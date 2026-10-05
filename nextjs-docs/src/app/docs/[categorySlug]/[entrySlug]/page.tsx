@@ -8,21 +8,7 @@ import MainContent from "@/components/main-content";
 import RightToc from "@/components/right-toc";
 import Link from "next/link";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-
-type LayoutNode = { ui_id?: string; entry_mgmt_id?: number | string; children?: LayoutNode[] };
-
-function parseLayoutStructure(raw: any): LayoutNode[] | null {
-  if (!raw) return null;
-  if (Array.isArray(raw)) return raw;
-  if (typeof raw === 'string') {
-    try {
-      return JSON.parse(raw);
-    } catch {
-      return null;
-    }
-  }
-  return null;
-}
+import { parseLayoutStructure, type LayoutNode } from '@/lib/layout-structure';
 
 function flattenEntryIds(nodes: LayoutNode[] | null): number[] {
   if (!nodes || nodes.length === 0) return [];

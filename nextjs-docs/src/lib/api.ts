@@ -6,7 +6,7 @@ const API_BASE_URL = isServer
   : (process.env.NEXT_PUBLIC_API_URL || 'http://localhost/api');
 
 // Request deduplicator cache
-const requestCache = new Map<string, Promise<any>>();
+const requestCache = new Map<string, Promise<unknown>>();
 
 export async function fetchApi<T>(endpoint: string): Promise<T> {
   const url = `${API_BASE_URL}${endpoint}`;

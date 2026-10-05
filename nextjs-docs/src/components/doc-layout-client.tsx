@@ -8,12 +8,13 @@ import SearchBar from "@/components/search-bar";
 import ThemeToggle from "@/components/theme-toggle";
 import Breadcrumbs from "@/components/breadcrumbs";
 import BackToTop from "@/components/back-to-top";
+import type { RawLayoutStructure } from '@/lib/layout-structure';
 
 interface DocLayoutClientProps {
   children: React.ReactNode;
   entries: Entry[];
   categorySlug: string;
-  layoutStructure?: any;
+  layoutStructure?: RawLayoutStructure;
 }
 
 export default function DocLayoutClient({
