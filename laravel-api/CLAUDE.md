@@ -34,7 +34,6 @@ docker exec ml-php php artisan migrate:fresh --seed      # DEV ONLY, destroys da
 ## Gotchas
 
 - New Larastan errors must be fixed, not added to the baseline; regenerate it only when the baseline shrinks (`composer analyse -- --generate-baseline=phpstan-baseline.neon`).
-- `phpstan/phpstan` is pinned `~2.1.0`: Larastan 3.1 is the newest that supports Laravel 11.34. Unpin with the Laravel upgrade (U1).
 - Tests hit a real PostgreSQL `testing` DB (see `phpunit.xml`), run inside `ml-php`.
 - DB views/triggers are created in migrations `..._000046` – `..._000049`; changing RBAC tables means checking those too.
 - Media upload goes to MinIO via `Services/MinioService.php` with queued jobs in `Jobs/Media`; broadcast progress over Reverb.
