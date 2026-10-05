@@ -96,7 +96,7 @@ class AdminMstRepository extends BaseRepository implements AdminMstInterface
     }
 
     // Use fill() with only fillable fields
-    $model = $this->model->fill(
+    $model = $this->model->newInstance()->fill(
       Arr::only($payload, $this->model->getFillable())
     );
 

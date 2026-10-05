@@ -75,7 +75,7 @@ class SocialMgmtRepository extends BaseRepository implements SocialMgmtInterface
      */
     public function executeStore(array $payload): int
     {
-        $model = $this->model->fill(
+        $model = $this->model->newInstance()->fill(
             Arr::only($payload, $this->model->getFillable())
         );
 

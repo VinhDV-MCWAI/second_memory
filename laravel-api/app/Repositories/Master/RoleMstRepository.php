@@ -67,7 +67,7 @@ class RoleMstRepository extends BaseRepository implements RoleMstInterface
      */
     public function executeStore(array $payload): int
     {
-        $model = $this->model->fill(
+        $model = $this->model->newInstance()->fill(
             Arr::only($payload, $this->model->getFillable())
         );
 

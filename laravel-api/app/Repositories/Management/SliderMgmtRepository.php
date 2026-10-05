@@ -71,7 +71,7 @@ class SliderMgmtRepository extends BaseRepository implements SliderMgmtInterface
      */
     public function executeStore(array $payload): int
     {
-        $model = $this->model->fill(
+        $model = $this->model->newInstance()->fill(
             Arr::only($payload, $this->model->getFillable())
         );
 

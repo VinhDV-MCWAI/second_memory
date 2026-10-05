@@ -74,7 +74,7 @@ class TokenMstRepository extends BaseRepository implements TokenMstInterface
       $payload['expired_at'] = \Carbon\Carbon::createFromFormat(\App\Constants\CommonVal::DATE_FORMAT, $payload['expired_at'])->format('Y-m-d');
     }
 
-    $model = $this->model->fill(
+    $model = $this->model->newInstance()->fill(
       Arr::only($payload, $this->model->getFillable())
     );
 

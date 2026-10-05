@@ -92,7 +92,7 @@ class UserMgmtRepository extends BaseRepository implements UserMgmtInterface
       $payload['birth'] = Carbon::createFromFormat(CommonVal::DATE_FORMAT, $payload['birth'])->format('Y-m-d');
     }
 
-    $model = $this->model->fill(
+    $model = $this->model->newInstance()->fill(
       Arr::only($payload, $this->model->getFillable())
     );
 
