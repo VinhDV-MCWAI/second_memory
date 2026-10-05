@@ -44,7 +44,7 @@ class RoleMstHistRepository extends BaseRepository implements RoleMstHistInterfa
    */
   public function executeStore(array $payload): int
   {
-    $model = $this->model->fill(Arr::only($payload, $this->model->getFillable()));
+    $model = $this->model->newInstance()->fill(Arr::only($payload, $this->model->getFillable()));
     $model->save();
     return $model->id;
   }

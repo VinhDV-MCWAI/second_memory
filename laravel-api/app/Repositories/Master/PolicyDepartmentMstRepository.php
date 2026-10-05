@@ -65,7 +65,7 @@ class PolicyDepartmentMstRepository extends BaseRepository implements PolicyDepa
    */
   public function executeStore(array $payload): int
   {
-    $model = $this->model->fill(
+    $model = $this->model->newInstance()->fill(
       Arr::only($payload, $this->model->getFillable())
     );
 

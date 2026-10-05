@@ -46,7 +46,7 @@ class AdminMstHistRepository extends BaseRepository implements AdminMstHistInter
         if (isset($payload['password']) && $payload['password']) {
             $payload['password'] = Hash::make($payload['password']);
         }
-        $model = $this->model->fill(Arr::only($payload, $this->model->getFillable()));
+        $model = $this->model->newInstance()->fill(Arr::only($payload, $this->model->getFillable()));
         $model->save();
         return $model->id;
     }
