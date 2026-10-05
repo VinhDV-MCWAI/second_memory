@@ -114,7 +114,7 @@ class StoreFeatureMstTest extends TestCase
 
     $response = $this->call('POST', $this->storeUrl, [], $cookies);
 
-    $this->assertCustomValidationErrors($response, ['name', 'group_name', 'description', 'status', 'is_delete']);
+    $this->assertCustomValidationErrors($response, ['name', 'group_name', 'status', 'is_delete']);
   }
 
   public function test_FTR_STO_003_invalid_enum_values()

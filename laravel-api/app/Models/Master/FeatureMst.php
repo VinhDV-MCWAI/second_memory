@@ -23,7 +23,6 @@ class FeatureMst extends Model
   protected $fillable = [
     'name',
     'group_name',
-    'description',
     'status',
     'is_delete',
   ];
@@ -37,7 +36,6 @@ class FeatureMst extends Model
     'id' => 'integer',
     'name' => 'string',
     'group_name' => 'string',
-    'description' => 'string',
     'status' => 'integer',
     'is_delete' => 'boolean',
     'created_at' => 'datetime',
