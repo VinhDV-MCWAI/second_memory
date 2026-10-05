@@ -5,9 +5,11 @@ REST API for Second Memory. Conventions: `.claude/rules/backend-laravel.md` (aut
 ## Commands (run from repo root)
 
 ```bash
-docker exec ml-php php artisan test                      # all tests
-docker exec ml-php php artisan test --filter=CategoryMgmt
-docker exec ml-php ./vendor/bin/pint                     # format
+docker exec ml-php composer check                        # lint + analyse + test
+docker exec ml-php composer test -- --filter=CategoryMgmt
+docker exec ml-php composer lint                         # pint --test (format: composer format)
+docker exec ml-php composer analyse                      # Larastan level 5 + phpstan-baseline.neon
+docker exec ml-php composer rector                       # Rector dry run (rules applied in PLAN U1)
 docker exec ml-php php artisan route:list --path=api/admin
 docker exec ml-php php artisan migrate:fresh --seed      # DEV ONLY, destroys data
 ```
@@ -24,13 +26,15 @@ docker exec ml-php php artisan migrate:fresh --seed      # DEV ONLY, destroys da
 
 ## HTTP contract (FE depends on it — do not break)
 
-- Routes: `GET {resource}/list`, `POST {resource}/store`, `PUT {resource}/update/{id}`, `DELETE {resource}/delete` (body `{ ids: [] }`). Admin routes under `/api/admin`, public under `/api/docs`.
+- Routes: `GET {resource}/list`, `POST {resource}/store`, `PUT {resource}/update/{id}`, `POST {resource}/delete` (body `{ ids: [] }`). Admin routes under `/api/admin`, public under `/api/docs`.
 - Envelope (`GenerateResponseMiddleware` + `bootstrap/app.php`): `{ "data": ..., "error": { "status": bool, "code": int, "messages": string|object|null } }`. Validation errors → 422 with field map in `error.messages`.
 - Auth: `access_token` httpOnly cookie (JWT) → `AdminMiddleware` checks Redis key `admin:{id}:{token}` and the per-admin permission hash `admin:{id}:<ADMIN_PERMISSION_TABLE>` (method → allowed route URIs).
 - Writes run inside `TransactionMiddleware`; `LoginFailedException` commits instead of rolling back.
 
 ## Gotchas
 
+- New Larastan errors must be fixed, not added to the baseline; regenerate it only when the baseline shrinks (`composer analyse -- --generate-baseline=phpstan-baseline.neon`).
+- `phpstan/phpstan` is pinned `~2.1.0`: Larastan 3.1 is the newest that supports Laravel 11.34. Unpin with the Laravel upgrade (U1).
 - Tests hit a real PostgreSQL `testing` DB (see `phpunit.xml`), run inside `ml-php`.
 - DB views/triggers are created in migrations `..._000046` – `..._000049`; changing RBAC tables means checking those too.
 - Media upload goes to MinIO via `Services/MinioService.php` with queued jobs in `Jobs/Media`; broadcast progress over Reverb.

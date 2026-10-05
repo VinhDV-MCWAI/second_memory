@@ -47,7 +47,7 @@
 | S7 FE error messages | done (verified) | Confirmed `react-hot-toast/headless` bundles its own store → interceptor toasts were never rendered (and used raw i18n keys). Removed `api/client/error-handler.ts`; interceptor only rejects. New `getApiErrorMessage()` in `shared/utils/error-handler.ts` reads `error.messages` (string/list/field map); used by `useCrud`, `useJunctionTable`, `file-upload`. `handleBindErrors` typed to real envelope. First Vitest spec (10 tests ✓); dropped dead `setupFiles` from `vitest.config.ts`. tsc ✓, eslint on touched files ✓. Manual browser check of a server error toast still TODO (needs login) |
 | S8 phpunit force testing DB | done (verified) | tests run against `testing` DB; `force="true"` + entrypoint creates `testing` DB idempotently |
 | F1 Monorepo hygiene + LF | done (verified) | commit `c6241d0`. Root lockfile only; Docker builds from repo root (`APP` arg); CI cache path + CD context updated. Verified: throwaway container `pnpm install --frozen-lockfile`/`typecheck`/`test` from root ✓; FE prod image builds; dev containers healthy, `/docs` `/login` `/admin` 200. `engines.node` kept `>=22` (images are Node 22; Node 24 = U2). Root `format` script → F3 (Prettier). Root `lint` fails only on pre-existing errors (F3). Docs prod image never existed (no standalone/public) → I5 |
-| F2 Backend tooling | todo | |
+| F2 Backend tooling | done (verified) | `pint.json` (laravel preset), Larastan 3.1 level 5 + `phpstan-baseline.neon` (631 errors, mostly Resources without `@mixin` / undefined model props), Rector 2.4 + rector-laravel (PHP 8.2 + up-to-Laravel-11 sets, dry-run only: 78 files → apply in U1), composer scripts `lint/format/analyse/rector/test/check`, `composer.lock` now tracked. phpstan pinned `~2.1.0` because Larastan ≥3.2 needs Laravel ≥11.44 (unpin in U1). Larastan findings fixed in separate commits: missing `IsActive` import in 5 history requests (valid `is_display` rejected, regression test added), dead CategoryEntryMgmt stubs, dead MediaFile repository. Tests: 442F/153P (was 450F/143P; −8 dead tests, +5 new, +5 fixed). `composer audit`: 9 advisories (laravel/framework 11.34.2 ×7, phpunit, firebase/php-jwt) → U1 / auth guide |
 | F3 FE tooling | todo | |
 | F4 CI | todo | build on developer's CI |
 | F5 Dead code / deps | done (verified) | backend: unused ProductMgmt stack, `Http/Kernel.php`, `Tmp`, `CommonService`, `SingletonService`, `CategoryMgmt::products()`, Laravel Vite assets. FE: `@dnd-kit/*`, `@reduxjs/toolkit`, `react-redux`, `novel` (local `novel-editor` is Tiptap, not the package), `react-masonry-css`, `shadcn-ui`, `@swc/helpers`; docs: unused `react-dialog`, `react-scroll-area`, `tw-animate-css`, pinned `@next/swc-linux-x64-musl@16.0.1` (stale vs next 16.3.8). `.bak` + tracked `tsbuildinfo` removed (already gitignored). `nodejs npm` dropped from PHP dev image. Verified: fresh `--frozen-lockfile` install, typecheck, test (10 ✓), FE + docs `next build` ✓, PHP dev image builds |
@@ -69,6 +69,8 @@
 
 - 2026-10-05 — F5 done & committed.
 
+- 2026-10-05 — F2 done & committed (+ fix IsActive imports, dead code removal).
+
 ## Next step
 
-F2 (backend tooling).
+F3 (FE tooling: shared ESLint flat config + Prettier, TS strict, Vitest 4, replace `next lint` in docs).
