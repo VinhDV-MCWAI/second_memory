@@ -7,6 +7,7 @@ use App\Constants\CommonVal;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Enum;
 use App\Models\History\Management\CategoryMgmtHist;
+use App\Enums\IsActive;
 use App\Enums\StatusEnum;
 use App\Models\Management\CategoryMgmt;
 

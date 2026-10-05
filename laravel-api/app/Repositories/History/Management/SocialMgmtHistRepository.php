@@ -23,7 +23,7 @@ class SocialMgmtHistRepository extends BaseRepository implements SocialMgmtHistI
    * Get list
    *
    * @param array $payload
-   * @return Collection
+   * @return LengthAwarePaginator
    */
   public function list(array $payload): LengthAwarePaginator
   {

@@ -23,7 +23,7 @@ class SliderMgmtHistRepository extends BaseRepository implements SliderMgmtHistI
      * Get list
      *
      * @param array $payload
-     * @return Collection
+     * @return LengthAwarePaginator
      */
     public function list(array $payload): LengthAwarePaginator
     {
