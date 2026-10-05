@@ -20,12 +20,16 @@
         "laravel/reverb": "@beta"
     },
     "require-dev": {
+        "driftingly/rector-laravel": "^2.0",
         "fakerphp/faker": "1.24.1",
+        "larastan/larastan": "^3.0",
         "laravel/pint": "1.18.3",
         "laravel/sail": "1.39.1",
         "mockery/mockery": "1.6.12",
         "nunomaduro/collision": "8.5.0",
-        "phpunit/phpunit": "11.4.4"
+        "phpstan/phpstan": "~2.1.0",
+        "phpunit/phpunit": "11.4.4",
+        "rector/rector": "^2.0"
     },
     "autoload": {
         "psr-4": {
@@ -40,6 +44,19 @@
         }
     },
     "scripts": {
+        "lint": "pint --test",
+        "format": "pint",
+        "analyse": "phpstan analyse --memory-limit=1G",
+        "rector": "rector process --dry-run",
+        "test": [
+            "Composer\\Config::disableProcessTimeout",
+            "@php artisan test"
+        ],
+        "check": [
+            "@lint",
+            "@analyse",
+            "@test"
+        ],
         "post-autoload-dump": [
             "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump"
         ],
