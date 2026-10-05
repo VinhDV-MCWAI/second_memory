@@ -23,7 +23,7 @@ class BannerMgmtHistRepository extends BaseRepository implements BannerMgmtHistI
    * Get list
    *
    * @param array $payload
-   * @return Collection
+   * @return LengthAwarePaginator
    */
   public function list(array $payload): LengthAwarePaginator
   {
