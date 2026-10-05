@@ -4,13 +4,14 @@ import "./globals.css";
 import { Providers } from './providers';
 import { MetadataManager } from '@/components/common/metadata-manager';
 import { useEffect, useState } from 'react';
+import type { AbstractIntlMessages } from 'next-intl';
 
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const [messages, setMessages] = useState<any>({});
+  const [messages, setMessages] = useState<AbstractIntlMessages>({});
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {

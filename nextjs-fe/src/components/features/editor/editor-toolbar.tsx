@@ -68,7 +68,7 @@ export function EditorToolbar({ editor, onImageUpload }: EditorToolbarProps) {
     } else {
       const url = window.prompt('Enter image URL');
       if (url) {
-        (editor.chain().focus() as any).setImage({ src: url }).run();
+        editor.chain().focus().setImage({ src: url }).run();
       }
     }
   };
@@ -82,18 +82,18 @@ export function EditorToolbar({ editor, onImageUpload }: EditorToolbarProps) {
     }
 
     if (url === '') {
-      (editor.chain().focus() as any).extendMarkRange('link').unsetLink().run();
+      editor.chain().focus().extendMarkRange('link').unsetLink().run();
       return;
     }
 
-    (editor.chain().focus() as any).extendMarkRange('link').setLink({ href: url }).run();
+    editor.chain().focus().extendMarkRange('link').setLink({ href: url }).run();
   };
 
   return (
     <div className="border-b p-2 flex flex-wrap gap-1 bg-gray-50 dark:bg-gray-900 dark:border-gray-700 sticky top-0 z-10">
       {/* Text formatting buttons */}
       <ToolbarButton
-        onClick={() => (editor.chain().focus() as any).toggleBold().run()}
+        onClick={() => editor.chain().focus().toggleBold().run()}
         isActive={editor.isActive('bold')}
         title="Bold"
       >
@@ -101,7 +101,7 @@ export function EditorToolbar({ editor, onImageUpload }: EditorToolbarProps) {
       </ToolbarButton>
 
       <ToolbarButton
-        onClick={() => (editor.chain().focus() as any).toggleItalic().run()}
+        onClick={() => editor.chain().focus().toggleItalic().run()}
         isActive={editor.isActive('italic')}
         title="Italic"
       >
@@ -109,7 +109,7 @@ export function EditorToolbar({ editor, onImageUpload }: EditorToolbarProps) {
       </ToolbarButton>
 
       <ToolbarButton
-        onClick={() => (editor.chain().focus() as any).toggleStrike().run()}
+        onClick={() => editor.chain().focus().toggleStrike().run()}
         isActive={editor.isActive('strike')}
         title="Strikethrough"
       >
@@ -117,7 +117,7 @@ export function EditorToolbar({ editor, onImageUpload }: EditorToolbarProps) {
       </ToolbarButton>
 
       <ToolbarButton
-        onClick={() => (editor.chain().focus() as any).toggleCode().run()}
+        onClick={() => editor.chain().focus().toggleCode().run()}
         isActive={editor.isActive('code')}
         title="Code"
       >
@@ -125,7 +125,7 @@ export function EditorToolbar({ editor, onImageUpload }: EditorToolbarProps) {
       </ToolbarButton>
 
       <ToolbarButton
-        onClick={() => (editor.chain().focus() as any).toggleHighlight().run()}
+        onClick={() => editor.chain().focus().toggleHighlight().run()}
         isActive={editor.isActive('highlight')}
         title="Highlight"
       >
@@ -136,7 +136,7 @@ export function EditorToolbar({ editor, onImageUpload }: EditorToolbarProps) {
 
       {/* Headings */}
       <ToolbarButton
-        onClick={() => (editor.chain().focus() as any).toggleHeading({ level: 1 }).run()}
+        onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
         isActive={editor.isActive('heading', { level: 1 })}
         title="Heading 1"
       >
@@ -144,7 +144,7 @@ export function EditorToolbar({ editor, onImageUpload }: EditorToolbarProps) {
       </ToolbarButton>
 
       <ToolbarButton
-        onClick={() => (editor.chain().focus() as any).toggleHeading({ level: 2 }).run()}
+        onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
         isActive={editor.isActive('heading', { level: 2 })}
         title="Heading 2"
       >
@@ -152,7 +152,7 @@ export function EditorToolbar({ editor, onImageUpload }: EditorToolbarProps) {
       </ToolbarButton>
 
       <ToolbarButton
-        onClick={() => (editor.chain().focus() as any).toggleHeading({ level: 3 }).run()}
+        onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}
         isActive={editor.isActive('heading', { level: 3 })}
         title="Heading 3"
       >
@@ -163,7 +163,7 @@ export function EditorToolbar({ editor, onImageUpload }: EditorToolbarProps) {
 
       {/* Lists */}
       <ToolbarButton
-        onClick={() => (editor.chain().focus() as any).toggleBulletList().run()}
+        onClick={() => editor.chain().focus().toggleBulletList().run()}
         isActive={editor.isActive('bulletList')}
         title="Bullet List"
       >
@@ -171,7 +171,7 @@ export function EditorToolbar({ editor, onImageUpload }: EditorToolbarProps) {
       </ToolbarButton>
 
       <ToolbarButton
-        onClick={() => (editor.chain().focus() as any).toggleOrderedList().run()}
+        onClick={() => editor.chain().focus().toggleOrderedList().run()}
         isActive={editor.isActive('orderedList')}
         title="Ordered List"
       >
@@ -179,7 +179,7 @@ export function EditorToolbar({ editor, onImageUpload }: EditorToolbarProps) {
       </ToolbarButton>
 
       <ToolbarButton
-        onClick={() => (editor.chain().focus() as any).toggleBlockquote().run()}
+        onClick={() => editor.chain().focus().toggleBlockquote().run()}
         isActive={editor.isActive('blockquote')}
         title="Quote"
       >
@@ -208,7 +208,7 @@ export function EditorToolbar({ editor, onImageUpload }: EditorToolbarProps) {
 
       {/* History */}
       <ToolbarButton
-        onClick={() => (editor.chain().focus() as any).undo().run()}
+        onClick={() => editor.chain().focus().undo().run()}
         disabled={!editor.can().undo()}
         title="Undo"
       >
@@ -216,7 +216,7 @@ export function EditorToolbar({ editor, onImageUpload }: EditorToolbarProps) {
       </ToolbarButton>
 
       <ToolbarButton
-        onClick={() => (editor.chain().focus() as any).redo().run()}
+        onClick={() => editor.chain().focus().redo().run()}
         disabled={!editor.can().redo()}
         title="Redo"
       >

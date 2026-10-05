@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef, useCallback } from 'react';
 import Echo from 'laravel-echo';
-import Pusher from 'pusher-js';
+import Pusher, { type Channel, type ChannelAuthorizationCallback } from 'pusher-js';
 
 // Ensure Pusher is available globally for Echo
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -57,9 +57,9 @@ export const useWebSocket = ({
           Authorization: `Bearer ${token}`,
         } : {},
       },
-      authorizer: (channel: any) => {
+      authorizer: (channel: Channel) => {
         return {
-          authorize: (socketId: string, callback: (error: Error | null, data: any) => void) => {
+          authorize: (socketId: string, callback: ChannelAuthorizationCallback) => {
             console.log('[useWebSocket] Authorizing channel:', channel.name, 'socketId:', socketId);
             // Use fetch with credentials to send cookies
             fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:81/api'}/admin/broadcasting/auth`, {
