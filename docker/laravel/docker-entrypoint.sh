@@ -86,6 +86,16 @@ if [ $RETRY_COUNT -eq $MAX_RETRIES ]; then
 fi
 echo ""
 
+# Step 3b: Ensure the isolated test database exists (idempotent)
+TEST_DB_NAME="${DB_TEST_DATABASE:-testing}"
+if ! PGPASSWORD="${DB_PASSWORD}" psql -h "${DB_HOST}" -p "${DB_PORT}" -U "${DB_USERNAME}" -d "${DB_DATABASE}" -tAc \
+    "SELECT 1 FROM pg_database WHERE datname = '${TEST_DB_NAME}'" | grep -q 1; then
+    echo -e "${BLUE}  -> Creating test database '${TEST_DB_NAME}'...${NC}"
+    PGPASSWORD="${DB_PASSWORD}" psql -h "${DB_HOST}" -p "${DB_PORT}" -U "${DB_USERNAME}" -d "${DB_DATABASE}" -c "CREATE DATABASE \"${TEST_DB_NAME}\""
+fi
+echo -e "${GREEN}  ✓ Test database '${TEST_DB_NAME}' ready${NC}"
+echo ""
+
 # Step 4: Generate application key (only if not already set)
 echo -e "${YELLOW}[4/6] Generating application key...${NC}"
 if grep -q "APP_KEY=base64:" .env; then
