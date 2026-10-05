@@ -114,6 +114,7 @@ export const getEntrySchema = (t: Translator) => z.object({
 });
 
 export type EntryFormData = z.infer<ReturnType<typeof getEntrySchema>>;
+export type EntryFormInput = z.input<ReturnType<typeof getEntrySchema>>;
 
 // Role schema
 export const getRoleSchema = (t: Translator) => z.object({

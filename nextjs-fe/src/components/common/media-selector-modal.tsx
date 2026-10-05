@@ -59,7 +59,7 @@ export function MediaSelectorModal({
       // But if response.data is undefined, we fall back to empty array or check if response itself is array.
       const listData = response?.data || (Array.isArray(response) ? response : []) || [];
 
-      const sorted = listData.sort((a: any, b: any) => {
+      const sorted = listData.sort((a, b) => {
         if (a.is_file === b.is_file) {
           return a.original_name.localeCompare(b.original_name);
         }

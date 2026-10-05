@@ -26,7 +26,7 @@ import type { EntryMgmt, LayoutStructureItem, EntryDescriptionMgmt } from '@/sha
 import { ENDPOINTS } from '@/shared/api';
 import { FORM_DEFAULTS } from '@/shared/config/constant';
 import { EntryStatus, EntryStatusLabels } from '@/shared/enums';
-import { getEntrySchema, type EntryFormData } from '@/shared/validation/validation';
+import { getEntrySchema, type EntryFormData, type EntryFormInput } from '@/shared/validation/validation';
 import { slugify } from '@/shared/utils/string-utils';
 import type { EntryFormProps } from './types';
 import { LayoutStructureEditor } from './layout-structure-editor';
@@ -67,8 +67,8 @@ export function EntryForm({ initialData, onSuccess, onCancel, hideActions = fals
     control,
     reset,
     setError,
-  } = useForm<EntryFormData>({
-    resolver: zodResolver(getEntrySchema(tValidation)) as any,
+  } = useForm<EntryFormInput, unknown, EntryFormData>({
+    resolver: zodResolver(getEntrySchema(tValidation)),
     defaultValues: {
       rank_order: FORM_DEFAULTS.RANK_ORDER,
       status: EntryStatus.ACTIVE,
