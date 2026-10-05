@@ -47,6 +47,7 @@ class Messages
     const E0404 = 'Not Found';
     const E0405 = 'Method Not Allowed';
     const E0422 = 'Invalid argument';
+    const E0429 = 'Too many requests';
     const E0500 = 'Internal server error';
 
     /**
