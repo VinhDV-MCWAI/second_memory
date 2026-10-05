@@ -230,14 +230,17 @@ services:
   ml-nextjs:
     container_name: ml-nextjs
     build:
-      context: ../nextjs-fe
-      dockerfile: ../docker/nextjs/Dockerfile
+      # Repo root context: installs from the workspace root pnpm-lock.yaml
+      context: ..
+      dockerfile: docker/nextjs/Dockerfile
       target: development
+      args:
+        APP: nextjs-fe
     restart: unless-stopped
     volumes:
-      - ../nextjs-fe:/app
-      - /app/.next
-      - /app/node_modules
+      - ../nextjs-fe:/repo/nextjs-fe
+      - /repo/nextjs-fe/.next
+      - /repo/nextjs-fe/node_modules
     environment:
       NODE_ENV: development
       PORT: ${NEXTJS_PORT_INSIDE_ENV}
@@ -275,14 +278,17 @@ services:
   ml-nextjs-docs:
     container_name: ml-nextjs-docs
     build:
-      context: ../nextjs-docs
-      dockerfile: ../docker/nextjs/Dockerfile
+      # Repo root context: installs from the workspace root pnpm-lock.yaml
+      context: ..
+      dockerfile: docker/nextjs/Dockerfile
       target: development
+      args:
+        APP: nextjs-docs
     restart: unless-stopped
     volumes:
-      - ../nextjs-docs:/app
-      - /app/.next
-      - docs_node_modules:/app/node_modules
+      - ../nextjs-docs:/repo/nextjs-docs
+      - /repo/nextjs-docs/.next
+      - /repo/nextjs-docs/node_modules
     environment:
       NODE_ENV: development
       PORT: ${NEXTJS_DOCS_PORT_INSIDE_ENV}
@@ -423,9 +429,6 @@ volumes:
   minio_data:
     driver: local
     name: ml_minio_data
-  docs_node_modules:
-    driver: local
-    name: ml_docs_node_modules
 
 # Network configuration
 networks:

@@ -1,0 +1,16 @@
+# Build context for docker/nextjs/Dockerfile is the repo root: send only the workspace
+# manifest and the Next.js apps.
+**
+!package.json
+!pnpm-lock.yaml
+!pnpm-workspace.yaml
+!nextjs-fe/
+!nextjs-docs/
+
+**/node_modules
+**/.next
+**/out
+**/coverage
+**/*.tsbuildinfo
+**/.env
+**/.env.*

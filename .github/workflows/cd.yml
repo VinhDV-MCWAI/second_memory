@@ -74,9 +74,12 @@ jobs:
       - name: Build and push FE image
         uses: docker/build-push-action@v5
         with:
-          context: ./nextjs-fe
+          # Repo root context: installs from the workspace root pnpm-lock.yaml
+          context: .
           file: ./docker/nextjs/Dockerfile
           target: production
+          build-args: |
+            APP=nextjs-fe
           push: true
           cache-from: type=gha,scope=fe
           cache-to: type=gha,mode=max,scope=fe

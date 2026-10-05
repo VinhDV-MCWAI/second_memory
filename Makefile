@@ -18,7 +18,7 @@ setup: ## Generate docker/.env and app env files (idempotent)
 .PHONY: up
 up: ## Start the whole stack (generates env on first run)
 	@[ -f docker/.env ] || $(MAKE) setup
-	$(COMPOSE) up -d --build
+	$(COMPOSE) up -d --build --renew-anon-volumes
 
 .PHONY: down
 down: ## Stop the stack (keeps volumes)
