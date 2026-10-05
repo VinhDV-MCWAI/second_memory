@@ -59,7 +59,6 @@ class ListApiMstHistTest extends TestCase
     $feature = \App\Models\Master\FeatureMst::firstOrCreate([
       'name' => 'System Features',
       'group_name' => 'System',
-      'description' => 'Auto generated',
       'status' => 1,
       'is_delete' => 0
     ]);

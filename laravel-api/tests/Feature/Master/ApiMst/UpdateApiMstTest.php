@@ -67,7 +67,6 @@ class UpdateApiMstTest extends TestCase
     $feature = FeatureMst::firstOrCreate([
       'name' => 'System Features',
       'group_name' => 'System',
-      'description' => 'Auto generated',
       'status' => 1,
       'is_delete' => 0
     ]);
