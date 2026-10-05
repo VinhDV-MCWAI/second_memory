@@ -54,16 +54,6 @@ class CategoryMgmt extends Model
   ];
 
   /**
-   * Get the products in this category.
-   *
-   * @return HasMany
-   */
-  public function products(): HasMany
-  {
-    return $this->hasMany(ProductMgmt::class, 'category_mgmt_id');
-  }
-
-  /**
    * Get the history records for the category.
    *
    * @return HasMany

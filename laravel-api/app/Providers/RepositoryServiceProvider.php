@@ -7,7 +7,6 @@ namespace App\Providers;
 use App\Interfaces\BaseInterface;
 use App\Interfaces\History\Management\BannerMgmtHistInterface;
 use App\Interfaces\History\Management\CategoryMgmtHistInterface;
-use App\Interfaces\History\Management\ProductMgmtHistInterface;
 use App\Interfaces\History\Management\SettingLinkMgmtHistInterface;
 use App\Interfaces\History\Management\EntryDescriptionMgmtHistInterface;
 use App\Interfaces\History\Management\EntryMgmtHistInterface;
@@ -28,7 +27,6 @@ use App\Interfaces\Management\CategoryMgmtInterface;
 use App\Interfaces\Management\CategoryEntryMgmtInterface;
 use App\Interfaces\Management\MediaFileInterface;
 use App\Interfaces\Management\MediaMgmtInterface;
-use App\Interfaces\Management\ProductMgmtInterface;
 use App\Interfaces\Management\SettingLinkMgmtInterface;
 use App\Interfaces\Management\EntryDescriptionMgmtInterface;
 use App\Interfaces\Management\EntryMgmtInterface;
@@ -53,7 +51,6 @@ use App\Interfaces\Master\TokenMstInterface;
 use App\Repositories\BaseRepository;
 use App\Repositories\History\Management\BannerMgmtHistRepository;
 use App\Repositories\History\Management\CategoryMgmtHistRepository;
-use App\Repositories\History\Management\ProductMgmtHistRepository;
 use App\Repositories\History\Management\SettingLinkMgmtHistRepository;
 use App\Repositories\History\Management\EntryDescriptionMgmtHistRepository;
 use App\Repositories\History\Management\EntryMgmtHistRepository;
@@ -74,7 +71,6 @@ use App\Repositories\Management\CategoryMgmtRepository;
 use App\Repositories\Management\CategoryEntryMgmtRepository;
 use App\Repositories\Management\MediaFileRepository;
 use App\Repositories\Management\MediaMgmtRepository;
-use App\Repositories\Management\ProductMgmtRepository;
 use App\Repositories\Management\SettingLinkMgmtRepository;
 use App\Repositories\Management\EntryDescriptionMgmtRepository;
 use App\Repositories\Management\EntryMgmtRepository;
@@ -123,7 +119,6 @@ final class RepositoryServiceProvider extends ServiceProvider
     CategoryMgmtInterface::class => CategoryMgmtRepository::class,
     CategoryEntryMgmtInterface::class => CategoryEntryMgmtRepository::class,
     MediaMgmtInterface::class => MediaMgmtRepository::class,
-    ProductMgmtInterface::class => ProductMgmtRepository::class,
     SettingLinkMgmtInterface::class => SettingLinkMgmtRepository::class,
     EntryDescriptionMgmtInterface::class => EntryDescriptionMgmtRepository::class,
     EntryMgmtInterface::class => EntryMgmtRepository::class,
@@ -146,7 +141,6 @@ final class RepositoryServiceProvider extends ServiceProvider
     // Management History
     BannerMgmtHistInterface::class => BannerMgmtHistRepository::class,
     CategoryMgmtHistInterface::class => CategoryMgmtHistRepository::class,
-    ProductMgmtHistInterface::class => ProductMgmtHistRepository::class,
     SettingLinkMgmtHistInterface::class => SettingLinkMgmtHistRepository::class,
     EntryDescriptionMgmtHistInterface::class => EntryDescriptionMgmtHistRepository::class,
     EntryMgmtHistInterface::class => EntryMgmtHistRepository::class,
