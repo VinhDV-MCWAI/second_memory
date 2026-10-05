@@ -3319,18 +3319,6 @@ parameters:
 			path: database/factories/Master/ApiMstFactory.php
 
 		-
-			message: '#^PHPDoc tag @extends has invalid type App\\Models\\Model\.$#'
-			identifier: class.notFound
-			count: 1
-			path: database/factories/Master/CategoryFactory.php
-
-		-
-			message: '#^Type App\\Models\\Model in generic type Illuminate\\Database\\Eloquent\\Factories\\Factory\<App\\Models\\Model\> in PHPDoc tag @extends is not subtype of template type TModel of Illuminate\\Database\\Eloquent\\Model of class Illuminate\\Database\\Eloquent\\Factories\\Factory\.$#'
-			identifier: generics.notSubtype
-			count: 1
-			path: database/factories/Master/CategoryFactory.php
-
-		-
 			message: '#^PHPDoc type string of property Database\\Factories\\Master\\FeatureMstFactory\:\:\$model is not covariant with PHPDoc type class\-string\<Illuminate\\Database\\Eloquent\\Model\> of overridden property Illuminate\\Database\\Eloquent\\Factories\\Factory\<Illuminate\\Database\\Eloquent\\Model\>\:\:\$model\.$#'
 			identifier: property.phpDocType
 			count: 1
