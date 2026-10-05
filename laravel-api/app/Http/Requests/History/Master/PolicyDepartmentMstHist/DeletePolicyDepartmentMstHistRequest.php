@@ -29,7 +29,7 @@ class DeletePolicyDepartmentMstHistRequest extends FormRequest
     {
         return [
             'ids' => ['required', 'array'],
-            'ids.*' => ['required', 'integer', 'min:' . CommonVal::MIN_VARCHAR, 'max:' . CommonVal::MAX_PHONE_NUMBER, Rule::exists(PolicyDepartmentMstHist::class, 'id')],
+            'ids.*' => ['required', 'integer', 'min:' . CommonVal::MIN_INTEGER, 'max:' . CommonVal::MAX_BIG_INTEGER, Rule::exists(PolicyDepartmentMstHist::class, 'id')],
         ];
     }
 
