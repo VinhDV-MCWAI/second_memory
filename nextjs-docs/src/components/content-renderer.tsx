@@ -22,7 +22,6 @@ export function ContentRenderer({ content, className }: ContentRendererProps) {
   const editor = useEditor({
     immediatelyRender: false,
     extensions: [
-      // @ts-expect-error - Mismatched extension type from monorepo tiptap versions
       StarterKit.configure({
         heading: {
           levels: [1, 2, 3, 4, 5, 6],
