@@ -31,7 +31,7 @@ class DeleteCategoryMgmtHistTest extends TestCase
     }
 
     // Grant access to DELETE endpoint
-    $this->grantAccessTo($rootRole, 'DELETE', 'api/admin/category-mgmt-hist/delete/{id}');
+    $this->grantAccessTo($rootRole, 'POST', 'api/admin/category-mgmt-hist/delete');
 
     if (!DB::table('admin_role_mst')
       ->where('admin_mst_id', $admin->id)
@@ -92,7 +92,7 @@ class DeleteCategoryMgmtHistTest extends TestCase
    */
   public function test_HST_CAT_DEL_001_unauthenticated()
   {
-    $response = $this->deleteJson($this->baseUrl . '/1', []);
+    $response = $this->postJson($this->baseUrl, []);
     $response->assertStatus(401);
   }
 
@@ -104,7 +104,7 @@ class DeleteCategoryMgmtHistTest extends TestCase
     $admin = AdminMst::factory()->create();
     $cookies = $this->getAuthCookies($admin);
 
-    $response = $this->call('DELETE', $this->baseUrl . '/1', [], $cookies);
+    $response = $this->call('POST', $this->baseUrl, [], $cookies);
     $response->assertStatus(CommonVal::HTTP_UNPROCESSABLE_CONTENT);
     $this->assertArrayHasKey('ids', $response->json('error.messages'));
   }
@@ -141,7 +141,7 @@ class DeleteCategoryMgmtHistTest extends TestCase
     $ids = [$history1->id, $history2->id];
     $payload = ['ids' => $ids];
 
-    $response = $this->call('DELETE', $this->baseUrl . '/' . $ids[0], $payload, $cookies);
+    $response = $this->call('POST', $this->baseUrl, $payload, $cookies);
     if ($response->status() !== 200) {
       $response->dump();
     }
