@@ -43,11 +43,11 @@ Workflow: `/refactor-item <ID…>`. Only `approved` items may be started.
 
 | ID | Item | Done when | Depends | Status |
 |---|---|---|---|---|
-| F1 | Monorepo hygiene: one root `pnpm-lock.yaml` (remove `nextjs-fe/pnpm-lock.yaml`, `laravel-api/package-lock.json`, fix `.gitignore`), `packageManager` + corepack, `engines.node >=24`, root scripts (`lint`, `typecheck`, `test`, `format`), root `.editorconfig`; drop `laravel-api` from pnpm workspace if its Vite assets are unused | `pnpm -r lint/typecheck/test` work from root | – | approved |
+| F1 | Monorepo hygiene: one root `pnpm-lock.yaml` (remove `nextjs-fe/pnpm-lock.yaml`, `laravel-api/package-lock.json`, fix `.gitignore`), `packageManager` + corepack, `engines.node >=24`, root scripts (`lint`, `typecheck`, `test`, `format`), root `.editorconfig`; drop `laravel-api` from pnpm workspace if its Vite assets are unused | `pnpm -r lint/typecheck/test` work from root | – | done (`refactor/p0-p1-foundation`; lint green after F3) |
 | F2 | Backend tooling: `pint.json` (PSR-12/laravel preset), Larastan 3 (start level 5 + baseline), Rector with rector-laravel, `composer` scripts `lint`, `analyse`, `test` | Commands run clean (with baseline) | – | approved |
 | F3 | FE tooling: shared ESLint flat config + Prettier for both apps, TS strict, Vitest 4 config; replace `next lint` in docs | Lint + tsc pass in both apps | F1 | approved |
 | F4 | Rewrite CI: jobs `frontend` (pnpm, Node 24) and `backend` (PHP 8.x + Postgres/Redis services: pint, larastan, tests), Docker build check; trigger on PR → `developer`/`main`; least-privilege permissions | CI green on a PR | F1–F3 | approved |
-| F5 | Remove dead code: `Http/Kernel.php`, `Utilities/Tmp.php`, `CommonService`, `SingletonService`, `CategoryMgmt::products()` (class doesn't exist), `.bak` files, `tsconfig.tsbuildinfo`; unused deps `@reduxjs/toolkit`, `react-redux`, `novel`, `@dnd-kit/*`, `react-masonry-css`, `shadcn-ui`, `@swc/helpers` | Build + tests green | – | approved |
+| F5 | Remove dead code: `Http/Kernel.php`, `Utilities/Tmp.php`, `CommonService`, `SingletonService`, `CategoryMgmt::products()` (class doesn't exist), `.bak` files, `tsconfig.tsbuildinfo`; unused deps `@reduxjs/toolkit`, `react-redux`, `novel`, `@dnd-kit/*`, `react-masonry-css`, `shadcn-ui`, `@swc/helpers` | Build + tests green | – | done (`refactor/p0-p1-foundation`) |
 | F6 | One-time format pass (Pint + Prettier) in a dedicated commit; add its SHA to `.git-blame-ignore-revs` | No style diffs remain | F2, F3 | approved |
 | F7 | Task runner `Makefile` (`make up/down/test/lint/fresh/backup`) wrapping docker compose; `start.sh` delegates to it | README/CLAUDE.md commands use `make` | – | approved |
 

@@ -80,8 +80,6 @@ FROM base AS development
 RUN apk add --no-cache \
   git \
   vim \
-  nodejs \
-  npm \
   postgresql-client
 
 # Install Xdebug for development  
