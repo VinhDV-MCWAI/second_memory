@@ -20,14 +20,14 @@ docker exec ml-php php artisan test --parallel                       # fall back
 ## Admin FE (`nextjs-fe/` changed)
 ```bash
 docker exec ml-nextjs pnpm lint
-docker exec ml-nextjs pnpm exec tsc --noEmit
+docker exec ml-nextjs pnpm typecheck
 docker exec ml-nextjs pnpm test --run
 ```
 
 ## Docs FE (`nextjs-docs/` changed)
 ```bash
 docker exec ml-nextjs-docs pnpm lint
-docker exec ml-nextjs-docs pnpm exec tsc --noEmit
+docker exec ml-nextjs-docs pnpm typecheck
 ```
 
 ## Report
