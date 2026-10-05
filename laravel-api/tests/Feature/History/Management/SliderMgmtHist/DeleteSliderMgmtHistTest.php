@@ -60,4 +60,15 @@ final class DeleteSliderMgmtHistTest extends TestCase
         $this->assertDatabaseMissing('slider_mgmt_hist', ['id' => $first->id]);
         $this->assertDatabaseMissing('slider_mgmt_hist', ['id' => $second->id]);
     }
+
+    public function test_deletes_rows_with_ids_above_twenty(): void
+    {
+        $admin = AdminMst::factory()->create();
+        $cookies = $this->loginWithAccess($admin, [['POST', self::URL]]);
+        $history = $this->createHistory(SliderMgmt::factory()->create(), $admin);
+        $history->forceFill(['id' => 100000])->save();
+
+        $this->call('POST', self::URL, ['ids' => [100000]], $cookies)->assertStatus(200);
+        $this->assertDatabaseMissing('slider_mgmt_hist', ['id' => 100000]);
+    }
 }

@@ -29,11 +29,11 @@ class UpdateSettingLinkMgmtHistRequest extends FormRequest
   {
     return [
       'id' => ['required', 'integer', 'min:1', Rule::exists(SettingLinkMgmtHist::class, 'id')],
-      'setting_link_mgmt_id' => ['required', 'integer', 'min:' . CommonVal::MIN_VARCHAR, 'max:' . CommonVal::MAX_PHONE_NUMBER, Rule::exists(SettingLinkMgmt::class, 'id')],
+      'setting_link_mgmt_id' => ['required', 'integer', 'min:' . CommonVal::MIN_INTEGER, 'max:' . CommonVal::MAX_INTEGER, Rule::exists(SettingLinkMgmt::class, 'id')],
       'key' => ['required', 'string', 'min:' . CommonVal::MIN_VARCHAR, 'max:30',],
       'value' => ['required', 'string', 'min:' . CommonVal::MIN_VARCHAR, 'max:100',],
       'action' => ['required', 'integer', 'min:' . CommonVal::MIN_VARCHAR, 'max:' . CommonVal::MAX_PHONE_NUMBER,],
-      'author_id' => ['required', 'integer', 'min:' . CommonVal::MIN_VARCHAR, 'max:' . CommonVal::MAX_PHONE_NUMBER, Rule::exists(AdminMst::class, 'id')],
+      'author_id' => ['required', 'integer', 'min:' . CommonVal::MIN_INTEGER, 'max:' . CommonVal::MAX_INTEGER, Rule::exists(AdminMst::class, 'id')],
     ];
   }
 
