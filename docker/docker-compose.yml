@@ -39,14 +39,16 @@ services:
     container_name: ml-redis
     image: redis:7-alpine
     restart: unless-stopped
+    environment:
+      REDIS_PASSWORD: ${REDIS_PASSWORD}
     volumes:
       - redis_data:/data
       - ./redis/redis.conf:/usr/local/etc/redis/redis.conf:ro
     ports:
       - "${REDIS_PORT_OUTSIDE_ENV}:${REDIS_PORT_INSIDE_ENV}"
-    command: ["redis-server", "/usr/local/etc/redis/redis.conf"]
+    command: ["sh", "-c", "exec redis-server /usr/local/etc/redis/redis.conf --requirepass \"$$REDIS_PASSWORD\""]
     healthcheck:
-      test: ["CMD", "redis-cli", "--raw", "incr", "ping"]
+      test: ["CMD-SHELL", "redis-cli --no-auth-warning -a \"$$REDIS_PASSWORD\" ping | grep -q PONG"]
       interval: 10s
       timeout: 3s
       retries: 5
@@ -393,7 +395,7 @@ services:
   # MinIO client - auto init buckets
   ml-minio-init:
     container_name: ml-minio-init
-    image: alpine:latest
+    image: ${MINIO_IMAGE:-pgsty/minio:RELEASE.2026-08-04T00-00-00Z}
     depends_on:
       ml-minio:
         condition: service_healthy
@@ -405,9 +407,8 @@ services:
       MINIO_IAM_USER: ${MINIO_IAM_USER}
       MINIO_IAM_PASSWORD: ${MINIO_IAM_PASSWORD}
     volumes:
-      - ./minio:/minio
-      - ../laravel-api:/laravel-api
-    entrypoint: /bin/sh /minio/create-buckets.sh
+      - ./minio:/minio:ro
+    entrypoint: ["/bin/sh", "/minio/create-buckets.sh"]
     networks:
       - app-network
 
