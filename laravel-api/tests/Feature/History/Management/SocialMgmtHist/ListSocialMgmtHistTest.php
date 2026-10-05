@@ -91,12 +91,14 @@ class ListSocialMgmtHistTest extends TestCase
   private function createSocial(): SocialMgmt
   {
     return SocialMgmt::create([
-      'title' => 'Test Social',
+      'name' => 'Test Social',
       'slug' => 'test-social-' . uniqid(),
       'link' => 'https://example.com',
       'image' => 'test.jpg',
       'status' => 1,
       'is_delete' => 0,
+      'is_display' => 1,
+      'rank_order' => 1,
     ]);
   }
 

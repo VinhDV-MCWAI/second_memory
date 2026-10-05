@@ -24,7 +24,6 @@ class FeatureMstFactory extends Factory
     return [
       'name' => $this->faker->name,
       'group_name' => $this->faker->word,
-      'description' => $this->faker->sentence,
       'status' => 1,
       'is_delete' => 0,
     ];

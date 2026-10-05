@@ -13,7 +13,6 @@ class EntryDescriptionMgmtFactory extends Factory
   public function definition()
   {
     return [
-      'parent_id' => 0,
       'title' => $this->faker->sentence(3),
       'summary' => $this->faker->sentence(10),
       'article' => $this->faker->paragraph(3),
