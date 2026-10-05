@@ -11,7 +11,9 @@
     "dev:docs": "pnpm --filter nextjs-docs dev",
     "build": "pnpm -r build",
     "lint": "pnpm -r lint",
-    "typecheck": "pnpm -r exec tsc --noEmit",
+    "typecheck": "pnpm -r typecheck",
+    "format": "pnpm -r format",
+    "format:check": "pnpm -r format:check",
     "test": "pnpm -r --if-present test --run",
     "clean": "pnpm -r exec rm -rf .next node_modules && rm -rf node_modules"
   }
