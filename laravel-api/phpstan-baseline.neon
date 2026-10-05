@@ -3353,9 +3353,3 @@ parameters:
 			identifier: foreach.nonIterable
 			count: 1
 			path: database/seeders/RootAccountSeeder.php
-
-		-
-			message: '#^Undefined variable\: \$this$#'
-			identifier: variable.undefined
-			count: 1
-			path: routes/console.php

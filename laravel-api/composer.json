@@ -12,12 +12,12 @@
         "aws/aws-sdk-php": "^3.300",
         "firebase/php-jwt": "6.10.2",
         "google/apiclient": "^2.15",
-        "laravel/framework": "11.34.2",
+        "laravel/framework": "^11.44.2",
+        "laravel/reverb": "@beta",
         "laravel/sanctum": "4.0.5",
         "laravel/tinker": "2.10.0",
         "league/flysystem-aws-s3-v3": "^3.0",
-        "predis/predis": "2.3.0",
-        "laravel/reverb": "@beta"
+        "predis/predis": "2.3.0"
     },
     "require-dev": {
         "driftingly/rector-laravel": "^2.0",
@@ -27,8 +27,7 @@
         "laravel/sail": "1.39.1",
         "mockery/mockery": "1.6.12",
         "nunomaduro/collision": "8.5.0",
-        "phpstan/phpstan": "~2.1.0",
-        "phpunit/phpunit": "11.4.4",
+        "phpunit/phpunit": "^11.5.50",
         "rector/rector": "^2.0"
     },
     "autoload": {
