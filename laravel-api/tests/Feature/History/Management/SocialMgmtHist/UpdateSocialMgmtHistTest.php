@@ -180,7 +180,7 @@ class UpdateSocialMgmtHistTest extends TestCase
 
     $response = $this->call('PUT', $this->baseUrl . '/0', $payload, $cookies);
     $response->assertStatus(422);
-    $response->assertJsonValidationErrors(['id']);
+    $response->assertJsonValidationErrors(['id'], 'error.messages');
   }
 
   public function test_SOC_HIST_UPD_V004_id_not_exists()
@@ -197,7 +197,7 @@ class UpdateSocialMgmtHistTest extends TestCase
 
     $response = $this->call('PUT', $this->baseUrl . '/999999', $payload, $cookies);
     $response->assertStatus(422);
-    $response->assertJsonValidationErrors(['id']);
+    $response->assertJsonValidationErrors(['id'], 'error.messages');
   }
 
   public function test_SOC_HIST_UPD_V005_id_exists_valid()
@@ -234,7 +234,7 @@ class UpdateSocialMgmtHistTest extends TestCase
 
     $response = $this->call('PUT', $this->baseUrl . '/' . $history->id, $payload, $cookies);
     $response->assertStatus(422);
-    $response->assertJsonValidationErrors(['social_mgmt_id']);
+    $response->assertJsonValidationErrors(['social_mgmt_id'], 'error.messages');
   }
 
   public function test_SOC_HIST_UPD_V007_social_mgmt_id_not_exists()
@@ -252,7 +252,7 @@ class UpdateSocialMgmtHistTest extends TestCase
 
     $response = $this->call('PUT', $this->baseUrl . '/' . $history->id, $payload, $cookies);
     $response->assertStatus(422);
-    $response->assertJsonValidationErrors(['social_mgmt_id']);
+    $response->assertJsonValidationErrors(['social_mgmt_id'], 'error.messages');
   }
 
   // ========== SERVICE LAYER TESTS ==========

@@ -143,7 +143,7 @@ class StoreSliderMgmtTest extends TestCase
 
     $response = $this->call('POST', $this->baseUrl, $payload, $cookies);
     $response->assertStatus(422);
-    // $response->assertJsonValidationErrors(['title']);
+    // $response->assertJsonValidationErrors(['title'], 'error.messages');
   }
 
   public function test_SLD_STO_V002_title_invalid_type()
@@ -162,7 +162,7 @@ class StoreSliderMgmtTest extends TestCase
 
     $response = $this->call('POST', $this->baseUrl, $payload, $cookies);
     $response->assertStatus(422);
-    // $response->assertJsonValidationErrors(['title']);
+    // $response->assertJsonValidationErrors(['title'], 'error.messages');
   }
 
   public function test_SLD_STO_V003_title_below_minimum_length()
@@ -181,7 +181,7 @@ class StoreSliderMgmtTest extends TestCase
 
     $response = $this->call('POST', $this->baseUrl, $payload, $cookies);
     $response->assertStatus(422);
-    // $response->assertJsonValidationErrors(['title']);
+    // $response->assertJsonValidationErrors(['title'], 'error.messages');
   }
 
   public function test_SLD_STO_V004_title_exceeds_maximum_length()
@@ -200,7 +200,7 @@ class StoreSliderMgmtTest extends TestCase
 
     $response = $this->call('POST', $this->baseUrl, $payload, $cookies);
     $response->assertStatus(422);
-    // $response->assertJsonValidationErrors(['title']);
+    // $response->assertJsonValidationErrors(['title'], 'error.messages');
   }
 
   public function test_SLD_STO_V005_title_boundary_50_characters()
@@ -238,7 +238,7 @@ class StoreSliderMgmtTest extends TestCase
 
     $response = $this->call('POST', $this->baseUrl, $payload, $cookies);
     $response->assertStatus(422);
-    // $response->assertJsonValidationErrors(['slug']);
+    // $response->assertJsonValidationErrors(['slug'], 'error.messages');
   }
 
   public function test_SLD_STO_V007_slug_invalid_type()
@@ -257,7 +257,7 @@ class StoreSliderMgmtTest extends TestCase
 
     $response = $this->call('POST', $this->baseUrl, $payload, $cookies);
     $response->assertStatus(422);
-    // $response->assertJsonValidationErrors(['slug']);
+    // $response->assertJsonValidationErrors(['slug'], 'error.messages');
   }
 
   public function test_SLD_STO_V008_slug_exceeds_maximum_length()
@@ -276,7 +276,7 @@ class StoreSliderMgmtTest extends TestCase
 
     $response = $this->call('POST', $this->baseUrl, $payload, $cookies);
     $response->assertStatus(422);
-    // $response->assertJsonValidationErrors(['slug']);
+    // $response->assertJsonValidationErrors(['slug'], 'error.messages');
   }
 
   // ========== VALIDATION LAYER TESTS - LINK ==========
@@ -296,7 +296,7 @@ class StoreSliderMgmtTest extends TestCase
 
     $response = $this->call('POST', $this->baseUrl, $payload, $cookies);
     $response->assertStatus(422);
-    // $response->assertJsonValidationErrors(['link']);
+    // $response->assertJsonValidationErrors(['link'], 'error.messages');
   }
 
   public function test_SLD_STO_V010_link_exceeds_maximum_length()
@@ -315,7 +315,7 @@ class StoreSliderMgmtTest extends TestCase
 
     $response = $this->call('POST', $this->baseUrl, $payload, $cookies);
     $response->assertStatus(422);
-    // $response->assertJsonValidationErrors(['link']);
+    // $response->assertJsonValidationErrors(['link'], 'error.messages');
   }
 
   public function test_SLD_STO_V011_link_boundary_100_characters()
@@ -353,7 +353,7 @@ class StoreSliderMgmtTest extends TestCase
 
     $response = $this->call('POST', $this->baseUrl, $payload, $cookies);
     $response->assertStatus(422);
-    // $response->assertJsonValidationErrors(['image']);
+    // $response->assertJsonValidationErrors(['image'], 'error.messages');
   }
 
   public function test_SLD_STO_V013_image_exceeds_maximum_length()
@@ -372,7 +372,7 @@ class StoreSliderMgmtTest extends TestCase
 
     $response = $this->call('POST', $this->baseUrl, $payload, $cookies);
     $response->assertStatus(422);
-    // $response->assertJsonValidationErrors(['image']);
+    // $response->assertJsonValidationErrors(['image'], 'error.messages');
   }
 
   // ========== VALIDATION LAYER TESTS - STATUS ==========
@@ -392,7 +392,7 @@ class StoreSliderMgmtTest extends TestCase
 
     $response = $this->call('POST', $this->baseUrl, $payload, $cookies);
     $response->assertStatus(422);
-    // $response->assertJsonValidationErrors(['status']);
+    // $response->assertJsonValidationErrors(['status'], 'error.messages');
   }
 
   public function test_SLD_STO_V015_status_invalid_enum()
@@ -411,7 +411,7 @@ class StoreSliderMgmtTest extends TestCase
 
     $response = $this->call('POST', $this->baseUrl, $payload, $cookies);
     $response->assertStatus(422);
-    // $response->assertJsonValidationErrors(['status']);
+    // $response->assertJsonValidationErrors(['status'], 'error.messages');
   }
 
   public function test_SLD_STO_V016_status_valid_enum_draft()
@@ -488,7 +488,7 @@ class StoreSliderMgmtTest extends TestCase
 
     $response = $this->call('POST', $this->baseUrl, $payload, $cookies);
     $response->assertStatus(422);
-    // $response->assertJsonValidationErrors(['is_delete']);
+    // $response->assertJsonValidationErrors(['is_delete'], 'error.messages');
   }
 
   public function test_SLD_STO_V018_is_delete_invalid_enum()
@@ -507,7 +507,7 @@ class StoreSliderMgmtTest extends TestCase
 
     $response = $this->call('POST', $this->baseUrl, $payload, $cookies);
     $response->assertStatus(422);
-    // $response->assertJsonValidationErrors(['is_delete']);
+    // $response->assertJsonValidationErrors(['is_delete'], 'error.messages');
   }
 
   public function test_SLD_STO_V019_is_delete_valid_enum_false()
