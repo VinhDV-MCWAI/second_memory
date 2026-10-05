@@ -25,8 +25,6 @@ class BannerMgmtFactory extends Factory
       'title' => $this->faker->text(40), // Limit to 50
       'slug' => \Illuminate\Support\Str::limit($this->faker->slug, 45, ''),
       'description' => $this->faker->text(200),
-      'link' => \Illuminate\Support\Str::limit($this->faker->url, 95, ''),
-      'image' => 'banner.jpg',
       'position' => 'top',
       'status' => 1,
       'is_delete' => 0,

@@ -6,12 +6,13 @@ use App\Models\History\Management\SocialMgmtHist;
 use App\Traits\HasSoftDelete;
 use App\Traits\HasStatus;
 use App\Traits\HasHistory;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class SocialMgmt extends Model
 {
-    use HasSoftDelete, HasStatus, HasHistory;
+    use HasSoftDelete, HasStatus, HasHistory, HasFactory;
 
     protected $table = 'social_mgmt';
 

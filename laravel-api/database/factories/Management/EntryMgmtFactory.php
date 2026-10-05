@@ -13,7 +13,6 @@ class EntryMgmtFactory extends Factory
   public function definition()
   {
     return [
-      'parent_id' => 0,
       'name' => Str::limit($this->faker->word, 45, ''),
       'slug' => Str::limit($this->faker->slug, 45, ''),
       'status' => 1,
