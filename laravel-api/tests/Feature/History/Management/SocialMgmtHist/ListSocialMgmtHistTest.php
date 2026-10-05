@@ -184,14 +184,14 @@ class ListSocialMgmtHistTest extends TestCase
 
     SocialMgmtHist::create([
       'social_mgmt_id' => $social->id,
-      'title' => 'History 1',
+      'name' => 'History 1',
       'action' => 1,
       'author_id' => 1,
     ]);
 
     SocialMgmtHist::create([
       'social_mgmt_id' => $social->id,
-      'title' => 'History 2',
+      'name' => 'History 2',
       'action' => 2,
       'author_id' => 1,
     ]);
@@ -211,14 +211,14 @@ class ListSocialMgmtHistTest extends TestCase
 
     SocialMgmtHist::create([
       'social_mgmt_id' => $social1->id,
-      'title' => 'History for Social 1',
+      'name' => 'History for Social 1',
       'action' => 1,
       'author_id' => 1,
     ]);
 
     SocialMgmtHist::create([
       'social_mgmt_id' => $social2->id,
-      'title' => 'History for Social 2',
+      'name' => 'History for Social 2',
       'action' => 1,
       'author_id' => 1,
     ]);
@@ -236,14 +236,14 @@ class ListSocialMgmtHistTest extends TestCase
 
     SocialMgmtHist::create([
       'social_mgmt_id' => $social->id,
-      'title' => 'Create Action',
+      'name' => 'Create Action',
       'action' => 1,
       'author_id' => 1,
     ]);
 
     SocialMgmtHist::create([
       'social_mgmt_id' => $social->id,
-      'title' => 'Update Action',
+      'name' => 'Update Action',
       'action' => 2,
       'author_id' => 1,
     ]);
@@ -261,14 +261,14 @@ class ListSocialMgmtHistTest extends TestCase
 
     SocialMgmtHist::create([
       'social_mgmt_id' => $social->id,
-      'title' => 'History by Author 1',
+      'name' => 'History by Author 1',
       'action' => 1,
       'author_id' => 1,
     ]);
 
     SocialMgmtHist::create([
       'social_mgmt_id' => $social->id,
-      'title' => 'History by Author 2',
+      'name' => 'History by Author 2',
       'action' => 1,
       'author_id' => 2,
     ]);
@@ -286,7 +286,7 @@ class ListSocialMgmtHistTest extends TestCase
 
     SocialMgmtHist::create([
       'social_mgmt_id' => $social->id,
-      'title' => 'Matching History',
+      'name' => 'Matching History',
       'action' => 2,
       'author_id' => 1,
     ]);
@@ -316,7 +316,7 @@ class ListSocialMgmtHistTest extends TestCase
 
     SocialMgmtHist::create([
       'social_mgmt_id' => $social->id,
-      'title' => 'Test History',
+      'name' => 'Test History',
       'slug' => 'test-history',
       'action' => 1,
       'author_id' => 1,
@@ -326,20 +326,23 @@ class ListSocialMgmtHistTest extends TestCase
     $response->assertStatus(200);
     $response->assertJsonStructure([
       'data' => [
-        '*' => [
-          'id',
-          'social_mgmt_id',
-          'title',
-          'slug',
-          'link',
-          'image',
-          'status',
-          'action',
-          'author_id',
-          'created_at',
-          'updated_at',
-        ]
-      ]
+        'data' => [
+          '*' => [
+            'id',
+            'social_mgmt_id',
+            'name',
+            'slug',
+            'link',
+            'image',
+            'status',
+            'is_display',
+            'rank_order',
+            'action',
+            'author_id',
+            'created_at',
+          ],
+        ],
+      ],
     ]);
   }
 }

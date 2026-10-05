@@ -106,7 +106,7 @@ class UpdateSocialMgmtHistTest extends TestCase
   {
     return SocialMgmtHist::create([
       'social_mgmt_id' => $social->id,
-      'title' => 'Original History Title',
+      'name' => 'Original History Title',
       'slug' => 'original-history-slug',
       'link' => 'https://original.com',
       'image' => 'original.jpg',
@@ -208,8 +208,9 @@ class UpdateSocialMgmtHistTest extends TestCase
     $cookies = $this->getAuthCookies($admin);
 
     $payload = [
+      'id' => $history->id,
       'social_mgmt_id' => $social->id,
-      'title' => 'Updated History Title',
+      'name' => 'Updated History Title',
       'action' => 2,
       'author_id' => 1,
     ];
@@ -265,8 +266,9 @@ class UpdateSocialMgmtHistTest extends TestCase
     $cookies = $this->getAuthCookies($admin);
 
     $payload = [
+      'id' => $history->id,
       'social_mgmt_id' => $social->id,
-      'title' => 'Updated History Title',
+      'name' => 'Updated History Title',
       'slug' => 'updated-history-slug',
       'action' => 2,
       'author_id' => 2,
@@ -277,7 +279,7 @@ class UpdateSocialMgmtHistTest extends TestCase
 
     $this->assertDatabaseHas('social_mgmt_hist', [
       'id' => $history->id,
-      'title' => 'Updated History Title',
+      'name' => 'Updated History Title',
       'slug' => 'updated-history-slug',
       'author_id' => 2,
     ]);
@@ -291,8 +293,9 @@ class UpdateSocialMgmtHistTest extends TestCase
     $cookies = $this->getAuthCookies($admin);
 
     $payload = [
+      'id' => $history->id,
       'social_mgmt_id' => $social->id,
-      'title' => 'Original History Title',
+      'name' => 'Original History Title',
       'slug' => 'original-history-slug',
       'action' => 1,
       'author_id' => 1,
@@ -303,7 +306,7 @@ class UpdateSocialMgmtHistTest extends TestCase
 
     $this->assertDatabaseHas('social_mgmt_hist', [
       'id' => $history->id,
-      'title' => 'Original History Title',
+      'name' => 'Original History Title',
     ]);
   }
 
@@ -317,8 +320,9 @@ class UpdateSocialMgmtHistTest extends TestCase
     $cookies = $this->getAuthCookies($admin);
 
     $payload = [
+      'id' => $history->id,
       'social_mgmt_id' => $social->id,
-      'title' => 'Updated Title',
+      'name' => 'Updated Title',
       'action' => 2,
       'author_id' => 1,
     ];
@@ -328,7 +332,7 @@ class UpdateSocialMgmtHistTest extends TestCase
 
     $this->assertDatabaseHas('social_mgmt_hist', [
       'id' => $history->id,
-      'title' => 'Updated Title',
+      'name' => 'Updated Title',
     ]);
   }
 
@@ -350,7 +354,7 @@ class UpdateSocialMgmtHistTest extends TestCase
     // Original record should remain unchanged
     $this->assertDatabaseHas('social_mgmt_hist', [
       'id' => $history->id,
-      'title' => 'Original History Title',
+      'name' => 'Original History Title',
     ]);
   }
 
@@ -364,8 +368,9 @@ class UpdateSocialMgmtHistTest extends TestCase
     $cookies = $this->getAuthCookies($admin);
 
     $payload = [
+      'id' => $history->id,
       'social_mgmt_id' => $social->id,
-      'title' => 'Updated Title',
+      'name' => 'Updated Title',
       'action' => 2,
       'author_id' => 1,
     ];
