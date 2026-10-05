@@ -3,6 +3,7 @@
 import { Category } from "@/types/docs";
 import Link from "next/link";
 import { useMemo, useState, useEffect } from "react";
+import { useIsClient } from '@/hooks/use-is-client';
 
 interface HexagonGridProps {
   categories: Category[];
@@ -40,11 +41,10 @@ const BG_END_C = 12;
 
 export default function HexagonGrid({ categories }: HexagonGridProps) {
   const [cols, setCols] = useState(6); // Default server-side to 6 columns
-  const [mounted, setMounted] = useState(false);
+  const mounted = useIsClient();
 
   // Dynamic D-Flex style wrapping by tracking window size and adjusting max columns
   useEffect(() => {
-    setMounted(true);
     const handleResize = () => {
       const w = window.innerWidth;
       if (w < 480) setCols(2);

@@ -4,24 +4,10 @@ import { useMemo } from "react";
 import { EntryDetail } from "@/types/docs";
 import { slugify } from "@/lib/utils";
 import { ContentRenderer } from "./content-renderer";
+import { parseLayoutStructure, type LayoutNode } from '@/lib/layout-structure';
 
 interface MainContentProps {
   entry: EntryDetail;
-}
-
-type LayoutNode = { ui_id?: string; entry_desc_id?: number | string; children?: LayoutNode[] };
-
-function parseLayoutStructure(raw: any): LayoutNode[] | null {
-  if (!raw) return null;
-  if (Array.isArray(raw)) return raw;
-  if (typeof raw === 'string') {
-    try {
-      return JSON.parse(raw);
-    } catch {
-      return null;
-    }
-  }
-  return null;
 }
 
 export default function MainContent({ entry }: MainContentProps) {

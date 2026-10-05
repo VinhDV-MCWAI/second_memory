@@ -6,26 +6,12 @@ import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { ChevronLeft } from "lucide-react";
 import { useMemo } from "react";
+import { parseLayoutStructure, type LayoutNode, type RawLayoutStructure } from '@/lib/layout-structure';
 
 interface LeftSidebarProps {
   entries: Entry[];
   categorySlug: string;
-  layoutStructure?: any;
-}
-
-type LayoutNode = { ui_id?: string; entry_mgmt_id?: number | string; children?: LayoutNode[] };
-
-function parseLayoutStructure(raw: any): LayoutNode[] | null {
-  if (!raw) return null;
-  if (Array.isArray(raw)) return raw;
-  if (typeof raw === 'string') {
-    try {
-      return JSON.parse(raw);
-    } catch {
-      return null;
-    }
-  }
-  return null;
+  layoutStructure?: RawLayoutStructure;
 }
 
 export default function LeftSidebar({

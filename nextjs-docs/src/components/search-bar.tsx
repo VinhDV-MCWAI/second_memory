@@ -124,7 +124,7 @@ export default function SearchBar() {
               <h3 className="text-sm font-semibold text-muted-foreground mb-2">
                 Content
               </h3>
-              {results.descriptions.map((desc: any) => (
+              {results.descriptions.map((desc) => (
                 <div
                   key={desc.id}
                   onClick={() =>

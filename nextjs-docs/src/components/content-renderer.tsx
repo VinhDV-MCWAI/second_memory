@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { EditorContent, useEditor, type JSONContent } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import Image from '@tiptap/extension-image';
@@ -10,6 +10,7 @@ import { Color } from '@tiptap/extension-color';
 import Highlight from '@tiptap/extension-highlight';
 import { Video } from './extensions/video';
 import { cn } from '@/lib/utils';
+import { useIsClient } from '@/hooks/use-is-client';
 
 interface ContentRendererProps {
   content: string | JSONContent | null;
@@ -17,7 +18,7 @@ interface ContentRendererProps {
 }
 
 export function ContentRenderer({ content, className }: ContentRendererProps) {
-  const [hydrated, setHydrated] = useState(false);
+  const hydrated = useIsClient();
 
   const editor = useEditor({
     immediatelyRender: false,
@@ -58,10 +59,6 @@ export function ContentRenderer({ content, className }: ContentRendererProps) {
       },
     },
   });
-
-  useEffect(() => {
-    setHydrated(true);
-  }, []);
 
   useEffect(() => {
     if (editor && content !== undefined) {

@@ -1,10 +1,12 @@
+import type { RawLayoutStructure } from '@/lib/layout-structure';
+
 export interface Category {
   id: number;
   name: string;
   slug: string;
   description: string | null;
   rank_order: number;
-  layout_structure?: any;
+  layout_structure?: RawLayoutStructure;
 }
 
 export interface Entry {
@@ -12,7 +14,7 @@ export interface Entry {
   name: string;
   slug: string;
   rank_order: number;
-  layout_structure?: any;
+  layout_structure?: RawLayoutStructure;
 }
 
 export interface Description {
@@ -29,7 +31,7 @@ export interface EntryDetail {
   slug: string;
   categories: Category[];
   descriptions: Description[];
-  layout_structure?: any;
+  layout_structure?: RawLayoutStructure;
 }
 
 export interface SearchResult {

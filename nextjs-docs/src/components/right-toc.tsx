@@ -4,25 +4,11 @@ import { Description, EntryDetail } from "@/types/docs";
 import { slugify, cn } from "@/lib/utils";
 import { useEffect, useState, useMemo } from "react";
 import { useScrollSpy } from "@/hooks/use-scroll-spy";
+import { parseLayoutStructure, type LayoutNode, type RawLayoutStructure } from '@/lib/layout-structure';
 
 interface RightTocProps {
   descriptions: Description[];
-  layoutStructure?: any;
-}
-
-type LayoutNode = { ui_id?: string; entry_desc_id?: number | string; children?: LayoutNode[] };
-
-function parseLayoutStructure(raw: any): LayoutNode[] | null {
-  if (!raw) return null;
-  if (Array.isArray(raw)) return raw;
-  if (typeof raw === 'string') {
-    try {
-      return JSON.parse(raw);
-    } catch {
-      return null;
-    }
-  }
-  return null;
+  layoutStructure?: RawLayoutStructure;
 }
 
 export default function RightToc({ descriptions, layoutStructure }: RightTocProps) {

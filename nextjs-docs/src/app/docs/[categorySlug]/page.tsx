@@ -4,21 +4,7 @@ import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { api } from "@/lib/api";
 import { Entry, Category } from "@/types/docs";
-
-type LayoutNode = { ui_id?: string; entry_mgmt_id?: number | string; children?: LayoutNode[] };
-
-function parseLayoutStructure(raw: any): LayoutNode[] | null {
-  if (!raw) return null;
-  if (Array.isArray(raw)) return raw;
-  if (typeof raw === 'string') {
-    try {
-      return JSON.parse(raw);
-    } catch {
-      return null;
-    }
-  }
-  return null;
-}
+import { parseLayoutStructure, type LayoutNode } from '@/lib/layout-structure';
 
 function getFirstEntryId(nodes: LayoutNode[] | null): number | null {
   if (!nodes || nodes.length === 0) return null;
@@ -97,7 +83,7 @@ export default function CategoryPage() {
     return (
       <div className="h-full min-h-[50vh] flex flex-col items-center justify-center p-8">
         <h2 className="text-2xl font-bold mb-2">No Entries Found</h2>
-        <p className="text-muted-foreground">This category doesn't have any documentation entries yet.</p>
+        <p className="text-muted-foreground">This category doesn&apos;t have any documentation entries yet.</p>
       </div>
     );
   }
