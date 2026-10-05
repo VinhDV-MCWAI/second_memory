@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Repositories\History\Master;
 
-use App\Enums\IsDelete;
 use App\Interfaces\History\Master\DepartmentMstHistInterface;
 use App\Models\History\Master\DepartmentMstHist;
 use App\Repositories\BaseRepository;
@@ -72,6 +71,6 @@ class DepartmentMstHistRepository extends BaseRepository implements DepartmentMs
    */
   public function executeDelete(array $ids): void
   {
-    $this->model->whereIn('id', $ids)->update(['is_delete' => IsDelete::TRUE->value]);
+    $this->model->whereIn('id', $ids)->delete();
   }
 }

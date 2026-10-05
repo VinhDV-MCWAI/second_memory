@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Repositories\History\Management;
 
-use App\Enums\IsDelete;
 use App\Interfaces\History\Management\SliderMgmtHistInterface;
 use App\Models\History\Management\SliderMgmtHist;
 use App\Repositories\BaseRepository;
@@ -39,7 +38,7 @@ class SliderMgmtHistRepository extends BaseRepository implements SliderMgmtHistI
                 'action',
                 'author_id',
             ])
-            ->with(['sliderMgmt:id,title', 'author:id,username']);
+            ->with(['sliderMgmt:id,title', 'author:id,user_name']);
 
         $this->applyFilters($query, $payload, [
             'slider_mgmt_id',
@@ -98,7 +97,7 @@ class SliderMgmtHistRepository extends BaseRepository implements SliderMgmtHistI
      */
     public function executeDelete(array $ids): void
     {
-        $this->model->whereIn('id', $ids)->update(['is_delete' => IsDelete::TRUE->value]);
+        $this->model->whereIn('id', $ids)->delete();
     }
 
 }

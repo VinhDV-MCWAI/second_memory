@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class RoleMstHist extends Model
 {
   protected $table = 'role_mst_hist';
-  public $timestamps = false;
+  const UPDATED_AT = null;
 
   /**
    * The attributes that are mass assignable.

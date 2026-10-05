@@ -33,7 +33,7 @@ class AdminDepartmentMstRepository extends BaseRepository implements AdminDepart
         'department_mst_id',
         // removed updated_at
       ])
-      ->with(['adminMst:id,username,email', 'departmentMst:id,code,name']); // Eager load
+      ->with(['adminMst:id,user_name,email', 'departmentMst:id,code,name']); // Eager load
 
     // Apply filters
     $this->applyFilters($query, $payload, [

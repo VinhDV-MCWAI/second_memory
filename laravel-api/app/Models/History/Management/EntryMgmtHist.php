@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class EntryMgmtHist extends Model
 {
   protected $table = 'entry_mgmt_hist';
-  public $timestamps = false;
+  const UPDATED_AT = null;
 
   /**
    * The attributes that are mass assignable.

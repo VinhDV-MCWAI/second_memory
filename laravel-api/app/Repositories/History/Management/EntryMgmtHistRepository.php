@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Repositories\History\Management;
 
-use App\Enums\IsDelete;
 use App\Interfaces\History\Management\EntryMgmtHistInterface;
 use App\Models\History\Management\EntryMgmtHist;
 use App\Repositories\BaseRepository;
@@ -102,15 +101,13 @@ class EntryMgmtHistRepository extends BaseRepository implements EntryMgmtHistInt
   }
 
   /**
-   * Delete record (soft delete)
+   * Delete record
    *
    * @param array $ids
    * @return void
    */
   public function executeDelete(array $ids): void
   {
-    // Soft delete
-    $this->model->whereIn('id', $ids)
-      ->update(['is_delete' => IsDelete::TRUE->value]);
+    $this->model->whereIn('id', $ids)->delete();
   }
 }

@@ -8,7 +8,7 @@ class PolicyDepartmentMstHist extends Model
 {
   protected $table = 'policy_department_mst_hist';
 
-  public $timestamps = false;
+  const UPDATED_AT = null;
 
   /**
    * The attributes that are mass assignable.
