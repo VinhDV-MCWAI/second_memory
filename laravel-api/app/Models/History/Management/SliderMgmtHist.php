@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class SliderMgmtHist extends Model
 {
   protected $table = 'slider_mgmt_hist';
-  public $timestamps = false;
+  const UPDATED_AT = null;
 
   /**
    * The attributes that are mass assignable.

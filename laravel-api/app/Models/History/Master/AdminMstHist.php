@@ -60,4 +60,14 @@ class AdminMstHist extends Model
     'author_id' => 'integer',
     'created_at' => 'datetime',
   ];
+
+  public function adminMst()
+  {
+    return $this->belongsTo(\App\Models\Master\AdminMst::class, 'admin_mst_id');
+  }
+
+  public function author()
+  {
+    return $this->belongsTo(\App\Models\Master\AdminMst::class, 'author_id');
+  }
 }

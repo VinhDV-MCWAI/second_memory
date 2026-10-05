@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Repositories\History\Management;
 
-use App\Enums\IsDelete;
 use App\Interfaces\History\Management\UserMgmtHistInterface;
 use App\Models\History\Management\UserMgmtHist;
 use App\Repositories\BaseRepository;
@@ -78,6 +77,6 @@ class UserMgmtHistRepository extends BaseRepository implements UserMgmtHistInter
    */
   public function executeDelete(array $ids): void
   {
-    $this->model->whereIn('id', $ids)->update(['is_delete' => IsDelete::TRUE->value]);
+    $this->model->whereIn('id', $ids)->delete();
   }
 }

@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class SettingLinkMgmtHist extends Model
 {
   protected $table = 'setting_link_mgmt_hist';
-  public $timestamps = false;
+  const UPDATED_AT = null;
 
   /**
    * The attributes that are mass assignable.

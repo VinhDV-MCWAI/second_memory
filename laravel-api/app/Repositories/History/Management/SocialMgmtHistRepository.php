@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Repositories\History\Management;
 
-use App\Enums\IsDelete;
 use App\Interfaces\History\Management\SocialMgmtHistInterface;
 use App\Models\History\Management\SocialMgmtHist;
 use App\Repositories\BaseRepository;
@@ -41,7 +40,7 @@ class SocialMgmtHistRepository extends BaseRepository implements SocialMgmtHistI
         'action',
         'author_id',
       ])
-      ->with(['socialMgmt:id,name', 'author:id,username']);
+      ->with(['socialMgmt:id,name', 'author:id,user_name']);
     $this->applyFilters($query, $payload, ['social_mgmt_id', 'link', 'image', 'status', 'is_display', 'rank_order', 'action', 'author_id'], ['name', 'slug']);
     $this->applyDateRange($query, $payload);
     $this->applySorting($query, $payload);
@@ -86,6 +85,6 @@ class SocialMgmtHistRepository extends BaseRepository implements SocialMgmtHistI
    */
   public function executeDelete(array $ids): void
   {
-    $this->model->whereIn('id', $ids)->update(['is_delete' => IsDelete::TRUE->value]);
+    $this->model->whereIn('id', $ids)->delete();
   }
 }

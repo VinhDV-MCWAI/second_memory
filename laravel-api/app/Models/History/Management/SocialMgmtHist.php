@@ -46,4 +46,14 @@ class SocialMgmtHist extends Model
         'author_id' => 'integer',
         'created_at' => 'datetime',
     ];
+
+    public function socialMgmt()
+    {
+        return $this->belongsTo(\App\Models\Management\SocialMgmt::class, 'social_mgmt_id');
+    }
+
+    public function author()
+    {
+        return $this->belongsTo(\App\Models\Master\AdminMst::class, 'author_id');
+    }
 }
