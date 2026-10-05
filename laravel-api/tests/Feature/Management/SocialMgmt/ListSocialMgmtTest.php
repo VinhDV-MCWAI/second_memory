@@ -115,7 +115,7 @@ class ListSocialMgmtTest extends TestCase
 
     $response = $this->call('GET', $this->baseUrl . '?name=' . str_repeat('a', 51), [], $cookies);
     $response->assertStatus(422);
-    // $response->assertJsonValidationErrors(['name']);
+    // $response->assertJsonValidationErrors(['name'], 'error.messages');
   }
 
   public function test_SOC_LST_V011_status_invalid_enum()
@@ -125,7 +125,7 @@ class ListSocialMgmtTest extends TestCase
 
     $response = $this->call('GET', $this->baseUrl . '?status=99', [], $cookies);
     $response->assertStatus(422);
-    // $response->assertJsonValidationErrors(['status']);
+    // $response->assertJsonValidationErrors(['status'], 'error.messages');
   }
 
   public function test_SOC_LST_V012_status_valid_enum()
@@ -144,7 +144,7 @@ class ListSocialMgmtTest extends TestCase
 
     $response = $this->call('GET', $this->baseUrl . '?is_display=99', [], $cookies);
     $response->assertStatus(422);
-    // $response->assertJsonValidationErrors(['is_display']);
+    // $response->assertJsonValidationErrors(['is_display'], 'error.messages');
   }
 
   public function test_SOC_LST_V014_is_display_valid_enum()
@@ -163,7 +163,7 @@ class ListSocialMgmtTest extends TestCase
 
     $response = $this->call('GET', $this->baseUrl . '?rank_order=abc', [], $cookies);
     $response->assertStatus(422);
-    // $response->assertJsonValidationErrors(['rank_order']);
+    // $response->assertJsonValidationErrors(['rank_order'], 'error.messages');
   }
 
   public function test_SOC_LST_V016_rank_order_valid()
@@ -182,7 +182,7 @@ class ListSocialMgmtTest extends TestCase
 
     $response = $this->call('GET', $this->baseUrl . '?from_date=2024-01-01', [], $cookies);
     $response->assertStatus(422);
-    // $response->assertJsonValidationErrors(['from_date']);
+    // $response->assertJsonValidationErrors(['from_date'], 'error.messages');
   }
 
   public function test_SOC_LST_V026_to_date_before_from_date()
@@ -192,7 +192,7 @@ class ListSocialMgmtTest extends TestCase
 
     $response = $this->call('GET', $this->baseUrl . '?from_date=31/12/2024&to_date=01/01/2024', [], $cookies);
     $response->assertStatus(422);
-    // $response->assertJsonValidationErrors(['to_date']);
+    // $response->assertJsonValidationErrors(['to_date'], 'error.messages');
   }
 
   public function test_SOC_LST_V027_all_fields_omitted()

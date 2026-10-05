@@ -158,6 +158,6 @@ class EntryIntegrationTest extends TestCase
     $dupResp = $this->call('POST', 'api/admin/category-mgmt/store', $catPayload, $cookies);
     // Expect 422 Unprocessable (Validation)
     $dupResp->assertStatus(422);
-    // $dupResp->assertJsonValidationErrors(['slug']);
+    // $dupResp->assertJsonValidationErrors(['slug'], 'error.messages');
   }
 }

@@ -135,7 +135,7 @@ class StoreSocialMgmtHistTest extends TestCase
 
     $response = $this->call('POST', $this->baseUrl, $payload, $cookies);
     $response->assertStatus(422);
-    $response->assertJsonValidationErrors(['social_mgmt_id']);
+    $response->assertJsonValidationErrors(['social_mgmt_id'], 'error.messages');
   }
 
   public function test_SOC_HIST_STO_V002_social_mgmt_id_invalid_type()
@@ -151,7 +151,7 @@ class StoreSocialMgmtHistTest extends TestCase
 
     $response = $this->call('POST', $this->baseUrl, $payload, $cookies);
     $response->assertStatus(422);
-    $response->assertJsonValidationErrors(['social_mgmt_id']);
+    $response->assertJsonValidationErrors(['social_mgmt_id'], 'error.messages');
   }
 
   public function test_SOC_HIST_STO_V005_social_mgmt_id_not_exists()
@@ -167,7 +167,7 @@ class StoreSocialMgmtHistTest extends TestCase
 
     $response = $this->call('POST', $this->baseUrl, $payload, $cookies);
     $response->assertStatus(422);
-    $response->assertJsonValidationErrors(['social_mgmt_id']);
+    $response->assertJsonValidationErrors(['social_mgmt_id'], 'error.messages');
   }
 
   public function test_SOC_HIST_STO_V006_social_mgmt_id_exists_valid()
@@ -225,7 +225,7 @@ class StoreSocialMgmtHistTest extends TestCase
 
     $response = $this->call('POST', $this->baseUrl, $payload, $cookies);
     $response->assertStatus(422);
-    $response->assertJsonValidationErrors(['name']);
+    $response->assertJsonValidationErrors(['name'], 'error.messages');
   }
 
   public function test_SOC_HIST_STO_V021_status_optional_omitted()
@@ -381,7 +381,7 @@ class StoreSocialMgmtHistTest extends TestCase
 
     $response = $this->call('POST', $this->baseUrl, $payload, $cookies);
     $response->assertStatus(422);
-    $response->assertJsonValidationErrors(['action']);
+    $response->assertJsonValidationErrors(['action'], 'error.messages');
   }
 
   public function test_SOC_HIST_STO_V029_action_valid_values()
@@ -425,7 +425,7 @@ class StoreSocialMgmtHistTest extends TestCase
 
     $response = $this->call('POST', $this->baseUrl, $payload, $cookies);
     $response->assertStatus(422);
-    $response->assertJsonValidationErrors(['author_id']);
+    $response->assertJsonValidationErrors(['author_id'], 'error.messages');
   }
 
   public function test_SOC_HIST_STO_V031_author_id_invalid_type()
@@ -442,7 +442,7 @@ class StoreSocialMgmtHistTest extends TestCase
 
     $response = $this->call('POST', $this->baseUrl, $payload, $cookies);
     $response->assertStatus(422);
-    $response->assertJsonValidationErrors(['author_id']);
+    $response->assertJsonValidationErrors(['author_id'], 'error.messages');
   }
 
   public function test_SOC_HIST_STO_V034_author_id_valid()

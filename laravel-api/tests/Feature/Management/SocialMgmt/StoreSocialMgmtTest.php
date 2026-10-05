@@ -124,7 +124,7 @@ class StoreSocialMgmtTest extends TestCase
 
     $response = $this->call('POST', $this->baseUrl, $payload, $cookies);
     $response->assertStatus(422);
-    // // // $response->assertJsonValidationErrors(['name']);
+    // // // $response->assertJsonValidationErrors(['name'], 'error.messages');
   }
 
   public function test_SOC_STO_V002_name_invalid_type()
@@ -145,7 +145,7 @@ class StoreSocialMgmtTest extends TestCase
 
     $response = $this->call('POST', $this->baseUrl, $payload, $cookies);
     $response->assertStatus(422);
-    // // // $response->assertJsonValidationErrors(['name']);
+    // // // $response->assertJsonValidationErrors(['name'], 'error.messages');
   }
 
   public function test_SOC_STO_V004_name_exceeds_maximum_length()
@@ -166,7 +166,7 @@ class StoreSocialMgmtTest extends TestCase
 
     $response = $this->call('POST', $this->baseUrl, $payload, $cookies);
     $response->assertStatus(422);
-    // // // $response->assertJsonValidationErrors(['name']);
+    // // // $response->assertJsonValidationErrors(['name'], 'error.messages');
   }
 
   public function test_SOC_STO_V005_name_boundary_50_characters()
@@ -209,7 +209,7 @@ class StoreSocialMgmtTest extends TestCase
 
     $response = $this->call('POST', $this->baseUrl, $payload, $cookies);
     $response->assertStatus(422);
-    // // // $response->assertJsonValidationErrors(['link']);
+    // // // $response->assertJsonValidationErrors(['link'], 'error.messages');
   }
 
   public function test_SOC_STO_V013_link_boundary_255_characters()
@@ -252,7 +252,7 @@ class StoreSocialMgmtTest extends TestCase
 
     $response = $this->call('POST', $this->baseUrl, $payload, $cookies);
     $response->assertStatus(422);
-    // // // $response->assertJsonValidationErrors(['status']);
+    // // // $response->assertJsonValidationErrors(['status'], 'error.messages');
   }
 
   public function test_SOC_STO_V019_status_valid_enum_values()
@@ -311,7 +311,7 @@ class StoreSocialMgmtTest extends TestCase
 
     $response = $this->call('POST', $this->baseUrl, $payload, $cookies);
     $response->assertStatus(422);
-    // // // $response->assertJsonValidationErrors(['is_display']);
+    // // // $response->assertJsonValidationErrors(['is_display'], 'error.messages');
   }
 
   public function test_SOC_STO_V021_is_display_invalid_enum()
@@ -332,7 +332,7 @@ class StoreSocialMgmtTest extends TestCase
 
     $response = $this->call('POST', $this->baseUrl, $payload, $cookies);
     $response->assertStatus(422);
-    // // // $response->assertJsonValidationErrors(['is_display']);
+    // // // $response->assertJsonValidationErrors(['is_display'], 'error.messages');
   }
 
   public function test_SOC_STO_V022_is_display_valid_enum_values()
@@ -383,7 +383,7 @@ class StoreSocialMgmtTest extends TestCase
 
     $response = $this->call('POST', $this->baseUrl, $payload, $cookies);
     $response->assertStatus(422);
-    // // // $response->assertJsonValidationErrors(['rank_order']);
+    // // // $response->assertJsonValidationErrors(['rank_order'], 'error.messages');
   }
 
   public function test_SOC_STO_V024_rank_order_invalid_type()
@@ -404,7 +404,7 @@ class StoreSocialMgmtTest extends TestCase
 
     $response = $this->call('POST', $this->baseUrl, $payload, $cookies);
     $response->assertStatus(422);
-    // // // $response->assertJsonValidationErrors(['rank_order']);
+    // // // $response->assertJsonValidationErrors(['rank_order'], 'error.messages');
   }
 
   public function test_SOC_STO_V027_rank_order_valid_value()
@@ -447,7 +447,7 @@ class StoreSocialMgmtTest extends TestCase
 
     $response = $this->call('POST', $this->baseUrl, $payload, $cookies);
     $response->assertStatus(422);
-    // // // $response->assertJsonValidationErrors(['is_delete']);
+    // // // $response->assertJsonValidationErrors(['is_delete'], 'error.messages');
   }
 
   public function test_SOC_STO_V030_is_delete_valid_enum_values()

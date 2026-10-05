@@ -117,7 +117,7 @@ class StoreUserMgmtTest extends TestCase
     $response = $this->call('POST', $this->baseUrl, $payload, $cookies);
     $response->assertStatus(422);
     $response->assertStatus(422);
-    // // $response->assertJsonValidationErrors(['user_name', 'email', 'password', 'first_name', 'last_name']);
+    // // $response->assertJsonValidationErrors(['user_name', 'email', 'password', 'first_name', 'last_name'], 'error.messages');
   }
 
   // ========== VALIDATION LAYER TESTS - EMAIL ==========
@@ -131,7 +131,7 @@ class StoreUserMgmtTest extends TestCase
 
     $response = $this->call('POST', $this->baseUrl, $payload, $cookies);
     $response->assertStatus(422);
-    // $response->assertJsonValidationErrors(['email']);
+    // $response->assertJsonValidationErrors(['email'], 'error.messages');
   }
 
   public function test_USER_STO_V003_email_exceeds_max_length()

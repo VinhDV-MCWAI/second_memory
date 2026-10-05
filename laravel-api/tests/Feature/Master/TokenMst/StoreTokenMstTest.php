@@ -117,7 +117,7 @@ class StoreTokenMstTest extends TestCase
 
     $response = $this->call('POST', $this->baseUrl, $payload, $cookies);
     $response->assertStatus(422);
-    // $response->assertJsonValidationErrors(['account_id']);
+    // $response->assertJsonValidationErrors(['account_id'], 'error.messages');
   }
 
   public function test_TOK_STO_V002_account_id_invalid_type()
@@ -129,7 +129,7 @@ class StoreTokenMstTest extends TestCase
 
     $response = $this->call('POST', $this->baseUrl, $payload, $cookies);
     $response->assertStatus(422);
-    // $response->assertJsonValidationErrors(['account_id']);
+    // $response->assertJsonValidationErrors(['account_id'], 'error.messages');
   }
 
   public function test_TOK_STO_V005_account_id_valid()
@@ -173,7 +173,7 @@ class StoreTokenMstTest extends TestCase
 
     $response = $this->call('POST', $this->baseUrl, $payload, $cookies);
     $response->assertStatus(422);
-    // $response->assertJsonValidationErrors(['device_name']);
+    // $response->assertJsonValidationErrors(['device_name'], 'error.messages');
   }
 
   public function test_TOK_STO_V008_device_name_exceeds_max_length()
@@ -189,7 +189,7 @@ class StoreTokenMstTest extends TestCase
 
     $response = $this->call('POST', $this->baseUrl, $payload, $cookies);
     $response->assertStatus(422);
-    // $response->assertJsonValidationErrors(['device_name']);
+    // $response->assertJsonValidationErrors(['device_name'], 'error.messages');
   }
 
   public function test_TOK_STO_V010_ip_address_optional_omitted()
@@ -222,7 +222,7 @@ class StoreTokenMstTest extends TestCase
 
     $response = $this->call('POST', $this->baseUrl, $payload, $cookies);
     $response->assertStatus(422);
-    // $response->assertJsonValidationErrors(['ip_address']);
+    // $response->assertJsonValidationErrors(['ip_address'], 'error.messages');
   }
 
   public function test_TOK_STO_V014_expired_at_optional_omitted()

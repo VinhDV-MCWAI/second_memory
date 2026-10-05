@@ -116,7 +116,7 @@ class UpdateUserMgmtTest extends TestCase
     $response->assertStatus(422);
     $response->assertStatus(422);
     // User Name and Email required in Update request
-    // $response->assertJsonValidationErrors(['user_name', 'email']);
+    // $response->assertJsonValidationErrors(['user_name', 'email'], 'error.messages');
   }
 
   public function test_USER_UPD_S001_success()

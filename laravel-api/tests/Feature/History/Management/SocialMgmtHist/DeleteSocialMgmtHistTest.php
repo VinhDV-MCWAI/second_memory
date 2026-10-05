@@ -155,7 +155,7 @@ class DeleteSocialMgmtHistTest extends TestCase
 
     $response = $this->call('POST', $this->baseUrl, [], $cookies);
     $response->assertStatus(422);
-    $response->assertJsonValidationErrors(['ids']);
+    $response->assertJsonValidationErrors(['ids'], 'error.messages');
   }
 
   public function test_SOC_HIST_DEL_V002_ids_not_array()
@@ -169,7 +169,7 @@ class DeleteSocialMgmtHistTest extends TestCase
 
     $response = $this->call('POST', $this->baseUrl, $payload, $cookies);
     $response->assertStatus(422);
-    $response->assertJsonValidationErrors(['ids']);
+    $response->assertJsonValidationErrors(['ids'], 'error.messages');
   }
 
   public function test_SOC_HIST_DEL_V003_ids_empty_array()
@@ -196,7 +196,7 @@ class DeleteSocialMgmtHistTest extends TestCase
 
     $response = $this->call('POST', $this->baseUrl, $payload, $cookies);
     $response->assertStatus(422);
-    $response->assertJsonValidationErrors(['ids.0']);
+    $response->assertJsonValidationErrors(['ids.0'], 'error.messages');
   }
 
   public function test_SOC_HIST_DEL_V007_ids_not_exists()
@@ -210,7 +210,7 @@ class DeleteSocialMgmtHistTest extends TestCase
 
     $response = $this->call('POST', $this->baseUrl, $payload, $cookies);
     $response->assertStatus(422);
-    $response->assertJsonValidationErrors(['ids.0']);
+    $response->assertJsonValidationErrors(['ids.0'], 'error.messages');
   }
 
   public function test_SOC_HIST_DEL_V008_multiple_valid_ids()
@@ -240,7 +240,7 @@ class DeleteSocialMgmtHistTest extends TestCase
 
     $response = $this->call('POST', $this->baseUrl, $payload, $cookies);
     $response->assertStatus(422);
-    $response->assertJsonValidationErrors(['ids.1']);
+    $response->assertJsonValidationErrors(['ids.1'], 'error.messages');
   }
 
   // ========== SERVICE LAYER TESTS ==========

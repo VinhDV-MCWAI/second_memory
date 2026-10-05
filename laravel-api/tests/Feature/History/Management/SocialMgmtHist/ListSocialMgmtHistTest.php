@@ -130,7 +130,7 @@ class ListSocialMgmtHistTest extends TestCase
 
     $response = $this->call('GET', $this->baseUrl . '?social_mgmt_id=abc', [], $cookies);
     $response->assertStatus(422);
-    $response->assertJsonValidationErrors(['social_mgmt_id']);
+    $response->assertJsonValidationErrors(['social_mgmt_id'], 'error.messages');
   }
 
   public function test_SOC_HIST_LST_V002_social_mgmt_id_below_minimum()
@@ -140,7 +140,7 @@ class ListSocialMgmtHistTest extends TestCase
 
     $response = $this->call('GET', $this->baseUrl . '?social_mgmt_id=-1', [], $cookies);
     $response->assertStatus(422);
-    $response->assertJsonValidationErrors(['social_mgmt_id']);
+    $response->assertJsonValidationErrors(['social_mgmt_id'], 'error.messages');
   }
 
   public function test_SOC_HIST_LST_V004_social_mgmt_id_valid()
@@ -161,7 +161,7 @@ class ListSocialMgmtHistTest extends TestCase
 
     $response = $this->call('GET', $this->baseUrl . '?author_id=abc', [], $cookies);
     $response->assertStatus(422);
-    $response->assertJsonValidationErrors(['author_id']);
+    $response->assertJsonValidationErrors(['author_id'], 'error.messages');
   }
 
   public function test_SOC_HIST_LST_V023_author_id_valid()

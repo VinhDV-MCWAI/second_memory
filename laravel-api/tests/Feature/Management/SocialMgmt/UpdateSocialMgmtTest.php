@@ -171,7 +171,7 @@ class UpdateSocialMgmtTest extends TestCase
 
     $response = $this->call('PUT', $this->baseUrl . '/0', $payload, $cookies);
     $response->assertStatus(422);
-    // // $response->assertJsonValidationErrors(['id']);
+    // // $response->assertJsonValidationErrors(['id'], 'error.messages');
   }
 
   public function test_SOC_UPD_V004_id_not_exists()
@@ -192,7 +192,7 @@ class UpdateSocialMgmtTest extends TestCase
 
     $response = $this->call('PUT', $this->baseUrl . '/999999', $payload, $cookies);
     $response->assertStatus(422);
-    // // $response->assertJsonValidationErrors(['id']);
+    // // $response->assertJsonValidationErrors(['id'], 'error.messages');
   }
 
   public function test_SOC_UPD_V005_id_exists_valid()
@@ -237,7 +237,7 @@ class UpdateSocialMgmtTest extends TestCase
 
     $response = $this->call('PUT', $this->baseUrl . '/' . $social->id, $payload, $cookies);
     $response->assertStatus(422);
-    // // $response->assertJsonValidationErrors(['name']);
+    // // $response->assertJsonValidationErrors(['name'], 'error.messages');
   }
 
   public function test_SOC_UPD_V012_link_exceeds_maximum_length()
@@ -259,7 +259,7 @@ class UpdateSocialMgmtTest extends TestCase
 
     $response = $this->call('PUT', $this->baseUrl . '/' . $social->id, $payload, $cookies);
     $response->assertStatus(422);
-    // // $response->assertJsonValidationErrors(['link']);
+    // // $response->assertJsonValidationErrors(['link'], 'error.messages');
   }
 
   public function test_SOC_UPD_V021_is_display_invalid_enum()
@@ -281,7 +281,7 @@ class UpdateSocialMgmtTest extends TestCase
 
     $response = $this->call('PUT', $this->baseUrl . '/' . $social->id, $payload, $cookies);
     $response->assertStatus(422);
-    // // $response->assertJsonValidationErrors(['is_display']);
+    // // $response->assertJsonValidationErrors(['is_display'], 'error.messages');
   }
 
   public function test_SOC_UPD_V024_rank_order_invalid_type()
@@ -303,7 +303,7 @@ class UpdateSocialMgmtTest extends TestCase
 
     $response = $this->call('PUT', $this->baseUrl . '/' . $social->id, $payload, $cookies);
     $response->assertStatus(422);
-    // // $response->assertJsonValidationErrors(['rank_order']);
+    // // $response->assertJsonValidationErrors(['rank_order'], 'error.messages');
   }
 
   // ========== SERVICE LAYER TESTS ==========
