@@ -4,7 +4,6 @@ import axios, {
   InternalAxiosRequestConfig,
   AxiosRequestConfig,
 } from "axios";
-import { handleCommonError } from "./error-handler";
 import { ApiResponse } from "@/shared/types/api";
 import { authLock } from "@/shared/utils/auth-lock";
 import { API_ENDPOINTS, API_BASE_URL } from "@/shared/api/endpoints";
@@ -105,7 +104,8 @@ class ApiClient {
           }
         }
 
-        return handleCommonError(error as AxiosError<ApiResponse<unknown> | { message?: string }>);
+        // Error toasts are shown by the caller (see getApiErrorMessage), which knows the context.
+        return Promise.reject(error);
       }
     );
   }

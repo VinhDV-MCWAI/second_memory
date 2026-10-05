@@ -3,7 +3,7 @@
 import { useState, useCallback, useRef } from 'react';
 import { apiClient } from '@/shared/api/client';
 import { ENDPOINTS } from '@/shared/api';
-import { notification } from '@/shared/utils';
+import { notification, getApiErrorMessage } from '@/shared/utils';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { Upload, X, Image as ImageIcon } from 'lucide-react';
@@ -116,10 +116,7 @@ export function FileUpload({
       }
 
     } catch (error: unknown) {
-      const message = error instanceof Error && 'response' in error 
-        ? (error as { response?: { data?: { message?: string } } }).response?.data?.message || t('media.failedToUploadFile')
-        : t('media.failedToUploadFile');
-      notification.error(message);
+      notification.error(getApiErrorMessage(error) ?? t('media.failedToUploadFile'));
     } finally {
       setUploading(false);
       setProgress(0);

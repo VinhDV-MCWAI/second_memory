@@ -2,9 +2,10 @@
 
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { apiClient } from '@/shared/api/client';
-import { notification } from '../utils';
+import { notification, getApiErrorMessage } from '../utils';
 import { AxiosError } from 'axios';
 import { useTranslations } from 'next-intl';
+import { HTTP_STATUS } from '@/shared/config/constant';
 import type { UseCrudReturn, UseCrudOptions } from '@/shared/types/api';
 
 /**
@@ -40,10 +41,9 @@ export function useCrud<T>(
         queryClient.invalidateQueries({ queryKey: [key] });
       });
     },
-    onError: (err: AxiosError<{ message?: string }>) => {
-      if (err.response?.status !== 422) {
-        const message = err.response?.data?.message || t('failedToCreate');
-        notification.error(message);
+    onError: (err: AxiosError) => {
+      if (err.response?.status !== HTTP_STATUS.UNPROCESSABLE_CONTENT) {
+        notification.error(getApiErrorMessage(err) ?? t('failedToCreate'));
       }
     },
   });
@@ -65,10 +65,9 @@ export function useCrud<T>(
         queryClient.invalidateQueries({ queryKey: [key] });
       });
     },
-    onError: (err: AxiosError<{ message?: string }>) => {
-      if (err.response?.status !== 422) {
-        const message = err.response?.data?.message || t('failedToUpdate');
-        notification.error(message);
+    onError: (err: AxiosError) => {
+      if (err.response?.status !== HTTP_STATUS.UNPROCESSABLE_CONTENT) {
+        notification.error(getApiErrorMessage(err) ?? t('failedToUpdate'));
       }
     },
   });
@@ -93,9 +92,8 @@ export function useCrud<T>(
         queryClient.invalidateQueries({ queryKey: [key] });
       });
     },
-    onError: (err: AxiosError<{ message?: string }>) => {
-      const message = err.response?.data?.message || t('failedToDelete');
-      notification.error(message);
+    onError: (err: AxiosError) => {
+      notification.error(getApiErrorMessage(err) ?? t('failedToDelete'));
     },
   });
 
