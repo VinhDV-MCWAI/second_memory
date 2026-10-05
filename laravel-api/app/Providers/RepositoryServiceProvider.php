@@ -24,7 +24,6 @@ use App\Interfaces\History\Master\RoleMstHistInterface;
 
 use App\Interfaces\Management\BannerMgmtInterface;
 use App\Interfaces\Management\CategoryMgmtInterface;
-use App\Interfaces\Management\MediaFileInterface;
 use App\Interfaces\Management\MediaMgmtInterface;
 use App\Interfaces\Management\SettingLinkMgmtInterface;
 use App\Interfaces\Management\EntryDescriptionMgmtInterface;
@@ -67,7 +66,6 @@ use App\Repositories\History\Master\RoleMstHistRepository;
 
 use App\Repositories\Management\BannerMgmtRepository;
 use App\Repositories\Management\CategoryMgmtRepository;
-use App\Repositories\Management\MediaFileRepository;
 use App\Repositories\Management\MediaMgmtRepository;
 use App\Repositories\Management\SettingLinkMgmtRepository;
 use App\Repositories\Management\EntryDescriptionMgmtRepository;
@@ -122,7 +120,6 @@ final class RepositoryServiceProvider extends ServiceProvider
     SliderMgmtInterface::class => SliderMgmtRepository::class,
     SocialMgmtInterface::class => SocialMgmtRepository::class,
     UserMgmtInterface::class => UserMgmtRepository::class,
-    MediaFileInterface::class => MediaFileRepository::class,
 
     // Master History
     AdminMstHistInterface::class => AdminMstHistRepository::class,
