@@ -32,7 +32,7 @@ class DeleteSocialMgmtHistTest extends TestCase
       $rootRole = RoleMst::create(['name' => 'root', 'permission' => '{}', 'is_active' => 1, 'is_delete' => 0]);
     }
 
-    $this->grantAccessTo($rootRole, 'DELETE', $this->baseUrl . '/{id}');
+    $this->grantAccessTo($rootRole, 'POST', $this->baseUrl);
 
     if (!DB::table('admin_role_mst')
       ->where('admin_mst_id', $admin->id)
@@ -140,7 +140,7 @@ class DeleteSocialMgmtHistTest extends TestCase
   {
     $social = $this->createSocial();
     $history = $this->createHistory($social);
-    $response = $this->deleteJson($this->baseUrl . '/' . $history->id, []);
+    $response = $this->postJson($this->baseUrl, []);
     $response->assertStatus(401);
   }
 
@@ -153,7 +153,7 @@ class DeleteSocialMgmtHistTest extends TestCase
     $history = $this->createHistory($social);
     $cookies = $this->getAuthCookies($admin);
 
-    $response = $this->call('DELETE', $this->baseUrl . '/' . $history->id, [], $cookies);
+    $response = $this->call('POST', $this->baseUrl, [], $cookies);
     $response->assertStatus(422);
     $response->assertJsonValidationErrors(['ids']);
   }
@@ -167,7 +167,7 @@ class DeleteSocialMgmtHistTest extends TestCase
 
     $payload = ['ids' => 123];
 
-    $response = $this->call('DELETE', $this->baseUrl . '/' . $history->id, $payload, $cookies);
+    $response = $this->call('POST', $this->baseUrl, $payload, $cookies);
     $response->assertStatus(422);
     $response->assertJsonValidationErrors(['ids']);
   }
@@ -181,7 +181,7 @@ class DeleteSocialMgmtHistTest extends TestCase
 
     $payload = ['ids' => []];
 
-    $response = $this->call('DELETE', $this->baseUrl . '/' . $history->id, $payload, $cookies);
+    $response = $this->call('POST', $this->baseUrl, $payload, $cookies);
     $response->assertStatus(422);
   }
 
@@ -194,7 +194,7 @@ class DeleteSocialMgmtHistTest extends TestCase
 
     $payload = ['ids' => ['abc', 'def']];
 
-    $response = $this->call('DELETE', $this->baseUrl . '/' . $history->id, $payload, $cookies);
+    $response = $this->call('POST', $this->baseUrl, $payload, $cookies);
     $response->assertStatus(422);
     $response->assertJsonValidationErrors(['ids.0']);
   }
@@ -208,7 +208,7 @@ class DeleteSocialMgmtHistTest extends TestCase
 
     $payload = ['ids' => [999999]];
 
-    $response = $this->call('DELETE', $this->baseUrl . '/' . $history->id, $payload, $cookies);
+    $response = $this->call('POST', $this->baseUrl, $payload, $cookies);
     $response->assertStatus(422);
     $response->assertJsonValidationErrors(['ids.0']);
   }
@@ -225,7 +225,7 @@ class DeleteSocialMgmtHistTest extends TestCase
 
     $payload = ['ids' => [$history1->id, $history2->id, $history3->id]];
 
-    $response = $this->call('DELETE', $this->baseUrl . '/' . $history1->id, $payload, $cookies);
+    $response = $this->call('POST', $this->baseUrl, $payload, $cookies);
     $response->assertStatus(200);
   }
 
@@ -238,7 +238,7 @@ class DeleteSocialMgmtHistTest extends TestCase
 
     $payload = ['ids' => [$history->id, 999999]];
 
-    $response = $this->call('DELETE', $this->baseUrl . '/' . $history->id, $payload, $cookies);
+    $response = $this->call('POST', $this->baseUrl, $payload, $cookies);
     $response->assertStatus(422);
     $response->assertJsonValidationErrors(['ids.1']);
   }
@@ -254,7 +254,7 @@ class DeleteSocialMgmtHistTest extends TestCase
 
     $payload = ['ids' => [$history->id]];
 
-    $response = $this->call('DELETE', $this->baseUrl . '/' . $history->id, $payload, $cookies);
+    $response = $this->call('POST', $this->baseUrl, $payload, $cookies);
     $response->assertStatus(200);
 
     $this->assertDatabaseMissing('social_mgmt_hist', ['id' => $history->id]);
@@ -272,7 +272,7 @@ class DeleteSocialMgmtHistTest extends TestCase
 
     $payload = ['ids' => [$history1->id, $history2->id, $history3->id]];
 
-    $response = $this->call('DELETE', $this->baseUrl . '/' . $history1->id, $payload, $cookies);
+    $response = $this->call('POST', $this->baseUrl, $payload, $cookies);
     $response->assertStatus(200);
 
     $this->assertDatabaseMissing('social_mgmt_hist', ['id' => $history1->id]);
@@ -293,7 +293,7 @@ class DeleteSocialMgmtHistTest extends TestCase
 
     $payload = ['ids' => [$history1->id, $history2->id]];
 
-    $response = $this->call('DELETE', $this->baseUrl . '/' . $history1->id, $payload, $cookies);
+    $response = $this->call('POST', $this->baseUrl, $payload, $cookies);
     $response->assertStatus(200);
 
     // All records deleted
@@ -312,7 +312,7 @@ class DeleteSocialMgmtHistTest extends TestCase
 
     $payload = ['ids' => [$history->id]];
 
-    $response = $this->call('DELETE', $this->baseUrl . '/' . $history->id, $payload, $cookies);
+    $response = $this->call('POST', $this->baseUrl, $payload, $cookies);
     $response->assertStatus(200);
     $response->assertJsonStructure(['data']);
   }

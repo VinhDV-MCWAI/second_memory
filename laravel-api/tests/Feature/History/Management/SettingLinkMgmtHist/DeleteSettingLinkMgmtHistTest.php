@@ -32,7 +32,7 @@ class DeleteSettingLinkMgmtHistTest extends TestCase
       $rootRole = RoleMst::create(['name' => 'root', 'permission' => '{}', 'is_active' => 1, 'is_delete' => 0]);
     }
 
-    $this->grantAccessTo($rootRole, 'DELETE', $this->baseUrl . '/{id}');
+    $this->grantAccessTo($rootRole, 'POST', $this->baseUrl);
 
     if (!DB::table('admin_role_mst')
       ->where('admin_mst_id', $admin->id)
@@ -90,7 +90,7 @@ class DeleteSettingLinkMgmtHistTest extends TestCase
 
   public function test_SET_LNK_HST_DEL_001_unauthenticated()
   {
-    $response = $this->deleteJson($this->baseUrl . '/1');
+    $response = $this->postJson($this->baseUrl, []);
     $response->assertStatus(401);
   }
 
@@ -109,7 +109,7 @@ class DeleteSettingLinkMgmtHistTest extends TestCase
       'created_at' => now(),
     ]);
 
-    $response = $this->call('DELETE', $this->baseUrl . '/' . $hist->id, ['ids' => [$hist->id]], $cookies);
+    $response = $this->call('POST', $this->baseUrl, ['ids' => [$hist->id]], $cookies);
     $response->assertStatus(200);
 
     // Check hard delete

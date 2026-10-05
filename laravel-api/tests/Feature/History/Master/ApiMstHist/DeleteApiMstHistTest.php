@@ -27,7 +27,7 @@ class DeleteApiMstHistTest extends TestCase
       $rootRole = \App\Models\Master\RoleMst::create(['name' => 'root', 'permission' => '{}', 'is_active' => 1, 'is_delete' => 0]);
     }
 
-    $this->grantAccessTo($rootRole, 'DELETE', 'api/admin/api-mst-hist/delete/{id}');
+    $this->grantAccessTo($rootRole, 'POST', 'api/admin/api-mst-hist/delete');
 
     if (!\Illuminate\Support\Facades\DB::table('admin_role_mst')
       ->where('admin_mst_id', $admin->id)
@@ -95,7 +95,7 @@ class DeleteApiMstHistTest extends TestCase
       'action' => 1,
       'author_id' => 1
     ]);
-    $url = $this->baseUrl . '/' . $hist->id;
+    $url = $this->baseUrl;
 
     $response = $this->getJson($url);
     $response->assertStatus(405);
@@ -113,9 +113,9 @@ class DeleteApiMstHistTest extends TestCase
       'action' => 1,
       'author_id' => 1
     ]);
-    $url = $this->baseUrl . '/' . $hist->id;
+    $url = $this->baseUrl;
 
-    $response = $this->deleteJson($url, []);
+    $response = $this->postJson($url, []);
     $response->assertStatus(401);
   }
 
@@ -128,9 +128,9 @@ class DeleteApiMstHistTest extends TestCase
     $cookies = $this->getAuthCookies($admin);
 
     // URL ID is ignored
-    $url = $this->baseUrl . '/1';
+    $url = $this->baseUrl;
 
-    $response = $this->call('DELETE', $url, [], $cookies);
+    $response = $this->call('POST', $url, [], $cookies);
     $response->assertStatus(CommonVal::HTTP_UNPROCESSABLE_CONTENT);
     $this->assertArrayHasKey('ids', $response->json('error.messages'));
   }
@@ -142,11 +142,11 @@ class DeleteApiMstHistTest extends TestCase
   {
     $admin = AdminMst::factory()->create();
     $cookies = $this->getAuthCookies($admin);
-    $url = $this->baseUrl . '/1';
+    $url = $this->baseUrl;
 
     $payload = ['ids' => 'abc'];
 
-    $response = $this->call('DELETE', $url, $payload, $cookies);
+    $response = $this->call('POST', $url, $payload, $cookies);
     $response->assertStatus(CommonVal::HTTP_UNPROCESSABLE_CONTENT);
     $this->assertArrayHasKey('ids', $response->json('error.messages'));
   }
@@ -158,11 +158,11 @@ class DeleteApiMstHistTest extends TestCase
   {
     $admin = AdminMst::factory()->create();
     $cookies = $this->getAuthCookies($admin);
-    $url = $this->baseUrl . '/1';
+    $url = $this->baseUrl;
 
     $payload = ['ids' => [999999]];
 
-    $response = $this->call('DELETE', $url, $payload, $cookies);
+    $response = $this->call('POST', $url, $payload, $cookies);
     $response->assertStatus(CommonVal::HTTP_UNPROCESSABLE_CONTENT);
     $this->assertArrayHasKey('ids.0', $response->json('error.messages'));
   }
@@ -178,11 +178,11 @@ class DeleteApiMstHistTest extends TestCase
     $h1 = ApiMstHist::create(['api_mst_id' => 1, 'feature_mst_id' => 1, 'action' => 1, 'author_id' => 1, 'name' => 'H1']);
     $h2 = ApiMstHist::create(['api_mst_id' => 1, 'feature_mst_id' => 1, 'action' => 1, 'author_id' => 1, 'name' => 'H2']);
 
-    $url = $this->baseUrl . '/1'; // ID ignored
+    $url = $this->baseUrl; // ID ignored
 
     $payload = ['ids' => [$h1->id, $h2->id]];
 
-    $response = $this->call('DELETE', $url, $payload, $cookies);
+    $response = $this->call('POST', $url, $payload, $cookies);
 
     if ($response->status() !== 200) {
       $response->dump();

@@ -1,148 +1,67 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tests\Feature\History\Management\SliderMgmtHist;
 
-use App\Models\Master\AdminMst;
-use App\Models\Master\ApiMst;
-use App\Models\Master\FeatureMst;
-use App\Models\Master\RoleMst;
-use App\Models\Management\SliderMgmt;
+use App\Enums\ActionType;
 use App\Models\History\Management\SliderMgmtHist;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Redis;
+use App\Models\Management\SliderMgmt;
+use App\Models\Master\AdminMst;
+use Tests\Concerns\GrantsApiAccess;
 use Tests\TestCase;
 
-class ListSliderMgmtHistTest extends TestCase
+final class ListSliderMgmtHistTest extends TestCase
 {
-  use RefreshDatabase;
+    use GrantsApiAccess;
 
-  private string $baseUrl = 'api/admin/slider-mgmt-hist/list';
+    private const string URL = 'api/admin/slider-mgmt-hist/list';
 
-  protected function setUp(): void
-  {
-    parent::setUp();
-    Redis::flushdb();
-  }
-
-  private function getAuthCookies(AdminMst $admin): array
-  {
-    $rootRole = RoleMst::where('name', 'root')->first();
-    if (!$rootRole) {
-      $rootRole = RoleMst::create(['name' => 'root', 'permission' => '{}', 'is_active' => 1, 'is_delete' => 0]);
+    private function createHistory(SliderMgmt $parent, AdminMst $admin, array $overrides = []): SliderMgmtHist
+    {
+        return SliderMgmtHist::create(array_merge([
+            'slider_mgmt_id' => $parent->id,
+            'title' => 'Slider history',
+            'slug' => 'slider-history',
+            'link' => 'https://example.com',
+            'image' => 'slider.jpg',
+            'status' => 1,
+            'action' => ActionType::CREATE->value,
+            'author_id' => $admin->id,
+            'created_at' => now(),
+        ], $overrides));
     }
 
-    $this->grantAccessTo($rootRole, 'GET', $this->baseUrl);
-
-    if (!DB::table('admin_role_mst')
-      ->where('admin_mst_id', $admin->id)
-      ->where('role_mst_id', $rootRole->id)
-      ->exists()) {
-      DB::table('admin_role_mst')->insert([
-        'admin_mst_id' => $admin->id,
-        'role_mst_id' => $rootRole->id,
-        'created_at' => now(),
-        'updated_at' => now(),
-      ]);
+    public function test_unauthenticated(): void
+    {
+        $this->getJson(self::URL)->assertStatus(401);
     }
 
-    $response = $this->postJson('/api/admin/credential/login', [
-      'user_name' => $admin->user_name,
-      'password' => 'password',
-    ]);
+    public function test_lists_history_rows(): void
+    {
+        $admin = AdminMst::factory()->create();
+        $cookies = $this->loginWithAccess($admin, [['GET', self::URL]]);
+        $history = $this->createHistory(SliderMgmt::factory()->create(), $admin);
 
-    $cookies = [];
-    foreach ($response->headers->getCookies() as $cookie) {
-      $cookies[$cookie->getName()] = $cookie->getValue();
+        $response = $this->call('GET', self::URL, [], $cookies);
+
+        $response->assertStatus(200);
+        $this->assertContains($history->id, array_column($response->json('data.data'), 'id'));
     }
-    return $cookies;
-  }
 
-  private function grantAccessTo(RoleMst $role, string $method, string $path)
-  {
-    $typeMap = ['GET' => 0, 'POST' => 1, 'PUT' => 2, 'PATCH' => 3, 'DELETE' => 4];
-    $type = $typeMap[strtoupper($method)] ?? 0;
+    public function test_filters_by_parent_id(): void
+    {
+        $admin = AdminMst::factory()->create();
+        $cookies = $this->loginWithAccess($admin, [['GET', self::URL]]);
+        $target = SliderMgmt::factory()->create();
+        $this->createHistory($target, $admin);
+        $this->createHistory(SliderMgmt::factory()->create(), $admin);
 
-    $feature = FeatureMst::firstOrCreate([
-      'name' => 'System Features',
-      'group_name' => 'System',
-      'status' => 1,
-      'is_delete' => 0
-    ]);
+        $response = $this->call('GET', self::URL, ['slider_mgmt_id' => $target->id], $cookies);
 
-    $api = ApiMst::firstOrCreate(
-      ['path' => $path, 'type' => $type],
-      [
-        'name' => substr("Endp $method $path", 0, 50),
-        'is_active' => 1,
-        'feature_mst_id' => $feature->id,
-        'is_delete' => 0
-      ]
-    );
-
-    DB::table('api_role_mst')->insertOrIgnore([
-      'api_mst_id' => $api->id,
-      'role_mst_id' => $role->id,
-      'created_at' => now(),
-      'updated_at' => now(),
-    ]);
-  }
-
-  public function test_SLD_HST_LST_001_unauthenticated()
-  {
-    $response = $this->getJson($this->baseUrl);
-    $response->assertStatus(401);
-  }
-
-  public function test_SLD_HST_LST_002_success_list()
-  {
-    $admin = AdminMst::factory()->create();
-    $cookies = $this->getAuthCookies($admin);
-
-    $setting = SliderMgmt::factory()->create();
-    SliderMgmtHist::create([
-      'setting_link_mgmt_id' => $setting->id,
-      'key' => $setting->key,
-      'value' => $setting->value,
-      'action' => 1,
-      'author_id' => $admin->id,
-      'created_at' => now(),
-    ]);
-
-    $response = $this->call('GET', $this->baseUrl, [], $cookies);
-    $response->assertStatus(200);
-
-    $data = $response->json('data.data');
-    $this->assertGreaterThanOrEqual(1, count($data));
-
-    $this->assertArrayHasKey('id', $data[0]);
-    $this->assertArrayHasKey('setting_link_mgmt_id', $data[0]);
-    $this->assertArrayHasKey('action', $data[0]);
-  }
-
-  public function test_SLD_HST_LST_003_filter_by_setting()
-  {
-    $admin = AdminMst::factory()->create();
-    $cookies = $this->getAuthCookies($admin);
-
-    $setting1 = SliderMgmt::factory()->create();
-    $setting2 = SliderMgmt::factory()->create();
-
-    SliderMgmtHist::create([
-      'setting_link_mgmt_id' => $setting1->id,
-      'key' => $setting1->key,
-      'value' => $setting1->value,
-      'action' => 1,
-      'author_id' => $admin->id,
-      'created_at' => now(),
-    ]);
-
-    $response = $this->call('GET', $this->baseUrl, ['setting_link_mgmt_id' => $setting1->id], $cookies);
-    $response->assertStatus(200);
-
-    $data = $response->json('data.data');
-    foreach ($data as $item) {
-      $this->assertEquals($setting1->id, $item['setting_link_mgmt_id']);
+        $response->assertStatus(200);
+        $rows = $response->json('data.data');
+        $this->assertCount(1, $rows);
+        $this->assertSame($target->id, $rows[0]['slider_mgmt_id']);
     }
-  }
 }
