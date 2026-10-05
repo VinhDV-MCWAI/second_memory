@@ -356,7 +356,7 @@ services:
   # MinIO Object Storage (S3-compatible)
   ml-minio:
     container_name: ml-minio
-    image: minio/minio:latest
+    image: ${MINIO_IMAGE:-pgsty/minio:RELEASE.2026-08-04T00-00-00Z}
     restart: unless-stopped
     ports:
       - "${MINIO_PORT_OUTSIDE_ENV}:${MINIO_PORT_INSIDE_ENV}"
