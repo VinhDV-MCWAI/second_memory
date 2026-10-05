@@ -109,15 +109,11 @@ class StoreEntryMgmtTest extends TestCase
     $entry = EntryMgmt::factory()->create();
 
     $payload = [
-
-      'parent_id' => 0,
       'name' => 'Test Entry',
       'slug' => 'test-entry',
-
       'status' => 1,
       'is_display' => 1,
       'rank_order' => 1,
-
       'is_delete' => 0,
     ];
 
@@ -125,7 +121,6 @@ class StoreEntryMgmtTest extends TestCase
     $response->assertStatus(200);
 
     $this->assertDatabaseHas('entry_mgmt', [
-      'parent_id' => 0,
       'name' => 'Test Entry',
       'slug' => 'test-entry',
     ]);
