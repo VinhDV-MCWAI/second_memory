@@ -46,10 +46,10 @@ class BannerMgmtRepository extends BaseRepository implements BannerMgmtInterface
 
     // Apply filters
     $this->applyFilters($query, $payload, [
-      'banner_mgmt.id',
-      'banner_mgmt.status',
+      'id' => 'banner_mgmt.id',
+      'status' => 'banner_mgmt.status',
     ], [
-      'banner_mgmt.title',
+      'title' => 'banner_mgmt.title',
     ]);
 
     // Apply date range

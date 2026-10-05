@@ -51,18 +51,23 @@ abstract class BaseRepository implements BaseInterface
      * @param array $exactMatchFields Fields that should use exact match (=)
      * @param array $likeFields Fields that should use LIKE search
      * @return void
+     *
+     * Fields are payload keys; use `'payload_key' => 'table.column'` to filter
+     * a qualified column (e.g. on joined queries).
      */
     protected function applyFilters($query, array $payload, array $exactMatchFields = [], array $likeFields = []): void
     {
-        foreach ($exactMatchFields as $field) {
-            if (isset($payload[$field])) {
-                $query->where($field, $payload[$field]);
+        foreach ($exactMatchFields as $key => $column) {
+            $key = is_int($key) ? $column : $key;
+            if (isset($payload[$key])) {
+                $query->where($column, $payload[$key]);
             }
         }
 
-        foreach ($likeFields as $field) {
-            if (isset($payload[$field])) {
-                $query->where($field, 'like', '%' . $payload[$field] . '%');
+        foreach ($likeFields as $key => $column) {
+            $key = is_int($key) ? $column : $key;
+            if (isset($payload[$key])) {
+                $query->where($column, 'like', '%' . $payload[$key] . '%');
             }
         }
     }
