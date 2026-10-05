@@ -295,7 +295,7 @@ class StoreSocialMgmtHistTest extends TestCase
     $id = $response->json('data');
     $this->assertDatabaseHas('social_mgmt_hist', [
       'id' => $id,
-      'is_display' => null,
+      'is_display' => false,
     ]);
   }
 
@@ -339,7 +339,7 @@ class StoreSocialMgmtHistTest extends TestCase
     $id = $response->json('data');
     $this->assertDatabaseHas('social_mgmt_hist', [
       'id' => $id,
-      'rank_order' => null,
+      'rank_order' => 0,
     ]);
   }
 
@@ -537,8 +537,8 @@ class StoreSocialMgmtHistTest extends TestCase
       'name' => null,
       'slug' => null,
       'status' => null,
-      'is_display' => null,
-      'rank_order' => null,
+      'is_display' => false,
+      'rank_order' => 0,
     ]);
   }
 

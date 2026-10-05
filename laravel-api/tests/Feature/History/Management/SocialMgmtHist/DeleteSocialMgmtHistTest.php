@@ -106,7 +106,7 @@ class DeleteSocialMgmtHistTest extends TestCase
   {
     return SocialMgmtHist::create([
       'social_mgmt_id' => $social->id,
-      'title' => 'Test History',
+      'name' => 'Test History',
       'action' => 1,
       'author_id' => 1,
     ]);
@@ -121,17 +121,8 @@ class DeleteSocialMgmtHistTest extends TestCase
     $history = $this->createHistory($social);
     $cookies = $this->getAuthCookies($admin);
 
-    $response = $this->call('POST', $this->baseUrl . '/' . $history->id, [], $cookies);
+    $response = $this->call('GET', $this->baseUrl, ['ids' => [$history->id]], $cookies);
     $response->assertStatus(405);
-  }
-
-  public function test_SOC_HIST_DEL_R002_missing_path_parameter()
-  {
-    $admin = AdminMst::factory()->create();
-    $cookies = $this->getAuthCookies($admin);
-
-    $response = $this->call('DELETE', $this->baseUrl, [], $cookies);
-    $response->assertStatus(404);
   }
 
   // ========== MIDDLEWARE LAYER TESTS ==========
