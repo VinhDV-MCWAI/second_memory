@@ -139,7 +139,7 @@ Mức độ: 🔴 nghiêm trọng · 🟠 cao · 🟡 trung bình · 🔵 thấp
 - **Vấn đề:**
   1. Đọc và tin payload (`exp`, `iat`) **trước** khi verify chữ ký. Nguyên tắc: *verify chữ ký trước, rồi mới đọc claims*.
   2. Không kiểm tra header `alg`/`typ` → nên **bắt buộc** `alg === 'HS256'` (RFC 8725, chống alg confusion khi sau này thêm thuật toán khác).
-  3. Giải mã base64**url** bằng `base64_decode` thường. Hiện chạy được nhờ chế độ non-strict *bỏ qua* ký tự `-`/`_` (thử 100.000 payload dạng hiện tại không lỗi), nhưng đó là may mắn chứ không đúng. Dòng `str_replace(['-','_',''], ['+','/','='])` thay chuỗi rỗng bằng `=` là vô nghĩa. Cần hàm `base64UrlDecode` đúng: đổi `-_` → `+/`, thêm padding, `base64_decode($s, true)` (strict).
+  3. Giải mã base64**url** bằng `base64_decode` thường. Hiện chạy được nhờ chế độ non-strict *bỏ qua* ký tự `-`/`_` (thử 100.000 payload dạng hiện tại không lỗi), nhưng đó là may mắn chứ không đúng. Dòng `str_replace(['-','_',''], ['+','/','='])` thay chuỗi rỗng bằng `=` là vô nghĩa. Cần hàm `base64UrlDecode` đúng: đổi `-_` → `+/`, thêm padding, `base64_decode($s, true)` (strict). Larastan cũng bắt được hệ quả: ở dòng ~143, `if (false === $sig)` **không bao giờ đúng** vì `base64_decode` non-strict không trả `false` → mã lỗi `E0605` là code chết (lỗi này đang nằm trong `phpstan-baseline.neon`; sửa xong thì xóa dòng tương ứng khỏi baseline).
   4. Truy cập `$payload['exp']`, `$payload['iat']` không kiểm tra tồn tại/kiểu.
   5. `iat === exp - TTL` buộc chặt token với hằng số TTL: đổi TTL là toàn bộ token đang sống bị từ chối. Nên kiểm tra `exp > now - leeway`, `iat <= now + leeway`, `nbf` nếu có.
   6. Access và refresh token chỉ phân biệt bằng secret. Thêm claim `token_use: "access" | "refresh"` (hoặc `typ`) và kiểm tra nó, phòng khi hai secret vô tình trùng nhau.
@@ -211,7 +211,7 @@ Mỗi bước: tạo nhánh `feature/auth-<bước>` từ `developer`, viết te
 
 | Bước | Việc | Xong khi |
 |---|---|---|
-| **C1** | Thay ruột `JsonWebToken` bằng `firebase/php-jwt` (giữ interface `encode/decode` để code gọi không đổi) | Toàn bộ test giai đoạn B vẫn xanh → chứng minh thư viện làm đúng những gì bạn đã tự làm |
+| **C1** | Thay ruột `JsonWebToken` bằng `firebase/php-jwt` (giữ interface `encode/decode` để code gọi không đổi). Nâng lên **`firebase/php-jwt:^7.0`** trước: bản 6.10.2 đang pin có advisory CVE-2025-45769 (chấp nhận khóa HMAC quá ngắn — 7.0 bắt buộc khóa ≥ độ dài hash), `composer audit` sẽ hết báo khi nâng | Toàn bộ test giai đoạn B vẫn xanh → chứng minh thư viện làm đúng những gì bạn đã tự làm |
 | **C2** | Viết **custom Guard** (`Auth::extend('admin-jwt', ...)`) + `AccessTokenAuthenticator` (A10); route dùng `auth:admin`; `request()->user()` trả `AdminMst` thật | Hai middleware cũ chỉ còn phần phân quyền, hoặc được thay hẳn |
 | **C3** | Phân quyền: chuyển kiểm tra route sang **Gate/Policy** hoặc middleware `can:`; xóa cache permission khi đổi role (A7) | Đổi role → có hiệu lực ngay ở request kế tiếp |
 | **C4** | Reuse detection theo `family_id` (A6) + lệnh prune token hết hạn | Dùng lại refresh token cũ → cả họ token bị thu hồi |
