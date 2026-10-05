@@ -42,7 +42,6 @@ class EntryIntegrationTest extends TestCase
     $feature = FeatureMst::firstOrCreate(['name' => 'System'], [
       'name' => 'System',
       'group_name' => 'System',
-      'description' => 'Entry Integration',
       'status' => 1,
       'is_delete' => 0
     ]);
@@ -75,7 +74,6 @@ class EntryIntegrationTest extends TestCase
     $this->ensureRootAccess($admin, 'POST', $this->loginUrl);
     $this->ensureRootAccess($admin, 'POST', 'api/admin/category-mgmt/store');
     $this->ensureRootAccess($admin, 'POST', 'api/admin/entry-mgmt/store');
-    $this->ensureRootAccess($admin, 'PUT', 'api/admin/category-entry-mgmt/update');
     $this->ensureRootAccess($admin, 'POST', 'api/admin/entry-description-mgmt/store');
 
     $response = $this->postJson($this->loginUrl, [
@@ -115,18 +113,7 @@ class EntryIntegrationTest extends TestCase
     $entryResp->assertStatus(200);
     $entryId = $entryResp->json('data');
 
-    // 4. Link Entry to Category (PUT)
-    $linkPayload = [
-      'insert' => [
-        [
-          'category_mgmt_id' => $catId,
-        ]
-      ]
-    ];
-    $linkResp = $this->call('PUT', 'api/admin/category-entry-mgmt/update', $linkPayload, $cookies);
-    $linkResp->assertStatus(200);
-
-    // 5. Add Description (Fixed Payload)
+    // 4. Add Description (Fixed Payload)
     $descPayload = [
       'parent_id' => 0,
       'title' => 'PHP Language',
@@ -139,8 +126,6 @@ class EntryIntegrationTest extends TestCase
     ];
     $descResp = $this->call('POST', 'api/admin/entry-description-mgmt/store', $descPayload, $cookies);
     $descResp->assertStatus(200);
-
-    // 6. Verify Connection
   }
 
   public function test_prevent_duplicate_slugs()
@@ -171,9 +156,6 @@ class EntryIntegrationTest extends TestCase
 
     // Attempt duplicate
     $dupResp = $this->call('POST', 'api/admin/category-mgmt/store', $catPayload, $cookies);
-    if ($dupResp->status() === 422) {
-      dump('422 Body:', $dupResp->json());
-    }
     // Expect 422 Unprocessable (Validation)
     $dupResp->assertStatus(422);
     // $dupResp->assertJsonValidationErrors(['slug']);

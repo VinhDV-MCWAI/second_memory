@@ -85,14 +85,6 @@ class FullSystemFlowTest extends TestCase
     ]);
   }
 
-  // Debug Helper
-  private function checkError($response)
-  {
-    if ($response->status() === 422) {
-      dump('422 Error:', $response->json());
-    }
-  }
-
   public function test_scenario_1_admin_provisioning_flow()
   {
     // 1. Root Login setup
@@ -113,6 +105,7 @@ class FullSystemFlowTest extends TestCase
       'password' => 'Password123!',
       'first_name' => 'New',
       'last_name' => 'Admin',
+      'status' => 1,
       'is_active' => 1,
       'is_delete' => 0,
       'gender' => 1,
@@ -143,14 +136,14 @@ class FullSystemFlowTest extends TestCase
     $socialUrl = 'api/admin/social-mgmt/store';
     $listSocialUrl = 'api/admin/social-mgmt/list';
     $updateSliderUrl = 'api/admin/slider-mgmt/update/{id}';
-    $deleteSocialUrl = 'api/admin/social-mgmt/delete/{id}';
+    $deleteSocialUrl = 'api/admin/social-mgmt/delete';
 
     $this->grantAccessToAdmin($admin, 'POST', $this->loginUrl);
     $this->grantAccessToAdmin($admin, 'POST', $sliderUrl);
     $this->grantAccessToAdmin($admin, 'POST', $socialUrl);
     $this->grantAccessToAdmin($admin, 'GET', $listSocialUrl);
     $this->grantAccessToAdmin($admin, 'PUT', $updateSliderUrl);
-    $this->grantAccessToAdmin($admin, 'DELETE', $deleteSocialUrl);
+    $this->grantAccessToAdmin($admin, 'POST', $deleteSocialUrl);
 
     $cookies = $this->getAuthCookies($admin);
 
@@ -165,7 +158,6 @@ class FullSystemFlowTest extends TestCase
     ];
 
     $response = $this->call('POST', $sliderUrl, $sliderPayload, $cookies);
-    $this->checkError($response);
     $response->assertStatus(200);
     $sliderId = $response->json('data');
 
@@ -201,10 +193,10 @@ class FullSystemFlowTest extends TestCase
     $this->assertDatabaseHas('slider_mgmt', ['id' => $sliderId, 'status' => 0]);
 
     // 5. Delete Social (Soft Delete)
-    $realDeleteUrl = 'api/admin/social-mgmt/delete/' . $socialId;
+    $realDeleteUrl = 'api/admin/social-mgmt/delete';
     $deletePayload = ['ids' => [$socialId]];
 
-    $response = $this->call('DELETE', $realDeleteUrl, $deletePayload, $cookies);
+    $response = $this->call('POST', $realDeleteUrl, $deletePayload, $cookies);
     $response->assertStatus(200);
 
     $this->assertDatabaseHas('social_mgmt', ['id' => $socialId, 'is_delete' => 1]);
@@ -231,7 +223,6 @@ class FullSystemFlowTest extends TestCase
     // 3. Manually Expire Token (Revoke from Redis)
     $tokenKey = \App\Constants\CommonVal::ADMIN_TYPE . ":{$admin->id}:{$accessToken}";
     $deleted = Redis::del($tokenKey);
-    // dump("Removing Token: $tokenKey, Result: $deleted");
 
     // 4. Access Retry (Should Fail)
     $response = $this->call('GET', $checkUrl, [], $cookies);
