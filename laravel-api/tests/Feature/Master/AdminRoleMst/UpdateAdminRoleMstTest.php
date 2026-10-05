@@ -9,11 +9,13 @@ use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Redis;
+use Tests\Concerns\GrantsApiAccess;
 use Tests\TestCase;
 
 class UpdateAdminRoleMstTest extends TestCase
 {
   use DatabaseTransactions;
+  use GrantsApiAccess;
 
   protected string $updateUrl = '/api/admin/admin-role-mst/update';
   protected string $loginUrl = '/api/admin/credential/login';
@@ -30,6 +32,7 @@ class UpdateAdminRoleMstTest extends TestCase
       ['name' => 'root'],
       ['permission' => '{}', 'is_active' => 1, 'is_delete' => 0]
     );
+    $this->grantAccessTo($rootRole, 'PUT', 'api/admin/admin-role-mst/update');
 
     if (!DB::table('admin_role_mst')->where('admin_mst_id', $admin->id)->where('role_mst_id', $rootRole->id)->exists()) {
       DB::table('admin_role_mst')->insert([
