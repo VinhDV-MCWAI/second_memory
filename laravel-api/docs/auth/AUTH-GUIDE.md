@@ -183,6 +183,18 @@ Mức độ: 🔴 nghiêm trọng · 🟠 cao · 🟡 trung bình · 🔵 thấp
 - Không có "đăng xuất mọi thiết bị" và không thu hồi token khi đổi mật khẩu.
 - Không có audit log cho đăng nhập thành công/thất bại (ai, IP, lúc nào).
 
+### 🟠 A13. Endpoint refresh: 4 test đang đỏ (phát hiện khi sửa test suite — T1)
+Sau khi sửa toàn bộ test suite (592 pass), chỉ còn 4 test trong `tests/Feature/Auth/RefreshTokenApiTest.php` fail — đều là hành vi thật của `POST credential/refresh`, để bạn tự sửa:
+
+| Test | Hiện tại | Mong đợi | Gợi ý |
+|---|---|---|---|
+| `T004_invalid_access_token` (cookie `access_token=invalidstuff`) | **500** | 401 | `decode()` ném lỗi không phải `UnexpectedValueException` (TypeError/JSON) với token sai định dạng → bắt mọi lỗi decode và trả 401 (liên quan A4). |
+| `T005_expired_access_token_redis_missing` (đã xóa key `admin:{id}:{token}`) | 200 | 401 | Refresh không kiểm tra phiên access token còn tồn tại → token đã logout/thu hồi vẫn đổi được cặp mới. Quyết định: refresh có cần phiên access còn sống không? Nếu có → kiểm tra key Redis. |
+| `T006_invalid_permission_redis` (đã xóa hash permission) | 200 | 401 | Cân nhắc: refresh nạp lại quyền là hợp lý → có thể **sửa test** thay vì code. Ghi lại quyết định. |
+| `T019_failure_user_deleted` (admin bị xóa) | **200** | 401 | 🔴 **Admin đã bị xóa vẫn lấy được token mới.** Refresh phải kiểm tra admin còn tồn tại, `is_delete = 0`, `is_active = 1`. Đây là lỗi bảo mật thật — ưu tiên cao nhất trong nhóm. |
+
+Chạy riêng: `docker exec ml-php php artisan test --filter=RefreshTokenApiTest`.
+
 ---
 
 ## 5. Lộ trình làm thủ công (bài tập theo thứ tự)
