@@ -1,0 +1,102 @@
+# Refactor plan — Second Memory (2026-10)
+
+Status values: `proposed` → `approved` → `in-progress` → `done` | `skipped` | `blocked: <reason>`.
+Workflow: `/refactor-item <ID…>`. Only `approved` items may be started.
+
+## Target stack (verified 2026-10-05)
+
+| Area | Current | Target | Why |
+|---|---|---|---|
+| PHP | 8.3 | **8.5** | Current stable; Laravel 13 supports 8.3–8.5 |
+| Laravel | 11.34 (pinned) | **13.x** | 11 is out of security support (ended 2026-03); 13 released 2026-03-17 |
+| Reverb | `@beta` | stable 1.x | No beta in prod |
+| PHP tests | PHPUnit 11 | PHPUnit 12 *or* Pest 4 (option) | Pest 4: cleaner syntax, sharding, browser tests |
+| PHP quality | Pint only | Pint + **Larastan 3** + **Rector** (rector-laravel) | Static analysis + automated upgrades |
+| API docs/types | hand-written TS types | **Scramble** (OpenAPI) → **openapi-typescript** | One source of truth for FE types |
+| Next.js | 16.0.1 (webpack) | **16.3.x LTS**, Turbopack | 16.0.1 is affected by CVE-2025-55182 |
+| React | 19.2.0 | latest 19.2.x + **React Compiler** | CVE fix; auto-memoization |
+| Node | 22 (Docker), 20 (CI) | **24 LTS** | 20 is EOL; align everything |
+| FE tests | Vitest 1, 0 tests | **Vitest 4** + Testing Library + MSW 2 | |
+| Lint | ESLint 9 (fe), broken `next lint` (docs) | Shared ESLint flat config + Prettier | `next lint` was removed in Next 16 |
+| PostgreSQL | 16 | **18** (optional) | Async I/O, supported longer |
+| Redis | 7 | **8** | Current stable |
+| Object storage | `minio/minio:latest` | pinned MinIO **or** S3-compatible alternative (option) | MinIO community edition is in maintenance mode |
+| Compose | `docker-compose` v1 CLI | `docker compose` v2 | v1 is deprecated |
+
+---
+
+## P0 — Security & correctness (do first)
+
+| ID | Item | Done when | Depends | Status |
+|---|---|---|---|---|
+| S1 | Upgrade `next` → 16.3.x, `react`/`react-dom` → latest 19.2.x in both apps (CVE-2025-55182, critical RSC RCE) | Lockfile shows patched versions; both apps build | – | done (`refactor/p0-p1-foundation`: next 16.3.8, react 19.2.8) |
+| S2 | Remove tracked secrets (`docker/postgres/.env`, `laravel-api/.env.testing` if it holds secrets) → `.env.example`; **rotate DB password**. History purge with `git filter-repo` = separate decision | `git ls-files` shows no secret files; setup-env.sh generates them | – | done in code (`refactor/p0-p1-foundation`); manual: rotate secrets, history purge = open decision 5 |
+| S3 | Remove 30 MB `docker/minio/mc` binary; use `minio/mc` image in `ml-minio-init` | Binary gone; bucket init still works | – | done (`refactor/p0-p1-foundation`: mc from pinned `pgsty/minio` image) |
+| S4 | `env()` at runtime (AdminMiddleware etc.) → `config()` | `grep -rn "env(" app/` empty; works with `config:cache` | – | moved to auth guide (manual) |
+| S5 | Harden exception handler: hide internal messages in prod, correct 401 vs 403, log all 5xx | Feature tests for 401/403/500 envelope | – | done (`refactor/p0-p1-foundation`: `ExceptionHandlerTest`) |
+| S6 | Replace hand-rolled JWT. **Option a:** `firebase/php-jwt` (minimal change). **Option b (recommended):** Sanctum SPA cookie auth, drop custom JWT + refresh endpoint, keep Redis permission cache | Auth tests green; FE login/refresh flow works | S4 | done as guide — user implements (`laravel-api/docs/auth/AUTH-GUIDE.md`) |
+| S8 | `phpunit.xml` env `force="true"` + idempotent `testing` DB creation (tests were wiping the dev DB) | Tests run against `testing` DB | – | done (`refactor/p0-p1-foundation`) |
+| T1 | Repair test suite: tests drift from schema (`feature_mst.description`, `social_mgmt.name`, status expectations) → 450 failing on `developer` | Feature suite green | – | proposed |
+| S7 | FE never shows server error messages (`useCrud`/`useJunctionTable` read `data.message`, backend sends `error.messages`) → use `error-handler.ts` everywhere | Unit test for error extraction; manual check | – | done (`refactor/p0-p1-foundation`: `getApiErrorMessage` + Vitest spec) |
+
+## P1 — Foundation & tooling (makes later refactors safe)
+
+| ID | Item | Done when | Depends | Status |
+|---|---|---|---|---|
+| F1 | Monorepo hygiene: one root `pnpm-lock.yaml` (remove `nextjs-fe/pnpm-lock.yaml`, `laravel-api/package-lock.json`, fix `.gitignore`), `packageManager` + corepack, `engines.node >=24`, root scripts (`lint`, `typecheck`, `test`, `format`), root `.editorconfig`; drop `laravel-api` from pnpm workspace if its Vite assets are unused | `pnpm -r lint/typecheck/test` work from root | – | approved |
+| F2 | Backend tooling: `pint.json` (PSR-12/laravel preset), Larastan 3 (start level 5 + baseline), Rector with rector-laravel, `composer` scripts `lint`, `analyse`, `test` | Commands run clean (with baseline) | – | approved |
+| F3 | FE tooling: shared ESLint flat config + Prettier for both apps, TS strict, Vitest 4 config; replace `next lint` in docs | Lint + tsc pass in both apps | F1 | approved |
+| F4 | Rewrite CI: jobs `frontend` (pnpm, Node 24) and `backend` (PHP 8.x + Postgres/Redis services: pint, larastan, tests), Docker build check; trigger on PR → `developer`/`main`; least-privilege permissions | CI green on a PR | F1–F3 | approved |
+| F5 | Remove dead code: `Http/Kernel.php`, `Utilities/Tmp.php`, `CommonService`, `SingletonService`, `CategoryMgmt::products()` (class doesn't exist), `.bak` files, `tsconfig.tsbuildinfo`; unused deps `@reduxjs/toolkit`, `react-redux`, `novel`, `@dnd-kit/*`, `react-masonry-css`, `shadcn-ui`, `@swc/helpers` | Build + tests green | – | approved |
+| F6 | One-time format pass (Pint + Prettier) in a dedicated commit; add its SHA to `.git-blame-ignore-revs` | No style diffs remain | F2, F3 | approved |
+| F7 | Task runner `Makefile` (`make up/down/test/lint/fresh/backup`) wrapping docker compose; `start.sh` delegates to it | README/CLAUDE.md commands use `make` | – | approved |
+
+## P2 — Framework upgrades
+
+| ID | Item | Done when | Depends | Status |
+|---|---|---|---|---|
+| U1 | PHP 8.5 image; Laravel 11 → 12 → 13 (Rector sets + upgrade guides), unpin exact versions to `^`, Reverb stable, Sanctum latest; PHPUnit 12 **or** convert to Pest 4 (option) | All tests green on 13 | F2, F4 | proposed |
+| U2 | Next 16.3 with Turbopack (drop `--webpack`; keep polling for Docker via env), enable React Compiler, Vitest 4, Node 24 images | Both apps build & run in Docker | S1, F3 | proposed |
+
+## P3 — Backend architecture
+
+| ID | Item | Done when | Depends | Status |
+|---|---|---|---|---|
+| B1 | **Generic CRUD core**: `BaseCrudController` / `BaseCrudService` / `BaseRepository` with list/store/update/delete; entities declare only model, resource, filters, rules. Consider `spatie/laravel-query-builder` for allow-listed filter/sort/include (replaces `applyFilters`/`applySorting`/`Schema::hasColumn`). Contract unchanged | ~60% fewer per-entity files; all feature tests green | U1 | proposed |
+| B2 | History via model trait/observer (`Auditable`) instead of manual `recordHistory()` in each service | History tests green; no `recordHistory` calls in services | B1 | proposed |
+| B3 | Enums: shared `HasLabel` trait, native enum casts on models, `Rule::enum` in requests | No duplicated `getLabel()` | U1 | proposed |
+| B4 | Routing: split `routes/api.php` into `routes/api/{master,management,history,docs}.php`, middleware aliases in `bootstrap/app.php` | `route:list` identical before/after (diff) | – | proposed |
+| B5 | `Model::shouldBeStrict()` in non-prod, `$request->validated()` everywhere, `declare(strict_types=1)` everywhere | Larastan level raised to 6+ | F2 | proposed |
+| B6 | OpenAPI via **Scramble** at `/docs/api` (admin-only), export spec in CI | Spec generated; consumed by FE4 | B1 | proposed |
+| B7 | *(optional, large)* Custom `is_delete` → Laravel `SoftDeletes` (`deleted_at`) with data migration | Migration reversible; tests green | B1 | proposed |
+
+## P4 — Frontend architecture
+
+| ID | Item | Done when | Depends | Status |
+|---|---|---|---|---|
+| FE1 | Tests first: Vitest specs for api client, error-handler, `useApiData`, `useCrud` (MSW) | Coverage on `src/shared` ≥ 70% | F3 | proposed |
+| FE2 | `app/admin/layout.tsx` hosts `AdminLayout` (remove per-page wrapping in 48 places) | No page imports `AdminLayout` | – | proposed |
+| FE3 | Auth guard in `proxy.ts` (Next 16) for `/admin/*` | Unauthenticated → redirect without flash | S6 | proposed |
+| FE4 | Generated API types (openapi-typescript) replace hand-written `types/api.ts`; query-key factory; merge `useApiData`/`useCrud` into `useResource(resource)` | No hand-written API model types | B6, FE1 | proposed |
+| FE5 | Config-driven `<ResourceListPage>`: 17 near-identical 300+ line pages → column/filter/form config per entity | Each entity page < 80 lines; behavior same | FE1, FE2, FE4 | proposed |
+| FE6 | Feature-based folders: `src/features/<domain>/{api,components,schemas,hooks}`; split oversized files (`layout-structure-editor`, `constant.ts`, `types/api.ts`) | No file > 300 lines outside `ui/` | FE5 | proposed |
+| FE7 | *(optional)* Shared workspace package `packages/editor` (Tiptap extensions + schema) used by both admin editor and docs renderer | Single source of extensions | U2 | proposed |
+| D1 | Docs site: API base URL from env (no hard-coded `ml-nginx`), drop custom request dedup, use Next caching (`revalidate`/Cache Components + tag revalidation on publish), `generateMetadata`, sitemap | Pages cached; content updates visible after publish | U2 | proposed |
+
+## P5 — Infrastructure
+
+| ID | Item | Done when | Depends | Status |
+|---|---|---|---|---|
+| I1 | Docker: pin all images, non-root, healthchecks + `depends_on: service_healthy`, compose v2, Redis 8 | `docker compose up` healthy from clean | – | proposed |
+| I2 | *(optional)* PostgreSQL 16 → 18 via dump/restore script | Data verified after restore | I1, I4 | proposed |
+| I3 | Object storage decision: pin last MinIO release **or** move to another S3-compatible server; app code stays on S3 API | Upload/download/multipart tests pass | I1 | proposed |
+| I4 | Backup: `set -euo pipefail`, retention, scheduled run, automated restore test | Restore into scratch DB succeeds | – | proposed |
+| I5 | CD: images tagged by commit SHA (+ `latest` alias), docs image too, deploy health check + one-command rollback | Rollback tested once | F4 | proposed |
+
+## Open decisions (user)
+
+1. S6: firebase/php-jwt (a) or Sanctum SPA cookie auth (b)?
+2. U1: keep PHPUnit or migrate to Pest 4?
+3. B7, FE7, I2: do the optional large items?
+4. I3: keep MinIO (pinned) or migrate?
+5. S2: also purge secrets from git history (rewrites history, needs force-push)?
