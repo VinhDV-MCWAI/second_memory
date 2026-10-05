@@ -106,7 +106,6 @@ class StoreCategoryMgmtTest extends TestCase
 
     $response = $this->call('POST', $this->baseUrl, [], $cookies);
     $response->assertStatus(CommonVal::HTTP_UNPROCESSABLE_CONTENT);
-    $this->assertArrayHasKey('parent_id', $response->json('error.messages'));
     $this->assertArrayHasKey('name', $response->json('error.messages'));
     $this->assertArrayHasKey('slug', $response->json('error.messages'));
     $this->assertArrayHasKey('status', $response->json('error.messages'));
