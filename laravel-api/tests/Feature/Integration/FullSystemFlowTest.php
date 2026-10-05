@@ -58,7 +58,6 @@ class FullSystemFlowTest extends TestCase
     $feature = FeatureMst::firstOrCreate([
       'name' => 'Integration Feature',
       'group_name' => 'System',
-      'description' => 'Auto generated for integration tests',
       'status' => 1,
       'is_delete' => 0
     ]);
