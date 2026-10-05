@@ -3,7 +3,7 @@
 import { useState, useCallback, useEffect } from 'react';
 import { useTranslations } from 'next-intl';
 import { apiClient } from '@/shared/api/client';
-import { notification } from '../utils';
+import { notification, getApiErrorMessage } from '../utils';
 import { PAGINATION } from '@/shared/config/constant';
 import type { UseJunctionTableReturn, PaginatedResponse } from '@/shared/types/api';
 
@@ -56,9 +56,7 @@ export function useJunctionTable<T = unknown>(
       setAssignedIds(assignedItemIds);
       setSelectedIds(assignedItemIds);
     } catch (error: unknown) {
-      const err = error as { response?: { data?: { message?: string } } };
-      const message = err.response?.data?.message || t('failedToLoadData');
-      notification.error(message);
+      notification.error(getApiErrorMessage(error) ?? t('failedToLoadData'));
     } finally {
       setLoading(false);
     }
@@ -116,9 +114,7 @@ export function useJunctionTable<T = unknown>(
       setAssignedIds(selectedIds);
       notification.success(t('relationshipsUpdatedSuccessfully'));
     } catch (error: unknown) {
-      const err = error as { response?: { data?: { message?: string } } };
-      const message = err.response?.data?.message || t('failedToUpdate');
-      notification.error(message);
+      notification.error(getApiErrorMessage(error) ?? t('failedToUpdate'));
       throw error;
     } finally {
       setSaving(false);
