@@ -42,7 +42,6 @@ class UserLifecycleIntegrationTest extends TestCase
     $feature = FeatureMst::firstOrCreate(['name' => 'System'], [
       'name' => 'System',
       'group_name' => 'System',
-      'description' => 'User Integration',
       'status' => 1,
       'is_delete' => 0
     ]);
@@ -75,7 +74,7 @@ class UserLifecycleIntegrationTest extends TestCase
     $this->ensureRootAccess($admin, 'POST', $this->loginUrl);
     $this->ensureRootAccess($admin, 'POST', 'api/admin/user-mgmt/store');
     $this->ensureRootAccess($admin, 'PUT', 'api/admin/user-mgmt/update/{id}');
-    $this->ensureRootAccess($admin, 'DELETE', 'api/admin/user-mgmt/delete/{id}');
+    $this->ensureRootAccess($admin, 'POST', 'api/admin/user-mgmt/delete');
 
     $response = $this->postJson($this->loginUrl, [
       'user_name' => $admin->user_name,
@@ -115,8 +114,8 @@ class UserLifecycleIntegrationTest extends TestCase
     $this->assertDatabaseHas('user_mgmt', ['id' => $userId, 'first_name' => 'UpdatedName']);
 
     // 4. Delete User
-    $deleteUrl = 'api/admin/user-mgmt/delete/' . $userId;
-    $deleteResp = $this->call('DELETE', $deleteUrl, ['ids' => [$userId]], $cookies);
+    $deleteUrl = 'api/admin/user-mgmt/delete';
+    $deleteResp = $this->call('POST', $deleteUrl, ['ids' => [$userId]], $cookies);
     $deleteResp->assertStatus(200);
 
     $this->assertDatabaseHas('user_mgmt', ['id' => $userId, 'is_delete' => 1]);

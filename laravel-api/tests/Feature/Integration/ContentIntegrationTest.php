@@ -42,7 +42,6 @@ class ContentIntegrationTest extends TestCase
     $feature = FeatureMst::firstOrCreate(['name' => 'System'], [
       'name' => 'System',
       'group_name' => 'System',
-      'description' => 'Content Integration',
       'status' => 1,
       'is_delete' => 0
     ]);
@@ -78,11 +77,11 @@ class ContentIntegrationTest extends TestCase
 
     $this->ensureRootAccess($admin, 'POST', 'api/admin/slider-mgmt/store');
     $this->ensureRootAccess($admin, 'PUT', 'api/admin/slider-mgmt/update/{id}');
-    $this->ensureRootAccess($admin, 'DELETE', 'api/admin/slider-mgmt/delete/{id}');
+    $this->ensureRootAccess($admin, 'POST', 'api/admin/slider-mgmt/delete');
 
     $this->ensureRootAccess($admin, 'POST', 'api/admin/social-mgmt/store');
     $this->ensureRootAccess($admin, 'GET', 'api/admin/social-mgmt/list');
-    $this->ensureRootAccess($admin, 'DELETE', 'api/admin/social-mgmt/delete/{id}');
+    $this->ensureRootAccess($admin, 'POST', 'api/admin/social-mgmt/delete');
 
     // Login (Populate Redis)
     $response = $this->postJson($this->loginUrl, [
@@ -144,13 +143,13 @@ class ContentIntegrationTest extends TestCase
     $this->assertDatabaseHas('slider_mgmt', ['id' => $sliderId, 'status' => 0]);
 
     // 7. Bulk Cleanup
-    $deleteSocialUrl = 'api/admin/social-mgmt/delete/' . $socialId;
-    $this->call('DELETE', $deleteSocialUrl, ['ids' => [$socialId]], $cookies)
+    $deleteSocialUrl = 'api/admin/social-mgmt/delete';
+    $this->call('POST', $deleteSocialUrl, ['ids' => [$socialId]], $cookies)
       ->assertStatus(200);
     $this->assertDatabaseHas('social_mgmt', ['id' => $socialId, 'is_delete' => 1]);
 
-    $deleteSliderUrl = 'api/admin/slider-mgmt/delete/' . $sliderId;
-    $this->call('DELETE', $deleteSliderUrl, ['ids' => [$sliderId]], $cookies)
+    $deleteSliderUrl = 'api/admin/slider-mgmt/delete';
+    $this->call('POST', $deleteSliderUrl, ['ids' => [$sliderId]], $cookies)
       ->assertStatus(200);
 
     // 8. Verify Hist

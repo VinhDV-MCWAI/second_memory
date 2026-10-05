@@ -42,7 +42,6 @@ class OrgStructureIntegrationTest extends TestCase
     $feature = FeatureMst::firstOrCreate(['name' => 'System'], [
       'name' => 'System',
       'group_name' => 'System',
-      'description' => 'Org Integration',
       'status' => 1,
       'is_delete' => 0
     ]);

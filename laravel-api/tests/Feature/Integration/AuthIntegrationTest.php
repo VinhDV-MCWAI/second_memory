@@ -42,7 +42,6 @@ class AuthIntegrationTest extends TestCase
     $feature = FeatureMst::firstOrCreate(['name' => 'System'], [
       'name' => 'System',
       'group_name' => 'System',
-      'description' => 'Integration Test Feature',
       'status' => 1,
       'is_delete' => 0
     ]);
