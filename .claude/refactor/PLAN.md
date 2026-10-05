@@ -36,7 +36,7 @@ Workflow: `/refactor-item <ID…>`. Only `approved` items may be started.
 | S5 | Harden exception handler: hide internal messages in prod, correct 401 vs 403, log all 5xx | Feature tests for 401/403/500 envelope | – | done (`refactor/p0-p1-foundation`: `ExceptionHandlerTest`) |
 | S6 | Replace hand-rolled JWT. **Option a:** `firebase/php-jwt` (minimal change). **Option b (recommended):** Sanctum SPA cookie auth, drop custom JWT + refresh endpoint, keep Redis permission cache | Auth tests green; FE login/refresh flow works | S4 | done as guide — user implements (`laravel-api/docs/auth/AUTH-GUIDE.md`) |
 | S8 | `phpunit.xml` env `force="true"` + idempotent `testing` DB creation (tests were wiping the dev DB) | Tests run against `testing` DB | – | done (`refactor/p0-p1-foundation`) |
-| T1 | Repair test suite: tests drift from schema (`feature_mst.description`, `social_mgmt.name`, status expectations) → 450 failing on `developer` | Feature suite green | – | proposed |
+| T1 | Repair test suite: tests drift from schema (`feature_mst.description`, `social_mgmt.name`, status expectations) → 450 failing on `developer` | Feature suite green | – | done (`refactor/p0-p1-foundation`: 593 pass; 4 auth refresh tests left for the manual auth work, see AUTH-GUIDE A13) |
 | S7 | FE never shows server error messages (`useCrud`/`useJunctionTable` read `data.message`, backend sends `error.messages`) → use `error-handler.ts` everywhere | Unit test for error extraction; manual check | – | done (`refactor/p0-p1-foundation`: `getApiErrorMessage` + Vitest spec) |
 
 ## P1 — Foundation & tooling (makes later refactors safe)
