@@ -21,7 +21,7 @@ class TokenMstController extends Controller
      */
     public function list(ListTokenMstRequest $request): JsonResource
     {
-        return $this->tokenMst->list($request->all());
+        return $this->tokenMst->list($request->validated());
     }
 
     /**
@@ -29,7 +29,7 @@ class TokenMstController extends Controller
      */
     public function store(StoreTokenMstRequest $request): int
     {
-        return $this->tokenMst->store($request->all());
+        return $this->tokenMst->store($request->validated());
     }
 
     /**
@@ -37,7 +37,7 @@ class TokenMstController extends Controller
      */
     public function update(UpdateTokenMstRequest $request, string $id): int
     {
-        $payload = $request->all();
+        $payload = $request->validated();
         $payload['id'] = $id;
 
         return $this->tokenMst->update($payload);
@@ -48,6 +48,6 @@ class TokenMstController extends Controller
      */
     public function delete(DeleteTokenMstRequest $request): void
     {
-        $this->tokenMst->delete($request->all());
+        $this->tokenMst->delete($request->validated());
     }
 }

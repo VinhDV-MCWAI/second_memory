@@ -21,7 +21,7 @@ class FeatureMstHistController extends Controller
      */
     public function list(ListFeatureMstHistRequest $request): JsonResource
     {
-        return $this->featureMstHist->list($request->all());
+        return $this->featureMstHist->list($request->validated());
     }
 
     /**
@@ -29,7 +29,7 @@ class FeatureMstHistController extends Controller
      */
     public function store(StoreFeatureMstHistRequest $request): int
     {
-        return $this->featureMstHist->store($request->all());
+        return $this->featureMstHist->store($request->validated());
     }
 
     /**
@@ -37,7 +37,7 @@ class FeatureMstHistController extends Controller
      */
     public function update(UpdateFeatureMstHistRequest $request, string $id): int
     {
-        $payload = $request->all();
+        $payload = $request->validated();
         $payload['id'] = $id;
 
         return $this->featureMstHist->update($payload);
@@ -48,6 +48,6 @@ class FeatureMstHistController extends Controller
      */
     public function delete(DeleteFeatureMstHistRequest $request): void
     {
-        $this->featureMstHist->delete($request->all());
+        $this->featureMstHist->delete($request->validated());
     }
 }

@@ -21,7 +21,7 @@ class DepartmentMstHistController extends Controller
      */
     public function list(ListDepartmentMstHistRequest $request): JsonResource
     {
-        return $this->departmentMstHist->list($request->all());
+        return $this->departmentMstHist->list($request->validated());
     }
 
     /**
@@ -29,7 +29,7 @@ class DepartmentMstHistController extends Controller
      */
     public function store(StoreDepartmentMstHistRequest $request): int
     {
-        return $this->departmentMstHist->store($request->all());
+        return $this->departmentMstHist->store($request->validated());
     }
 
     /**
@@ -37,7 +37,7 @@ class DepartmentMstHistController extends Controller
      */
     public function update(UpdateDepartmentMstHistRequest $request, string $id): int
     {
-        $payload = $request->all();
+        $payload = $request->validated();
         $payload['id'] = $id;
 
         return $this->departmentMstHist->update($payload);
@@ -48,6 +48,6 @@ class DepartmentMstHistController extends Controller
      */
     public function delete(DeleteDepartmentMstHistRequest $request): void
     {
-        $this->departmentMstHist->delete($request->all());
+        $this->departmentMstHist->delete($request->validated());
     }
 }

@@ -19,7 +19,7 @@ class AdminRoleMstController extends Controller
      */
     public function list(ListAdminRoleMstRequest $request): JsonResource
     {
-        return $this->adminRoleMst->list($request->all());
+        return $this->adminRoleMst->list($request->validated());
     }
 
     /**
@@ -27,6 +27,6 @@ class AdminRoleMstController extends Controller
      */
     public function update(UpdateAdminRoleMstRequest $request): bool
     {
-        return $this->adminRoleMst->update($request->all());
+        return $this->adminRoleMst->update($request->validated());
     }
 }

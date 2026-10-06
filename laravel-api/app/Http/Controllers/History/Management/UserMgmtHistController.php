@@ -21,7 +21,7 @@ class UserMgmtHistController extends Controller
      */
     public function list(ListUserMgmtHistRequest $request): JsonResource
     {
-        return $this->userMgmtHist->list($request->all());
+        return $this->userMgmtHist->list($request->validated());
     }
 
     /**
@@ -29,7 +29,7 @@ class UserMgmtHistController extends Controller
      */
     public function store(StoreUserMgmtHistRequest $request): int
     {
-        return $this->userMgmtHist->store($request->all());
+        return $this->userMgmtHist->store($request->validated());
     }
 
     /**
@@ -37,7 +37,7 @@ class UserMgmtHistController extends Controller
      */
     public function update(UpdateUserMgmtHistRequest $request, string $id): int
     {
-        $payload = $request->all();
+        $payload = $request->validated();
         $payload['id'] = $id;
 
         return $this->userMgmtHist->update($payload);
@@ -48,6 +48,6 @@ class UserMgmtHistController extends Controller
      */
     public function delete(DeleteUserMgmtHistRequest $request): void
     {
-        $this->userMgmtHist->delete($request->all());
+        $this->userMgmtHist->delete($request->validated());
     }
 }

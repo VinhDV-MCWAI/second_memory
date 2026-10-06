@@ -21,7 +21,7 @@ class BannerMgmtHistController extends Controller
      */
     public function list(ListBannerMgmtHistRequest $request): JsonResource
     {
-        return $this->bannerMgmtHist->list($request->all());
+        return $this->bannerMgmtHist->list($request->validated());
     }
 
     /**
@@ -29,7 +29,7 @@ class BannerMgmtHistController extends Controller
      */
     public function store(StoreBannerMgmtHistRequest $request): int
     {
-        return $this->bannerMgmtHist->store($request->all());
+        return $this->bannerMgmtHist->store($request->validated());
     }
 
     /**
@@ -37,7 +37,7 @@ class BannerMgmtHistController extends Controller
      */
     public function update(UpdateBannerMgmtHistRequest $request, string $id): int
     {
-        $payload = $request->all();
+        $payload = $request->validated();
         $payload['id'] = $id;
 
         return $this->bannerMgmtHist->update($payload);
@@ -48,6 +48,6 @@ class BannerMgmtHistController extends Controller
      */
     public function delete(DeleteBannerMgmtHistRequest $request): void
     {
-        $this->bannerMgmtHist->delete($request->all());
+        $this->bannerMgmtHist->delete($request->validated());
     }
 }

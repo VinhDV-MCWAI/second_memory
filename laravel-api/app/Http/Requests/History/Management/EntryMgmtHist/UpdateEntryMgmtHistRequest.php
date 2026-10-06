@@ -29,6 +29,7 @@ class UpdateEntryMgmtHistRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'layout_structure' => ['nullable'],
             'id' => ['required', 'integer', 'min:1', Rule::exists(EntryMgmtHist::class, 'id')],
             'entry_mgmt_id' => ['required', 'integer', 'min:'.CommonVal::MIN_INTEGER, 'max:'.CommonVal::MAX_INTEGER, Rule::exists(EntryMgmt::class, 'id')],
             'parent_id' => ['integer', 'min:'.CommonVal::MIN_INTEGER, 'max:'.CommonVal::MAX_INTEGER],

@@ -21,7 +21,7 @@ class SettingLinkMgmtController extends Controller
      */
     public function list(ListSettingLinkMgmtRequest $request): JsonResource
     {
-        return $this->settingLinkMgmt->list($request->all());
+        return $this->settingLinkMgmt->list($request->validated());
     }
 
     /**
@@ -29,7 +29,7 @@ class SettingLinkMgmtController extends Controller
      */
     public function store(StoreSettingLinkMgmtRequest $request): int
     {
-        return $this->settingLinkMgmt->store($request->all());
+        return $this->settingLinkMgmt->store($request->validated());
     }
 
     /**
@@ -37,7 +37,7 @@ class SettingLinkMgmtController extends Controller
      */
     public function update(UpdateSettingLinkMgmtRequest $request, string $id): int
     {
-        $payload = $request->all();
+        $payload = $request->validated();
         $payload['id'] = $id;
 
         return $this->settingLinkMgmt->update($payload);
@@ -48,6 +48,6 @@ class SettingLinkMgmtController extends Controller
      */
     public function delete(DeleteSettingLinkMgmtRequest $request): void
     {
-        $this->settingLinkMgmt->delete($request->all());
+        $this->settingLinkMgmt->delete($request->validated());
     }
 }

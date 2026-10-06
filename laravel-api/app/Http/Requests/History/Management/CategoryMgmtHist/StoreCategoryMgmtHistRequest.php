@@ -28,6 +28,7 @@ class StoreCategoryMgmtHistRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'layout_structure' => ['nullable'],
             'category_mgmt_id' => ['required', 'integer', 'min:'.CommonVal::MIN_INTEGER, 'max:'.CommonVal::MAX_INTEGER, Rule::exists(CategoryMgmt::class, 'id')],
             'parent_id' => ['integer', 'min:'.CommonVal::MIN_INTEGER, 'max:'.CommonVal::MAX_INTEGER],
             'name' => ['string', 'min:'.CommonVal::MIN_VARCHAR, 'max:50'],

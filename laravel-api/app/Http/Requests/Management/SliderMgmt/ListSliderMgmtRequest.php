@@ -5,26 +5,16 @@ namespace App\Http\Requests\Management\SliderMgmt;
 use App\Constants\CommonVal;
 use App\Enums\IsDelete;
 use App\Enums\StatusEnum;
+use App\Http\Requests\ListRequest;
 use Illuminate\Contracts\Validation\ValidationRule;
-use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
-class ListSliderMgmtRequest extends FormRequest
+class ListSliderMgmtRequest extends ListRequest
 {
     /**
-     * Determine if the user is authorized to make this request.
-     */
-    public function authorize(): bool
-    {
-        return true;
-    }
-
-    /**
-     * Get the validation rules that apply to the request.
-     *
      * @return array<string, ValidationRule|array<mixed>|string>
      */
-    public function rules(): array
+    protected function filters(): array
     {
         return [
             'title' => ['nullable', 'string', 'min:'.CommonVal::MIN_VARCHAR, 'max:50'],

@@ -21,7 +21,7 @@ class RoleMstHistController extends Controller
      */
     public function list(ListRoleMstHistRequest $request): JsonResource
     {
-        return $this->roleMstHist->list($request->all());
+        return $this->roleMstHist->list($request->validated());
     }
 
     /**
@@ -29,7 +29,7 @@ class RoleMstHistController extends Controller
      */
     public function store(StoreRoleMstHistRequest $request): int
     {
-        return $this->roleMstHist->store($request->all());
+        return $this->roleMstHist->store($request->validated());
     }
 
     /**
@@ -37,7 +37,7 @@ class RoleMstHistController extends Controller
      */
     public function update(UpdateRoleMstHistRequest $request, string $id): int
     {
-        $payload = $request->all();
+        $payload = $request->validated();
         $payload['id'] = $id;
 
         return $this->roleMstHist->update($payload);
@@ -48,6 +48,6 @@ class RoleMstHistController extends Controller
      */
     public function delete(DeleteRoleMstHistRequest $request): void
     {
-        $this->roleMstHist->delete($request->all());
+        $this->roleMstHist->delete($request->validated());
     }
 }

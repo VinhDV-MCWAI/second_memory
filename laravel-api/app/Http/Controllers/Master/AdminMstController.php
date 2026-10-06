@@ -21,7 +21,7 @@ class AdminMstController extends Controller
      */
     public function list(ListAdminMstRequest $request): JsonResource
     {
-        return $this->adminMst->list($request->all());
+        return $this->adminMst->list($request->validated());
     }
 
     /**
@@ -29,7 +29,7 @@ class AdminMstController extends Controller
      */
     public function store(StoreAdminMstRequest $request): int
     {
-        return $this->adminMst->store($request->all());
+        return $this->adminMst->store($request->validated());
     }
 
     /**
@@ -37,7 +37,7 @@ class AdminMstController extends Controller
      */
     public function update(UpdateAdminMstRequest $request, string $id): int
     {
-        $payload = $request->all();
+        $payload = $request->validated();
         $payload['id'] = $id;
 
         return $this->adminMst->update($payload);
@@ -48,6 +48,6 @@ class AdminMstController extends Controller
      */
     public function delete(DeleteAdminMstRequest $request): void
     {
-        $this->adminMst->delete($request->all());
+        $this->adminMst->delete($request->validated());
     }
 }

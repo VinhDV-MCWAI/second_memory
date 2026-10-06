@@ -3,27 +3,18 @@
 namespace App\Http\Requests\History\Management\SettingLinkMgmtHist;
 
 use App\Constants\CommonVal;
+use App\Http\Requests\ListRequest;
 use Illuminate\Contracts\Validation\ValidationRule;
-use Illuminate\Foundation\Http\FormRequest;
 
-class ListSettingLinkMgmtHistRequest extends FormRequest
+class ListSettingLinkMgmtHistRequest extends ListRequest
 {
     /**
-     * Determine if the user is authorized to make this request.
-     */
-    public function authorize(): bool
-    {
-        return true;
-    }
-
-    /**
-     * Get the validation rules that apply to the request.
-     *
      * @return array<string, ValidationRule|array<mixed>|string>
      */
-    public function rules(): array
+    protected function filters(): array
     {
         return [
+            'setting_link_mgmt_id' => ['nullable', 'integer'],
             'setting_link_id' => ['nullable', 'integer', 'min:'.CommonVal::MIN_INTEGER, 'max:'.CommonVal::MAX_INTEGER],
             'key' => ['nullable', 'string', 'min:'.CommonVal::MIN_VARCHAR, 'max:30'],
             'value' => ['nullable', 'string', 'min:'.CommonVal::MIN_VARCHAR, 'max:100'],

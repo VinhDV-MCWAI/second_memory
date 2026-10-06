@@ -21,7 +21,7 @@ class BannerMgmtController extends Controller
      */
     public function list(ListBannerMgmtRequest $request): JsonResource
     {
-        return $this->bannerMgmt->list($request->all());
+        return $this->bannerMgmt->list($request->validated());
     }
 
     /**
@@ -29,7 +29,7 @@ class BannerMgmtController extends Controller
      */
     public function store(StoreBannerMgmtRequest $request): int
     {
-        return $this->bannerMgmt->store($request->all());
+        return $this->bannerMgmt->store($request->validated());
     }
 
     /**
@@ -37,7 +37,7 @@ class BannerMgmtController extends Controller
      */
     public function update(UpdateBannerMgmtRequest $request, string $id): int
     {
-        $payload = $request->all();
+        $payload = $request->validated();
         $payload['id'] = $id;
 
         return $this->bannerMgmt->update($payload);
@@ -48,6 +48,6 @@ class BannerMgmtController extends Controller
      */
     public function delete(DeleteBannerMgmtRequest $request): void
     {
-        $this->bannerMgmt->delete($request->all());
+        $this->bannerMgmt->delete($request->validated());
     }
 }

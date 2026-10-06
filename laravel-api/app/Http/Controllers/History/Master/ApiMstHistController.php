@@ -21,7 +21,7 @@ class ApiMstHistController extends Controller
      */
     public function list(ListApiMstHistRequest $request): JsonResource
     {
-        return $this->apiMstHist->list($request->all());
+        return $this->apiMstHist->list($request->validated());
     }
 
     /**
@@ -29,7 +29,7 @@ class ApiMstHistController extends Controller
      */
     public function store(StoreApiMstHistRequest $request): int
     {
-        return $this->apiMstHist->store($request->all());
+        return $this->apiMstHist->store($request->validated());
     }
 
     /**
@@ -37,7 +37,7 @@ class ApiMstHistController extends Controller
      */
     public function update(UpdateApiMstHistRequest $request, string $id): int
     {
-        $payload = $request->all();
+        $payload = $request->validated();
         $payload['id'] = $id;
 
         return $this->apiMstHist->update($payload);
@@ -48,6 +48,6 @@ class ApiMstHistController extends Controller
      */
     public function delete(DeleteApiMstHistRequest $request): void
     {
-        $this->apiMstHist->delete($request->all());
+        $this->apiMstHist->delete($request->validated());
     }
 }

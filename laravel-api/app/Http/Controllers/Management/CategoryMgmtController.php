@@ -21,7 +21,7 @@ class CategoryMgmtController extends Controller
      */
     public function list(ListCategoryMgmtRequest $request): JsonResource
     {
-        return $this->categoryMgmt->list($request->all());
+        return $this->categoryMgmt->list($request->validated());
     }
 
     /**
@@ -29,7 +29,7 @@ class CategoryMgmtController extends Controller
      */
     public function store(StoreCategoryMgmtRequest $request): int
     {
-        return $this->categoryMgmt->store($request->all());
+        return $this->categoryMgmt->store($request->validated());
     }
 
     /**
@@ -37,7 +37,7 @@ class CategoryMgmtController extends Controller
      */
     public function update(UpdateCategoryMgmtRequest $request, string $id): int
     {
-        $payload = $request->all();
+        $payload = $request->validated();
         $payload['id'] = $id;
 
         return $this->categoryMgmt->update($payload);
@@ -48,6 +48,6 @@ class CategoryMgmtController extends Controller
      */
     public function delete(DeleteCategoryMgmtRequest $request): void
     {
-        $this->categoryMgmt->delete($request->all());
+        $this->categoryMgmt->delete($request->validated());
     }
 }

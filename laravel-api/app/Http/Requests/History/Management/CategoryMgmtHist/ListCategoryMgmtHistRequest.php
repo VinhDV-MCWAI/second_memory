@@ -5,26 +5,16 @@ namespace App\Http\Requests\History\Management\CategoryMgmtHist;
 use App\Constants\CommonVal;
 use App\Enums\IsActive;
 use App\Enums\StatusEnum;
+use App\Http\Requests\ListRequest;
 use Illuminate\Contracts\Validation\ValidationRule;
-use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
-class ListCategoryMgmtHistRequest extends FormRequest
+class ListCategoryMgmtHistRequest extends ListRequest
 {
     /**
-     * Determine if the user is authorized to make this request.
-     */
-    public function authorize(): bool
-    {
-        return true;
-    }
-
-    /**
-     * Get the validation rules that apply to the request.
-     *
      * @return array<string, ValidationRule|array<mixed>|string>
      */
-    public function rules(): array
+    protected function filters(): array
     {
         return [
             'category_mgmt_id' => ['nullable', 'integer', 'min:'.CommonVal::MIN_INTEGER, 'max:'.CommonVal::MAX_INTEGER],

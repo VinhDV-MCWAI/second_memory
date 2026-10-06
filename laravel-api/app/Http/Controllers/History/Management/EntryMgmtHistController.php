@@ -21,7 +21,7 @@ class EntryMgmtHistController extends Controller
      */
     public function list(ListEntryMgmtHistRequest $request): JsonResource
     {
-        return $this->entryMgmtHist->list($request->all());
+        return $this->entryMgmtHist->list($request->validated());
     }
 
     /**
@@ -29,7 +29,7 @@ class EntryMgmtHistController extends Controller
      */
     public function store(StoreEntryMgmtHistRequest $request): int
     {
-        return $this->entryMgmtHist->store($request->all());
+        return $this->entryMgmtHist->store($request->validated());
     }
 
     /**
@@ -37,7 +37,7 @@ class EntryMgmtHistController extends Controller
      */
     public function update(UpdateEntryMgmtHistRequest $request, string $id): int
     {
-        $payload = $request->all();
+        $payload = $request->validated();
         $payload['id'] = $id;
 
         return $this->entryMgmtHist->update($payload);
@@ -48,6 +48,6 @@ class EntryMgmtHistController extends Controller
      */
     public function delete(DeleteEntryMgmtHistRequest $request): void
     {
-        $this->entryMgmtHist->delete($request->all());
+        $this->entryMgmtHist->delete($request->validated());
     }
 }

@@ -4,26 +4,16 @@ namespace App\Http\Requests\History\Management\SliderMgmtHist;
 
 use App\Constants\CommonVal;
 use App\Enums\StatusEnum;
+use App\Http\Requests\ListRequest;
 use Illuminate\Contracts\Validation\ValidationRule;
-use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
-class ListSliderMgmtHistRequest extends FormRequest
+class ListSliderMgmtHistRequest extends ListRequest
 {
     /**
-     * Determine if the user is authorized to make this request.
-     */
-    public function authorize(): bool
-    {
-        return true;
-    }
-
-    /**
-     * Get the validation rules that apply to the request.
-     *
      * @return array<string, ValidationRule|array<mixed>|string>
      */
-    public function rules(): array
+    protected function filters(): array
     {
         return [
             'slider_mgmt_id' => ['nullable', 'integer', 'min:'.CommonVal::MIN_INTEGER, 'max:'.CommonVal::MAX_INTEGER],

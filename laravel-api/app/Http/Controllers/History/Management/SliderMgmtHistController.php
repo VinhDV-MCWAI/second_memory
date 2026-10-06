@@ -21,7 +21,7 @@ class SliderMgmtHistController extends Controller
      */
     public function list(ListSliderMgmtHistRequest $request): JsonResource
     {
-        return $this->sliderMgmtHist->list($request->all());
+        return $this->sliderMgmtHist->list($request->validated());
     }
 
     /**
@@ -29,7 +29,7 @@ class SliderMgmtHistController extends Controller
      */
     public function store(StoreSliderMgmtHistRequest $request): int
     {
-        return $this->sliderMgmtHist->store($request->all());
+        return $this->sliderMgmtHist->store($request->validated());
     }
 
     /**
@@ -37,7 +37,7 @@ class SliderMgmtHistController extends Controller
      */
     public function update(UpdateSliderMgmtHistRequest $request, string $id): int
     {
-        $payload = $request->all();
+        $payload = $request->validated();
         $payload['id'] = $id;
 
         return $this->sliderMgmtHist->update($payload);
@@ -48,6 +48,6 @@ class SliderMgmtHistController extends Controller
      */
     public function delete(DeleteSliderMgmtHistRequest $request): void
     {
-        $this->sliderMgmtHist->delete($request->all());
+        $this->sliderMgmtHist->delete($request->validated());
     }
 }

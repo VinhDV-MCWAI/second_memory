@@ -21,7 +21,7 @@ class SocialMgmtController extends Controller
      */
     public function list(ListSocialMgmtRequest $request): JsonResource
     {
-        return $this->socialMgmt->list($request->all());
+        return $this->socialMgmt->list($request->validated());
     }
 
     /**
@@ -29,7 +29,7 @@ class SocialMgmtController extends Controller
      */
     public function store(StoreSocialMgmtRequest $request): int
     {
-        return $this->socialMgmt->store($request->all());
+        return $this->socialMgmt->store($request->validated());
     }
 
     /**
@@ -37,7 +37,7 @@ class SocialMgmtController extends Controller
      */
     public function update(UpdateSocialMgmtRequest $request, string $id): int
     {
-        $payload = $request->all();
+        $payload = $request->validated();
         $payload['id'] = $id;
 
         return $this->socialMgmt->update($payload);
@@ -48,6 +48,6 @@ class SocialMgmtController extends Controller
      */
     public function delete(DeleteSocialMgmtRequest $request): void
     {
-        $this->socialMgmt->delete($request->all());
+        $this->socialMgmt->delete($request->validated());
     }
 }

@@ -21,7 +21,7 @@ class EntryMgmtController extends Controller
      */
     public function list(ListEntryMgmtRequest $request): JsonResource
     {
-        return $this->entryMgmt->list($request->all());
+        return $this->entryMgmt->list($request->validated());
     }
 
     /**
@@ -29,7 +29,7 @@ class EntryMgmtController extends Controller
      */
     public function store(StoreEntryMgmtRequest $request): int
     {
-        return $this->entryMgmt->store($request->all());
+        return $this->entryMgmt->store($request->validated());
     }
 
     /**
@@ -37,7 +37,7 @@ class EntryMgmtController extends Controller
      */
     public function update(UpdateEntryMgmtRequest $request, string $id): int
     {
-        $payload = $request->all();
+        $payload = $request->validated();
         $payload['id'] = $id;
 
         return $this->entryMgmt->update($payload);
@@ -48,6 +48,6 @@ class EntryMgmtController extends Controller
      */
     public function delete(DeleteEntryMgmtRequest $request): void
     {
-        $this->entryMgmt->delete($request->all());
+        $this->entryMgmt->delete($request->validated());
     }
 }

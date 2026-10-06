@@ -21,7 +21,7 @@ class PolicyDepartmentMstController extends Controller
      */
     public function list(ListPolicyDepartmentMstRequest $request): JsonResource
     {
-        return $this->policyDepartmentMst->list($request->all());
+        return $this->policyDepartmentMst->list($request->validated());
     }
 
     /**
@@ -29,7 +29,7 @@ class PolicyDepartmentMstController extends Controller
      */
     public function store(StorePolicyDepartmentMstRequest $request): int
     {
-        return $this->policyDepartmentMst->store($request->all());
+        return $this->policyDepartmentMst->store($request->validated());
     }
 
     /**
@@ -37,7 +37,7 @@ class PolicyDepartmentMstController extends Controller
      */
     public function update(UpdatePolicyDepartmentMstRequest $request, string $id): int
     {
-        $payload = $request->all();
+        $payload = $request->validated();
         $payload['id'] = $id;
 
         return $this->policyDepartmentMst->update($payload);
@@ -48,6 +48,6 @@ class PolicyDepartmentMstController extends Controller
      */
     public function delete(DeletePolicyDepartmentMstRequest $request): void
     {
-        $this->policyDepartmentMst->delete($request->all());
+        $this->policyDepartmentMst->delete($request->validated());
     }
 }

@@ -7,28 +7,19 @@ use App\Enums\Gender;
 use App\Enums\IsActive;
 use App\Enums\IsDelete;
 use App\Enums\StatusEnum;
+use App\Http\Requests\ListRequest;
 use Illuminate\Contracts\Validation\ValidationRule;
-use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
-class ListAdminMstRequest extends FormRequest
+class ListAdminMstRequest extends ListRequest
 {
     /**
-     * Determine if the user is authorized to make this request.
-     */
-    public function authorize(): bool
-    {
-        return true;
-    }
-
-    /**
-     * Get the validation rules that apply to the request.
-     *
      * @return array<string, ValidationRule|array<mixed>|string>
      */
-    public function rules(): array
+    protected function filters(): array
     {
         return [
+            'email' => ['nullable', 'string', 'max:'.CommonVal::MAX_VARCHAR],
             'user_name' => ['nullable', 'string', 'min:'.CommonVal::MIN_VARCHAR, 'max:50'],
             'first_name' => ['nullable', 'string', 'min:'.CommonVal::MIN_VARCHAR, 'max:20'],
             'last_name' => ['nullable', 'string', 'min:'.CommonVal::MIN_VARCHAR, 'max:20'],

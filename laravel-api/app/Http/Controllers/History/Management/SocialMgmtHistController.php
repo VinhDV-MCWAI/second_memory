@@ -21,7 +21,7 @@ class SocialMgmtHistController extends Controller
      */
     public function list(ListSocialMgmtHistRequest $request): JsonResource
     {
-        return $this->socialMgmtHist->list($request->all());
+        return $this->socialMgmtHist->list($request->validated());
     }
 
     /**
@@ -29,7 +29,7 @@ class SocialMgmtHistController extends Controller
      */
     public function store(StoreSocialMgmtHistRequest $request): int
     {
-        return $this->socialMgmtHist->store($request->all());
+        return $this->socialMgmtHist->store($request->validated());
     }
 
     /**
@@ -37,7 +37,7 @@ class SocialMgmtHistController extends Controller
      */
     public function update(UpdateSocialMgmtHistRequest $request, string $id): int
     {
-        $payload = $request->all();
+        $payload = $request->validated();
         $payload['id'] = $id;
 
         return $this->socialMgmtHist->update($payload);
@@ -48,6 +48,6 @@ class SocialMgmtHistController extends Controller
      */
     public function delete(DeleteSocialMgmtHistRequest $request): void
     {
-        $this->socialMgmtHist->delete($request->all());
+        $this->socialMgmtHist->delete($request->validated());
     }
 }

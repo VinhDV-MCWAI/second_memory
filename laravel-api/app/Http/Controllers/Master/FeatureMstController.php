@@ -21,7 +21,7 @@ class FeatureMstController extends Controller
      */
     public function list(ListFeatureMstRequest $request): JsonResource
     {
-        return $this->featureMst->list($request->all());
+        return $this->featureMst->list($request->validated());
     }
 
     /**
@@ -29,7 +29,7 @@ class FeatureMstController extends Controller
      */
     public function store(StoreFeatureMstRequest $request): int
     {
-        return $this->featureMst->store($request->all());
+        return $this->featureMst->store($request->validated());
     }
 
     /**
@@ -37,7 +37,7 @@ class FeatureMstController extends Controller
      */
     public function update(UpdateFeatureMstRequest $request, string $id): int
     {
-        $payload = $request->all();
+        $payload = $request->validated();
         $payload['id'] = $id;
 
         return $this->featureMst->update($payload);
@@ -48,6 +48,6 @@ class FeatureMstController extends Controller
      */
     public function delete(DeleteFeatureMstRequest $request): void
     {
-        $this->featureMst->delete($request->all());
+        $this->featureMst->delete($request->validated());
     }
 }

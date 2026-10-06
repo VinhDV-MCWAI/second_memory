@@ -21,8 +21,8 @@ class UserMgmtController extends Controller
      */
     public function list(ListUserMgmtRequest $request): JsonResource
     {
-        // dump($request->all());
-        return $this->userMgmt->list($request->all());
+        // dump($request->validated());
+        return $this->userMgmt->list($request->validated());
     }
 
     /**
@@ -30,7 +30,7 @@ class UserMgmtController extends Controller
      */
     public function store(StoreUserMgmtRequest $request): int
     {
-        return $this->userMgmt->store($request->all());
+        return $this->userMgmt->store($request->validated());
     }
 
     /**
@@ -38,7 +38,7 @@ class UserMgmtController extends Controller
      */
     public function update(UpdateUserMgmtRequest $request, string $id): int
     {
-        $payload = $request->all();
+        $payload = $request->validated();
         $payload['id'] = $id;
 
         return $this->userMgmt->update($payload);
@@ -49,6 +49,6 @@ class UserMgmtController extends Controller
      */
     public function delete(DeleteUserMgmtRequest $request): void
     {
-        $this->userMgmt->delete($request->all());
+        $this->userMgmt->delete($request->validated());
     }
 }

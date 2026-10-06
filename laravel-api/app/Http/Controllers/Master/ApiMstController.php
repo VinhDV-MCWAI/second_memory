@@ -21,7 +21,7 @@ class ApiMstController extends Controller
      */
     public function list(ListApiMstRequest $request): JsonResource
     {
-        return $this->apiMst->list($request->all());
+        return $this->apiMst->list($request->validated());
     }
 
     /**
@@ -29,7 +29,7 @@ class ApiMstController extends Controller
      */
     public function store(StoreApiMstRequest $request): int
     {
-        return $this->apiMst->store($request->all());
+        return $this->apiMst->store($request->validated());
     }
 
     /**
@@ -37,7 +37,7 @@ class ApiMstController extends Controller
      */
     public function update(UpdateApiMstRequest $request, string $id): int
     {
-        $payload = $request->all();
+        $payload = $request->validated();
         $payload['id'] = $id;
 
         return $this->apiMst->update($payload);
@@ -48,6 +48,6 @@ class ApiMstController extends Controller
      */
     public function delete(DeleteApiMstRequest $request): void
     {
-        $this->apiMst->delete($request->all());
+        $this->apiMst->delete($request->validated());
     }
 }

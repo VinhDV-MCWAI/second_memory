@@ -19,7 +19,7 @@ class DepartmentManagementMstController extends Controller
      */
     public function list(ListDepartmentManagementMstRequest $request): JsonResource
     {
-        return $this->departmentManagementMst->list($request->all());
+        return $this->departmentManagementMst->list($request->validated());
     }
 
     /**
@@ -27,6 +27,6 @@ class DepartmentManagementMstController extends Controller
      */
     public function update(UpdateDepartmentManagementMstRequest $request): bool
     {
-        return $this->departmentManagementMst->update($request->all());
+        return $this->departmentManagementMst->update($request->validated());
     }
 }

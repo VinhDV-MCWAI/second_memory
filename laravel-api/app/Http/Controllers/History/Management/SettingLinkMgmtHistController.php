@@ -21,7 +21,7 @@ class SettingLinkMgmtHistController extends Controller
      */
     public function list(ListSettingLinkMgmtHistRequest $request): JsonResource
     {
-        return $this->settingLinkMgmtHist->list($request->all());
+        return $this->settingLinkMgmtHist->list($request->validated());
     }
 
     /**
@@ -29,7 +29,7 @@ class SettingLinkMgmtHistController extends Controller
      */
     public function store(StoreSettingLinkMgmtHistRequest $request): int
     {
-        return $this->settingLinkMgmtHist->store($request->all());
+        return $this->settingLinkMgmtHist->store($request->validated());
     }
 
     /**
@@ -37,7 +37,7 @@ class SettingLinkMgmtHistController extends Controller
      */
     public function update(UpdateSettingLinkMgmtHistRequest $request, string $id): int
     {
-        $payload = $request->all();
+        $payload = $request->validated();
         $payload['id'] = $id;
 
         return $this->settingLinkMgmtHist->update($payload);
@@ -48,6 +48,6 @@ class SettingLinkMgmtHistController extends Controller
      */
     public function delete(DeleteSettingLinkMgmtHistRequest $request): void
     {
-        $this->settingLinkMgmtHist->delete($request->all());
+        $this->settingLinkMgmtHist->delete($request->validated());
     }
 }

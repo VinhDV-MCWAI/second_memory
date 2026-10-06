@@ -20,7 +20,7 @@ class DocsController extends Controller
      */
     public function getCategories(GetCategoriesRequest $request): JsonResource
     {
-        return $this->docsService->getCategories($request->all());
+        return $this->docsService->getCategories($request->validated());
     }
 
     /**
@@ -28,7 +28,7 @@ class DocsController extends Controller
      */
     public function getEntriesByCategory(GetEntriesByCategoryRequest $request, string $slug): JsonResource
     {
-        return $this->docsService->getEntriesByCategory($slug, $request->all());
+        return $this->docsService->getEntriesByCategory($slug, $request->validated());
     }
 
     /**
@@ -36,7 +36,7 @@ class DocsController extends Controller
      */
     public function getEntryDetail(GetEntryDetailRequest $request, string $slug): JsonResource
     {
-        return $this->docsService->getEntryDetail($slug, $request->all());
+        return $this->docsService->getEntryDetail($slug, $request->validated());
     }
 
     /**
@@ -44,6 +44,6 @@ class DocsController extends Controller
      */
     public function search(SearchDocsRequest $request): JsonResource
     {
-        return $this->docsService->search($request->all());
+        return $this->docsService->search($request->validated());
     }
 }

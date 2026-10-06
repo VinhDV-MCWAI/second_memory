@@ -19,7 +19,7 @@ class ApiRoleMstController extends Controller
      */
     public function list(ListApiRoleMstRequest $request): JsonResource
     {
-        return $this->apiRoleMst->list($request->all());
+        return $this->apiRoleMst->list($request->validated());
     }
 
     /**
@@ -27,6 +27,6 @@ class ApiRoleMstController extends Controller
      */
     public function update(UpdateApiRoleMstRequest $request): bool
     {
-        return $this->apiRoleMst->update($request->all());
+        return $this->apiRoleMst->update($request->validated());
     }
 }

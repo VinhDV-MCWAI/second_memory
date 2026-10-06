@@ -21,7 +21,7 @@ class CategoryMgmtHistController extends Controller
      */
     public function list(ListCategoryMgmtHistRequest $request): JsonResource
     {
-        return $this->categoryMgmtHist->list($request->all());
+        return $this->categoryMgmtHist->list($request->validated());
     }
 
     /**
@@ -29,7 +29,7 @@ class CategoryMgmtHistController extends Controller
      */
     public function store(StoreCategoryMgmtHistRequest $request): int
     {
-        return $this->categoryMgmtHist->store($request->all());
+        return $this->categoryMgmtHist->store($request->validated());
     }
 
     /**
@@ -37,7 +37,7 @@ class CategoryMgmtHistController extends Controller
      */
     public function update(UpdateCategoryMgmtHistRequest $request, string $id): int
     {
-        $payload = $request->all();
+        $payload = $request->validated();
         $payload['id'] = $id;
 
         return $this->categoryMgmtHist->update($payload);
@@ -48,6 +48,6 @@ class CategoryMgmtHistController extends Controller
      */
     public function delete(DeleteCategoryMgmtHistRequest $request): void
     {
-        $this->categoryMgmtHist->delete($request->all());
+        $this->categoryMgmtHist->delete($request->validated());
     }
 }
