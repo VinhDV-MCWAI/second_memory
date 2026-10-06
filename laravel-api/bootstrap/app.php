@@ -2,6 +2,10 @@
 
 use App\Constants\CommonVal;
 use App\Constants\Messages;
+use App\Http\Middleware\AdminMiddleware;
+use App\Http\Middleware\BroadcastingAuthMiddleware;
+use App\Http\Middleware\GenerateResponseMiddleware;
+use App\Http\Middleware\TransactionMiddleware;
 use App\Traits\ApiResponse;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Auth\AuthenticationException;
@@ -26,7 +30,14 @@ return Application::configure(basePath: dirname(__DIR__))
         channels: __DIR__.'/../routes/channels.php',
         health: '/up',
     )
-    ->withMiddleware(function (Middleware $middleware) {})
+    ->withMiddleware(function (Middleware $middleware) {
+        $middleware->alias([
+            'api.response' => GenerateResponseMiddleware::class,
+            'db.transaction' => TransactionMiddleware::class,
+            'auth.admin' => AdminMiddleware::class,
+            'auth.broadcasting' => BroadcastingAuthMiddleware::class,
+        ]);
+    })
     ->withExceptions(function (Exceptions $exceptions) {
         // Reporting (logging) is handled by Laravel's default reporter; this callback only renders.
         $exceptions->render(function (Throwable $e, Request $request): ?JsonResponse {

@@ -26,7 +26,8 @@ docker exec ml-php php artisan migrate:fresh --seed      # DEV ONLY, destroys da
 
 ## HTTP contract (FE depends on it — do not break)
 
-- Routes: `GET {resource}/list`, `POST {resource}/store`, `PUT {resource}/update/{id}`, `POST {resource}/delete` (body `{ ids: [] }`). Admin routes under `/api/admin`, public under `/api/docs`.
+- Routes live in `routes/api.php` (docs + credential + admin group) which loads `routes/api/{docs,master,management,history}.php`; standard resources are declared in a `$resource => Controller` list. Middleware aliases (`api.response`, `db.transaction`, `auth.admin`, `auth.broadcasting`) are in `bootstrap/app.php`.
+- Route shape: `GET {resource}/list`, `POST {resource}/store`, `PUT {resource}/update/{id}`, `POST {resource}/delete` (body `{ ids: [] }`). Admin routes under `/api/admin`, public under `/api/docs`.
 - Envelope (`GenerateResponseMiddleware` + `bootstrap/app.php`): `{ "data": ..., "error": { "status": bool, "code": int, "messages": string|object|null } }`. Validation errors → 422 with field map in `error.messages`.
 - Auth: `access_token` httpOnly cookie (JWT) → `AdminMiddleware` checks Redis key `admin:{id}:{token}` and the per-admin permission hash `admin:{id}:<ADMIN_PERMISSION_TABLE>` (method → allowed route URIs).
 - Writes run inside `TransactionMiddleware`; `LoginFailedException` commits instead of rolling back.
