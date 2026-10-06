@@ -7,7 +7,7 @@ namespace App\Services\Master;
 use App\Http\Resources\Master\DepartmentManagementMstResource;
 use App\Repositories\Master\DepartmentManagementMstRepository;
 use App\Services\BaseJunctionService;
-use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class DepartmentManagementMstService extends BaseJunctionService
 {
@@ -18,7 +18,7 @@ class DepartmentManagementMstService extends BaseJunctionService
     /**
      * Get department management mst list
      */
-    public function list(array $payload): JsonResource
+    public function list(array $payload): AnonymousResourceCollection
     {
         $list = $this->departmentManagementMst->list($payload);
 

@@ -9,8 +9,10 @@ use App\Http\Requests\History\Master\ApiMstHist\DeleteApiMstHistRequest;
 use App\Http\Requests\History\Master\ApiMstHist\ListApiMstHistRequest;
 use App\Http\Requests\History\Master\ApiMstHist\StoreApiMstHistRequest;
 use App\Http\Requests\History\Master\ApiMstHist\UpdateApiMstHistRequest;
+use App\Http\Resources\History\Master\ApiMstHistResource;
 use App\Services\History\Master\ApiMstHistService;
-use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class ApiMstHistController extends Controller
 {
@@ -21,7 +23,10 @@ class ApiMstHistController extends Controller
     /**
      * ApiMstHist list
      */
-    public function list(ListApiMstHistRequest $request): JsonResource
+    /**
+     * @return AnonymousResourceCollection<LengthAwarePaginator<int, ApiMstHistResource>>
+     */
+    public function list(ListApiMstHistRequest $request): AnonymousResourceCollection
     {
         return $this->apiMstHist->list($request->validated());
     }

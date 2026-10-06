@@ -9,8 +9,10 @@ use App\Http\Requests\History\Master\PolicyDepartmentMstHist\DeletePolicyDepartm
 use App\Http\Requests\History\Master\PolicyDepartmentMstHist\ListPolicyDepartmentMstHistRequest;
 use App\Http\Requests\History\Master\PolicyDepartmentMstHist\StorePolicyDepartmentMstHistRequest;
 use App\Http\Requests\History\Master\PolicyDepartmentMstHist\UpdatePolicyDepartmentMstHistRequest;
+use App\Http\Resources\History\Master\PolicyDepartmentMstHistResource;
 use App\Services\History\Master\PolicyDepartmentMstHistService;
-use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class PolicyDepartmentMstHistController extends Controller
 {
@@ -21,7 +23,10 @@ class PolicyDepartmentMstHistController extends Controller
     /**
      * PolicyDepartmentMstHist list
      */
-    public function list(ListPolicyDepartmentMstHistRequest $request): JsonResource
+    /**
+     * @return AnonymousResourceCollection<LengthAwarePaginator<int, PolicyDepartmentMstHistResource>>
+     */
+    public function list(ListPolicyDepartmentMstHistRequest $request): AnonymousResourceCollection
     {
         return $this->policyDepartmentMstHist->list($request->validated());
     }

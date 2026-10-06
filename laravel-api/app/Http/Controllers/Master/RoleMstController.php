@@ -9,8 +9,10 @@ use App\Http\Requests\Master\RoleMst\DeleteRoleMstRequest;
 use App\Http\Requests\Master\RoleMst\ListRoleMstRequest;
 use App\Http\Requests\Master\RoleMst\StoreRoleMstRequest;
 use App\Http\Requests\Master\RoleMst\UpdateRoleMstRequest;
+use App\Http\Resources\Master\RoleMstResource;
 use App\Services\Master\RoleMstService;
-use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class RoleMstController extends Controller
 {
@@ -21,7 +23,10 @@ class RoleMstController extends Controller
     /**
      * RoleMst list
      */
-    public function list(ListRoleMstRequest $request): JsonResource
+    /**
+     * @return AnonymousResourceCollection<LengthAwarePaginator<int, RoleMstResource>>
+     */
+    public function list(ListRoleMstRequest $request): AnonymousResourceCollection
     {
         return $this->roleMst->list($request->validated());
     }

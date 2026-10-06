@@ -20,7 +20,6 @@
         "/admin/admin-department-mst/list": {
             "get": {
                 "operationId": "adminDepartmentMst.list",
-                "summary": "AdminDepartmentMst list",
                 "tags": [
                     "AdminDepartmentMst"
                 ],
@@ -124,7 +123,7 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "Paginated set of `AdminDepartmentMstResource`",
+                        "description": "Array of `AdminDepartmentMstResource`",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -135,128 +134,10 @@
                                             "items": {
                                                 "$ref": "#/components/schemas/AdminDepartmentMstResource"
                                             }
-                                        },
-                                        "links": {
-                                            "type": "object",
-                                            "properties": {
-                                                "first": {
-                                                    "type": [
-                                                        "string",
-                                                        "null"
-                                                    ]
-                                                },
-                                                "last": {
-                                                    "type": [
-                                                        "string",
-                                                        "null"
-                                                    ]
-                                                },
-                                                "prev": {
-                                                    "type": [
-                                                        "string",
-                                                        "null"
-                                                    ]
-                                                },
-                                                "next": {
-                                                    "type": [
-                                                        "string",
-                                                        "null"
-                                                    ]
-                                                }
-                                            },
-                                            "required": [
-                                                "first",
-                                                "last",
-                                                "prev",
-                                                "next"
-                                            ]
-                                        },
-                                        "meta": {
-                                            "type": "object",
-                                            "properties": {
-                                                "current_page": {
-                                                    "type": "integer",
-                                                    "minimum": 1
-                                                },
-                                                "from": {
-                                                    "type": [
-                                                        "integer",
-                                                        "null"
-                                                    ],
-                                                    "minimum": 1
-                                                },
-                                                "last_page": {
-                                                    "type": "integer",
-                                                    "minimum": 1
-                                                },
-                                                "links": {
-                                                    "type": "array",
-                                                    "description": "Generated paginator links.",
-                                                    "items": {
-                                                        "type": "object",
-                                                        "properties": {
-                                                            "url": {
-                                                                "type": [
-                                                                    "string",
-                                                                    "null"
-                                                                ]
-                                                            },
-                                                            "label": {
-                                                                "type": "string"
-                                                            },
-                                                            "active": {
-                                                                "type": "boolean"
-                                                            }
-                                                        },
-                                                        "required": [
-                                                            "url",
-                                                            "label",
-                                                            "active"
-                                                        ]
-                                                    }
-                                                },
-                                                "path": {
-                                                    "type": [
-                                                        "string",
-                                                        "null"
-                                                    ],
-                                                    "description": "Base path for paginator generated URLs."
-                                                },
-                                                "per_page": {
-                                                    "type": "integer",
-                                                    "description": "Number of items shown per page.",
-                                                    "minimum": 0
-                                                },
-                                                "to": {
-                                                    "type": [
-                                                        "integer",
-                                                        "null"
-                                                    ],
-                                                    "description": "Number of the last item in the slice.",
-                                                    "minimum": 1
-                                                },
-                                                "total": {
-                                                    "type": "integer",
-                                                    "description": "Total number of items being paginated.",
-                                                    "minimum": 0
-                                                }
-                                            },
-                                            "required": [
-                                                "current_page",
-                                                "from",
-                                                "last_page",
-                                                "links",
-                                                "path",
-                                                "per_page",
-                                                "to",
-                                                "total"
-                                            ]
                                         }
                                     },
                                     "required": [
-                                        "data",
-                                        "links",
-                                        "meta"
+                                        "data"
                                     ]
                                 }
                             }
@@ -304,7 +185,6 @@
         "/admin/admin-mst/list": {
             "get": {
                 "operationId": "adminMst.list",
-                "summary": "AdminMst list",
                 "tags": [
                     "AdminMst"
                 ],
@@ -533,14 +413,17 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "`JsonResource`",
+                        "description": "Array of `AdminMstResource`",
                         "content": {
                             "application/json": {
                                 "schema": {
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/components/schemas/JsonResource"
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/AdminMstResource"
+                                            }
                                         }
                                     },
                                     "required": [
@@ -671,7 +554,6 @@
         "/admin/admin-mst-hist/list": {
             "get": {
                 "operationId": "adminMstHist.list",
-                "summary": "AdminMstHist list",
                 "tags": [
                     "AdminMstHist"
                 ],
@@ -920,14 +802,17 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "`JsonResource`",
+                        "description": "Array of `AdminMstHistResource`",
                         "content": {
                             "application/json": {
                                 "schema": {
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/components/schemas/JsonResource"
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/AdminMstHistResource"
+                                            }
                                         }
                                     },
                                     "required": [
@@ -1058,7 +943,6 @@
         "/admin/admin-role-mst/list": {
             "get": {
                 "operationId": "adminRoleMst.list",
-                "summary": "AdminRoleMst list",
                 "tags": [
                     "AdminRoleMst"
                 ],
@@ -1162,7 +1046,7 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "Paginated set of `AdminRoleMstResource`",
+                        "description": "Array of `AdminRoleMstResource`",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -1173,128 +1057,10 @@
                                             "items": {
                                                 "$ref": "#/components/schemas/AdminRoleMstResource"
                                             }
-                                        },
-                                        "links": {
-                                            "type": "object",
-                                            "properties": {
-                                                "first": {
-                                                    "type": [
-                                                        "string",
-                                                        "null"
-                                                    ]
-                                                },
-                                                "last": {
-                                                    "type": [
-                                                        "string",
-                                                        "null"
-                                                    ]
-                                                },
-                                                "prev": {
-                                                    "type": [
-                                                        "string",
-                                                        "null"
-                                                    ]
-                                                },
-                                                "next": {
-                                                    "type": [
-                                                        "string",
-                                                        "null"
-                                                    ]
-                                                }
-                                            },
-                                            "required": [
-                                                "first",
-                                                "last",
-                                                "prev",
-                                                "next"
-                                            ]
-                                        },
-                                        "meta": {
-                                            "type": "object",
-                                            "properties": {
-                                                "current_page": {
-                                                    "type": "integer",
-                                                    "minimum": 1
-                                                },
-                                                "from": {
-                                                    "type": [
-                                                        "integer",
-                                                        "null"
-                                                    ],
-                                                    "minimum": 1
-                                                },
-                                                "last_page": {
-                                                    "type": "integer",
-                                                    "minimum": 1
-                                                },
-                                                "links": {
-                                                    "type": "array",
-                                                    "description": "Generated paginator links.",
-                                                    "items": {
-                                                        "type": "object",
-                                                        "properties": {
-                                                            "url": {
-                                                                "type": [
-                                                                    "string",
-                                                                    "null"
-                                                                ]
-                                                            },
-                                                            "label": {
-                                                                "type": "string"
-                                                            },
-                                                            "active": {
-                                                                "type": "boolean"
-                                                            }
-                                                        },
-                                                        "required": [
-                                                            "url",
-                                                            "label",
-                                                            "active"
-                                                        ]
-                                                    }
-                                                },
-                                                "path": {
-                                                    "type": [
-                                                        "string",
-                                                        "null"
-                                                    ],
-                                                    "description": "Base path for paginator generated URLs."
-                                                },
-                                                "per_page": {
-                                                    "type": "integer",
-                                                    "description": "Number of items shown per page.",
-                                                    "minimum": 0
-                                                },
-                                                "to": {
-                                                    "type": [
-                                                        "integer",
-                                                        "null"
-                                                    ],
-                                                    "description": "Number of the last item in the slice.",
-                                                    "minimum": 1
-                                                },
-                                                "total": {
-                                                    "type": "integer",
-                                                    "description": "Total number of items being paginated.",
-                                                    "minimum": 0
-                                                }
-                                            },
-                                            "required": [
-                                                "current_page",
-                                                "from",
-                                                "last_page",
-                                                "links",
-                                                "path",
-                                                "per_page",
-                                                "to",
-                                                "total"
-                                            ]
                                         }
                                     },
                                     "required": [
-                                        "data",
-                                        "links",
-                                        "meta"
+                                        "data"
                                     ]
                                 }
                             }
@@ -1342,7 +1108,6 @@
         "/admin/api-mst/list": {
             "get": {
                 "operationId": "apiMst.list",
-                "summary": "ApiMst list",
                 "tags": [
                     "ApiMst"
                 ],
@@ -1496,14 +1261,17 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "`JsonResource`",
+                        "description": "Array of `ApiMstResource`",
                         "content": {
                             "application/json": {
                                 "schema": {
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/components/schemas/JsonResource"
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/ApiMstResource"
+                                            }
                                         }
                                     },
                                     "required": [
@@ -1634,7 +1402,6 @@
         "/admin/api-mst-hist/list": {
             "get": {
                 "operationId": "apiMstHist.list",
-                "summary": "ApiMstHist list",
                 "tags": [
                     "ApiMstHist"
                 ],
@@ -1808,14 +1575,17 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "`JsonResource`",
+                        "description": "Array of `ApiMstHistResource`",
                         "content": {
                             "application/json": {
                                 "schema": {
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/components/schemas/JsonResource"
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/ApiMstHistResource"
+                                            }
                                         }
                                     },
                                     "required": [
@@ -1946,7 +1716,6 @@
         "/admin/api-role-mst/list": {
             "get": {
                 "operationId": "apiRoleMst.list",
-                "summary": "ApiRoleMst list",
                 "tags": [
                     "ApiRoleMst"
                 ],
@@ -2050,7 +1819,7 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "Paginated set of `ApiRoleMstResource`",
+                        "description": "Array of `ApiRoleMstResource`",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -2061,128 +1830,10 @@
                                             "items": {
                                                 "$ref": "#/components/schemas/ApiRoleMstResource"
                                             }
-                                        },
-                                        "links": {
-                                            "type": "object",
-                                            "properties": {
-                                                "first": {
-                                                    "type": [
-                                                        "string",
-                                                        "null"
-                                                    ]
-                                                },
-                                                "last": {
-                                                    "type": [
-                                                        "string",
-                                                        "null"
-                                                    ]
-                                                },
-                                                "prev": {
-                                                    "type": [
-                                                        "string",
-                                                        "null"
-                                                    ]
-                                                },
-                                                "next": {
-                                                    "type": [
-                                                        "string",
-                                                        "null"
-                                                    ]
-                                                }
-                                            },
-                                            "required": [
-                                                "first",
-                                                "last",
-                                                "prev",
-                                                "next"
-                                            ]
-                                        },
-                                        "meta": {
-                                            "type": "object",
-                                            "properties": {
-                                                "current_page": {
-                                                    "type": "integer",
-                                                    "minimum": 1
-                                                },
-                                                "from": {
-                                                    "type": [
-                                                        "integer",
-                                                        "null"
-                                                    ],
-                                                    "minimum": 1
-                                                },
-                                                "last_page": {
-                                                    "type": "integer",
-                                                    "minimum": 1
-                                                },
-                                                "links": {
-                                                    "type": "array",
-                                                    "description": "Generated paginator links.",
-                                                    "items": {
-                                                        "type": "object",
-                                                        "properties": {
-                                                            "url": {
-                                                                "type": [
-                                                                    "string",
-                                                                    "null"
-                                                                ]
-                                                            },
-                                                            "label": {
-                                                                "type": "string"
-                                                            },
-                                                            "active": {
-                                                                "type": "boolean"
-                                                            }
-                                                        },
-                                                        "required": [
-                                                            "url",
-                                                            "label",
-                                                            "active"
-                                                        ]
-                                                    }
-                                                },
-                                                "path": {
-                                                    "type": [
-                                                        "string",
-                                                        "null"
-                                                    ],
-                                                    "description": "Base path for paginator generated URLs."
-                                                },
-                                                "per_page": {
-                                                    "type": "integer",
-                                                    "description": "Number of items shown per page.",
-                                                    "minimum": 0
-                                                },
-                                                "to": {
-                                                    "type": [
-                                                        "integer",
-                                                        "null"
-                                                    ],
-                                                    "description": "Number of the last item in the slice.",
-                                                    "minimum": 1
-                                                },
-                                                "total": {
-                                                    "type": "integer",
-                                                    "description": "Total number of items being paginated.",
-                                                    "minimum": 0
-                                                }
-                                            },
-                                            "required": [
-                                                "current_page",
-                                                "from",
-                                                "last_page",
-                                                "links",
-                                                "path",
-                                                "per_page",
-                                                "to",
-                                                "total"
-                                            ]
                                         }
                                     },
                                     "required": [
-                                        "data",
-                                        "links",
-                                        "meta"
+                                        "data"
                                     ]
                                 }
                             }
@@ -2230,7 +1881,6 @@
         "/admin/banner-mgmt/list": {
             "get": {
                 "operationId": "bannerMgmt.list",
-                "summary": "BannerMgmt list",
                 "tags": [
                     "BannerMgmt"
                 ],
@@ -2410,14 +2060,17 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "`JsonResource`",
+                        "description": "Array of `BannerMgmtResource`",
                         "content": {
                             "application/json": {
                                 "schema": {
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/components/schemas/JsonResource"
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/BannerMgmtResource"
+                                            }
                                         }
                                     },
                                     "required": [
@@ -2548,7 +2201,6 @@
         "/admin/banner-mgmt-hist/list": {
             "get": {
                 "operationId": "bannerMgmtHist.list",
-                "summary": "BannerMgmtHist list",
                 "tags": [
                     "BannerMgmtHist"
                 ],
@@ -2748,14 +2400,17 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "`JsonResource`",
+                        "description": "Array of `BannerMgmtHistResource`",
                         "content": {
                             "application/json": {
                                 "schema": {
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/components/schemas/JsonResource"
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/BannerMgmtHistResource"
+                                            }
                                         }
                                     },
                                     "required": [
@@ -2886,7 +2541,6 @@
         "/admin/category-mgmt/list": {
             "get": {
                 "operationId": "categoryMgmt.list",
-                "summary": "CategoryMgmt list",
                 "tags": [
                     "CategoryMgmt"
                 ],
@@ -3054,14 +2708,17 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "`JsonResource`",
+                        "description": "Array of `CategoryMgmtResource`",
                         "content": {
                             "application/json": {
                                 "schema": {
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/components/schemas/JsonResource"
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/CategoryMgmtResource"
+                                            }
                                         }
                                     },
                                     "required": [
@@ -3192,7 +2849,6 @@
         "/admin/category-mgmt-hist/list": {
             "get": {
                 "operationId": "categoryMgmtHist.list",
-                "summary": "CategoryMgmtHist list",
                 "tags": [
                     "CategoryMgmtHist"
                 ],
@@ -3392,14 +3048,17 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "`JsonResource`",
+                        "description": "Array of `CategoryMgmtHistResource`",
                         "content": {
                             "application/json": {
                                 "schema": {
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/components/schemas/JsonResource"
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/CategoryMgmtHistResource"
+                                            }
                                         }
                                     },
                                     "required": [
@@ -3994,7 +3653,6 @@
         "/admin/department-management-mst/list": {
             "get": {
                 "operationId": "departmentManagementMst.list",
-                "summary": "DepartmentManagementMst list",
                 "tags": [
                     "DepartmentManagementMst"
                 ],
@@ -4098,7 +3756,7 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "Paginated set of `DepartmentManagementMstResource`",
+                        "description": "Array of `DepartmentManagementMstResource`",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -4109,128 +3767,10 @@
                                             "items": {
                                                 "$ref": "#/components/schemas/DepartmentManagementMstResource"
                                             }
-                                        },
-                                        "links": {
-                                            "type": "object",
-                                            "properties": {
-                                                "first": {
-                                                    "type": [
-                                                        "string",
-                                                        "null"
-                                                    ]
-                                                },
-                                                "last": {
-                                                    "type": [
-                                                        "string",
-                                                        "null"
-                                                    ]
-                                                },
-                                                "prev": {
-                                                    "type": [
-                                                        "string",
-                                                        "null"
-                                                    ]
-                                                },
-                                                "next": {
-                                                    "type": [
-                                                        "string",
-                                                        "null"
-                                                    ]
-                                                }
-                                            },
-                                            "required": [
-                                                "first",
-                                                "last",
-                                                "prev",
-                                                "next"
-                                            ]
-                                        },
-                                        "meta": {
-                                            "type": "object",
-                                            "properties": {
-                                                "current_page": {
-                                                    "type": "integer",
-                                                    "minimum": 1
-                                                },
-                                                "from": {
-                                                    "type": [
-                                                        "integer",
-                                                        "null"
-                                                    ],
-                                                    "minimum": 1
-                                                },
-                                                "last_page": {
-                                                    "type": "integer",
-                                                    "minimum": 1
-                                                },
-                                                "links": {
-                                                    "type": "array",
-                                                    "description": "Generated paginator links.",
-                                                    "items": {
-                                                        "type": "object",
-                                                        "properties": {
-                                                            "url": {
-                                                                "type": [
-                                                                    "string",
-                                                                    "null"
-                                                                ]
-                                                            },
-                                                            "label": {
-                                                                "type": "string"
-                                                            },
-                                                            "active": {
-                                                                "type": "boolean"
-                                                            }
-                                                        },
-                                                        "required": [
-                                                            "url",
-                                                            "label",
-                                                            "active"
-                                                        ]
-                                                    }
-                                                },
-                                                "path": {
-                                                    "type": [
-                                                        "string",
-                                                        "null"
-                                                    ],
-                                                    "description": "Base path for paginator generated URLs."
-                                                },
-                                                "per_page": {
-                                                    "type": "integer",
-                                                    "description": "Number of items shown per page.",
-                                                    "minimum": 0
-                                                },
-                                                "to": {
-                                                    "type": [
-                                                        "integer",
-                                                        "null"
-                                                    ],
-                                                    "description": "Number of the last item in the slice.",
-                                                    "minimum": 1
-                                                },
-                                                "total": {
-                                                    "type": "integer",
-                                                    "description": "Total number of items being paginated.",
-                                                    "minimum": 0
-                                                }
-                                            },
-                                            "required": [
-                                                "current_page",
-                                                "from",
-                                                "last_page",
-                                                "links",
-                                                "path",
-                                                "per_page",
-                                                "to",
-                                                "total"
-                                            ]
                                         }
                                     },
                                     "required": [
-                                        "data",
-                                        "links",
-                                        "meta"
+                                        "data"
                                     ]
                                 }
                             }
@@ -4278,7 +3818,6 @@
         "/admin/department-mst/list": {
             "get": {
                 "operationId": "departmentMst.list",
-                "summary": "DepartmentMst list",
                 "tags": [
                     "DepartmentMst"
                 ],
@@ -4410,14 +3949,17 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "`JsonResource`",
+                        "description": "Array of `DepartmentMstResource`",
                         "content": {
                             "application/json": {
                                 "schema": {
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/components/schemas/JsonResource"
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/DepartmentMstResource"
+                                            }
                                         }
                                     },
                                     "required": [
@@ -4548,7 +4090,6 @@
         "/admin/department-mst-hist/list": {
             "get": {
                 "operationId": "departmentMstHist.list",
-                "summary": "DepartmentMstHist list",
                 "tags": [
                     "DepartmentMstHist"
                 ],
@@ -4700,14 +4241,17 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "`JsonResource`",
+                        "description": "Array of `DepartmentMstHistResource`",
                         "content": {
                             "application/json": {
                                 "schema": {
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/components/schemas/JsonResource"
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/DepartmentMstHistResource"
+                                            }
                                         }
                                     },
                                     "required": [
@@ -5013,7 +4557,6 @@
         "/admin/entry-description-mgmt/list": {
             "get": {
                 "operationId": "entryDescriptionMgmt.list",
-                "summary": "EntryDescriptionMgmt list",
                 "tags": [
                     "EntryDescriptionMgmt"
                 ],
@@ -5181,14 +4724,17 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "`JsonResource`",
+                        "description": "Array of `EntryDescriptionMgmtResource`",
                         "content": {
                             "application/json": {
                                 "schema": {
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/components/schemas/JsonResource"
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/EntryDescriptionMgmtResource"
+                                            }
                                         }
                                     },
                                     "required": [
@@ -5319,7 +4865,6 @@
         "/admin/entry-description-mgmt-hist/list": {
             "get": {
                 "operationId": "entryDescriptionMgmtHist.list",
-                "summary": "EntryDescriptionMgmtHist list",
                 "tags": [
                     "EntryDescriptionMgmtHist"
                 ],
@@ -5519,14 +5064,17 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "`JsonResource`",
+                        "description": "Array of `EntryDescriptionMgmtHistResource`",
                         "content": {
                             "application/json": {
                                 "schema": {
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/components/schemas/JsonResource"
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/EntryDescriptionMgmtHistResource"
+                                            }
                                         }
                                     },
                                     "required": [
@@ -5657,7 +5205,6 @@
         "/admin/entry-mgmt/list": {
             "get": {
                 "operationId": "entryMgmt.list",
-                "summary": "EntryMgmt list",
                 "tags": [
                     "EntryMgmt"
                 ],
@@ -5813,14 +5360,17 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "`JsonResource`",
+                        "description": "Array of `EntryMgmtResource`",
                         "content": {
                             "application/json": {
                                 "schema": {
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/components/schemas/JsonResource"
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/EntryMgmtResource"
+                                            }
                                         }
                                     },
                                     "required": [
@@ -5951,7 +5501,6 @@
         "/admin/entry-mgmt-hist/list": {
             "get": {
                 "operationId": "entryMgmtHist.list",
-                "summary": "EntryMgmtHist list",
                 "tags": [
                     "EntryMgmtHist"
                 ],
@@ -6127,14 +5676,17 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "`JsonResource`",
+                        "description": "Array of `EntryMgmtHistResource`",
                         "content": {
                             "application/json": {
                                 "schema": {
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/components/schemas/JsonResource"
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/EntryMgmtHistResource"
+                                            }
                                         }
                                     },
                                     "required": [
@@ -6265,7 +5817,6 @@
         "/admin/feature-mst/list": {
             "get": {
                 "operationId": "featureMst.list",
-                "summary": "FeatureMst list",
                 "tags": [
                     "FeatureMst"
                 ],
@@ -6409,14 +5960,17 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "`JsonResource`",
+                        "description": "Array of `FeatureMstResource`",
                         "content": {
                             "application/json": {
                                 "schema": {
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/components/schemas/JsonResource"
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/FeatureMstResource"
+                                            }
                                         }
                                     },
                                     "required": [
@@ -6547,7 +6101,6 @@
         "/admin/feature-mst-hist/list": {
             "get": {
                 "operationId": "featureMstHist.list",
-                "summary": "FeatureMstHist list",
                 "tags": [
                     "FeatureMstHist"
                 ],
@@ -6711,14 +6264,17 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "`JsonResource`",
+                        "description": "Array of `FeatureMstHistResource`",
                         "content": {
                             "application/json": {
                                 "schema": {
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/components/schemas/JsonResource"
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/FeatureMstHistResource"
+                                            }
                                         }
                                     },
                                     "required": [
@@ -7470,7 +7026,6 @@
         "/admin/policy-department-mst/list": {
             "get": {
                 "operationId": "policyDepartmentMst.list",
-                "summary": "PolicyDepartmentMst list",
                 "tags": [
                     "PolicyDepartmentMst"
                 ],
@@ -7588,14 +7143,17 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "`JsonResource`",
+                        "description": "Array of `PolicyDepartmentMstResource`",
                         "content": {
                             "application/json": {
                                 "schema": {
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/components/schemas/JsonResource"
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/PolicyDepartmentMstResource"
+                                            }
                                         }
                                     },
                                     "required": [
@@ -7726,7 +7284,6 @@
         "/admin/policy-department-mst-hist/list": {
             "get": {
                 "operationId": "policyDepartmentMstHist.list",
-                "summary": "PolicyDepartmentMstHist list",
                 "tags": [
                     "PolicyDepartmentMstHist"
                 ],
@@ -7864,14 +7421,17 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "`JsonResource`",
+                        "description": "Array of `PolicyDepartmentMstHistResource`",
                         "content": {
                             "application/json": {
                                 "schema": {
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/components/schemas/JsonResource"
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/PolicyDepartmentMstHistResource"
+                                            }
                                         }
                                     },
                                     "required": [
@@ -8002,7 +7562,6 @@
         "/admin/role-mst/list": {
             "get": {
                 "operationId": "roleMst.list",
-                "summary": "RoleMst list",
                 "tags": [
                     "RoleMst"
                 ],
@@ -8134,14 +7693,17 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "`JsonResource`",
+                        "description": "Array of `RoleMstResource`",
                         "content": {
                             "application/json": {
                                 "schema": {
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/components/schemas/JsonResource"
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/RoleMstResource"
+                                            }
                                         }
                                     },
                                     "required": [
@@ -8272,7 +7834,6 @@
         "/admin/role-mst-hist/list": {
             "get": {
                 "operationId": "roleMstHist.list",
-                "summary": "RoleMstHist list",
                 "tags": [
                     "RoleMstHist"
                 ],
@@ -8424,14 +7985,17 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "`JsonResource`",
+                        "description": "Array of `RoleMstHistResource`",
                         "content": {
                             "application/json": {
                                 "schema": {
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/components/schemas/JsonResource"
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/RoleMstHistResource"
+                                            }
                                         }
                                     },
                                     "required": [
@@ -8562,7 +8126,6 @@
         "/admin/setting-link-mgmt/list": {
             "get": {
                 "operationId": "settingLinkMgmt.list",
-                "summary": "SettingLinkMgmt list",
                 "tags": [
                     "SettingLinkMgmt"
                 ],
@@ -8680,14 +8243,17 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "`JsonResource`",
+                        "description": "Array of `SettingLinkMgmtResource`",
                         "content": {
                             "application/json": {
                                 "schema": {
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/components/schemas/JsonResource"
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/SettingLinkMgmtResource"
+                                            }
                                         }
                                     },
                                     "required": [
@@ -8818,7 +8384,6 @@
         "/admin/setting-link-mgmt-hist/list": {
             "get": {
                 "operationId": "settingLinkMgmtHist.list",
-                "summary": "SettingLinkMgmtHist list",
                 "tags": [
                     "SettingLinkMgmtHist"
                 ],
@@ -8966,14 +8531,17 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "`JsonResource`",
+                        "description": "Array of `SettingLinkMgmtHistResource`",
                         "content": {
                             "application/json": {
                                 "schema": {
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/components/schemas/JsonResource"
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/SettingLinkMgmtHistResource"
+                                            }
                                         }
                                     },
                                     "required": [
@@ -9104,7 +8672,6 @@
         "/admin/slider-mgmt/list": {
             "get": {
                 "operationId": "sliderMgmt.list",
-                "summary": "SliderMgmt list",
                 "tags": [
                     "SliderMgmt"
                 ],
@@ -9260,14 +8827,17 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "`JsonResource`",
+                        "description": "Array of `SliderMgmtResource`",
                         "content": {
                             "application/json": {
                                 "schema": {
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/components/schemas/JsonResource"
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/SliderMgmtResource"
+                                            }
                                         }
                                     },
                                     "required": [
@@ -9398,7 +8968,6 @@
         "/admin/slider-mgmt-hist/list": {
             "get": {
                 "operationId": "sliderMgmtHist.list",
-                "summary": "SliderMgmtHist list",
                 "tags": [
                     "SliderMgmtHist"
                 ],
@@ -9574,14 +9143,17 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "`JsonResource`",
+                        "description": "Array of `SliderMgmtHistResource`",
                         "content": {
                             "application/json": {
                                 "schema": {
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/components/schemas/JsonResource"
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/SliderMgmtHistResource"
+                                            }
                                         }
                                     },
                                     "required": [
@@ -9712,7 +9284,6 @@
         "/admin/social-mgmt/list": {
             "get": {
                 "operationId": "socialMgmt.list",
-                "summary": "SocialMgmt list",
                 "tags": [
                     "SocialMgmt"
                 ],
@@ -9894,14 +9465,17 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "`JsonResource`",
+                        "description": "Array of `SocialMgmtResource`",
                         "content": {
                             "application/json": {
                                 "schema": {
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/components/schemas/JsonResource"
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/SocialMgmtResource"
+                                            }
                                         }
                                     },
                                     "required": [
@@ -10032,7 +9606,6 @@
         "/admin/social-mgmt-hist/list": {
             "get": {
                 "operationId": "socialMgmtHist.list",
-                "summary": "SocialMgmtHist list",
                 "tags": [
                     "SocialMgmtHist"
                 ],
@@ -10236,14 +9809,17 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "`JsonResource`",
+                        "description": "Array of `SocialMgmtHistResource`",
                         "content": {
                             "application/json": {
                                 "schema": {
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/components/schemas/JsonResource"
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/SocialMgmtHistResource"
+                                            }
                                         }
                                     },
                                     "required": [
@@ -10374,7 +9950,6 @@
         "/admin/token-mst/list": {
             "get": {
                 "operationId": "tokenMst.list",
-                "summary": "TokenMst list",
                 "tags": [
                     "TokenMst"
                 ],
@@ -10511,14 +10086,17 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "`JsonResource`",
+                        "description": "Array of `TokenMstResource`",
                         "content": {
                             "application/json": {
                                 "schema": {
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/components/schemas/JsonResource"
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/TokenMstResource"
+                                            }
                                         }
                                     },
                                     "required": [
@@ -10649,7 +10227,6 @@
         "/admin/user-mgmt/list": {
             "get": {
                 "operationId": "userMgmt.list",
-                "summary": "UserMgmt list",
                 "tags": [
                     "UserMgmt"
                 ],
@@ -10878,14 +10455,17 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "`JsonResource`",
+                        "description": "Array of `UserMgmtResource`",
                         "content": {
                             "application/json": {
                                 "schema": {
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/components/schemas/JsonResource"
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/UserMgmtResource"
+                                            }
                                         }
                                     },
                                     "required": [
@@ -11016,7 +10596,6 @@
         "/admin/user-mgmt-hist/list": {
             "get": {
                 "operationId": "userMgmtHist.list",
-                "summary": "UserMgmtHist list",
                 "tags": [
                     "UserMgmtHist"
                 ],
@@ -11265,14 +10844,17 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "`JsonResource`",
+                        "description": "Array of `UserMgmtHistResource`",
                         "content": {
                             "application/json": {
                                 "schema": {
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/components/schemas/JsonResource"
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/UserMgmtHistResource"
+                                            }
                                         }
                                     },
                                     "required": [
@@ -11430,6 +11012,153 @@
                 ],
                 "title": "AdminDepartmentMstResource"
             },
+            "AdminMstHistResource": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "admin_mst_id": {
+                        "type": "integer"
+                    },
+                    "email": {
+                        "type": "string"
+                    },
+                    "user_name": {
+                        "type": "string"
+                    },
+                    "password": {
+                        "type": "string"
+                    },
+                    "first_name": {
+                        "type": "string"
+                    },
+                    "last_name": {
+                        "type": "string"
+                    },
+                    "address": {
+                        "type": "string"
+                    },
+                    "phone_number": {
+                        "type": "string"
+                    },
+                    "birth": {
+                        "type": "string"
+                    },
+                    "gender": {
+                        "type": "string"
+                    },
+                    "status": {
+                        "type": "string"
+                    },
+                    "is_active": {
+                        "type": "boolean"
+                    },
+                    "avatar": {
+                        "type": "string"
+                    },
+                    "action": {
+                        "type": "string"
+                    },
+                    "author_id": {
+                        "type": "integer"
+                    },
+                    "created_at": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "id",
+                    "admin_mst_id",
+                    "email",
+                    "user_name",
+                    "password",
+                    "first_name",
+                    "last_name",
+                    "address",
+                    "phone_number",
+                    "birth",
+                    "gender",
+                    "status",
+                    "is_active",
+                    "avatar",
+                    "action",
+                    "author_id",
+                    "created_at"
+                ],
+                "title": "AdminMstHistResource"
+            },
+            "AdminMstResource": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "email": {
+                        "type": "string"
+                    },
+                    "user_name": {
+                        "type": "string"
+                    },
+                    "password": {
+                        "type": "string"
+                    },
+                    "first_name": {
+                        "type": "string"
+                    },
+                    "last_name": {
+                        "type": "string"
+                    },
+                    "address": {
+                        "type": "string"
+                    },
+                    "phone_number": {
+                        "type": "string"
+                    },
+                    "birth": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "gender": {
+                        "type": "integer"
+                    },
+                    "status": {
+                        "type": "integer"
+                    },
+                    "is_active": {
+                        "type": "boolean"
+                    },
+                    "avatar": {
+                        "type": "string"
+                    },
+                    "is_delete": {
+                        "type": "boolean"
+                    },
+                    "updated_at": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "id",
+                    "email",
+                    "user_name",
+                    "password",
+                    "first_name",
+                    "last_name",
+                    "address",
+                    "phone_number",
+                    "birth",
+                    "gender",
+                    "status",
+                    "is_active",
+                    "avatar",
+                    "is_delete",
+                    "updated_at"
+                ],
+                "title": "AdminMstResource"
+            },
             "AdminRoleMstResource": {
                 "type": "object",
                 "properties": {
@@ -11460,6 +11189,94 @@
                 ],
                 "title": "AdminStatus"
             },
+            "ApiMstHistResource": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "api_mst_id": {
+                        "type": "integer"
+                    },
+                    "type": {
+                        "type": "string"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "path": {
+                        "type": "string"
+                    },
+                    "is_active": {
+                        "type": "string"
+                    },
+                    "feature_mst_id": {
+                        "type": "integer"
+                    },
+                    "action": {
+                        "type": "string"
+                    },
+                    "author_id": {
+                        "type": "integer"
+                    },
+                    "created_at": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "id",
+                    "api_mst_id",
+                    "type",
+                    "name",
+                    "path",
+                    "is_active",
+                    "feature_mst_id",
+                    "action",
+                    "author_id",
+                    "created_at"
+                ],
+                "title": "ApiMstHistResource"
+            },
+            "ApiMstResource": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "type": {
+                        "type": "integer"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "path": {
+                        "type": "string"
+                    },
+                    "is_active": {
+                        "type": "boolean"
+                    },
+                    "feature_mst_id": {
+                        "type": "integer"
+                    },
+                    "is_delete": {
+                        "type": "boolean"
+                    },
+                    "updated_at": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "id",
+                    "type",
+                    "name",
+                    "path",
+                    "is_active",
+                    "feature_mst_id",
+                    "is_delete",
+                    "updated_at"
+                ],
+                "title": "ApiMstResource"
+            },
             "ApiRoleMstResource": {
                 "type": "object",
                 "properties": {
@@ -11479,6 +11296,219 @@
                     "updated_at"
                 ],
                 "title": "ApiRoleMstResource"
+            },
+            "BannerMgmtHistResource": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "banner_mgmt_id": {
+                        "type": "integer"
+                    },
+                    "title": {
+                        "type": "string"
+                    },
+                    "slug": {
+                        "type": "string"
+                    },
+                    "description": {
+                        "type": "string"
+                    },
+                    "link": {
+                        "type": "string"
+                    },
+                    "image": {
+                        "type": "string"
+                    },
+                    "position": {
+                        "type": "string"
+                    },
+                    "status": {
+                        "type": "string"
+                    },
+                    "action": {
+                        "type": "string"
+                    },
+                    "author_id": {
+                        "type": "integer"
+                    },
+                    "created_at": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "id",
+                    "banner_mgmt_id",
+                    "title",
+                    "slug",
+                    "description",
+                    "link",
+                    "image",
+                    "position",
+                    "status",
+                    "action",
+                    "author_id",
+                    "created_at"
+                ],
+                "title": "BannerMgmtHistResource"
+            },
+            "BannerMgmtResource": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "title": {
+                        "type": "string"
+                    },
+                    "slug": {
+                        "type": "string"
+                    },
+                    "description": {
+                        "type": "string"
+                    },
+                    "link": {
+                        "type": "string"
+                    },
+                    "image": {
+                        "type": "string"
+                    },
+                    "media_id": {
+                        "type": "integer",
+                        "description": "Fallback to image column if media not found (backward compatibility)"
+                    },
+                    "position": {
+                        "type": "string"
+                    },
+                    "status": {
+                        "type": "string"
+                    },
+                    "is_delete": {
+                        "type": "boolean"
+                    },
+                    "updated_at": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "id",
+                    "title",
+                    "slug",
+                    "description",
+                    "link",
+                    "image",
+                    "media_id",
+                    "position",
+                    "status",
+                    "is_delete",
+                    "updated_at"
+                ],
+                "title": "BannerMgmtResource"
+            },
+            "CategoryMgmtHistResource": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "category_mgmt_id": {
+                        "type": "integer"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "slug": {
+                        "type": "string"
+                    },
+                    "description": {
+                        "type": "string"
+                    },
+                    "status": {
+                        "type": "string"
+                    },
+                    "is_display": {
+                        "type": "boolean"
+                    },
+                    "rank_order": {
+                        "type": "string"
+                    },
+                    "action": {
+                        "type": "string"
+                    },
+                    "author_id": {
+                        "type": "integer"
+                    },
+                    "created_at": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "id",
+                    "category_mgmt_id",
+                    "name",
+                    "slug",
+                    "description",
+                    "status",
+                    "is_display",
+                    "rank_order",
+                    "action",
+                    "author_id",
+                    "created_at"
+                ],
+                "title": "CategoryMgmtHistResource"
+            },
+            "CategoryMgmtResource": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "slug": {
+                        "type": "string"
+                    },
+                    "description": {
+                        "type": "string"
+                    },
+                    "status": {
+                        "type": "string"
+                    },
+                    "is_display": {
+                        "type": "boolean"
+                    },
+                    "rank_order": {
+                        "type": "string"
+                    },
+                    "layout_structure": {
+                        "type": [
+                            "array",
+                            "null"
+                        ],
+                        "items": {}
+                    },
+                    "is_delete": {
+                        "type": "boolean"
+                    },
+                    "updated_at": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "id",
+                    "name",
+                    "slug",
+                    "description",
+                    "status",
+                    "is_display",
+                    "rank_order",
+                    "layout_structure",
+                    "is_delete",
+                    "updated_at"
+                ],
+                "title": "CategoryMgmtResource"
             },
             "CategoryResource": {
                 "type": "object",
@@ -12135,6 +12165,46 @@
                 ],
                 "title": "DepartmentManagementMstResource"
             },
+            "DepartmentMstHistResource": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "department_mst_id": {
+                        "type": "integer"
+                    },
+                    "code": {
+                        "type": "string"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "status": {
+                        "type": "string"
+                    },
+                    "action": {
+                        "type": "string"
+                    },
+                    "author_id": {
+                        "type": "integer"
+                    },
+                    "created_at": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "id",
+                    "department_mst_id",
+                    "code",
+                    "name",
+                    "status",
+                    "action",
+                    "author_id",
+                    "created_at"
+                ],
+                "title": "DepartmentMstHistResource"
+            },
             "DepartmentMstResource": {
                 "type": "object",
                 "properties": {
@@ -12209,6 +12279,110 @@
                 ],
                 "title": "DescriptionResource"
             },
+            "EntryDescriptionMgmtHistResource": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "entry_description_mgmt_id": {
+                        "type": "integer"
+                    },
+                    "title": {
+                        "type": "string"
+                    },
+                    "summary": {
+                        "type": "string"
+                    },
+                    "article": {
+                        "type": "string"
+                    },
+                    "status": {
+                        "type": "string"
+                    },
+                    "is_display": {
+                        "type": "boolean"
+                    },
+                    "rank_order": {
+                        "type": "string"
+                    },
+                    "entry_id": {
+                        "type": "integer"
+                    },
+                    "action": {
+                        "type": "string"
+                    },
+                    "author_id": {
+                        "type": "integer"
+                    },
+                    "created_at": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "id",
+                    "entry_description_mgmt_id",
+                    "title",
+                    "summary",
+                    "article",
+                    "status",
+                    "is_display",
+                    "rank_order",
+                    "entry_id",
+                    "action",
+                    "author_id",
+                    "created_at"
+                ],
+                "title": "EntryDescriptionMgmtHistResource"
+            },
+            "EntryDescriptionMgmtResource": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "title": {
+                        "type": "string"
+                    },
+                    "summary": {
+                        "type": "string"
+                    },
+                    "article": {
+                        "type": [
+                            "string",
+                            "object"
+                        ]
+                    },
+                    "status": {
+                        "type": "string",
+                        "description": "Convert array to JSON string for frontend"
+                    },
+                    "is_display": {
+                        "type": "boolean"
+                    },
+                    "rank_order": {
+                        "type": "string"
+                    },
+                    "is_delete": {
+                        "type": "boolean"
+                    },
+                    "updated_at": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "id",
+                    "title",
+                    "summary",
+                    "article",
+                    "status",
+                    "is_display",
+                    "rank_order",
+                    "is_delete",
+                    "updated_at"
+                ],
+                "title": "EntryDescriptionMgmtResource"
+            },
             "EntryDetailResource": {
                 "type": "object",
                 "properties": {
@@ -12249,6 +12423,102 @@
                 ],
                 "title": "EntryDetailResource"
             },
+            "EntryMgmtHistResource": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "entry_mgmt_id": {
+                        "type": "integer"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "slug": {
+                        "type": "string"
+                    },
+                    "status": {
+                        "type": "string"
+                    },
+                    "is_display": {
+                        "type": "boolean"
+                    },
+                    "rank_order": {
+                        "type": "string"
+                    },
+                    "action": {
+                        "type": "string"
+                    },
+                    "author_id": {
+                        "type": "integer"
+                    },
+                    "created_at": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "id",
+                    "entry_mgmt_id",
+                    "name",
+                    "slug",
+                    "status",
+                    "is_display",
+                    "rank_order",
+                    "action",
+                    "author_id",
+                    "created_at"
+                ],
+                "title": "EntryMgmtHistResource"
+            },
+            "EntryMgmtResource": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "slug": {
+                        "type": "string"
+                    },
+                    "status": {
+                        "type": "string"
+                    },
+                    "is_display": {
+                        "type": "boolean"
+                    },
+                    "rank_order": {
+                        "type": "string"
+                    },
+                    "layout_structure": {
+                        "type": [
+                            "array",
+                            "null"
+                        ],
+                        "items": {}
+                    },
+                    "is_delete": {
+                        "type": "boolean"
+                    },
+                    "updated_at": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "id",
+                    "name",
+                    "slug",
+                    "status",
+                    "is_display",
+                    "rank_order",
+                    "layout_structure",
+                    "is_delete",
+                    "updated_at"
+                ],
+                "title": "EntryMgmtResource"
+            },
             "EntryResource": {
                 "type": "object",
                 "properties": {
@@ -12280,6 +12550,86 @@
                     "layout_structure"
                 ],
                 "title": "EntryResource"
+            },
+            "FeatureMstHistResource": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "feature_mst_id": {
+                        "type": "integer"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "group_name": {
+                        "type": "string"
+                    },
+                    "description": {
+                        "type": "string"
+                    },
+                    "status": {
+                        "type": "string"
+                    },
+                    "action": {
+                        "type": "string"
+                    },
+                    "author_id": {
+                        "type": "integer"
+                    },
+                    "created_at": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "id",
+                    "feature_mst_id",
+                    "name",
+                    "group_name",
+                    "description",
+                    "status",
+                    "action",
+                    "author_id",
+                    "created_at"
+                ],
+                "title": "FeatureMstHistResource"
+            },
+            "FeatureMstResource": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "group_name": {
+                        "type": "string"
+                    },
+                    "description": {
+                        "type": "string"
+                    },
+                    "status": {
+                        "type": "string"
+                    },
+                    "is_delete": {
+                        "type": "boolean"
+                    },
+                    "updated_at": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "id",
+                    "name",
+                    "group_name",
+                    "description",
+                    "status",
+                    "is_delete",
+                    "updated_at"
+                ],
+                "title": "FeatureMstResource"
             },
             "Gender": {
                 "type": "integer",
@@ -12369,10 +12719,6 @@
                 ],
                 "title": "IsDisplay"
             },
-            "JsonResource": {
-                "type": "string",
-                "title": "JsonResource"
-            },
             "LoginRequest": {
                 "type": "object",
                 "properties": {
@@ -12392,6 +12738,42 @@
                     "password"
                 ],
                 "title": "LoginRequest"
+            },
+            "PolicyDepartmentMstHistResource": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "policy_department_mst_id": {
+                        "type": "integer"
+                    },
+                    "table_name": {
+                        "type": "integer"
+                    },
+                    "row_id": {
+                        "type": "integer"
+                    },
+                    "action": {
+                        "type": "string"
+                    },
+                    "author_id": {
+                        "type": "integer"
+                    },
+                    "created_at": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "id",
+                    "policy_department_mst_id",
+                    "table_name",
+                    "row_id",
+                    "action",
+                    "author_id",
+                    "created_at"
+                ],
+                "title": "PolicyDepartmentMstHistResource"
             },
             "PolicyDepartmentMstResource": {
                 "type": "object",
@@ -12453,6 +12835,78 @@
                 ],
                 "title": "PrepareUploadRequest"
             },
+            "RoleMstHistResource": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "role_mst_id": {
+                        "type": "integer"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "permission": {
+                        "type": "string"
+                    },
+                    "is_active": {
+                        "type": "boolean"
+                    },
+                    "action": {
+                        "type": "string"
+                    },
+                    "author_id": {
+                        "type": "integer"
+                    },
+                    "created_at": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "id",
+                    "role_mst_id",
+                    "name",
+                    "permission",
+                    "is_active",
+                    "action",
+                    "author_id",
+                    "created_at"
+                ],
+                "title": "RoleMstHistResource"
+            },
+            "RoleMstResource": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "permission": {
+                        "type": "string"
+                    },
+                    "is_active": {
+                        "type": "boolean"
+                    },
+                    "is_delete": {
+                        "type": "boolean"
+                    },
+                    "updated_at": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "id",
+                    "name",
+                    "permission",
+                    "is_active",
+                    "is_delete",
+                    "updated_at"
+                ],
+                "title": "RoleMstResource"
+            },
             "SearchDescriptionResource": {
                 "type": "object",
                 "properties": {
@@ -12512,6 +12966,269 @@
                     "descriptions"
                 ],
                 "title": "SearchResultResource"
+            },
+            "SettingLinkMgmtHistResource": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "setting_link_mgmt_id": {
+                        "type": "integer"
+                    },
+                    "key": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "value": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "action": {
+                        "type": "integer"
+                    },
+                    "author_id": {
+                        "type": "integer"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                },
+                "required": [
+                    "id",
+                    "setting_link_mgmt_id",
+                    "key",
+                    "value",
+                    "action",
+                    "author_id",
+                    "created_at"
+                ],
+                "title": "SettingLinkMgmtHistResource"
+            },
+            "SettingLinkMgmtResource": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "key": {
+                        "type": "string"
+                    },
+                    "value": {
+                        "type": "string"
+                    },
+                    "is_delete": {
+                        "type": "boolean"
+                    },
+                    "updated_at": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "id",
+                    "key",
+                    "value",
+                    "is_delete",
+                    "updated_at"
+                ],
+                "title": "SettingLinkMgmtResource"
+            },
+            "SliderMgmtHistResource": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "slider_mgmt_id": {
+                        "type": "integer"
+                    },
+                    "title": {
+                        "type": "string"
+                    },
+                    "slug": {
+                        "type": "string"
+                    },
+                    "link": {
+                        "type": "string"
+                    },
+                    "image": {
+                        "type": "string"
+                    },
+                    "status": {
+                        "type": "string"
+                    },
+                    "action": {
+                        "type": "string"
+                    },
+                    "author_id": {
+                        "type": "integer"
+                    },
+                    "created_at": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "id",
+                    "slider_mgmt_id",
+                    "title",
+                    "slug",
+                    "link",
+                    "image",
+                    "status",
+                    "action",
+                    "author_id",
+                    "created_at"
+                ],
+                "title": "SliderMgmtHistResource"
+            },
+            "SliderMgmtResource": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "title": {
+                        "type": "string"
+                    },
+                    "slug": {
+                        "type": "string"
+                    },
+                    "link": {
+                        "type": "string"
+                    },
+                    "image": {
+                        "type": "string"
+                    },
+                    "status": {
+                        "type": "string"
+                    },
+                    "is_delete": {
+                        "type": "boolean"
+                    },
+                    "updated_at": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "id",
+                    "title",
+                    "slug",
+                    "link",
+                    "image",
+                    "status",
+                    "is_delete",
+                    "updated_at"
+                ],
+                "title": "SliderMgmtResource"
+            },
+            "SocialMgmtHistResource": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "social_mgmt_id": {
+                        "type": "integer"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "slug": {
+                        "type": "string"
+                    },
+                    "link": {
+                        "type": "string"
+                    },
+                    "image": {
+                        "type": "string"
+                    },
+                    "status": {
+                        "type": "integer"
+                    },
+                    "is_display": {
+                        "type": "boolean"
+                    },
+                    "rank_order": {
+                        "type": "integer"
+                    },
+                    "action": {
+                        "type": "integer"
+                    },
+                    "author_id": {
+                        "type": "integer"
+                    },
+                    "created_at": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "id",
+                    "social_mgmt_id",
+                    "name",
+                    "slug",
+                    "link",
+                    "image",
+                    "status",
+                    "is_display",
+                    "rank_order",
+                    "action",
+                    "author_id",
+                    "created_at"
+                ],
+                "title": "SocialMgmtHistResource"
+            },
+            "SocialMgmtResource": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "slug": {
+                        "type": "string"
+                    },
+                    "link": {
+                        "type": "string"
+                    },
+                    "image": {
+                        "type": "string"
+                    },
+                    "status": {
+                        "type": "integer"
+                    },
+                    "is_display": {
+                        "type": "boolean"
+                    },
+                    "rank_order": {
+                        "type": "integer"
+                    },
+                    "is_delete": {
+                        "type": "boolean"
+                    },
+                    "updated_at": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "id",
+                    "name",
+                    "slug",
+                    "link",
+                    "image",
+                    "status",
+                    "is_display",
+                    "rank_order",
+                    "is_delete",
+                    "updated_at"
+                ],
+                "title": "SocialMgmtResource"
             },
             "StatusEnum": {
                 "type": "integer",
@@ -13958,6 +14675,38 @@
                     "is_delete"
                 ],
                 "title": "StoreUserMgmtRequest"
+            },
+            "TokenMstResource": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "account_id": {
+                        "type": "integer"
+                    },
+                    "device_name": {
+                        "type": "string"
+                    },
+                    "ip_address": {
+                        "type": "string"
+                    },
+                    "expired_at": {
+                        "type": "string"
+                    },
+                    "updated_at": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "id",
+                    "account_id",
+                    "device_name",
+                    "ip_address",
+                    "expired_at",
+                    "updated_at"
+                ],
+                "title": "TokenMstResource"
             },
             "UpdateAdminDepartmentMstRequest": {
                 "type": "object",
@@ -15718,6 +16467,153 @@
                     "is_active"
                 ],
                 "title": "UpdateUserMgmtRequest"
+            },
+            "UserMgmtHistResource": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "user_mgmt_id": {
+                        "type": "integer"
+                    },
+                    "email": {
+                        "type": "string"
+                    },
+                    "user_name": {
+                        "type": "string"
+                    },
+                    "password": {
+                        "type": "string"
+                    },
+                    "first_name": {
+                        "type": "string"
+                    },
+                    "last_name": {
+                        "type": "string"
+                    },
+                    "address": {
+                        "type": "string"
+                    },
+                    "phone_number": {
+                        "type": "string"
+                    },
+                    "birth": {
+                        "type": "string"
+                    },
+                    "gender": {
+                        "type": "string"
+                    },
+                    "status": {
+                        "type": "integer"
+                    },
+                    "is_active": {
+                        "type": "boolean"
+                    },
+                    "avatar": {
+                        "type": "string"
+                    },
+                    "action": {
+                        "type": "string"
+                    },
+                    "author_id": {
+                        "type": "integer"
+                    },
+                    "created_at": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "id",
+                    "user_mgmt_id",
+                    "email",
+                    "user_name",
+                    "password",
+                    "first_name",
+                    "last_name",
+                    "address",
+                    "phone_number",
+                    "birth",
+                    "gender",
+                    "status",
+                    "is_active",
+                    "avatar",
+                    "action",
+                    "author_id",
+                    "created_at"
+                ],
+                "title": "UserMgmtHistResource"
+            },
+            "UserMgmtResource": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "email": {
+                        "type": "string"
+                    },
+                    "user_name": {
+                        "type": "string"
+                    },
+                    "password": {
+                        "type": "string"
+                    },
+                    "first_name": {
+                        "type": "string"
+                    },
+                    "last_name": {
+                        "type": "string"
+                    },
+                    "address": {
+                        "type": "string"
+                    },
+                    "phone_number": {
+                        "type": "string"
+                    },
+                    "birth": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "gender": {
+                        "type": "integer"
+                    },
+                    "status": {
+                        "type": "integer"
+                    },
+                    "is_active": {
+                        "type": "boolean"
+                    },
+                    "avatar": {
+                        "type": "string"
+                    },
+                    "is_delete": {
+                        "type": "boolean"
+                    },
+                    "updated_at": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "id",
+                    "email",
+                    "user_name",
+                    "password",
+                    "first_name",
+                    "last_name",
+                    "address",
+                    "phone_number",
+                    "birth",
+                    "gender",
+                    "status",
+                    "is_active",
+                    "avatar",
+                    "is_delete",
+                    "updated_at"
+                ],
+                "title": "UserMgmtResource"
             },
             "UserStatus": {
                 "type": "integer",

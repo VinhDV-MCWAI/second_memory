@@ -9,8 +9,10 @@ use App\Http\Requests\Management\UserMgmt\DeleteUserMgmtRequest;
 use App\Http\Requests\Management\UserMgmt\ListUserMgmtRequest;
 use App\Http\Requests\Management\UserMgmt\StoreUserMgmtRequest;
 use App\Http\Requests\Management\UserMgmt\UpdateUserMgmtRequest;
+use App\Http\Resources\Management\UserMgmtResource;
 use App\Services\Management\UserMgmtService;
-use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class UserMgmtController extends Controller
 {
@@ -21,7 +23,10 @@ class UserMgmtController extends Controller
     /**
      * UserMgmt list
      */
-    public function list(ListUserMgmtRequest $request): JsonResource
+    /**
+     * @return AnonymousResourceCollection<LengthAwarePaginator<int, UserMgmtResource>>
+     */
+    public function list(ListUserMgmtRequest $request): AnonymousResourceCollection
     {
         // dump($request->validated());
         return $this->userMgmt->list($request->validated());

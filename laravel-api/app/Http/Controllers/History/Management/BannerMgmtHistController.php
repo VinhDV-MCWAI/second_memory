@@ -9,8 +9,10 @@ use App\Http\Requests\History\Management\BannerMgmtHist\DeleteBannerMgmtHistRequ
 use App\Http\Requests\History\Management\BannerMgmtHist\ListBannerMgmtHistRequest;
 use App\Http\Requests\History\Management\BannerMgmtHist\StoreBannerMgmtHistRequest;
 use App\Http\Requests\History\Management\BannerMgmtHist\UpdateBannerMgmtHistRequest;
+use App\Http\Resources\History\Management\BannerMgmtHistResource;
 use App\Services\History\Management\BannerMgmtHistService;
-use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class BannerMgmtHistController extends Controller
 {
@@ -21,7 +23,10 @@ class BannerMgmtHistController extends Controller
     /**
      * BannerMgmtHist list
      */
-    public function list(ListBannerMgmtHistRequest $request): JsonResource
+    /**
+     * @return AnonymousResourceCollection<LengthAwarePaginator<int, BannerMgmtHistResource>>
+     */
+    public function list(ListBannerMgmtHistRequest $request): AnonymousResourceCollection
     {
         return $this->bannerMgmtHist->list($request->validated());
     }

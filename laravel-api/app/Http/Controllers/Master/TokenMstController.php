@@ -9,8 +9,10 @@ use App\Http\Requests\Master\TokenMst\DeleteTokenMstRequest;
 use App\Http\Requests\Master\TokenMst\ListTokenMstRequest;
 use App\Http\Requests\Master\TokenMst\StoreTokenMstRequest;
 use App\Http\Requests\Master\TokenMst\UpdateTokenMstRequest;
+use App\Http\Resources\Master\TokenMstResource;
 use App\Services\Master\TokenMstService;
-use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class TokenMstController extends Controller
 {
@@ -21,7 +23,10 @@ class TokenMstController extends Controller
     /**
      * TokenMst list
      */
-    public function list(ListTokenMstRequest $request): JsonResource
+    /**
+     * @return AnonymousResourceCollection<LengthAwarePaginator<int, TokenMstResource>>
+     */
+    public function list(ListTokenMstRequest $request): AnonymousResourceCollection
     {
         return $this->tokenMst->list($request->validated());
     }

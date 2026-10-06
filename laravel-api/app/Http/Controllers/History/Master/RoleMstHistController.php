@@ -9,8 +9,10 @@ use App\Http\Requests\History\Master\RoleMstHist\DeleteRoleMstHistRequest;
 use App\Http\Requests\History\Master\RoleMstHist\ListRoleMstHistRequest;
 use App\Http\Requests\History\Master\RoleMstHist\StoreRoleMstHistRequest;
 use App\Http\Requests\History\Master\RoleMstHist\UpdateRoleMstHistRequest;
+use App\Http\Resources\History\Master\RoleMstHistResource;
 use App\Services\History\Master\RoleMstHistService;
-use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class RoleMstHistController extends Controller
 {
@@ -21,7 +23,10 @@ class RoleMstHistController extends Controller
     /**
      * RoleMstHist list
      */
-    public function list(ListRoleMstHistRequest $request): JsonResource
+    /**
+     * @return AnonymousResourceCollection<LengthAwarePaginator<int, RoleMstHistResource>>
+     */
+    public function list(ListRoleMstHistRequest $request): AnonymousResourceCollection
     {
         return $this->roleMstHist->list($request->validated());
     }

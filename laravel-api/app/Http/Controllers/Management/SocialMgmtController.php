@@ -9,8 +9,10 @@ use App\Http\Requests\Management\SocialMgmt\DeleteSocialMgmtRequest;
 use App\Http\Requests\Management\SocialMgmt\ListSocialMgmtRequest;
 use App\Http\Requests\Management\SocialMgmt\StoreSocialMgmtRequest;
 use App\Http\Requests\Management\SocialMgmt\UpdateSocialMgmtRequest;
+use App\Http\Resources\Management\SocialMgmtResource;
 use App\Services\Management\SocialMgmtService;
-use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class SocialMgmtController extends Controller
 {
@@ -21,7 +23,10 @@ class SocialMgmtController extends Controller
     /**
      * SocialMgmt list
      */
-    public function list(ListSocialMgmtRequest $request): JsonResource
+    /**
+     * @return AnonymousResourceCollection<LengthAwarePaginator<int, SocialMgmtResource>>
+     */
+    public function list(ListSocialMgmtRequest $request): AnonymousResourceCollection
     {
         return $this->socialMgmt->list($request->validated());
     }

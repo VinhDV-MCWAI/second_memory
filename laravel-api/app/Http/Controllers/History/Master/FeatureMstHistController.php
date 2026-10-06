@@ -9,8 +9,10 @@ use App\Http\Requests\History\Master\FeatureMstHist\DeleteFeatureMstHistRequest;
 use App\Http\Requests\History\Master\FeatureMstHist\ListFeatureMstHistRequest;
 use App\Http\Requests\History\Master\FeatureMstHist\StoreFeatureMstHistRequest;
 use App\Http\Requests\History\Master\FeatureMstHist\UpdateFeatureMstHistRequest;
+use App\Http\Resources\History\Master\FeatureMstHistResource;
 use App\Services\History\Master\FeatureMstHistService;
-use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class FeatureMstHistController extends Controller
 {
@@ -21,7 +23,10 @@ class FeatureMstHistController extends Controller
     /**
      * FeatureMstHist list
      */
-    public function list(ListFeatureMstHistRequest $request): JsonResource
+    /**
+     * @return AnonymousResourceCollection<LengthAwarePaginator<int, FeatureMstHistResource>>
+     */
+    public function list(ListFeatureMstHistRequest $request): AnonymousResourceCollection
     {
         return $this->featureMstHist->list($request->validated());
     }

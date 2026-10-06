@@ -9,8 +9,10 @@ use App\Http\Requests\History\Management\SettingLinkMgmtHist\DeleteSettingLinkMg
 use App\Http\Requests\History\Management\SettingLinkMgmtHist\ListSettingLinkMgmtHistRequest;
 use App\Http\Requests\History\Management\SettingLinkMgmtHist\StoreSettingLinkMgmtHistRequest;
 use App\Http\Requests\History\Management\SettingLinkMgmtHist\UpdateSettingLinkMgmtHistRequest;
+use App\Http\Resources\History\Management\SettingLinkMgmtHistResource;
 use App\Services\History\Management\SettingLinkMgmtHistService;
-use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class SettingLinkMgmtHistController extends Controller
 {
@@ -21,7 +23,10 @@ class SettingLinkMgmtHistController extends Controller
     /**
      * SettingLinkMgmtHist list
      */
-    public function list(ListSettingLinkMgmtHistRequest $request): JsonResource
+    /**
+     * @return AnonymousResourceCollection<LengthAwarePaginator<int, SettingLinkMgmtHistResource>>
+     */
+    public function list(ListSettingLinkMgmtHistRequest $request): AnonymousResourceCollection
     {
         return $this->settingLinkMgmtHist->list($request->validated());
     }

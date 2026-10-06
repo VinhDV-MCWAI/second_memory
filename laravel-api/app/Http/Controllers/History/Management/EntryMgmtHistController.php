@@ -9,8 +9,10 @@ use App\Http\Requests\History\Management\EntryMgmtHist\DeleteEntryMgmtHistReques
 use App\Http\Requests\History\Management\EntryMgmtHist\ListEntryMgmtHistRequest;
 use App\Http\Requests\History\Management\EntryMgmtHist\StoreEntryMgmtHistRequest;
 use App\Http\Requests\History\Management\EntryMgmtHist\UpdateEntryMgmtHistRequest;
+use App\Http\Resources\History\Management\EntryMgmtHistResource;
 use App\Services\History\Management\EntryMgmtHistService;
-use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class EntryMgmtHistController extends Controller
 {
@@ -21,7 +23,10 @@ class EntryMgmtHistController extends Controller
     /**
      * EntryMgmtHist list
      */
-    public function list(ListEntryMgmtHistRequest $request): JsonResource
+    /**
+     * @return AnonymousResourceCollection<LengthAwarePaginator<int, EntryMgmtHistResource>>
+     */
+    public function list(ListEntryMgmtHistRequest $request): AnonymousResourceCollection
     {
         return $this->entryMgmtHist->list($request->validated());
     }

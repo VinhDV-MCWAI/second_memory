@@ -9,8 +9,10 @@ use App\Http\Requests\Management\BannerMgmt\DeleteBannerMgmtRequest;
 use App\Http\Requests\Management\BannerMgmt\ListBannerMgmtRequest;
 use App\Http\Requests\Management\BannerMgmt\StoreBannerMgmtRequest;
 use App\Http\Requests\Management\BannerMgmt\UpdateBannerMgmtRequest;
+use App\Http\Resources\Management\BannerMgmtResource;
 use App\Services\Management\BannerMgmtService;
-use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class BannerMgmtController extends Controller
 {
@@ -21,7 +23,10 @@ class BannerMgmtController extends Controller
     /**
      * BannerMgmt list
      */
-    public function list(ListBannerMgmtRequest $request): JsonResource
+    /**
+     * @return AnonymousResourceCollection<LengthAwarePaginator<int, BannerMgmtResource>>
+     */
+    public function list(ListBannerMgmtRequest $request): AnonymousResourceCollection
     {
         return $this->bannerMgmt->list($request->validated());
     }

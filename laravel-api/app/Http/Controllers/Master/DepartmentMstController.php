@@ -9,8 +9,10 @@ use App\Http\Requests\Master\DepartmentMst\DeleteDepartmentMstRequest;
 use App\Http\Requests\Master\DepartmentMst\ListDepartmentMstRequest;
 use App\Http\Requests\Master\DepartmentMst\StoreDepartmentMstRequest;
 use App\Http\Requests\Master\DepartmentMst\UpdateDepartmentMstRequest;
+use App\Http\Resources\Master\DepartmentMstResource;
 use App\Services\Master\DepartmentMstService;
-use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class DepartmentMstController extends Controller
 {
@@ -21,7 +23,10 @@ class DepartmentMstController extends Controller
     /**
      * DepartmentMst list
      */
-    public function list(ListDepartmentMstRequest $request): JsonResource
+    /**
+     * @return AnonymousResourceCollection<LengthAwarePaginator<int, DepartmentMstResource>>
+     */
+    public function list(ListDepartmentMstRequest $request): AnonymousResourceCollection
     {
         return $this->departmentMst->list($request->validated());
     }

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Services;
 
 use App\Repositories\CrudRepository;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 /**
@@ -18,7 +19,7 @@ abstract class CrudService
 
     public function __construct(protected CrudRepository $repository) {}
 
-    public function list(array $payload): JsonResource
+    public function list(array $payload): AnonymousResourceCollection
     {
         return $this->resource::collection($this->repository->list($payload));
     }

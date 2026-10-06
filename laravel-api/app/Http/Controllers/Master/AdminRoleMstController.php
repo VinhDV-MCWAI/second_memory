@@ -7,8 +7,10 @@ namespace App\Http\Controllers\Master;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Master\AdminRoleMst\ListAdminRoleMstRequest;
 use App\Http\Requests\Master\AdminRoleMst\UpdateAdminRoleMstRequest;
+use App\Http\Resources\Master\AdminRoleMstResource;
 use App\Services\Master\AdminRoleMstService;
-use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class AdminRoleMstController extends Controller
 {
@@ -19,7 +21,10 @@ class AdminRoleMstController extends Controller
     /**
      * AdminRoleMst list
      */
-    public function list(ListAdminRoleMstRequest $request): JsonResource
+    /**
+     * @return AnonymousResourceCollection<LengthAwarePaginator<int, AdminRoleMstResource>>
+     */
+    public function list(ListAdminRoleMstRequest $request): AnonymousResourceCollection
     {
         return $this->adminRoleMst->list($request->validated());
     }

@@ -7,8 +7,10 @@ namespace App\Http\Controllers\Master;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Master\ApiRoleMst\ListApiRoleMstRequest;
 use App\Http\Requests\Master\ApiRoleMst\UpdateApiRoleMstRequest;
+use App\Http\Resources\Master\ApiRoleMstResource;
 use App\Services\Master\ApiRoleMstService;
-use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class ApiRoleMstController extends Controller
 {
@@ -19,7 +21,10 @@ class ApiRoleMstController extends Controller
     /**
      * ApiRoleMst list
      */
-    public function list(ListApiRoleMstRequest $request): JsonResource
+    /**
+     * @return AnonymousResourceCollection<LengthAwarePaginator<int, ApiRoleMstResource>>
+     */
+    public function list(ListApiRoleMstRequest $request): AnonymousResourceCollection
     {
         return $this->apiRoleMst->list($request->validated());
     }

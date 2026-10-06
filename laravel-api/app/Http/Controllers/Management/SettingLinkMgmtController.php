@@ -9,8 +9,10 @@ use App\Http\Requests\Management\SettingLinkMgmt\DeleteSettingLinkMgmtRequest;
 use App\Http\Requests\Management\SettingLinkMgmt\ListSettingLinkMgmtRequest;
 use App\Http\Requests\Management\SettingLinkMgmt\StoreSettingLinkMgmtRequest;
 use App\Http\Requests\Management\SettingLinkMgmt\UpdateSettingLinkMgmtRequest;
+use App\Http\Resources\Management\SettingLinkMgmtResource;
 use App\Services\Management\SettingLinkMgmtService;
-use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class SettingLinkMgmtController extends Controller
 {
@@ -21,7 +23,10 @@ class SettingLinkMgmtController extends Controller
     /**
      * SettingLinkMgmt list
      */
-    public function list(ListSettingLinkMgmtRequest $request): JsonResource
+    /**
+     * @return AnonymousResourceCollection<LengthAwarePaginator<int, SettingLinkMgmtResource>>
+     */
+    public function list(ListSettingLinkMgmtRequest $request): AnonymousResourceCollection
     {
         return $this->settingLinkMgmt->list($request->validated());
     }

@@ -9,8 +9,10 @@ use App\Http\Requests\History\Management\CategoryMgmtHist\DeleteCategoryMgmtHist
 use App\Http\Requests\History\Management\CategoryMgmtHist\ListCategoryMgmtHistRequest;
 use App\Http\Requests\History\Management\CategoryMgmtHist\StoreCategoryMgmtHistRequest;
 use App\Http\Requests\History\Management\CategoryMgmtHist\UpdateCategoryMgmtHistRequest;
+use App\Http\Resources\History\Management\CategoryMgmtHistResource;
 use App\Services\History\Management\CategoryMgmtHistService;
-use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class CategoryMgmtHistController extends Controller
 {
@@ -21,7 +23,10 @@ class CategoryMgmtHistController extends Controller
     /**
      * CategoryMgmtHist list
      */
-    public function list(ListCategoryMgmtHistRequest $request): JsonResource
+    /**
+     * @return AnonymousResourceCollection<LengthAwarePaginator<int, CategoryMgmtHistResource>>
+     */
+    public function list(ListCategoryMgmtHistRequest $request): AnonymousResourceCollection
     {
         return $this->categoryMgmtHist->list($request->validated());
     }

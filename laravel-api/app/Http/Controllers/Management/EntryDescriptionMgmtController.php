@@ -9,8 +9,10 @@ use App\Http\Requests\Management\EntryDescriptionMgmt\DeleteEntryDescriptionMgmt
 use App\Http\Requests\Management\EntryDescriptionMgmt\ListEntryDescriptionMgmtRequest;
 use App\Http\Requests\Management\EntryDescriptionMgmt\StoreEntryDescriptionMgmtRequest;
 use App\Http\Requests\Management\EntryDescriptionMgmt\UpdateEntryDescriptionMgmtRequest;
+use App\Http\Resources\Management\EntryDescriptionMgmtResource;
 use App\Services\Management\EntryDescriptionMgmtService;
-use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class EntryDescriptionMgmtController extends Controller
 {
@@ -21,7 +23,10 @@ class EntryDescriptionMgmtController extends Controller
     /**
      * EntryDescriptionMgmt list
      */
-    public function list(ListEntryDescriptionMgmtRequest $request): JsonResource
+    /**
+     * @return AnonymousResourceCollection<LengthAwarePaginator<int, EntryDescriptionMgmtResource>>
+     */
+    public function list(ListEntryDescriptionMgmtRequest $request): AnonymousResourceCollection
     {
         return $this->entryDescriptionMgmt->list($request->validated());
     }

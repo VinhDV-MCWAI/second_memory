@@ -9,7 +9,7 @@ use App\Constants\Messages;
 use App\Http\Resources\Master\ApiRoleMstResource;
 use App\Repositories\Master\ApiRoleMstRepository;
 use App\Services\BaseJunctionService;
-use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use LogicException;
 
 class ApiRoleMstService extends BaseJunctionService
@@ -21,7 +21,7 @@ class ApiRoleMstService extends BaseJunctionService
     /**
      * Get api role mst list
      */
-    public function list(array $payload): JsonResource
+    public function list(array $payload): AnonymousResourceCollection
     {
         $list = $this->apiRoleMst->list($payload);
 

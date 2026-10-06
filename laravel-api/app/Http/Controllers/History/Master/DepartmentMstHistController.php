@@ -9,8 +9,10 @@ use App\Http\Requests\History\Master\DepartmentMstHist\DeleteDepartmentMstHistRe
 use App\Http\Requests\History\Master\DepartmentMstHist\ListDepartmentMstHistRequest;
 use App\Http\Requests\History\Master\DepartmentMstHist\StoreDepartmentMstHistRequest;
 use App\Http\Requests\History\Master\DepartmentMstHist\UpdateDepartmentMstHistRequest;
+use App\Http\Resources\History\Master\DepartmentMstHistResource;
 use App\Services\History\Master\DepartmentMstHistService;
-use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class DepartmentMstHistController extends Controller
 {
@@ -21,7 +23,10 @@ class DepartmentMstHistController extends Controller
     /**
      * DepartmentMstHist list
      */
-    public function list(ListDepartmentMstHistRequest $request): JsonResource
+    /**
+     * @return AnonymousResourceCollection<LengthAwarePaginator<int, DepartmentMstHistResource>>
+     */
+    public function list(ListDepartmentMstHistRequest $request): AnonymousResourceCollection
     {
         return $this->departmentMstHist->list($request->validated());
     }

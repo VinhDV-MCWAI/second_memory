@@ -9,8 +9,10 @@ use App\Http\Requests\Management\CategoryMgmt\DeleteCategoryMgmtRequest;
 use App\Http\Requests\Management\CategoryMgmt\ListCategoryMgmtRequest;
 use App\Http\Requests\Management\CategoryMgmt\StoreCategoryMgmtRequest;
 use App\Http\Requests\Management\CategoryMgmt\UpdateCategoryMgmtRequest;
+use App\Http\Resources\Management\CategoryMgmtResource;
 use App\Services\Management\CategoryMgmtService;
-use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class CategoryMgmtController extends Controller
 {
@@ -21,7 +23,10 @@ class CategoryMgmtController extends Controller
     /**
      * CategoryMgmt list
      */
-    public function list(ListCategoryMgmtRequest $request): JsonResource
+    /**
+     * @return AnonymousResourceCollection<LengthAwarePaginator<int, CategoryMgmtResource>>
+     */
+    public function list(ListCategoryMgmtRequest $request): AnonymousResourceCollection
     {
         return $this->categoryMgmt->list($request->validated());
     }

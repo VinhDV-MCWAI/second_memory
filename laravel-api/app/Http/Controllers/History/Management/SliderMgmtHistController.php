@@ -9,8 +9,10 @@ use App\Http\Requests\History\Management\SliderMgmtHist\DeleteSliderMgmtHistRequ
 use App\Http\Requests\History\Management\SliderMgmtHist\ListSliderMgmtHistRequest;
 use App\Http\Requests\History\Management\SliderMgmtHist\StoreSliderMgmtHistRequest;
 use App\Http\Requests\History\Management\SliderMgmtHist\UpdateSliderMgmtHistRequest;
+use App\Http\Resources\History\Management\SliderMgmtHistResource;
 use App\Services\History\Management\SliderMgmtHistService;
-use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class SliderMgmtHistController extends Controller
 {
@@ -21,7 +23,10 @@ class SliderMgmtHistController extends Controller
     /**
      * SliderMgmtHist list
      */
-    public function list(ListSliderMgmtHistRequest $request): JsonResource
+    /**
+     * @return AnonymousResourceCollection<LengthAwarePaginator<int, SliderMgmtHistResource>>
+     */
+    public function list(ListSliderMgmtHistRequest $request): AnonymousResourceCollection
     {
         return $this->sliderMgmtHist->list($request->validated());
     }

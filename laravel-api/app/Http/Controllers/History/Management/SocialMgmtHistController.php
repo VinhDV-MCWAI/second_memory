@@ -9,8 +9,10 @@ use App\Http\Requests\History\Management\SocialMgmtHist\DeleteSocialMgmtHistRequ
 use App\Http\Requests\History\Management\SocialMgmtHist\ListSocialMgmtHistRequest;
 use App\Http\Requests\History\Management\SocialMgmtHist\StoreSocialMgmtHistRequest;
 use App\Http\Requests\History\Management\SocialMgmtHist\UpdateSocialMgmtHistRequest;
+use App\Http\Resources\History\Management\SocialMgmtHistResource;
 use App\Services\History\Management\SocialMgmtHistService;
-use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class SocialMgmtHistController extends Controller
 {
@@ -21,7 +23,10 @@ class SocialMgmtHistController extends Controller
     /**
      * SocialMgmtHist list
      */
-    public function list(ListSocialMgmtHistRequest $request): JsonResource
+    /**
+     * @return AnonymousResourceCollection<LengthAwarePaginator<int, SocialMgmtHistResource>>
+     */
+    public function list(ListSocialMgmtHistRequest $request): AnonymousResourceCollection
     {
         return $this->socialMgmtHist->list($request->validated());
     }

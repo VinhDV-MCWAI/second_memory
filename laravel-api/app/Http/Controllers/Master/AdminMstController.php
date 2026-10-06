@@ -9,8 +9,10 @@ use App\Http\Requests\Master\AdminMst\DeleteAdminMstRequest;
 use App\Http\Requests\Master\AdminMst\ListAdminMstRequest;
 use App\Http\Requests\Master\AdminMst\StoreAdminMstRequest;
 use App\Http\Requests\Master\AdminMst\UpdateAdminMstRequest;
+use App\Http\Resources\Master\AdminMstResource;
 use App\Services\Master\AdminMstService;
-use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class AdminMstController extends Controller
 {
@@ -21,7 +23,10 @@ class AdminMstController extends Controller
     /**
      * AdminMst list
      */
-    public function list(ListAdminMstRequest $request): JsonResource
+    /**
+     * @return AnonymousResourceCollection<LengthAwarePaginator<int, AdminMstResource>>
+     */
+    public function list(ListAdminMstRequest $request): AnonymousResourceCollection
     {
         return $this->adminMst->list($request->validated());
     }

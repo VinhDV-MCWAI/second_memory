@@ -9,8 +9,10 @@ use App\Http\Requests\Master\ApiMst\DeleteApiMstRequest;
 use App\Http\Requests\Master\ApiMst\ListApiMstRequest;
 use App\Http\Requests\Master\ApiMst\StoreApiMstRequest;
 use App\Http\Requests\Master\ApiMst\UpdateApiMstRequest;
+use App\Http\Resources\Master\ApiMstResource;
 use App\Services\Master\ApiMstService;
-use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class ApiMstController extends Controller
 {
@@ -21,7 +23,10 @@ class ApiMstController extends Controller
     /**
      * ApiMst list
      */
-    public function list(ListApiMstRequest $request): JsonResource
+    /**
+     * @return AnonymousResourceCollection<LengthAwarePaginator<int, ApiMstResource>>
+     */
+    public function list(ListApiMstRequest $request): AnonymousResourceCollection
     {
         return $this->apiMst->list($request->validated());
     }

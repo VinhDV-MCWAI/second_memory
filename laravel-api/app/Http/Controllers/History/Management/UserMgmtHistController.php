@@ -9,8 +9,10 @@ use App\Http\Requests\History\Management\UserMgmtHist\DeleteUserMgmtHistRequest;
 use App\Http\Requests\History\Management\UserMgmtHist\ListUserMgmtHistRequest;
 use App\Http\Requests\History\Management\UserMgmtHist\StoreUserMgmtHistRequest;
 use App\Http\Requests\History\Management\UserMgmtHist\UpdateUserMgmtHistRequest;
+use App\Http\Resources\History\Management\UserMgmtHistResource;
 use App\Services\History\Management\UserMgmtHistService;
-use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class UserMgmtHistController extends Controller
 {
@@ -21,7 +23,10 @@ class UserMgmtHistController extends Controller
     /**
      * UserMgmtHist list
      */
-    public function list(ListUserMgmtHistRequest $request): JsonResource
+    /**
+     * @return AnonymousResourceCollection<LengthAwarePaginator<int, UserMgmtHistResource>>
+     */
+    public function list(ListUserMgmtHistRequest $request): AnonymousResourceCollection
     {
         return $this->userMgmtHist->list($request->validated());
     }
