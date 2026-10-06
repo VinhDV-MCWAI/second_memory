@@ -6,18 +6,7 @@ namespace App\Enums;
 
 enum IsActive: int
 {
-    /**
-     * false
-     *
-     * @var int
-     */
     case FALSE = 0;
-
-    /**
-     * true
-     *
-     * @var int
-     */
     case TRUE = 1;
 
     public function label(): string

@@ -6,25 +6,8 @@ namespace App\Enums;
 
 enum StatusEnum: int
 {
-    /**
-     * draft
-     *
-     * @var int
-     */
     case DRAFT = 0;
-
-    /**
-     * published
-     *
-     * @var int
-     */
     case PUBLISHED = 1;
-
-    /**
-     * archived
-     *
-     * @var int
-     */
     case ARCHIVED = 2;
 
     public function label(): string

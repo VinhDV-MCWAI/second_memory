@@ -6,25 +6,8 @@ namespace App\Enums;
 
 enum ActionType: int
 {
-    /**
-     * Create
-     *
-     * @var int
-     */
     case CREATE = 1;
-
-    /**
-     * Update
-     *
-     * @var int
-     */
     case UPDATE = 2;
-
-    /**
-     * Delete
-     *
-     * @var int
-     */
     case DELETE = 3;
 
     public function label(): string

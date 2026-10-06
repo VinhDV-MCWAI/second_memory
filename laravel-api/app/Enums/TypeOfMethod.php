@@ -6,39 +6,10 @@ namespace App\Enums;
 
 enum TypeOfMethod: int
 {
-    /**
-     * GET
-     *
-     * @var int
-     */
     case GET = 0;
-
-    /**
-     * POST
-     *
-     * @var int
-     */
     case POST = 1;
-
-    /**
-     * PUT
-     *
-     * @var int
-     */
     case PUT = 2;
-
-    /**
-     * PATCH
-     *
-     * @var int
-     */
     case PATCH = 3;
-
-    /**
-     * DELETE
-     *
-     * @var int
-     */
     case DELETE = 4;
 
     public static function fromName(string $method): ?self
