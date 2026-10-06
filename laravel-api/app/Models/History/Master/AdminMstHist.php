@@ -2,6 +2,7 @@
 
 namespace App\Models\History\Master;
 
+use App\Models\Master\AdminMst;
 use Illuminate\Database\Eloquent\Model;
 
 class AdminMstHist extends Model
@@ -35,40 +36,41 @@ class AdminMstHist extends Model
         'author_id',
     ];
 
-    /**
-     * The attributes that should be cast.
-     *
-     * @var array
-     */
-    protected $casts = [
-        'id' => 'integer',
-        'admin_mst_id' => 'integer',
-        'email' => 'string',
-        'user_name' => 'string',
-        'password' => 'string',
-        'first_name' => 'string',
-        'last_name' => 'string',
-        'address' => 'string',
-        'phone_number' => 'string',
-        'birth' => 'datetime',
-        'gender' => 'integer',
-        'status' => 'integer',
-        'is_active' => 'boolean',
-        'avatar' => 'string',
-        'email_verified_at' => 'datetime',
-        'remember_token' => 'string',
-        'action' => 'integer',
-        'author_id' => 'integer',
-        'created_at' => 'datetime',
-    ];
-
     public function adminMst()
     {
-        return $this->belongsTo(\App\Models\Master\AdminMst::class, 'admin_mst_id');
+        return $this->belongsTo(AdminMst::class, 'admin_mst_id');
     }
 
     public function author()
     {
-        return $this->belongsTo(\App\Models\Master\AdminMst::class, 'author_id');
+        return $this->belongsTo(AdminMst::class, 'author_id');
+    }
+
+    /**
+     * The attributes that should be cast.
+     */
+    protected function casts(): array
+    {
+        return [
+            'id' => 'integer',
+            'admin_mst_id' => 'integer',
+            'email' => 'string',
+            'user_name' => 'string',
+            'password' => 'string',
+            'first_name' => 'string',
+            'last_name' => 'string',
+            'address' => 'string',
+            'phone_number' => 'string',
+            'birth' => 'datetime',
+            'gender' => 'integer',
+            'status' => 'integer',
+            'is_active' => 'boolean',
+            'avatar' => 'string',
+            'email_verified_at' => 'datetime',
+            'remember_token' => 'string',
+            'action' => 'integer',
+            'author_id' => 'integer',
+            'created_at' => 'datetime',
+        ];
     }
 }

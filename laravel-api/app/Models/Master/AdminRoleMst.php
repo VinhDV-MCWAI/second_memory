@@ -24,18 +24,6 @@ class AdminRoleMst extends Model
     ];
 
     /**
-     * The attributes that should be cast.
-     *
-     * @var array
-     */
-    protected $casts = [
-        'admin_mst_id' => 'integer',
-        'role_mst_id' => 'integer',
-        'created_at' => 'datetime',
-        'updated_at' => 'datetime',
-    ];
-
-    /**
      * Get the admin that owns this relationship.
      */
     public function adminMst(): BelongsTo
@@ -49,5 +37,18 @@ class AdminRoleMst extends Model
     public function roleMst(): BelongsTo
     {
         return $this->belongsTo(RoleMst::class, 'role_mst_id');
+    }
+
+    /**
+     * The attributes that should be cast.
+     */
+    protected function casts(): array
+    {
+        return [
+            'admin_mst_id' => 'integer',
+            'role_mst_id' => 'integer',
+            'created_at' => 'datetime',
+            'updated_at' => 'datetime',
+        ];
     }
 }

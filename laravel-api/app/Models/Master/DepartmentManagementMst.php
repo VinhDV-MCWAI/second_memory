@@ -24,18 +24,6 @@ class DepartmentManagementMst extends Model
     ];
 
     /**
-     * The attributes that should be cast.
-     *
-     * @var array
-     */
-    protected $casts = [
-        'department_mst_id' => 'integer',
-        'policy_department_mst_id' => 'integer',
-        'created_at' => 'datetime',
-        'updated_at' => 'datetime',
-    ];
-
-    /**
      * Get the department that owns this relationship.
      */
     public function department(): BelongsTo
@@ -49,5 +37,18 @@ class DepartmentManagementMst extends Model
     public function policy(): BelongsTo
     {
         return $this->belongsTo(PolicyDepartmentMst::class, 'policy_department_mst_id');
+    }
+
+    /**
+     * The attributes that should be cast.
+     */
+    protected function casts(): array
+    {
+        return [
+            'department_mst_id' => 'integer',
+            'policy_department_mst_id' => 'integer',
+            'created_at' => 'datetime',
+            'updated_at' => 'datetime',
+        ];
     }
 }

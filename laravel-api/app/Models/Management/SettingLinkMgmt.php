@@ -27,24 +27,25 @@ class SettingLinkMgmt extends Model
     ];
 
     /**
-     * The attributes that should be cast.
-     *
-     * @var array
-     */
-    protected $casts = [
-        'id' => 'integer',
-        'key' => 'string',
-        'value' => 'string',
-        'is_delete' => 'boolean',
-        'created_at' => 'datetime',
-        'updated_at' => 'datetime',
-    ];
-
-    /**
      * Get the history records for the setting link.
      */
     public function history(): HasMany
     {
         return $this->hasMany(SettingLinkMgmtHist::class, 'setting_link_mgmt_id');
+    }
+
+    /**
+     * The attributes that should be cast.
+     */
+    protected function casts(): array
+    {
+        return [
+            'id' => 'integer',
+            'key' => 'string',
+            'value' => 'string',
+            'is_delete' => 'boolean',
+            'created_at' => 'datetime',
+            'updated_at' => 'datetime',
+        ];
     }
 }

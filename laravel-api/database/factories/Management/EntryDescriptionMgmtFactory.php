@@ -5,6 +5,9 @@ namespace Database\Factories\Management;
 use App\Models\Management\EntryDescriptionMgmt;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
+/**
+ * @extends Factory<EntryDescriptionMgmt>
+ */
 class EntryDescriptionMgmtFactory extends Factory
 {
     protected $model = EntryDescriptionMgmt::class;
@@ -12,12 +15,12 @@ class EntryDescriptionMgmtFactory extends Factory
     public function definition()
     {
         return [
-            'title' => $this->faker->sentence(3),
-            'summary' => $this->faker->sentence(10),
-            'article' => $this->faker->paragraph(3),
+            'title' => fake()->sentence(3),
+            'summary' => fake()->sentence(10),
+            'article' => fake()->paragraph(3),
             'status' => 1,
             'is_display' => true,
-            'rank_order' => $this->faker->numberBetween(1, 100),
+            'rank_order' => fake()->numberBetween(1, 100),
             'is_delete' => false,
         ];
     }

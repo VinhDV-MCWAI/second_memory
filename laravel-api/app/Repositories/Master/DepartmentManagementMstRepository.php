@@ -55,12 +55,10 @@ class DepartmentManagementMstRepository extends BaseRepository implements Depart
     public function executeStore(array $payload): void
     {
         $now = now();
-        $data = collect($payload)->map(function ($item) use ($now) {
-            return array_merge($item, [
-                'created_at' => $now,
-                'updated_at' => $now,
-            ]);
-        })->all();
+        $data = collect($payload)->map(fn ($item) => array_merge($item, [
+            'created_at' => $now,
+            'updated_at' => $now,
+        ]))->all();
 
         $this->model->insert($data);
     }
@@ -70,9 +68,7 @@ class DepartmentManagementMstRepository extends BaseRepository implements Depart
      */
     public function executeDelete(array $payload): void
     {
-        $values = collect($payload)->map(function ($item) {
-            return '('.(int) $item['department_mst_id'].', '.(int) $item['policy_department_mst_id'].')';
-        })->all();
+        $values = collect($payload)->map(fn ($item) => '('.(int) $item['department_mst_id'].', '.(int) $item['policy_department_mst_id'].')')->all();
 
         $this->model
             ->whereRaw('(department_mst_id, policy_department_mst_id) IN ('.implode(', ', $values).')')
@@ -85,8 +81,8 @@ class DepartmentManagementMstRepository extends BaseRepository implements Depart
     public function getDepartmentManagementMstId(array $tuples): Collection
     {
         $values = collect($tuples)->map(function ($item) {
-            $depId = isset($item['department_mst_id']) ? $item['department_mst_id'] : ($item[0] ?? 0);
-            $polId = isset($item['policy_department_mst_id']) ? $item['policy_department_mst_id'] : ($item[1] ?? 0);
+            $depId = $item['department_mst_id'] ?? ($item[0] ?? 0);
+            $polId = $item['policy_department_mst_id'] ?? ($item[1] ?? 0);
 
             return '('.(int) $depId.', '.(int) $polId.')';
         })->all();
@@ -94,8 +90,6 @@ class DepartmentManagementMstRepository extends BaseRepository implements Depart
         return $this->model
             ->whereRaw('(department_mst_id, policy_department_mst_id) IN ('.implode(', ', $values).')')
             ->get(['department_mst_id', 'policy_department_mst_id'])
-            ->map(function ($item) {
-                return [$item->department_mst_id, $item->policy_department_mst_id];
-            });
+            ->map(fn ($item) => [$item->department_mst_id, $item->policy_department_mst_id]);
     }
 }

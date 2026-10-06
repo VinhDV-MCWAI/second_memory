@@ -7,6 +7,9 @@ use App\Models\Master\DepartmentMst;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 
+/**
+ * @extends Factory<DepartmentMst>
+ */
 class DepartmentMstFactory extends Factory
 {
     protected $model = DepartmentMst::class;
@@ -15,7 +18,7 @@ class DepartmentMstFactory extends Factory
     {
         return [
             'code' => Str::upper(Str::random(10)),
-            'name' => $this->faker->company,
+            'name' => fake()->company,
             'status' => StatusEnum::PUBLISHED->value,
             'is_delete' => 0,
         ];

@@ -26,17 +26,18 @@ class TokenMst extends Model
 
     /**
      * The attributes that should be cast.
-     *
-     * @var array
      */
-    protected $casts = [
-        'id' => 'integer',
-        'token_hash' => 'string',
-        'account_id' => 'integer',
-        'device_name' => 'string',
-        'ip_address' => 'string',
-        'expired_at' => 'datetime',
-        'created_at' => 'datetime',
-        'updated_at' => 'datetime',
-    ];
+    protected function casts(): array
+    {
+        return [
+            'id' => 'integer',
+            'token_hash' => 'string',
+            'account_id' => 'integer',
+            'device_name' => 'string',
+            'ip_address' => 'string',
+            'expired_at' => 'datetime',
+            'created_at' => 'datetime',
+            'updated_at' => 'datetime',
+        ];
+    }
 }

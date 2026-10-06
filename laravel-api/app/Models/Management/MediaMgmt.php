@@ -2,7 +2,9 @@
 
 namespace App\Models\Management;
 
+use App\Enums\UploadStatus;
 use App\Traits\HasSoftDelete;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 
 class MediaMgmt extends Model
@@ -32,17 +34,6 @@ class MediaMgmt extends Model
         'created_by',
         'updated_by',
         'upload_status',
-    ];
-
-    protected $casts = [
-        'is_file' => 'boolean',
-        'is_delete' => 'boolean',
-        'size' => 'integer',
-        'width' => 'integer',
-        'height' => 'integer',
-        'duration' => 'integer',
-        'metadata' => 'array',
-        'upload_status' => \App\Enums\UploadStatus::class,
     ];
 
     /**
@@ -96,17 +87,33 @@ class MediaMgmt extends Model
      * Get folder path (parent directory of this file/folder)
      * This accessor is used by MediaFileResource to return folder_path
      */
-    public function getFolderPathAttribute(): string
+    protected function folderPath(): Attribute
     {
-        if ($this->is_file) {
-            // For files, return the directory containing the file
-            return dirname($this->virtual_path);
-        } else {
-            // For folders, return the parent folder
-            // Remove trailing slash first
-            $path = rtrim($this->virtual_path, '/');
+        return Attribute::make(get: function () {
+            if ($this->is_file) {
+                // For files, return the directory containing the file
+                return dirname($this->virtual_path);
+            } else {
+                // For folders, return the parent folder
+                // Remove trailing slash first
+                $path = rtrim($this->virtual_path, '/');
 
-            return dirname($path);
-        }
+                return dirname($path);
+            }
+        });
+    }
+
+    protected function casts(): array
+    {
+        return [
+            'is_file' => 'boolean',
+            'is_delete' => 'boolean',
+            'size' => 'integer',
+            'width' => 'integer',
+            'height' => 'integer',
+            'duration' => 'integer',
+            'metadata' => 'array',
+            'upload_status' => UploadStatus::class,
+        ];
     }
 }

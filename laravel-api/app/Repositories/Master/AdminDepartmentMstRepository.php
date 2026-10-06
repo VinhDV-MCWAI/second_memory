@@ -64,8 +64,8 @@ class AdminDepartmentMstRepository extends BaseRepository implements AdminDepart
     public function executeDelete(array $payload): void
     {
         $values = collect($payload)->map(function ($item) {
-            $adminId = isset($item['admin_mst_id']) ? $item['admin_mst_id'] : ($item[0] ?? 0);
-            $deptId = isset($item['department_mst_id']) ? $item['department_mst_id'] : ($item[1] ?? 0);
+            $adminId = $item['admin_mst_id'] ?? ($item[0] ?? 0);
+            $deptId = $item['department_mst_id'] ?? ($item[1] ?? 0);
 
             return '('.(int) $adminId.', '.(int) $deptId.')';
         })->all();
@@ -82,8 +82,8 @@ class AdminDepartmentMstRepository extends BaseRepository implements AdminDepart
     {
         // Handle both Associative and Indexed Array (from BaseJunctionService)
         $values = collect($tuples)->map(function ($item) {
-            $adminId = isset($item['admin_mst_id']) ? $item['admin_mst_id'] : ($item[0] ?? 0);
-            $deptId = isset($item['department_mst_id']) ? $item['department_mst_id'] : ($item[1] ?? 0);
+            $adminId = $item['admin_mst_id'] ?? ($item[0] ?? 0);
+            $deptId = $item['department_mst_id'] ?? ($item[1] ?? 0);
 
             return '('.(int) $adminId.', '.(int) $deptId.')';
         })->all();

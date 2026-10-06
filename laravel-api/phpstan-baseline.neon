@@ -2179,10 +2179,16 @@ parameters:
 			path: app/Http/Resources/Master/TokenMstResource.php
 
 		-
-			message: '#^PHPDoc type array of property App\\Models\\History\\Management\\BannerMgmtHist\:\:\$casts is not covariant with PHPDoc type array\<string, string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$casts\.$#'
-			identifier: property.phpDocType
+			message: '#^Property App\\Models\\Management\\MediaMgmt\:\:\$upload_status \(int\) does not accept App\\Enums\\UploadStatus\:\:COMPLETED\.$#'
+			identifier: assign.propertyType
 			count: 1
-			path: app/Models/History/Management/BannerMgmtHist.php
+			path: app/Jobs/Media/ProcessLargeFile.php
+
+		-
+			message: '#^Property App\\Models\\Management\\MediaMgmt\:\:\$upload_status \(int\) does not accept App\\Enums\\UploadStatus\:\:FAILED\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: app/Jobs/Media/ProcessLargeFile.php
 
 		-
 			message: '#^PHPDoc type array\<string\> of property App\\Models\\History\\Management\\BannerMgmtHist\:\:\$fillable is not covariant with PHPDoc type list\<string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$fillable\.$#'
@@ -2191,22 +2197,10 @@ parameters:
 			path: app/Models/History/Management/BannerMgmtHist.php
 
 		-
-			message: '#^PHPDoc type array of property App\\Models\\History\\Management\\CategoryMgmtHist\:\:\$casts is not covariant with PHPDoc type array\<string, string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$casts\.$#'
-			identifier: property.phpDocType
-			count: 1
-			path: app/Models/History/Management/CategoryMgmtHist.php
-
-		-
 			message: '#^PHPDoc type array\<string\> of property App\\Models\\History\\Management\\CategoryMgmtHist\:\:\$fillable is not covariant with PHPDoc type list\<string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$fillable\.$#'
 			identifier: property.phpDocType
 			count: 1
 			path: app/Models/History/Management/CategoryMgmtHist.php
-
-		-
-			message: '#^PHPDoc type array of property App\\Models\\History\\Management\\EntryDescriptionMgmtHist\:\:\$casts is not covariant with PHPDoc type array\<string, string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$casts\.$#'
-			identifier: property.phpDocType
-			count: 1
-			path: app/Models/History/Management/EntryDescriptionMgmtHist.php
 
 		-
 			message: '#^PHPDoc type array\<string\> of property App\\Models\\History\\Management\\EntryDescriptionMgmtHist\:\:\$fillable is not covariant with PHPDoc type list\<string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$fillable\.$#'
@@ -2215,22 +2209,10 @@ parameters:
 			path: app/Models/History/Management/EntryDescriptionMgmtHist.php
 
 		-
-			message: '#^PHPDoc type array of property App\\Models\\History\\Management\\EntryMgmtHist\:\:\$casts is not covariant with PHPDoc type array\<string, string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$casts\.$#'
-			identifier: property.phpDocType
-			count: 1
-			path: app/Models/History/Management/EntryMgmtHist.php
-
-		-
 			message: '#^PHPDoc type array\<string\> of property App\\Models\\History\\Management\\EntryMgmtHist\:\:\$fillable is not covariant with PHPDoc type list\<string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$fillable\.$#'
 			identifier: property.phpDocType
 			count: 1
 			path: app/Models/History/Management/EntryMgmtHist.php
-
-		-
-			message: '#^PHPDoc type array of property App\\Models\\History\\Management\\SettingLinkMgmtHist\:\:\$casts is not covariant with PHPDoc type array\<string, string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$casts\.$#'
-			identifier: property.phpDocType
-			count: 1
-			path: app/Models/History/Management/SettingLinkMgmtHist.php
 
 		-
 			message: '#^PHPDoc type array\<string\> of property App\\Models\\History\\Management\\SettingLinkMgmtHist\:\:\$fillable is not covariant with PHPDoc type list\<string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$fillable\.$#'
@@ -2239,22 +2221,10 @@ parameters:
 			path: app/Models/History/Management/SettingLinkMgmtHist.php
 
 		-
-			message: '#^PHPDoc type array of property App\\Models\\History\\Management\\SliderMgmtHist\:\:\$casts is not covariant with PHPDoc type array\<string, string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$casts\.$#'
-			identifier: property.phpDocType
-			count: 1
-			path: app/Models/History/Management/SliderMgmtHist.php
-
-		-
 			message: '#^PHPDoc type array\<string\> of property App\\Models\\History\\Management\\SliderMgmtHist\:\:\$fillable is not covariant with PHPDoc type list\<string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$fillable\.$#'
 			identifier: property.phpDocType
 			count: 1
 			path: app/Models/History/Management/SliderMgmtHist.php
-
-		-
-			message: '#^PHPDoc type array of property App\\Models\\History\\Management\\SocialMgmtHist\:\:\$casts is not covariant with PHPDoc type array\<string, string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$casts\.$#'
-			identifier: property.phpDocType
-			count: 1
-			path: app/Models/History/Management/SocialMgmtHist.php
 
 		-
 			message: '#^PHPDoc type array\<string\> of property App\\Models\\History\\Management\\SocialMgmtHist\:\:\$fillable is not covariant with PHPDoc type list\<string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$fillable\.$#'
@@ -2263,22 +2233,10 @@ parameters:
 			path: app/Models/History/Management/SocialMgmtHist.php
 
 		-
-			message: '#^PHPDoc type array of property App\\Models\\History\\Management\\UserMgmtHist\:\:\$casts is not covariant with PHPDoc type array\<string, string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$casts\.$#'
-			identifier: property.phpDocType
-			count: 1
-			path: app/Models/History/Management/UserMgmtHist.php
-
-		-
 			message: '#^PHPDoc type array\<string\> of property App\\Models\\History\\Management\\UserMgmtHist\:\:\$fillable is not covariant with PHPDoc type list\<string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$fillable\.$#'
 			identifier: property.phpDocType
 			count: 1
 			path: app/Models/History/Management/UserMgmtHist.php
-
-		-
-			message: '#^PHPDoc type array of property App\\Models\\History\\Master\\AdminMstHist\:\:\$casts is not covariant with PHPDoc type array\<string, string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$casts\.$#'
-			identifier: property.phpDocType
-			count: 1
-			path: app/Models/History/Master/AdminMstHist.php
 
 		-
 			message: '#^PHPDoc type array\<string\> of property App\\Models\\History\\Master\\AdminMstHist\:\:\$fillable is not covariant with PHPDoc type list\<string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$fillable\.$#'
@@ -2287,22 +2245,10 @@ parameters:
 			path: app/Models/History/Master/AdminMstHist.php
 
 		-
-			message: '#^PHPDoc type array of property App\\Models\\History\\Master\\ApiMstHist\:\:\$casts is not covariant with PHPDoc type array\<string, string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$casts\.$#'
-			identifier: property.phpDocType
-			count: 1
-			path: app/Models/History/Master/ApiMstHist.php
-
-		-
 			message: '#^PHPDoc type array\<string\> of property App\\Models\\History\\Master\\ApiMstHist\:\:\$fillable is not covariant with PHPDoc type list\<string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$fillable\.$#'
 			identifier: property.phpDocType
 			count: 1
 			path: app/Models/History/Master/ApiMstHist.php
-
-		-
-			message: '#^PHPDoc type array of property App\\Models\\History\\Master\\DepartmentMstHist\:\:\$casts is not covariant with PHPDoc type array\<string, string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$casts\.$#'
-			identifier: property.phpDocType
-			count: 1
-			path: app/Models/History/Master/DepartmentMstHist.php
 
 		-
 			message: '#^PHPDoc type array\<string\> of property App\\Models\\History\\Master\\DepartmentMstHist\:\:\$fillable is not covariant with PHPDoc type list\<string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$fillable\.$#'
@@ -2311,34 +2257,16 @@ parameters:
 			path: app/Models/History/Master/DepartmentMstHist.php
 
 		-
-			message: '#^PHPDoc type array of property App\\Models\\History\\Master\\FeatureMstHist\:\:\$casts is not covariant with PHPDoc type array\<string, string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$casts\.$#'
-			identifier: property.phpDocType
-			count: 1
-			path: app/Models/History/Master/FeatureMstHist.php
-
-		-
 			message: '#^PHPDoc type array\<string\> of property App\\Models\\History\\Master\\FeatureMstHist\:\:\$fillable is not covariant with PHPDoc type list\<string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$fillable\.$#'
 			identifier: property.phpDocType
 			count: 1
 			path: app/Models/History/Master/FeatureMstHist.php
 
 		-
-			message: '#^PHPDoc type array of property App\\Models\\History\\Master\\PolicyDepartmentMstHist\:\:\$casts is not covariant with PHPDoc type array\<string, string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$casts\.$#'
-			identifier: property.phpDocType
-			count: 1
-			path: app/Models/History/Master/PolicyDepartmentMstHist.php
-
-		-
 			message: '#^PHPDoc type array\<string\> of property App\\Models\\History\\Master\\PolicyDepartmentMstHist\:\:\$fillable is not covariant with PHPDoc type list\<string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$fillable\.$#'
 			identifier: property.phpDocType
 			count: 1
 			path: app/Models/History/Master/PolicyDepartmentMstHist.php
-
-		-
-			message: '#^PHPDoc type array of property App\\Models\\History\\Master\\RoleMstHist\:\:\$casts is not covariant with PHPDoc type array\<string, string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$casts\.$#'
-			identifier: property.phpDocType
-			count: 1
-			path: app/Models/History/Master/RoleMstHist.php
 
 		-
 			message: '#^PHPDoc type array\<string\> of property App\\Models\\History\\Master\\RoleMstHist\:\:\$fillable is not covariant with PHPDoc type list\<string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$fillable\.$#'
@@ -2359,15 +2287,15 @@ parameters:
 			path: app/Models/Management/BannerMgmt.php
 
 		-
-			message: '#^PHPDoc type array of property App\\Models\\Management\\BannerMgmt\:\:\$casts is not covariant with PHPDoc type array\<string, string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$casts\.$#'
+			message: '#^PHPDoc type array\<string\> of property App\\Models\\Management\\BannerMgmt\:\:\$fillable is not covariant with PHPDoc type list\<string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$fillable\.$#'
 			identifier: property.phpDocType
 			count: 1
 			path: app/Models/Management/BannerMgmt.php
 
 		-
-			message: '#^PHPDoc type array\<string\> of property App\\Models\\Management\\BannerMgmt\:\:\$fillable is not covariant with PHPDoc type list\<string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$fillable\.$#'
-			identifier: property.phpDocType
-			count: 1
+			message: '#^Property App\\Models\\Management\\BannerMgmt\:\:\$is_delete \(bool\) does not accept int\.$#'
+			identifier: assign.propertyType
+			count: 2
 			path: app/Models/Management/BannerMgmt.php
 
 		-
@@ -2377,15 +2305,15 @@ parameters:
 			path: app/Models/Management/CategoryMgmt.php
 
 		-
-			message: '#^PHPDoc type array of property App\\Models\\Management\\CategoryMgmt\:\:\$casts is not covariant with PHPDoc type array\<string, string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$casts\.$#'
+			message: '#^PHPDoc type array\<string\> of property App\\Models\\Management\\CategoryMgmt\:\:\$fillable is not covariant with PHPDoc type list\<string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$fillable\.$#'
 			identifier: property.phpDocType
 			count: 1
 			path: app/Models/Management/CategoryMgmt.php
 
 		-
-			message: '#^PHPDoc type array\<string\> of property App\\Models\\Management\\CategoryMgmt\:\:\$fillable is not covariant with PHPDoc type list\<string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$fillable\.$#'
-			identifier: property.phpDocType
-			count: 1
+			message: '#^Property App\\Models\\Management\\CategoryMgmt\:\:\$is_delete \(bool\) does not accept int\.$#'
+			identifier: assign.propertyType
+			count: 2
 			path: app/Models/Management/CategoryMgmt.php
 
 		-
@@ -2395,15 +2323,15 @@ parameters:
 			path: app/Models/Management/EntryDescriptionMgmt.php
 
 		-
-			message: '#^PHPDoc type array of property App\\Models\\Management\\EntryDescriptionMgmt\:\:\$casts is not covariant with PHPDoc type array\<string, string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$casts\.$#'
+			message: '#^PHPDoc type array\<string\> of property App\\Models\\Management\\EntryDescriptionMgmt\:\:\$fillable is not covariant with PHPDoc type list\<string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$fillable\.$#'
 			identifier: property.phpDocType
 			count: 1
 			path: app/Models/Management/EntryDescriptionMgmt.php
 
 		-
-			message: '#^PHPDoc type array\<string\> of property App\\Models\\Management\\EntryDescriptionMgmt\:\:\$fillable is not covariant with PHPDoc type list\<string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$fillable\.$#'
-			identifier: property.phpDocType
-			count: 1
+			message: '#^Property App\\Models\\Management\\EntryDescriptionMgmt\:\:\$is_delete \(bool\) does not accept int\.$#'
+			identifier: assign.propertyType
+			count: 2
 			path: app/Models/Management/EntryDescriptionMgmt.php
 
 		-
@@ -2413,27 +2341,33 @@ parameters:
 			path: app/Models/Management/EntryMgmt.php
 
 		-
-			message: '#^PHPDoc type array of property App\\Models\\Management\\EntryMgmt\:\:\$casts is not covariant with PHPDoc type array\<string, string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$casts\.$#'
-			identifier: property.phpDocType
-			count: 1
-			path: app/Models/Management/EntryMgmt.php
-
-		-
 			message: '#^PHPDoc type array\<string\> of property App\\Models\\Management\\EntryMgmt\:\:\$fillable is not covariant with PHPDoc type list\<string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$fillable\.$#'
 			identifier: property.phpDocType
 			count: 1
 			path: app/Models/Management/EntryMgmt.php
 
 		-
-			message: '#^PHPDoc type array of property App\\Models\\Management\\SettingLinkMgmt\:\:\$casts is not covariant with PHPDoc type array\<string, string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$casts\.$#'
-			identifier: property.phpDocType
-			count: 1
-			path: app/Models/Management/SettingLinkMgmt.php
+			message: '#^Property App\\Models\\Management\\EntryMgmt\:\:\$is_delete \(bool\) does not accept int\.$#'
+			identifier: assign.propertyType
+			count: 2
+			path: app/Models/Management/EntryMgmt.php
+
+		-
+			message: '#^Property App\\Models\\Management\\MediaMgmt\:\:\$is_delete \(bool\) does not accept int\.$#'
+			identifier: assign.propertyType
+			count: 2
+			path: app/Models/Management/MediaMgmt.php
 
 		-
 			message: '#^PHPDoc type array\<string\> of property App\\Models\\Management\\SettingLinkMgmt\:\:\$fillable is not covariant with PHPDoc type list\<string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$fillable\.$#'
 			identifier: property.phpDocType
 			count: 1
+			path: app/Models/Management/SettingLinkMgmt.php
+
+		-
+			message: '#^Property App\\Models\\Management\\SettingLinkMgmt\:\:\$is_delete \(bool\) does not accept int\.$#'
+			identifier: assign.propertyType
+			count: 2
 			path: app/Models/Management/SettingLinkMgmt.php
 
 		-
@@ -2443,15 +2377,15 @@ parameters:
 			path: app/Models/Management/SliderMgmt.php
 
 		-
-			message: '#^PHPDoc type array of property App\\Models\\Management\\SliderMgmt\:\:\$casts is not covariant with PHPDoc type array\<string, string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$casts\.$#'
+			message: '#^PHPDoc type array\<string\> of property App\\Models\\Management\\SliderMgmt\:\:\$fillable is not covariant with PHPDoc type list\<string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$fillable\.$#'
 			identifier: property.phpDocType
 			count: 1
 			path: app/Models/Management/SliderMgmt.php
 
 		-
-			message: '#^PHPDoc type array\<string\> of property App\\Models\\Management\\SliderMgmt\:\:\$fillable is not covariant with PHPDoc type list\<string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$fillable\.$#'
-			identifier: property.phpDocType
-			count: 1
+			message: '#^Property App\\Models\\Management\\SliderMgmt\:\:\$is_delete \(bool\) does not accept int\.$#'
+			identifier: assign.propertyType
+			count: 2
 			path: app/Models/Management/SliderMgmt.php
 
 		-
@@ -2461,22 +2395,16 @@ parameters:
 			path: app/Models/Management/SocialMgmt.php
 
 		-
-			message: '#^PHPDoc type array of property App\\Models\\Management\\SocialMgmt\:\:\$casts is not covariant with PHPDoc type array\<string, string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$casts\.$#'
-			identifier: property.phpDocType
-			count: 1
-			path: app/Models/Management/SocialMgmt.php
-
-		-
 			message: '#^PHPDoc type array\<string\> of property App\\Models\\Management\\SocialMgmt\:\:\$fillable is not covariant with PHPDoc type list\<string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$fillable\.$#'
 			identifier: property.phpDocType
 			count: 1
 			path: app/Models/Management/SocialMgmt.php
 
 		-
-			message: '#^PHPDoc type array of property App\\Models\\Management\\UserMgmt\:\:\$casts is not covariant with PHPDoc type array\<string, string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$casts\.$#'
-			identifier: property.phpDocType
-			count: 1
-			path: app/Models/Management/UserMgmt.php
+			message: '#^Property App\\Models\\Management\\SocialMgmt\:\:\$is_delete \(bool\) does not accept int\.$#'
+			identifier: assign.propertyType
+			count: 2
+			path: app/Models/Management/SocialMgmt.php
 
 		-
 			message: '#^PHPDoc type array\<string\> of property App\\Models\\Management\\UserMgmt\:\:\$fillable is not covariant with PHPDoc type list\<string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$fillable\.$#'
@@ -2485,10 +2413,10 @@ parameters:
 			path: app/Models/Management/UserMgmt.php
 
 		-
-			message: '#^PHPDoc type array of property App\\Models\\Master\\AdminDepartmentMst\:\:\$casts is not covariant with PHPDoc type array\<string, string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$casts\.$#'
-			identifier: property.phpDocType
-			count: 1
-			path: app/Models/Master/AdminDepartmentMst.php
+			message: '#^Property App\\Models\\Management\\UserMgmt\:\:\$is_delete \(bool\) does not accept int\.$#'
+			identifier: assign.propertyType
+			count: 2
+			path: app/Models/Management/UserMgmt.php
 
 		-
 			message: '#^PHPDoc type array\<string\> of property App\\Models\\Master\\AdminDepartmentMst\:\:\$fillable is not covariant with PHPDoc type list\<string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$fillable\.$#'
@@ -2497,22 +2425,16 @@ parameters:
 			path: app/Models/Master/AdminDepartmentMst.php
 
 		-
-			message: '#^PHPDoc type array of property App\\Models\\Master\\AdminMst\:\:\$casts is not covariant with PHPDoc type array\<string, string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$casts\.$#'
-			identifier: property.phpDocType
-			count: 1
-			path: app/Models/Master/AdminMst.php
-
-		-
 			message: '#^PHPDoc type array\<string\> of property App\\Models\\Master\\AdminMst\:\:\$fillable is not covariant with PHPDoc type list\<string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$fillable\.$#'
 			identifier: property.phpDocType
 			count: 1
 			path: app/Models/Master/AdminMst.php
 
 		-
-			message: '#^PHPDoc type array of property App\\Models\\Master\\AdminRoleMst\:\:\$casts is not covariant with PHPDoc type array\<string, string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$casts\.$#'
-			identifier: property.phpDocType
-			count: 1
-			path: app/Models/Master/AdminRoleMst.php
+			message: '#^Property App\\Models\\Master\\AdminMst\:\:\$is_delete \(bool\) does not accept int\.$#'
+			identifier: assign.propertyType
+			count: 2
+			path: app/Models/Master/AdminMst.php
 
 		-
 			message: '#^PHPDoc type array\<string\> of property App\\Models\\Master\\AdminRoleMst\:\:\$fillable is not covariant with PHPDoc type list\<string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$fillable\.$#'
@@ -2521,34 +2443,22 @@ parameters:
 			path: app/Models/Master/AdminRoleMst.php
 
 		-
-			message: '#^PHPDoc type array of property App\\Models\\Master\\ApiMst\:\:\$casts is not covariant with PHPDoc type array\<string, string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$casts\.$#'
-			identifier: property.phpDocType
-			count: 1
-			path: app/Models/Master/ApiMst.php
-
-		-
 			message: '#^PHPDoc type array\<string\> of property App\\Models\\Master\\ApiMst\:\:\$fillable is not covariant with PHPDoc type list\<string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$fillable\.$#'
 			identifier: property.phpDocType
 			count: 1
 			path: app/Models/Master/ApiMst.php
 
 		-
-			message: '#^PHPDoc type array of property App\\Models\\Master\\ApiRoleMst\:\:\$casts is not covariant with PHPDoc type array\<string, string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$casts\.$#'
-			identifier: property.phpDocType
-			count: 1
-			path: app/Models/Master/ApiRoleMst.php
+			message: '#^Property App\\Models\\Master\\ApiMst\:\:\$is_delete \(bool\) does not accept int\.$#'
+			identifier: assign.propertyType
+			count: 2
+			path: app/Models/Master/ApiMst.php
 
 		-
 			message: '#^PHPDoc type array\<string\> of property App\\Models\\Master\\ApiRoleMst\:\:\$fillable is not covariant with PHPDoc type list\<string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$fillable\.$#'
 			identifier: property.phpDocType
 			count: 1
 			path: app/Models/Master/ApiRoleMst.php
-
-		-
-			message: '#^PHPDoc type array of property App\\Models\\Master\\DepartmentManagementMst\:\:\$casts is not covariant with PHPDoc type array\<string, string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$casts\.$#'
-			identifier: property.phpDocType
-			count: 1
-			path: app/Models/Master/DepartmentManagementMst.php
 
 		-
 			message: '#^PHPDoc type array\<string\> of property App\\Models\\Master\\DepartmentManagementMst\:\:\$fillable is not covariant with PHPDoc type list\<string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$fillable\.$#'
@@ -2563,15 +2473,15 @@ parameters:
 			path: app/Models/Master/DepartmentMst.php
 
 		-
-			message: '#^PHPDoc type array of property App\\Models\\Master\\DepartmentMst\:\:\$casts is not covariant with PHPDoc type array\<string, string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$casts\.$#'
+			message: '#^PHPDoc type array\<string\> of property App\\Models\\Master\\DepartmentMst\:\:\$fillable is not covariant with PHPDoc type list\<string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$fillable\.$#'
 			identifier: property.phpDocType
 			count: 1
 			path: app/Models/Master/DepartmentMst.php
 
 		-
-			message: '#^PHPDoc type array\<string\> of property App\\Models\\Master\\DepartmentMst\:\:\$fillable is not covariant with PHPDoc type list\<string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$fillable\.$#'
-			identifier: property.phpDocType
-			count: 1
+			message: '#^Property App\\Models\\Master\\DepartmentMst\:\:\$is_delete \(bool\) does not accept int\.$#'
+			identifier: assign.propertyType
+			count: 2
 			path: app/Models/Master/DepartmentMst.php
 
 		-
@@ -2581,22 +2491,16 @@ parameters:
 			path: app/Models/Master/FeatureMst.php
 
 		-
-			message: '#^PHPDoc type array of property App\\Models\\Master\\FeatureMst\:\:\$casts is not covariant with PHPDoc type array\<string, string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$casts\.$#'
-			identifier: property.phpDocType
-			count: 1
-			path: app/Models/Master/FeatureMst.php
-
-		-
 			message: '#^PHPDoc type array\<string\> of property App\\Models\\Master\\FeatureMst\:\:\$fillable is not covariant with PHPDoc type list\<string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$fillable\.$#'
 			identifier: property.phpDocType
 			count: 1
 			path: app/Models/Master/FeatureMst.php
 
 		-
-			message: '#^PHPDoc type array of property App\\Models\\Master\\PolicyDepartmentMst\:\:\$casts is not covariant with PHPDoc type array\<string, string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$casts\.$#'
-			identifier: property.phpDocType
-			count: 1
-			path: app/Models/Master/PolicyDepartmentMst.php
+			message: '#^Property App\\Models\\Master\\FeatureMst\:\:\$is_delete \(bool\) does not accept int\.$#'
+			identifier: assign.propertyType
+			count: 2
+			path: app/Models/Master/FeatureMst.php
 
 		-
 			message: '#^PHPDoc type array\<string\> of property App\\Models\\Master\\PolicyDepartmentMst\:\:\$fillable is not covariant with PHPDoc type list\<string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$fillable\.$#'
@@ -2605,10 +2509,10 @@ parameters:
 			path: app/Models/Master/PolicyDepartmentMst.php
 
 		-
-			message: '#^PHPDoc type array of property App\\Models\\Master\\RoleMst\:\:\$casts is not covariant with PHPDoc type array\<string, string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$casts\.$#'
-			identifier: property.phpDocType
-			count: 1
-			path: app/Models/Master/RoleMst.php
+			message: '#^Property App\\Models\\Master\\PolicyDepartmentMst\:\:\$is_delete \(bool\) does not accept int\.$#'
+			identifier: assign.propertyType
+			count: 2
+			path: app/Models/Master/PolicyDepartmentMst.php
 
 		-
 			message: '#^PHPDoc type array\<string\> of property App\\Models\\Master\\RoleMst\:\:\$fillable is not covariant with PHPDoc type list\<string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$fillable\.$#'
@@ -2617,10 +2521,10 @@ parameters:
 			path: app/Models/Master/RoleMst.php
 
 		-
-			message: '#^PHPDoc type array of property App\\Models\\Master\\TokenMst\:\:\$casts is not covariant with PHPDoc type array\<string, string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$casts\.$#'
-			identifier: property.phpDocType
-			count: 1
-			path: app/Models/Master/TokenMst.php
+			message: '#^Property App\\Models\\Master\\RoleMst\:\:\$is_delete \(bool\) does not accept int\.$#'
+			identifier: assign.propertyType
+			count: 2
+			path: app/Models/Master/RoleMst.php
 
 		-
 			message: '#^PHPDoc type array\<string\> of property App\\Models\\Master\\TokenMst\:\:\$fillable is not covariant with PHPDoc type list\<string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$fillable\.$#'
@@ -2639,6 +2543,42 @@ parameters:
 			identifier: property.phpDocType
 			count: 1
 			path: app/Models/User.php
+
+		-
+			message: '#^Call to function is_array\(\) with string\|null will always evaluate to false\.$#'
+			identifier: function.impossibleType
+			count: 1
+			path: app/Observers/EntryDescriptionMgmtObserver.php
+
+		-
+			message: '#^Property App\\Models\\Management\\EntryMgmt\:\:\$layout_structure \(string\|null\) does not accept array\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: app/Observers/EntryDescriptionMgmtObserver.php
+
+		-
+			message: '#^Variable \$layoutStructure in empty\(\) is never defined\.$#'
+			identifier: empty.variable
+			count: 1
+			path: app/Observers/EntryDescriptionMgmtObserver.php
+
+		-
+			message: '#^Call to function is_array\(\) with string\|null will always evaluate to false\.$#'
+			identifier: function.impossibleType
+			count: 1
+			path: app/Observers/EntryMgmtObserver.php
+
+		-
+			message: '#^Property App\\Models\\Management\\CategoryMgmt\:\:\$layout_structure \(string\|null\) does not accept array\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: app/Observers/EntryMgmtObserver.php
+
+		-
+			message: '#^Variable \$layoutStructure in empty\(\) is never defined\.$#'
+			identifier: empty.variable
+			count: 1
+			path: app/Observers/EntryMgmtObserver.php
 
 		-
 			message: '#^Method App\\Repositories\\BaseRepository\:\:delete\(\) should return bool but returns int\.$#'
@@ -2907,6 +2847,12 @@ parameters:
 		-
 			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Collection\<int, Illuminate\\Database\\Eloquent\\Model\>\|Illuminate\\Database\\Eloquent\\Model\:\:isDeleted\(\)\.$#'
 			identifier: method.notFound
+			count: 1
+			path: app/Repositories/Management/EntryMgmtRepository.php
+
+		-
+			message: '#^Parameter \#1 \$layoutStructure of method App\\Repositories\\Management\\EntryMgmtRepository\:\:extractEntryIdsFromLayoutStructure\(\) expects array, string given\.$#'
+			identifier: argument.type
 			count: 1
 			path: app/Repositories/Management/EntryMgmtRepository.php
 
@@ -3289,13 +3235,13 @@ parameters:
 			path: app/Utilities/JsonWebToken.php
 
 		-
-			message: '#^PHPDoc type string of property Database\\Factories\\Management\\BannerMgmtFactory\:\:\$model is not covariant with PHPDoc type class\-string\<Illuminate\\Database\\Eloquent\\Model\> of overridden property Illuminate\\Database\\Eloquent\\Factories\\Factory\<Illuminate\\Database\\Eloquent\\Model\>\:\:\$model\.$#'
+			message: '#^PHPDoc type string of property Database\\Factories\\Management\\BannerMgmtFactory\:\:\$model is not covariant with PHPDoc type class\-string\<App\\Models\\Management\\BannerMgmt\> of overridden property Illuminate\\Database\\Eloquent\\Factories\\Factory\<App\\Models\\Management\\BannerMgmt\>\:\:\$model\.$#'
 			identifier: property.phpDocType
 			count: 1
 			path: database/factories/Management/BannerMgmtFactory.php
 
 		-
-			message: '#^PHPDoc type string of property Database\\Factories\\Management\\CategoryMgmtFactory\:\:\$model is not covariant with PHPDoc type class\-string\<Illuminate\\Database\\Eloquent\\Model\> of overridden property Illuminate\\Database\\Eloquent\\Factories\\Factory\<Illuminate\\Database\\Eloquent\\Model\>\:\:\$model\.$#'
+			message: '#^PHPDoc type string of property Database\\Factories\\Management\\CategoryMgmtFactory\:\:\$model is not covariant with PHPDoc type class\-string\<App\\Models\\Management\\CategoryMgmt\> of overridden property Illuminate\\Database\\Eloquent\\Factories\\Factory\<App\\Models\\Management\\CategoryMgmt\>\:\:\$model\.$#'
 			identifier: property.phpDocType
 			count: 1
 			path: database/factories/Management/CategoryMgmtFactory.php
@@ -3307,32 +3253,50 @@ parameters:
 			path: database/factories/Management/UserMgmtFactory.php
 
 		-
-			message: '#^PHPDoc type string of property Database\\Factories\\Master\\AdminMstFactory\:\:\$model is not covariant with PHPDoc type class\-string\<Illuminate\\Database\\Eloquent\\Model\> of overridden property Illuminate\\Database\\Eloquent\\Factories\\Factory\<Illuminate\\Database\\Eloquent\\Model\>\:\:\$model\.$#'
+			message: '#^PHPDoc type string of property Database\\Factories\\Master\\AdminMstFactory\:\:\$model is not covariant with PHPDoc type class\-string\<App\\Models\\Master\\AdminMst\> of overridden property Illuminate\\Database\\Eloquent\\Factories\\Factory\<App\\Models\\Master\\AdminMst\>\:\:\$model\.$#'
 			identifier: property.phpDocType
 			count: 1
 			path: database/factories/Master/AdminMstFactory.php
 
 		-
-			message: '#^PHPDoc type string of property Database\\Factories\\Master\\ApiMstFactory\:\:\$model is not covariant with PHPDoc type class\-string\<Illuminate\\Database\\Eloquent\\Model\> of overridden property Illuminate\\Database\\Eloquent\\Factories\\Factory\<Illuminate\\Database\\Eloquent\\Model\>\:\:\$model\.$#'
+			message: '#^PHPDoc type string of property Database\\Factories\\Master\\ApiMstFactory\:\:\$model is not covariant with PHPDoc type class\-string\<App\\Models\\Master\\ApiMst\> of overridden property Illuminate\\Database\\Eloquent\\Factories\\Factory\<App\\Models\\Master\\ApiMst\>\:\:\$model\.$#'
 			identifier: property.phpDocType
 			count: 1
 			path: database/factories/Master/ApiMstFactory.php
 
 		-
-			message: '#^PHPDoc type string of property Database\\Factories\\Master\\FeatureMstFactory\:\:\$model is not covariant with PHPDoc type class\-string\<Illuminate\\Database\\Eloquent\\Model\> of overridden property Illuminate\\Database\\Eloquent\\Factories\\Factory\<Illuminate\\Database\\Eloquent\\Model\>\:\:\$model\.$#'
+			message: '#^PHPDoc type string of property Database\\Factories\\Master\\FeatureMstFactory\:\:\$model is not covariant with PHPDoc type class\-string\<App\\Models\\Master\\FeatureMst\> of overridden property Illuminate\\Database\\Eloquent\\Factories\\Factory\<App\\Models\\Master\\FeatureMst\>\:\:\$model\.$#'
 			identifier: property.phpDocType
 			count: 1
 			path: database/factories/Master/FeatureMstFactory.php
 
 		-
-			message: '#^PHPDoc type string of property Database\\Factories\\Master\\TokenMstFactory\:\:\$model is not covariant with PHPDoc type class\-string\<Illuminate\\Database\\Eloquent\\Model\> of overridden property Illuminate\\Database\\Eloquent\\Factories\\Factory\<Illuminate\\Database\\Eloquent\\Model\>\:\:\$model\.$#'
+			message: '#^PHPDoc type string of property Database\\Factories\\Master\\TokenMstFactory\:\:\$model is not covariant with PHPDoc type class\-string\<App\\Models\\Master\\TokenMst\> of overridden property Illuminate\\Database\\Eloquent\\Factories\\Factory\<App\\Models\\Master\\TokenMst\>\:\:\$model\.$#'
 			identifier: property.phpDocType
 			count: 1
 			path: database/factories/Master/TokenMstFactory.php
 
 		-
+			message: '#^Empty array passed to foreach\.$#'
+			identifier: foreach.emptyArray
+			count: 1
+			path: database/seeders/EntryMgmtSeeder.php
+
+		-
+			message: '#^Negated boolean expression is always true\.$#'
+			identifier: booleanNot.alwaysTrue
+			count: 1
+			path: database/seeders/EntryMgmtSeeder.php
+
+		-
 			message: '#^Offset ''rank_order'' on array\{name\: ''API Resources'', slug\: ''api\-resources'', rank_order\: 4\}\|array\{name\: ''Authentication'', slug\: ''authentication'', rank_order\: 1\}\|array\{name\: ''Authorization'', slug\: ''authorization'', rank_order\: 2\}\|array\{name\: ''Categories API'', slug\: ''categories\-api'', rank_order\: 2\}\|array\{name\: ''Coding Conventions'', slug\: ''coding\-conventions'', rank_order\: 1\}\|array\{name\: ''Configuration'', slug\: ''configuration'', rank_order\: 3\}\|array\{name\: ''Controllers &…'', slug\: ''controllers\-services'', rank_order\: 2\}\|array\{name\: ''Design Patterns'', slug\: ''design\-patterns'', rank_order\: 3\}\|array\{name\: ''Docker Configuration'', slug\: ''docker\-configuration'', rank_order\: 1\}\|array\{name\: ''E2E Testing'', slug\: ''e2e\-testing'', rank_order\: 3\}\|array\{name\: ''Entries API'', slug\: ''entries\-api'', rank_order\: 3\}\|array\{name\: ''Environment…'', slug\: ''environment…'', rank_order\: 2\}\|array\{name\: ''Error Handling'', slug\: ''error\-handling'', rank_order\: 2\}\|array\{name\: ''Installation'', slug\: ''installation'', rank_order\: 1\}\|array\{name\: ''Integration Testing'', slug\: ''integration\-testing'', rank_order\: 2\}\|array\{name\: ''JWT Authentication'', slug\: ''jwt\-authentication'', rank_order\: 1\}\|array\{name\: ''Laravel Setup'', slug\: ''laravel\-setup'', rank_order\: 1\}\|array\{name\: ''Layered Architecture'', slug\: ''layered\-architecture'', rank_order\: 2\}\|array\{name\: ''Migrations'', slug\: ''migrations'', rank_order\: 1\}\|array\{name\: ''Models & Relations'', slug\: ''models\-relations'', rank_order\: 2\}\|array\{name\: ''Next\.js Setup'', slug\: ''nextjs\-setup'', rank_order\: 1\}\|array\{name\: ''Overview'', slug\: ''overview'', rank_order\: 1\}\|array\{name\: ''Performance…'', slug\: ''performance…'', rank_order\: 3\}\|array\{name\: ''Production Setup'', slug\: ''production\-setup'', rank_order\: 3\}\|array\{name\: ''Project Structure'', slug\: ''project\-structure'', rank_order\: 2\}\|array\{name\: ''Repository Pattern'', slug\: ''repository\-pattern'', rank_order\: 3\}\|array\{name\: ''Routing'', slug\: ''routing'', rank_order\: 2\}\|array\{name\: ''Search API'', slug\: ''search\-api'', rank_order\: 4\}\|array\{name\: ''Security Best…'', slug\: ''security\-best…'', rank_order\: 3\}\|array\{name\: ''Seeders'', slug\: ''seeders'', rank_order\: 3\}\|array\{name\: ''State Management'', slug\: ''state\-management'', rank_order\: 3\}\|array\{name\: ''Styling with…'', slug\: ''styling\-tailwind'', rank_order\: 4\}\|array\{name\: ''Unit Testing'', slug\: ''unit\-testing'', rank_order\: 1\} on left side of \?\? always exists and is not nullable\.$#'
 			identifier: nullCoalesce.offset
+			count: 1
+			path: database/seeders/EntryMgmtSeeder.php
+
+		-
+			message: '#^Property App\\Models\\Management\\CategoryMgmt\:\:\$layout_structure \(string\|null\) does not accept array\<int, array\<string, int\<0, max\>\>\>\.$#'
+			identifier: assign.propertyType
 			count: 1
 			path: database/seeders/EntryMgmtSeeder.php
 

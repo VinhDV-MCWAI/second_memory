@@ -2,6 +2,8 @@
 
 namespace App\Models\History\Master;
 
+use App\Models\Master\AdminMst;
+use App\Models\Master\PolicyDepartmentMst;
 use Illuminate\Database\Eloquent\Model;
 
 class PolicyDepartmentMstHist extends Model
@@ -24,28 +26,29 @@ class PolicyDepartmentMstHist extends Model
         'created_at',
     ];
 
-    /**
-     * The attributes that should be cast.
-     *
-     * @var array
-     */
-    protected $casts = [
-        'id' => 'integer',
-        'policy_department_mst_id' => 'integer',
-        'table_name' => 'string',
-        'row_id' => 'integer',
-        'action' => 'integer',
-        'author_id' => 'integer',
-        'created_at' => 'datetime',
-    ];
-
     public function policyDepartmentMst()
     {
-        return $this->belongsTo(\App\Models\Master\PolicyDepartmentMst::class, 'policy_department_mst_id');
+        return $this->belongsTo(PolicyDepartmentMst::class, 'policy_department_mst_id');
     }
 
     public function author()
     {
-        return $this->belongsTo(\App\Models\Master\AdminMst::class, 'author_id');
+        return $this->belongsTo(AdminMst::class, 'author_id');
+    }
+
+    /**
+     * The attributes that should be cast.
+     */
+    protected function casts(): array
+    {
+        return [
+            'id' => 'integer',
+            'policy_department_mst_id' => 'integer',
+            'table_name' => 'string',
+            'row_id' => 'integer',
+            'action' => 'integer',
+            'author_id' => 'integer',
+            'created_at' => 'datetime',
+        ];
     }
 }

@@ -32,28 +32,29 @@ class EntryMgmt extends Model
     ];
 
     /**
-     * The attributes that should be cast.
-     *
-     * @var array
-     */
-    protected $casts = [
-        'id' => 'integer',
-        'name' => 'string',
-        'slug' => 'string',
-        'status' => 'integer',
-        'is_display' => 'boolean',
-        'rank_order' => 'integer',
-        'is_delete' => 'boolean',
-        'layout_structure' => 'array',
-        'created_at' => 'datetime',
-        'updated_at' => 'datetime',
-    ];
-
-    /**
      * Get the history records for the entry.
      */
     public function history(): HasMany
     {
         return $this->hasMany(EntryMgmtHist::class, 'entry_mgmt_id');
+    }
+
+    /**
+     * The attributes that should be cast.
+     */
+    protected function casts(): array
+    {
+        return [
+            'id' => 'integer',
+            'name' => 'string',
+            'slug' => 'string',
+            'status' => 'integer',
+            'is_display' => 'boolean',
+            'rank_order' => 'integer',
+            'is_delete' => 'boolean',
+            'layout_structure' => 'array',
+            'created_at' => 'datetime',
+            'updated_at' => 'datetime',
+        ];
     }
 }

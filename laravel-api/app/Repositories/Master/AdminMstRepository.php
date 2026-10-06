@@ -84,7 +84,7 @@ class AdminMstRepository extends BaseRepository implements AdminMstInterface
         if (isset($payload['birth']) && ! empty($payload['birth'])) {
             try {
                 $payload['birth'] = Carbon::createFromFormat(CommonVal::DATE_FORMAT, $payload['birth'])->format('Y-m-d');
-            } catch (\Exception $e) {
+            } catch (\Exception) {
                 // Keep original value if parsing fails
             }
         }
@@ -119,7 +119,7 @@ class AdminMstRepository extends BaseRepository implements AdminMstInterface
         if (isset($payload['birth']) && ! empty($payload['birth'])) {
             try {
                 $payload['birth'] = Carbon::createFromFormat(CommonVal::DATE_FORMAT, $payload['birth'])->format('Y-m-d');
-            } catch (\Exception $e) {
+            } catch (\Exception) {
                 // Keep original value if parsing fails, let database handle it or fail
             }
         }

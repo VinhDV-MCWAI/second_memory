@@ -6,16 +6,12 @@ use App\Enums\UploadStatus;
 use App\Models\Management\MediaMgmt;
 use App\Services\MinioService;
 use Carbon\Carbon;
-use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Foundation\Bus\Dispatchable;
-use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
 
 class CleanupStuckUploads implements ShouldQueue
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+    use \Illuminate\Foundation\Queue\Queueable;
 
     /**
      * Execute the job.

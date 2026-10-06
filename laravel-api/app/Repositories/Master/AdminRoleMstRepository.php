@@ -9,6 +9,7 @@ use App\Models\Master\AdminRoleMst;
 use App\Repositories\BaseRepository;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Auth;
 
 class AdminRoleMstRepository extends BaseRepository implements AdminRoleMstInterface
 {
@@ -64,9 +65,7 @@ class AdminRoleMstRepository extends BaseRepository implements AdminRoleMstInter
      */
     public function executeDelete(array $payload): void
     {
-        $values = collect($payload)->map(function ($item) {
-            return '('.(int) $item['admin_mst_id'].', '.(int) $item['role_mst_id'].')';
-        })->all();
+        $values = collect($payload)->map(fn ($item) => '('.(int) $item['admin_mst_id'].', '.(int) $item['role_mst_id'].')')->all();
 
         $this->model
             ->whereRaw('(admin_mst_id, role_mst_id) IN ('.implode(', ', $values).')')
@@ -88,9 +87,7 @@ class AdminRoleMstRepository extends BaseRepository implements AdminRoleMstInter
         return $this->model
             ->whereRaw('(admin_mst_id, role_mst_id) IN ('.implode(', ', $values).')')
             ->get(['admin_mst_id', 'role_mst_id'])
-            ->map(function ($item) {
-                return [$item->admin_mst_id, $item->role_mst_id];
-            });
+            ->map(fn ($item) => [$item->admin_mst_id, $item->role_mst_id]);
     }
 
     /**
@@ -98,7 +95,7 @@ class AdminRoleMstRepository extends BaseRepository implements AdminRoleMstInter
      */
     public function isMyRole(array $payload): bool
     {
-        $currentAdminId = (int) (request()->attributes->get('current_admin_id') ?? \Illuminate\Support\Facades\Auth::id());
+        $currentAdminId = (int) (request()->attributes->get('current_admin_id') ?? Auth::id());
 
         if (! $currentAdminId) {
             return false;

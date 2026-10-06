@@ -7,21 +7,13 @@ use Illuminate\Contracts\Validation\ValidationRule;
 
 class LayoutStructureRule implements ValidationRule
 {
-    protected int $maxItems;
-
-    protected string $childIdField;
-
     /**
      * Create a new rule instance.
      *
      * @param  int  $maxItems  Maximum total items allowed (including nested)
      * @param  string  $childIdField  Field name for child ID (entry_mgmt_id or entry_desc_id)
      */
-    public function __construct(int $maxItems = 100, string $childIdField = 'entry_mgmt_id')
-    {
-        $this->maxItems = $maxItems;
-        $this->childIdField = $childIdField;
-    }
+    public function __construct(protected int $maxItems = 100, protected string $childIdField = 'entry_mgmt_id') {}
 
     /**
      * Run the validation rule.

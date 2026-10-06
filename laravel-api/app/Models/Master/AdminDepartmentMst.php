@@ -22,18 +22,6 @@ class AdminDepartmentMst extends Model
     ];
 
     /**
-     * The attributes that should be cast.
-     *
-     * @var array
-     */
-    protected $casts = [
-        'admin_mst_id' => 'integer',
-        'department_mst_id' => 'integer',
-        'created_at' => 'datetime',
-        'updated_at' => 'datetime',
-    ];
-
-    /**
      * Get the admin that owns this relationship.
      */
     public function admin(): BelongsTo
@@ -47,5 +35,18 @@ class AdminDepartmentMst extends Model
     public function department(): BelongsTo
     {
         return $this->belongsTo(DepartmentMst::class, 'department_mst_id');
+    }
+
+    /**
+     * The attributes that should be cast.
+     */
+    protected function casts(): array
+    {
+        return [
+            'admin_mst_id' => 'integer',
+            'department_mst_id' => 'integer',
+            'created_at' => 'datetime',
+            'updated_at' => 'datetime',
+        ];
     }
 }

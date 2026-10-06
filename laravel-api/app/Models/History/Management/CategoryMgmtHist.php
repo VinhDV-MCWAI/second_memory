@@ -2,6 +2,8 @@
 
 namespace App\Models\History\Management;
 
+use App\Models\Management\CategoryMgmt;
+use App\Models\Master\AdminMst;
 use Illuminate\Database\Eloquent\Model;
 
 class CategoryMgmtHist extends Model
@@ -26,26 +28,6 @@ class CategoryMgmtHist extends Model
         'author_id',
     ];
 
-    /**
-     * The attributes that should be cast.
-     *
-     * @var array
-     */
-    protected $casts = [
-        'id' => 'integer',
-        'category_mgmt_id' => 'integer',
-        'name' => 'string',
-        'slug' => 'string',
-        'description' => 'string',
-        'status' => 'integer',
-        'is_display' => 'boolean',
-        'rank_order' => 'integer',
-        'layout_structure' => 'array',
-        'action' => 'integer',
-        'author_id' => 'integer',
-        'created_at' => 'datetime',
-    ];
-
     const UPDATED_AT = null;
 
     /**
@@ -53,7 +35,7 @@ class CategoryMgmtHist extends Model
      */
     public function categoryMgmt()
     {
-        return $this->belongsTo(\App\Models\Management\CategoryMgmt::class, 'category_mgmt_id');
+        return $this->belongsTo(CategoryMgmt::class, 'category_mgmt_id');
     }
 
     /**
@@ -61,6 +43,27 @@ class CategoryMgmtHist extends Model
      */
     public function author()
     {
-        return $this->belongsTo(\App\Models\Master\AdminMst::class, 'author_id');
+        return $this->belongsTo(AdminMst::class, 'author_id');
+    }
+
+    /**
+     * The attributes that should be cast.
+     */
+    protected function casts(): array
+    {
+        return [
+            'id' => 'integer',
+            'category_mgmt_id' => 'integer',
+            'name' => 'string',
+            'slug' => 'string',
+            'description' => 'string',
+            'status' => 'integer',
+            'is_display' => 'boolean',
+            'rank_order' => 'integer',
+            'layout_structure' => 'array',
+            'action' => 'integer',
+            'author_id' => 'integer',
+            'created_at' => 'datetime',
+        ];
     }
 }

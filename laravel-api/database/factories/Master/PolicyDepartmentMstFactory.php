@@ -6,6 +6,9 @@ use App\Models\Master\PolicyDepartmentMst;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 
+/**
+ * @extends Factory<PolicyDepartmentMst>
+ */
 class PolicyDepartmentMstFactory extends Factory
 {
     protected $model = PolicyDepartmentMst::class;
@@ -14,7 +17,7 @@ class PolicyDepartmentMstFactory extends Factory
     {
         return [
             'table_name' => 'table_'.Str::random(5),
-            'row_id' => $this->faker->randomNumber(),
+            'row_id' => fake()->randomNumber(),
             'is_delete' => 0,
         ];
     }

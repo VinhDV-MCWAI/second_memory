@@ -24,18 +24,6 @@ class ApiRoleMst extends Model
     ];
 
     /**
-     * The attributes that should be cast.
-     *
-     * @var array
-     */
-    protected $casts = [
-        'api_mst_id' => 'integer',
-        'role_mst_id' => 'integer',
-        'created_at' => 'datetime',
-        'updated_at' => 'datetime',
-    ];
-
-    /**
      * Get the API that owns this relationship.
      */
     /**
@@ -52,5 +40,18 @@ class ApiRoleMst extends Model
     public function roleMst(): BelongsTo
     {
         return $this->belongsTo(RoleMst::class, 'role_mst_id');
+    }
+
+    /**
+     * The attributes that should be cast.
+     */
+    protected function casts(): array
+    {
+        return [
+            'api_mst_id' => 'integer',
+            'role_mst_id' => 'integer',
+            'created_at' => 'datetime',
+            'updated_at' => 'datetime',
+        ];
     }
 }

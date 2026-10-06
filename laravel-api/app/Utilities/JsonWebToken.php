@@ -31,7 +31,7 @@ class JsonWebToken
      */
     public static function JWTPayload(array $payload, bool $isRefresh = false, ?int $iat = null): array
     {
-        $iat = $iat ?? time();
+        $iat ??= time();
 
         return [
             'id' => $payload['id'] ?? '',                                        // ID of the token (member id)

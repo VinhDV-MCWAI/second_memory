@@ -5,18 +5,14 @@ namespace App\Repositories;
 use App\Enums\IsDelete;
 use App\Interfaces\BaseInterface;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Collection;
 
 abstract class BaseRepository implements BaseInterface
 {
-    protected Model $model;
-
-    public function __construct(Model $model)
-    {
-        $this->model = $model;
-    }
+    public function __construct(protected Model $model) {}
 
     public function getAll(): Collection
     {
@@ -46,7 +42,7 @@ abstract class BaseRepository implements BaseInterface
     /**
      * Apply dynamic filters to query based on payload
      *
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @param  Builder  $query
      * @param  array  $exactMatchFields  Fields that should use exact match (=)
      * @param  array  $likeFields  Fields that should use LIKE search
      * @return void
@@ -74,7 +70,7 @@ abstract class BaseRepository implements BaseInterface
     /**
      * Apply date range filter to query
      *
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @param  Builder  $query
      * @param  string  $dateField  The field to filter on (default: 'updated_at')
      */
     protected function applyDateRange($query, array $payload, string $dateField = 'updated_at'): void
@@ -93,7 +89,7 @@ abstract class BaseRepository implements BaseInterface
     /**
      * Apply sorting to query
      *
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @param  Builder  $query
      * @param  string  $defaultSortBy  Default field to sort by
      * @param  string  $defaultSortOrder  Default sort order (asc/desc)
      */

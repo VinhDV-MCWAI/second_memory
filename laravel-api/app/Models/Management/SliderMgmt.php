@@ -31,27 +31,28 @@ class SliderMgmt extends Model
     ];
 
     /**
-     * The attributes that should be cast.
-     *
-     * @var array
-     */
-    protected $casts = [
-        'id' => 'integer',
-        'title' => 'string',
-        'slug' => 'string',
-        'link' => 'string',
-        'image' => 'string',
-        'status' => 'integer',
-        'is_delete' => 'boolean',
-        'created_at' => 'datetime',
-        'updated_at' => 'datetime',
-    ];
-
-    /**
      * Get the history records for the slider.
      */
     public function history(): HasMany
     {
         return $this->hasMany(SliderMgmtHist::class, 'slider_mgmt_id');
+    }
+
+    /**
+     * The attributes that should be cast.
+     */
+    protected function casts(): array
+    {
+        return [
+            'id' => 'integer',
+            'title' => 'string',
+            'slug' => 'string',
+            'link' => 'string',
+            'image' => 'string',
+            'status' => 'integer',
+            'is_delete' => 'boolean',
+            'created_at' => 'datetime',
+            'updated_at' => 'datetime',
+        ];
     }
 }

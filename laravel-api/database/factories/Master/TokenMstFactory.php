@@ -5,6 +5,9 @@ namespace Database\Factories\Master;
 use App\Models\Master\TokenMst;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
+/**
+ * @extends Factory<TokenMst>
+ */
 class TokenMstFactory extends Factory
 {
     /**
@@ -22,10 +25,10 @@ class TokenMstFactory extends Factory
     public function definition()
     {
         return [
-            'token_hash' => md5($this->faker->uuid),
+            'token_hash' => md5(fake()->uuid),
             'account_id' => 1, // Default, override in tests
-            'device_name' => $this->faker->userAgent,
-            'ip_address' => $this->faker->ipv4,
+            'device_name' => fake()->userAgent,
+            'ip_address' => fake()->ipv4,
             'expired_at' => now()->addDays(7),
         ];
     }

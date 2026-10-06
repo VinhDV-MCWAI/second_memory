@@ -8,6 +8,7 @@ use App\Utilities\JsonWebToken;
 use Closure;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Redis;
 use Symfony\Component\HttpFoundation\Response;
 use UnexpectedValueException;
@@ -32,7 +33,7 @@ class BroadcastingAuthMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-        \Illuminate\Support\Facades\Log::info('[BroadcastingAuthMiddleware] Request received', [
+        Log::info('[BroadcastingAuthMiddleware] Request received', [
             'path' => $request->path(),
             'method' => $request->method(),
             'has_cookie' => $request->hasCookie('access_token'),
@@ -42,13 +43,13 @@ class BroadcastingAuthMiddleware
 
         // Check existing access token
         if (! $accessToken) {
-            \Illuminate\Support\Facades\Log::warning('[BroadcastingAuthMiddleware] No access token in cookie');
+            Log::warning('[BroadcastingAuthMiddleware] No access token in cookie');
             throw new AuthorizationException(Messages::E0401, CommonVal::HTTP_UNAUTHORIZED);
         }
 
         try {
             $payload = JsonWebToken::decode($accessToken, env('ACCESS_TOKEN_SECRET'));
-        } catch (UnexpectedValueException $e) {
+        } catch (UnexpectedValueException) {
             throw new AuthorizationException(Messages::E0401, CommonVal::HTTP_UNAUTHORIZED);
         }
 
@@ -75,14 +76,12 @@ class BroadcastingAuthMiddleware
         // Set a user resolver for Laravel Broadcasting authorization
         // Broadcasting authorization in channels.php expects $user parameter
         // This resolver provides the authenticated user object
-        $request->setUserResolver(function () use ($credentials) {
-            return (object) [
-                'id' => $credentials['id'],
-                'type' => $credentials['type'],
-            ];
-        });
+        $request->setUserResolver(fn () => (object) [
+            'id' => $credentials['id'],
+            'type' => $credentials['type'],
+        ]);
 
-        \Illuminate\Support\Facades\Log::info('[BroadcastingAuthMiddleware] Auth successful', [
+        Log::info('[BroadcastingAuthMiddleware] Auth successful', [
             'user_id' => $credentials['id'],
             'user_type' => $credentials['type'],
         ]);

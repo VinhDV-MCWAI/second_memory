@@ -17,5 +17,5 @@ return RectorConfig::configure()
         __DIR__.'/tests',
     ])
     ->withCache(__DIR__.'/storage/framework/cache/rector')
-    ->withPhpSets(php82: true)
-    ->withSets([LaravelLevelSetList::UP_TO_LARAVEL_110]);
+    ->withPhpSets(php83: true)
+    ->withSets([LaravelLevelSetList::UP_TO_LARAVEL_130_WITHOUT_ATTRIBUTES]);

@@ -4,6 +4,7 @@ namespace Tests;
 
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
+use Illuminate\Support\Facades\Redis;
 
 abstract class TestCase extends BaseTestCase
 {
@@ -14,8 +15,8 @@ abstract class TestCase extends BaseTestCase
         // Flush Redis data after each test
         if (config('database.redis.client')) {
             try {
-                \Illuminate\Support\Facades\Redis::flushdb();
-            } catch (\Exception $e) {
+                Redis::flushdb();
+            } catch (\Exception) {
                 // Ignore redis errors if connection fails, but log if needed
             }
         }

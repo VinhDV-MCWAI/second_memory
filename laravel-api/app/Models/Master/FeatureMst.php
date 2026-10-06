@@ -27,25 +27,26 @@ class FeatureMst extends Model
     ];
 
     /**
-     * The attributes that should be cast.
-     *
-     * @var array
-     */
-    protected $casts = [
-        'id' => 'integer',
-        'name' => 'string',
-        'group_name' => 'string',
-        'status' => 'integer',
-        'is_delete' => 'boolean',
-        'created_at' => 'datetime',
-        'updated_at' => 'datetime',
-    ];
-
-    /**
      * Get the APIs for the feature.
      */
     public function apis(): HasMany
     {
         return $this->hasMany(ApiMst::class, 'feature_mst_id');
+    }
+
+    /**
+     * The attributes that should be cast.
+     */
+    protected function casts(): array
+    {
+        return [
+            'id' => 'integer',
+            'name' => 'string',
+            'group_name' => 'string',
+            'status' => 'integer',
+            'is_delete' => 'boolean',
+            'created_at' => 'datetime',
+            'updated_at' => 'datetime',
+        ];
     }
 }

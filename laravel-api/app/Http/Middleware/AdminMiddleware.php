@@ -33,7 +33,7 @@ class AdminMiddleware
 
         try {
             $payload = JsonWebToken::decode($accessToken, env('ACCESS_TOKEN_SECRET'));
-        } catch (UnexpectedValueException $e) {
+        } catch (UnexpectedValueException) {
             throw new AuthorizationException(Messages::E0401, CommonVal::HTTP_UNAUTHORIZED);
         }
 
@@ -76,9 +76,7 @@ class AdminMiddleware
 
         // Set a pseudo user object for broadcasting auth
         // Broadcasting authorization expects $user parameter
-        $request->setUserResolver(function () use ($credentials) {
-            return (object) ['id' => $credentials['id'], 'type' => $credentials['type']];
-        });
+        $request->setUserResolver(fn () => (object) ['id' => $credentials['id'], 'type' => $credentials['type']]);
 
         return $next($request);
     }

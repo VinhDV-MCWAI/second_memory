@@ -5,6 +5,9 @@ namespace Database\Factories\Management;
 use App\Models\Management\SettingLinkMgmt;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
+/**
+ * @extends Factory<SettingLinkMgmt>
+ */
 class SettingLinkMgmtFactory extends Factory
 {
     protected $model = SettingLinkMgmt::class;
@@ -12,8 +15,8 @@ class SettingLinkMgmtFactory extends Factory
     public function definition()
     {
         return [
-            'key' => $this->faker->unique()->word,
-            'value' => $this->faker->url,
+            'key' => fake()->unique()->word,
+            'value' => fake()->url,
             'is_delete' => false,
         ];
     }

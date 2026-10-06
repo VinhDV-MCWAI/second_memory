@@ -2,11 +2,15 @@
 
 namespace Database\Factories\Master;
 
+use App\Enums\Gender;
 use App\Models\Master\AdminMst;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 
+/**
+ * @extends Factory<AdminMst>
+ */
 class AdminMstFactory extends Factory
 {
     /**
@@ -25,14 +29,14 @@ class AdminMstFactory extends Factory
     {
         return [
             'email' => Str::random(10).'@gmail.com',
-            'user_name' => substr($this->faker->unique()->userName(), 0, 15).Str::random(2),
+            'user_name' => substr(fake()->unique()->userName(), 0, 15).Str::random(2),
             'password' => Hash::make('password'), // password
-            'first_name' => substr($this->faker->firstName(), 0, 15),
-            'last_name' => substr($this->faker->lastName(), 0, 15),
-            'address' => substr($this->faker->address(), 0, 50),
+            'first_name' => substr(fake()->firstName(), 0, 15),
+            'last_name' => substr(fake()->lastName(), 0, 15),
+            'address' => substr(fake()->address(), 0, 50),
             'phone_number' => '0901234567',
-            'birth' => $this->faker->dateTimeBetween('-50 years', '-18 years'),
-            'gender' => $this->faker->randomElement([\App\Enums\Gender::MALE->value, \App\Enums\Gender::FEMALE->value]),
+            'birth' => fake()->dateTimeBetween('-50 years', '-18 years'),
+            'gender' => fake()->randomElement([Gender::MALE->value, Gender::FEMALE->value]),
             'status' => 1,
             'is_active' => true,
             'avatar' => null,

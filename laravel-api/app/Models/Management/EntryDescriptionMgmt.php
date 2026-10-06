@@ -32,28 +32,29 @@ class EntryDescriptionMgmt extends Model
     ];
 
     /**
-     * The attributes that should be cast.
-     *
-     * @var array
-     */
-    protected $casts = [
-        'id' => 'integer',
-        'title' => 'string',
-        'summary' => 'string',
-        'article' => 'array',
-        'status' => 'integer',
-        'is_display' => 'boolean',
-        'rank_order' => 'integer',
-        'is_delete' => 'boolean',
-        'created_at' => 'datetime',
-        'updated_at' => 'datetime',
-    ];
-
-    /**
      * Get the history records for the entry description.
      */
     public function history(): HasMany
     {
         return $this->hasMany(EntryDescriptionMgmtHist::class, 'entry_description_mgmt_id');
+    }
+
+    /**
+     * The attributes that should be cast.
+     */
+    protected function casts(): array
+    {
+        return [
+            'id' => 'integer',
+            'title' => 'string',
+            'summary' => 'string',
+            'article' => 'array',
+            'status' => 'integer',
+            'is_display' => 'boolean',
+            'rank_order' => 'integer',
+            'is_delete' => 'boolean',
+            'created_at' => 'datetime',
+            'updated_at' => 'datetime',
+        ];
     }
 }

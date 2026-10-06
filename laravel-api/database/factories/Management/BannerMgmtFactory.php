@@ -4,7 +4,11 @@ namespace Database\Factories\Management;
 
 use App\Models\Management\BannerMgmt;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Str;
 
+/**
+ * @extends Factory<BannerMgmt>
+ */
 class BannerMgmtFactory extends Factory
 {
     /**
@@ -22,9 +26,9 @@ class BannerMgmtFactory extends Factory
     public function definition()
     {
         return [
-            'title' => $this->faker->text(40), // Limit to 50
-            'slug' => \Illuminate\Support\Str::limit($this->faker->slug, 45, ''),
-            'description' => $this->faker->text(200),
+            'title' => fake()->text(40), // Limit to 50
+            'slug' => Str::limit(fake()->slug, 45, ''),
+            'description' => fake()->text(200),
             'position' => 'top',
             'status' => 1,
             'is_delete' => 0,

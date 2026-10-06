@@ -3,11 +3,14 @@
 namespace App\Services\Management;
 
 use App\Constants\MediaConst;
+use App\Enums\UploadStatus;
 use App\Http\Resources\Management\MediaFileResource;
 use App\Interfaces\Management\MediaMgmtInterface;
+use App\Jobs\Media\ProcessLargeFile;
 use App\Services\BaseService;
 use App\Services\MinioService;
 use Exception;
+use Illuminate\Support\Str;
 
 class MediaMgmtService extends BaseService
 {
@@ -34,9 +37,7 @@ class MediaMgmtService extends BaseService
         $list = $this->mediaMgmt->list($payload);
 
         // Manually transform to array to avoid ResourceCollection pagination wrapper
-        return $list->map(function ($item) {
-            return MediaFileResource::make($item)->resolve();
-        })->values()->all();
+        return $list->map(fn ($item) => MediaFileResource::make($item)->resolve())->values()->all();
     }
 
     /**
@@ -284,7 +285,7 @@ class MediaMgmtService extends BaseService
             'minio_object_key' => $officialPath,
             'url' => $this->minioService->getPublicUrl($officialDisk, $officialPath),
             'is_delete' => false,
-            'upload_status' => $isHeavyFile ? \App\Enums\UploadStatus::PROCESSING : \App\Enums\UploadStatus::COMPLETED,
+            'upload_status' => $isHeavyFile ? UploadStatus::PROCESSING : UploadStatus::COMPLETED,
             'created_by' => $currentUserId,
         ];
 
@@ -296,16 +297,16 @@ class MediaMgmtService extends BaseService
             // Heavy file: Dispatch async job
             // Generate room ID for WebSocket notification
             // Format: {uuid}_{adminId}_upload_file
-            $uuid = \Illuminate\Support\Str::uuid()->toString();
+            $uuid = Str::uuid()->toString();
             $roomId = "{$uuid}_{$currentUserId}_upload_file";
 
             // Dispatch Job to Process File (Move + Notify)
-            \App\Jobs\Media\ProcessLargeFile::dispatch($media, $tempKey, $roomId);
+            ProcessLargeFile::dispatch($media, $tempKey, $roomId);
 
             return [
                 'media_id' => $media->id,
                 'room_id' => $roomId,
-                'status' => \App\Enums\UploadStatus::PROCESSING->value,
+                'status' => UploadStatus::PROCESSING->value,
                 'message' => 'File is being processed. You will be notified when it is ready.',
             ];
         } else {
@@ -327,10 +328,10 @@ class MediaMgmtService extends BaseService
                 return [
                     'media_id' => $media->id,
                     'room_id' => null,
-                    'status' => \App\Enums\UploadStatus::COMPLETED->value,
+                    'status' => UploadStatus::COMPLETED->value,
                     'message' => 'File uploaded successfully.',
                 ];
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 // If move fails, mark as failed and delete DB record
                 $this->mediaMgmt->executeDelete([$mediaId]);
                 throw new Exception(__('messages.media.move_file_failed').': '.$e->getMessage());

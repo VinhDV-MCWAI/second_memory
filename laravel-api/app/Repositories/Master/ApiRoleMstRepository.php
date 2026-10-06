@@ -9,6 +9,8 @@ use App\Models\Master\ApiRoleMst;
 use App\Repositories\BaseRepository;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class ApiRoleMstRepository extends BaseRepository implements ApiRoleMstInterface
 {
@@ -74,9 +76,7 @@ class ApiRoleMstRepository extends BaseRepository implements ApiRoleMstInterface
      */
     public function executeDelete(array $payload): void
     {
-        $values = collect($payload)->map(function ($item) {
-            return '('.(int) $item['api_mst_id'].', '.(int) $item['role_mst_id'].')';
-        })->all();
+        $values = collect($payload)->map(fn ($item) => '('.(int) $item['api_mst_id'].', '.(int) $item['role_mst_id'].')')->all();
 
         $this->model
             ->whereRaw('(api_mst_id, role_mst_id) IN ('.implode(', ', $values).')')
@@ -98,9 +98,7 @@ class ApiRoleMstRepository extends BaseRepository implements ApiRoleMstInterface
         return $this->model
             ->whereRaw('(api_mst_id, role_mst_id) IN ('.implode(', ', $values).')')
             ->get(['api_mst_id', 'role_mst_id'])
-            ->map(function ($item) {
-                return [$item->api_mst_id, $item->role_mst_id];
-            });
+            ->map(fn ($item) => [$item->api_mst_id, $item->role_mst_id]);
     }
 
     /**
@@ -108,7 +106,7 @@ class ApiRoleMstRepository extends BaseRepository implements ApiRoleMstInterface
      */
     public function isMyRole(array $payload): bool
     {
-        $currentAdminId = (int) (request()->attributes->get('current_admin_id') ?? \Illuminate\Support\Facades\Auth::id());
+        $currentAdminId = (int) (request()->attributes->get('current_admin_id') ?? Auth::id());
 
         if (! $currentAdminId) {
             return false;
@@ -131,7 +129,7 @@ class ApiRoleMstRepository extends BaseRepository implements ApiRoleMstInterface
             return false;
         }
 
-        return \Illuminate\Support\Facades\DB::table('admin_role_mst')
+        return DB::table('admin_role_mst')
             ->where('admin_mst_id', $currentAdminId)
             ->whereIn('role_mst_id', array_unique($roleIds))
             ->exists();

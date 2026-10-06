@@ -33,23 +33,6 @@ class ApiMst extends Model
     ];
 
     /**
-     * The attributes that should be cast.
-     *
-     * @var array
-     */
-    protected $casts = [
-        'id' => 'integer',
-        'type' => 'integer',
-        'name' => 'string',
-        'path' => 'string',
-        'is_active' => 'boolean',
-        'feature_mst_id' => 'integer',
-        'is_delete' => 'boolean',
-        'created_at' => 'datetime',
-        'updated_at' => 'datetime',
-    ];
-
-    /**
      * Get the feature that owns the API.
      */
     public function feature(): BelongsTo
@@ -76,5 +59,23 @@ class ApiMst extends Model
     public function history(): HasMany
     {
         return $this->hasMany(ApiMstHist::class, 'api_mst_id');
+    }
+
+    /**
+     * The attributes that should be cast.
+     */
+    protected function casts(): array
+    {
+        return [
+            'id' => 'integer',
+            'type' => 'integer',
+            'name' => 'string',
+            'path' => 'string',
+            'is_active' => 'boolean',
+            'feature_mst_id' => 'integer',
+            'is_delete' => 'boolean',
+            'created_at' => 'datetime',
+            'updated_at' => 'datetime',
+        ];
     }
 }

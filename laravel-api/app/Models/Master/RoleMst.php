@@ -30,21 +30,6 @@ class RoleMst extends Model
     ];
 
     /**
-     * The attributes that should be cast.
-     *
-     * @var array
-     */
-    protected $casts = [
-        'id' => 'integer',
-        'name' => 'string',
-        'permission' => 'string',
-        'is_active' => 'boolean',
-        'is_delete' => 'boolean',
-        'created_at' => 'datetime',
-        'updated_at' => 'datetime',
-    ];
-
-    /**
      * Get the admins associated with the role.
      */
     public function admins(): BelongsToMany
@@ -76,5 +61,21 @@ class RoleMst extends Model
     public function history(): HasMany
     {
         return $this->hasMany(RoleMstHist::class, 'role_mst_id');
+    }
+
+    /**
+     * The attributes that should be cast.
+     */
+    protected function casts(): array
+    {
+        return [
+            'id' => 'integer',
+            'name' => 'string',
+            'permission' => 'string',
+            'is_active' => 'boolean',
+            'is_delete' => 'boolean',
+            'created_at' => 'datetime',
+            'updated_at' => 'datetime',
+        ];
     }
 }

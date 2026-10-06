@@ -63,7 +63,7 @@ trait GrantsApiAccess
         );
 
         $api = ApiMst::firstOrCreate(
-            ['path' => trim($routeUri, '/'), 'type' => constant(TypeOfMethod::class.'::'.strtoupper($method))->value],
+            ['path' => trim($routeUri, '/'), 'type' => TypeOfMethod::{strtoupper($method)}->value],
             ['name' => substr("{$method} {$routeUri}", 0, 50), 'is_active' => 1, 'feature_mst_id' => $feature->id, 'is_delete' => 0],
         );
 

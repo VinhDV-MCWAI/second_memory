@@ -9,6 +9,7 @@ use App\Models\Master\ApiRoleMst;
 use App\Models\Master\FeatureMst;
 use App\Models\Master\RoleMst;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\DB;
 use Tests\TestCase;
 
 class ListApiRoleMstTest extends TestCase
@@ -29,11 +30,11 @@ class ListApiRoleMstTest extends TestCase
 
         $this->grantAccessTo($rootRole, 'GET', 'api/admin/api-role-mst/list');
 
-        if (! \Illuminate\Support\Facades\DB::table('admin_role_mst')
+        if (! DB::table('admin_role_mst')
             ->where('admin_mst_id', $admin->id)
             ->where('role_mst_id', $rootRole->id)
             ->exists()) {
-            \Illuminate\Support\Facades\DB::table('admin_role_mst')->insert([
+            DB::table('admin_role_mst')->insert([
                 'admin_mst_id' => $admin->id,
                 'role_mst_id' => $rootRole->id,
                 'created_at' => now(),
@@ -76,7 +77,7 @@ class ListApiRoleMstTest extends TestCase
             ]
         );
 
-        \Illuminate\Support\Facades\DB::table('api_role_mst')->insertOrIgnore([
+        DB::table('api_role_mst')->insertOrIgnore([
             'api_mst_id' => $api->id,
             'role_mst_id' => $role->id,
             'created_at' => now(),
@@ -189,9 +190,7 @@ class ListApiRoleMstTest extends TestCase
         // Expect at least 1, as root role might also be assigned
         $this->assertGreaterThanOrEqual(1, count($data));
 
-        $contains = collect($data)->contains(function ($item) use ($api1, $role) {
-            return $item['api_mst_id'] == $api1->id && $item['role_mst_id'] == $role->id;
-        });
+        $contains = collect($data)->contains(fn ($item) => $item['api_mst_id'] == $api1->id && $item['role_mst_id'] == $role->id);
         $this->assertTrue($contains, 'Filtered data should contain the created assignment');
     }
 

@@ -30,21 +30,6 @@ class DepartmentMst extends Model
     ];
 
     /**
-     * The attributes that should be cast.
-     *
-     * @var array
-     */
-    protected $casts = [
-        'id' => 'integer',
-        'code' => 'string',
-        'name' => 'string',
-        'status' => 'integer',
-        'is_delete' => 'boolean',
-        'created_at' => 'datetime',
-        'updated_at' => 'datetime',
-    ];
-
-    /**
      * Get the admins associated with the department.
      */
     public function admins(): BelongsToMany
@@ -76,5 +61,21 @@ class DepartmentMst extends Model
     public function history(): HasMany
     {
         return $this->hasMany(DepartmentMstHist::class, 'department_mst_id');
+    }
+
+    /**
+     * The attributes that should be cast.
+     */
+    protected function casts(): array
+    {
+        return [
+            'id' => 'integer',
+            'code' => 'string',
+            'name' => 'string',
+            'status' => 'integer',
+            'is_delete' => 'boolean',
+            'created_at' => 'datetime',
+            'updated_at' => 'datetime',
+        ];
     }
 }

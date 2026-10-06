@@ -28,20 +28,6 @@ class PolicyDepartmentMst extends Model
     ];
 
     /**
-     * The attributes that should be cast.
-     *
-     * @var array
-     */
-    protected $casts = [
-        'id' => 'integer',
-        'table_name' => 'string',
-        'row_id' => 'integer',
-        'is_delete' => 'boolean',
-        'created_at' => 'datetime',
-        'updated_at' => 'datetime',
-    ];
-
-    /**
      * Get the departments associated with the policy.
      */
     public function departments(): BelongsToMany
@@ -60,5 +46,20 @@ class PolicyDepartmentMst extends Model
     public function history(): HasMany
     {
         return $this->hasMany(PolicyDepartmentMstHist::class, 'policy_department_mst_id');
+    }
+
+    /**
+     * The attributes that should be cast.
+     */
+    protected function casts(): array
+    {
+        return [
+            'id' => 'integer',
+            'table_name' => 'string',
+            'row_id' => 'integer',
+            'is_delete' => 'boolean',
+            'created_at' => 'datetime',
+            'updated_at' => 'datetime',
+        ];
     }
 }

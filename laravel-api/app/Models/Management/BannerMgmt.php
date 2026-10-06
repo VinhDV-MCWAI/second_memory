@@ -35,25 +35,6 @@ class BannerMgmt extends Model
     ];
 
     /**
-     * The attributes that should be cast.
-     *
-     * @var array
-     */
-    protected $casts = [
-        'id' => 'integer',
-        'title' => 'string',
-        'slug' => 'string',
-        'description' => 'string',
-        'position' => 'string',
-        'position' => 'string',
-        'status' => 'integer',
-        'is_delete' => 'boolean',
-        'media_id' => 'integer',
-        'created_at' => 'datetime',
-        'updated_at' => 'datetime',
-    ];
-
-    /**
      * Get the history records for the banner.
      */
     public function history(): HasMany
@@ -66,6 +47,26 @@ class BannerMgmt extends Model
      */
     public function media()
     {
-        return $this->belongsTo(\App\Models\Management\MediaMgmt::class, 'media_id');
+        return $this->belongsTo(MediaMgmt::class, 'media_id');
+    }
+
+    /**
+     * The attributes that should be cast.
+     */
+    protected function casts(): array
+    {
+        return [
+            'id' => 'integer',
+            'title' => 'string',
+            'slug' => 'string',
+            'description' => 'string',
+            'position' => 'string',
+            'position' => 'string',
+            'status' => 'integer',
+            'is_delete' => 'boolean',
+            'media_id' => 'integer',
+            'created_at' => 'datetime',
+            'updated_at' => 'datetime',
+        ];
     }
 }

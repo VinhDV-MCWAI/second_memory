@@ -41,32 +41,6 @@ class AdminMst extends Model
     ];
 
     /**
-     * The attributes that should be cast.
-     *
-     * @var array
-     */
-    protected $casts = [
-        'id' => 'integer',
-        'email' => 'string',
-        'user_name' => 'string',
-        'password' => 'string',
-        'first_name' => 'string',
-        'last_name' => 'string',
-        'address' => 'string',
-        'phone_number' => 'string',
-        'birth' => 'datetime',
-        'gender' => 'integer',
-        'status' => 'integer',
-        'is_active' => 'boolean',
-        'avatar' => 'string',
-        'email_verified_at' => 'datetime',
-        'is_delete' => 'boolean',
-        'remember_token' => 'string',
-        'created_at' => 'datetime',
-        'updated_at' => 'datetime',
-    ];
-
-    /**
      * Get the roles associated with the admin.
      */
     public function roles(): BelongsToMany
@@ -98,5 +72,32 @@ class AdminMst extends Model
     public function history(): HasMany
     {
         return $this->hasMany(AdminMstHist::class, 'admin_mst_id');
+    }
+
+    /**
+     * The attributes that should be cast.
+     */
+    protected function casts(): array
+    {
+        return [
+            'id' => 'integer',
+            'email' => 'string',
+            'user_name' => 'string',
+            'password' => 'string',
+            'first_name' => 'string',
+            'last_name' => 'string',
+            'address' => 'string',
+            'phone_number' => 'string',
+            'birth' => 'datetime',
+            'gender' => 'integer',
+            'status' => 'integer',
+            'is_active' => 'boolean',
+            'avatar' => 'string',
+            'email_verified_at' => 'datetime',
+            'is_delete' => 'boolean',
+            'remember_token' => 'string',
+            'created_at' => 'datetime',
+            'updated_at' => 'datetime',
+        ];
     }
 }

@@ -5,6 +5,9 @@ namespace Database\Factories\Master;
 use App\Models\Master\FeatureMst;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
+/**
+ * @extends Factory<FeatureMst>
+ */
 class FeatureMstFactory extends Factory
 {
     /**
@@ -22,8 +25,8 @@ class FeatureMstFactory extends Factory
     public function definition()
     {
         return [
-            'name' => $this->faker->name,
-            'group_name' => $this->faker->word,
+            'name' => fake()->name,
+            'group_name' => fake()->word,
             'status' => 1,
             'is_delete' => 0,
         ];

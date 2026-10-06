@@ -33,29 +33,30 @@ class SocialMgmt extends Model
     ];
 
     /**
-     * The attributes that should be cast.
-     *
-     * @var array
-     */
-    protected $casts = [
-        'id' => 'integer',
-        'name' => 'string',
-        'slug' => 'string',
-        'link' => 'string',
-        'image' => 'string',
-        'status' => 'integer',
-        'is_display' => 'boolean',
-        'rank_order' => 'integer',
-        'is_delete' => 'boolean',
-        'created_at' => 'datetime',
-        'updated_at' => 'datetime',
-    ];
-
-    /**
      * Get the history records for the social.
      */
     public function history(): HasMany
     {
         return $this->hasMany(SocialMgmtHist::class, 'social_mgmt_id');
+    }
+
+    /**
+     * The attributes that should be cast.
+     */
+    protected function casts(): array
+    {
+        return [
+            'id' => 'integer',
+            'name' => 'string',
+            'slug' => 'string',
+            'link' => 'string',
+            'image' => 'string',
+            'status' => 'integer',
+            'is_display' => 'boolean',
+            'rank_order' => 'integer',
+            'is_delete' => 'boolean',
+            'created_at' => 'datetime',
+            'updated_at' => 'datetime',
+        ];
     }
 }

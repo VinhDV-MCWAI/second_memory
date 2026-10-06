@@ -3,20 +3,18 @@
 namespace App\Jobs\Media;
 
 use App\Constants\MediaConst;
+use App\Enums\UploadStatus;
+use App\Events\UploadStatusUpdated;
 use App\Models\Management\MediaMgmt;
 use App\Services\MinioService;
 use App\Services\WebSocket\RedisPublisher;
 use Exception;
-use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Foundation\Bus\Dispatchable;
-use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
 
 class ProcessLargeFile implements ShouldQueue
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+    use \Illuminate\Foundation\Queue\Queueable;
 
     /**
      * The number of times the job may be attempted.
@@ -78,7 +76,7 @@ class ProcessLargeFile implements ShouldQueue
             }
 
             // 2. Update DB status to completed
-            $this->media->upload_status = \App\Enums\UploadStatus::COMPLETED;
+            $this->media->upload_status = UploadStatus::COMPLETED;
             $this->media->save();
 
             $duration = microtime(true) - $startTime;
@@ -86,10 +84,10 @@ class ProcessLargeFile implements ShouldQueue
             // 3. Notify User via Reverb (Event)
             $userId = $this->media->created_by;
 
-            broadcast(new \App\Events\UploadStatusUpdated(
+            broadcast(new UploadStatusUpdated(
                 userId: $userId,
                 roomId: $this->roomId,
-                status: \App\Enums\UploadStatus::COMPLETED->value,
+                status: UploadStatus::COMPLETED->value,
                 message: 'Upload completed successfully.',
                 fileId: $this->media->id,
                 url: $this->media->url
@@ -112,15 +110,15 @@ class ProcessLargeFile implements ShouldQueue
 
             // If it's the last attempt, mark as failed
             if ($this->attempts() >= $this->tries) {
-                $this->media->upload_status = \App\Enums\UploadStatus::FAILED;
+                $this->media->upload_status = UploadStatus::FAILED;
                 $this->media->save();
 
                 $userId = $this->media->created_by;
 
-                broadcast(new \App\Events\UploadStatusUpdated(
+                broadcast(new UploadStatusUpdated(
                     userId: $userId,
                     roomId: $this->roomId,
-                    status: \App\Enums\UploadStatus::FAILED->value,
+                    status: UploadStatus::FAILED->value,
                     message: 'Upload failed after retries.'
                 ));
             }

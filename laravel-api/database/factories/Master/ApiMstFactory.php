@@ -6,6 +6,9 @@ use App\Models\Master\ApiMst;
 use App\Models\Master\FeatureMst;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
+/**
+ * @extends Factory<ApiMst>
+ */
 class ApiMstFactory extends Factory
 {
     /**
@@ -23,9 +26,9 @@ class ApiMstFactory extends Factory
     public function definition()
     {
         return [
-            'type' => $this->faker->numberBetween(1, 10), // Assuming type is integer
-            'name' => $this->faker->word,
-            'path' => $this->faker->url,
+            'type' => fake()->numberBetween(1, 10), // Assuming type is integer
+            'name' => fake()->word,
+            'path' => fake()->url,
             'is_active' => 1,
             'feature_mst_id' => FeatureMst::factory(),
             'is_delete' => 0,
