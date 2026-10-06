@@ -24,6 +24,7 @@ class StoreTokenMstRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'token_hash' => ['required', 'string', 'max:'.CommonVal::MAX_VARCHAR],
             'account_id' => ['required', 'integer', 'min:'.CommonVal::MIN_INTEGER, 'max:'.CommonVal::MAX_INTEGER],
             'device_name' => ['string', 'min:'.CommonVal::MIN_VARCHAR, 'max:255'],
             'ip_address' => ['string', 'min:'.CommonVal::MIN_VARCHAR, 'max:255'],
@@ -34,6 +35,7 @@ class StoreTokenMstRequest extends FormRequest
     public function attributes(): array
     {
         return [
+            'token_hash' => __('messages.token_hash'),
             'account_id' => __('messages.account_id'),
             'device_name' => __('messages.device_name'),
             'ip_address' => __('messages.ip_address'),

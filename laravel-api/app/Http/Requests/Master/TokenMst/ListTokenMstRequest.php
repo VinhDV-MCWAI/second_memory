@@ -3,27 +3,18 @@
 namespace App\Http\Requests\Master\TokenMst;
 
 use App\Constants\CommonVal;
+use App\Http\Requests\ListRequest;
 use Illuminate\Contracts\Validation\ValidationRule;
-use Illuminate\Foundation\Http\FormRequest;
 
-class ListTokenMstRequest extends FormRequest
+class ListTokenMstRequest extends ListRequest
 {
     /**
-     * Determine if the user is authorized to make this request.
-     */
-    public function authorize(): bool
-    {
-        return true;
-    }
-
-    /**
-     * Get the validation rules that apply to the request.
-     *
      * @return array<string, ValidationRule|array<mixed>|string>
      */
-    public function rules(): array
+    protected function filters(): array
     {
         return [
+            'token_hash' => ['nullable', 'string', 'max:'.CommonVal::MAX_VARCHAR],
             'account_id' => ['nullable', 'integer', 'min:'.CommonVal::MIN_INTEGER, 'max:'.CommonVal::MAX_INTEGER],
             'device_name' => ['nullable', 'string', 'min:'.CommonVal::MIN_VARCHAR, 'max:255'],
             'ip_address' => ['nullable', 'string', 'min:'.CommonVal::MIN_VARCHAR, 'max:255'],
