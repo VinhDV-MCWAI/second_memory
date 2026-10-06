@@ -55,7 +55,7 @@ Workflow: `/refactor-item <ID…>`. Only `approved` items may be started.
 
 | ID | Item | Done when | Depends | Status |
 |---|---|---|---|---|
-| U1 | PHP 8.5 image; Laravel 11 → 12 → 13 (Rector sets + upgrade guides), unpin exact versions to `^`, Reverb stable, Sanctum latest; PHPUnit 12 **or** convert to Pest 4 (option) | All tests green on 13 | F2, F4 | proposed |
+| U1 | PHP 8.5 image; Laravel 11 → 12 → 13 (Rector sets + upgrade guides), unpin exact versions to `^`, Reverb stable, Sanctum latest; PHPUnit 12 **or** convert to Pest 4 (option) | All tests green on 13 | F2, F4 | done (`refactor/p2-upgrades`: Laravel 13.35, PHP 8.5.11, PHPUnit 12.5, 593 pass) |
 | U2 | Next 16.3 with Turbopack (drop `--webpack`; keep polling for Docker via env), enable React Compiler, Vitest 4, Node 24 images | Both apps build & run in Docker | S1, F3 | proposed |
 
 ## P3 — Backend architecture
@@ -93,10 +93,12 @@ Workflow: `/refactor-item <ID…>`. Only `approved` items may be started.
 | I4 | Backup: `set -euo pipefail`, retention, scheduled run, automated restore test | Restore into scratch DB succeeds | – | proposed |
 | I5 | CD: images tagged by commit SHA (+ `latest` alias), docs image too, deploy health check + one-command rollback | Rollback tested once | F4 | proposed |
 
-## Open decisions (user)
+## Open decisions
 
-1. S6: firebase/php-jwt (a) or Sanctum SPA cookie auth (b)?
-2. U1: keep PHPUnit or migrate to Pest 4?
-3. B7, FE7, I2: do the optional large items?
-4. I3: keep MinIO (pinned) or migrate?
-5. S2: also purge secrets from git history (rewrites history, needs force-push)?
+User delegated P2+ on 2026-10-06 ("toàn quyền thực hiện"); Claude's defaults below can be overridden any time.
+
+1. S6: firebase/php-jwt (a) or Sanctum SPA cookie auth (b)? — **user** (manual auth work).
+2. U1: keep PHPUnit or migrate to Pest 4? — **decided: PHPUnit 12** (no rewrite of 593 tests for syntax only).
+3. B7, FE7, I2: do the optional large items? — **decided: skipped for now** (data migration / new package / DB major upgrade carry risk without a real need).
+4. I3: keep MinIO (pinned) or migrate? — **decided: keep S3 API, pinned `pgsty/minio` community build** (see I3).
+5. S2: also purge secrets from git history (rewrites history, needs force-push)? — **user**.

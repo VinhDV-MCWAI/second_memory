@@ -69,6 +69,14 @@
 | F6 Format pass | done (verified) | `3669e72`: Pint (550 PHP files) + Prettier (175 FE, 28 docs), formatting only — includes auth files (JsonWebToken etc., whitespace/import order only). Larastan baseline message updated (Pint flipped a yoda comparison). `.git-blame-ignore-revs` + local `git config blame.ignoreRevsFile`. Verified: pint --test ✓, phpstan ✓, prettier --check ✓ both, lint 0 errors, tsc ✓, Vitest 10/10, PHP 4F/593P (same 4 auth tests). Separate fix `740966f`: flaky SliderMgmtFactory link > varchar(100) |
 | F7 Makefile | done (verified) | Root `Makefile` (first version was in `1fdca10`) extended: `fresh` (asks for `yes`, then `migrate:fresh --seed`), `format`/`fe-format`, `test-ci` (same auth exclusion as CI), `lint` now also runs Prettier checks, `verify` = lint + analyse + typecheck + test-ci + fe-test (mirrors CI), backend targets use composer scripts, `restart` rebuilds. `start.sh` just runs `make up`. Root CLAUDE.md, README (start/DB/test/quality sections) and `/verify` skill use `make`. Verified: `make verify` exit 0. Separate fix: flaky `RoleMstFactory` (unique `role_mst.name` collided on repeated faker words) |
 
+## Item status (P2+) — branch `refactor/p2-upgrades` (stacked on `refactor/p0-p1-foundation`)
+
+User delegated all P2+ items on 2026-10-06 ("toàn quyền thực hiện, không cần response lại"). Auth-dependent items stay blocked on the manual auth rework.
+
+| ID | Status | Notes |
+|---|---|---|
+| U1 Laravel 13 / PHP 8.5 | done (verified) | Laravel 11.57 → **13.35** directly (11→12→13 guides: nothing applicable beyond Rector's CSRF rename; config files are published so default changes don't apply), Reverb ^1.12, Sanctum ^4.3, Tinker 3, Predis 3, **PHPUnit 12.5** (no docblock annotations in tests, so nothing silently skipped: still 593). Rector php83 + `UP_TO_LARAVEL_130_WITHOUT_ATTRIBUTES` applied (69 files: `casts()` methods, `Queueable` trait, `fake()`), auth files now in Rector `withSkip`. Pint 1.18 → 1.32 restyled 183 files (FQCN imports) in its own commit, added to `.git-blame-ignore-revs`. Larastan baseline regenerated (637): `casts()` exposed int→bool cast assignments that `$casts` hid. Docker: `PHP_VERSION` arg now actually used, PHP **8.5.11**, phpredis 6.3.0, Xdebug 3.5, Composer 2; CI on 8.5. Verified: 593 pass, Larastan ✓, Pint ✓, Rector dry-run clean, API 200 via nginx, queue + reverb up on 8.5. `composer audit`: only firebase/php-jwt (auth guide). Not verified: production image build (CI docker job) |
+
 ## Log
 
 - 2026-10-05 — Claude Code setup done (CLAUDE.md files, `.claude/rules`, settings, skills `verify` + `refactor-item`, PLAN.md). Branch created. Auth flow analysed for the guide.
@@ -97,6 +105,9 @@
 
 21. Factories using bare `faker->word` for unique columns cause random failures (fixed: `RoleMstFactory`, `SliderMgmtFactory`). `ApiMstFactory.name` / `FeatureMstFactory.group_name` also use bare words but have no unique constraint — fine.
 22. Per-app `CLAUDE.md` files still show raw `docker exec` commands — still valid; `make` wraps them.
+
+- 2026-10-06 — Rule: no `Co-Authored-By: Claude` trailer (settings `attribution.commit: ""`, CLAUDE.md, workflow rule, local `commit-msg` hook). All 46 earlier commits rewritten without it (tree identical; old tips kept in branch `backup/pre-msg-rewrite`). **38 of them are already on `origin/developer`** → the remote still has the old messages until someone force-pushes `developer` (user decision).
+- 2026-10-06 — U1 done (Laravel 13, PHP 8.5, PHPUnit 12).
 
 ## Next step
 
