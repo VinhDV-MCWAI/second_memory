@@ -10,11 +10,12 @@ use App\Services\MinioService;
 use App\Services\WebSocket\RedisPublisher;
 use Exception;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Foundation\Queue\Queueable;
 use Illuminate\Support\Facades\Log;
 
 class ProcessLargeFile implements ShouldQueue
 {
-    use \Illuminate\Foundation\Queue\Queueable;
+    use Queueable;
 
     /**
      * The number of times the job may be attempted.

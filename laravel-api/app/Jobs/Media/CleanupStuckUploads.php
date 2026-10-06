@@ -7,11 +7,12 @@ use App\Models\Management\MediaMgmt;
 use App\Services\MinioService;
 use Carbon\Carbon;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Foundation\Queue\Queueable;
 use Illuminate\Support\Facades\Log;
 
 class CleanupStuckUploads implements ShouldQueue
 {
-    use \Illuminate\Foundation\Queue\Queueable;
+    use Queueable;
 
     /**
      * Execute the job.
