@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace App\Repositories\Master;
 
-use App\Enums\IsDelete;
 use App\Models\Master\FeatureMst;
-use App\Repositories\BaseRepository;
+use App\Repositories\SoftDeleteCrudRepository;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
-use Illuminate\Support\Arr;
 
-class FeatureMstRepository extends BaseRepository
+class FeatureMstRepository extends SoftDeleteCrudRepository
 {
+    protected array $deleteBlockedBy = ['apis'];
+
     public function __construct(FeatureMst $model)
     {
         parent::__construct($model);
@@ -54,50 +54,5 @@ class FeatureMstRepository extends BaseRepository
         $page = $payload['page'] ?? 1;
 
         return $query->paginate($perPage, ['*'], 'page', $page);
-    }
-
-    /**
-     * Create new record
-     */
-    public function executeStore(array $payload): int
-    {
-        $model = $this->model->newInstance()->fill(
-            Arr::only($payload, $this->model->getFillable())
-        );
-
-        $model->save();
-
-        return $model->id;
-    }
-
-    /**
-     * Update record
-     */
-    public function executeUpdate(array $payload): int
-    {
-        $model = $this->model->findOrFail($payload['id']);
-
-        if ($model->isDeleted()) {
-            throw new \LogicException('Cannot update deleted record');
-        }
-
-        $model->fill(Arr::only($payload, $this->model->getFillable()));
-        $model->save();
-
-        return $model->id;
-    }
-
-    /**
-     * Delete record (soft delete)
-     */
-    public function executeDelete(array $ids): void
-    {
-        // Check if features have dependent APIs
-        $this->checkCanDelete($ids, ['apis']);
-
-        // Soft delete
-        $this->model->whereIn('id', $ids)
-            ->notDeleted()
-            ->update(['is_delete' => IsDelete::TRUE->value]);
     }
 }

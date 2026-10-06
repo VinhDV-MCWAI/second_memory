@@ -5,15 +5,14 @@ declare(strict_types=1);
 namespace App\Repositories\Master;
 
 use App\Constants\CommonVal;
-use App\Enums\IsDelete;
 use App\Models\Master\AdminMst;
-use App\Repositories\BaseRepository;
+use App\Repositories\SoftDeleteCrudRepository;
 use Carbon\Carbon;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Hash;
 
-class AdminMstRepository extends BaseRepository
+class AdminMstRepository extends SoftDeleteCrudRepository
 {
     public function __construct(AdminMst $model)
     {
@@ -134,16 +133,5 @@ class AdminMstRepository extends BaseRepository
         $model->save();
 
         return $model->id;
-    }
-
-    /**
-     * Delete record (soft delete)
-     */
-    public function executeDelete(array $ids): void
-    {
-        // Soft delete using scope
-        $this->model->whereIn('id', $ids)
-            ->notDeleted()
-            ->update(['is_delete' => IsDelete::TRUE->value]);
     }
 }

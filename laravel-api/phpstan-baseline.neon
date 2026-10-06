@@ -2479,273 +2479,21 @@ parameters:
 			path: app/Observers/EntryMgmtObserver.php
 
 		-
-			message: '#^Method App\\Repositories\\BaseRepository\:\:delete\(\) should return bool but returns int\.$#'
-			identifier: return.type
-			count: 1
-			path: app/Repositories/BaseRepository.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Collection\<int, Illuminate\\Database\\Eloquent\\Model\>\|Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Repositories/History/Management/BannerMgmtHistRepository.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Repositories/History/Management/BannerMgmtHistRepository.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Collection\<int, Illuminate\\Database\\Eloquent\\Model\>\|Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Repositories/History/Management/CategoryMgmtHistRepository.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Repositories/History/Management/CategoryMgmtHistRepository.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Collection\<int, Illuminate\\Database\\Eloquent\\Model\>\|Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Repositories/History/Management/EntryDescriptionMgmtHistRepository.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Repositories/History/Management/EntryDescriptionMgmtHistRepository.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Collection\<int, Illuminate\\Database\\Eloquent\\Model\>\|Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Repositories/History/Management/EntryMgmtHistRepository.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Repositories/History/Management/EntryMgmtHistRepository.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Collection\<int, Illuminate\\Database\\Eloquent\\Model\>\|Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Repositories/History/Management/SettingLinkMgmtHistRepository.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Repositories/History/Management/SettingLinkMgmtHistRepository.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Collection\<int, Illuminate\\Database\\Eloquent\\Model\>\|Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Repositories/History/Management/SliderMgmtHistRepository.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Repositories/History/Management/SliderMgmtHistRepository.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Collection\<int, Illuminate\\Database\\Eloquent\\Model\>\|Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Repositories/History/Management/SocialMgmtHistRepository.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Repositories/History/Management/SocialMgmtHistRepository.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Collection\<int, Illuminate\\Database\\Eloquent\\Model\>\|Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Repositories/History/Management/UserMgmtHistRepository.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Repositories/History/Management/UserMgmtHistRepository.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Collection\<int, Illuminate\\Database\\Eloquent\\Model\>\|Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Repositories/History/Master/AdminMstHistRepository.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Repositories/History/Master/AdminMstHistRepository.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Collection\<int, Illuminate\\Database\\Eloquent\\Model\>\|Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Repositories/History/Master/ApiMstHistRepository.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Repositories/History/Master/ApiMstHistRepository.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Collection\<int, Illuminate\\Database\\Eloquent\\Model\>\|Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Repositories/History/Master/DepartmentMstHistRepository.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Repositories/History/Master/DepartmentMstHistRepository.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Collection\<int, Illuminate\\Database\\Eloquent\\Model\>\|Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Repositories/History/Master/FeatureMstHistRepository.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Repositories/History/Master/FeatureMstHistRepository.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Collection\<int, Illuminate\\Database\\Eloquent\\Model\>\|Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Repositories/History/Master/PolicyDepartmentMstHistRepository.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Repositories/History/Master/PolicyDepartmentMstHistRepository.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Collection\<int, Illuminate\\Database\\Eloquent\\Model\>\|Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Repositories/History/Master/RoleMstHistRepository.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Repositories/History/Master/RoleMstHistRepository.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Collection\<int, Illuminate\\Database\\Eloquent\\Model\>\|Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Repositories/Management/BannerMgmtRepository.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Repositories/Management/BannerMgmtRepository.php
-
-		-
 			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Builder\<Illuminate\\Database\\Eloquent\\Model\>\:\:notDeleted\(\)\.$#'
 			identifier: method.notFound
-			count: 1
-			path: app/Repositories/Management/BannerMgmtRepository.php
-
-		-
-			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Collection\<int, Illuminate\\Database\\Eloquent\\Model\>\|Illuminate\\Database\\Eloquent\\Model\:\:isDeleted\(\)\.$#'
-			identifier: method.notFound
-			count: 1
-			path: app/Repositories/Management/BannerMgmtRepository.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Collection\<int, Illuminate\\Database\\Eloquent\\Model\>\|Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Repositories/Management/CategoryMgmtRepository.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
-			identifier: property.notFound
-			count: 1
+			count: 3
 			path: app/Repositories/Management/CategoryMgmtRepository.php
 
 		-
 			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Builder\<Illuminate\\Database\\Eloquent\\Model\>\:\:notDeleted\(\)\.$#'
 			identifier: method.notFound
-			count: 4
-			path: app/Repositories/Management/CategoryMgmtRepository.php
-
-		-
-			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Collection\<int, Illuminate\\Database\\Eloquent\\Model\>\|Illuminate\\Database\\Eloquent\\Model\:\:isDeleted\(\)\.$#'
-			identifier: method.notFound
-			count: 1
-			path: app/Repositories/Management/CategoryMgmtRepository.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Collection\<int, Illuminate\\Database\\Eloquent\\Model\>\|Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Repositories/Management/EntryDescriptionMgmtRepository.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
-			identifier: property.notFound
-			count: 1
+			count: 2
 			path: app/Repositories/Management/EntryDescriptionMgmtRepository.php
 
 		-
 			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Builder\<Illuminate\\Database\\Eloquent\\Model\>\:\:notDeleted\(\)\.$#'
 			identifier: method.notFound
 			count: 3
-			path: app/Repositories/Management/EntryDescriptionMgmtRepository.php
-
-		-
-			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Collection\<int, Illuminate\\Database\\Eloquent\\Model\>\|Illuminate\\Database\\Eloquent\\Model\:\:isDeleted\(\)\.$#'
-			identifier: method.notFound
-			count: 1
-			path: app/Repositories/Management/EntryDescriptionMgmtRepository.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Collection\<int, Illuminate\\Database\\Eloquent\\Model\>\|Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Repositories/Management/EntryMgmtRepository.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Repositories/Management/EntryMgmtRepository.php
-
-		-
-			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Builder\<Illuminate\\Database\\Eloquent\\Model\>\:\:notDeleted\(\)\.$#'
-			identifier: method.notFound
-			count: 4
-			path: app/Repositories/Management/EntryMgmtRepository.php
-
-		-
-			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Collection\<int, Illuminate\\Database\\Eloquent\\Model\>\|Illuminate\\Database\\Eloquent\\Model\:\:isDeleted\(\)\.$#'
-			identifier: method.notFound
-			count: 1
 			path: app/Repositories/Management/EntryMgmtRepository.php
 
 		-
@@ -2755,97 +2503,25 @@ parameters:
 			path: app/Repositories/Management/EntryMgmtRepository.php
 
 		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Collection\<int, Illuminate\\Database\\Eloquent\\Model\>\|Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Repositories/Management/MediaMgmtRepository.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
-			identifier: property.notFound
+			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Builder\<Illuminate\\Database\\Eloquent\\Model\>\:\:notDeleted\(\)\.$#'
+			identifier: method.notFound
 			count: 1
 			path: app/Repositories/Management/MediaMgmtRepository.php
 
 		-
 			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Builder\<Illuminate\\Database\\Eloquent\\Model\>\:\:notDeleted\(\)\.$#'
 			identifier: method.notFound
-			count: 2
-			path: app/Repositories/Management/MediaMgmtRepository.php
-
-		-
-			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Collection\<int, Illuminate\\Database\\Eloquent\\Model\>\|Illuminate\\Database\\Eloquent\\Model\:\:isDeleted\(\)\.$#'
-			identifier: method.notFound
-			count: 1
-			path: app/Repositories/Management/MediaMgmtRepository.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Collection\<int, Illuminate\\Database\\Eloquent\\Model\>\|Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Repositories/Management/SettingLinkMgmtRepository.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
-			identifier: property.notFound
 			count: 1
 			path: app/Repositories/Management/SettingLinkMgmtRepository.php
 
 		-
 			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Builder\<Illuminate\\Database\\Eloquent\\Model\>\:\:notDeleted\(\)\.$#'
 			identifier: method.notFound
-			count: 2
-			path: app/Repositories/Management/SettingLinkMgmtRepository.php
-
-		-
-			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Collection\<int, Illuminate\\Database\\Eloquent\\Model\>\|Illuminate\\Database\\Eloquent\\Model\:\:isDeleted\(\)\.$#'
-			identifier: method.notFound
-			count: 1
-			path: app/Repositories/Management/SettingLinkMgmtRepository.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Collection\<int, Illuminate\\Database\\Eloquent\\Model\>\|Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Repositories/Management/SliderMgmtRepository.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
-			identifier: property.notFound
 			count: 1
 			path: app/Repositories/Management/SliderMgmtRepository.php
 
 		-
 			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Builder\<Illuminate\\Database\\Eloquent\\Model\>\:\:notDeleted\(\)\.$#'
-			identifier: method.notFound
-			count: 2
-			path: app/Repositories/Management/SliderMgmtRepository.php
-
-		-
-			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Collection\<int, Illuminate\\Database\\Eloquent\\Model\>\|Illuminate\\Database\\Eloquent\\Model\:\:isDeleted\(\)\.$#'
-			identifier: method.notFound
-			count: 1
-			path: app/Repositories/Management/SliderMgmtRepository.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Collection\<int, Illuminate\\Database\\Eloquent\\Model\>\|Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Repositories/Management/SocialMgmtRepository.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Repositories/Management/SocialMgmtRepository.php
-
-		-
-			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Builder\<Illuminate\\Database\\Eloquent\\Model\>\:\:notDeleted\(\)\.$#'
-			identifier: method.notFound
-			count: 2
-			path: app/Repositories/Management/SocialMgmtRepository.php
-
-		-
-			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Collection\<int, Illuminate\\Database\\Eloquent\\Model\>\|Illuminate\\Database\\Eloquent\\Model\:\:isDeleted\(\)\.$#'
 			identifier: method.notFound
 			count: 1
 			path: app/Repositories/Management/SocialMgmtRepository.php
@@ -2877,7 +2553,7 @@ parameters:
 		-
 			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Builder\<Illuminate\\Database\\Eloquent\\Model\>\:\:notDeleted\(\)\.$#'
 			identifier: method.notFound
-			count: 2
+			count: 1
 			path: app/Repositories/Management/UserMgmtRepository.php
 
 		-
@@ -2913,7 +2589,7 @@ parameters:
 		-
 			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Builder\<Illuminate\\Database\\Eloquent\\Model\>\:\:notDeleted\(\)\.$#'
 			identifier: method.notFound
-			count: 2
+			count: 1
 			path: app/Repositories/Master/AdminMstRepository.php
 
 		-
@@ -2955,7 +2631,7 @@ parameters:
 		-
 			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Builder\<Illuminate\\Database\\Eloquent\\Model\>\:\:notDeleted\(\)\.$#'
 			identifier: method.notFound
-			count: 2
+			count: 1
 			path: app/Repositories/Master/ApiMstRepository.php
 
 		-
@@ -3001,118 +2677,46 @@ parameters:
 			path: app/Repositories/Master/DepartmentManagementMstRepository.php
 
 		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Collection\<int, Illuminate\\Database\\Eloquent\\Model\>\|Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Repositories/Master/DepartmentMstRepository.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
-			identifier: property.notFound
+			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Builder\<Illuminate\\Database\\Eloquent\\Model\>\:\:notDeleted\(\)\.$#'
+			identifier: method.notFound
 			count: 1
 			path: app/Repositories/Master/DepartmentMstRepository.php
 
 		-
 			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Builder\<Illuminate\\Database\\Eloquent\\Model\>\:\:notDeleted\(\)\.$#'
 			identifier: method.notFound
-			count: 2
-			path: app/Repositories/Master/DepartmentMstRepository.php
-
-		-
-			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Collection\<int, Illuminate\\Database\\Eloquent\\Model\>\|Illuminate\\Database\\Eloquent\\Model\:\:isDeleted\(\)\.$#'
-			identifier: method.notFound
-			count: 1
-			path: app/Repositories/Master/DepartmentMstRepository.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Collection\<int, Illuminate\\Database\\Eloquent\\Model\>\|Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Repositories/Master/FeatureMstRepository.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
-			identifier: property.notFound
 			count: 1
 			path: app/Repositories/Master/FeatureMstRepository.php
 
 		-
 			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Builder\<Illuminate\\Database\\Eloquent\\Model\>\:\:notDeleted\(\)\.$#'
 			identifier: method.notFound
-			count: 2
-			path: app/Repositories/Master/FeatureMstRepository.php
-
-		-
-			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Collection\<int, Illuminate\\Database\\Eloquent\\Model\>\|Illuminate\\Database\\Eloquent\\Model\:\:isDeleted\(\)\.$#'
-			identifier: method.notFound
-			count: 1
-			path: app/Repositories/Master/FeatureMstRepository.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Collection\<int, Illuminate\\Database\\Eloquent\\Model\>\|Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Repositories/Master/PolicyDepartmentMstRepository.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
-			identifier: property.notFound
 			count: 1
 			path: app/Repositories/Master/PolicyDepartmentMstRepository.php
 
 		-
 			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Builder\<Illuminate\\Database\\Eloquent\\Model\>\:\:notDeleted\(\)\.$#'
 			identifier: method.notFound
-			count: 2
-			path: app/Repositories/Master/PolicyDepartmentMstRepository.php
-
-		-
-			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Collection\<int, Illuminate\\Database\\Eloquent\\Model\>\|Illuminate\\Database\\Eloquent\\Model\:\:isDeleted\(\)\.$#'
-			identifier: method.notFound
-			count: 1
-			path: app/Repositories/Master/PolicyDepartmentMstRepository.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Collection\<int, Illuminate\\Database\\Eloquent\\Model\>\|Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Repositories/Master/RoleMstRepository.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
-			identifier: property.notFound
 			count: 1
 			path: app/Repositories/Master/RoleMstRepository.php
 
 		-
 			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Builder\<Illuminate\\Database\\Eloquent\\Model\>\:\:notDeleted\(\)\.$#'
 			identifier: method.notFound
-			count: 2
-			path: app/Repositories/Master/RoleMstRepository.php
+			count: 1
+			path: app/Repositories/SoftDeleteCrudRepository.php
 
 		-
-			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Collection\<int, Illuminate\\Database\\Eloquent\\Model\>\|Illuminate\\Database\\Eloquent\\Model\:\:isDeleted\(\)\.$#'
+			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Model\:\:isDeleted\(\)\.$#'
 			identifier: method.notFound
 			count: 1
-			path: app/Repositories/Master/RoleMstRepository.php
+			path: app/Repositories/SoftDeleteCrudRepository.php
 
 		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Collection\<int, Illuminate\\Database\\Eloquent\\Model\>\|Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
+			message: '#^Access to an undefined property Illuminate\\Http\\Resources\\Json\\JsonResource\:\:\$collection\.$#'
 			identifier: property.notFound
 			count: 1
-			path: app/Repositories/Master/TokenMstRepository.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Repositories/Master/TokenMstRepository.php
-
-		-
-			message: '#^Cannot access property \$collection on array\|Illuminate\\Http\\Resources\\Json\\JsonResource\.$#'
-			identifier: property.nonObject
-			count: 1
-			path: app/Services/BaseService.php
+			path: app/Services/AuditedCrudService.php
 
 		-
 			message: '#^Called ''env'' outside of the config directory which returns null when the config is cached, use ''config''\.$#'

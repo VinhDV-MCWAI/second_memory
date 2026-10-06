@@ -2,78 +2,19 @@
 
 namespace App\Services\Management;
 
-use App\Enums\ActionType;
 use App\Http\Resources\Management\SettingLinkMgmtResource;
 use App\Repositories\History\Management\SettingLinkMgmtHistRepository;
 use App\Repositories\Management\SettingLinkMgmtRepository;
-use App\Services\BaseService;
-use Illuminate\Http\Resources\Json\JsonResource;
+use App\Services\AuditedCrudService;
 
-class SettingLinkMgmtService extends BaseService
+class SettingLinkMgmtService extends AuditedCrudService
 {
-    public function __construct(
-        protected SettingLinkMgmtRepository $settingLinkMgmt,
-        protected SettingLinkMgmtHistRepository $settingLinkMgmtHist
-    ) {}
+    protected string $resource = SettingLinkMgmtResource::class;
 
-    protected function getHistoryRepository()
+    protected string $historyForeignKey = 'setting_link_mgmt_id';
+
+    public function __construct(SettingLinkMgmtRepository $settingLinkMgmt, SettingLinkMgmtHistRepository $settingLinkMgmtHist)
     {
-        return $this->settingLinkMgmtHist;
-    }
-
-    protected function getHistoryForeignKey(): string
-    {
-        return 'setting_link_mgmt_id';
-    }
-
-    /**
-     * Get setting link mgmt list
-     */
-    public function list(array $payload): JsonResource
-    {
-        $list = $this->settingLinkMgmt->list($payload);
-
-        return SettingLinkMgmtResource::collection($list);
-    }
-
-    /**
-     * Store setting link mgmt
-     */
-    public function store(array $payload): int
-    {
-        $id = $this->settingLinkMgmt->executeStore($payload);
-        $this->recordHistory($id, ActionType::CREATE, $payload);
-
-        return $id;
-    }
-
-    /**
-     * Update setting link mgmt
-     */
-    public function update(array $payload): int
-    {
-        $id = $payload['id'];
-        $affected = $this->settingLinkMgmt->executeUpdate($payload);
-        $this->recordHistory($id, ActionType::UPDATE, $payload);
-
-        return $affected;
-    }
-
-    /**
-     * Delete setting link mgmt
-     */
-    public function delete(array $payload): void
-    {
-        if (! isset($payload['ids']) || ! is_array($payload['ids'])) {
-            $this->settingLinkMgmt->executeDelete($payload['ids'] ?? []);
-
-            return;
-        }
-
-        foreach ($payload['ids'] as $id) {
-            $this->recordHistory($id, ActionType::DELETE, $payload);
-        }
-
-        $this->settingLinkMgmt->executeDelete($payload['ids']);
+        parent::__construct($settingLinkMgmt, $settingLinkMgmtHist);
     }
 }

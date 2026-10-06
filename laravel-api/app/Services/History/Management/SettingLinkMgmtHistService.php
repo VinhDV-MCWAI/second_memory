@@ -4,45 +4,14 @@ namespace App\Services\History\Management;
 
 use App\Http\Resources\History\Management\SettingLinkMgmtHistResource;
 use App\Repositories\History\Management\SettingLinkMgmtHistRepository;
-use Illuminate\Http\Resources\Json\JsonResource;
+use App\Services\CrudService;
 
-class SettingLinkMgmtHistService
+class SettingLinkMgmtHistService extends CrudService
 {
-    public function __construct(
-        protected SettingLinkMgmtHistRepository $settingLinkMgmtHist
-    ) {}
+    protected string $resource = SettingLinkMgmtHistResource::class;
 
-    /**
-     * Get setting link mgmt hist list
-     */
-    public function list(array $payload): JsonResource
+    public function __construct(SettingLinkMgmtHistRepository $settingLinkMgmtHist)
     {
-        $list = $this->settingLinkMgmtHist->list($payload);
-
-        return SettingLinkMgmtHistResource::collection($list);
-    }
-
-    /**
-     * Store setting link mgmt hist
-     */
-    public function store(array $payload): int
-    {
-        return $this->settingLinkMgmtHist->executeStore($payload);
-    }
-
-    /**
-     * Update setting link mgmt hist
-     */
-    public function update(array $payload): int
-    {
-        return $this->settingLinkMgmtHist->executeUpdate($payload);
-    }
-
-    /**
-     * Delete setting link mgmt hist
-     */
-    public function delete(array $payload): void
-    {
-        $this->settingLinkMgmtHist->executeDelete($payload['ids']);
+        parent::__construct($settingLinkMgmtHist);
     }
 }

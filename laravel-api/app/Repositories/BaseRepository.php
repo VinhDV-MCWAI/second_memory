@@ -7,36 +7,10 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Illuminate\Support\Collection;
 
 abstract class BaseRepository
 {
     public function __construct(protected Model $model) {}
-
-    public function getAll(): Collection
-    {
-        return $this->model->all();
-    }
-
-    public function findById($id): ?Model
-    {
-        return $this->model->find($id);
-    }
-
-    public function create(array $data): Model
-    {
-        return $this->model->create($data);
-    }
-
-    public function update($id, array $data): bool
-    {
-        return $this->model->find($id)->update($data);
-    }
-
-    public function delete($id): bool
-    {
-        return $this->model->destroy($id);
-    }
 
     /**
      * Apply dynamic filters to query based on payload

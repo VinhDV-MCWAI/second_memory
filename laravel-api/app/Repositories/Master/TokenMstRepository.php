@@ -6,12 +6,11 @@ namespace App\Repositories\Master;
 
 use App\Constants\CommonVal;
 use App\Models\Master\TokenMst;
-use App\Repositories\BaseRepository;
+use App\Repositories\CrudRepository;
 use Carbon\Carbon;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
-use Illuminate\Support\Arr;
 
-class TokenMstRepository extends BaseRepository
+class TokenMstRepository extends CrudRepository
 {
     public function __construct(TokenMst $model)
     {
@@ -58,46 +57,12 @@ class TokenMstRepository extends BaseRepository
         return $query->paginate($perPage, ['*'], 'page', $page);
     }
 
-    /**
-     * Create new record
-     */
-    public function executeStore(array $payload): int
+    protected function fillable(array $payload): array
     {
         if (isset($payload['expired_at'])) {
             $payload['expired_at'] = Carbon::createFromFormat(CommonVal::DATE_FORMAT, $payload['expired_at'])->format('Y-m-d');
         }
 
-        $model = $this->model->newInstance()->fill(
-            Arr::only($payload, $this->model->getFillable())
-        );
-
-        $model->save();
-
-        return $model->id;
-    }
-
-    /**
-     * Update record
-     */
-    public function executeUpdate(array $payload): int
-    {
-        $model = $this->model->findOrFail($payload['id']);
-
-        if (isset($payload['expired_at'])) {
-            $payload['expired_at'] = Carbon::createFromFormat(CommonVal::DATE_FORMAT, $payload['expired_at'])->format('Y-m-d');
-        }
-
-        $model->fill(Arr::only($payload, $this->model->getFillable()));
-        $model->save();
-
-        return $model->id;
-    }
-
-    /**
-     * Delete record (hard delete)
-     */
-    public function executeDelete(array $ids): void
-    {
-        $this->model->whereIn('id', $ids)->delete();
+        return parent::fillable($payload);
     }
 }

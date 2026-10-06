@@ -4,45 +4,14 @@ namespace App\Services\History\Management;
 
 use App\Http\Resources\History\Management\SliderMgmtHistResource;
 use App\Repositories\History\Management\SliderMgmtHistRepository;
-use Illuminate\Http\Resources\Json\JsonResource;
+use App\Services\CrudService;
 
-class SliderMgmtHistService
+class SliderMgmtHistService extends CrudService
 {
-    public function __construct(
-        protected SliderMgmtHistRepository $sliderMgmtHist
-    ) {}
+    protected string $resource = SliderMgmtHistResource::class;
 
-    /**
-     * Get slider mgmt hist list
-     */
-    public function list(array $payload): JsonResource
+    public function __construct(SliderMgmtHistRepository $sliderMgmtHist)
     {
-        $list = $this->sliderMgmtHist->list($payload);
-
-        return SliderMgmtHistResource::collection($list);
-    }
-
-    /**
-     * Store slider mgmt hist
-     */
-    public function store(array $payload): int
-    {
-        return $this->sliderMgmtHist->executeStore($payload);
-    }
-
-    /**
-     * Update slider mgmt hist
-     */
-    public function update(array $payload): int
-    {
-        return $this->sliderMgmtHist->executeUpdate($payload);
-    }
-
-    /**
-     * Delete slider mgmt hist
-     */
-    public function delete(array $payload): void
-    {
-        $this->sliderMgmtHist->executeDelete($payload['ids']);
+        parent::__construct($sliderMgmtHist);
     }
 }

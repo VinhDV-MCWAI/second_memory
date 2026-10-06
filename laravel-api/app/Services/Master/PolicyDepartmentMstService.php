@@ -2,78 +2,19 @@
 
 namespace App\Services\Master;
 
-use App\Enums\ActionType;
 use App\Http\Resources\Master\PolicyDepartmentMstResource;
 use App\Repositories\History\Master\PolicyDepartmentMstHistRepository;
 use App\Repositories\Master\PolicyDepartmentMstRepository;
-use App\Services\BaseService;
-use Illuminate\Http\Resources\Json\JsonResource;
+use App\Services\AuditedCrudService;
 
-class PolicyDepartmentMstService extends BaseService
+class PolicyDepartmentMstService extends AuditedCrudService
 {
-    public function __construct(
-        protected PolicyDepartmentMstRepository $policyDepartmentMst,
-        protected PolicyDepartmentMstHistRepository $policyDepartmentMstHist
-    ) {}
+    protected string $resource = PolicyDepartmentMstResource::class;
 
-    protected function getHistoryRepository()
+    protected string $historyForeignKey = 'policy_department_mst_id';
+
+    public function __construct(PolicyDepartmentMstRepository $policyDepartmentMst, PolicyDepartmentMstHistRepository $policyDepartmentMstHist)
     {
-        return $this->policyDepartmentMstHist;
-    }
-
-    protected function getHistoryForeignKey(): string
-    {
-        return 'policy_department_mst_id';
-    }
-
-    /**
-     * Get policy department mst list
-     */
-    public function list(array $payload): JsonResource
-    {
-        $list = $this->policyDepartmentMst->list($payload);
-
-        return PolicyDepartmentMstResource::collection($list);
-    }
-
-    /**
-     * Store policy department mst
-     */
-    public function store(array $payload): int
-    {
-        $id = $this->policyDepartmentMst->executeStore($payload);
-        $this->recordHistory($id, ActionType::CREATE, $payload);
-
-        return $id;
-    }
-
-    /**
-     * Update policy department mst
-     */
-    public function update(array $payload): int
-    {
-        $id = $payload['id'];
-        $affected = $this->policyDepartmentMst->executeUpdate($payload);
-        $this->recordHistory($id, ActionType::UPDATE, $payload);
-
-        return $affected;
-    }
-
-    /**
-     * Delete policy department mst
-     */
-    public function delete(array $payload): void
-    {
-        if (! isset($payload['ids']) || ! is_array($payload['ids'])) {
-            $this->policyDepartmentMst->executeDelete($payload['ids'] ?? []);
-
-            return;
-        }
-
-        foreach ($payload['ids'] as $id) {
-            $this->recordHistory($id, ActionType::DELETE, $payload);
-        }
-
-        $this->policyDepartmentMst->executeDelete($payload['ids']);
+        parent::__construct($policyDepartmentMst, $policyDepartmentMstHist);
     }
 }

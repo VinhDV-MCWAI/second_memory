@@ -4,45 +4,14 @@ namespace App\Services\History\Master;
 
 use App\Http\Resources\History\Master\AdminMstHistResource;
 use App\Repositories\History\Master\AdminMstHistRepository;
-use Illuminate\Http\Resources\Json\JsonResource;
+use App\Services\CrudService;
 
-class AdminMstHistService
+class AdminMstHistService extends CrudService
 {
-    public function __construct(
-        protected AdminMstHistRepository $adminMstHist
-    ) {}
+    protected string $resource = AdminMstHistResource::class;
 
-    /**
-     * Get admin mst hist list
-     */
-    public function list(array $payload): JsonResource
+    public function __construct(AdminMstHistRepository $adminMstHist)
     {
-        $list = $this->adminMstHist->list($payload);
-
-        return AdminMstHistResource::collection($list);
-    }
-
-    /**
-     * Store admin mst hist
-     */
-    public function store(array $payload): int
-    {
-        return $this->adminMstHist->executeStore($payload);
-    }
-
-    /**
-     * Update admin mst hist
-     */
-    public function update(array $payload): int
-    {
-        return $this->adminMstHist->executeUpdate($payload);
-    }
-
-    /**
-     * Delete admin mst hist
-     */
-    public function delete(array $payload): void
-    {
-        $this->adminMstHist->executeDelete($payload['ids']);
+        parent::__construct($adminMstHist);
     }
 }

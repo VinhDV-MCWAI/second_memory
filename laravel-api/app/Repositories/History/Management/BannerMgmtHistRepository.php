@@ -5,11 +5,10 @@ declare(strict_types=1);
 namespace App\Repositories\History\Management;
 
 use App\Models\History\Management\BannerMgmtHist;
-use App\Repositories\BaseRepository;
+use App\Repositories\CrudRepository;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
-use Illuminate\Support\Arr;
 
-class BannerMgmtHistRepository extends BaseRepository
+class BannerMgmtHistRepository extends CrudRepository
 {
     public function __construct(BannerMgmtHist $model)
     {
@@ -58,37 +57,5 @@ class BannerMgmtHistRepository extends BaseRepository
         $page = $payload['page'] ?? 1;
 
         return $query->paginate($perPage, ['*'], 'page', $page);
-    }
-
-    /**
-     * Create new record
-     */
-    public function executeStore(array $payload): int
-    {
-        $model = $this->model->newInstance();
-        $model->fill(Arr::only($payload, $this->model->getFillable()));
-        $model->save();
-
-        return $model->id;
-    }
-
-    /**
-     * Update record
-     */
-    public function executeUpdate(array $payload): int
-    {
-        $model = $this->model->findOrFail($payload['id']);
-        $model->fill(Arr::only($payload, $this->model->getFillable()));
-        $model->save();
-
-        return $model->id;
-    }
-
-    /**
-     * Delete record
-     */
-    public function executeDelete(array $ids): void
-    {
-        $this->model->whereIn('id', $ids)->delete();
     }
 }

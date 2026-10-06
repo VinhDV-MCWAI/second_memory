@@ -5,11 +5,10 @@ declare(strict_types=1);
 namespace App\Repositories\History\Management;
 
 use App\Models\History\Management\SocialMgmtHist;
-use App\Repositories\BaseRepository;
+use App\Repositories\CrudRepository;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
-use Illuminate\Support\Arr;
 
-class SocialMgmtHistRepository extends BaseRepository
+class SocialMgmtHistRepository extends CrudRepository
 {
     public function __construct(SocialMgmtHist $model)
     {
@@ -41,36 +40,5 @@ class SocialMgmtHistRepository extends BaseRepository
         $this->applySorting($query, $payload);
 
         return $query->paginate($payload['per_page'] ?? 15, ['*'], 'page', $payload['page'] ?? 1);
-    }
-
-    /**
-     * Create new record
-     */
-    public function executeStore(array $payload): int
-    {
-        $model = $this->model->newInstance()->fill(Arr::only($payload, $this->model->getFillable()));
-        $model->save();
-
-        return $model->id;
-    }
-
-    /**
-     * Update record
-     */
-    public function executeUpdate(array $payload): int
-    {
-        $model = $this->model->findOrFail($payload['id']);
-        $model->fill(Arr::only($payload, $this->model->getFillable()));
-        $model->save();
-
-        return $model->id;
-    }
-
-    /**
-     * Delete record
-     */
-    public function executeDelete(array $ids): void
-    {
-        $this->model->whereIn('id', $ids)->delete();
     }
 }

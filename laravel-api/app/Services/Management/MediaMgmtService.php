@@ -7,27 +7,16 @@ use App\Enums\UploadStatus;
 use App\Http\Resources\Management\MediaFileResource;
 use App\Jobs\Media\ProcessLargeFile;
 use App\Repositories\Management\MediaMgmtRepository;
-use App\Services\BaseService;
 use App\Services\MinioService;
 use Exception;
 use Illuminate\Support\Str;
 
-class MediaMgmtService extends BaseService
+class MediaMgmtService
 {
     public function __construct(
         protected MediaMgmtRepository $mediaMgmt,
         protected MinioService $minioService
     ) {}
-
-    protected function getHistoryRepository()
-    {
-        return null; // No history tracking for media
-    }
-
-    protected function getHistoryForeignKey(): string
-    {
-        return '';
-    }
 
     /**
      * List media (files and folders)

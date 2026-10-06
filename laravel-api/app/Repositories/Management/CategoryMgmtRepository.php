@@ -4,14 +4,12 @@ declare(strict_types=1);
 
 namespace App\Repositories\Management;
 
-use App\Enums\IsDelete;
 use App\Models\Management\CategoryMgmt;
-use App\Repositories\BaseRepository;
+use App\Repositories\SoftDeleteCrudRepository;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
-use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 
-class CategoryMgmtRepository extends BaseRepository
+class CategoryMgmtRepository extends SoftDeleteCrudRepository
 {
     public function __construct(CategoryMgmt $model)
     {
@@ -60,49 +58,6 @@ class CategoryMgmtRepository extends BaseRepository
         $page = $payload['page'] ?? 1;
 
         return $query->paginate($perPage, ['*'], 'page', $page);
-    }
-
-    /**
-     * Create new record
-     */
-    public function executeStore(array $payload): int
-    {
-        $model = $this->model->newInstance();
-        $model->fill(
-            Arr::only($payload, $this->model->getFillable())
-        );
-
-        $model->save();
-
-        return $model->id;
-    }
-
-    /**
-     * Update record
-     */
-    public function executeUpdate(array $payload): int
-    {
-        $model = $this->model->findOrFail($payload['id']);
-
-        if ($model->isDeleted()) {
-            throw new \LogicException('Cannot update deleted record');
-        }
-
-        $model->fill(Arr::only($payload, $this->model->getFillable()));
-        $model->save();
-
-        return $model->id;
-    }
-
-    /**
-     * Delete record (soft delete)
-     */
-    public function executeDelete(array $ids): void
-    {
-        // Soft delete
-        $this->model->whereIn('id', $ids)
-            ->notDeleted()
-            ->update(['is_delete' => IsDelete::TRUE->value]);
     }
 
     /**

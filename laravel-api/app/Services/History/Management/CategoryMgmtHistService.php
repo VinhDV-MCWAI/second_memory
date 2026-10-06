@@ -4,45 +4,14 @@ namespace App\Services\History\Management;
 
 use App\Http\Resources\History\Management\CategoryMgmtHistResource;
 use App\Repositories\History\Management\CategoryMgmtHistRepository;
-use Illuminate\Http\Resources\Json\JsonResource;
+use App\Services\CrudService;
 
-class CategoryMgmtHistService
+class CategoryMgmtHistService extends CrudService
 {
-    public function __construct(
-        protected CategoryMgmtHistRepository $categoryMgmtHist
-    ) {}
+    protected string $resource = CategoryMgmtHistResource::class;
 
-    /**
-     * Get category mgmt hist list
-     */
-    public function list(array $payload): JsonResource
+    public function __construct(CategoryMgmtHistRepository $categoryMgmtHist)
     {
-        $list = $this->categoryMgmtHist->list($payload);
-
-        return CategoryMgmtHistResource::collection($list);
-    }
-
-    /**
-     * Store category mgmt hist
-     */
-    public function store(array $payload): int
-    {
-        return $this->categoryMgmtHist->executeStore($payload);
-    }
-
-    /**
-     * Update category mgmt hist
-     */
-    public function update(array $payload): int
-    {
-        return $this->categoryMgmtHist->executeUpdate($payload);
-    }
-
-    /**
-     * Delete category mgmt hist
-     */
-    public function delete(array $payload): void
-    {
-        $this->categoryMgmtHist->executeDelete($payload['ids']);
+        parent::__construct($categoryMgmtHist);
     }
 }

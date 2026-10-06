@@ -5,15 +5,14 @@ declare(strict_types=1);
 namespace App\Repositories\Management;
 
 use App\Constants\CommonVal;
-use App\Enums\IsDelete;
 use App\Models\Management\UserMgmt;
-use App\Repositories\BaseRepository;
+use App\Repositories\SoftDeleteCrudRepository;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Hash;
 
-class UserMgmtRepository extends BaseRepository
+class UserMgmtRepository extends SoftDeleteCrudRepository
 {
     public function __construct(UserMgmt $model)
     {
@@ -125,16 +124,5 @@ class UserMgmtRepository extends BaseRepository
         $model->save();
 
         return $model->id;
-    }
-
-    /**
-     * Delete record (soft delete)
-     */
-    public function executeDelete(array $ids): void
-    {
-        // Soft delete
-        $this->model->whereIn('id', $ids)
-            ->notDeleted()
-            ->update(['is_delete' => IsDelete::TRUE->value]);
     }
 }

@@ -4,14 +4,13 @@ declare(strict_types=1);
 
 namespace App\Repositories\Master;
 
-use App\Enums\IsDelete;
 use App\Models\Master\ApiMst;
 use App\Models\Master\FeatureMst;
-use App\Repositories\BaseRepository;
+use App\Repositories\SoftDeleteCrudRepository;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Arr;
 
-class ApiMstRepository extends BaseRepository
+class ApiMstRepository extends SoftDeleteCrudRepository
 {
     public function __construct(ApiMst $model)
     {
@@ -99,16 +98,5 @@ class ApiMstRepository extends BaseRepository
         $model->save();
 
         return $model->id;
-    }
-
-    /**
-     * Delete record (soft delete)
-     */
-    public function executeDelete(array $ids): void
-    {
-        // Soft delete
-        $this->model->whereIn('id', $ids)
-            ->notDeleted()
-            ->update(['is_delete' => IsDelete::TRUE->value]);
     }
 }

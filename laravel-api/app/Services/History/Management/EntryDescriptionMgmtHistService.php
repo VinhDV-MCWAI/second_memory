@@ -4,45 +4,14 @@ namespace App\Services\History\Management;
 
 use App\Http\Resources\History\Management\EntryDescriptionMgmtHistResource;
 use App\Repositories\History\Management\EntryDescriptionMgmtHistRepository;
-use Illuminate\Http\Resources\Json\JsonResource;
+use App\Services\CrudService;
 
-class EntryDescriptionMgmtHistService
+class EntryDescriptionMgmtHistService extends CrudService
 {
-    public function __construct(
-        protected EntryDescriptionMgmtHistRepository $entryDescriptionMgmtHist
-    ) {}
+    protected string $resource = EntryDescriptionMgmtHistResource::class;
 
-    /**
-     * Get entry description mgmt hist list
-     */
-    public function list(array $payload): JsonResource
+    public function __construct(EntryDescriptionMgmtHistRepository $entryDescriptionMgmtHist)
     {
-        $list = $this->entryDescriptionMgmtHist->list($payload);
-
-        return EntryDescriptionMgmtHistResource::collection($list);
-    }
-
-    /**
-     * Store entry description mgmt hist
-     */
-    public function store(array $payload): int
-    {
-        return $this->entryDescriptionMgmtHist->executeStore($payload);
-    }
-
-    /**
-     * Update entry description mgmt hist
-     */
-    public function update(array $payload): int
-    {
-        return $this->entryDescriptionMgmtHist->executeUpdate($payload);
-    }
-
-    /**
-     * Delete entry description mgmt hist
-     */
-    public function delete(array $payload): void
-    {
-        $this->entryDescriptionMgmtHist->executeDelete($payload['ids']);
+        parent::__construct($entryDescriptionMgmtHist);
     }
 }

@@ -4,14 +4,12 @@ declare(strict_types=1);
 
 namespace App\Repositories\Management;
 
-use App\Enums\IsDelete;
 use App\Enums\UploadStatus;
 use App\Models\Management\MediaMgmt;
-use App\Repositories\BaseRepository;
-use Illuminate\Support\Arr;
+use App\Repositories\SoftDeleteCrudRepository;
 use Illuminate\Support\Collection;
 
-class MediaMgmtRepository extends BaseRepository
+class MediaMgmtRepository extends SoftDeleteCrudRepository
 {
     public function __construct(MediaMgmt $model)
     {
@@ -94,46 +92,5 @@ class MediaMgmtRepository extends BaseRepository
     public function find(int $id)
     {
         return $this->model->find($id);
-    }
-
-    /**
-     * Create new record
-     */
-    public function executeStore(array $payload): int
-    {
-        $model = $this->model->newInstance()->fill(
-            Arr::only($payload, $this->model->getFillable())
-        );
-
-        $model->save();
-
-        return $model->id;
-    }
-
-    /**
-     * Update record
-     */
-    public function executeUpdate(array $payload): int
-    {
-        $model = $this->model->findOrFail($payload['id']);
-
-        if ($model->isDeleted()) {
-            throw new \LogicException('Cannot update deleted record');
-        }
-
-        $model->fill(Arr::only($payload, $this->model->getFillable()));
-        $model->save();
-
-        return $model->id;
-    }
-
-    /**
-     * Delete record (soft delete with is_delete flag)
-     */
-    public function executeDelete(array $ids): void
-    {
-        $this->model->whereIn('id', $ids)
-            ->notDeleted()
-            ->update(['is_delete' => IsDelete::TRUE->value]);
     }
 }
