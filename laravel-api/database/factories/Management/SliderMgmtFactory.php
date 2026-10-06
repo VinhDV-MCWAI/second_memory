@@ -16,7 +16,8 @@ class SliderMgmtFactory extends Factory
         return [
             'title' => $title,
             'slug' => substr(str_replace(' ', '-', strtolower($title)), 0, 30),
-            'link' => $this->faker->url(),
+            // slider_mgmt.link is varchar(100); faker->url() can exceed it.
+            'link' => 'https://'.$this->faker->domainName().'/'.$this->faker->word(),
             'image' => 'slider-'.$this->faker->numberBetween(1, 100).'.jpg',
             'status' => 1,
             'is_delete' => false,
