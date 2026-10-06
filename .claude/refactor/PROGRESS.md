@@ -83,6 +83,7 @@ User delegated all P2+ items on 2026-10-06 ("toàn quyền thực hiện, không
 | B5 Strictness | done (verified) | `preventLazyLoading` + `preventSilentlyDiscardingAttributes` outside production (`preventAccessingMissingAttributes` left off: freshly created models lack DB defaults → false positives). Found: banner list N+1 on `media` (fixed, separate commit), RoleMst test fixtures with phantom `status`/`note` (incl. one line in `LoginApiTest` fixture — data only), hist `created_at` fillable. `$request->validated()` everywhere: **paging/sorting/id were never validated**, so `ListRequest` base now declares them (lenient: no `per_page` max, FE uses up to 9999); missing filter rules added. `declare(strict_types=1)` in all files except auth; implicit coercions made explicit (dates via `FormatsDates`, media ints, UUID string). Larastan **level 6** (array-shape/generics identifiers ignored), baseline 518. 595 tests pass |
 | B2 History in one place | done (via B1) | `recordHistory()` now lives only in `AuditedCrudService`; no entity service calls it. A model observer/`Auditable` trait was **not** adopted: the history row is a snapshot of the *list Resource* (joined columns such as banner `media.url` as `image`), which an observer on the model cannot reproduce without changing stored history data |
 | B6 OpenAPI (Scramble) | done (verified) | `dedoc/scramble` ^0.13 (new dependency: generates the spec from FormRequests/Resources, needed for FE4). UI `/api/openapi`, JSON `/api/openapi.json` (not `/docs/api`: nginx sends `/docs` to the docs site and `/api/docs/*` is the public docs API); local env only (`RestrictedDocsAccess`) — "admin-only" would need a Laravel guard, which the custom JWT auth does not provide. Cookie `access_token` security scheme, relative `/api` server. `openapi.json` committed (142 paths, 119 schemas, deterministic); `make openapi`; CI step fails when stale. `@mixin` on all Resources + `@property` for enum casts + typed list responses → each list response references its Resource schema; Larastan baseline 518 → 204. **Spec limitation:** it does not show the `{data, error}` envelope added by `GenerateResponseMiddleware` → FE wraps generated types in its own envelope type |
+| FE2 Admin layout | done (verified) | Branch `refactor/p4-frontend` (stacked on `refactor/p3-backend`). `src/app/admin/layout.tsx` renders `AdminLayout`; 17 pages lost the wrapper (fragments). tsc ✓, lint 0 errors, `/admin*` 200. Not verified in a logged-in browser (needs credentials) |
 
 ## Log
 
@@ -127,6 +128,7 @@ User delegated all P2+ items on 2026-10-06 ("toàn quyền thực hiện, không
 - 2026-10-06 — B5 done.
 - 2026-10-06 — B2 closed (covered by B1).
 - 2026-10-06 — B6 done.
+- 2026-10-06 — FE2 done.
 
 ## Next step
 
