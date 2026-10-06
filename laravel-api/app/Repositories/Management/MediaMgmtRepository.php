@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Repositories\Management;
 
 use App\Enums\IsDelete;
+use App\Enums\UploadStatus;
 use App\Interfaces\Management\MediaMgmtInterface;
 use App\Models\Management\MediaMgmt;
 use App\Repositories\BaseRepository;
@@ -66,7 +67,7 @@ class MediaMgmtRepository extends BaseRepository implements MediaMgmtInterface
         } else {
             // Default: only show completed files (or folders which don't have upload_status)
             $query->where(function ($q) {
-                $q->where('upload_status', \App\Enums\UploadStatus::COMPLETED->value)
+                $q->where('upload_status', UploadStatus::COMPLETED->value)
                     ->orWhere('is_file', false); // Folders don't have upload status
             });
         }

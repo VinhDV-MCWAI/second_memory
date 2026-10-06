@@ -6,10 +6,14 @@ namespace App\Repositories\Management;
 
 use App\Enums\IsDelete;
 use App\Interfaces\Management\EntryMgmtInterface;
+use App\Models\Management\CategoryMgmt;
+use App\Models\Management\EntryDescriptionMgmt;
 use App\Models\Management\EntryMgmt;
 use App\Repositories\BaseRepository;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Collection;
 
 class EntryMgmtRepository extends BaseRepository implements EntryMgmtInterface
 {
@@ -105,10 +109,10 @@ class EntryMgmtRepository extends BaseRepository implements EntryMgmtInterface
     /**
      * Get entries by category slug
      */
-    public function getEntriesByCategorySlug(string $slug): \Illuminate\Support\Collection
+    public function getEntriesByCategorySlug(string $slug): Collection
     {
         // Get the category by slug
-        $category = \App\Models\Management\CategoryMgmt::where('slug', $slug)
+        $category = CategoryMgmt::where('slug', $slug)
             ->where('is_display', true)
             ->where('status', 1)
             ->where('is_delete', false)
@@ -161,7 +165,7 @@ class EntryMgmtRepository extends BaseRepository implements EntryMgmtInterface
         return array_unique($entryIds);
     }
 
-    public function getEntryDetailBySlug(string $slug): ?\Illuminate\Database\Eloquent\Model
+    public function getEntryDetailBySlug(string $slug): ?Model
     {
         $entry = $this->model->query()
             ->where('slug', $slug)
@@ -178,7 +182,7 @@ class EntryMgmtRepository extends BaseRepository implements EntryMgmtInterface
             $descIds = $this->extractEntryDescIdsFromLayoutStructure($entry->layout_structure);
 
             if (! empty($descIds)) {
-                $descriptions = \App\Models\Management\EntryDescriptionMgmt::query()
+                $descriptions = EntryDescriptionMgmt::query()
                     ->select([
                         'id',
                         'entry_mgmt_id',
@@ -244,7 +248,7 @@ class EntryMgmtRepository extends BaseRepository implements EntryMgmtInterface
     /**
      * Search entries
      */
-    public function searchEntries(string $query): \Illuminate\Support\Collection
+    public function searchEntries(string $query): Collection
     {
         return $this->model->query()
             ->select([

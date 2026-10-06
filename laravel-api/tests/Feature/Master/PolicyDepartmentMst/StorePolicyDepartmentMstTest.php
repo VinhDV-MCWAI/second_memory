@@ -9,6 +9,7 @@ use App\Models\Master\FeatureMst;
 use App\Models\Master\RoleMst;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Redis;
 use Tests\TestCase;
 
 class StorePolicyDepartmentMstTest extends TestCase
@@ -20,7 +21,7 @@ class StorePolicyDepartmentMstTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        \Illuminate\Support\Facades\Redis::flushdb();
+        Redis::flushdb();
     }
 
     private function getAuthCookies(AdminMst $admin): array

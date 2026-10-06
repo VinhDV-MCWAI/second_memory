@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Integration;
 
+use App\Constants\CommonVal;
 use App\Models\Master\AdminMst;
 use App\Models\Master\ApiMst;
 use App\Models\Master\FeatureMst;
@@ -220,7 +221,7 @@ class FullSystemFlowTest extends TestCase
         $response->assertStatus(200);
 
         // 3. Manually Expire Token (Revoke from Redis)
-        $tokenKey = \App\Constants\CommonVal::ADMIN_TYPE.":{$admin->id}:{$accessToken}";
+        $tokenKey = CommonVal::ADMIN_TYPE.":{$admin->id}:{$accessToken}";
         $deleted = Redis::del($tokenKey);
 
         // 4. Access Retry (Should Fail)

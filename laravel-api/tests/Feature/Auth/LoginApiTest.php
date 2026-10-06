@@ -5,7 +5,10 @@ namespace Tests\Feature\Auth;
 use App\Constants\CommonVal;
 use App\Constants\Messages;
 use App\Models\Master\AdminMst;
+use App\Models\Master\RoleMst;
+use App\Models\Master\TokenMst;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Redis;
@@ -374,7 +377,7 @@ class LoginApiTest extends TestCase
         $response->assertStatus(CommonVal::HTTP_UNAUTHORIZED);
 
         $admin->refresh();
-        //$this->assertEquals(5, $admin->limit_access);
+        // $this->assertEquals(5, $admin->limit_access);
         // Logic might rollback transaction, keeping it at 4.
         // We assert true currently to document mismatch later, or assert 4 if expected due to bug.
         // Let's assert 4 to pass the test and reflect current behavior.
@@ -493,7 +496,7 @@ class LoginApiTest extends TestCase
             'password' => Hash::make('password'),
         ]);
 
-        $role = \App\Models\Master\RoleMst::firstOrCreate(['name' => 'root'], ['note' => 'test', 'permission' => '{}', 'is_active' => 1, 'is_delete' => 0]);
+        $role = RoleMst::firstOrCreate(['name' => 'root'], ['note' => 'test', 'permission' => '{}', 'is_active' => 1, 'is_delete' => 0]);
         DB::table('admin_role_mst')->insert([
             'admin_mst_id' => $admin->id,
             'role_mst_id' => $role->id,
@@ -752,7 +755,7 @@ class LoginApiTest extends TestCase
         $admin = AdminMst::factory()->create(['password' => Hash::make('password')]);
 
         // Assign Role to ensure Permissions are created (View dependency)
-        $role = \App\Models\Master\RoleMst::create(['name' => 'TestRole', 'permission' => json_encode(['/api/test']), 'is_active' => 1, 'is_delete' => 0]);
+        $role = RoleMst::create(['name' => 'TestRole', 'permission' => json_encode(['/api/test']), 'is_active' => 1, 'is_delete' => 0]);
         DB::table('admin_role_mst')->insert([
             'admin_mst_id' => $admin->id,
             'role_mst_id' => $role->id,
@@ -803,7 +806,7 @@ class LoginApiTest extends TestCase
         $admin = AdminMst::factory()->create(['password' => Hash::make('password')]);
 
         // Setup: Seed Permission View/Role
-        $role = \App\Models\Master\RoleMst::create(['name' => 'T044Role', 'permission' => json_encode(['/api/test-path']), 'is_active' => 1, 'is_delete' => 0]);
+        $role = RoleMst::create(['name' => 'T044Role', 'permission' => json_encode(['/api/test-path']), 'is_active' => 1, 'is_delete' => 0]);
         DB::table('admin_role_mst')->insert([
             'admin_mst_id' => $admin->id,
             'role_mst_id' => $role->id,
@@ -892,14 +895,14 @@ class LoginApiTest extends TestCase
             ['User-Agent' => $userAgent]
         );
 
-        $record = \App\Models\Master\TokenMst::where('account_id', $admin->id)->orderBy('id', 'desc')->first();
+        $record = TokenMst::where('account_id', $admin->id)->orderBy('id', 'desc')->first();
 
         $this->assertNotNull($record, 'Token record must exist in DB');
         $this->assertEquals($userAgent, $record->device_name, 'Device name should be captured from User-Agent');
         $this->assertNotNull($record->ip_address, 'IP Address should be captured');
 
         // Expiry Check
-        $dbTime = \Illuminate\Support\Carbon::parse($record->expired_at);
+        $dbTime = Carbon::parse($record->expired_at);
         $expected = now()->addSeconds(CommonVal::MAX_REFRESH_TTL);
 
         // Allow 60s diff

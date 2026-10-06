@@ -8,6 +8,7 @@ use Closure;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Symfony\Component\HttpFoundation\Cookie;
 use Symfony\Component\HttpFoundation\Response;
 
 class GenerateResponseMiddleware
@@ -97,7 +98,7 @@ class GenerateResponseMiddleware
                         $cookieData['sameSite'] ?? null
                     );
                     $responseApi = $responseApi->withCookie($cookie);
-                } elseif ($cookieData instanceof \Symfony\Component\HttpFoundation\Cookie) {
+                } elseif ($cookieData instanceof Cookie) {
                     $responseApi = $responseApi->withCookie($cookieData);
                 }
             }

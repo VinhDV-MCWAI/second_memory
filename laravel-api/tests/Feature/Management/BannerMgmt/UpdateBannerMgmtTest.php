@@ -3,6 +3,7 @@
 namespace Tests\Feature\Management\BannerMgmt;
 
 use App\Constants\CommonVal;
+use App\Enums\ActionType;
 use App\Enums\IsDelete;
 use App\Enums\StatusEnum;
 use App\Models\Management\BannerMgmt;
@@ -191,7 +192,7 @@ class UpdateBannerMgmtTest extends TestCase
         $this->assertDatabaseHas('banner_mgmt_hist', [
             'banner_mgmt_id' => $banner->id,
             'title' => 'Updated Title',
-            'action' => \App\Enums\ActionType::UPDATE->value,
+            'action' => ActionType::UPDATE->value,
             'author_id' => $admin->id,
         ]);
     }

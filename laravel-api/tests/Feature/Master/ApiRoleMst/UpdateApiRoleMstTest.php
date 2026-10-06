@@ -9,6 +9,7 @@ use App\Models\Master\ApiRoleMst;
 use App\Models\Master\FeatureMst;
 use App\Models\Master\RoleMst; // Pivot Model
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\DB;
 use Tests\TestCase;
 
 class UpdateApiRoleMstTest extends TestCase
@@ -29,11 +30,11 @@ class UpdateApiRoleMstTest extends TestCase
 
         $this->grantAccessTo($rootRole, 'PUT', 'api/admin/api-role-mst/update');
 
-        if (! \Illuminate\Support\Facades\DB::table('admin_role_mst')
+        if (! DB::table('admin_role_mst')
             ->where('admin_mst_id', $admin->id)
             ->where('role_mst_id', $rootRole->id)
             ->exists()) {
-            \Illuminate\Support\Facades\DB::table('admin_role_mst')->insert([
+            DB::table('admin_role_mst')->insert([
                 'admin_mst_id' => $admin->id,
                 'role_mst_id' => $rootRole->id,
                 'created_at' => now(),
@@ -76,7 +77,7 @@ class UpdateApiRoleMstTest extends TestCase
             ]
         );
 
-        \Illuminate\Support\Facades\DB::table('api_role_mst')->insertOrIgnore([
+        DB::table('api_role_mst')->insertOrIgnore([
             'api_mst_id' => $api->id,
             'role_mst_id' => $role->id,
             'created_at' => now(),

@@ -6,6 +6,7 @@ namespace App\Interfaces\Management;
 
 use App\Interfaces\BaseInterface;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Collection;
 
 interface CategoryMgmtInterface extends BaseInterface
 {
@@ -32,10 +33,10 @@ interface CategoryMgmtInterface extends BaseInterface
     /**
      * Get displayable categories for docs
      */
-    public function getDisplayableCategories(): \Illuminate\Support\Collection;
+    public function getDisplayableCategories(): Collection;
 
     /**
      * Search categories
      */
-    public function searchCategories(string $query): \Illuminate\Support\Collection;
+    public function searchCategories(string $query): Collection;
 }

@@ -3,6 +3,7 @@
 namespace App\Http\Requests\History\Master\PolicyDepartmentMstHist;
 
 use App\Constants\CommonVal;
+use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class ListPolicyDepartmentMstHistRequest extends FormRequest
@@ -18,7 +19,7 @@ class ListPolicyDepartmentMstHistRequest extends FormRequest
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
+     * @return array<string, ValidationRule|array<mixed>|string>
      */
     public function rules(): array
     {

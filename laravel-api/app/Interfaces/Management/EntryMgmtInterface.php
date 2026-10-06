@@ -5,13 +5,16 @@ declare(strict_types=1);
 namespace App\Interfaces\Management;
 
 use App\Interfaces\BaseInterface;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Collection;
 
 interface EntryMgmtInterface extends BaseInterface
 {
     /**
      * Get list
      */
-    public function list(array $payload): \Illuminate\Contracts\Pagination\LengthAwarePaginator;
+    public function list(array $payload): LengthAwarePaginator;
 
     /**
      * Store record
@@ -31,15 +34,15 @@ interface EntryMgmtInterface extends BaseInterface
     /**
      * Get entries by category slug
      */
-    public function getEntriesByCategorySlug(string $slug): \Illuminate\Support\Collection;
+    public function getEntriesByCategorySlug(string $slug): Collection;
 
     /**
      * Get entry detail by slug with descriptions
      */
-    public function getEntryDetailBySlug(string $slug): ?\Illuminate\Database\Eloquent\Model;
+    public function getEntryDetailBySlug(string $slug): ?Model;
 
     /**
      * Search entries
      */
-    public function searchEntries(string $query): \Illuminate\Support\Collection;
+    public function searchEntries(string $query): Collection;
 }

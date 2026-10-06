@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Constants\MediaConst;
 use Aws\S3\S3Client;
 use Exception;
+use Illuminate\Filesystem\FilesystemAdapter;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
@@ -36,7 +37,7 @@ class MinioService
             }
 
             $filesystem = Storage::disk($disk);
-            /** @var \Illuminate\Filesystem\FilesystemAdapter $filesystem */
+            /** @var FilesystemAdapter $filesystem */
 
             return [
                 'disk' => $disk,
@@ -220,7 +221,7 @@ class MinioService
      */
     public function getPublicUrl(string $disk, string $objectKey): string
     {
-        /** @var \Illuminate\Filesystem\FilesystemAdapter $filesystem */
+        /** @var FilesystemAdapter $filesystem */
         $filesystem = Storage::disk($disk);
 
         return $filesystem->url($objectKey);

@@ -4,6 +4,7 @@ namespace App\Http\Middleware;
 
 use App\Constants\CommonVal;
 use App\Enums\TypeOfMethod;
+use App\Exceptions\Auth\LoginFailedException;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -15,7 +16,7 @@ class TransactionMiddleware
      * List of exceptions that should trigger a COMMIT instead of ROLLBACK.
      */
     protected array $exceptionsShouldCommit = [
-        \App\Exceptions\Auth\LoginFailedException::class,
+        LoginFailedException::class,
     ];
 
     /**

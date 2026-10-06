@@ -4,6 +4,7 @@ namespace App\Services\Custom;
 
 use App\Constants\CommonVal;
 use App\Constants\Messages;
+use App\Exceptions\Auth\LoginFailedException;
 use App\Models\Master\AdminMst;
 use App\Models\Master\TokenMst;
 use App\Utilities\JsonWebToken;
@@ -36,7 +37,7 @@ class CredentialService
         } elseif (! Hash::check($credentials['password'], $admin->password)) {
             $admin->limit_access += 1;
             $admin->save();
-            throw new \App\Exceptions\Auth\LoginFailedException(Messages::E0401, CommonVal::HTTP_UNAUTHORIZED);
+            throw new LoginFailedException(Messages::E0401, CommonVal::HTTP_UNAUTHORIZED);
         } else {
             $admin->limit_access = 0;
             $admin->save();
@@ -211,7 +212,7 @@ class CredentialService
      * Revoke token (add to black list)
      *
      * @throws AuthorizationException
-     * @throws \UnexpectedValueException
+     * @throws UnexpectedValueException
      */
     private function revokeToken(?string $token, bool $isRefresh): int
     {

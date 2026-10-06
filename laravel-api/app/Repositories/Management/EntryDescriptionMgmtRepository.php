@@ -10,6 +10,7 @@ use App\Models\Management\EntryDescriptionMgmt;
 use App\Repositories\BaseRepository;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Collection;
 
 class EntryDescriptionMgmtRepository extends BaseRepository implements EntryDescriptionMgmtInterface
 {
@@ -106,7 +107,7 @@ class EntryDescriptionMgmtRepository extends BaseRepository implements EntryDesc
     /**
      * Search descriptions
      */
-    public function searchDescriptions(string $query): \Illuminate\Support\Collection
+    public function searchDescriptions(string $query): Collection
     {
         return $this->model->query()
             ->select([

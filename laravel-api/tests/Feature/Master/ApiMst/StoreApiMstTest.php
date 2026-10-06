@@ -5,6 +5,7 @@ namespace Tests\Feature\Master\ApiMst;
 use App\Constants\CommonVal;
 use App\Enums\IsActive;
 use App\Enums\IsDelete;
+use App\Enums\TypeOfMethod;
 use App\Models\Master\AdminMst;
 use App\Models\Master\ApiMst;
 use App\Models\Master\FeatureMst;
@@ -101,7 +102,7 @@ class StoreApiMstTest extends TestCase
         $payload = [
             'name' => 'Test API',
             'path' => '/api/test',
-            'type' => \App\Enums\TypeOfMethod::GET->value,
+            'type' => TypeOfMethod::GET->value,
             'is_active' => IsActive::TRUE->value,
             'feature_mst_id' => $feature->id,
             'is_delete' => IsDelete::FALSE->value,

@@ -7,6 +7,7 @@ use App\Jobs\Media\ProcessLargeFile;
 use App\Models\Management\MediaMgmt;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 
 /**
  * Retry stuck uploads that are in PROCESSING state
@@ -59,7 +60,7 @@ class RetryStuckUploadsCommand extends Command
                 $tempKey = end($pathParts);
 
                 // Generate new room ID
-                $uuid = \Illuminate\Support\Str::uuid()->toString();
+                $uuid = Str::uuid()->toString();
                 $userId = $media->created_by;
                 $roomId = "{$uuid}_{$userId}_upload_file";
 

@@ -7,6 +7,7 @@ use App\Enums\IsActive;
 use App\Enums\StatusEnum;
 use App\Models\History\Management\SocialMgmtHist;
 use App\Models\Management\SocialMgmt;
+use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Enum;
@@ -24,7 +25,7 @@ class UpdateSocialMgmtHistRequest extends FormRequest
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
+     * @return array<string, ValidationRule|array<mixed>|string>
      */
     public function rules(): array
     {

@@ -3,6 +3,7 @@
 namespace Tests\Feature\Management\BannerMgmt;
 
 use App\Constants\CommonVal;
+use App\Enums\ActionType;
 use App\Enums\IsDelete;
 use App\Enums\StatusEnum;
 use App\Models\Master\AdminMst;
@@ -199,7 +200,7 @@ class StoreBannerMgmtTest extends TestCase
         // Check History
         $this->assertDatabaseHas('banner_mgmt_hist', [
             'title' => 'Valid Title',
-            'action' => \App\Enums\ActionType::CREATE->value,
+            'action' => ActionType::CREATE->value,
             'author_id' => $admin->id,
         ]);
     }

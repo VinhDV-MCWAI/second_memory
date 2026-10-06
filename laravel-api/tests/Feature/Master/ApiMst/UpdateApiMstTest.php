@@ -5,6 +5,7 @@ namespace Tests\Feature\Master\ApiMst;
 use App\Constants\CommonVal;
 use App\Enums\IsActive;
 use App\Enums\IsDelete;
+use App\Enums\TypeOfMethod;
 use App\Models\Master\AdminMst;
 use App\Models\Master\ApiMst;
 use App\Models\Master\FeatureMst;
@@ -103,7 +104,7 @@ class UpdateApiMstTest extends TestCase
             'id' => $api->id,
             'name' => 'Updated API',
             'path' => '/api/updated',
-            'type' => \App\Enums\TypeOfMethod::POST->value,
+            'type' => TypeOfMethod::POST->value,
             'is_active' => IsActive::FALSE->value,
             'feature_mst_id' => $feature->id,
             'is_delete' => IsDelete::FALSE->value,

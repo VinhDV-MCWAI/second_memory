@@ -5,6 +5,7 @@ namespace Tests\Feature\Auth;
 use App\Constants\CommonVal;
 use App\Constants\Messages;
 use App\Models\Master\AdminMst;
+use App\Models\Master\RoleMst;
 use App\Models\Master\TokenMst;
 use App\Utilities\JsonWebToken;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
@@ -30,9 +31,9 @@ class LogoutApiTest extends TestCase
     // Helper to get authenticated cookies
     protected function getAuthCookies(AdminMst $admin): array
     {
-        $rootRole = \App\Models\Master\RoleMst::where('name', 'root')->first();
+        $rootRole = RoleMst::where('name', 'root')->first();
         if (! $rootRole) {
-            $rootRole = \App\Models\Master\RoleMst::create(['name' => 'root', 'permission' => '{}', 'is_active' => 1, 'is_delete' => 0]);
+            $rootRole = RoleMst::create(['name' => 'root', 'permission' => '{}', 'is_active' => 1, 'is_delete' => 0]);
         } else {
             // Ensure permission is not null
             if (is_null($rootRole->permission)) {

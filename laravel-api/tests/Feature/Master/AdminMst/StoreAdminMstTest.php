@@ -3,6 +3,7 @@
 namespace Tests\Feature\Master\AdminMst;
 
 use App\Constants\CommonVal;
+use App\Enums\ActionType;
 use App\Enums\Gender;
 use App\Enums\IsActive;
 use App\Enums\IsDelete;
@@ -393,7 +394,7 @@ class StoreAdminMstTest extends TestCase
         // History verification
         $this->assertDatabaseHas('admin_mst_hist', [
             'admin_mst_id' => $newId,
-            'action' => \App\Enums\ActionType::CREATE->value,
+            'action' => ActionType::CREATE->value,
             'user_name' => $payload['user_name'],
         ]);
     }

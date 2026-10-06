@@ -6,6 +6,7 @@ use App\Constants\CommonVal;
 use App\Models\Master\AdminMst;
 use App\Models\Master\RoleMst;
 use App\Utilities\JsonWebToken;
+use Carbon\Carbon;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\DB;
@@ -326,7 +327,7 @@ class RefreshTokenApiTest extends TestCase
         // We expect expired_at to be roughly Now + 3 Days.
         // Allow 10s variance.
         $expectedExpiry = now()->addSeconds($e3Days);
-        $actualExpiry = \Carbon\Carbon::parse($tokenRecord->expired_at);
+        $actualExpiry = Carbon::parse($tokenRecord->expired_at);
 
         $diff = $actualExpiry->diffInSeconds($expectedExpiry);
         $this->assertLessThan(10, $diff, 'New refresh token expiry should be reset to +3 days');

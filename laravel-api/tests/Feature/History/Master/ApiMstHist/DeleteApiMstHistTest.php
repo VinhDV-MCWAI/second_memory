@@ -5,7 +5,11 @@ namespace Tests\Feature\History\Master\ApiMstHist;
 use App\Constants\CommonVal;
 use App\Models\History\Master\ApiMstHist;
 use App\Models\Master\AdminMst;
+use App\Models\Master\ApiMst;
+use App\Models\Master\FeatureMst;
+use App\Models\Master\RoleMst;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\DB;
 use Tests\TestCase;
 
 class DeleteApiMstHistTest extends TestCase
@@ -19,18 +23,18 @@ class DeleteApiMstHistTest extends TestCase
      */
     private function getAuthCookies(AdminMst $admin): array
     {
-        $rootRole = \App\Models\Master\RoleMst::where('name', 'root')->first();
+        $rootRole = RoleMst::where('name', 'root')->first();
         if (! $rootRole) {
-            $rootRole = \App\Models\Master\RoleMst::create(['name' => 'root', 'permission' => '{}', 'is_active' => 1, 'is_delete' => 0]);
+            $rootRole = RoleMst::create(['name' => 'root', 'permission' => '{}', 'is_active' => 1, 'is_delete' => 0]);
         }
 
         $this->grantAccessTo($rootRole, 'POST', 'api/admin/api-mst-hist/delete');
 
-        if (! \Illuminate\Support\Facades\DB::table('admin_role_mst')
+        if (! DB::table('admin_role_mst')
             ->where('admin_mst_id', $admin->id)
             ->where('role_mst_id', $rootRole->id)
             ->exists()) {
-            \Illuminate\Support\Facades\DB::table('admin_role_mst')->insert([
+            DB::table('admin_role_mst')->insert([
                 'admin_mst_id' => $admin->id,
                 'role_mst_id' => $rootRole->id,
                 'created_at' => now(),
@@ -51,19 +55,19 @@ class DeleteApiMstHistTest extends TestCase
         return $cookies;
     }
 
-    private function grantAccessTo(\App\Models\Master\RoleMst $role, string $method, string $path)
+    private function grantAccessTo(RoleMst $role, string $method, string $path)
     {
         $typeMap = ['GET' => 0, 'POST' => 1, 'PUT' => 2, 'PATCH' => 3, 'DELETE' => 4];
         $type = $typeMap[strtoupper($method)] ?? 0;
 
-        $feature = \App\Models\Master\FeatureMst::firstOrCreate([
+        $feature = FeatureMst::firstOrCreate([
             'name' => 'System Features',
             'group_name' => 'System',
             'status' => 1,
             'is_delete' => 0,
         ]);
 
-        $api = \App\Models\Master\ApiMst::firstOrCreate(
+        $api = ApiMst::firstOrCreate(
             ['path' => $path, 'type' => $type],
             [
                 'name' => "Endpoint $method $path",
@@ -73,7 +77,7 @@ class DeleteApiMstHistTest extends TestCase
             ]
         );
 
-        \Illuminate\Support\Facades\DB::table('api_role_mst')->insertOrIgnore([
+        DB::table('api_role_mst')->insertOrIgnore([
             'api_mst_id' => $api->id,
             'role_mst_id' => $role->id,
             'created_at' => now(),

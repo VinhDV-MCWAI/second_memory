@@ -10,6 +10,7 @@ use App\Models\Management\CategoryMgmt;
 use App\Repositories\BaseRepository;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Collection;
 
 class CategoryMgmtRepository extends BaseRepository implements CategoryMgmtInterface
 {
@@ -108,7 +109,7 @@ class CategoryMgmtRepository extends BaseRepository implements CategoryMgmtInter
     /**
      * Get displayable categories for docs
      */
-    public function getDisplayableCategories(): \Illuminate\Support\Collection
+    public function getDisplayableCategories(): Collection
     {
         return $this->model->query()
             ->select([
@@ -129,7 +130,7 @@ class CategoryMgmtRepository extends BaseRepository implements CategoryMgmtInter
     /**
      * Search categories
      */
-    public function searchCategories(string $query): \Illuminate\Support\Collection
+    public function searchCategories(string $query): Collection
     {
         return $this->model->query()
             ->select([

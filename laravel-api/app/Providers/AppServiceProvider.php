@@ -6,6 +6,7 @@ use App\Models\Management\EntryDescriptionMgmt;
 use App\Models\Management\EntryMgmt;
 use App\Observers\EntryDescriptionMgmtObserver;
 use App\Observers\EntryMgmtObserver;
+use Illuminate\Console\Command;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -15,7 +16,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        $this->app->resolving(\Illuminate\Console\Command::class, function ($command, $app) {
+        $this->app->resolving(Command::class, function ($command, $app) {
             $command->setLaravel($app);
         });
     }

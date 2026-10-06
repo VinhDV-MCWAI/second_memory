@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace App\Repositories\Master;
 
+use App\Constants\CommonVal;
 use App\Interfaces\Master\TokenMstInterface;
 use App\Models\Master\TokenMst;
 use App\Repositories\BaseRepository;
+use Carbon\Carbon;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Arr;
 
@@ -63,7 +65,7 @@ class TokenMstRepository extends BaseRepository implements TokenMstInterface
     public function executeStore(array $payload): int
     {
         if (isset($payload['expired_at'])) {
-            $payload['expired_at'] = \Carbon\Carbon::createFromFormat(\App\Constants\CommonVal::DATE_FORMAT, $payload['expired_at'])->format('Y-m-d');
+            $payload['expired_at'] = Carbon::createFromFormat(CommonVal::DATE_FORMAT, $payload['expired_at'])->format('Y-m-d');
         }
 
         $model = $this->model->newInstance()->fill(
@@ -83,7 +85,7 @@ class TokenMstRepository extends BaseRepository implements TokenMstInterface
         $model = $this->model->findOrFail($payload['id']);
 
         if (isset($payload['expired_at'])) {
-            $payload['expired_at'] = \Carbon\Carbon::createFromFormat(\App\Constants\CommonVal::DATE_FORMAT, $payload['expired_at'])->format('Y-m-d');
+            $payload['expired_at'] = Carbon::createFromFormat(CommonVal::DATE_FORMAT, $payload['expired_at'])->format('Y-m-d');
         }
 
         $model->fill(Arr::only($payload, $this->model->getFillable()));

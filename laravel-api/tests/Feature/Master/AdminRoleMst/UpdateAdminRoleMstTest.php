@@ -3,6 +3,7 @@
 namespace Tests\Feature\Master\AdminRoleMst;
 
 use App\Constants\CommonVal;
+use App\Constants\Messages;
 use App\Models\Master\AdminMst;
 use App\Models\Master\RoleMst;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
@@ -105,7 +106,7 @@ class UpdateAdminRoleMstTest extends TestCase
         }
         // Expect LogicException E0018 converted to 422
         $response->assertStatus(CommonVal::HTTP_UNPROCESSABLE_CONTENT);
-        $response->assertJsonFragment(['messages' => \App\Constants\Messages::E0018]);
+        $response->assertJsonFragment(['messages' => Messages::E0018]);
         // Or check generic error structure if messages key differs
     }
 

@@ -3,6 +3,7 @@
 namespace Tests\Feature\Master\AdminMst;
 
 use App\Constants\CommonVal;
+use App\Enums\ActionType;
 use App\Models\Master\AdminMst;
 use App\Models\Master\RoleMst;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
@@ -178,7 +179,7 @@ class UpdateAdminMstTest extends TestCase
 
         $this->assertDatabaseHas('admin_mst_hist', [
             'admin_mst_id' => $admin->id,
-            'action' => \App\Enums\ActionType::UPDATE->value,
+            'action' => ActionType::UPDATE->value,
             'first_name' => 'Updated',
         ]);
     }
