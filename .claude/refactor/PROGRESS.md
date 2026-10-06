@@ -81,6 +81,7 @@ User delegated all P2+ items on 2026-10-06 ("toàn quyền thực hiện, không
 | B3 Enums | done (verified) | No shared trait needed: the duplicated static `getLabel()`/`toArray()` were unused outside the enums, so each enum keeps one `label()` (match on `$this`). Removed unused `FeatureStatus` (broken `getAll()`), `CategoryStatus`, `EntryStatus`, `SocialStatus`. 158 `new Enum()` → `Rule::enum()`. Enum casts for `status`/`gender` on Banner/Category/Entry/EntryDescription/Feature/Slider/Social (StatusEnum), DepartmentMst (DepartmentStatus), UserMgmt (UserStatus, Gender); Resources emit `?->value` with the same string/int casts → JSON unchanged. **Not cast:** `AdminMst` (auth reads `status`), history models, `is_*` columns (stay boolean). Note: Social/Category validate with `StatusEnum` although dedicated enums existed — kept (behavior). Larastan baseline 637 → 590. 593 tests pass |
 | B1 Generic CRUD core | done (verified) | Repository interfaces (34, all 1:1) + `RepositoryServiceProvider` removed. `CrudRepository` / `SoftDeleteCrudRepository` (`fillable()` hook, `$deleteBlockedBy`), `CrudService` / `AuditedCrudService` (replaces `BaseService`). 36 entity services now = resource + history key + constructor; entity repositories keep `list()` + real differences. Controllers stay explicit (typed FormRequests are what Scramble reads in B6). **Not adopted:** `spatie/laravel-query-builder` — it would change filter/sort semantics (contract); allow-list sorting is a follow-up. Net −3000 lines. Fix found: `token_hash` unvalidated → 500 on missing (separate `fix` commit). 593 → 595 tests pass (new `ListPagingTest`) |
 | B5 Strictness | done (verified) | `preventLazyLoading` + `preventSilentlyDiscardingAttributes` outside production (`preventAccessingMissingAttributes` left off: freshly created models lack DB defaults → false positives). Found: banner list N+1 on `media` (fixed, separate commit), RoleMst test fixtures with phantom `status`/`note` (incl. one line in `LoginApiTest` fixture — data only), hist `created_at` fillable. `$request->validated()` everywhere: **paging/sorting/id were never validated**, so `ListRequest` base now declares them (lenient: no `per_page` max, FE uses up to 9999); missing filter rules added. `declare(strict_types=1)` in all files except auth; implicit coercions made explicit (dates via `FormatsDates`, media ints, UUID string). Larastan **level 6** (array-shape/generics identifiers ignored), baseline 518. 595 tests pass |
+| B2 History in one place | done (via B1) | `recordHistory()` now lives only in `AuditedCrudService`; no entity service calls it. A model observer/`Auditable` trait was **not** adopted: the history row is a snapshot of the *list Resource* (joined columns such as banner `media.url` as `image`), which an observer on the model cannot reproduce without changing stored history data |
 
 ## Log
 
@@ -118,6 +119,7 @@ User delegated all P2+ items on 2026-10-06 ("toàn quyền thực hiện, không
 - 2026-10-06 — B3 done.
 - 2026-10-06 — B1 done.
 - 2026-10-06 — B5 done.
+- 2026-10-06 — B2 closed (covered by B1).
 
 ## Next step
 
