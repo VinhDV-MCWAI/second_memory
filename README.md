@@ -259,28 +259,23 @@ cp .env.example .env.local
 # Quay về root directory
 cd ..
 
-# Build và start tất cả services
-cd docker
-docker-compose up -d --build
+# Tạo env (lần đầu), build và start tất cả services
+make up
 ```
 
-Hoặc sử dụng quick start script:
-
-```bash
-bash start.sh
-```
+`bash start.sh` vẫn dùng được (gọi `make up`). Xem toàn bộ lệnh bằng `make help`.
 
 ### 4. Initialize Database
 
 ```bash
 # Chạy migrations
-docker exec -it laravel-api php artisan migrate
+make migrate
 
 # (Optional) Seed dữ liệu mẫu
-docker exec -it laravel-api php artisan db:seed
+docker exec ml-php php artisan db:seed
 
-# Generate JWT secret
-docker exec -it laravel-api php artisan jwt:secret
+# Hoặc xóa toàn bộ dev DB, migrate lại và seed (hỏi xác nhận trước)
+make fresh
 ```
 
 ### 5. Access Applications
@@ -318,8 +313,16 @@ php artisan serve
 # Watch queue jobs
 php artisan queue:work
 
-# Run tests
-php artisan test
+# Run tests (trong Docker)
+make test
+```
+
+### Quality checks
+
+```bash
+make lint      # Pint + ESLint + Prettier
+make analyse   # Larastan
+make verify    # toàn bộ những gì CI chạy
 ```
 
 ### Database Migrations

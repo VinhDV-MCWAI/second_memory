@@ -13,13 +13,14 @@ Root `0X-*.md` files are architecture docs (Vietnamese, may be outdated — code
 
 ## Running things
 
-PHP, Composer, Node and pnpm are **not installed on the host**. Everything runs in Docker (containers prefixed `ml-`).
+PHP, Composer, Node and pnpm are **not installed on the host**. Everything runs in Docker (containers prefixed `ml-`). The root `Makefile` wraps the common commands (`make help` lists them):
 
 ```bash
-./start.sh                                    # generate env if missing, then compose up
-docker exec ml-php php artisan test           # backend tests
-docker exec ml-php ./vendor/bin/pint --test   # backend style check
-docker exec ml-nextjs pnpm lint               # admin FE lint
+make up          # generate env if missing, then build + start the stack (./start.sh does the same)
+make test        # backend tests (make test f=CategoryMgmt); make test-ci skips the known auth failures
+make lint        # Pint + ESLint + Prettier checks, backend and both FE apps
+make verify      # everything CI runs
+make fresh       # DEV ONLY: wipe, re-migrate and seed the dev DB (asks first)
 ```
 
 Use the `/verify` skill to run the full check suite before declaring work done.

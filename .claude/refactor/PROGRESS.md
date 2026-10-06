@@ -3,9 +3,23 @@
 > Handoff file. Updated after every step so any new Claude Code conversation can resume.
 > To resume: read this file top to bottom, then `.claude/refactor/PLAN.md`, then continue at **Next step**.
 
+## Handoff summary (read first) — updated 2026-10-06
+
+**P0 + P1 are complete** on branch `refactor/p0-p1-foundation` (local commits only, nothing pushed). `make verify` passes: Pint ✓, Larastan ✓, ESLint 0 errors, Prettier ✓, tsc ✓ (both apps), Vitest 10/10, PHPUnit 593 passed with the 4 known auth tests excluded (4F/593P without exclusion).
+
+**Waiting on the user (Claude cannot do these):**
+1. Push the branch and open a PR → `developer`; check CI is green (F4 acceptance; docker job never built locally).
+2. Manual auth rework from `laravel-api/docs/auth/AUTH-GUIDE.md` (S4/S6, A1–A13). When done, remove the `--exclude-filter` from `.github/workflows/ci.yml` and `AUTH_TODO` in `Makefile`.
+3. Rotate DB/Redis/MinIO/JWT/APP_KEY on any real deployment (old values are in git history, S2).
+4. Browser check: a server error shows a toast with the backend message (S7, needs login).
+5. Answer the open decisions at the bottom of PLAN.md (S6 option, Pest, optional items, MinIO, history purge) and the `media-official` public bucket question (finding 12).
+6. Approve which P2+ items (all `proposed`) to start next. Suggested order: U1 (Laravel 12→13) and U2 (Next/Node 24/React Compiler — also fixes the react-hooks 7.1.1 errors), then I1/I5.
+
+**Do not** start any `proposed` item without approval. Do not touch auth code.
+
 ## Current state
 
-- **Branch:** `refactor/p0-p1-foundation` (from `origin/developer`, NOT `main`). P0 + F1 committed locally (not pushed).
+- **Branch:** `refactor/p0-p1-foundation` (from `origin/developer`, NOT `main`). P0 + P1 committed locally (not pushed).
 - **Scope approved by user (2026-10-05):** P0 + P1 from PLAN.md.
   - **S6 (auth) is manual:** the user implements auth changes themselves to learn. Claude only writes the guide `laravel-api/docs/auth/AUTH-GUIDE.md`. Do NOT modify auth code (`JsonWebToken`, `CredentialService`, `AdminMiddleware`, `BroadcastingAuthMiddleware`, `CredentialController`, auth tests).
   - **S4 (`env()` → `config()`)** only occurs in auth code → moved into the auth guide as a manual task.
@@ -53,7 +67,7 @@
 | F4 CI | done (validated locally) | `.github/workflows/ci.yml` rewritten: PR → `developer`/`main` + manual dispatch, `contents: read`, concurrency. Jobs: **frontend** (pnpm from root, Node 22 until U2: install --frozen-lockfile, lint, format:check, typecheck, test, audit non-blocking), **backend** (PHP 8.3 + Postgres 16/Redis 7 services: composer install, Pint, Larastan `--error-format=github`, tests, composer audit non-blocking), **docker** (api + fe production targets build, no push, read-only gha cache). Tests exclude the 4 `RefreshTokenApiTest` auth cases (A13) → remove the exclusion after the manual auth rework. Validated: actionlint clean; frontend job simulated from `git archive HEAD` in node:22-alpine ✓; `php artisan test --exclude-filter ...` = 593 passed. **Not validated:** real GitHub run (needs user push/PR — acceptance "CI green on a PR" pending), docker job (local prod image build was declined by the user). CD (`cd.yml`) shellcheck infos SC2015/SC2086 left for I5 |
 | F5 Dead code / deps | done (verified) | backend: unused ProductMgmt stack, `Http/Kernel.php`, `Tmp`, `CommonService`, `SingletonService`, `CategoryMgmt::products()`, Laravel Vite assets. FE: `@dnd-kit/*`, `@reduxjs/toolkit`, `react-redux`, `novel` (local `novel-editor` is Tiptap, not the package), `react-masonry-css`, `shadcn-ui`, `@swc/helpers`; docs: unused `react-dialog`, `react-scroll-area`, `tw-animate-css`, pinned `@next/swc-linux-x64-musl@16.0.1` (stale vs next 16.3.8). `.bak` + tracked `tsbuildinfo` removed (already gitignored). `nodejs npm` dropped from PHP dev image. Verified: fresh `--frozen-lockfile` install, typecheck, test (10 ✓), FE + docs `next build` ✓, PHP dev image builds |
 | F6 Format pass | done (verified) | `12ff099`: Pint (550 PHP files) + Prettier (175 FE, 28 docs), formatting only — includes auth files (JsonWebToken etc., whitespace/import order only). Larastan baseline message updated (Pint flipped a yoda comparison). `.git-blame-ignore-revs` + local `git config blame.ignoreRevsFile`. Verified: pint --test ✓, phpstan ✓, prettier --check ✓ both, lint 0 errors, tsc ✓, Vitest 10/10, PHP 4F/593P (same 4 auth tests). Separate fix `f573f67`: flaky SliderMgmtFactory link > varchar(100) |
-| F7 Makefile | todo | |
+| F7 Makefile | done (verified) | Root `Makefile` (first version was in `2c60c11`) extended: `fresh` (asks for `yes`, then `migrate:fresh --seed`), `format`/`fe-format`, `test-ci` (same auth exclusion as CI), `lint` now also runs Prettier checks, `verify` = lint + analyse + typecheck + test-ci + fe-test (mirrors CI), backend targets use composer scripts, `restart` rebuilds. `start.sh` just runs `make up`. Root CLAUDE.md, README (start/DB/test/quality sections) and `/verify` skill use `make`. Verified: `make verify` exit 0. Separate fix: flaky `RoleMstFactory` (unique `role_mst.name` collided on repeated faker words) |
 
 ## Log
 
@@ -75,11 +89,15 @@
 - 2026-10-06 — F6 done & committed (+ flaky slider factory fix).
 - 2026-10-06 — Stack restarted (Docker Desktop restart). F3 verified & marked done.
 - 2026-10-06 — F4 committed (CI rewrite). Green-on-PR check waits for the user to push.
+- 2026-10-06 — F7 done & committed (+ flaky role factory fix). **P0 + P1 complete.**
 
 - 2026-10-05 — Security bump (Laravel 11.57, PHPUnit 11.5), T1 done (user said "sửa và tiếp tục"; T1 approved via delegated decisions).
 
 20. **Stale FE container deps:** FE images built before a lockfile change keep old `node_modules` in anonymous volumes → lint/test results differ from the lockfile. After any lockfile change: `docker compose up -d --build --force-recreate --renew-anon-volumes ml-nextjs ml-nextjs-docs`.
 
+21. Factories using bare `faker->word` for unique columns cause random failures (fixed: `RoleMstFactory`, `SliderMgmtFactory`). `ApiMstFactory.name` / `FeatureMstFactory.group_name` also use bare words but have no unique constraint — fine.
+22. Per-app `CLAUDE.md` files still show raw `docker exec` commands — still valid; `make` wraps them.
+
 ## Next step
 
-F4 (CI), then F7 (Makefile).
+P0 + P1 done. Wait for the user: push/PR for CI (see Handoff summary), then approval of the next P2+ items. Nothing approved is left to do.
