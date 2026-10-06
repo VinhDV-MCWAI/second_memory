@@ -82,6 +82,7 @@ User delegated all P2+ items on 2026-10-06 ("toàn quyền thực hiện, không
 | B1 Generic CRUD core | done (verified) | Repository interfaces (34, all 1:1) + `RepositoryServiceProvider` removed. `CrudRepository` / `SoftDeleteCrudRepository` (`fillable()` hook, `$deleteBlockedBy`), `CrudService` / `AuditedCrudService` (replaces `BaseService`). 36 entity services now = resource + history key + constructor; entity repositories keep `list()` + real differences. Controllers stay explicit (typed FormRequests are what Scramble reads in B6). **Not adopted:** `spatie/laravel-query-builder` — it would change filter/sort semantics (contract); allow-list sorting is a follow-up. Net −3000 lines. Fix found: `token_hash` unvalidated → 500 on missing (separate `fix` commit). 593 → 595 tests pass (new `ListPagingTest`) |
 | B5 Strictness | done (verified) | `preventLazyLoading` + `preventSilentlyDiscardingAttributes` outside production (`preventAccessingMissingAttributes` left off: freshly created models lack DB defaults → false positives). Found: banner list N+1 on `media` (fixed, separate commit), RoleMst test fixtures with phantom `status`/`note` (incl. one line in `LoginApiTest` fixture — data only), hist `created_at` fillable. `$request->validated()` everywhere: **paging/sorting/id were never validated**, so `ListRequest` base now declares them (lenient: no `per_page` max, FE uses up to 9999); missing filter rules added. `declare(strict_types=1)` in all files except auth; implicit coercions made explicit (dates via `FormatsDates`, media ints, UUID string). Larastan **level 6** (array-shape/generics identifiers ignored), baseline 518. 595 tests pass |
 | B2 History in one place | done (via B1) | `recordHistory()` now lives only in `AuditedCrudService`; no entity service calls it. A model observer/`Auditable` trait was **not** adopted: the history row is a snapshot of the *list Resource* (joined columns such as banner `media.url` as `image`), which an observer on the model cannot reproduce without changing stored history data |
+| B6 OpenAPI (Scramble) | done (verified) | `dedoc/scramble` ^0.13 (new dependency: generates the spec from FormRequests/Resources, needed for FE4). UI `/api/openapi`, JSON `/api/openapi.json` (not `/docs/api`: nginx sends `/docs` to the docs site and `/api/docs/*` is the public docs API); local env only (`RestrictedDocsAccess`) — "admin-only" would need a Laravel guard, which the custom JWT auth does not provide. Cookie `access_token` security scheme, relative `/api` server. `openapi.json` committed (142 paths, 119 schemas, deterministic); `make openapi`; CI step fails when stale. `@mixin` on all Resources + `@property` for enum casts + typed list responses → each list response references its Resource schema; Larastan baseline 518 → 204. **Spec limitation:** it does not show the `{data, error}` envelope added by `GenerateResponseMiddleware` → FE wraps generated types in its own envelope type |
 
 ## Log
 
@@ -111,6 +112,11 @@ User delegated all P2+ items on 2026-10-06 ("toàn quyền thực hiện, không
 
 21. Factories using bare `faker->word` for unique columns cause random failures (fixed: `RoleMstFactory`, `SliderMgmtFactory`). `ApiMstFactory.name` / `FeatureMstFactory.group_name` also use bare words but have no unique constraint — fine.
 22. Per-app `CLAUDE.md` files still show raw `docker exec` commands — still valid; `make` wraps them.
+23. **Resources read attributes that don't exist** (kept, they are part of the JSON contract): `BannerMgmtResource.link` (no `banner_mgmt.link` column → always `""`), `UserMgmt.password`, `EntryDescriptionMgmtHist.entry_id`; history resources print `updated_at` although history tables have none.
+24. **Empty dates print `01/01/1970`**: Resources format with `date(fmt, strtotime(''))` → epoch. Kept via `FormatsDates` (behavior-preserving); every history row's `updated_at` shows 1970. Candidate fix: return `''`/`null` and update the FE in the same change.
+25. Social/Category/Entry validate `status` with `StatusEnum` (draft/published/archived) although `SocialStatus`/`CategoryStatus`/`EntryStatus` existed (unused, removed in B3). FE badges treat status as `IsActive` (0/1).
+26. Flaky test seen once: `ListSettingLinkMgmtTest::test_se_t_ln_k_ls_t_003` (passed on 3 reruns). Watch it.
+27. Paging/sorting were never validated (any value reached `paginate()`/`orderBy`); now `ListRequest` validates them leniently. Sorting still uses `Schema::hasColumn` per request (allow-list = follow-up, see rules/backend-laravel.md).
 
 - 2026-10-06 — Rule: no `Co-Authored-By: Claude` trailer (settings `attribution.commit: ""`, CLAUDE.md, workflow rule, local `commit-msg` hook). All 46 earlier commits rewritten without it (tree identical; old tips kept in branch `backup/pre-msg-rewrite`). **38 of them are already on `origin/developer`** → the remote still has the old messages until someone force-pushes `developer` (user decision).
 - 2026-10-06 — U1 done (Laravel 13, PHP 8.5, PHPUnit 12).
@@ -120,6 +126,7 @@ User delegated all P2+ items on 2026-10-06 ("toàn quyền thực hiện, không
 - 2026-10-06 — B1 done.
 - 2026-10-06 — B5 done.
 - 2026-10-06 — B2 closed (covered by B1).
+- 2026-10-06 — B6 done.
 
 ## Next step
 

@@ -67,8 +67,8 @@ Workflow: `/refactor-item <ID…>`. Only `approved` items may be started.
 | B3 | Enums: shared `HasLabel` trait, native enum casts on models, `Rule::enum` in requests | No duplicated `getLabel()` | U1 | done (`refactor/p3-backend`) |
 | B4 | Routing: split `routes/api.php` into `routes/api/{master,management,history,docs}.php`, middleware aliases in `bootstrap/app.php` | `route:list` identical before/after (diff) | – | done (`refactor/p3-backend`: route:list identical) |
 | B5 | `Model::shouldBeStrict()` in non-prod, `$request->validated()` everywhere, `declare(strict_types=1)` everywhere | Larastan level raised to 6+ | F2 | done (`refactor/p3-backend`: Larastan level 6) |
-| B6 | OpenAPI via **Scramble** at `/docs/api` (admin-only), export spec in CI | Spec generated; consumed by FE4 | B1 | proposed |
-| B7 | *(optional, large)* Custom `is_delete` → Laravel `SoftDeletes` (`deleted_at`) with data migration | Migration reversible; tests green | B1 | proposed |
+| B6 | OpenAPI via **Scramble** at `/docs/api` (admin-only), export spec in CI | Spec generated; consumed by FE4 | B1 | done (`refactor/p3-backend`: `laravel-api/openapi.json`) |
+| B7 | *(optional, large)* Custom `is_delete` → Laravel `SoftDeletes` (`deleted_at`) with data migration | Migration reversible; tests green | B1 | skipped (decision 3: no real need; data migration risk) |
 
 ## P4 — Frontend architecture
 
