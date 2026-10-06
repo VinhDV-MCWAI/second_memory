@@ -52,7 +52,7 @@
 | F3 FE tooling | done (verified) | commits `b9153c3`, `a15d4a8`, `d96b061`. Shared-style ESLint flat config (next core-web-vitals + typescript + prettier) in both apps, `next lint` replaced in docs, Prettier configs, Vitest 4, `typecheck`/`format`/`format:check` scripts. TS `strict` was already on. Verified 2026-10-06 after rebuilding FE containers from the current lockfile: lint 0 errors (FE 20 / docs 5 warnings), tsc ✓ both, Vitest 10/10. Note: eslint-plugin-react-hooks 7.1.1 (a newer resolve) adds ~20 React-Compiler errors (`set-state-in-effect`, `immutability`, `use-memo`) → handle in U2 with React Compiler |
 | F4 CI | todo | build on developer's CI |
 | F5 Dead code / deps | done (verified) | backend: unused ProductMgmt stack, `Http/Kernel.php`, `Tmp`, `CommonService`, `SingletonService`, `CategoryMgmt::products()`, Laravel Vite assets. FE: `@dnd-kit/*`, `@reduxjs/toolkit`, `react-redux`, `novel` (local `novel-editor` is Tiptap, not the package), `react-masonry-css`, `shadcn-ui`, `@swc/helpers`; docs: unused `react-dialog`, `react-scroll-area`, `tw-animate-css`, pinned `@next/swc-linux-x64-musl@16.0.1` (stale vs next 16.3.8). `.bak` + tracked `tsbuildinfo` removed (already gitignored). `nodejs npm` dropped from PHP dev image. Verified: fresh `--frozen-lockfile` install, typecheck, test (10 ✓), FE + docs `next build` ✓, PHP dev image builds |
-| F6 Format pass | todo | |
+| F6 Format pass | done (verified) | `12ff099`: Pint (550 PHP files) + Prettier (175 FE, 28 docs), formatting only — includes auth files (JsonWebToken etc., whitespace/import order only). Larastan baseline message updated (Pint flipped a yoda comparison). `.git-blame-ignore-revs` + local `git config blame.ignoreRevsFile`. Verified: pint --test ✓, phpstan ✓, prettier --check ✓ both, lint 0 errors, tsc ✓, Vitest 10/10, PHP 4F/593P (same 4 auth tests). Separate fix `f573f67`: flaky SliderMgmtFactory link > varchar(100) |
 | F7 Makefile | todo | |
 
 ## Log
@@ -72,6 +72,7 @@
 
 - 2026-10-05 — F2 done & committed (+ fix IsActive imports, dead code removal).
 
+- 2026-10-06 — F6 done & committed (+ flaky slider factory fix).
 - 2026-10-06 — Stack restarted (Docker Desktop restart). F3 verified & marked done.
 
 - 2026-10-05 — Security bump (Laravel 11.57, PHPUnit 11.5), T1 done (user said "sửa và tiếp tục"; T1 approved via delegated decisions).
@@ -80,4 +81,4 @@
 
 ## Next step
 
-F6 (one-time Pint + Prettier format pass, SHA into `.git-blame-ignore-revs`), then F4 (CI), F7 (Makefile).
+F4 (CI), then F7 (Makefile).

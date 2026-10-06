@@ -48,7 +48,7 @@ Workflow: `/refactor-item <ID…>`. Only `approved` items may be started.
 | F3 | FE tooling: shared ESLint flat config + Prettier for both apps, TS strict, Vitest 4 config; replace `next lint` in docs | Lint + tsc pass in both apps | F1 | done (`refactor/p0-p1-foundation`: lint 0 errors, tsc ✓, Vitest 4) |
 | F4 | Rewrite CI: jobs `frontend` (pnpm, Node 24) and `backend` (PHP 8.x + Postgres/Redis services: pint, larastan, tests), Docker build check; trigger on PR → `developer`/`main`; least-privilege permissions | CI green on a PR | F1–F3 | approved |
 | F5 | Remove dead code: `Http/Kernel.php`, `Utilities/Tmp.php`, `CommonService`, `SingletonService`, `CategoryMgmt::products()` (class doesn't exist), `.bak` files, `tsconfig.tsbuildinfo`; unused deps `@reduxjs/toolkit`, `react-redux`, `novel`, `@dnd-kit/*`, `react-masonry-css`, `shadcn-ui`, `@swc/helpers` | Build + tests green | – | done (`refactor/p0-p1-foundation`) |
-| F6 | One-time format pass (Pint + Prettier) in a dedicated commit; add its SHA to `.git-blame-ignore-revs` | No style diffs remain | F2, F3 | approved |
+| F6 | One-time format pass (Pint + Prettier) in a dedicated commit; add its SHA to `.git-blame-ignore-revs` | No style diffs remain | F2, F3 | done (`refactor/p0-p1-foundation`: `12ff099`, in `.git-blame-ignore-revs`) |
 | F7 | Task runner `Makefile` (`make up/down/test/lint/fresh/backup`) wrapping docker compose; `start.sh` delegates to it | README/CLAUDE.md commands use `make` | – | approved |
 
 ## P2 — Framework upgrades
