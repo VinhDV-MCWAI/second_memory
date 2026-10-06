@@ -40,3 +40,4 @@ Detailed, path-scoped conventions live in `.claude/rules/`. The essentials:
 - Simple over clever. Don't add abstractions that aren't used at least twice.
 - Never read, print or commit secrets or `.env` files.
 - Git flow: `feature/*` or `refactor/*` → PR to `developer` → PR to `main`. Conventional Commits.
+- Commit messages never carry a `Co-Authored-By: Claude ...` trailer.

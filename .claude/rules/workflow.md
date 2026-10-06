@@ -17,4 +17,5 @@
 ## Git
 - Branch per plan item/group: `refactor/<id>-<slug>` from `developer`.
 - Conventional Commits: `refactor(api): ...`, `fix(fe): ...`, `chore(ci): ...`, `build(docker): ...`.
+- No `Co-Authored-By` (or any AI attribution) trailer in commit messages. `.claude/settings.json` sets `attribution.commit` to empty; a local `commit-msg` hook strips it too.
 - Small, reviewable commits. Commit/push only when the user asks.
