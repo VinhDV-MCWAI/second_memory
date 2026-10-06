@@ -8,7 +8,6 @@ use App\Models\Master\PolicyDepartmentMst;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
-use Illuminate\Validation\Rules\Enum;
 
 class UpdatePolicyDepartmentMstRequest extends FormRequest
 {
@@ -31,7 +30,7 @@ class UpdatePolicyDepartmentMstRequest extends FormRequest
             'id' => ['required', 'integer', 'min:1', Rule::exists(PolicyDepartmentMst::class, 'id')],
             'table_name' => ['required', 'string', 'min:'.CommonVal::MIN_VARCHAR, 'max:20'],
             'row_id' => ['required', 'integer', 'min:'.CommonVal::MIN_INTEGER, 'max:'.CommonVal::MAX_INTEGER],
-            'is_delete' => ['required', new Enum(IsDelete::class)],
+            'is_delete' => ['required', Rule::enum(IsDelete::class)],
         ];
     }
 

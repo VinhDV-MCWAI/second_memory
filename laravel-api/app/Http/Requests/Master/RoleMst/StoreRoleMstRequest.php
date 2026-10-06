@@ -7,7 +7,7 @@ use App\Enums\IsActive;
 use App\Enums\IsDelete;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rules\Enum;
+use Illuminate\Validation\Rule;
 
 class StoreRoleMstRequest extends FormRequest
 {
@@ -29,8 +29,8 @@ class StoreRoleMstRequest extends FormRequest
         return [
             'name' => ['required', 'string', 'min:'.CommonVal::MIN_VARCHAR, 'max:30'],
             'permission' => ['required', 'string', 'min:'.CommonVal::MIN_VARCHAR, 'max:50'],
-            'is_active' => ['required', new Enum(IsActive::class)],
-            'is_delete' => ['required', new Enum(IsDelete::class)],
+            'is_active' => ['required', Rule::enum(IsActive::class)],
+            'is_delete' => ['required', Rule::enum(IsDelete::class)],
         ];
     }
 

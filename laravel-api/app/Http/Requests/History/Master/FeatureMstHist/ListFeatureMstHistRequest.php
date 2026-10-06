@@ -6,7 +6,7 @@ use App\Constants\CommonVal;
 use App\Enums\StatusEnum;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rules\Enum;
+use Illuminate\Validation\Rule;
 
 class ListFeatureMstHistRequest extends FormRequest
 {
@@ -30,7 +30,7 @@ class ListFeatureMstHistRequest extends FormRequest
             'name' => ['nullable', 'string', 'min:'.CommonVal::MIN_VARCHAR, 'max:50'],
             'group_name' => ['nullable', 'string', 'min:'.CommonVal::MIN_VARCHAR, 'max:50'],
             'description' => ['nullable', 'string', 'min:'.CommonVal::MIN_VARCHAR, 'max:100'],
-            'status' => ['nullable', new Enum(StatusEnum::class)],
+            'status' => ['nullable', Rule::enum(StatusEnum::class)],
             'action' => ['nullable'],
             'author_id' => ['nullable', 'integer', 'min:'.CommonVal::MIN_INTEGER, 'max:'.CommonVal::MAX_INTEGER],
             'from_date' => [

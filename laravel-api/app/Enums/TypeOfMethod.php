@@ -53,24 +53,14 @@ enum TypeOfMethod: int
         };
     }
 
-    public static function getLabel(self|int $value): string
+    public function label(): string
     {
-        if (is_int($value)) {
-            $value = self::tryFrom($value);
-        }
-
-        return match ($value) {
+        return match ($this) {
             self::GET => 'GET',
             self::POST => 'POST',
             self::PUT => 'PUT',
             self::PATCH => 'PATCH',
             self::DELETE => 'DELETE',
-            default => '',
         };
-    }
-
-    public function label(): string
-    {
-        return self::getLabel($this);
     }
 }

@@ -6,7 +6,7 @@ use App\Constants\CommonVal;
 use App\Enums\IsActive;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rules\Enum;
+use Illuminate\Validation\Rule;
 
 class ListApiMstHistRequest extends FormRequest
 {
@@ -30,7 +30,7 @@ class ListApiMstHistRequest extends FormRequest
             'type' => ['nullable'],
             'name' => ['nullable', 'string', 'min:'.CommonVal::MIN_VARCHAR, 'max:50'],
             'path' => ['nullable', 'string', 'min:'.CommonVal::MIN_VARCHAR, 'max:100'],
-            'is_active' => ['nullable', new Enum(IsActive::class)],
+            'is_active' => ['nullable', Rule::enum(IsActive::class)],
             'feature_mst_id' => ['nullable', 'integer', 'min:'.CommonVal::MIN_INTEGER, 'max:'.CommonVal::MAX_INTEGER],
             'action' => ['nullable'],
             'author_id' => ['nullable', 'integer', 'min:'.CommonVal::MIN_INTEGER, 'max:'.CommonVal::MAX_INTEGER],

@@ -9,7 +9,7 @@ use App\Enums\IsDelete;
 use App\Enums\StatusEnum;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rules\Enum;
+use Illuminate\Validation\Rule;
 
 class ListAdminMstRequest extends FormRequest
 {
@@ -35,11 +35,11 @@ class ListAdminMstRequest extends FormRequest
             'address' => ['nullable', 'string', 'min:'.CommonVal::MIN_VARCHAR, 'max:100'],
             'phone_number' => ['nullable', 'string', 'min:'.CommonVal::MIN_VARCHAR, 'max:'.CommonVal::MAX_PHONE_NUMBER],
             'birth' => ['nullable', 'date_format:'.CommonVal::DATE_FORMAT, 'after_or_equal:'.CommonVal::MIN_DATE, 'before_or_equal:'.CommonVal::MAX_DATE],
-            'gender' => ['nullable', new Enum(Gender::class)],
-            'status' => ['nullable', new Enum(StatusEnum::class)],
-            'is_active' => ['nullable', new Enum(IsActive::class)],
+            'gender' => ['nullable', Rule::enum(Gender::class)],
+            'status' => ['nullable', Rule::enum(StatusEnum::class)],
+            'is_active' => ['nullable', Rule::enum(IsActive::class)],
             'avatar' => ['nullable', 'string', 'min:'.CommonVal::MIN_VARCHAR, 'max:30'],
-            'is_delete' => ['nullable', new Enum(IsDelete::class)],
+            'is_delete' => ['nullable', Rule::enum(IsDelete::class)],
             'from_date' => [
                 'nullable',
                 'date_format:'.CommonVal::DATE_FORMAT,

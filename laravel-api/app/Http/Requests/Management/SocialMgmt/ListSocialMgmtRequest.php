@@ -8,7 +8,7 @@ use App\Enums\IsDelete;
 use App\Enums\StatusEnum;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rules\Enum;
+use Illuminate\Validation\Rule;
 
 class ListSocialMgmtRequest extends FormRequest
 {
@@ -32,10 +32,10 @@ class ListSocialMgmtRequest extends FormRequest
             'slug' => ['nullable', 'string', 'min:'.CommonVal::MIN_VARCHAR, 'max:50'],
             'link' => ['nullable', 'string', 'min:'.CommonVal::MIN_VARCHAR, 'max:255'],
             'image' => ['nullable', 'string', 'min:'.CommonVal::MIN_VARCHAR, 'max:100'],
-            'status' => ['nullable', new Enum(StatusEnum::class)],
-            'is_display' => ['nullable', new Enum(IsActive::class)],
+            'status' => ['nullable', Rule::enum(StatusEnum::class)],
+            'is_display' => ['nullable', Rule::enum(IsActive::class)],
             'rank_order' => ['nullable', 'integer', 'min:'.CommonVal::MIN_INTEGER, 'max:'.CommonVal::MAX_INTEGER],
-            'is_delete' => ['nullable', new Enum(IsDelete::class)],
+            'is_delete' => ['nullable', Rule::enum(IsDelete::class)],
             'from_date' => [
                 'nullable',
                 'date_format:'.CommonVal::DATE_FORMAT,

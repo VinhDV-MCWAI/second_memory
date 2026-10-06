@@ -2,6 +2,8 @@
 
 namespace App\Models\Management;
 
+use App\Enums\Gender;
+use App\Enums\UserStatus;
 use App\Models\History\Management\UserMgmtHist;
 use App\Traits\HasHistory;
 use App\Traits\HasSoftDelete;
@@ -62,8 +64,8 @@ class UserMgmt extends Model
             'address' => 'string',
             'phone_number' => 'string',
             'birth' => 'datetime',
-            'gender' => 'integer',
-            'status' => 'integer',
+            'gender' => Gender::class,
+            'status' => UserStatus::class,
             'is_active' => 'boolean',
             'avatar' => 'string',
             'email_verified_at' => 'datetime',

@@ -6,7 +6,7 @@ use App\Constants\MediaConst;
 use App\Enums\IsDelete;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rules\Enum;
+use Illuminate\Validation\Rule;
 
 class StoreMediaMgmtRequest extends FormRequest
 {
@@ -51,7 +51,7 @@ class StoreMediaMgmtRequest extends FormRequest
             // Common fields
             'parent_path' => ['nullable', 'string', 'max:1000'],
             'workspace_id' => ['nullable', 'integer'],
-            'is_delete' => ['nullable', new Enum(IsDelete::class)],
+            'is_delete' => ['nullable', Rule::enum(IsDelete::class)],
         ];
     }
 

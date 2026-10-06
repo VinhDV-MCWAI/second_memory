@@ -20,7 +20,7 @@ class CategoryMgmtResource extends JsonResource
             'name' => (string) $this->name,
             'slug' => (string) $this->slug,
             'description' => (string) $this->description,
-            'status' => (string) $this->status,
+            'status' => (string) $this->status?->value,
             'is_display' => (bool) $this->is_display,
             'rank_order' => (string) $this->rank_order,
             'layout_structure' => $this->layout_structure,

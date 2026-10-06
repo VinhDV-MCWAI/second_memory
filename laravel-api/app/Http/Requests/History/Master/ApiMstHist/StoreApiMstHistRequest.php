@@ -9,7 +9,6 @@ use App\Models\Master\FeatureMst;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
-use Illuminate\Validation\Rules\Enum;
 
 class StoreApiMstHistRequest extends FormRequest
 {
@@ -33,7 +32,7 @@ class StoreApiMstHistRequest extends FormRequest
             'type' => [],
             'name' => ['string', 'min:'.CommonVal::MIN_VARCHAR, 'max:50'],
             'path' => ['string', 'min:'.CommonVal::MIN_VARCHAR, 'max:100'],
-            'is_active' => [new Enum(IsActive::class)],
+            'is_active' => [Rule::enum(IsActive::class)],
             'feature_mst_id' => ['required', 'integer', 'min:'.CommonVal::MIN_INTEGER, 'max:'.CommonVal::MAX_INTEGER, Rule::exists(FeatureMst::class, 'id')],
             'action' => ['required'],
             'author_id' => ['required', 'integer', 'min:'.CommonVal::MIN_INTEGER, 'max:'.CommonVal::MAX_INTEGER],

@@ -21,7 +21,7 @@ class SocialMgmtResource extends JsonResource
             'slug' => (string) $this->slug,
             'link' => (string) $this->link,
             'image' => (string) $this->image,
-            'status' => (int) $this->status,
+            'status' => (int) $this->status?->value,
             'is_display' => (bool) $this->is_display,
             'rank_order' => (int) $this->rank_order,
             'is_delete' => (bool) $this->is_delete,

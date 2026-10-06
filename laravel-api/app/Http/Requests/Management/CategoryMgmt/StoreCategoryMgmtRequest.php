@@ -10,7 +10,6 @@ use App\Rules\LayoutStructureRule;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
-use Illuminate\Validation\Rules\Enum;
 
 class StoreCategoryMgmtRequest extends FormRequest
 {
@@ -33,10 +32,10 @@ class StoreCategoryMgmtRequest extends FormRequest
             'name' => ['required', 'string', 'min:'.CommonVal::MIN_VARCHAR, 'max:50'],
             'slug' => ['required', 'string', 'min:'.CommonVal::MIN_VARCHAR, 'max:50', Rule::unique('category_mgmt', 'slug')->where(fn ($query) => $query->where('is_delete', IsDelete::FALSE))],
             'description' => ['nullable', 'string', 'min:'.CommonVal::MIN_VARCHAR, 'max:150'],
-            'status' => ['required', new Enum(StatusEnum::class)],
-            'is_display' => ['required', new Enum(IsActive::class)],
+            'status' => ['required', Rule::enum(StatusEnum::class)],
+            'is_display' => ['required', Rule::enum(IsActive::class)],
             'rank_order' => ['required'],
-            'is_delete' => ['required', new Enum(IsDelete::class)],
+            'is_delete' => ['required', Rule::enum(IsDelete::class)],
             'layout_structure' => ['nullable', new LayoutStructureRule(100, 'entry_mgmt_id')],
         ];
     }

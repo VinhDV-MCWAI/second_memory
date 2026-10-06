@@ -8,7 +8,6 @@ use App\Models\Master\RoleMst;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
-use Illuminate\Validation\Rules\Enum;
 
 class StoreRoleMstHistRequest extends FormRequest
 {
@@ -31,7 +30,7 @@ class StoreRoleMstHistRequest extends FormRequest
             'role_mst_id' => ['required', 'integer', 'min:'.CommonVal::MIN_INTEGER, 'max:'.CommonVal::MAX_INTEGER, Rule::exists(RoleMst::class, 'id')],
             'name' => ['string', 'min:'.CommonVal::MIN_VARCHAR, 'max:30'],
             'permission' => ['string', 'min:'.CommonVal::MIN_VARCHAR, 'max:50'],
-            'is_active' => [new Enum(IsActive::class)],
+            'is_active' => [Rule::enum(IsActive::class)],
             'action' => ['required'],
             'author_id' => ['required', 'integer', 'min:'.CommonVal::MIN_INTEGER, 'max:'.CommonVal::MAX_INTEGER],
         ];

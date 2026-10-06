@@ -8,7 +8,7 @@ use App\Enums\IsActive;
 use App\Enums\UserStatus;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rules\Enum;
+use Illuminate\Validation\Rule;
 
 class ListUserMgmtHistRequest extends FormRequest
 {
@@ -35,9 +35,9 @@ class ListUserMgmtHistRequest extends FormRequest
             'address' => ['nullable', 'string', 'min:'.CommonVal::MIN_VARCHAR, 'max:50'],
             'phone_number' => ['nullable', 'string', 'min:'.CommonVal::MIN_VARCHAR, 'max:'.CommonVal::MAX_PHONE_NUMBER],
             'birth' => ['nullable', 'date_format:'.CommonVal::DATE_FORMAT, 'after_or_equal:'.CommonVal::MIN_DATE, 'before_or_equal:'.CommonVal::MAX_DATE],
-            'gender' => ['nullable', new Enum(Gender::class)],
-            'status' => ['nullable', new Enum(UserStatus::class)],
-            'is_active' => ['nullable', new Enum(IsActive::class)],
+            'gender' => ['nullable', Rule::enum(Gender::class)],
+            'status' => ['nullable', Rule::enum(UserStatus::class)],
+            'is_active' => ['nullable', Rule::enum(IsActive::class)],
             'avatar' => ['nullable', 'string', 'min:'.CommonVal::MIN_VARCHAR, 'max:30'],
             'action' => ['nullable'],
             'author_id' => ['nullable', 'integer', 'min:'.CommonVal::MIN_INTEGER, 'max:'.CommonVal::MAX_INTEGER],

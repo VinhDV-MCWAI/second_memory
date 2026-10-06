@@ -9,7 +9,6 @@ use App\Models\Management\SliderMgmt;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
-use Illuminate\Validation\Rules\Enum;
 
 class UpdateSliderMgmtRequest extends FormRequest
 {
@@ -34,8 +33,8 @@ class UpdateSliderMgmtRequest extends FormRequest
             'slug' => ['required', 'string', 'min:'.CommonVal::MIN_VARCHAR, 'max:50'],
             'link' => ['required', 'string', 'min:'.CommonVal::MIN_VARCHAR, 'max:100'],
             'image' => ['required', 'string', 'min:'.CommonVal::MIN_VARCHAR, 'max:100'],
-            'status' => ['required', new Enum(StatusEnum::class)],
-            'is_delete' => ['required', new Enum(IsDelete::class)],
+            'status' => ['required', Rule::enum(StatusEnum::class)],
+            'is_delete' => ['required', Rule::enum(IsDelete::class)],
         ];
     }
 

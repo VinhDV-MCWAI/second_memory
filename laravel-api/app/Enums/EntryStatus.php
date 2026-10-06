@@ -34,23 +34,13 @@ enum EntryStatus: int
      */
     case SUSPENDED = 3;
 
-    public static function getLabel(self|int $value): string
+    public function label(): string
     {
-        if (is_int($value)) {
-            $value = self::tryFrom($value);
-        }
-
-        return match ($value) {
+        return match ($this) {
             self::INACTIVE => 'inactive',
             self::ACTIVE => 'active',
             self::WAITING => 'waiting',
             self::SUSPENDED => 'suspended',
-            default => '',
         };
-    }
-
-    public function label(): string
-    {
-        return self::getLabel($this);
     }
 }

@@ -21,22 +21,12 @@ enum SocialStatus: int
      */
     case PENDING = 2;
 
-    public static function getLabel(self|int $value): string
+    public function label(): string
     {
-        if (is_int($value)) {
-            $value = self::tryFrom($value);
-        }
-
-        return match ($value) {
+        return match ($this) {
             self::INACTIVE => 'Inactive',
             self::ACTIVE => 'Active',
             self::PENDING => 'Pending',
-            default => '',
         };
-    }
-
-    public function label(): string
-    {
-        return self::getLabel($this);
     }
 }

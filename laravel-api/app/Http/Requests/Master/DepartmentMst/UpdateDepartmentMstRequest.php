@@ -7,7 +7,6 @@ use App\Enums\DepartmentStatus;
 use App\Models\Master\DepartmentMst;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
-use Illuminate\Validation\Rules\Enum;
 
 class UpdateDepartmentMstRequest extends FormRequest
 {
@@ -18,7 +17,7 @@ class UpdateDepartmentMstRequest extends FormRequest
             'id' => ['required', 'integer', 'min:1', Rule::exists(DepartmentMst::class, 'id')],
             'code' => ['required', 'string', 'min:'.CommonVal::MIN_VARCHAR, 'max:50'],
             'name' => ['required', 'string', 'min:'.CommonVal::MIN_VARCHAR, 'max:50'],
-            'status' => ['required', new Enum(DepartmentStatus::class)],
+            'status' => ['required', Rule::enum(DepartmentStatus::class)],
         ];
     }
 

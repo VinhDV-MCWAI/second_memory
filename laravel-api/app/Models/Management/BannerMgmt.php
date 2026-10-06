@@ -2,6 +2,7 @@
 
 namespace App\Models\Management;
 
+use App\Enums\StatusEnum;
 use App\Models\History\Management\BannerMgmtHist;
 use App\Traits\HasHistory;
 use App\Traits\HasSoftDelete;
@@ -62,7 +63,7 @@ class BannerMgmt extends Model
             'description' => 'string',
             'position' => 'string',
             'position' => 'string',
-            'status' => 'integer',
+            'status' => StatusEnum::class,
             'is_delete' => 'boolean',
             'media_id' => 'integer',
             'created_at' => 'datetime',

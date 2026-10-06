@@ -32,22 +32,12 @@ enum Gender: int
      */
     case OTHER = 3;
 
-    public static function getLabel(self|int $value): string
+    public function label(): string
     {
-        if (is_int($value)) {
-            $value = self::tryFrom($value);
-        }
-
-        return match ($value) {
+        return match ($this) {
             self::MALE => 'male',
             self::FEMALE => 'female',
             self::OTHER => 'other',
-            default => '',
         };
-    }
-
-    public function label(): string
-    {
-        return self::getLabel($this);
     }
 }

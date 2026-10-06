@@ -11,7 +11,6 @@ use App\Models\Management\UserMgmt;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
-use Illuminate\Validation\Rules\Enum;
 
 class StoreUserMgmtHistRequest extends FormRequest
 {
@@ -40,9 +39,9 @@ class StoreUserMgmtHistRequest extends FormRequest
             'address' => ['string', 'min:'.CommonVal::MIN_VARCHAR, 'max:50'],
             'phone_number' => ['string', 'min:'.CommonVal::MIN_VARCHAR, 'max:'.CommonVal::MAX_PHONE_NUMBER],
             'birth' => ['date_format:'.CommonVal::DATE_FORMAT, 'after_or_equal:'.CommonVal::MIN_DATE, 'before_or_equal:'.CommonVal::MAX_DATE],
-            'gender' => [new Enum(Gender::class)],
-            'status' => [new Enum(UserStatus::class)],
-            'is_active' => [new Enum(IsActive::class)],
+            'gender' => [Rule::enum(Gender::class)],
+            'status' => [Rule::enum(UserStatus::class)],
+            'is_active' => [Rule::enum(IsActive::class)],
             'avatar' => ['string', 'min:'.CommonVal::MIN_VARCHAR, 'max:30'],
             'action' => ['required'],
             'author_id' => ['required', 'integer', 'min:'.CommonVal::MIN_INTEGER, 'max:'.CommonVal::MAX_INTEGER],

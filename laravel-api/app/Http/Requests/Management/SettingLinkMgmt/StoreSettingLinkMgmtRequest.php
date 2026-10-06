@@ -6,7 +6,7 @@ use App\Constants\CommonVal;
 use App\Enums\IsDelete;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rules\Enum;
+use Illuminate\Validation\Rule;
 
 class StoreSettingLinkMgmtRequest extends FormRequest
 {
@@ -28,7 +28,7 @@ class StoreSettingLinkMgmtRequest extends FormRequest
         return [
             'key' => ['required', 'string', 'min:'.CommonVal::MIN_VARCHAR, 'max:30'],
             'value' => ['required', 'string', 'min:'.CommonVal::MIN_VARCHAR, 'max:100'],
-            'is_delete' => ['required', new Enum(IsDelete::class)],
+            'is_delete' => ['required', Rule::enum(IsDelete::class)],
         ];
     }
 

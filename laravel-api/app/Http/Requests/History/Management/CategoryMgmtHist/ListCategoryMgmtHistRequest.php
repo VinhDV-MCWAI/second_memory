@@ -7,7 +7,7 @@ use App\Enums\IsActive;
 use App\Enums\StatusEnum;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rules\Enum;
+use Illuminate\Validation\Rule;
 
 class ListCategoryMgmtHistRequest extends FormRequest
 {
@@ -32,8 +32,8 @@ class ListCategoryMgmtHistRequest extends FormRequest
             'name' => ['nullable', 'string', 'min:'.CommonVal::MIN_VARCHAR, 'max:50'],
             'slug' => ['nullable', 'string', 'min:'.CommonVal::MIN_VARCHAR, 'max:50'],
             'description' => ['nullable', 'string', 'min:'.CommonVal::MIN_VARCHAR, 'max:150'],
-            'status' => ['nullable', new Enum(StatusEnum::class)],
-            'is_display' => ['nullable', new Enum(IsActive::class)],
+            'status' => ['nullable', Rule::enum(StatusEnum::class)],
+            'is_display' => ['nullable', Rule::enum(IsActive::class)],
             'rank_order' => ['nullable'],
             'action' => ['nullable'],
             'author_id' => ['nullable', 'integer', 'min:'.CommonVal::MIN_INTEGER, 'max:'.CommonVal::MAX_INTEGER],

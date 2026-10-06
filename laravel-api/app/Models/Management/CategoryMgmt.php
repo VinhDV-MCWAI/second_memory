@@ -2,6 +2,7 @@
 
 namespace App\Models\Management;
 
+use App\Enums\StatusEnum;
 use App\Models\History\Management\CategoryMgmtHist;
 use App\Traits\HasHistory;
 use App\Traits\HasSoftDelete;
@@ -50,7 +51,7 @@ class CategoryMgmt extends Model
             'name' => 'string',
             'slug' => 'string',
             'description' => 'string',
-            'status' => 'integer',
+            'status' => StatusEnum::class,
             'is_display' => 'boolean',
             'rank_order' => 'integer',
             'is_delete' => 'boolean',

@@ -9,7 +9,6 @@ use App\Models\Management\EntryMgmt;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
-use Illuminate\Validation\Rules\Enum;
 
 class StoreEntryMgmtHistRequest extends FormRequest
 {
@@ -33,8 +32,8 @@ class StoreEntryMgmtHistRequest extends FormRequest
             'parent_id' => ['integer', 'min:'.CommonVal::MIN_INTEGER, 'max:'.CommonVal::MAX_INTEGER],
             'name' => ['string', 'min:'.CommonVal::MIN_VARCHAR, 'max:50'],
             'slug' => ['string', 'min:'.CommonVal::MIN_VARCHAR, 'max:50'],
-            'status' => [new Enum(StatusEnum::class)],
-            'is_display' => [new Enum(IsActive::class)],
+            'status' => [Rule::enum(StatusEnum::class)],
+            'is_display' => [Rule::enum(IsActive::class)],
             'rank_order' => [],
             'action' => ['required'],
             'author_id' => ['required', 'integer', 'min:'.CommonVal::MIN_INTEGER, 'max:'.CommonVal::MAX_INTEGER],

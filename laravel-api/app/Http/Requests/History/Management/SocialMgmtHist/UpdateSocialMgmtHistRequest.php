@@ -10,7 +10,6 @@ use App\Models\Management\SocialMgmt;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
-use Illuminate\Validation\Rules\Enum;
 
 class UpdateSocialMgmtHistRequest extends FormRequest
 {
@@ -36,8 +35,8 @@ class UpdateSocialMgmtHistRequest extends FormRequest
             'slug' => ['string', 'min:'.CommonVal::MIN_VARCHAR, 'max:50'],
             'link' => ['string', 'min:'.CommonVal::MIN_VARCHAR, 'max:255'],
             'image' => ['string', 'min:'.CommonVal::MIN_VARCHAR, 'max:100'],
-            'status' => [new Enum(StatusEnum::class)],
-            'is_display' => [new Enum(IsActive::class)],
+            'status' => [Rule::enum(StatusEnum::class)],
+            'is_display' => [Rule::enum(IsActive::class)],
             'rank_order' => ['integer', 'min:'.CommonVal::MIN_INTEGER, 'max:'.CommonVal::MAX_INTEGER],
             'action' => ['required', 'integer', 'min:'.CommonVal::MIN_INTEGER, 'max:'.CommonVal::MAX_INTEGER],
             'author_id' => ['required', 'integer', 'min:'.CommonVal::MIN_INTEGER, 'max:'.CommonVal::MAX_INTEGER],

@@ -8,7 +8,7 @@ use App\Enums\IsDelete;
 use App\Enums\StatusEnum;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rules\Enum;
+use Illuminate\Validation\Rule;
 
 class ListEntryMgmtRequest extends FormRequest
 {
@@ -30,10 +30,10 @@ class ListEntryMgmtRequest extends FormRequest
         return [
             'name' => ['nullable', 'string', 'min:'.CommonVal::MIN_VARCHAR, 'max:50'],
             'slug' => ['nullable', 'string', 'min:'.CommonVal::MIN_VARCHAR, 'max:50'],
-            'status' => ['nullable', new Enum(StatusEnum::class)],
-            'is_display' => ['nullable', new Enum(IsActive::class)],
+            'status' => ['nullable', Rule::enum(StatusEnum::class)],
+            'is_display' => ['nullable', Rule::enum(IsActive::class)],
             'rank_order' => ['nullable'],
-            'is_delete' => ['nullable', new Enum(IsDelete::class)],
+            'is_delete' => ['nullable', Rule::enum(IsDelete::class)],
             'from_date' => [
                 'nullable',
                 'date_format:'.CommonVal::DATE_FORMAT,

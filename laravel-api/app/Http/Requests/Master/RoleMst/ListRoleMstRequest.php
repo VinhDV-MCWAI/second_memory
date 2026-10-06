@@ -7,7 +7,7 @@ use App\Enums\IsActive;
 use App\Enums\IsDelete;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rules\Enum;
+use Illuminate\Validation\Rule;
 
 class ListRoleMstRequest extends FormRequest
 {
@@ -29,8 +29,8 @@ class ListRoleMstRequest extends FormRequest
         return [
             'name' => ['nullable', 'string', 'min:'.CommonVal::MIN_VARCHAR, 'max:30'],
             'permission' => ['nullable', 'string', 'min:'.CommonVal::MIN_VARCHAR, 'max:50'],
-            'is_active' => ['nullable', new Enum(IsActive::class)],
-            'is_delete' => ['nullable', new Enum(IsDelete::class)],
+            'is_active' => ['nullable', Rule::enum(IsActive::class)],
+            'is_delete' => ['nullable', Rule::enum(IsDelete::class)],
             'from_date' => [
                 'nullable',
                 'date_format:'.CommonVal::DATE_FORMAT,

@@ -6,7 +6,7 @@ use App\Constants\CommonVal;
 use App\Enums\IsDelete;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rules\Enum;
+use Illuminate\Validation\Rule;
 
 class ListPolicyDepartmentMstRequest extends FormRequest
 {
@@ -28,7 +28,7 @@ class ListPolicyDepartmentMstRequest extends FormRequest
         return [
             'table_name' => ['nullable', 'string', 'min:'.CommonVal::MIN_VARCHAR, 'max:20'],
             'row_id' => ['nullable', 'integer', 'min:'.CommonVal::MIN_INTEGER, 'max:'.CommonVal::MAX_INTEGER],
-            'is_delete' => ['nullable', new Enum(IsDelete::class)],
+            'is_delete' => ['nullable', Rule::enum(IsDelete::class)],
             'from_date' => [
                 'nullable',
                 'date_format:'.CommonVal::DATE_FORMAT,

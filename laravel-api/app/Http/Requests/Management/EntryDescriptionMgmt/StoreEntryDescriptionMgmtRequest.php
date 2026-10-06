@@ -7,7 +7,7 @@ use App\Enums\IsDelete;
 use App\Enums\StatusEnum;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rules\Enum;
+use Illuminate\Validation\Rule;
 
 class StoreEntryDescriptionMgmtRequest extends FormRequest
 {
@@ -30,10 +30,10 @@ class StoreEntryDescriptionMgmtRequest extends FormRequest
             'title' => ['required', 'string', 'min:'.CommonVal::MIN_VARCHAR, 'max:100'],
             'summary' => ['required', 'string', 'min:'.CommonVal::MIN_VARCHAR, 'max:255'],
             'article' => ['required', 'string', 'min:'.CommonVal::MIN_VARCHAR, 'max:'.CommonVal::MAX_TEXT],
-            'status' => ['required', new Enum(StatusEnum::class)],
+            'status' => ['required', Rule::enum(StatusEnum::class)],
             'is_display' => ['required', 'boolean'],
             'rank_order' => ['required', 'integer'],
-            'is_delete' => ['required', new Enum(IsDelete::class)],
+            'is_delete' => ['required', Rule::enum(IsDelete::class)],
         ];
     }
 

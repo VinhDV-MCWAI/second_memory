@@ -6,7 +6,7 @@ use App\Constants\CommonVal;
 use App\Enums\StatusEnum;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rules\Enum;
+use Illuminate\Validation\Rule;
 
 class ListBannerMgmtHistRequest extends FormRequest
 {
@@ -33,7 +33,7 @@ class ListBannerMgmtHistRequest extends FormRequest
             'link' => ['nullable', 'string', 'min:'.CommonVal::MIN_VARCHAR, 'max:100'],
             'image' => ['nullable', 'string', 'min:'.CommonVal::MIN_VARCHAR, 'max:100'],
             'position' => ['nullable', 'string', 'min:'.CommonVal::MIN_VARCHAR, 'max:50'],
-            'status' => ['nullable', new Enum(StatusEnum::class)],
+            'status' => ['nullable', Rule::enum(StatusEnum::class)],
             'action' => ['nullable'],
             'author_id' => ['nullable', 'integer', 'min:'.CommonVal::MIN_INTEGER, 'max:'.CommonVal::MAX_INTEGER],
             'from_date' => [

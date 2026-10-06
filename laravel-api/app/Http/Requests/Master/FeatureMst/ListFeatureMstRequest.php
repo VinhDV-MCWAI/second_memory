@@ -7,7 +7,7 @@ use App\Enums\IsDelete;
 use App\Enums\StatusEnum;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rules\Enum;
+use Illuminate\Validation\Rule;
 
 class ListFeatureMstRequest extends FormRequest
 {
@@ -30,8 +30,8 @@ class ListFeatureMstRequest extends FormRequest
             'name' => ['nullable', 'string', 'min:'.CommonVal::MIN_VARCHAR, 'max:50'],
             'group_name' => ['nullable', 'string', 'min:'.CommonVal::MIN_VARCHAR, 'max:50'],
             'description' => ['nullable', 'string', 'min:'.CommonVal::MIN_VARCHAR, 'max:100'],
-            'status' => ['nullable', new Enum(StatusEnum::class)],
-            'is_delete' => ['nullable', new Enum(IsDelete::class)],
+            'status' => ['nullable', Rule::enum(StatusEnum::class)],
+            'is_delete' => ['nullable', Rule::enum(IsDelete::class)],
             'from_date' => [
                 'nullable',
                 'date_format:'.CommonVal::DATE_FORMAT,

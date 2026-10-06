@@ -19,7 +19,7 @@ class EntryMgmtResource extends JsonResource
             'id' => (int) $this->id,
             'name' => (string) $this->name,
             'slug' => (string) $this->slug,
-            'status' => (string) $this->status,
+            'status' => (string) $this->status?->value,
             'is_display' => (bool) $this->is_display,
             'rank_order' => (string) $this->rank_order,
             'layout_structure' => $this->layout_structure,

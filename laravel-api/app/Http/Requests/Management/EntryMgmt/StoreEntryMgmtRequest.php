@@ -9,7 +9,7 @@ use App\Enums\StatusEnum;
 use App\Rules\LayoutStructureRule;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rules\Enum;
+use Illuminate\Validation\Rule;
 
 class StoreEntryMgmtRequest extends FormRequest
 {
@@ -31,10 +31,10 @@ class StoreEntryMgmtRequest extends FormRequest
         return [
             'name' => ['required', 'string', 'min:'.CommonVal::MIN_VARCHAR, 'max:50'],
             'slug' => ['required', 'string', 'min:'.CommonVal::MIN_VARCHAR, 'max:50'],
-            'status' => ['required', new Enum(StatusEnum::class)],
-            'is_display' => ['required', new Enum(IsDisplay::class)],
+            'status' => ['required', Rule::enum(StatusEnum::class)],
+            'is_display' => ['required', Rule::enum(IsDisplay::class)],
             'rank_order' => ['required', 'integer', 'min:'.CommonVal::MIN_INTEGER, 'max:'.CommonVal::MAX_INTEGER],
-            'is_delete' => ['required', new Enum(IsDelete::class)],
+            'is_delete' => ['required', Rule::enum(IsDelete::class)],
             'layout_structure' => ['nullable', new LayoutStructureRule(100, 'entry_desc_id')],
         ];
     }

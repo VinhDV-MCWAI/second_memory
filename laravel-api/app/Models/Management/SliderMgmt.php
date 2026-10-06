@@ -2,6 +2,7 @@
 
 namespace App\Models\Management;
 
+use App\Enums\StatusEnum;
 use App\Models\History\Management\SliderMgmtHist;
 use App\Traits\HasHistory;
 use App\Traits\HasSoftDelete;
@@ -49,7 +50,7 @@ class SliderMgmt extends Model
             'slug' => 'string',
             'link' => 'string',
             'image' => 'string',
-            'status' => 'integer',
+            'status' => StatusEnum::class,
             'is_delete' => 'boolean',
             'created_at' => 'datetime',
             'updated_at' => 'datetime',

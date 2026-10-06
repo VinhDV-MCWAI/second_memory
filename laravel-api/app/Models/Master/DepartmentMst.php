@@ -2,6 +2,7 @@
 
 namespace App\Models\Master;
 
+use App\Enums\DepartmentStatus;
 use App\Models\History\Master\DepartmentMstHist;
 use App\Traits\HasHistory;
 use App\Traits\HasSoftDelete;
@@ -72,7 +73,7 @@ class DepartmentMst extends Model
             'id' => 'integer',
             'code' => 'string',
             'name' => 'string',
-            'status' => 'integer',
+            'status' => DepartmentStatus::class,
             'is_delete' => 'boolean',
             'created_at' => 'datetime',
             'updated_at' => 'datetime',

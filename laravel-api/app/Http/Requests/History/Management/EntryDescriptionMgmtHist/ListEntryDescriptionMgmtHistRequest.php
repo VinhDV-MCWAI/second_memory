@@ -7,7 +7,7 @@ use App\Enums\IsActive;
 use App\Enums\StatusEnum;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rules\Enum;
+use Illuminate\Validation\Rule;
 
 class ListEntryDescriptionMgmtHistRequest extends FormRequest
 {
@@ -31,8 +31,8 @@ class ListEntryDescriptionMgmtHistRequest extends FormRequest
             'title' => ['nullable', 'string', 'min:'.CommonVal::MIN_VARCHAR, 'max:100'],
             'summary' => ['nullable', 'string', 'min:'.CommonVal::MIN_VARCHAR, 'max:255'],
             'article' => ['nullable', 'string', 'min:'.CommonVal::MIN_VARCHAR, 'max:'.CommonVal::MAX_VARCHAR],
-            'status' => ['nullable', new Enum(StatusEnum::class)],
-            'is_display' => ['nullable', new Enum(IsActive::class)],
+            'status' => ['nullable', Rule::enum(StatusEnum::class)],
+            'is_display' => ['nullable', Rule::enum(IsActive::class)],
             'rank_order' => ['nullable'],
             'entry_id' => ['nullable', 'integer', 'min:'.CommonVal::MIN_INTEGER, 'max:'.CommonVal::MAX_INTEGER],
             'action' => ['nullable'],

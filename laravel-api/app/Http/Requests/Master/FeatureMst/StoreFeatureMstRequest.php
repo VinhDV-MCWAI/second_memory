@@ -7,7 +7,7 @@ use App\Enums\IsDelete;
 use App\Enums\StatusEnum;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rules\Enum;
+use Illuminate\Validation\Rule;
 
 class StoreFeatureMstRequest extends FormRequest
 {
@@ -29,8 +29,8 @@ class StoreFeatureMstRequest extends FormRequest
         return [
             'name' => ['required', 'string', 'min:'.CommonVal::MIN_VARCHAR, 'max:50'],
             'group_name' => ['required', 'string', 'min:'.CommonVal::MIN_VARCHAR, 'max:50'],
-            'status' => ['required', new Enum(StatusEnum::class)],
-            'is_delete' => ['required', new Enum(IsDelete::class)],
+            'status' => ['required', Rule::enum(StatusEnum::class)],
+            'is_delete' => ['required', Rule::enum(IsDelete::class)],
         ];
     }
 

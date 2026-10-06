@@ -2,6 +2,7 @@
 
 namespace App\Models\Management;
 
+use App\Enums\StatusEnum;
 use App\Models\History\Management\SocialMgmtHist;
 use App\Traits\HasHistory;
 use App\Traits\HasSoftDelete;
@@ -51,7 +52,7 @@ class SocialMgmt extends Model
             'slug' => 'string',
             'link' => 'string',
             'image' => 'string',
-            'status' => 'integer',
+            'status' => StatusEnum::class,
             'is_display' => 'boolean',
             'rank_order' => 'integer',
             'is_delete' => 'boolean',

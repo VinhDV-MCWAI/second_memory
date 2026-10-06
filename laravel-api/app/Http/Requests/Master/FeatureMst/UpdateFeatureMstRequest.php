@@ -8,7 +8,6 @@ use App\Models\Master\FeatureMst;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
-use Illuminate\Validation\Rules\Enum;
 
 class UpdateFeatureMstRequest extends FormRequest
 {
@@ -31,7 +30,7 @@ class UpdateFeatureMstRequest extends FormRequest
             'id' => ['required', 'integer', 'min:1', Rule::exists(FeatureMst::class, 'id')],
             'name' => ['required', 'string', 'min:'.CommonVal::MIN_VARCHAR, 'max:50'],
             'group_name' => ['required', 'string', 'min:'.CommonVal::MIN_VARCHAR, 'max:50'],
-            'status' => ['required', new Enum(StatusEnum::class)],
+            'status' => ['required', Rule::enum(StatusEnum::class)],
         ];
     }
 

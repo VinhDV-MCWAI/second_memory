@@ -9,7 +9,6 @@ use App\Models\Management\EntryDescriptionMgmt;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
-use Illuminate\Validation\Rules\Enum;
 
 class StoreEntryDescriptionMgmtHistRequest extends FormRequest
 {
@@ -34,8 +33,8 @@ class StoreEntryDescriptionMgmtHistRequest extends FormRequest
             'title' => ['string', 'min:'.CommonVal::MIN_VARCHAR, 'max:100'],
             'summary' => ['string', 'min:'.CommonVal::MIN_VARCHAR, 'max:255'],
             'article' => ['string', 'min:'.CommonVal::MIN_VARCHAR, 'max:'.CommonVal::MAX_VARCHAR],
-            'status' => [new Enum(StatusEnum::class)],
-            'is_display' => [new Enum(IsActive::class)],
+            'status' => [Rule::enum(StatusEnum::class)],
+            'is_display' => [Rule::enum(IsActive::class)],
             'rank_order' => [],
             'entry_id' => ['integer', 'min:'.CommonVal::MIN_INTEGER, 'max:'.CommonVal::MAX_INTEGER],
             'action' => ['required'],

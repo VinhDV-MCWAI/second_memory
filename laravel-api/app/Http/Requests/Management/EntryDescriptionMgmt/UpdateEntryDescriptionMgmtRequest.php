@@ -9,7 +9,6 @@ use App\Models\Management\EntryDescriptionMgmt;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
-use Illuminate\Validation\Rules\Enum;
 
 class UpdateEntryDescriptionMgmtRequest extends FormRequest
 {
@@ -33,10 +32,10 @@ class UpdateEntryDescriptionMgmtRequest extends FormRequest
             'title' => ['required', 'string', 'min:'.CommonVal::MIN_VARCHAR, 'max:100'],
             'summary' => ['required', 'string', 'min:'.CommonVal::MIN_VARCHAR, 'max:255'],
             'article' => ['required', 'string', 'min:'.CommonVal::MIN_VARCHAR, 'max:'.CommonVal::MAX_TEXT],
-            'status' => ['required', new Enum(StatusEnum::class)],
+            'status' => ['required', Rule::enum(StatusEnum::class)],
             'is_display' => ['required', 'boolean'],
             'rank_order' => ['required', 'integer'],
-            'is_delete' => ['nullable', new Enum(IsDelete::class)],
+            'is_delete' => ['nullable', Rule::enum(IsDelete::class)],
         ];
     }
 

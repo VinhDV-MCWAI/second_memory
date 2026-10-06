@@ -7,7 +7,7 @@ use App\Enums\IsDelete;
 use App\Enums\StatusEnum;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rules\Enum;
+use Illuminate\Validation\Rule;
 
 class StoreSliderMgmtRequest extends FormRequest
 {
@@ -31,8 +31,8 @@ class StoreSliderMgmtRequest extends FormRequest
             'slug' => ['required', 'string', 'min:'.CommonVal::MIN_VARCHAR, 'max:50'],
             'link' => ['required', 'string', 'min:'.CommonVal::MIN_VARCHAR, 'max:100'],
             'image' => ['required', 'string', 'min:'.CommonVal::MIN_VARCHAR, 'max:100'],
-            'status' => ['required', new Enum(StatusEnum::class)],
-            'is_delete' => ['required', new Enum(IsDelete::class)],
+            'status' => ['required', Rule::enum(StatusEnum::class)],
+            'is_delete' => ['required', Rule::enum(IsDelete::class)],
         ];
     }
 

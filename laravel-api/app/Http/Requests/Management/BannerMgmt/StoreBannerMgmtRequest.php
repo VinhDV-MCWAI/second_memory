@@ -8,7 +8,7 @@ use App\Enums\StatusEnum;
 use App\Rules\IsImageMedia;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rules\Enum;
+use Illuminate\Validation\Rule;
 
 class StoreBannerMgmtRequest extends FormRequest
 {
@@ -32,8 +32,8 @@ class StoreBannerMgmtRequest extends FormRequest
             'slug' => ['required', 'string', 'min:'.CommonVal::MIN_VARCHAR, 'max:50'],
             'description' => ['required', 'string', 'min:'.CommonVal::MIN_VARCHAR, 'max:255'],
             'position' => ['required', 'string', 'min:'.CommonVal::MIN_VARCHAR, 'max:50'],
-            'status' => ['required', new Enum(StatusEnum::class)],
-            'is_delete' => ['required', new Enum(IsDelete::class)],
+            'status' => ['required', Rule::enum(StatusEnum::class)],
+            'is_delete' => ['required', Rule::enum(IsDelete::class)],
             'media_id' => ['nullable', 'integer', 'exists:media_mgmt,id', new IsImageMedia],
         ];
     }

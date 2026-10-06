@@ -27,22 +27,12 @@ enum CategoryStatus: int
      */
     case ARCHIVED = 2;
 
-    public static function getLabel(self|int $value): string
+    public function label(): string
     {
-        if (is_int($value)) {
-            $value = self::tryFrom($value);
-        }
-
-        return match ($value) {
+        return match ($this) {
             self::INACTIVE => 'inactive',
             self::ACTIVE => 'active',
             self::ARCHIVED => 'archived',
-            default => '',
         };
-    }
-
-    public function label(): string
-    {
-        return self::getLabel($this);
     }
 }

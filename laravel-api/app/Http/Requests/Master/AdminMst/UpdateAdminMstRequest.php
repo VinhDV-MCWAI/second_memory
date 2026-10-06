@@ -11,7 +11,6 @@ use App\Models\Master\AdminMst;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
-use Illuminate\Validation\Rules\Enum;
 
 class UpdateAdminMstRequest extends FormRequest
 {
@@ -50,12 +49,12 @@ class UpdateAdminMstRequest extends FormRequest
             'address' => ['nullable', 'string', 'min:'.CommonVal::MIN_VARCHAR, 'max:100'],
             'phone_number' => ['nullable', 'string', 'min:'.CommonVal::MIN_VARCHAR, 'max:'.CommonVal::MAX_PHONE_NUMBER],
             'birth' => ['nullable', 'date_format:'.CommonVal::DATE_FORMAT, 'after_or_equal:'.CommonVal::MIN_DATE, 'before_or_equal:'.CommonVal::MAX_DATE],
-            'gender' => ['required', new Enum(Gender::class)],
-            'status' => ['required', new Enum(AdminStatus::class)],
-            'is_active' => ['required', new Enum(IsActive::class)],
+            'gender' => ['required', Rule::enum(Gender::class)],
+            'status' => ['required', Rule::enum(AdminStatus::class)],
+            'is_active' => ['required', Rule::enum(IsActive::class)],
             'avatar' => ['nullable', 'string', 'min:'.CommonVal::MIN_VARCHAR, 'max:30'],
-            // 'is_delete' => ['required', new Enum(IsDelete::class),], // Removed required check for update
-            'is_delete' => ['nullable', new Enum(IsDelete::class)],
+            // 'is_delete' => ['required', Rule::enum(IsDelete::class),], // Removed required check for update
+            'is_delete' => ['nullable', Rule::enum(IsDelete::class)],
         ];
     }
 

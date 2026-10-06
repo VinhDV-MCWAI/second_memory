@@ -354,7 +354,7 @@ class UpdateSocialMgmtTest extends TestCase
             'slug' => $social->slug,
             'link' => $social->link,
             'image' => $social->image,
-            'status' => $social->status,
+            'status' => $social->status->value,
             'is_display' => $social->is_display,
             'rank_order' => $social->rank_order,
             'is_delete' => $social->is_delete,

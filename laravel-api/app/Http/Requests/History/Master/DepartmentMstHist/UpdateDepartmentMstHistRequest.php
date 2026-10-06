@@ -9,7 +9,6 @@ use App\Models\Master\DepartmentMst;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
-use Illuminate\Validation\Rules\Enum;
 
 class UpdateDepartmentMstHistRequest extends FormRequest
 {
@@ -33,7 +32,7 @@ class UpdateDepartmentMstHistRequest extends FormRequest
             'department_mst_id' => ['required', 'integer', 'min:'.CommonVal::MIN_INTEGER, 'max:'.CommonVal::MAX_INTEGER, Rule::exists(DepartmentMst::class, 'id')],
             'code' => ['string', 'min:'.CommonVal::MIN_VARCHAR, 'max:50'],
             'name' => ['string', 'min:'.CommonVal::MIN_VARCHAR, 'max:50'],
-            'status' => [new Enum(StatusEnum::class)],
+            'status' => [Rule::enum(StatusEnum::class)],
             'action' => ['required'],
             'author_id' => ['required', 'integer', 'min:'.CommonVal::MIN_INTEGER, 'max:'.CommonVal::MAX_INTEGER],
         ];

@@ -6,7 +6,7 @@ use App\Constants\CommonVal;
 use App\Enums\IsDelete;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rules\Enum;
+use Illuminate\Validation\Rule;
 
 class ListSettingLinkMgmtRequest extends FormRequest
 {
@@ -28,7 +28,7 @@ class ListSettingLinkMgmtRequest extends FormRequest
         return [
             'key' => ['nullable', 'string', 'min:'.CommonVal::MIN_VARCHAR, 'max:30'],
             'value' => ['nullable', 'string', 'min:'.CommonVal::MIN_VARCHAR, 'max:100'],
-            'is_delete' => ['nullable', new Enum(IsDelete::class)],
+            'is_delete' => ['nullable', Rule::enum(IsDelete::class)],
             'from_date' => [
                 'nullable',
                 'date_format:'.CommonVal::DATE_FORMAT,

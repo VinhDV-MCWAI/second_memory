@@ -20,7 +20,7 @@ class EntryDescriptionMgmtResource extends JsonResource
             'title' => (string) $this->title,
             'summary' => (string) $this->summary,
             'article' => json_encode($this->article, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES), // Convert array to JSON string for frontend
-            'status' => (string) $this->status,
+            'status' => (string) $this->status?->value,
             'is_display' => (bool) $this->is_display,
             'rank_order' => (string) $this->rank_order,
             'is_delete' => (bool) $this->is_delete,

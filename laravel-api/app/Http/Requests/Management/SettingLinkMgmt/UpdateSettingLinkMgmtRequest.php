@@ -8,7 +8,6 @@ use App\Models\Management\SettingLinkMgmt;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
-use Illuminate\Validation\Rules\Enum;
 
 class UpdateSettingLinkMgmtRequest extends FormRequest
 {
@@ -31,7 +30,7 @@ class UpdateSettingLinkMgmtRequest extends FormRequest
             'id' => ['required', 'integer', 'min:1', Rule::exists(SettingLinkMgmt::class, 'id')],
             'key' => ['required', 'string', 'min:'.CommonVal::MIN_VARCHAR, 'max:30'],
             'value' => ['required', 'string', 'min:'.CommonVal::MIN_VARCHAR, 'max:100'],
-            'is_delete' => ['required', new Enum(IsDelete::class)],
+            'is_delete' => ['required', Rule::enum(IsDelete::class)],
         ];
     }
 

@@ -2,6 +2,7 @@
 
 namespace App\Models\Management;
 
+use App\Enums\StatusEnum;
 use App\Models\History\Management\EntryDescriptionMgmtHist;
 use App\Traits\HasHistory;
 use App\Traits\HasSoftDelete;
@@ -49,7 +50,7 @@ class EntryDescriptionMgmt extends Model
             'title' => 'string',
             'summary' => 'string',
             'article' => 'array',
-            'status' => 'integer',
+            'status' => StatusEnum::class,
             'is_display' => 'boolean',
             'rank_order' => 'integer',
             'is_delete' => 'boolean',

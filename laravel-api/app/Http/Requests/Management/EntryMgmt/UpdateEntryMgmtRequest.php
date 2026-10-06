@@ -11,7 +11,6 @@ use App\Rules\LayoutStructureRule;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
-use Illuminate\Validation\Rules\Enum;
 
 class UpdateEntryMgmtRequest extends FormRequest
 {
@@ -34,10 +33,10 @@ class UpdateEntryMgmtRequest extends FormRequest
             'id' => ['required', 'integer', 'min:1', Rule::exists(EntryMgmt::class, 'id')],
             'name' => ['required', 'string', 'min:'.CommonVal::MIN_VARCHAR, 'max:50'],
             'slug' => ['required', 'string', 'min:'.CommonVal::MIN_VARCHAR, 'max:50'],
-            'status' => ['required', new Enum(StatusEnum::class)],
-            'is_display' => ['required', new Enum(IsDisplay::class)],
+            'status' => ['required', Rule::enum(StatusEnum::class)],
+            'is_display' => ['required', Rule::enum(IsDisplay::class)],
             'rank_order' => ['required', 'integer', 'min:'.CommonVal::MIN_INTEGER, 'max:'.CommonVal::MAX_INTEGER],
-            'is_delete' => ['nullable', new Enum(IsDelete::class)],
+            'is_delete' => ['nullable', Rule::enum(IsDelete::class)],
             'layout_structure' => ['nullable', new LayoutStructureRule(100, 'entry_desc_id')],
         ];
     }

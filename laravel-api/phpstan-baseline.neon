@@ -31,36 +31,6 @@ parameters:
 			path: app/Enums/EntryStatus.php
 
 		-
-			message: '#^Invalid array key type App\\Enums\\FeatureStatus\:\:ACTIVE\.$#'
-			identifier: array.invalidKey
-			count: 1
-			path: app/Enums/FeatureStatus.php
-
-		-
-			message: '#^Invalid array key type App\\Enums\\FeatureStatus\:\:ARCHIVED\.$#'
-			identifier: array.invalidKey
-			count: 1
-			path: app/Enums/FeatureStatus.php
-
-		-
-			message: '#^Invalid array key type App\\Enums\\FeatureStatus\:\:DRAFT\.$#'
-			identifier: array.invalidKey
-			count: 1
-			path: app/Enums/FeatureStatus.php
-
-		-
-			message: '#^Invalid array key type App\\Enums\\FeatureStatus\:\:INACTIVE\.$#'
-			identifier: array.invalidKey
-			count: 1
-			path: app/Enums/FeatureStatus.php
-
-		-
-			message: '#^PHPDoc tag @var does not specify variable name\.$#'
-			identifier: varTag.noVariable
-			count: 4
-			path: app/Enums/FeatureStatus.php
-
-		-
 			message: '#^PHPDoc tag @var does not specify variable name\.$#'
 			identifier: varTag.noVariable
 			count: 3
