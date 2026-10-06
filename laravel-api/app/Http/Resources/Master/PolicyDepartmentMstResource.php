@@ -5,9 +5,13 @@ declare(strict_types=1);
 namespace App\Http\Resources\Master;
 
 use App\Http\Resources\Concerns\FormatsDates;
+use App\Models\Master\PolicyDepartmentMst;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
+/**
+ * @mixin PolicyDepartmentMst
+ */
 class PolicyDepartmentMstResource extends JsonResource
 {
     use FormatsDates;

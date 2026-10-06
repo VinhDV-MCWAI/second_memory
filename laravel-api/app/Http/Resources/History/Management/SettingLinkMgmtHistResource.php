@@ -4,8 +4,12 @@ declare(strict_types=1);
 
 namespace App\Http\Resources\History\Management;
 
+use App\Models\History\Management\SettingLinkMgmtHist;
 use Illuminate\Http\Resources\Json\JsonResource;
 
+/**
+ * @mixin SettingLinkMgmtHist
+ */
 class SettingLinkMgmtHistResource extends JsonResource
 {
     /**

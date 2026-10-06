@@ -5,9 +5,13 @@ declare(strict_types=1);
 namespace App\Http\Resources\Management;
 
 use App\Http\Resources\Concerns\FormatsDates;
+use App\Models\Management\EntryMgmt;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
+/**
+ * @mixin EntryMgmt
+ */
 class EntryMgmtResource extends JsonResource
 {
     use FormatsDates;

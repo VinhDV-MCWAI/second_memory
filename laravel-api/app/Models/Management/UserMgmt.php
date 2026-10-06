@@ -14,6 +14,10 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
+/**
+ * @property UserStatus|null $status
+ * @property Gender|null $gender
+ */
 class UserMgmt extends Model
 {
     use HasFactory, HasHistory, HasSoftDelete, HasStatus;

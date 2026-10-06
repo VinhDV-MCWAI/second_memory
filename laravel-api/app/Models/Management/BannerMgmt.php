@@ -14,6 +14,9 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
+/**
+ * @property StatusEnum|null $status
+ */
 class BannerMgmt extends Model
 {
     use HasFactory, HasHistory, HasSoftDelete, HasStatus;
@@ -47,7 +50,7 @@ class BannerMgmt extends Model
     }
 
     /**
-     * Get the media record.
+     * @return BelongsTo<MediaMgmt, $this>
      */
     public function media(): BelongsTo
     {
@@ -64,7 +67,6 @@ class BannerMgmt extends Model
             'title' => 'string',
             'slug' => 'string',
             'description' => 'string',
-            'position' => 'string',
             'position' => 'string',
             'status' => StatusEnum::class,
             'is_delete' => 'boolean',

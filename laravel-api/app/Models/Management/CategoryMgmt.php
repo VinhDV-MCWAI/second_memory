@@ -13,6 +13,9 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
+/**
+ * @property StatusEnum|null $status
+ */
 class CategoryMgmt extends Model
 {
     use HasFactory, HasHistory, HasSoftDelete, HasStatus;

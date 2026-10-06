@@ -4,9 +4,13 @@ declare(strict_types=1);
 
 namespace App\Http\Resources\Docs;
 
+use App\Models\Management\EntryMgmt;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
+/**
+ * @mixin EntryMgmt
+ */
 class EntryDetailResource extends JsonResource
 {
     /**

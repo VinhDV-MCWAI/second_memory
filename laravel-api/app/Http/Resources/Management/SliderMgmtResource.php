@@ -5,9 +5,13 @@ declare(strict_types=1);
 namespace App\Http\Resources\Management;
 
 use App\Http\Resources\Concerns\FormatsDates;
+use App\Models\Management\SliderMgmt;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
+/**
+ * @mixin SliderMgmt
+ */
 class SliderMgmtResource extends JsonResource
 {
     use FormatsDates;

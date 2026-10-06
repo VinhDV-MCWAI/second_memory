@@ -5,9 +5,13 @@ declare(strict_types=1);
 namespace App\Http\Resources\History\Master;
 
 use App\Http\Resources\Concerns\FormatsDates;
+use App\Models\History\Master\RoleMstHist;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
+/**
+ * @mixin RoleMstHist
+ */
 class RoleMstHistResource extends JsonResource
 {
     use FormatsDates;

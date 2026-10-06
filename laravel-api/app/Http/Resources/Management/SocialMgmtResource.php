@@ -5,9 +5,13 @@ declare(strict_types=1);
 namespace App\Http\Resources\Management;
 
 use App\Http\Resources\Concerns\FormatsDates;
+use App\Models\Management\SocialMgmt;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
+/**
+ * @mixin SocialMgmt
+ */
 class SocialMgmtResource extends JsonResource
 {
     use FormatsDates;
