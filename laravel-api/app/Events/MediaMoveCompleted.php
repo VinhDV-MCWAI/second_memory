@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Events;
 
 use App\Models\Management\MediaMgmt;
@@ -14,7 +16,7 @@ class MediaMoveCompleted implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    public $media;
+    public MediaMgmt $media;
 
     /**
      * Create a new event instance.

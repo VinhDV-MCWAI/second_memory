@@ -1,10 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Models\History\Management;
 
 use App\Models\Management\BannerMgmt;
 use App\Models\Master\AdminMst;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class BannerMgmtHist extends Model
 {
@@ -34,7 +37,7 @@ class BannerMgmtHist extends Model
     /**
      * Get the banner management record.
      */
-    public function bannerMgmt()
+    public function bannerMgmt(): BelongsTo
     {
         return $this->belongsTo(BannerMgmt::class, 'banner_mgmt_id');
     }
@@ -42,7 +45,7 @@ class BannerMgmtHist extends Model
     /**
      * Get the author record.
      */
-    public function author()
+    public function author(): BelongsTo
     {
         return $this->belongsTo(AdminMst::class, 'author_id');
     }

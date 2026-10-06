@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use App\Http\Controllers\Management\BannerMgmtController;
 use App\Http\Controllers\Management\CategoryMgmtController;
 use App\Http\Controllers\Management\EntryDescriptionMgmtController;

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Services\Master;
 
 use App\Http\Resources\Master\DepartmentManagementMstResource;

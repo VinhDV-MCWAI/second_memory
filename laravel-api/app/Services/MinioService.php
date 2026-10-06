@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Services;
 
 use App\Constants\MediaConst;
@@ -234,7 +236,7 @@ class MinioService
      */
     public function generateStoragePath(string $extension, string $disk, ?int $workspaceId = null): string
     {
-        $uuid = Str::uuid();
+        $uuid = (string) Str::uuid();
 
         if ($disk === MediaConst::DISK_TEMP) {
             return str_replace(

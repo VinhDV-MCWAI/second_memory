@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Jobs\Media;
 
 use App\Constants\MediaConst;
@@ -63,7 +65,7 @@ class ProcessLargeFile implements ShouldQueue
             $sourceDisk = MediaConst::DISK_TEMP;
             $destDisk = $this->media->minio_bucket;
             $destKey = $this->media->minio_object_key;
-            $fileSize = $this->media->size;
+            $fileSize = (int) $this->media->size;
 
             Log::info('Moving file', [
                 'from' => "{$sourceDisk}:{$this->tempKey}",

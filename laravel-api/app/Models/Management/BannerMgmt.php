@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Models\Management;
 
 use App\Enums\StatusEnum;
@@ -9,6 +11,7 @@ use App\Traits\HasSoftDelete;
 use App\Traits\HasStatus;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class BannerMgmt extends Model
@@ -46,7 +49,7 @@ class BannerMgmt extends Model
     /**
      * Get the media record.
      */
-    public function media()
+    public function media(): BelongsTo
     {
         return $this->belongsTo(MediaMgmt::class, 'media_id');
     }

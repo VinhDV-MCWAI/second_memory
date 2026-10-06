@@ -1,13 +1,17 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Resources\History\Master;
 
-use App\Constants\CommonVal;
+use App\Http\Resources\Concerns\FormatsDates;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class PolicyDepartmentMstHistResource extends JsonResource
 {
+    use FormatsDates;
+
     /**
      * Transform the resource into an array.
      *
@@ -22,7 +26,7 @@ class PolicyDepartmentMstHistResource extends JsonResource
             'row_id' => (int) $this->row_id,
             'action' => (string) $this->action,
             'author_id' => (int) $this->author_id,
-            'created_at' => (string) date(CommonVal::DATE_FORMAT, strtotime($this->created_at)),
+            'created_at' => $this->formatDate($this->created_at),
         ];
     }
 }

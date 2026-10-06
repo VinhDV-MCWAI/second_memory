@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Console\Commands\Media;
 
 use App\Enums\UploadStatus;
@@ -32,7 +34,7 @@ class RetryStuckUploadsCommand extends Command
     /**
      * Execute the console command.
      */
-    public function handle()
+    public function handle(): int
     {
         $hours = (int) $this->option('hours');
         $this->info("Finding uploads stuck in PROCESSING for more than {$hours} hour(s)...");

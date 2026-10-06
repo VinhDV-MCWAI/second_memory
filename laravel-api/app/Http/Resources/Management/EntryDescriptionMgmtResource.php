@@ -1,13 +1,17 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Resources\Management;
 
-use App\Constants\CommonVal;
+use App\Http\Resources\Concerns\FormatsDates;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class EntryDescriptionMgmtResource extends JsonResource
 {
+    use FormatsDates;
+
     /**
      * Transform the resource into an array.
      *
@@ -24,7 +28,7 @@ class EntryDescriptionMgmtResource extends JsonResource
             'is_display' => (bool) $this->is_display,
             'rank_order' => (string) $this->rank_order,
             'is_delete' => (bool) $this->is_delete,
-            'updated_at' => (string) date(CommonVal::DATE_FORMAT, strtotime($this->updated_at)),
+            'updated_at' => $this->formatDate($this->updated_at),
         ];
     }
 }

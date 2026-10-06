@@ -1,10 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Models\History\Management;
 
 use App\Models\Management\SocialMgmt;
 use App\Models\Master\AdminMst;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class SocialMgmtHist extends Model
 {
@@ -31,12 +34,12 @@ class SocialMgmtHist extends Model
         'created_at',
     ];
 
-    public function socialMgmt()
+    public function socialMgmt(): BelongsTo
     {
         return $this->belongsTo(SocialMgmt::class, 'social_mgmt_id');
     }
 
-    public function author()
+    public function author(): BelongsTo
     {
         return $this->belongsTo(AdminMst::class, 'author_id');
     }

@@ -1,10 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Models\History\Management;
 
 use App\Models\Management\SliderMgmt;
 use App\Models\Master\AdminMst;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class SliderMgmtHist extends Model
 {
@@ -29,12 +32,12 @@ class SliderMgmtHist extends Model
         'created_at',
     ];
 
-    public function sliderMgmt()
+    public function sliderMgmt(): BelongsTo
     {
         return $this->belongsTo(SliderMgmt::class, 'slider_mgmt_id');
     }
 
-    public function author()
+    public function author(): BelongsTo
     {
         return $this->belongsTo(AdminMst::class, 'author_id');
     }

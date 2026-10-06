@@ -1,10 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Models\History\Master;
 
 use App\Models\Master\AdminMst;
 use App\Models\Master\RoleMst;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class RoleMstHist extends Model
 {
@@ -27,12 +30,12 @@ class RoleMstHist extends Model
         'created_at',
     ];
 
-    public function roleMst()
+    public function roleMst(): BelongsTo
     {
         return $this->belongsTo(RoleMst::class, 'role_mst_id');
     }
 
-    public function author()
+    public function author(): BelongsTo
     {
         return $this->belongsTo(AdminMst::class, 'author_id');
     }

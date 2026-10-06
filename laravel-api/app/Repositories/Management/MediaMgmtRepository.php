@@ -89,8 +89,8 @@ class MediaMgmtRepository extends SoftDeleteCrudRepository
     /**
      * Find by ID
      */
-    public function find(int $id)
+    public function find(int|string $id): ?MediaMgmt
     {
-        return $this->model->find($id);
+        return MediaMgmt::query()->find($id);
     }
 }

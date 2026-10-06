@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use App\Http\Controllers\Custom\CredentialController;
 use Illuminate\Support\Facades\Broadcast;
 use Illuminate\Support\Facades\Route;

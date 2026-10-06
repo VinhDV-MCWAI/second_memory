@@ -1,13 +1,17 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Resources\Master;
 
-use App\Constants\CommonVal;
+use App\Http\Resources\Concerns\FormatsDates;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class DepartmentManagementMstResource extends JsonResource
 {
+    use FormatsDates;
+
     /**
      * Transform the resource into an array.
      *
@@ -20,7 +24,7 @@ class DepartmentManagementMstResource extends JsonResource
             'policy_department_mst_id' => (int) $this->policy_department_mst_id,
             'department' => new DepartmentMstResource($this->whenLoaded('department')),
             'policy' => new PolicyDepartmentMstResource($this->whenLoaded('policy')),
-            'updated_at' => (string) date(CommonVal::DATE_FORMAT, strtotime($this->updated_at)),
+            'updated_at' => $this->formatDate($this->updated_at),
         ];
     }
 }

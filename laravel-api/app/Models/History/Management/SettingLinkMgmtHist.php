@@ -1,10 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Models\History\Management;
 
 use App\Models\Management\SettingLinkMgmt;
 use App\Models\Master\AdminMst;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class SettingLinkMgmtHist extends Model
 {
@@ -26,12 +29,12 @@ class SettingLinkMgmtHist extends Model
         'created_at',
     ];
 
-    public function settingLinkMgmt()
+    public function settingLinkMgmt(): BelongsTo
     {
         return $this->belongsTo(SettingLinkMgmt::class, 'setting_link_mgmt_id');
     }
 
-    public function author()
+    public function author(): BelongsTo
     {
         return $this->belongsTo(AdminMst::class, 'author_id');
     }

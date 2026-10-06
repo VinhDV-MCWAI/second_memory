@@ -1,13 +1,17 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Resources\Master;
 
-use App\Constants\CommonVal;
+use App\Http\Resources\Concerns\FormatsDates;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class ApiMstResource extends JsonResource
 {
+    use FormatsDates;
+
     /**
      * Transform the resource into an array.
      *
@@ -23,7 +27,7 @@ class ApiMstResource extends JsonResource
             'is_active' => (bool) $this->is_active,
             'feature_mst_id' => (int) $this->feature_mst_id,
             'is_delete' => (bool) $this->is_delete,
-            'updated_at' => (string) date(CommonVal::DATE_FORMAT, strtotime($this->updated_at)),
+            'updated_at' => $this->formatDate($this->updated_at),
         ];
     }
 }

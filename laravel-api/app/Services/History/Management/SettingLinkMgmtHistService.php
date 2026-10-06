@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Services\History\Management;
 
 use App\Http\Resources\History\Management\SettingLinkMgmtHistResource;

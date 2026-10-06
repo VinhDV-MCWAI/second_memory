@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tests\Feature\Master\DepartmentManagementMst;
 
 use App\Models\Master\AdminMst;

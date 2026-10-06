@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Middleware;
 
 use App\Constants\CommonVal;
@@ -69,7 +71,7 @@ class TransactionMiddleware
     /**
      * Determine if the response indicates an error (status >= 400).
      */
-    protected function isErrorResponse($response): bool
+    protected function isErrorResponse(mixed $response): bool
     {
         return method_exists($response, 'getStatusCode')
           && $response->getStatusCode() >= CommonVal::HTTP_BAD_REQUEST;

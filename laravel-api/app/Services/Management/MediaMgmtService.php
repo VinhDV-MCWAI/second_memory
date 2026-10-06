@@ -1,11 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Services\Management;
 
 use App\Constants\MediaConst;
 use App\Enums\UploadStatus;
 use App\Http\Resources\Management\MediaFileResource;
 use App\Jobs\Media\ProcessLargeFile;
+use App\Models\Management\MediaMgmt;
 use App\Repositories\Management\MediaMgmtRepository;
 use App\Services\MinioService;
 use Exception;
@@ -202,7 +205,7 @@ class MediaMgmtService
         $parts = $payload['parts']; // Array of ['PartNumber' => x, 'ETag' => y]
         $originalName = $payload['original_name'];
         $extension = $payload['extension'];
-        $workspaceId = $payload['workspace_id'] ?? null;
+        $workspaceId = isset($payload['workspace_id']) ? (int) $payload['workspace_id'] : null;
         $parentPath = $payload['parent_path'] ?? '/';
         $size = $payload['size'] ?? 0;
 
@@ -237,10 +240,10 @@ class MediaMgmtService
     {
         $tempKey = $payload['key']; // This is the path in temp bucket: {uuid}.{ext}
         $extension = $payload['extension'];
-        $workspaceId = $payload['workspace_id'] ?? null;
+        $workspaceId = isset($payload['workspace_id']) ? (int) $payload['workspace_id'] : null;
         $parentPath = $payload['parent_path'] ?? '/';
         $originalName = $payload['original_name'];
-        $fileSize = $payload['size'] ?? 0;
+        $fileSize = (int) ($payload['size'] ?? 0);
 
         // 1. Verify file exists in Temp (Optional but recommended)
         if (! $this->minioService->exists(MediaConst::DISK_TEMP, $tempKey)) {
@@ -331,7 +334,7 @@ class MediaMgmtService
     /**
      * Rename (internal method)
      */
-    protected function rename(array $payload, $media): int
+    protected function rename(array $payload, MediaMgmt $media): int
     {
         $newName = $payload['name'];
         $parentPath = dirname($media->virtual_path);
@@ -353,7 +356,7 @@ class MediaMgmtService
     /**
      * Move (internal method)
      */
-    protected function move(array $payload, $media): int
+    protected function move(array $payload, MediaMgmt $media): int
     {
         $newParentPath = $payload['new_parent_path'] ?? '/';
         $currentVirtualPath = $media->virtual_path;

@@ -1,10 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Models\History\Management;
 
 use App\Models\Management\CategoryMgmt;
 use App\Models\Master\AdminMst;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class CategoryMgmtHist extends Model
 {
@@ -34,7 +37,7 @@ class CategoryMgmtHist extends Model
     /**
      * Get the category management record.
      */
-    public function categoryMgmt()
+    public function categoryMgmt(): BelongsTo
     {
         return $this->belongsTo(CategoryMgmt::class, 'category_mgmt_id');
     }
@@ -42,7 +45,7 @@ class CategoryMgmtHist extends Model
     /**
      * Get the author record.
      */
-    public function author()
+    public function author(): BelongsTo
     {
         return $this->belongsTo(AdminMst::class, 'author_id');
     }

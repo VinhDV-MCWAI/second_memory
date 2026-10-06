@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tests\Feature\History\Master\RoleMstHist;
 
 use App\Models\History\Master\RoleMstHist;

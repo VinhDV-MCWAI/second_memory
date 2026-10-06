@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tests\Feature\Management\CategoryMgmt;
 
 use App\Constants\CommonVal;

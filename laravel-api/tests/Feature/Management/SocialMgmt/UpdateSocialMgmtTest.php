@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tests\Feature\Management\SocialMgmt;
 
 use App\Models\Management\SocialMgmt;

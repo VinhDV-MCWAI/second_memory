@@ -1,13 +1,17 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Resources\History\Management;
 
-use App\Constants\CommonVal;
+use App\Http\Resources\Concerns\FormatsDates;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class EntryDescriptionMgmtHistResource extends JsonResource
 {
+    use FormatsDates;
+
     /**
      * Transform the resource into an array.
      *
@@ -27,7 +31,7 @@ class EntryDescriptionMgmtHistResource extends JsonResource
             'entry_id' => (int) $this->entry_id,
             'action' => (string) $this->action,
             'author_id' => (int) $this->author_id,
-            'created_at' => (string) date(CommonVal::DATE_FORMAT, strtotime($this->created_at)),
+            'created_at' => $this->formatDate($this->created_at),
         ];
     }
 }

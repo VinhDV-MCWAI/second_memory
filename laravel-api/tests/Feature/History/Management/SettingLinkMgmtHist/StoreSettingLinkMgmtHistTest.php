@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tests\Feature\History\Management\SettingLinkMgmtHist;
 
 use App\Models\Management\SettingLinkMgmt;

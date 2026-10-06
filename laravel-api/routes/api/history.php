@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use App\Http\Controllers\History\Management\BannerMgmtHistController;
 use App\Http\Controllers\History\Management\CategoryMgmtHistController;
 use App\Http\Controllers\History\Management\EntryDescriptionMgmtHistController;

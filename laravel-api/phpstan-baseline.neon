@@ -1,6 +1,30 @@
 parameters:
 	ignoreErrors:
 		-
+			message: '#^Property App\\Exceptions\\GoogleDriveAuthException\:\:\$code has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: app/Exceptions/GoogleDriveAuthException.php
+
+		-
+			message: '#^Property App\\Exceptions\\GoogleDriveFileNotFoundException\:\:\$code has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: app/Exceptions/GoogleDriveFileNotFoundException.php
+
+		-
+			message: '#^Property App\\Exceptions\\GoogleDrivePermissionException\:\:\$code has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: app/Exceptions/GoogleDrivePermissionException.php
+
+		-
+			message: '#^Property App\\Exceptions\\GoogleDriveQuotaExceededException\:\:\$code has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: app/Exceptions/GoogleDriveQuotaExceededException.php
+
+		-
 			message: '#^Called ''env'' outside of the config directory which returns null when the config is cached, use ''config''\.$#'
 			identifier: larastan.noEnvCallsOutsideOfConfig
 			count: 1
@@ -2251,6 +2275,12 @@ parameters:
 			path: app/Models/Management/EntryMgmt.php
 
 		-
+			message: '#^Method App\\Models\\Management\\MediaMgmt\:\:children\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Models/Management/MediaMgmt.php
+
+		-
 			message: '#^Property App\\Models\\Management\\MediaMgmt\:\:\$is_delete \(bool\) does not accept int\.$#'
 			identifier: assign.propertyType
 			count: 2
@@ -2617,6 +2647,12 @@ parameters:
 			path: app/Repositories/Master/AdminRoleMstRepository.php
 
 		-
+			message: '#^Return type of call to method Illuminate\\Database\\Eloquent\\Collection\<int,Illuminate\\Database\\Eloquent\\Model\>\:\:map\(\) contains unresolvable type\.$#'
+			identifier: method.unresolvableReturnType
+			count: 1
+			path: app/Repositories/Master/AdminRoleMstRepository.php
+
+		-
 			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Collection\<int, Illuminate\\Database\\Eloquent\\Model\>\|Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
 			identifier: property.notFound
 			count: 1
@@ -2659,6 +2695,12 @@ parameters:
 			path: app/Repositories/Master/ApiRoleMstRepository.php
 
 		-
+			message: '#^Return type of call to method Illuminate\\Database\\Eloquent\\Collection\<int,Illuminate\\Database\\Eloquent\\Model\>\:\:map\(\) contains unresolvable type\.$#'
+			identifier: method.unresolvableReturnType
+			count: 1
+			path: app/Repositories/Master/ApiRoleMstRepository.php
+
+		-
 			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$department_mst_id\.$#'
 			identifier: property.notFound
 			count: 1
@@ -2673,6 +2715,12 @@ parameters:
 		-
 			message: '#^Parameter \#1 \$callback of method Illuminate\\Database\\Eloquent\\Collection\<int,Illuminate\\Database\\Eloquent\\Model\>\:\:map\(\) contains unresolvable type\.$#'
 			identifier: argument.unresolvableType
+			count: 1
+			path: app/Repositories/Master/DepartmentManagementMstRepository.php
+
+		-
+			message: '#^Return type of call to method Illuminate\\Database\\Eloquent\\Collection\<int,Illuminate\\Database\\Eloquent\\Model\>\:\:map\(\) contains unresolvable type\.$#'
+			identifier: method.unresolvableReturnType
 			count: 1
 			path: app/Repositories/Master/DepartmentManagementMstRepository.php
 

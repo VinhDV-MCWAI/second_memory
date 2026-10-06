@@ -1,10 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Models\History\Master;
 
 use App\Models\Master\AdminMst;
 use App\Models\Master\PolicyDepartmentMst;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class PolicyDepartmentMstHist extends Model
 {
@@ -26,12 +29,12 @@ class PolicyDepartmentMstHist extends Model
         'created_at',
     ];
 
-    public function policyDepartmentMst()
+    public function policyDepartmentMst(): BelongsTo
     {
         return $this->belongsTo(PolicyDepartmentMst::class, 'policy_department_mst_id');
     }
 
-    public function author()
+    public function author(): BelongsTo
     {
         return $this->belongsTo(AdminMst::class, 'author_id');
     }

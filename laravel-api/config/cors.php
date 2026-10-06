@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 return [
     'paths' => ['api/*'],  // Áp dụng cho tất cả routes api
     'allowed_methods' => ['*'],  // Allow methods

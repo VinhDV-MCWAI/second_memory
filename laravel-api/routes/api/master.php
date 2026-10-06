@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use App\Http\Controllers\Master\AdminDepartmentMstController;
 use App\Http\Controllers\Master\AdminMstController;
 use App\Http\Controllers\Master\AdminRoleMstController;

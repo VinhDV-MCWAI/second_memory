@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tests\Feature\Management\BannerMgmt;
 
 use App\Constants\CommonVal;

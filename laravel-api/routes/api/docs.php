@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use App\Http\Controllers\DocsController;
 use Illuminate\Support\Facades\Route;
 

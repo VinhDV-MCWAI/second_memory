@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tests\Feature\History\Management\BannerMgmtHist;
 
 use App\Enums\ActionType;

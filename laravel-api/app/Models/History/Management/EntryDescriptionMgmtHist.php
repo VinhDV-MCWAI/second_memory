@@ -1,10 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Models\History\Management;
 
 use App\Models\Management\EntryDescriptionMgmt;
 use App\Models\Master\AdminMst;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class EntryDescriptionMgmtHist extends Model
 {
@@ -30,12 +33,12 @@ class EntryDescriptionMgmtHist extends Model
         'created_at',
     ];
 
-    public function entryDescriptionMgmt()
+    public function entryDescriptionMgmt(): BelongsTo
     {
         return $this->belongsTo(EntryDescriptionMgmt::class, 'entry_description_mgmt_id');
     }
 
-    public function author()
+    public function author(): BelongsTo
     {
         return $this->belongsTo(AdminMst::class, 'author_id');
     }

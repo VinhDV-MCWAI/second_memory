@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Factories\Management;
 
 use App\Models\Management\BannerMgmt;
