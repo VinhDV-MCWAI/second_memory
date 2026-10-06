@@ -1,4 +1,6 @@
 # Revisions skipped by `git blame` (enable: git config blame.ignoreRevsFile .git-blame-ignore-revs)
 
 # style: one-time Pint and Prettier format pass
-12ff0996f4c7b7c59949b944159b6f7a42ca53b6
+3669e723fa5f42d3eac96388e97060c03cff5ca8
+# style(api): apply Pint 1.32 laravel preset
+71c65426e316aba49b334dfb2392c1b6446ef1aa
