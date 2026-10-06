@@ -9,15 +9,15 @@ use Illuminate\Support\Str;
 
 class DepartmentMstFactory extends Factory
 {
-  protected $model = DepartmentMst::class;
+    protected $model = DepartmentMst::class;
 
-  public function definition()
-  {
-    return [
-      'code' => Str::upper(Str::random(10)),
-      'name' => $this->faker->company,
-      'status' => StatusEnum::PUBLISHED->value,
-      'is_delete' => 0,
-    ];
-  }
+    public function definition()
+    {
+        return [
+            'code' => Str::upper(Str::random(10)),
+            'name' => $this->faker->company,
+            'status' => StatusEnum::PUBLISHED->value,
+            'is_delete' => 0,
+        ];
+    }
 }

@@ -102,7 +102,6 @@ export interface FeatureMst {
 // LANGUAGE MASTER
 // ============================================
 
-
 // ============================================
 // TOKEN MASTER
 // ============================================
@@ -136,7 +135,6 @@ export interface PolicyDepartmentMst {
 // ============================================
 // ORIGINAL TRANSLATOR MASTER
 // ============================================
-
 
 // ============================================
 // JUNCTION TABLES
@@ -173,5 +171,3 @@ export interface DepartmentManagementMst {
   created_at: string;
   updated_at: string;
 }
-
-

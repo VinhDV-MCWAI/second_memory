@@ -2,20 +2,19 @@
 
 namespace App\Services\Master;
 
-use App\Services\BaseService;
-use App\Interfaces\Master\RoleMstInterface;
-use App\Interfaces\History\Master\RoleMstHistInterface;
 use App\Enums\ActionType;
-use Illuminate\Http\Resources\Json\JsonResource;
 use App\Http\Resources\Master\RoleMstResource;
+use App\Interfaces\History\Master\RoleMstHistInterface;
+use App\Interfaces\Master\RoleMstInterface;
+use App\Services\BaseService;
+use Illuminate\Http\Resources\Json\JsonResource;
 
 class RoleMstService extends BaseService
 {
     public function __construct(
         protected RoleMstInterface $roleMst,
         protected RoleMstHistInterface $roleMstHist
-    ) {
-    }
+    ) {}
 
     protected function getHistoryRepository()
     {
@@ -29,9 +28,6 @@ class RoleMstService extends BaseService
 
     /**
      * Get role mst list
-     *
-     * @param array $payload
-     * @return JsonResource
      */
     public function list(array $payload): JsonResource
     {
@@ -42,9 +38,6 @@ class RoleMstService extends BaseService
 
     /**
      * Store role mst
-     *
-     * @param array $payload
-     * @return int
      */
     public function store(array $payload): int
     {
@@ -56,9 +49,6 @@ class RoleMstService extends BaseService
 
     /**
      * Update role mst
-     *
-     * @param array $payload
-     * @return int
      */
     public function update(array $payload): int
     {
@@ -71,14 +61,12 @@ class RoleMstService extends BaseService
 
     /**
      * Delete role mst
-     *
-     * @param array $payload
-     * @return void
      */
     public function delete(array $payload): void
     {
-        if (!isset($payload['ids']) || !is_array($payload['ids'])) {
+        if (! isset($payload['ids']) || ! is_array($payload['ids'])) {
             $this->roleMst->executeDelete($payload['ids'] ?? []);
+
             return;
         }
 

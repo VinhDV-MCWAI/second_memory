@@ -2,15 +2,10 @@
 
 namespace App\Http\Requests\History\Master\AdminMstHist;
 
-use Illuminate\Foundation\Http\FormRequest;
 use App\Constants\CommonVal;
-use Illuminate\Validation\Rule;
-use Illuminate\Validation\Rules\Enum;
 use App\Models\History\Master\AdminMstHist;
-use App\Enums\Gender;
-use App\Enums\IsActive;
-use App\Enums\StatusEnum;
-use App\Models\Master\AdminMst;
+use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class DeleteAdminMstHistRequest extends FormRequest
 {
@@ -31,7 +26,7 @@ class DeleteAdminMstHistRequest extends FormRequest
     {
         return [
             'ids' => ['required', 'array'],
-            'ids.*' => ['required', 'integer', 'min:' . CommonVal::MIN_INTEGER, 'max:' . CommonVal::MAX_BIG_INTEGER, Rule::exists(AdminMstHist::class, 'id')],
+            'ids.*' => ['required', 'integer', 'min:'.CommonVal::MIN_INTEGER, 'max:'.CommonVal::MAX_BIG_INTEGER, Rule::exists(AdminMstHist::class, 'id')],
         ];
     }
 

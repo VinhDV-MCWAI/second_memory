@@ -18,7 +18,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { NAVIGATION_MENU } from '@/shared/config/navigation';
 import type { MenuItem } from '@/shared/types/ui.types';
-import { cn } from "@/shared/utils";
+import { cn } from '@/shared/utils';
 import type { AdminNavDropdownProps } from '@/shared/types/ui.types';
 import { useTranslations } from 'next-intl';
 
@@ -42,27 +42,34 @@ export function AdminNavDropdown({
         <DropdownMenuSub key={item.label}>
           <DropdownMenuSubTrigger>
             <Icon className="mr-2 h-4 w-4" />
-            <span>{item.label.startsWith('navigation.') ? tNav(item.label.replace('navigation.', '')) : tEntities(item.label.replace('entities.', ''))}</span>
+            <span>
+              {item.label.startsWith('navigation.')
+                ? tNav(item.label.replace('navigation.', ''))
+                : tEntities(item.label.replace('entities.', ''))}
+            </span>
           </DropdownMenuSubTrigger>
           <DropdownMenuSubContent>
             {item.children.map((child) => {
               const ChildIcon = child.icon;
-              const isChildActive = pathname === child.href || pathname.startsWith(child.href + '/');
-              
+              const isChildActive =
+                pathname === child.href || pathname.startsWith(child.href + '/');
+
               return (
                 <DropdownMenuItem key={child.href} asChild disabled={child.disabled}>
                   <Link
                     href={child.href || '#'}
                     className={cn(
                       'cursor-pointer',
-                      isChildActive && 'bg-accent text-accent-foreground'
+                      isChildActive && 'bg-accent text-accent-foreground',
                     )}
                   >
                     <ChildIcon className="mr-2 h-4 w-4" />
-                    <span>{child.label.startsWith('navigation.') ? tNav(child.label.replace('navigation.', '')) : tEntities(child.label.replace('entities.', ''))}</span>
-                    {child.badge && (
-                      <span className="ml-auto text-xs">{child.badge}</span>
-                    )}
+                    <span>
+                      {child.label.startsWith('navigation.')
+                        ? tNav(child.label.replace('navigation.', ''))
+                        : tEntities(child.label.replace('entities.', ''))}
+                    </span>
+                    {child.badge && <span className="ml-auto text-xs">{child.badge}</span>}
                   </Link>
                 </DropdownMenuItem>
               );
@@ -76,16 +83,15 @@ export function AdminNavDropdown({
       <DropdownMenuItem key={item.href} asChild disabled={item.disabled}>
         <Link
           href={item.href || '#'}
-          className={cn(
-            'cursor-pointer',
-            isActive && 'bg-accent text-accent-foreground'
-          )}
+          className={cn('cursor-pointer', isActive && 'bg-accent text-accent-foreground')}
         >
           <Icon className="mr-2 h-4 w-4" />
-          <span>{item.label.startsWith('navigation.') ? tNav(item.label.replace('navigation.', '')) : tEntities(item.label.replace('entities.', ''))}</span>
-          {item.badge && (
-            <span className="ml-auto text-xs">{item.badge}</span>
-          )}
+          <span>
+            {item.label.startsWith('navigation.')
+              ? tNav(item.label.replace('navigation.', ''))
+              : tEntities(item.label.replace('entities.', ''))}
+          </span>
+          {item.badge && <span className="ml-auto text-xs">{item.badge}</span>}
         </Link>
       </DropdownMenuItem>
     );
@@ -102,9 +108,7 @@ export function AdminNavDropdown({
       <DropdownMenuContent align="start" className="w-56">
         <DropdownMenuLabel>{tNav('adminDashboard')}</DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <DropdownMenuGroup>
-          {NAVIGATION_MENU.map((item) => renderMenuItem(item))}
-        </DropdownMenuGroup>
+        <DropdownMenuGroup>{NAVIGATION_MENU.map((item) => renderMenuItem(item))}</DropdownMenuGroup>
       </DropdownMenuContent>
     </DropdownMenu>
   );

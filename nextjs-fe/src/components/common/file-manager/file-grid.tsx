@@ -26,7 +26,7 @@ export const FileGrid = ({
   onDownload,
 }: FileGridProps) => {
   const t = useTranslations('fileManager');
-  
+
   if (isLoading) {
     return (
       <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
@@ -54,7 +54,7 @@ export const FileGrid = ({
   };
 
   return (
-    <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 pb-20">
+    <div className="grid grid-cols-2 gap-4 pb-20 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
       {files.map((file) => {
         const isSelected = selectedFiles.includes(file.id);
         const Icon = getFileIcon(file.mime_type);
@@ -71,14 +71,16 @@ export const FileGrid = ({
             onDownload={onDownload}
           >
             <Card
-              className={`group relative overflow-hidden transition-all hover:shadow-lg cursor-pointer ${
-                isSelected ? 'ring-2 ring-primary shadow-md' : 'hover:shadow-primary/20'
+              className={`group relative cursor-pointer overflow-hidden transition-all hover:shadow-lg ${
+                isSelected ? 'shadow-md ring-2 ring-primary' : 'hover:shadow-primary/20'
               }`}
               onClick={() => onFileClick(file)}
               onDoubleClick={() => handleDoubleClick(file)}
             >
               {/* Checkbox */}
-              <div className={`absolute right-2 top-2 z-10 flex items-center gap-2 transition-opacity ${isSelected ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'}`}>
+              <div
+                className={`absolute top-2 right-2 z-10 flex items-center gap-2 transition-opacity ${isSelected ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'}`}
+              >
                 <Checkbox
                   checked={isSelected}
                   onCheckedChange={(checked: boolean | 'indeterminate') => {

@@ -2,20 +2,19 @@
 
 namespace App\Services\Master;
 
-use App\Services\BaseService;
-use App\Interfaces\Master\FeatureMstInterface;
-use App\Interfaces\History\Master\FeatureMstHistInterface;
 use App\Enums\ActionType;
-use Illuminate\Http\Resources\Json\JsonResource;
 use App\Http\Resources\Master\FeatureMstResource;
+use App\Interfaces\History\Master\FeatureMstHistInterface;
+use App\Interfaces\Master\FeatureMstInterface;
+use App\Services\BaseService;
+use Illuminate\Http\Resources\Json\JsonResource;
 
 class FeatureMstService extends BaseService
 {
     public function __construct(
         protected FeatureMstInterface $featureMst,
         protected FeatureMstHistInterface $featureMstHist
-    ) {
-    }
+    ) {}
 
     protected function getHistoryRepository()
     {
@@ -29,9 +28,6 @@ class FeatureMstService extends BaseService
 
     /**
      * Get feature mst list
-     *
-     * @param array $payload
-     * @return JsonResource
      */
     public function list(array $payload): JsonResource
     {
@@ -42,9 +38,6 @@ class FeatureMstService extends BaseService
 
     /**
      * Store feature mst
-     *
-     * @param array $payload
-     * @return int
      */
     public function store(array $payload): int
     {
@@ -56,9 +49,6 @@ class FeatureMstService extends BaseService
 
     /**
      * Update feature mst
-     *
-     * @param array $payload
-     * @return int
      */
     public function update(array $payload): int
     {
@@ -71,14 +61,12 @@ class FeatureMstService extends BaseService
 
     /**
      * Delete feature mst
-     *
-     * @param array $payload
-     * @return void
      */
     public function delete(array $payload): void
     {
-        if (!isset($payload['ids']) || !is_array($payload['ids'])) {
+        if (! isset($payload['ids']) || ! is_array($payload['ids'])) {
             $this->featureMst->executeDelete($payload['ids'] ?? []);
+
             return;
         }
 

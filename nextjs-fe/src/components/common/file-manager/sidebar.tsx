@@ -14,8 +14,8 @@ export const Sidebar = ({
   className,
 }: SidebarProps) => {
   const t = useTranslations('fileManager');
-  
-  const FOLDERS: SidebarFolder[] = DEFAULT_SIDEBAR_FOLDERS.map(folder => ({
+
+  const FOLDERS: SidebarFolder[] = DEFAULT_SIDEBAR_FOLDERS.map((folder) => ({
     id: folder.id,
     name: t(folder.nameKey),
     path: folder.path,
@@ -29,12 +29,7 @@ export const Sidebar = ({
         <div className="mb-6 flex items-center justify-between">
           <h2 className="text-lg font-semibold">{t('sidebar.title')}</h2>
           {onToggle && (
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={onToggle}
-              className="h-8 w-8"
-            >
+            <Button variant="ghost" size="sm" onClick={onToggle} className="h-8 w-8">
               <ChevronDown className="h-4 w-4" />
             </Button>
           )}
@@ -54,7 +49,7 @@ export const Sidebar = ({
           ))}
         </nav>
 
-        <div className="border-t border-border pt-4 mt-4">
+        <div className="mt-4 border-t border-border pt-4">
           <h3 className="mb-2 text-sm font-medium text-muted-foreground">
             {t('sidebar.foldersList')}
           </h3>
@@ -65,7 +60,7 @@ export const Sidebar = ({
                 className="flex w-full items-center rounded-md px-2 py-1.5 text-sm hover:bg-accent"
                 onClick={() => onPathChange(folder.path)}
               >
-                <span className="text-base mr-2">📁</span>
+                <span className="mr-2 text-base">📁</span>
                 <span className="truncate text-left">{folder.name}</span>
               </button>
             ))}

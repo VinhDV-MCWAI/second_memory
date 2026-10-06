@@ -54,7 +54,7 @@ const ToolbarButton = ({
     title={title}
     className={cn(
       'h-8 w-8 p-0 text-gray-700 dark:text-gray-100',
-      isActive && 'bg-gray-200 dark:bg-gray-700'
+      isActive && 'bg-gray-200 dark:bg-gray-700',
     )}
   >
     {children}
@@ -90,7 +90,7 @@ export function EditorToolbar({ editor, onImageUpload }: EditorToolbarProps) {
   };
 
   return (
-    <div className="border-b p-2 flex flex-wrap gap-1 bg-gray-50 dark:bg-gray-900 dark:border-gray-700 sticky top-0 z-10">
+    <div className="sticky top-0 z-10 flex flex-wrap gap-1 border-b bg-gray-50 p-2 dark:border-gray-700 dark:bg-gray-900">
       {/* Text formatting buttons */}
       <ToolbarButton
         onClick={() => editor.chain().focus().toggleBold().run()}
@@ -132,7 +132,7 @@ export function EditorToolbar({ editor, onImageUpload }: EditorToolbarProps) {
         <Highlighter className="h-4 w-4" />
       </ToolbarButton>
 
-      <div className="w-px h-8 bg-gray-300 dark:bg-gray-600 mx-1" />
+      <div className="mx-1 h-8 w-px bg-gray-300 dark:bg-gray-600" />
 
       {/* Headings */}
       <ToolbarButton
@@ -159,7 +159,7 @@ export function EditorToolbar({ editor, onImageUpload }: EditorToolbarProps) {
         <Heading3 className="h-4 w-4" />
       </ToolbarButton>
 
-      <div className="w-px h-8 bg-gray-300 dark:bg-gray-600 mx-1" />
+      <div className="mx-1 h-8 w-px bg-gray-300 dark:bg-gray-600" />
 
       {/* Lists */}
       <ToolbarButton
@@ -186,25 +186,18 @@ export function EditorToolbar({ editor, onImageUpload }: EditorToolbarProps) {
         <Quote className="h-4 w-4" />
       </ToolbarButton>
 
-      <div className="w-px h-8 bg-gray-300 dark:bg-gray-600 mx-1" />
+      <div className="mx-1 h-8 w-px bg-gray-300 dark:bg-gray-600" />
 
       {/* Media */}
-      <ToolbarButton
-        onClick={setLink}
-        isActive={editor.isActive('link')}
-        title="Link"
-      >
+      <ToolbarButton onClick={setLink} isActive={editor.isActive('link')} title="Link">
         <LinkIcon className="h-4 w-4" />
       </ToolbarButton>
 
-      <ToolbarButton
-        onClick={addImage}
-        title="Image"
-      >
+      <ToolbarButton onClick={addImage} title="Image">
         <ImageIcon className="h-4 w-4" />
       </ToolbarButton>
 
-      <div className="w-px h-8 bg-gray-300 dark:bg-gray-600 mx-1" />
+      <div className="mx-1 h-8 w-px bg-gray-300 dark:bg-gray-600" />
 
       {/* History */}
       <ToolbarButton

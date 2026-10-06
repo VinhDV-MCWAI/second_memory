@@ -3,7 +3,14 @@
 import { useState } from 'react';
 import { FieldRenderer } from './field-renderer';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Separator } from '@/components/ui/separator';
 import { useTranslations } from 'next-intl';
@@ -74,14 +81,14 @@ export function FormBuilder({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!validateForm()) {
       return;
     }
 
     try {
       await onSubmit(values);
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (_error) {
       // Handle error silently
     }
@@ -93,7 +100,10 @@ export function FormBuilder({
     return (
       <div className={gridClass}>
         {fields.map((field) => (
-          <div key={field.name} className={field.type === 'textarea' && columns === 2 ? 'md:col-span-2' : ''}>
+          <div
+            key={field.name}
+            className={field.type === 'textarea' && columns === 2 ? 'md:col-span-2' : ''}
+          >
             <FieldRenderer
               field={field}
               value={values[field.name]}
@@ -121,7 +131,10 @@ export function FormBuilder({
 
     return (
       <Tabs defaultValue={schema.sections[0]?.title} className="w-full">
-        <TabsList className="grid w-full" style={{ gridTemplateColumns: `repeat(${schema.sections.length}, 1fr)` }}>
+        <TabsList
+          className="grid w-full"
+          style={{ gridTemplateColumns: `repeat(${schema.sections.length}, 1fr)` }}
+        >
           {schema.sections.map((section) => (
             <TabsTrigger key={section.title} value={section.title}>
               {section.title}
@@ -161,26 +174,19 @@ export function FormBuilder({
             {schema.description && <CardDescription>{schema.description}</CardDescription>}
           </CardHeader>
         )}
-        
-        <CardContent className="pt-6">
-          {renderFormContent()}
-        </CardContent>
+
+        <CardContent className="pt-6">{renderFormContent()}</CardContent>
 
         <Separator />
 
         <CardFooter className="flex justify-end gap-2 pt-6">
           {onCancel && (
-            <Button
-              type="button"
-              variant="outline"
-              onClick={onCancel}
-              disabled={isLoading}
-            >
+            <Button type="button" variant="outline" onClick={onCancel} disabled={isLoading}>
               {cancelLabel || tCommon('cancel')}
             </Button>
           )}
           <Button type="submit" disabled={isLoading}>
-            {isLoading ? t('saving') : (submitLabel || tCommon('save'))}
+            {isLoading ? t('saving') : submitLabel || tCommon('save')}
           </Button>
         </CardFooter>
       </Card>

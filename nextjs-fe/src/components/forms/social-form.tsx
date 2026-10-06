@@ -72,7 +72,9 @@ export function SocialForm({ initialData, onSuccess, onCancel }: SocialFormProps
     }
   }, [initialData, reset]);
 
-  const { execute, isLoading: isActionProcessing } = useActionLock({ delay: UI_CONSTANTS.ACTION_DELAY_MS });
+  const { execute, isLoading: isActionProcessing } = useActionLock({
+    delay: UI_CONSTANTS.ACTION_DELAY_MS,
+  });
 
   const onSubmit = async (data: SocialFormData) => {
     await execute(async () => {
@@ -84,17 +86,17 @@ export function SocialForm({ initialData, onSuccess, onCancel }: SocialFormProps
           is_display: data.is_display ? IsActive.TRUE : IsActive.FALSE,
           is_delete: false,
         };
-      
-      if (isEdit && initialData) {
-        await update(initialData.id, payload);
-      } else {
-        await create(payload);
+
+        if (isEdit && initialData) {
+          await update(initialData.id, payload);
+        } else {
+          await create(payload);
+        }
+        onSuccess();
+      } catch (error: unknown) {
+        console.error(error);
+        handleBindErrors(error, setError);
       }
-      onSuccess();
-    } catch (error: unknown) {
-      console.error(error);
-      handleBindErrors(error, setError);
-    }
     });
   };
 
@@ -114,18 +116,12 @@ export function SocialForm({ initialData, onSuccess, onCancel }: SocialFormProps
             className={errors.name ? 'border-red-500' : ''}
             placeholder={tForms('socialName')}
           />
-          {errors.name && (
-            <p className="text-sm text-red-500">{errors.name.message}</p>
-          )}
+          {errors.name && <p className="text-sm text-red-500">{errors.name.message}</p>}
         </div>
 
         <div className="space-y-2">
           <Label htmlFor="image">{tLabels('iconImageUrl')}</Label>
-          <Input
-            id="image"
-            {...register('image')}
-            placeholder={tForms('socialIcon')}
-          />
+          <Input id="image" {...register('image')} placeholder={tForms('socialIcon')} />
         </div>
       </div>
 
@@ -139,9 +135,7 @@ export function SocialForm({ initialData, onSuccess, onCancel }: SocialFormProps
           className={errors.link ? 'border-red-500' : ''}
           placeholder={tForms('socialUrl')}
         />
-        {errors.link && (
-          <p className="text-sm text-red-500">{errors.link.message}</p>
-        )}
+        {errors.link && <p className="text-sm text-red-500">{errors.link.message}</p>}
       </div>
 
       <div className="grid grid-cols-2 gap-4">
@@ -155,9 +149,7 @@ export function SocialForm({ initialData, onSuccess, onCancel }: SocialFormProps
             {...register('rank_order')}
             className={errors.rank_order ? 'border-red-500' : ''}
           />
-          {errors.rank_order && (
-            <p className="text-sm text-red-500">{errors.rank_order.message}</p>
-          )}
+          {errors.rank_order && <p className="text-sm text-red-500">{errors.rank_order.message}</p>}
         </div>
 
         <div className="space-y-2">
@@ -172,29 +164,39 @@ export function SocialForm({ initialData, onSuccess, onCancel }: SocialFormProps
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value={SocialStatus.ACTIVE.toString()}>{SocialStatusLabels[SocialStatus.ACTIVE]}</SelectItem>
-              <SelectItem value={SocialStatus.INACTIVE.toString()}>{SocialStatusLabels[SocialStatus.INACTIVE]}</SelectItem>
+              <SelectItem value={SocialStatus.ACTIVE.toString()}>
+                {SocialStatusLabels[SocialStatus.ACTIVE]}
+              </SelectItem>
+              <SelectItem value={SocialStatus.INACTIVE.toString()}>
+                {SocialStatusLabels[SocialStatus.INACTIVE]}
+              </SelectItem>
             </SelectContent>
           </Select>
         </div>
       </div>
 
-      <div className="flex items-center gap-2 mt-4">
-        <input
-          type="checkbox"
-          id="is_display"
-          {...register('is_display')}
-          className="rounded"
-        />
+      <div className="mt-4 flex items-center gap-2">
+        <input type="checkbox" id="is_display" {...register('is_display')} className="rounded" />
         <Label htmlFor="is_display">{tCommon('isDisplay')}</Label>
       </div>
 
       <div className="flex justify-end gap-2 pt-4">
-        <Button type="button" variant="outline" onClick={onCancel} disabled={loading || isActionProcessing}>
+        <Button
+          type="button"
+          variant="outline"
+          onClick={onCancel}
+          disabled={loading || isActionProcessing}
+        >
           {tCommon('cancel')}
         </Button>
         <Button type="submit" disabled={loading || isActionProcessing}>
-          {loading || isActionProcessing ? (isEdit ? tCommon('updating') : tCommon('creating')) : (isEdit ? tCommon('update') : tCommon('create'))}
+          {loading || isActionProcessing
+            ? isEdit
+              ? tCommon('updating')
+              : tCommon('creating')
+            : isEdit
+              ? tCommon('update')
+              : tCommon('create')}
         </Button>
       </div>
     </form>

@@ -11,7 +11,6 @@ use App\Repositories\BaseRepository;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Arr;
 
-
 class SettingLinkMgmtRepository extends BaseRepository implements SettingLinkMgmtInterface
 {
     public function __construct(SettingLinkMgmt $model)
@@ -21,9 +20,6 @@ class SettingLinkMgmtRepository extends BaseRepository implements SettingLinkMgm
 
     /**
      * Get list with pagination
-     *
-     * @param array $payload
-     * @return LengthAwarePaginator
      */
     public function list(array $payload): LengthAwarePaginator
     {
@@ -59,9 +55,6 @@ class SettingLinkMgmtRepository extends BaseRepository implements SettingLinkMgm
 
     /**
      * Create new record
-     *
-     * @param array $payload
-     * @return int
      */
     public function executeStore(array $payload): int
     {
@@ -74,12 +67,8 @@ class SettingLinkMgmtRepository extends BaseRepository implements SettingLinkMgm
         return $model->id;
     }
 
-
     /**
      * Update record
-     *
-     * @param array $payload
-     * @return int
      */
     public function executeUpdate(array $payload): int
     {
@@ -97,9 +86,6 @@ class SettingLinkMgmtRepository extends BaseRepository implements SettingLinkMgm
 
     /**
      * Delete record (soft delete)
-     *
-     * @param array $ids
-     * @return void
      */
     public function executeDelete(array $ids): void
     {
@@ -108,5 +94,4 @@ class SettingLinkMgmtRepository extends BaseRepository implements SettingLinkMgm
             ->notDeleted()
             ->update(['is_delete' => IsDelete::TRUE->value]);
     }
-
 }

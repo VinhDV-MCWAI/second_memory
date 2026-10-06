@@ -33,7 +33,7 @@ export function ApiForm({ initialData, onSuccess, onCancel }: ApiFormProps) {
   const tValidation = useTranslations('validation');
   const isEdit = !!initialData;
   const { create, update, loading } = useCrud<ApiMst>(ENDPOINTS.MASTER.API);
-  
+
   // Fetch features for dropdown
   const { data: features } = useApiData<FeatureMst>(ENDPOINTS.MASTER.FEATURE, {
     per_page: 1000,
@@ -68,10 +68,11 @@ export function ApiForm({ initialData, onSuccess, onCancel }: ApiFormProps) {
         HTTP_METHODS.POST,
         HTTP_METHODS.PUT,
         HTTP_METHODS.PATCH,
-        HTTP_METHODS.DELETE
+        HTTP_METHODS.DELETE,
       ];
       // Type is number in DB but might be string in some contexts, safely parse it
-      const typeIndex = typeof initialData.type === 'string' ? parseInt(initialData.type) : initialData.type;
+      const typeIndex =
+        typeof initialData.type === 'string' ? parseInt(initialData.type) : initialData.type;
       const mappedMethod = methods[typeIndex] || HTTP_METHODS.GET;
 
       reset({
@@ -94,40 +95,42 @@ export function ApiForm({ initialData, onSuccess, onCancel }: ApiFormProps) {
     }
   }, [initialData, reset]);
 
-  const { execute, isLoading: isActionProcessing } = useActionLock({ delay: UI_CONSTANTS.ACTION_DELAY_MS });
+  const { execute, isLoading: isActionProcessing } = useActionLock({
+    delay: UI_CONSTANTS.ACTION_DELAY_MS,
+  });
 
   const onSubmit = async (data: ApiFormData) => {
     await execute(async () => {
       try {
         const methodMap: Record<string, number> = {
-        [HTTP_METHODS.GET]: TypeOfMethod.GET,
-        [HTTP_METHODS.POST]: TypeOfMethod.POST,
-        [HTTP_METHODS.PUT]: TypeOfMethod.PUT,
-        [HTTP_METHODS.PATCH]: TypeOfMethod.PATCH,
-        [HTTP_METHODS.DELETE]: TypeOfMethod.DELETE
-      };
-      
-      const payload = { 
-        ...data,
-        type: Number(data.method ? (methodMap[data.method] ?? 0) : 0),
-        feature_mst_id: Number(data.feature_mst_id),
-        is_delete: false 
-      };
+          [HTTP_METHODS.GET]: TypeOfMethod.GET,
+          [HTTP_METHODS.POST]: TypeOfMethod.POST,
+          [HTTP_METHODS.PUT]: TypeOfMethod.PUT,
+          [HTTP_METHODS.PATCH]: TypeOfMethod.PATCH,
+          [HTTP_METHODS.DELETE]: TypeOfMethod.DELETE,
+        };
 
-      if (isEdit && initialData) {
-        if (!initialData) return;
-        await update(initialData.id, {
+        const payload = {
+          ...data,
+          type: Number(data.method ? (methodMap[data.method] ?? 0) : 0),
+          feature_mst_id: Number(data.feature_mst_id),
+          is_delete: false,
+        };
+
+        if (isEdit && initialData) {
+          if (!initialData) return;
+          await update(initialData.id, {
             ...payload,
-            is_delete: initialData.is_delete || false
-        });
-      } else {
-        await create(payload);
+            is_delete: initialData.is_delete || false,
+          });
+        } else {
+          await create(payload);
+        }
+        onSuccess();
+      } catch (error: unknown) {
+        console.error(error);
+        handleBindErrors(error, setError);
       }
-      onSuccess();
-    } catch (error: unknown) {
-      console.error(error);
-      handleBindErrors(error, setError);
-    }
     });
   };
 
@@ -154,13 +157,13 @@ export function ApiForm({ initialData, onSuccess, onCancel }: ApiFormProps) {
             <SelectValue placeholder={tForms('selectFeature')} />
           </SelectTrigger>
           <SelectContent>
-            {features.map((feature) => (
+            {features.map((feature) =>
               feature.id ? (
                 <SelectItem key={feature.id} value={feature.id.toString()}>
                   {feature.name}
                 </SelectItem>
-              ) : null
-            ))}
+              ) : null,
+            )}
           </SelectContent>
         </Select>
         {errors.feature_mst_id && (
@@ -178,9 +181,7 @@ export function ApiForm({ initialData, onSuccess, onCancel }: ApiFormProps) {
           className={errors.name ? 'border-red-500' : ''}
           placeholder={tForms('apiName')}
         />
-        {errors.name && (
-          <p className="text-sm text-red-500">{errors.name.message}</p>
-        )}
+        {errors.name && <p className="text-sm text-red-500">{errors.name.message}</p>}
       </div>
 
       <div className="space-y-2">
@@ -193,9 +194,7 @@ export function ApiForm({ initialData, onSuccess, onCancel }: ApiFormProps) {
           className={errors.path ? 'border-red-500' : ''}
           placeholder={tForms('apiPath')}
         />
-        {errors.path && (
-          <p className="text-sm text-red-500">{errors.path.message}</p>
-        )}
+        {errors.path && <p className="text-sm text-red-500">{errors.path.message}</p>}
       </div>
 
       <div className="space-y-2">
@@ -210,17 +209,20 @@ export function ApiForm({ initialData, onSuccess, onCancel }: ApiFormProps) {
               HTTP_METHODS.POST,
               HTTP_METHODS.PUT,
               HTTP_METHODS.PATCH,
-              HTTP_METHODS.DELETE
+              HTTP_METHODS.DELETE,
             ];
-            if (value && validMethods.includes(value as 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE')) {
+            if (
+              value &&
+              validMethods.includes(value as 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE')
+            ) {
               setValue('method', value as 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE');
-              
+
               const methodMap: Record<string, number> = {
                 [HTTP_METHODS.GET]: TypeOfMethod.GET,
                 [HTTP_METHODS.POST]: TypeOfMethod.POST,
                 [HTTP_METHODS.PUT]: TypeOfMethod.PUT,
                 [HTTP_METHODS.PATCH]: TypeOfMethod.PATCH,
-                [HTTP_METHODS.DELETE]: TypeOfMethod.DELETE
+                [HTTP_METHODS.DELETE]: TypeOfMethod.DELETE,
               };
               setValue('type', methodMap[value] ?? TypeOfMethod.GET);
             }
@@ -237,12 +239,8 @@ export function ApiForm({ initialData, onSuccess, onCancel }: ApiFormProps) {
             <SelectItem value={HTTP_METHODS.PATCH}>{HTTP_METHODS.PATCH}</SelectItem>
           </SelectContent>
         </Select>
-        {errors.method && (
-          <p className="text-sm text-red-500">{errors.method.message}</p>
-        )}
+        {errors.method && <p className="text-sm text-red-500">{errors.method.message}</p>}
       </div>
-
-
 
       <div className="space-y-2">
         <Label htmlFor="is_active">
@@ -256,19 +254,33 @@ export function ApiForm({ initialData, onSuccess, onCancel }: ApiFormProps) {
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value={IsActive.TRUE.toString()}>{IsActiveLabels[IsActive.TRUE]}</SelectItem>
-            <SelectItem value={IsActive.FALSE.toString()}>{IsActiveLabels[IsActive.FALSE]}</SelectItem>
+            <SelectItem value={IsActive.TRUE.toString()}>
+              {IsActiveLabels[IsActive.TRUE]}
+            </SelectItem>
+            <SelectItem value={IsActive.FALSE.toString()}>
+              {IsActiveLabels[IsActive.FALSE]}
+            </SelectItem>
           </SelectContent>
         </Select>
       </div>
 
-
       <div className="flex justify-end gap-2 pt-4">
-        <Button type="button" variant="outline" onClick={onCancel} disabled={loading || isActionProcessing}>
+        <Button
+          type="button"
+          variant="outline"
+          onClick={onCancel}
+          disabled={loading || isActionProcessing}
+        >
           {tCommon('cancel')}
         </Button>
         <Button type="submit" disabled={loading || isActionProcessing}>
-          {loading || isActionProcessing ? (isEdit ? tCommon('updating') : tCommon('creating')) : (isEdit ? tCommon('update') : tCommon('create'))}
+          {loading || isActionProcessing
+            ? isEdit
+              ? tCommon('updating')
+              : tCommon('creating')
+            : isEdit
+              ? tCommon('update')
+              : tCommon('create')}
         </Button>
       </div>
     </form>

@@ -13,14 +13,10 @@ class DocsController extends Controller
 {
     public function __construct(
         protected DocsService $docsService
-    ) {
-    }
+    ) {}
 
     /**
      * Get all displayable categories for documentation
-     *
-     * @param GetCategoriesRequest $request
-     * @return JsonResource
      */
     public function getCategories(GetCategoriesRequest $request): JsonResource
     {
@@ -29,10 +25,6 @@ class DocsController extends Controller
 
     /**
      * Get entries by category slug
-     *
-     * @param GetEntriesByCategoryRequest $request
-     * @param string $slug
-     * @return JsonResource
      */
     public function getEntriesByCategory(GetEntriesByCategoryRequest $request, string $slug): JsonResource
     {
@@ -41,10 +33,6 @@ class DocsController extends Controller
 
     /**
      * Get entry detail with descriptions
-     *
-     * @param GetEntryDetailRequest $request
-     * @param string $slug
-     * @return JsonResource
      */
     public function getEntryDetail(GetEntryDetailRequest $request, string $slug): JsonResource
     {
@@ -53,9 +41,6 @@ class DocsController extends Controller
 
     /**
      * Global search across categories, entries, and descriptions
-     *
-     * @param SearchDocsRequest $request
-     * @return JsonResource
      */
     public function search(SearchDocsRequest $request): JsonResource
     {

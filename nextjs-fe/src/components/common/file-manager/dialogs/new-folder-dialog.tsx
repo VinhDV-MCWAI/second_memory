@@ -26,8 +26,6 @@ export const NewFolderDialog = ({
   const [folderName, setFolderName] = useState('');
   const [error, setError] = useState('');
 
-
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -54,9 +52,7 @@ export const NewFolderDialog = ({
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>{t('newFolder.title')}</DialogTitle>
-          <DialogDescription>
-            {t('newFolder.description')}
-          </DialogDescription>
+          <DialogDescription>{t('newFolder.description')}</DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit}>
           <div className="grid gap-4 py-4">

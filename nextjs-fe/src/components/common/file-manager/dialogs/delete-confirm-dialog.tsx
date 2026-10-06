@@ -37,24 +37,20 @@ export function DeleteConfirmDialog({
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>
-            {count === 1 && itemName 
+            {count === 1 && itemName
               ? t('singleMessage', { name: itemName })
               : t('multipleMessage', { count })}
           </AlertDialogTitle>
-          <AlertDialogDescription>
-            {t('description')}
-          </AlertDialogDescription>
+          <AlertDialogDescription>{t('description')}</AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel disabled={isLoading}>
-            {tCommon('cancel')}
-          </AlertDialogCancel>
+          <AlertDialogCancel disabled={isLoading}>{tCommon('cancel')}</AlertDialogCancel>
           <AlertDialogAction
             onClick={(e) => {
               e.preventDefault();
               onConfirm();
             }}
-            className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            className="text-destructive-foreground bg-destructive hover:bg-destructive/90"
             disabled={isLoading}
           >
             {isLoading ? tCommon('processing') : tCommon('delete')}

@@ -16,9 +16,9 @@ class ApiRoleMstResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'api_mst_id' => (int)$this->api_mst_id,
-            'role_mst_id' => (int)$this->role_mst_id,
-            'updated_at' => (string)date(CommonVal::DATE_FORMAT, strtotime($this->updated_at)),
+            'api_mst_id' => (int) $this->api_mst_id,
+            'role_mst_id' => (int) $this->role_mst_id,
+            'updated_at' => (string) date(CommonVal::DATE_FORMAT, strtotime($this->updated_at)),
         ];
     }
 }

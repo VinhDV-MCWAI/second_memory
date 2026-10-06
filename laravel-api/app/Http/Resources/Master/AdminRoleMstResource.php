@@ -16,9 +16,9 @@ class AdminRoleMstResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'admin_mst_id' => (int)$this->admin_mst_id,
-            'role_mst_id' => (int)$this->role_mst_id,
-            'updated_at' => (string)date(CommonVal::DATE_FORMAT, strtotime($this->updated_at)),
+            'admin_mst_id' => (int) $this->admin_mst_id,
+            'role_mst_id' => (int) $this->role_mst_id,
+            'updated_at' => (string) date(CommonVal::DATE_FORMAT, strtotime($this->updated_at)),
         ];
     }
 }

@@ -13,13 +13,13 @@ import { ConfirmDialog } from '@/components/ui/confirm-dialog';
 import { Button } from '@/components/ui/button';
 import type { PolicyDepartmentMst } from '@/shared/types/api';
 import { API_ENDPOINTS } from '@/shared/api';
-import { 
-  SORT_ORDER, 
-  SORT_FIELDS, 
-  type SortOrder, 
-  PAGINATION, 
+import {
+  SORT_ORDER,
+  SORT_FIELDS,
+  type SortOrder,
+  PAGINATION,
   ADMIN_ROUTES,
-  UI_CONSTANTS 
+  UI_CONSTANTS,
 } from '@/shared/config';
 import { AdvancedSearch } from '@/components/common/advanced-search';
 import type { SearchField, SearchCriteria } from '@/shared/types/data-table.types';
@@ -45,7 +45,7 @@ export default function PolicyDepartmentListPage() {
   const [sortBy, setSortBy] = useState<string>(SORT_FIELDS.CREATED_AT);
   const [sortOrder, setSortOrder] = useState<SortOrder>(SORT_ORDER.DESC);
   const [selectedIds, setSelectedIds] = useState<number[]>([]);
-  
+
   // Dialog states
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [deleteIds, setDeleteIds] = useState<number[]>([]);
@@ -61,7 +61,7 @@ export default function PolicyDepartmentListPage() {
 
   const { data, loading, pagination, refetch } = useApiData<PolicyDepartmentMst>(
     API_ENDPOINTS.MASTER.POLICY_DEPARTMENT,
-    { page, per_page: perPage, filters, sort_by: sortBy, sort_order: sortOrder }
+    { page, per_page: perPage, filters, sort_by: sortBy, sort_order: sortOrder },
   );
 
   const { remove } = useCrud<PolicyDepartmentMst>(API_ENDPOINTS.MASTER.POLICY_DEPARTMENT);
@@ -85,7 +85,9 @@ export default function PolicyDepartmentListPage() {
     setDeleteDialogOpen(true);
   };
 
-  const { execute, isLoading: isDeleteProcessing } = useActionLock({ delay: UI_CONSTANTS.ACTION_DELAY_MS });
+  const { execute, isLoading: isDeleteProcessing } = useActionLock({
+    delay: UI_CONSTANTS.ACTION_DELAY_MS,
+  });
 
   const confirmDelete = async () => {
     try {
@@ -117,32 +119,46 @@ export default function PolicyDepartmentListPage() {
   ];
 
   const filterFields: FilterField[] = [
-    { key: 'table_name', label: tFields('tableName'), type: 'text', placeholder: tCommon('search') },
+    {
+      key: 'table_name',
+      label: tFields('tableName'),
+      type: 'text',
+      placeholder: tCommon('search'),
+    },
   ];
   const searchFields: SearchField[] = [
     { key: 'table_name', label: tFields('tableName'), type: 'text' },
     { key: 'row_id', label: tFields('rowId'), type: 'number' },
-    { key: 'created_at', label: tFields('createdAt'), type: 'date' }
+    { key: 'created_at', label: tFields('createdAt'), type: 'date' },
   ];
   const bulkActions: BulkAction[] = [
-    { 
-      label: tBulkActions('deleteSelected'), 
-      icon: <Trash2 className="h-4 w-4" />, 
-      variant: 'destructive', 
-      onClick: async (ids) => { await remove(ids); }, 
-      confirmMessage: tCrud('deleteConfirm', { count: selectedIds.length, entity: tEntities('policyDepartment').toLowerCase() }), 
-      confirmTitle: tCrud('deleteEntity', { entity: tEntities('policyDepartments') }) 
-    }, 
-    { 
-      label: tBulkActions('activateSelected'), 
-      icon: <CheckCircle className="h-4 w-4" />, 
-      onClick: async () => { refetch(); } 
-    }, 
-    { 
-      label: tBulkActions('deactivateSelected'), 
-      icon: <XCircle className="h-4 w-4" />, 
-      onClick: async () => { refetch(); } 
-    }
+    {
+      label: tBulkActions('deleteSelected'),
+      icon: <Trash2 className="h-4 w-4" />,
+      variant: 'destructive',
+      onClick: async (ids) => {
+        await remove(ids);
+      },
+      confirmMessage: tCrud('deleteConfirm', {
+        count: selectedIds.length,
+        entity: tEntities('policyDepartment').toLowerCase(),
+      }),
+      confirmTitle: tCrud('deleteEntity', { entity: tEntities('policyDepartments') }),
+    },
+    {
+      label: tBulkActions('activateSelected'),
+      icon: <CheckCircle className="h-4 w-4" />,
+      onClick: async () => {
+        refetch();
+      },
+    },
+    {
+      label: tBulkActions('deactivateSelected'),
+      icon: <XCircle className="h-4 w-4" />,
+      onClick: async () => {
+        refetch();
+      },
+    },
   ];
   const handleAdvancedSearch = (criteria: SearchCriteria[]) => {
     const newFilters = criteria.reduce((acc, c) => ({ ...acc, [c.field]: c.value }), {});
@@ -158,14 +174,17 @@ export default function PolicyDepartmentListPage() {
     <AdminLayout>
       <PageHeader
         title={tManagement('title', { entity: tEntities('policyDepartments') })}
-        description={tManagement('description', { entity: tEntities('policyDepartments').toLowerCase() })}
+        description={tManagement('description', {
+          entity: tEntities('policyDepartments').toLowerCase(),
+        })}
         breadcrumbs={[
           { label: tCommon('admin'), href: ADMIN_ROUTES.DASHBOARD },
           { label: tEntities('policyDepartments'), isActive: true },
         ]}
         action={
           <Button onClick={handleCreate}>
-            <Plus className="mr-2 h-4 w-4" /> {tCrud('createEntity', { entity: tEntities('policyDepartment') })}
+            <Plus className="mr-2 h-4 w-4" />{' '}
+            {tCrud('createEntity', { entity: tEntities('policyDepartment') })}
           </Button>
         }
       />
@@ -173,13 +192,13 @@ export default function PolicyDepartmentListPage() {
       <div className="mt-6 space-y-4">
         <div className="flex gap-2">
           <AdvancedSearch fields={searchFields} onSearch={handleAdvancedSearch} />
-          <SavedFilters 
-            currentFilters={filters} 
-            onApplyFilter={(f) => { 
-              setFilters(f); 
-              setPage(PAGINATION.DEFAULT_PAGE); 
-            }} 
-            storageKey="policy-department-filters" 
+          <SavedFilters
+            currentFilters={filters}
+            onApplyFilter={(f) => {
+              setFilters(f);
+              setPage(PAGINATION.DEFAULT_PAGE);
+            }}
+            storageKey="policy-department-filters"
           />
           <ImportExport onImport={handleImport} />
         </div>
@@ -197,9 +216,15 @@ export default function PolicyDepartmentListPage() {
           fields={filterFields}
         />
 
-        <BulkActions selectedIds={selectedIds} onClearSelection={() => setSelectedIds([])} actions={bulkActions} isLoading={loading} />
+        <BulkActions
+          selectedIds={selectedIds}
+          onClearSelection={() => setSelectedIds([])}
+          actions={bulkActions}
+          isLoading={loading}
+        />
 
-        <DataTable data={data}
+        <DataTable
+          data={data}
           columns={columns}
           loading={loading}
           selectedIds={selectedIds}
@@ -208,7 +233,7 @@ export default function PolicyDepartmentListPage() {
           sortBy={sortBy}
           sortOrder={sortOrder}
           onEdit={(id) => {
-            const policy = data.find(p => p.id === id);
+            const policy = data.find((p) => p.id === id);
             if (policy) handleEdit(policy);
           }}
           onDelete={(id) => handleDelete([id])}
@@ -229,19 +254,29 @@ export default function PolicyDepartmentListPage() {
       {/* Create/Edit Policy Department Modal */}
       {/* Create/Edit Policy Department Modal */}
       <Dialog open={formDialogOpen} onOpenChange={setFormDialogOpen}>
-        <DialogContent className="max-w-xl max-h-[90vh] p-0 flex flex-col gap-0 overflow-hidden">
+        <DialogContent className="flex max-h-[90vh] max-w-xl flex-col gap-0 overflow-hidden p-0">
           {/* Header - Fixed */}
-          <div className="shrink-0 px-6 pt-6 pb-4 border-b bg-background">
+          <div className="shrink-0 border-b bg-background px-6 pt-6 pb-4">
             <DialogHeader>
-              <DialogTitle>{editingPolicy ? tCrud('editEntity', { entity: tEntities('policyDepartment') }) : tCrud('createEntity', { entity: tEntities('policyDepartment') })}</DialogTitle>
+              <DialogTitle>
+                {editingPolicy
+                  ? tCrud('editEntity', { entity: tEntities('policyDepartment') })
+                  : tCrud('createEntity', { entity: tEntities('policyDepartment') })}
+              </DialogTitle>
               <DialogDescription>
-                {editingPolicy ? tCrud('editDescription', { entity: tEntities('policyDepartment').toLowerCase() }) : tCrud('createDescription', { entity: tEntities('policyDepartment').toLowerCase() })}
+                {editingPolicy
+                  ? tCrud('editDescription', {
+                      entity: tEntities('policyDepartment').toLowerCase(),
+                    })
+                  : tCrud('createDescription', {
+                      entity: tEntities('policyDepartment').toLowerCase(),
+                    })}
               </DialogDescription>
             </DialogHeader>
           </div>
-          
+
           {/* Body - Scrollable */}
-          <div className="flex-1 overflow-y-auto min-h-0">
+          <div className="min-h-0 flex-1 overflow-y-auto">
             <div className="px-6 py-4">
               <PolicyDepartmentForm
                 initialData={editingPolicy}
@@ -250,9 +285,9 @@ export default function PolicyDepartmentListPage() {
               />
             </div>
           </div>
-          
+
           {/* Footer - Fixed */}
-          <div className="shrink-0 px-6 py-4 border-t bg-muted/20">
+          <div className="shrink-0 border-t bg-muted/20 px-6 py-4">
             <DialogFooter>
               <Button type="button" variant="outline" onClick={() => setFormDialogOpen(false)}>
                 {tCommon('cancel')}
@@ -269,10 +304,12 @@ export default function PolicyDepartmentListPage() {
         open={deleteDialogOpen}
         onOpenChange={setDeleteDialogOpen}
         title={tCrud('deleteEntity', { entity: tEntities('policyDepartment') })}
-        description={tCrud('deleteConfirm', { count: deleteIds.length, entity: tEntities('policyDepartment').toLowerCase() })}
+        description={tCrud('deleteConfirm', {
+          count: deleteIds.length,
+          entity: tEntities('policyDepartment').toLowerCase(),
+        })}
         onConfirm={confirmDelete}
         confirmText={tCommon('delete')}
-
         variant="destructive"
         isLoading={isDeleteProcessing}
       />

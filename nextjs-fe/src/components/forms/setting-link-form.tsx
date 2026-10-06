@@ -72,7 +72,9 @@ export function SettingLinkForm({ initialData, onSuccess, onCancel }: SettingLin
     }
   }, [initialData, reset]);
 
-  const { execute, isLoading: isActionProcessing } = useActionLock({ delay: UI_CONSTANTS.ACTION_DELAY_MS });
+  const { execute, isLoading: isActionProcessing } = useActionLock({
+    delay: UI_CONSTANTS.ACTION_DELAY_MS,
+  });
 
   const onSubmit = async (data: SettingLinkFormData) => {
     await execute(async () => {
@@ -85,17 +87,17 @@ export function SettingLinkForm({ initialData, onSuccess, onCancel }: SettingLin
           is_active: data.is_active ? IsActive.TRUE : IsActive.FALSE,
           is_delete: false,
         };
-      
-      if (isEdit && initialData) {
-        await update(initialData.id, payload);
-      } else {
-        await create(payload);
+
+        if (isEdit && initialData) {
+          await update(initialData.id, payload);
+        } else {
+          await create(payload);
+        }
+        onSuccess();
+      } catch (error: unknown) {
+        console.error(error);
+        handleBindErrors(error, setError);
       }
-      onSuccess();
-    } catch (error: unknown) {
-      console.error(error);
-      handleBindErrors(error, setError);
-    }
     });
   };
 
@@ -114,9 +116,7 @@ export function SettingLinkForm({ initialData, onSuccess, onCancel }: SettingLin
           className={errors.name ? 'border-red-500' : ''}
           placeholder={tForms('privacyPolicy')}
         />
-        {errors.name && (
-          <p className="text-sm text-red-500">{errors.name.message}</p>
-        )}
+        {errors.name && <p className="text-sm text-red-500">{errors.name.message}</p>}
       </div>
 
       <div className="space-y-2">
@@ -129,9 +129,7 @@ export function SettingLinkForm({ initialData, onSuccess, onCancel }: SettingLin
           className={errors.url ? 'border-red-500' : ''}
           placeholder={tForms('privacyUrl')}
         />
-        {errors.url && (
-          <p className="text-sm text-red-500">{errors.url.message}</p>
-        )}
+        {errors.url && <p className="text-sm text-red-500">{errors.url.message}</p>}
       </div>
 
       <div className="space-y-2">
@@ -144,11 +142,7 @@ export function SettingLinkForm({ initialData, onSuccess, onCancel }: SettingLin
           <Label htmlFor="rank_order">
             {tCommon('displayOrder')} <span className="text-red-500">*</span>
           </Label>
-          <Input
-            id="rank_order"
-            type="number"
-            {...register('rank_order')}
-          />
+          <Input id="rank_order" type="number" {...register('rank_order')} />
         </div>
 
         <div className="space-y-2">
@@ -163,30 +157,42 @@ export function SettingLinkForm({ initialData, onSuccess, onCancel }: SettingLin
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value={StatusEnum.PUBLISHED.toString()}>{StatusEnumLabels[StatusEnum.PUBLISHED]}</SelectItem>
-              <SelectItem value={StatusEnum.DRAFT.toString()}>{StatusEnumLabels[StatusEnum.DRAFT]}</SelectItem>
-              <SelectItem value={StatusEnum.ARCHIVED.toString()}>{StatusEnumLabels[StatusEnum.ARCHIVED]}</SelectItem>
+              <SelectItem value={StatusEnum.PUBLISHED.toString()}>
+                {StatusEnumLabels[StatusEnum.PUBLISHED]}
+              </SelectItem>
+              <SelectItem value={StatusEnum.DRAFT.toString()}>
+                {StatusEnumLabels[StatusEnum.DRAFT]}
+              </SelectItem>
+              <SelectItem value={StatusEnum.ARCHIVED.toString()}>
+                {StatusEnumLabels[StatusEnum.ARCHIVED]}
+              </SelectItem>
             </SelectContent>
           </Select>
         </div>
       </div>
 
-      <div className="flex items-center gap-2 mt-4">
-        <input
-          type="checkbox"
-          id="is_active"
-          {...register('is_active')}
-          className="rounded"
-        />
+      <div className="mt-4 flex items-center gap-2">
+        <input type="checkbox" id="is_active" {...register('is_active')} className="rounded" />
         <Label htmlFor="is_active">{tCommon('isActive')}</Label>
       </div>
 
       <div className="flex justify-end gap-2 pt-4">
-        <Button type="button" variant="outline" onClick={onCancel} disabled={loading || isActionProcessing}>
+        <Button
+          type="button"
+          variant="outline"
+          onClick={onCancel}
+          disabled={loading || isActionProcessing}
+        >
           {tCommon('cancel')}
         </Button>
         <Button type="submit" disabled={loading || isActionProcessing}>
-          {loading || isActionProcessing ? (isEdit ? tCommon('updating') : tCommon('creating')) : (isEdit ? tCommon('update') : tCommon('create'))}
+          {loading || isActionProcessing
+            ? isEdit
+              ? tCommon('updating')
+              : tCommon('creating')
+            : isEdit
+              ? tCommon('update')
+              : tCommon('create')}
         </Button>
       </div>
     </form>

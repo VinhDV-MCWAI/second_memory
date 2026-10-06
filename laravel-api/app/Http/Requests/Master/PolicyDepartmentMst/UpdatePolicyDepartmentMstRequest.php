@@ -2,12 +2,12 @@
 
 namespace App\Http\Requests\Master\PolicyDepartmentMst;
 
-use Illuminate\Foundation\Http\FormRequest;
 use App\Constants\CommonVal;
+use App\Enums\IsDelete;
+use App\Models\Master\PolicyDepartmentMst;
+use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Enum;
-use App\Models\Master\PolicyDepartmentMst;
-use App\Enums\IsDelete;
 
 class UpdatePolicyDepartmentMstRequest extends FormRequest
 {
@@ -28,9 +28,9 @@ class UpdatePolicyDepartmentMstRequest extends FormRequest
     {
         return [
             'id' => ['required', 'integer', 'min:1', Rule::exists(PolicyDepartmentMst::class, 'id')],
-            'table_name' => ['required', 'string', 'min:' . CommonVal::MIN_VARCHAR, 'max:20',],
-            'row_id' => ['required', 'integer', 'min:' . CommonVal::MIN_INTEGER, 'max:' . CommonVal::MAX_INTEGER,],
-            'is_delete' => ['required', new Enum(IsDelete::class),],
+            'table_name' => ['required', 'string', 'min:'.CommonVal::MIN_VARCHAR, 'max:20'],
+            'row_id' => ['required', 'integer', 'min:'.CommonVal::MIN_INTEGER, 'max:'.CommonVal::MAX_INTEGER],
+            'is_delete' => ['required', new Enum(IsDelete::class)],
         ];
     }
 

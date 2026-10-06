@@ -13,13 +13,13 @@ import { ConfirmDialog } from '@/components/ui/confirm-dialog';
 import { Button } from '@/components/ui/button';
 import type { TokenMst } from '@/shared/types/api';
 import { API_ENDPOINTS } from '@/shared/api';
-import { 
-  SORT_ORDER, 
-  SORT_FIELDS, 
-  type SortOrder, 
-  PAGINATION, 
+import {
+  SORT_ORDER,
+  SORT_FIELDS,
+  type SortOrder,
+  PAGINATION,
   ADMIN_ROUTES,
-  UI_CONSTANTS 
+  UI_CONSTANTS,
 } from '@/shared/config';
 import { AdvancedSearch } from '@/components/common/advanced-search';
 import type { SearchField, SearchCriteria } from '@/shared/types/data-table.types';
@@ -59,10 +59,13 @@ export default function TokenListPage() {
   const tCrud = useTranslations('crud');
   const tBulkActions = useTranslations('bulkActions');
 
-  const { data, loading, pagination, refetch } = useApiData<TokenMst>(
-    API_ENDPOINTS.MASTER.TOKEN,
-    { page, per_page: perPage, filters, sort_by: sortBy, sort_order: sortOrder }
-  );
+  const { data, loading, pagination, refetch } = useApiData<TokenMst>(API_ENDPOINTS.MASTER.TOKEN, {
+    page,
+    per_page: perPage,
+    filters,
+    sort_by: sortBy,
+    sort_order: sortOrder,
+  });
 
   const { remove } = useCrud<TokenMst>(API_ENDPOINTS.MASTER.TOKEN);
 
@@ -85,7 +88,9 @@ export default function TokenListPage() {
     setDeleteDialogOpen(true);
   };
 
-  const { execute, isLoading: isDeleteProcessing } = useActionLock({ delay: UI_CONSTANTS.ACTION_DELAY_MS });
+  const { execute, isLoading: isDeleteProcessing } = useActionLock({
+    delay: UI_CONSTANTS.ACTION_DELAY_MS,
+  });
 
   const confirmDelete = async () => {
     try {
@@ -119,44 +124,58 @@ export default function TokenListPage() {
   ];
 
   const filterFields: FilterField[] = [
-    { key: 'account_id', label: tFields('accountId'), type: 'text', placeholder: tCommon('search') },
+    {
+      key: 'account_id',
+      label: tFields('accountId'),
+      type: 'text',
+      placeholder: tCommon('search'),
+    },
     { key: 'device_name', label: tFields('deviceName'), type: 'text' },
   ];
   const searchFields: SearchField[] = [
     { key: 'account_id', label: tFields('accountId'), type: 'text' },
     { key: 'device_name', label: tFields('deviceName'), type: 'text' },
     { key: 'ip_address', label: tFields('ipAddress'), type: 'text' },
-    { key: 'created_at', label: tFields('createdAt'), type: 'date' }
+    { key: 'created_at', label: tFields('createdAt'), type: 'date' },
   ];
   const bulkActions: BulkAction[] = [
-    { 
-      label: tBulkActions('deleteSelected'), 
-      icon: <Trash2 className="h-4 w-4" />, 
-      variant: 'destructive', 
-      onClick: async (ids) => { await remove(ids); }, 
-      confirmMessage: tCrud('deleteConfirm', { count: selectedIds.length, entity: tEntities('token').toLowerCase() }), 
-      confirmTitle: tCrud('deleteEntity', { entity: tEntities('tokens') }) 
-    }, 
-    { 
-      label: tBulkActions('activateSelected'), 
-      icon: <CheckCircle className="h-4 w-4" />, 
-      onClick: async () => { /* Implement activate */ } 
-    }, 
-    { 
-      label: tBulkActions('deactivateSelected'), 
-      icon: <XCircle className="h-4 w-4" />, 
-      onClick: async () => { /* Implement deactivate */ } 
-    }
+    {
+      label: tBulkActions('deleteSelected'),
+      icon: <Trash2 className="h-4 w-4" />,
+      variant: 'destructive',
+      onClick: async (ids) => {
+        await remove(ids);
+      },
+      confirmMessage: tCrud('deleteConfirm', {
+        count: selectedIds.length,
+        entity: tEntities('token').toLowerCase(),
+      }),
+      confirmTitle: tCrud('deleteEntity', { entity: tEntities('tokens') }),
+    },
+    {
+      label: tBulkActions('activateSelected'),
+      icon: <CheckCircle className="h-4 w-4" />,
+      onClick: async () => {
+        /* Implement activate */
+      },
+    },
+    {
+      label: tBulkActions('deactivateSelected'),
+      icon: <XCircle className="h-4 w-4" />,
+      onClick: async () => {
+        /* Implement deactivate */
+      },
+    },
   ];
 
-  const handleAdvancedSearch = (criteria: SearchCriteria[]) => { 
-    const newFilters = criteria.reduce((acc, c) => ({ ...acc, [c.field]: c.value }), {}); 
-    setFilters(newFilters); 
-    setPage(PAGINATION.DEFAULT_PAGE); 
+  const handleAdvancedSearch = (criteria: SearchCriteria[]) => {
+    const newFilters = criteria.reduce((acc, c) => ({ ...acc, [c.field]: c.value }), {});
+    setFilters(newFilters);
+    setPage(PAGINATION.DEFAULT_PAGE);
   };
 
-  const handleImport = async () => { 
-    refetch(); 
+  const handleImport = async () => {
+    refetch();
   };
 
   return (
@@ -170,7 +189,8 @@ export default function TokenListPage() {
         ]}
         action={
           <Button onClick={handleCreate}>
-            <Plus className="mr-2 h-4 w-4" /> {tCrud('createEntity', { entity: tEntities('token') })}
+            <Plus className="mr-2 h-4 w-4" />{' '}
+            {tCrud('createEntity', { entity: tEntities('token') })}
           </Button>
         }
       />
@@ -178,13 +198,13 @@ export default function TokenListPage() {
       <div className="mt-6 space-y-4">
         <div className="flex gap-2">
           <AdvancedSearch fields={searchFields} onSearch={handleAdvancedSearch} />
-          <SavedFilters 
-            currentFilters={filters} 
-            onApplyFilter={(f) => { 
-              setFilters(f); 
-              setPage(PAGINATION.DEFAULT_PAGE); 
-            }} 
-            storageKey="token-filters" 
+          <SavedFilters
+            currentFilters={filters}
+            onApplyFilter={(f) => {
+              setFilters(f);
+              setPage(PAGINATION.DEFAULT_PAGE);
+            }}
+            storageKey="token-filters"
           />
           <ImportExport onImport={handleImport} />
         </div>
@@ -202,9 +222,15 @@ export default function TokenListPage() {
           fields={filterFields}
         />
 
-        <BulkActions selectedIds={selectedIds} onClearSelection={() => setSelectedIds([])} actions={bulkActions} isLoading={loading} />
+        <BulkActions
+          selectedIds={selectedIds}
+          onClearSelection={() => setSelectedIds([])}
+          actions={bulkActions}
+          isLoading={loading}
+        />
 
-        <DataTable data={data}
+        <DataTable
+          data={data}
           columns={columns}
           loading={loading}
           selectedIds={selectedIds}
@@ -213,7 +239,7 @@ export default function TokenListPage() {
           sortBy={sortBy}
           sortOrder={sortOrder}
           onEdit={(id) => {
-            const token = data.find(t => t.id === id);
+            const token = data.find((t) => t.id === id);
             if (token) handleEdit(token);
           }}
           onDelete={(id) => handleDelete([id])}
@@ -234,19 +260,25 @@ export default function TokenListPage() {
       {/* Create/Edit Token Modal */}
       {/* Create/Edit Token Modal */}
       <Dialog open={formDialogOpen} onOpenChange={setFormDialogOpen}>
-        <DialogContent className="max-w-xl max-h-[90vh] p-0 flex flex-col gap-0 overflow-hidden">
+        <DialogContent className="flex max-h-[90vh] max-w-xl flex-col gap-0 overflow-hidden p-0">
           {/* Header - Fixed */}
-          <div className="shrink-0 px-6 pt-6 pb-4 border-b bg-background">
+          <div className="shrink-0 border-b bg-background px-6 pt-6 pb-4">
             <DialogHeader>
-              <DialogTitle>{editingToken ? tCrud('editEntity', { entity: tEntities('token') }) : tCrud('createEntity', { entity: tEntities('token') })}</DialogTitle>
+              <DialogTitle>
+                {editingToken
+                  ? tCrud('editEntity', { entity: tEntities('token') })
+                  : tCrud('createEntity', { entity: tEntities('token') })}
+              </DialogTitle>
               <DialogDescription>
-                {editingToken ? tCrud('editDescription', { entity: tEntities('token').toLowerCase() }) : tCrud('createDescription', { entity: tEntities('token').toLowerCase() })}
+                {editingToken
+                  ? tCrud('editDescription', { entity: tEntities('token').toLowerCase() })
+                  : tCrud('createDescription', { entity: tEntities('token').toLowerCase() })}
               </DialogDescription>
             </DialogHeader>
           </div>
-          
+
           {/* Body - Scrollable */}
-          <div className="flex-1 overflow-y-auto min-h-0">
+          <div className="min-h-0 flex-1 overflow-y-auto">
             <div className="px-6 py-4">
               <TokenForm
                 initialData={editingToken}
@@ -255,9 +287,9 @@ export default function TokenListPage() {
               />
             </div>
           </div>
-          
+
           {/* Footer - Fixed */}
-          <div className="shrink-0 px-6 py-4 border-t bg-muted/20">
+          <div className="shrink-0 border-t bg-muted/20 px-6 py-4">
             <DialogFooter>
               <Button type="button" variant="outline" onClick={() => setFormDialogOpen(false)}>
                 {tCommon('cancel')}
@@ -274,10 +306,12 @@ export default function TokenListPage() {
         open={deleteDialogOpen}
         onOpenChange={setDeleteDialogOpen}
         title={tCrud('deleteEntity', { entity: tEntities('token') })}
-        description={tCrud('deleteConfirm', { count: deleteIds.length, entity: tEntities('token').toLowerCase() })}
+        description={tCrud('deleteConfirm', {
+          count: deleteIds.length,
+          entity: tEntities('token').toLowerCase(),
+        })}
         onConfirm={confirmDelete}
         confirmText={tCommon('delete')}
-
         variant="destructive"
         isLoading={isDeleteProcessing}
       />

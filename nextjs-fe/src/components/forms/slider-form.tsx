@@ -58,7 +58,8 @@ export function SliderForm({ initialData, onSuccess, onCancel }: SliderFormProps
         link: initialData.link || '',
         slug: initialData.slug || '',
 
-        status: initialData.status !== undefined ? Number(initialData.status) : StatusEnum.PUBLISHED,
+        status:
+          initialData.status !== undefined ? Number(initialData.status) : StatusEnum.PUBLISHED,
       });
     } else {
       reset({
@@ -71,26 +72,28 @@ export function SliderForm({ initialData, onSuccess, onCancel }: SliderFormProps
     }
   }, [initialData, reset]);
 
-  const { execute, isLoading: isActionProcessing } = useActionLock({ delay: UI_CONSTANTS.ACTION_DELAY_MS });
+  const { execute, isLoading: isActionProcessing } = useActionLock({
+    delay: UI_CONSTANTS.ACTION_DELAY_MS,
+  });
 
   const onSubmit = async (data: SliderFormData) => {
     await execute(async () => {
       try {
         const payload = { ...data };
-      
-      if (isEdit && initialData) {
-        await update(initialData.id, payload);
-      } else {
-        await create({
-          ...payload,
-          is_delete: false,
-        });
+
+        if (isEdit && initialData) {
+          await update(initialData.id, payload);
+        } else {
+          await create({
+            ...payload,
+            is_delete: false,
+          });
+        }
+        onSuccess();
+      } catch (error: unknown) {
+        console.error(error);
+        handleBindErrors(error, setError);
       }
-      onSuccess();
-    } catch (error: unknown) {
-      console.error(error);
-      handleBindErrors(error, setError);
-    }
     });
   };
 
@@ -99,7 +102,7 @@ export function SliderForm({ initialData, onSuccess, onCancel }: SliderFormProps
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
         <div>
           <ImageUpload
             label={tCommon('sliderImage')}
@@ -113,11 +116,17 @@ export function SliderForm({ initialData, onSuccess, onCancel }: SliderFormProps
             aspectRatio="aspect-[21/9]"
           />
         </div>
-        
+
         <div className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="title">{tCommon('title')} <span className="text-red-500">*</span></Label>
-            <Input id="title" {...register('title')} className={errors.title ? 'border-red-500' : ''} />
+            <Label htmlFor="title">
+              {tCommon('title')} <span className="text-red-500">*</span>
+            </Label>
+            <Input
+              id="title"
+              {...register('title')}
+              className={errors.title ? 'border-red-500' : ''}
+            />
             {errors.title && <p className="text-sm text-red-500">{errors.title.message}</p>}
           </div>
 
@@ -135,25 +144,49 @@ export function SliderForm({ initialData, onSuccess, onCancel }: SliderFormProps
 
       <div className="grid grid-cols-2 gap-4">
         <div className="space-y-2">
-            <Label htmlFor="status">{tCommon('status')} <span className="text-red-500">*</span></Label>
-            <Select key={`status-${String(statusValue)}`} value={statusValue !== undefined && statusValue !== null ? String(statusValue) : ''} onValueChange={(value) => setValue('status', Number(value) as StatusEnum)}>
-              <SelectTrigger><SelectValue /></SelectTrigger>
-              <SelectContent>
-                <SelectItem value={StatusEnum.PUBLISHED.toString()}>{StatusEnumLabels[StatusEnum.PUBLISHED]}</SelectItem>
-                <SelectItem value={StatusEnum.DRAFT.toString()}>{StatusEnumLabels[StatusEnum.DRAFT]}</SelectItem>
-                <SelectItem value={StatusEnum.ARCHIVED.toString()}>{StatusEnumLabels[StatusEnum.ARCHIVED]}</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-
+          <Label htmlFor="status">
+            {tCommon('status')} <span className="text-red-500">*</span>
+          </Label>
+          <Select
+            key={`status-${String(statusValue)}`}
+            value={statusValue !== undefined && statusValue !== null ? String(statusValue) : ''}
+            onValueChange={(value) => setValue('status', Number(value) as StatusEnum)}
+          >
+            <SelectTrigger>
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value={StatusEnum.PUBLISHED.toString()}>
+                {StatusEnumLabels[StatusEnum.PUBLISHED]}
+              </SelectItem>
+              <SelectItem value={StatusEnum.DRAFT.toString()}>
+                {StatusEnumLabels[StatusEnum.DRAFT]}
+              </SelectItem>
+              <SelectItem value={StatusEnum.ARCHIVED.toString()}>
+                {StatusEnumLabels[StatusEnum.ARCHIVED]}
+              </SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
       </div>
 
       <div className="flex justify-end gap-2 pt-4">
-        <Button type="button" variant="outline" onClick={onCancel} disabled={loading || isActionProcessing}>
+        <Button
+          type="button"
+          variant="outline"
+          onClick={onCancel}
+          disabled={loading || isActionProcessing}
+        >
           {tCommon('cancel')}
         </Button>
         <Button type="submit" disabled={loading || isActionProcessing}>
-          {loading || isActionProcessing ? (isEdit ? tCommon('updating') : tCommon('creating')) : (isEdit ? tCommon('update') : tCommon('create'))}
+          {loading || isActionProcessing
+            ? isEdit
+              ? tCommon('updating')
+              : tCommon('creating')
+            : isEdit
+              ? tCommon('update')
+              : tCommon('create')}
         </Button>
       </div>
     </form>

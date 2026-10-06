@@ -11,7 +11,6 @@ use App\Repositories\BaseRepository;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Arr;
 
-
 class SliderMgmtRepository extends BaseRepository implements SliderMgmtInterface
 {
     public function __construct(SliderMgmt $model)
@@ -21,9 +20,6 @@ class SliderMgmtRepository extends BaseRepository implements SliderMgmtInterface
 
     /**
      * Get list with pagination
-     *
-     * @param array $payload
-     * @return LengthAwarePaginator
      */
     public function list(array $payload): LengthAwarePaginator
     {
@@ -65,9 +61,6 @@ class SliderMgmtRepository extends BaseRepository implements SliderMgmtInterface
 
     /**
      * Create new record
-     *
-     * @param array $payload
-     * @return int
      */
     public function executeStore(array $payload): int
     {
@@ -80,12 +73,8 @@ class SliderMgmtRepository extends BaseRepository implements SliderMgmtInterface
         return $model->id;
     }
 
-
     /**
      * Update record
-     *
-     * @param array $payload
-     * @return int
      */
     public function executeUpdate(array $payload): int
     {
@@ -103,9 +92,6 @@ class SliderMgmtRepository extends BaseRepository implements SliderMgmtInterface
 
     /**
      * Delete record (soft delete)
-     *
-     * @param array $ids
-     * @return void
      */
     public function executeDelete(array $ids): void
     {
@@ -114,5 +100,4 @@ class SliderMgmtRepository extends BaseRepository implements SliderMgmtInterface
             ->notDeleted()
             ->update(['is_delete' => IsDelete::TRUE->value]);
     }
-
 }

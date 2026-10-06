@@ -6,14 +6,7 @@ import {
   ContextMenuShortcut,
   ContextMenuTrigger,
 } from '@/components/ui/context-menu';
-import {
-  Eye,
-  Pencil,
-  Move,
-  Copy,
-  Trash,
-  Download,
-} from 'lucide-react';
+import { Eye, Pencil, Move, Copy, Trash, Download } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import type { FileContextMenuProps } from '@/shared/types/file-manager.types';
 import { KEYBOARD_KEYS } from '@/shared/config/constant';
@@ -58,10 +51,7 @@ export const FileContextMenu = ({
           {t('copy')}
         </ContextMenuItem>
         <ContextMenuSeparator />
-        <ContextMenuItem
-          onClick={() => onDelete(file)}
-          className="text-red-600 focus:text-red-600"
-        >
+        <ContextMenuItem onClick={() => onDelete(file)} className="text-red-600 focus:text-red-600">
           <Trash className="mr-2 h-4 w-4" />
           {t('delete')}
           <ContextMenuShortcut>{KEYBOARD_KEYS.DELETE}</ContextMenuShortcut>

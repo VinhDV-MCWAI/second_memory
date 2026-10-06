@@ -1,6 +1,6 @@
 'use client';
 
-import "./globals.css";
+import './globals.css';
 import { Providers } from './providers';
 import { MetadataManager } from '@/components/common/metadata-manager';
 import { useEffect, useState } from 'react';

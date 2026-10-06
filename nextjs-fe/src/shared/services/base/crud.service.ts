@@ -30,7 +30,9 @@ export class BaseCrudService<T> {
   }
 
   async bulkDelete(ids: number[]): Promise<ApiResponse<void>> {
-    const response = await apiClient.post<ApiResponse<void>>(`${this.endpoint}/bulk-delete`, { ids });
+    const response = await apiClient.post<ApiResponse<void>>(`${this.endpoint}/bulk-delete`, {
+      ids,
+    });
     return response.data;
   }
 }

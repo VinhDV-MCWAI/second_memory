@@ -1,16 +1,12 @@
 'use client';
 
-import { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
-import { api } from "@/lib/api";
-import { Entry, Category } from "@/types/docs";
-import DocLayoutClient from "@/components/doc-layout-client";
+import { useEffect, useState } from 'react';
+import { useParams } from 'next/navigation';
+import { api } from '@/lib/api';
+import { Entry, Category } from '@/types/docs';
+import DocLayoutClient from '@/components/doc-layout-client';
 
-export default function CategoryLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function CategoryLayout({ children }: { children: React.ReactNode }) {
   const params = useParams();
   const categorySlug = params?.categorySlug as string;
   const [entries, setEntries] = useState<Entry[]>([]);
@@ -26,7 +22,7 @@ export default function CategoryLayout({
             api.getCategories() as Promise<Category[]>,
           ]);
           setEntries(entriesData);
-          const currentCategory = categoriesData.find(c => c.slug === categorySlug);
+          const currentCategory = categoriesData.find((c) => c.slug === categorySlug);
           if (currentCategory) {
             setCategory(currentCategory);
           }
@@ -43,14 +39,18 @@ export default function CategoryLayout({
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="flex min-h-screen items-center justify-center">
         <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent"></div>
       </div>
     );
   }
 
   return (
-    <DocLayoutClient entries={entries} categorySlug={categorySlug} layoutStructure={category?.layout_structure}>
+    <DocLayoutClient
+      entries={entries}
+      categorySlug={categorySlug}
+      layoutStructure={category?.layout_structure}
+    >
       {children}
     </DocLayoutClient>
   );

@@ -24,7 +24,7 @@ export function PermissionManager({
     const newSelected = selected.includes(permissionId)
       ? selected.filter((id) => id !== permissionId)
       : [...selected, permissionId];
-    
+
     setSelected(newSelected);
     onChange(newSelected);
   };
@@ -55,13 +55,9 @@ export function PermissionManager({
       <div className="flex items-center justify-between">
         <div>
           <h3 className="text-lg font-medium">{t('title')}</h3>
-          <p className="text-sm text-muted-foreground">
-            {t('description')}
-          </p>
+          <p className="text-sm text-muted-foreground">{t('description')}</p>
         </div>
-        <Badge variant="secondary">
-          {t('selected', { count: selected.length })}
-        </Badge>
+        <Badge variant="secondary">{t('selected', { count: selected.length })}</Badge>
       </div>
 
       <Separator />
@@ -101,12 +97,12 @@ export function PermissionManager({
                     <div className="flex-1">
                       <Label
                         htmlFor={`permission-${permission.id}`}
-                        className="cursor-pointer text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                        className="cursor-pointer text-sm leading-none font-medium peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
                       >
                         {permission.name}
                       </Label>
                       {permission.description && (
-                        <p className="text-xs text-muted-foreground mt-1">
+                        <p className="mt-1 text-xs text-muted-foreground">
                           {permission.description}
                         </p>
                       )}

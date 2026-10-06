@@ -1,8 +1,8 @@
-import { clsx, type ClassValue } from "clsx"
-import { twMerge } from "tailwind-merge"
+import { clsx, type ClassValue } from 'clsx';
+import { twMerge } from 'tailwind-merge';
 
 export function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs))
+  return twMerge(clsx(inputs));
 }
 
 /**
@@ -22,7 +22,7 @@ export function slugify(text: string): string {
  */
 export function debounce<A extends unknown[]>(
   func: (...args: A) => unknown,
-  wait: number
+  wait: number,
 ): (...args: A) => void {
   let timeout: NodeJS.Timeout;
   return (...args: A) => {

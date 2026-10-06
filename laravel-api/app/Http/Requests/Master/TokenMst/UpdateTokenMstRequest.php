@@ -2,11 +2,10 @@
 
 namespace App\Http\Requests\Master\TokenMst;
 
-use Illuminate\Foundation\Http\FormRequest;
 use App\Constants\CommonVal;
-use Illuminate\Validation\Rule;
-use Illuminate\Validation\Rules\Enum;
 use App\Models\Master\TokenMst;
+use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class UpdateTokenMstRequest extends FormRequest
 {
@@ -27,10 +26,10 @@ class UpdateTokenMstRequest extends FormRequest
     {
         return [
             'id' => ['required', 'integer', 'min:1', Rule::exists(TokenMst::class, 'id')],
-            'account_id' => ['required', 'integer', 'min:' . CommonVal::MIN_INTEGER, 'max:' . CommonVal::MAX_INTEGER,],
-            'device_name' => ['string', 'min:' . CommonVal::MIN_VARCHAR, 'max:255',],
-            'ip_address' => ['string', 'min:' . CommonVal::MIN_VARCHAR, 'max:255',],
-            'expired_at' => ['date_format:' . CommonVal::DATE_FORMAT, 'after_or_equal:' . CommonVal::MIN_DATE, 'before_or_equal:' . CommonVal::MAX_DATE,],
+            'account_id' => ['required', 'integer', 'min:'.CommonVal::MIN_INTEGER, 'max:'.CommonVal::MAX_INTEGER],
+            'device_name' => ['string', 'min:'.CommonVal::MIN_VARCHAR, 'max:255'],
+            'ip_address' => ['string', 'min:'.CommonVal::MIN_VARCHAR, 'max:255'],
+            'expired_at' => ['date_format:'.CommonVal::DATE_FORMAT, 'after_or_equal:'.CommonVal::MIN_DATE, 'before_or_equal:'.CommonVal::MAX_DATE],
         ];
     }
 

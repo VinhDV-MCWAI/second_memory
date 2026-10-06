@@ -50,30 +50,30 @@ export const MoveCopyDialog = ({
           // We need to map MediaFile to FolderType if necessary or adjust types
           // Looking at types: MediaFile has folder_path, FolderType has path
           const response = await mediaFileService.listFolders({
-             parent_path: '/', // TODO: Should we list all folders recursively or just root?
-             // The original mock did a flat list of all folders. 
-             // Real API might need recursive fetching or just flat list if supported.
-             // Assuming listFolders returns what we need for now, but we might need to adjust.
-             // Let's check mediaFileService.listFolders implementation again.
-             // It calls API_PATHS.LIST with is_file=false.
+            parent_path: '/', // TODO: Should we list all folders recursively or just root?
+            // The original mock did a flat list of all folders.
+            // Real API might need recursive fetching or just flat list if supported.
+            // Assuming listFolders returns what we need for now, but we might need to adjust.
+            // Let's check mediaFileService.listFolders implementation again.
+            // It calls API_PATHS.LIST with is_file=false.
           });
 
           // The listFolders returns MediaFile[], but we need FolderType[]
           // We cast to any to safely access properties that might vary between API types and runtime response
           const mappedFolders: FolderType[] = response.data.map((f: ServiceMediaFile) => {
-             const item = f as unknown as { parent_id?: number };
-             return {
-               id: f.id.toString(),
-               name: f.original_name,
-               path: f.virtual_path,
-               parent_id: item.parent_id?.toString() || 'root'
-             };
+            const item = f as unknown as { parent_id?: number };
+            return {
+              id: f.id.toString(),
+              name: f.original_name,
+              path: f.virtual_path,
+              parent_id: item.parent_id?.toString() || 'root',
+            };
           });
 
           // Filter out: current path AND folders that are being moved (prevent moving folder into itself)
-          setFolders(mappedFolders.filter(f => 
-            f.path !== currentPath && !selectedFileIds.includes(f.id)
-          ));
+          setFolders(
+            mappedFolders.filter((f) => f.path !== currentPath && !selectedFileIds.includes(f.id)),
+          );
           setSelectedPath('');
         } catch {
         } finally {
@@ -86,7 +86,7 @@ export const MoveCopyDialog = ({
 
   const handleConfirm = async () => {
     if (!selectedPath) return;
-    
+
     setIsLoading(true);
     try {
       await onConfirm(selectedPath);
@@ -104,12 +104,14 @@ export const MoveCopyDialog = ({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>{title} {count} {t('moveCopy.items')}</DialogTitle>
+          <DialogTitle>
+            {title} {count} {t('moveCopy.items')}
+          </DialogTitle>
           <DialogDescription>
             {t('moveCopy.description', { action: action.toLowerCase() })}
           </DialogDescription>
         </DialogHeader>
-        
+
         <div className="grid gap-4 py-4">
           <div className="space-y-2">
             <Label>{t('moveCopy.targetFolder')}</Label>
@@ -133,9 +135,7 @@ export const MoveCopyDialog = ({
                     <div className="flex items-center gap-2">
                       <Folder className="h-4 w-4" />
                       <span>{folder.name}</span>
-                      <span className="text-xs text-muted-foreground ml-2">
-                        {folder.path}
-                      </span>
+                      <span className="ml-2 text-xs text-muted-foreground">{folder.path}</span>
                     </div>
                   </SelectItem>
                 ))}
@@ -152,8 +152,8 @@ export const MoveCopyDialog = ({
           >
             {t('cancel')}
           </Button>
-          <Button 
-            onClick={handleConfirm} 
+          <Button
+            onClick={handleConfirm}
             disabled={!selectedPath || isLoading || isExternalLoading}
           >
             {isLoading || isExternalLoading ? t('processing') : action}

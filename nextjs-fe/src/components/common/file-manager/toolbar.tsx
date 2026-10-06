@@ -45,7 +45,7 @@ export const Toolbar = ({
   onSortChange,
 }: ToolbarProps) => {
   const t = useTranslations('fileManager');
-  
+
   const handleSort = (field: SortField) => {
     if (sortOptions.field === field) {
       onSortChange({
@@ -64,25 +64,15 @@ export const Toolbar = ({
     <div className="flex flex-col gap-4 border-b border-border bg-background px-4 py-4">
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div className="flex flex-wrap items-center gap-2">
-          <Button
-            onClick={onUpload}
-            variant="default"
-            size="sm"
-            className="gap-2"
-          >
+          <Button onClick={onUpload} variant="default" size="sm" className="gap-2">
             <Upload className="h-4 w-4" />
             {t('upload')}
           </Button>
-          <Button
-            onClick={onNewFolder}
-            variant="outline"
-            size="sm"
-            className="gap-2"
-          >
+          <Button onClick={onNewFolder} variant="outline" size="sm" className="gap-2">
             <FolderPlus className="h-4 w-4" />
             {t('newFolder')}
           </Button>
-          
+
           {selectedCount > 0 && (
             <>
               <div className="mx-2 h-6 w-px bg-border" />
@@ -90,30 +80,15 @@ export const Toolbar = ({
                 <CheckSquare className="h-4 w-4" />
                 <span>{t('selectedCount', { count: selectedCount })}</span>
               </div>
-              <Button
-                onClick={onMove}
-                variant="outline"
-                size="sm"
-                className="gap-2"
-              >
+              <Button onClick={onMove} variant="outline" size="sm" className="gap-2">
                 <Move className="h-4 w-4" />
                 {t('move')}
               </Button>
-              <Button
-                onClick={onCopy}
-                variant="outline"
-                size="sm"
-                className="gap-2"
-              >
+              <Button onClick={onCopy} variant="outline" size="sm" className="gap-2">
                 <Copy className="h-4 w-4" />
                 {t('copy')}
               </Button>
-              <Button
-                onClick={onDelete}
-                variant="destructive"
-                size="sm"
-                className="gap-2"
-              >
+              <Button onClick={onDelete} variant="destructive" size="sm" className="gap-2">
                 <Delete className="h-4 w-4" />
                 {t('delete')}
               </Button>
@@ -137,10 +112,18 @@ export const Toolbar = ({
                 }
               >
                 <DropdownMenuRadioItem value="all">{t('filterType.all')}</DropdownMenuRadioItem>
-                <DropdownMenuRadioItem value="images">{t('filterType.images')}</DropdownMenuRadioItem>
-                <DropdownMenuRadioItem value="videos">{t('filterType.videos')}</DropdownMenuRadioItem>
-                <DropdownMenuRadioItem value="documents">{t('filterType.documents')}</DropdownMenuRadioItem>
-                <DropdownMenuRadioItem value="folders">{t('filterType.folders')}</DropdownMenuRadioItem>
+                <DropdownMenuRadioItem value="images">
+                  {t('filterType.images')}
+                </DropdownMenuRadioItem>
+                <DropdownMenuRadioItem value="videos">
+                  {t('filterType.videos')}
+                </DropdownMenuRadioItem>
+                <DropdownMenuRadioItem value="documents">
+                  {t('filterType.documents')}
+                </DropdownMenuRadioItem>
+                <DropdownMenuRadioItem value="folders">
+                  {t('filterType.folders')}
+                </DropdownMenuRadioItem>
               </DropdownMenuRadioGroup>
             </DropdownMenuContent>
           </DropdownMenu>
@@ -154,16 +137,24 @@ export const Toolbar = ({
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               <DropdownMenuItem onClick={() => handleSort(FILE_MANAGER_SORT_FIELDS.NAME)}>
-                {t('sortField.name')} {sortOptions.field === FILE_MANAGER_SORT_FIELDS.NAME && (sortOptions.order === SORT_ORDER.ASC ? '↑' : '↓')}
+                {t('sortField.name')}{' '}
+                {sortOptions.field === FILE_MANAGER_SORT_FIELDS.NAME &&
+                  (sortOptions.order === SORT_ORDER.ASC ? '↑' : '↓')}
               </DropdownMenuItem>
               <DropdownMenuItem onClick={() => handleSort(FILE_MANAGER_SORT_FIELDS.DATE)}>
-                {t('sortField.date')} {sortOptions.field === FILE_MANAGER_SORT_FIELDS.DATE && (sortOptions.order === SORT_ORDER.ASC ? '↑' : '↓')}
+                {t('sortField.date')}{' '}
+                {sortOptions.field === FILE_MANAGER_SORT_FIELDS.DATE &&
+                  (sortOptions.order === SORT_ORDER.ASC ? '↑' : '↓')}
               </DropdownMenuItem>
               <DropdownMenuItem onClick={() => handleSort(FILE_MANAGER_SORT_FIELDS.SIZE)}>
-                {t('sortField.size')} {sortOptions.field === FILE_MANAGER_SORT_FIELDS.SIZE && (sortOptions.order === SORT_ORDER.ASC ? '↑' : '↓')}
+                {t('sortField.size')}{' '}
+                {sortOptions.field === FILE_MANAGER_SORT_FIELDS.SIZE &&
+                  (sortOptions.order === SORT_ORDER.ASC ? '↑' : '↓')}
               </DropdownMenuItem>
               <DropdownMenuItem onClick={() => handleSort(FILE_MANAGER_SORT_FIELDS.TYPE)}>
-                {t('sortField.type')} {sortOptions.field === FILE_MANAGER_SORT_FIELDS.TYPE && (sortOptions.order === SORT_ORDER.ASC ? '↑' : '↓')}
+                {t('sortField.type')}{' '}
+                {sortOptions.field === FILE_MANAGER_SORT_FIELDS.TYPE &&
+                  (sortOptions.order === SORT_ORDER.ASC ? '↑' : '↓')}
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
@@ -190,7 +181,7 @@ export const Toolbar = ({
       </div>
 
       <div className="relative">
-        <Search className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
+        <Search className="absolute top-2.5 left-3 h-4 w-4 text-muted-foreground" />
         <Input
           placeholder={t('searchPlaceholder')}
           value={searchQuery}

@@ -20,9 +20,6 @@ class DepartmentMstRepository extends BaseRepository implements DepartmentMstInt
 
     /**
      * Get list with pagination
-     *
-     * @param array $payload
-     * @return LengthAwarePaginator
      */
     public function list(array $payload): LengthAwarePaginator
     {
@@ -61,9 +58,6 @@ class DepartmentMstRepository extends BaseRepository implements DepartmentMstInt
 
     /**
      * Create new record
-     *
-     * @param array $payload
-     * @return int
      */
     public function executeStore(array $payload): int
     {
@@ -78,9 +72,6 @@ class DepartmentMstRepository extends BaseRepository implements DepartmentMstInt
 
     /**
      * Update record
-     *
-     * @param array $payload
-     * @return int
      */
     public function executeUpdate(array $payload): int
     {
@@ -98,9 +89,6 @@ class DepartmentMstRepository extends BaseRepository implements DepartmentMstInt
 
     /**
      * Delete record (soft delete)
-     *
-     * @param array $ids
-     * @return void
      */
     public function executeDelete(array $ids): void
     {

@@ -2,27 +2,22 @@
 
 namespace App\Http\Controllers\History\Management;
 
+use App\Http\Controllers\Controller;
+use App\Http\Requests\History\Management\BannerMgmtHist\DeleteBannerMgmtHistRequest;
 use App\Http\Requests\History\Management\BannerMgmtHist\ListBannerMgmtHistRequest;
 use App\Http\Requests\History\Management\BannerMgmtHist\StoreBannerMgmtHistRequest;
 use App\Http\Requests\History\Management\BannerMgmtHist\UpdateBannerMgmtHistRequest;
-use App\Http\Requests\History\Management\BannerMgmtHist\DeleteBannerMgmtHistRequest;
 use App\Services\History\Management\BannerMgmtHistService;
-use App\Http\Controllers\Controller;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class BannerMgmtHistController extends Controller
 {
     public function __construct(
         protected BannerMgmtHistService $bannerMgmtHist
-    )
-    {
-    }
-    
+    ) {}
+
     /**
      * BannerMgmtHist list
-     *
-     * @param ListBannerMgmtHistRequest $request
-     * @return JsonResource
      */
     public function list(ListBannerMgmtHistRequest $request): JsonResource
     {
@@ -31,9 +26,6 @@ class BannerMgmtHistController extends Controller
 
     /**
      * Store banner mgmt hist
-     *
-     * @param StoreBannerMgmtHistRequest $request
-     * @return int
      */
     public function store(StoreBannerMgmtHistRequest $request): int
     {
@@ -42,10 +34,6 @@ class BannerMgmtHistController extends Controller
 
     /**
      * Update banner mgmt hist
-     *
-     * @param UpdateBannerMgmtHistRequest $request
-     * @param string $id
-     * @return int
      */
     public function update(UpdateBannerMgmtHistRequest $request, string $id): int
     {
@@ -57,9 +45,6 @@ class BannerMgmtHistController extends Controller
 
     /**
      * Delete banner mgmt hist
-     *
-     * @param DeleteBannerMgmtHistRequest $request
-     * @return void
      */
     public function delete(DeleteBannerMgmtHistRequest $request): void
     {

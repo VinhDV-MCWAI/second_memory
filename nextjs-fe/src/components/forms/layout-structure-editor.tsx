@@ -2,10 +2,26 @@
 
 import { useState, useCallback, useEffect, useRef } from 'react';
 import { v4 as uuidv4 } from 'uuid';
-import { Search, Trash2, ChevronRight, ChevronDown, GripVertical, IndentDecrease, IndentIncrease } from 'lucide-react';
-import { draggable, dropTargetForElements, monitorForElements } from '@atlaskit/pragmatic-drag-and-drop/element/adapter';
+import {
+  Search,
+  Trash2,
+  ChevronRight,
+  ChevronDown,
+  GripVertical,
+  IndentDecrease,
+  IndentIncrease,
+} from 'lucide-react';
+import {
+  draggable,
+  dropTargetForElements,
+  monitorForElements,
+} from '@atlaskit/pragmatic-drag-and-drop/element/adapter';
 import { combine } from '@atlaskit/pragmatic-drag-and-drop/combine';
-import { attachClosestEdge, extractClosestEdge, type Edge } from '@atlaskit/pragmatic-drag-and-drop-hitbox/closest-edge';
+import {
+  attachClosestEdge,
+  extractClosestEdge,
+  type Edge,
+} from '@atlaskit/pragmatic-drag-and-drop-hitbox/closest-edge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -38,9 +54,13 @@ const MAX_DEPTH = 5; // Maximum nesting level
 
 // Tree manipulation helpers
 const treeHelpers = {
-  flatten: (items: LayoutStructureItem[], parentId: string | null = null, depth: number = 0): FlatItem[] => {
+  flatten: (
+    items: LayoutStructureItem[],
+    parentId: string | null = null,
+    depth: number = 0,
+  ): FlatItem[] => {
     const flat: FlatItem[] = [];
-    items.forEach(item => {
+    items.forEach((item) => {
       flat.push({ ...item, depth, parentId });
       if (item.children?.length) {
         flat.push(...treeHelpers.flatten(item.children, item.ui_id, depth + 1));
@@ -53,13 +73,13 @@ const treeHelpers = {
     const map = new Map<string, LayoutStructureItem>();
     const roots: LayoutStructureItem[] = [];
 
-    flatItems.forEach(item => {
+    flatItems.forEach((item) => {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { depth: _depth, parentId: _parentId, ...data } = item;
       map.set(item.ui_id, { ...data, children: [] });
     });
 
-    flatItems.forEach(item => {
+    flatItems.forEach((item) => {
       const node = map.get(item.ui_id)!;
       if (item.parentId && map.has(item.parentId)) {
         const parent = map.get(item.parentId)!;
@@ -72,7 +92,7 @@ const treeHelpers = {
 
     // Clean up empty children arrays
     const cleanup = (items: LayoutStructureItem[]) => {
-      items.forEach(item => {
+      items.forEach((item) => {
         if (item.children && item.children.length === 0) {
           delete item.children;
         } else if (item.children) {
@@ -120,7 +140,7 @@ function TreeItem({
 }: TreeItemProps) {
   const ref = useRef<HTMLDivElement>(null);
   const dragHandleRef = useRef<HTMLDivElement>(null);
-  
+
   const hasChildren = item.children && item.children.length > 0;
   const isCollapsed = collapsed.has(item.ui_id);
 
@@ -157,7 +177,7 @@ function TreeItem({
           const sourceData = source.data as unknown as DragData;
           return sourceData.type === 'tree-item' && sourceData.itemId !== item.ui_id;
         },
-      })
+      }),
     );
   }, [item.ui_id, item.children, depth]);
 
@@ -166,17 +186,17 @@ function TreeItem({
       <div
         ref={ref}
         className={cn(
-          'flex items-center gap-2 p-2.5 mb-1 border rounded-lg bg-card transition-all duration-200',
+          'mb-1 flex items-center gap-2 rounded-lg border bg-card p-2.5 transition-all duration-200',
           !isDragging && 'hover:bg-accent hover:shadow-sm',
           isDragging && 'opacity-40',
           closestEdge === 'top' && 'border-t-2 border-t-primary',
-          closestEdge === 'bottom' && 'border-b-2 border-b-primary'
+          closestEdge === 'bottom' && 'border-b-2 border-b-primary',
         )}
         style={{ marginLeft: `${depth * INDENT_WIDTH}px` }}
       >
-        <div 
+        <div
           ref={dragHandleRef}
-          className="flex-shrink-0 cursor-grab active:cursor-grabbing touch-none"
+          className="flex-shrink-0 cursor-grab touch-none active:cursor-grabbing"
         >
           <GripVertical className="h-4 w-4 text-muted-foreground" />
         </div>
@@ -187,7 +207,7 @@ function TreeItem({
               e.stopPropagation();
               onToggleCollapse(item.ui_id);
             }}
-            className="flex-shrink-0 hover:bg-accent/50 rounded p-0.5 transition-colors"
+            className="flex-shrink-0 rounded p-0.5 transition-colors hover:bg-accent/50"
             type="button"
           >
             {isCollapsed ? (
@@ -200,11 +220,11 @@ function TreeItem({
           <div className="w-5" />
         )}
 
-        <div className="flex-1 text-sm font-medium truncate text-foreground">
+        <div className="flex-1 truncate text-sm font-medium text-foreground">
           {item.name || `Item ${item.entry_desc_id || item.entry_mgmt_id || 'Unknown'}`}
         </div>
 
-        <div className="flex items-center gap-1 flex-shrink-0">
+        <div className="flex flex-shrink-0 items-center gap-1">
           {canOutdent && (
             <Button
               variant="ghost"
@@ -214,7 +234,7 @@ function TreeItem({
                 onOutdent(item.ui_id);
               }}
               title="Move Left"
-              className="h-7 w-7 hover:bg-muted transition-colors"
+              className="h-7 w-7 transition-colors hover:bg-muted"
               type="button"
             >
               <IndentDecrease className="h-3.5 w-3.5" />
@@ -230,7 +250,7 @@ function TreeItem({
                 onIndent(item.ui_id);
               }}
               title="Move Right"
-              className="h-7 w-7 hover:bg-muted transition-colors"
+              className="h-7 w-7 transition-colors hover:bg-muted"
               type="button"
             >
               <IndentIncrease className="h-3.5 w-3.5" />
@@ -244,7 +264,7 @@ function TreeItem({
               e.stopPropagation();
               onRemove(item.ui_id);
             }}
-            className="h-7 w-7 hover:bg-destructive/10 transition-colors"
+            className="h-7 w-7 transition-colors hover:bg-destructive/10"
             type="button"
           >
             <Trash2 className="h-3.5 w-3.5 text-destructive" />
@@ -282,7 +302,7 @@ export function LayoutStructureEditor({
   type,
   availableItems,
   value = [],
-  onChange,  
+  onChange,
   onSearch,
   loading,
 }: LayoutStructureEditorProps): React.ReactElement {
@@ -297,25 +317,25 @@ export function LayoutStructureEditor({
     (items: LayoutStructureItem[]): LayoutStructureItem[] => {
       if (!items || items.length === 0) return [];
       const enriched: LayoutStructureItem[] = [];
-      
+
       for (const item of items) {
         if (!item.ui_id) {
           item.ui_id = uuidv4();
         }
-        
+
         const itemId = item.entry_mgmt_id || item.entry_desc_id;
         if (!itemId) continue;
-        
-        const availableItem = availableItems.find(ai => ai.id === itemId);
+
+        const availableItem = availableItems.find((ai) => ai.id === itemId);
         if (!availableItem) continue;
-        
+
         const enrichedItem: LayoutStructureItem = {
           ...item,
           ui_id: item.ui_id,
           name: availableItem.name,
           slug: availableItem.slug,
         };
-        
+
         if (item.children && item.children.length > 0) {
           enrichedItem.children = enrichStructureWithNames(item.children);
         }
@@ -323,7 +343,7 @@ export function LayoutStructureEditor({
       }
       return enriched;
     },
-    [availableItems]
+    [availableItems],
   );
 
   useEffect(() => {
@@ -333,7 +353,7 @@ export function LayoutStructureEditor({
     }
     const enrichedValue = enrichStructureWithNames(value);
     setStructure(enrichedValue);
-    
+
     if (enrichedValue.length !== value.length && onChange) {
       queueMicrotask(() => onChange(enrichedValue));
     }
@@ -344,8 +364,8 @@ export function LayoutStructureEditor({
       if (draggedId === targetId) return;
 
       const flat = treeHelpers.flatten(structure);
-      const draggedIndex = flat.findIndex(i => i.ui_id === draggedId);
-      const targetIndex = flat.findIndex(i => i.ui_id === targetId);
+      const draggedIndex = flat.findIndex((i) => i.ui_id === draggedId);
+      const targetIndex = flat.findIndex((i) => i.ui_id === targetId);
 
       if (draggedIndex < 0 || targetIndex < 0) return;
 
@@ -354,7 +374,7 @@ export function LayoutStructureEditor({
 
       const descendants: string[] = [];
       const collectDescendants = (parentId: string) => {
-        flat.forEach(item => {
+        flat.forEach((item) => {
           if (item.parentId === parentId) {
             descendants.push(item.ui_id);
             collectDescendants(item.ui_id);
@@ -364,10 +384,10 @@ export function LayoutStructureEditor({
       collectDescendants(draggedId);
 
       const filtered = flat.filter(
-        item => item.ui_id !== draggedId && !descendants.includes(item.ui_id)
+        (item) => item.ui_id !== draggedId && !descendants.includes(item.ui_id),
       );
 
-      const newTargetIndex = filtered.findIndex(i => i.ui_id === targetId);
+      const newTargetIndex = filtered.findIndex((i) => i.ui_id === targetId);
       if (newTargetIndex < 0) return;
 
       let insertIndex = edge === 'bottom' ? newTargetIndex + 1 : newTargetIndex;
@@ -376,8 +396,8 @@ export function LayoutStructureEditor({
 
       filtered.splice(insertIndex, 0, draggedItem);
 
-      descendants.forEach(descId => {
-        const desc = flat.find(i => i.ui_id === descId);
+      descendants.forEach((descId) => {
+        const desc = flat.find((i) => i.ui_id === descId);
         if (desc) {
           insertIndex++;
           filtered.splice(insertIndex, 0, { ...desc });
@@ -388,7 +408,7 @@ export function LayoutStructureEditor({
       setStructure(newStructure);
       queueMicrotask(() => onChange(newStructure));
     },
-    [structure, onChange]
+    [structure, onChange],
   );
 
   useEffect(() => {
@@ -439,7 +459,7 @@ export function LayoutStructureEditor({
       setSearchQuery(query);
       onSearch?.(query);
     },
-    [onSearch]
+    [onSearch],
   );
 
   const handleAddItem = useCallback(
@@ -454,15 +474,15 @@ export function LayoutStructureEditor({
       setStructure(newStructure);
       queueMicrotask(() => onChange(newStructure));
     },
-    [structure, onChange, type]
+    [structure, onChange, type],
   );
 
   const handleRemoveItem = useCallback(
     (uiId: string) => {
       const removeFromTree = (items: LayoutStructureItem[]): LayoutStructureItem[] => {
         return items
-          .filter(item => item.ui_id !== uiId)
-          .map(item => ({
+          .filter((item) => item.ui_id !== uiId)
+          .map((item) => ({
             ...item,
             children: item.children ? removeFromTree(item.children) : undefined,
           }));
@@ -471,11 +491,11 @@ export function LayoutStructureEditor({
       setStructure(newStructure);
       queueMicrotask(() => onChange(newStructure));
     },
-    [structure, onChange]
+    [structure, onChange],
   );
 
   const handleToggleCollapse = useCallback((uiId: string) => {
-    setCollapsed(prev => {
+    setCollapsed((prev) => {
       const newSet = new Set(prev);
       if (newSet.has(uiId)) {
         newSet.delete(uiId);
@@ -489,13 +509,13 @@ export function LayoutStructureEditor({
   const handleIndent = useCallback(
     (uiId: string) => {
       const flat = treeHelpers.flatten(structure);
-      const itemIndex = flat.findIndex(i => i.ui_id === uiId);
+      const itemIndex = flat.findIndex((i) => i.ui_id === uiId);
       if (itemIndex <= 0) return;
 
       const item = flat[itemIndex];
-      
+
       if (item.depth >= MAX_DEPTH - 1) return;
-      
+
       let prevSibling: FlatItem | null = null;
       for (let i = itemIndex - 1; i >= 0; i--) {
         if (flat[i].parentId === item.parentId && flat[i].depth === item.depth) {
@@ -513,19 +533,19 @@ export function LayoutStructureEditor({
       setStructure(newStructure);
       queueMicrotask(() => onChange(newStructure));
     },
-    [structure, onChange]
+    [structure, onChange],
   );
 
   const handleOutdent = useCallback(
     (uiId: string) => {
       const flat = treeHelpers.flatten(structure);
-      const itemIndex = flat.findIndex(i => i.ui_id === uiId);
+      const itemIndex = flat.findIndex((i) => i.ui_id === uiId);
       if (itemIndex < 0) return;
 
       const item = flat[itemIndex];
       if (!item.parentId || item.depth === 0) return;
 
-      const parentItem = flat.find(i => i.ui_id === item.parentId);
+      const parentItem = flat.find((i) => i.ui_id === item.parentId);
       if (!parentItem) return;
 
       item.parentId = parentItem.parentId;
@@ -535,28 +555,36 @@ export function LayoutStructureEditor({
       setStructure(newStructure);
       queueMicrotask(() => onChange(newStructure));
     },
-    [structure, onChange]
+    [structure, onChange],
   );
 
-  const filteredAvailableItems = availableItems.filter(item =>
-    item.name.toLowerCase().includes(searchQuery.toLowerCase())
+  const filteredAvailableItems = availableItems.filter((item) =>
+    item.name.toLowerCase().includes(searchQuery.toLowerCase()),
   );
 
   return (
-    <div className="grid grid-cols-2 gap-4 h-full min-h-[400px]">
+    <div className="grid h-full min-h-[400px] grid-cols-2 gap-4">
       {/* Left - Structure */}
-      <div className="border rounded-lg p-4 flex flex-col bg-card h-full overflow-hidden">
-        <Label className="text-base font-semibold mb-3 shrink-0">Layout Structure</Label>
-        <div className="text-xs text-muted-foreground mb-4 space-y-1 bg-muted/30 p-3 rounded-md shrink-0">
+      <div className="flex h-full flex-col overflow-hidden rounded-lg border bg-card p-4">
+        <Label className="mb-3 shrink-0 text-base font-semibold">Layout Structure</Label>
+        <div className="mb-4 shrink-0 space-y-1 rounded-md bg-muted/30 p-3 text-xs text-muted-foreground">
           <div className="font-medium">How to organize items:</div>
-          <div>• <strong>Drag items</strong> up/down to reorder them</div>
-          <div>• <strong>Use →</strong> button to make an item a child of the item above</div>
-          <div>• <strong>Use ←</strong> button to move an item up one level</div>
-          <div>• <strong>Click chevron (▼/▶)</strong> to collapse/expand children</div>
+          <div>
+            • <strong>Drag items</strong> up/down to reorder them
+          </div>
+          <div>
+            • <strong>Use →</strong> button to make an item a child of the item above
+          </div>
+          <div>
+            • <strong>Use ←</strong> button to move an item up one level
+          </div>
+          <div>
+            • <strong>Click chevron (▼/▶)</strong> to collapse/expand children
+          </div>
         </div>
-        <div className="flex-1 overflow-y-auto px-1 min-h-0">
+        <div className="min-h-0 flex-1 overflow-y-auto px-1">
           {structure.length === 0 ? (
-            <div className="text-muted-foreground text-center py-12 text-sm">
+            <div className="py-12 text-center text-sm text-muted-foreground">
               No items yet. Add from the right panel.
             </div>
           ) : (
@@ -585,10 +613,10 @@ export function LayoutStructureEditor({
       </div>
 
       {/* Right - Available Items */}
-      <div className="border rounded-lg p-4 flex flex-col bg-card h-full overflow-hidden">
-        <Label className="text-base font-semibold mb-3 shrink-0">Available Items</Label>
+      <div className="flex h-full flex-col overflow-hidden rounded-lg border bg-card p-4">
+        <Label className="mb-3 shrink-0 text-base font-semibold">Available Items</Label>
         <div className="relative mb-3 shrink-0">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <Search className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
           <Input
             placeholder={`Search ${type === 'entry' ? 'entries' : 'descriptions'}...`}
             value={searchQuery}
@@ -597,25 +625,25 @@ export function LayoutStructureEditor({
             className="pl-9"
           />
         </div>
-        <div className="flex-1 overflow-y-auto space-y-2 min-h-0 px-1">
+        <div className="min-h-0 flex-1 space-y-2 overflow-y-auto px-1">
           {loading ? (
-            <div className="text-center py-8 text-muted-foreground text-sm">Loading...</div>
+            <div className="py-8 text-center text-sm text-muted-foreground">Loading...</div>
           ) : filteredAvailableItems.length === 0 ? (
-            <div className="text-center py-8 text-muted-foreground text-sm">
+            <div className="py-8 text-center text-sm text-muted-foreground">
               {searchQuery ? 'No items found' : 'No items available'}
             </div>
           ) : (
-            filteredAvailableItems.map(item => (
+            filteredAvailableItems.map((item) => (
               <Button
                 key={item.id}
                 variant="outline"
-                className="w-full justify-start text-left h-auto py-2.5"
+                className="h-auto w-full justify-start py-2.5 text-left"
                 onClick={() => handleAddItem(item)}
                 disabled={loading}
                 type="button"
               >
-                <div className="flex items-center gap-2 w-full">
-                  <div className="h-8 w-8 bg-primary/10 rounded flex items-center justify-center flex-shrink-0">
+                <div className="flex w-full items-center gap-2">
+                  <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded bg-primary/10">
                     <span className="text-xs font-bold text-primary">
                       {item.name.substring(0, 2).toUpperCase()}
                     </span>

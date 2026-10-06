@@ -9,7 +9,12 @@ import {
   Folder,
 } from 'lucide-react';
 import { SORT_ORDER, MIME_TYPE_PREFIX } from '@/shared/config/constant';
-import { FILTER_TYPE, FILE_TYPE, FILE_SIZE_UNITS, MIME_TYPE_LABELS } from '@/shared/config/constant';
+import {
+  FILTER_TYPE,
+  FILE_TYPE,
+  FILE_SIZE_UNITS,
+  MIME_TYPE_LABELS,
+} from '@/shared/config/constant';
 import type { MediaFile, FilterOptions, SortOptions } from '@/shared/types/file-manager.types';
 
 export const formatFileSize = (bytes: number): string => {
@@ -26,7 +31,7 @@ export const getFileIcon = (mimeType: string | null | undefined) => {
   if (!mimeType) {
     return File;
   }
-  
+
   if (mimeType === 'folder' || mimeType === 'application/vnd.google-apps.folder') return Folder;
   if (mimeType.startsWith(MIME_TYPE_PREFIX.IMAGE)) return FileImage;
   if (mimeType.startsWith(MIME_TYPE_PREFIX.VIDEO)) return FileVideo;
@@ -42,7 +47,8 @@ export const getFileIcon = (mimeType: string | null | undefined) => {
   if (mimeType.includes('zip') || mimeType.includes('rar') || mimeType.includes('compressed')) {
     return FileArchive;
   }
-  if (mimeType.startsWith('text/') || mimeType.includes('json') || mimeType.includes('xml')) return FileCode;
+  if (mimeType.startsWith('text/') || mimeType.includes('json') || mimeType.includes('xml'))
+    return FileCode;
 
   return File;
 };
@@ -52,15 +58,11 @@ export const getMimeTypeLabel = (mimeType: string | null | undefined): string =>
   if (!mimeType) {
     return 'Folder';
   }
-  
+
   return MIME_TYPE_LABELS[mimeType] || mimeType.split('/')[1]?.toUpperCase() || 'File';
 };
 
-export const filterFiles = (
-  files: MediaFile[],
-  searchQuery: string,
-  options: FilterOptions,
-) => {
+export const filterFiles = (files: MediaFile[], searchQuery: string, options: FilterOptions) => {
   return files.filter((file) => {
     // Search query
     if (searchQuery && !file.name.toLowerCase().includes(searchQuery.toLowerCase())) {
@@ -70,9 +72,28 @@ export const filterFiles = (
     // Type filter
     if (options.type !== FILTER_TYPE.ALL) {
       if (options.type === FILTER_TYPE.FOLDERS && file.type !== FILE_TYPE.FOLDER) return false;
-      if (options.type === FILTER_TYPE.IMAGES && (file.type === FILE_TYPE.FOLDER || !file.mime_type || !file.mime_type.startsWith(MIME_TYPE_PREFIX.IMAGE))) return false;
-      if (options.type === FILTER_TYPE.VIDEOS && (file.type === FILE_TYPE.FOLDER || !file.mime_type || !file.mime_type.startsWith(MIME_TYPE_PREFIX.VIDEO))) return false;
-      if (options.type === FILTER_TYPE.DOCUMENTS && (file.type === FILE_TYPE.FOLDER || !file.mime_type || file.mime_type.startsWith(MIME_TYPE_PREFIX.IMAGE) || file.mime_type.startsWith(MIME_TYPE_PREFIX.VIDEO))) return false;
+      if (
+        options.type === FILTER_TYPE.IMAGES &&
+        (file.type === FILE_TYPE.FOLDER ||
+          !file.mime_type ||
+          !file.mime_type.startsWith(MIME_TYPE_PREFIX.IMAGE))
+      )
+        return false;
+      if (
+        options.type === FILTER_TYPE.VIDEOS &&
+        (file.type === FILE_TYPE.FOLDER ||
+          !file.mime_type ||
+          !file.mime_type.startsWith(MIME_TYPE_PREFIX.VIDEO))
+      )
+        return false;
+      if (
+        options.type === FILTER_TYPE.DOCUMENTS &&
+        (file.type === FILE_TYPE.FOLDER ||
+          !file.mime_type ||
+          file.mime_type.startsWith(MIME_TYPE_PREFIX.IMAGE) ||
+          file.mime_type.startsWith(MIME_TYPE_PREFIX.VIDEO))
+      )
+        return false;
     }
 
     // Date filter
@@ -87,10 +108,7 @@ export const filterFiles = (
   });
 };
 
-export const sortFiles = (
-  files: MediaFile[],
-  options: SortOptions,
-) => {
+export const sortFiles = (files: MediaFile[], options: SortOptions) => {
   const sorted = [...files];
   const { field, order } = options;
   const multiplier = order === SORT_ORDER.ASC ? 1 : -1;

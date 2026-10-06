@@ -7,4 +7,3 @@ export {
   type LogoutPayload,
   type AuthErrorPayload,
 } from '@/shared/types';
-

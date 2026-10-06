@@ -6,43 +6,43 @@ namespace App\Enums;
 
 enum CategoryStatus: int
 {
-  /**
-   * inactive
-   *
-   * @var int
-   */
-  case INACTIVE = 0;
+    /**
+     * inactive
+     *
+     * @var int
+     */
+    case INACTIVE = 0;
 
-  /**
-   * active
-   *
-   * @var int
-   */
-  case ACTIVE = 1;
+    /**
+     * active
+     *
+     * @var int
+     */
+    case ACTIVE = 1;
 
-  /**
-   * archived
-   *
-   * @var int
-   */
-  case ARCHIVED = 2;
+    /**
+     * archived
+     *
+     * @var int
+     */
+    case ARCHIVED = 2;
 
-  public static function getLabel(self|int $value): string
-  {
-    if (is_int($value)) {
-      $value = self::tryFrom($value);
+    public static function getLabel(self|int $value): string
+    {
+        if (is_int($value)) {
+            $value = self::tryFrom($value);
+        }
+
+        return match ($value) {
+            self::INACTIVE => 'inactive',
+            self::ACTIVE => 'active',
+            self::ARCHIVED => 'archived',
+            default => '',
+        };
     }
 
-    return match ($value) {
-      self::INACTIVE => 'inactive',
-      self::ACTIVE => 'active',
-      self::ARCHIVED => 'archived',
-      default => '',
-    };
-  }
-
-  public function label(): string
-  {
-    return self::getLabel($this);
-  }
+    public function label(): string
+    {
+        return self::getLabel($this);
+    }
 }

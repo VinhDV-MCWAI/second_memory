@@ -2,24 +2,18 @@
 
 namespace App\Services\History\Management;
 
-use App\Interfaces\History\Management\CategoryMgmtHistInterface;
-
-use Illuminate\Http\Resources\Json\JsonResource;
 use App\Http\Resources\History\Management\CategoryMgmtHistResource;
+use App\Interfaces\History\Management\CategoryMgmtHistInterface;
+use Illuminate\Http\Resources\Json\JsonResource;
 
 class CategoryMgmtHistService
 {
     public function __construct(
         protected CategoryMgmtHistInterface $categoryMgmtHist
-    )
-    {
-    }
+    ) {}
 
     /**
      * Get category mgmt hist list
-     *
-     * @param array $payload
-     * @return JsonResource
      */
     public function list(array $payload): JsonResource
     {
@@ -30,9 +24,6 @@ class CategoryMgmtHistService
 
     /**
      * Store category mgmt hist
-     *
-     * @param array $payload
-     * @return int
      */
     public function store(array $payload): int
     {
@@ -41,9 +32,6 @@ class CategoryMgmtHistService
 
     /**
      * Update category mgmt hist
-     *
-     * @param array $payload
-     * @return int
      */
     public function update(array $payload): int
     {
@@ -52,9 +40,6 @@ class CategoryMgmtHistService
 
     /**
      * Delete category mgmt hist
-     *
-     * @param array $payload
-     * @return void
      */
     public function delete(array $payload): void
     {

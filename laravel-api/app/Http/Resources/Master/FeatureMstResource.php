@@ -16,13 +16,13 @@ class FeatureMstResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'id' => (int)$this->id,
-            'name' => (string)$this->name,
-            'group_name' => (string)$this->group_name,
-            'description' => (string)$this->description,
-            'status' => (string)$this->status,
-            'is_delete' => (bool)$this->is_delete,
-            'updated_at' => (string)date(CommonVal::DATE_FORMAT, strtotime($this->updated_at)),
+            'id' => (int) $this->id,
+            'name' => (string) $this->name,
+            'group_name' => (string) $this->group_name,
+            'description' => (string) $this->description,
+            'status' => (string) $this->status,
+            'is_delete' => (bool) $this->is_delete,
+            'updated_at' => (string) date(CommonVal::DATE_FORMAT, strtotime($this->updated_at)),
         ];
     }
 }

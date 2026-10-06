@@ -16,7 +16,11 @@ import { Download, Upload, FileSpreadsheet, FileText } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import toast from 'react-hot-toast';
 import { useTranslations } from 'next-intl';
-import type { ExportFormat, ImportFormat, ImportExportProps } from '@/shared/types/data-table.types';
+import type {
+  ExportFormat,
+  ImportFormat,
+  ImportExportProps,
+} from '@/shared/types/data-table.types';
 import { EXPORT_FORMATS } from '@/shared/config/constant';
 
 export type { ExportFormat, ImportFormat } from '@/shared/types/data-table.types';
@@ -42,7 +46,7 @@ export function ImportExport({
       await onExport(format);
       toast.success(t('importExport.exported', { moduleName, format: format.toUpperCase() }));
       setIsOpen(false);
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (_error) {
       toast.error(t('importExport.exportFailed'));
     } finally {
@@ -62,7 +66,7 @@ export function ImportExport({
       toast.success(t('importExport.imported', { moduleName }));
       setSelectedFile(null);
       setIsOpen(false);
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (_error) {
       toast.error(t('importExport.importFailed'));
     } finally {
@@ -77,7 +81,7 @@ export function ImportExport({
     try {
       await onDownloadTemplate(format);
       toast.success(t('importExport.templateDownloaded', { format: format.toUpperCase() }));
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (_error) {
       toast.error(t('importExport.templateDownloadFailed'));
     } finally {
@@ -98,12 +102,7 @@ export function ImportExport({
 
   return (
     <>
-      <Button
-        variant="outline"
-        size="sm"
-        onClick={() => setIsOpen(true)}
-        className="gap-2"
-      >
+      <Button variant="outline" size="sm" onClick={() => setIsOpen(true)} className="gap-2">
         <Download className="h-4 w-4" />
         {t('importExport.title')}
       </Button>
@@ -111,10 +110,10 @@ export function ImportExport({
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
         <DialogContent className="sm:max-w-[500px]">
           <DialogHeader>
-            <DialogTitle>{t('importExport.title')} {moduleName}</DialogTitle>
-            <DialogDescription>
-              {t('importExport.description')}
-            </DialogDescription>
+            <DialogTitle>
+              {t('importExport.title')} {moduleName}
+            </DialogTitle>
+            <DialogDescription>{t('importExport.description')}</DialogDescription>
           </DialogHeader>
 
           <Tabs defaultValue="export" className="w-full">
@@ -142,9 +141,7 @@ export function ImportExport({
                   ))}
                 </div>
               </div>
-              <p className="text-sm text-muted-foreground">
-                {t('importExport.exportDescription')}
-              </p>
+              <p className="text-sm text-muted-foreground">{t('importExport.exportDescription')}</p>
             </TabsContent>
 
             {/* Import Tab */}
@@ -154,7 +151,9 @@ export function ImportExport({
                 <Input
                   id="file"
                   type="file"
-                  accept={importFormats.map(f => f === EXPORT_FORMATS.CSV ? '.csv' : '.xlsx,.xls').join(',')}
+                  accept={importFormats
+                    .map((f) => (f === EXPORT_FORMATS.CSV ? '.csv' : '.xlsx,.xls'))
+                    .join(',')}
                   onChange={(e) => setSelectedFile(e.target.files?.[0] || null)}
                   disabled={isProcessing}
                 />
@@ -219,11 +218,7 @@ export function ImportExport({
           </Tabs>
 
           <DialogFooter>
-            <Button
-              variant="outline"
-              onClick={() => setIsOpen(false)}
-              disabled={isProcessing}
-            >
+            <Button variant="outline" onClick={() => setIsOpen(false)} disabled={isProcessing}>
               {t('common.close')}
             </Button>
           </DialogFooter>

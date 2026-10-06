@@ -2,8 +2,8 @@
 
 namespace App\Http\Requests\Master\ApiRoleMst;
 
-use Illuminate\Foundation\Http\FormRequest;
 use App\Constants\CommonVal;
+use Illuminate\Foundation\Http\FormRequest;
 
 class UpdateApiRoleMstRequest extends FormRequest
 {
@@ -25,12 +25,12 @@ class UpdateApiRoleMstRequest extends FormRequest
         return [
             'insert' => ['nullable', 'array'],
             'insert.*' => 'array',
-            'insert.*.api_mst_id' => ['required', 'integer', 'min:' . CommonVal::MIN_INTEGER, 'max:' . CommonVal::MAX_INTEGER],
-            'insert.*.role_mst_id' => ['required', 'integer', 'min:' . CommonVal::MIN_INTEGER, 'max:' . CommonVal::MAX_INTEGER],
+            'insert.*.api_mst_id' => ['required', 'integer', 'min:'.CommonVal::MIN_INTEGER, 'max:'.CommonVal::MAX_INTEGER],
+            'insert.*.role_mst_id' => ['required', 'integer', 'min:'.CommonVal::MIN_INTEGER, 'max:'.CommonVal::MAX_INTEGER],
             'delete' => ['nullable', 'array'],
             'delete.*' => 'array',
-            'delete.*.api_mst_id' => ['required', 'integer', 'min:' . CommonVal::MIN_INTEGER, 'max:' . CommonVal::MAX_INTEGER],
-            'delete.*.role_mst_id' => ['required', 'integer', 'min:' . CommonVal::MIN_INTEGER, 'max:' . CommonVal::MAX_INTEGER],
+            'delete.*.api_mst_id' => ['required', 'integer', 'min:'.CommonVal::MIN_INTEGER, 'max:'.CommonVal::MAX_INTEGER],
+            'delete.*.role_mst_id' => ['required', 'integer', 'min:'.CommonVal::MIN_INTEGER, 'max:'.CommonVal::MAX_INTEGER],
         ];
     }
 

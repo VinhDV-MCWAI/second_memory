@@ -2,14 +2,14 @@
 
 namespace App\Http\Requests\History\Management\EntryMgmtHist;
 
-use Illuminate\Foundation\Http\FormRequest;
 use App\Constants\CommonVal;
-use Illuminate\Validation\Rule;
-use Illuminate\Validation\Rules\Enum;
-use App\Models\History\Management\EntryMgmtHist;
 use App\Enums\IsActive;
 use App\Enums\StatusEnum;
+use App\Models\History\Management\EntryMgmtHist;
 use App\Models\Management\EntryMgmt;
+use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
+use Illuminate\Validation\Rules\Enum;
 
 class UpdateEntryMgmtHistRequest extends FormRequest
 {
@@ -30,15 +30,15 @@ class UpdateEntryMgmtHistRequest extends FormRequest
     {
         return [
             'id' => ['required', 'integer', 'min:1', Rule::exists(EntryMgmtHist::class, 'id')],
-            'entry_mgmt_id' => ['required', 'integer', 'min:' . CommonVal::MIN_INTEGER, 'max:' . CommonVal::MAX_INTEGER, Rule::exists(EntryMgmt::class, 'id'),],
-            'parent_id' => ['integer', 'min:' . CommonVal::MIN_INTEGER, 'max:' . CommonVal::MAX_INTEGER,],
-            'name' => ['string', 'min:' . CommonVal::MIN_VARCHAR, 'max:50',],
-            'slug' => ['string', 'min:' . CommonVal::MIN_VARCHAR, 'max:50',],
-            'status' => [new Enum(StatusEnum::class),],
-            'is_display' => [new Enum(IsActive::class),],
+            'entry_mgmt_id' => ['required', 'integer', 'min:'.CommonVal::MIN_INTEGER, 'max:'.CommonVal::MAX_INTEGER, Rule::exists(EntryMgmt::class, 'id')],
+            'parent_id' => ['integer', 'min:'.CommonVal::MIN_INTEGER, 'max:'.CommonVal::MAX_INTEGER],
+            'name' => ['string', 'min:'.CommonVal::MIN_VARCHAR, 'max:50'],
+            'slug' => ['string', 'min:'.CommonVal::MIN_VARCHAR, 'max:50'],
+            'status' => [new Enum(StatusEnum::class)],
+            'is_display' => [new Enum(IsActive::class)],
             'rank_order' => [],
-            'action' => ['required',],
-            'author_id' => ['required', 'integer', 'min:' . CommonVal::MIN_INTEGER, 'max:' . CommonVal::MAX_INTEGER,],
+            'action' => ['required'],
+            'author_id' => ['required', 'integer', 'min:'.CommonVal::MIN_INTEGER, 'max:'.CommonVal::MAX_INTEGER],
         ];
     }
 

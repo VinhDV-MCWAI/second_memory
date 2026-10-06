@@ -30,50 +30,62 @@ export function FileUpload({
     }
   }, []);
 
-  const validateFile = useCallback((file: File): string | null => {
-    if (file.size > maxSize) {
-      return t('fileSizeExceeds', { maxSize: mediaFileService.formatFileSize(maxSize) });
-    }
-    return null;
-  }, [maxSize, t]);
+  const validateFile = useCallback(
+    (file: File): string | null => {
+      if (file.size > maxSize) {
+        return t('fileSizeExceeds', { maxSize: mediaFileService.formatFileSize(maxSize) });
+      }
+      return null;
+    },
+    [maxSize, t],
+  );
 
-  const handleFile = useCallback((file: File) => {
-    const error = validateFile(file);
-    if (error) {
-      alert(error);
-      return;
-    }
+  const handleFile = useCallback(
+    (file: File) => {
+      const error = validateFile(file);
+      if (error) {
+        alert(error);
+        return;
+      }
 
-    setSelectedFile(file);
+      setSelectedFile(file);
 
-    // Generate preview for images
-    if (file.type.startsWith(MIME_TYPE_PREFIX.IMAGE)) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setPreview(reader.result as string);
-      };
-      reader.readAsDataURL(file);
-    } else {
-      setPreview(null);
-    }
-  }, [validateFile]);
+      // Generate preview for images
+      if (file.type.startsWith(MIME_TYPE_PREFIX.IMAGE)) {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          setPreview(reader.result as string);
+        };
+        reader.readAsDataURL(file);
+      } else {
+        setPreview(null);
+      }
+    },
+    [validateFile],
+  );
 
-  const handleDrop = useCallback((e: React.DragEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setDragActive(false);
+  const handleDrop = useCallback(
+    (e: React.DragEvent) => {
+      e.preventDefault();
+      e.stopPropagation();
+      setDragActive(false);
 
-    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
-      handleFile(e.dataTransfer.files[0]);
-    }
-  }, [handleFile]);
+      if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+        handleFile(e.dataTransfer.files[0]);
+      }
+    },
+    [handleFile],
+  );
 
-  const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    e.preventDefault();
-    if (e.target.files && e.target.files[0]) {
-      handleFile(e.target.files[0]);
-    }
-  }, [handleFile]);
+  const handleChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      e.preventDefault();
+      if (e.target.files && e.target.files[0]) {
+        handleFile(e.target.files[0]);
+      }
+    },
+    [handleFile],
+  );
 
   const handleUpload = async () => {
     if (!selectedFile) return;
@@ -84,7 +96,9 @@ export function FileUpload({
     try {
       // Simulate progress (in real app, use XMLHttpRequest for actual progress)
       const progressInterval = setInterval(() => {
-        setProgress(prev => Math.min(prev + UPLOAD_CONFIG.PROGRESS_INCREMENT, UPLOAD_CONFIG.MAX_PROGRESS));
+        setProgress((prev) =>
+          Math.min(prev + UPLOAD_CONFIG.PROGRESS_INCREMENT, UPLOAD_CONFIG.MAX_PROGRESS),
+        );
       }, UPLOAD_CONFIG.PROGRESS_INTERVAL_MS);
 
       const result = await mediaFileService.upload({
@@ -136,9 +150,7 @@ export function FileUpload({
           />
           <label htmlFor="file-upload-input" className="upload-label">
             <div className="upload-icon">📁</div>
-            <p className="upload-text">
-              {t('dragDropHere')}
-            </p>
+            <p className="upload-text">{t('dragDropHere')}</p>
             <p className="upload-hint">
               {t('maxSize')}: {mediaFileService.formatFileSize(maxSize)}
             </p>
@@ -154,36 +166,23 @@ export function FileUpload({
           )}
           <div className="file-info">
             <p className="file-name">{selectedFile.name}</p>
-            <p className="file-size">
-              {mediaFileService.formatFileSize(selectedFile.size)}
-            </p>
+            <p className="file-size">{mediaFileService.formatFileSize(selectedFile.size)}</p>
           </div>
 
           {uploading && (
             <div className="upload-progress">
               <div className="progress-bar">
-                <div
-                  className="progress-fill"
-                  style={{ width: `${progress}%` }}
-                />
+                <div className="progress-fill" style={{ width: `${progress}%` }} />
               </div>
               <p className="progress-text">{progress}%</p>
             </div>
           )}
 
           <div className="file-actions">
-            <button
-              onClick={handleUpload}
-              disabled={uploading}
-              className="btn btn-primary"
-            >
+            <button onClick={handleUpload} disabled={uploading} className="btn btn-primary">
               {uploading ? t('uploading') : t('upload')}
             </button>
-            <button
-              onClick={handleCancel}
-              disabled={uploading}
-              className="btn btn-secondary"
-            >
+            <button onClick={handleCancel} disabled={uploading} className="btn btn-secondary">
               {t('cancel')}
             </button>
           </div>

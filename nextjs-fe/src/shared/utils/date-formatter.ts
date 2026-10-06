@@ -13,7 +13,7 @@ import { DATE_FORMATS } from '@/shared/config/constant';
  */
 export function formatDate(date: Date | string | null | undefined): string {
   if (!date) return '';
-  
+
   try {
     const dateObj = typeof date === 'string' ? parseISO(date) : date;
     if (!isValid(dateObj)) return '';
@@ -30,7 +30,7 @@ export function formatDate(date: Date | string | null | undefined): string {
  */
 export function formatDateForInput(date: Date | string | null | undefined): string {
   if (!date) return '';
-  
+
   try {
     const dateObj = typeof date === 'string' ? parseISO(date) : date;
     if (!isValid(dateObj)) return '';
@@ -48,7 +48,7 @@ export function formatDateForInput(date: Date | string | null | undefined): stri
  */
 export function formatDateForBackend(date: Date | string | null | undefined): string {
   if (!date) return '';
-  
+
   try {
     const dateObj = typeof date === 'string' ? parseISO(date) : date;
     if (!isValid(dateObj)) return '';
@@ -65,7 +65,7 @@ export function formatDateForBackend(date: Date | string | null | undefined): st
  */
 export function formatDateTime(date: Date | string | null | undefined): string {
   if (!date) return '';
-  
+
   try {
     const dateObj = typeof date === 'string' ? parseISO(date) : date;
     if (!isValid(dateObj)) return '';
@@ -83,7 +83,7 @@ export function formatDateTime(date: Date | string | null | undefined): string {
  */
 export function formatDateTimeForBackend(date: Date | string | null | undefined): string {
   if (!date) return '';
-  
+
   try {
     const dateObj = typeof date === 'string' ? parseISO(date) : date;
     if (!isValid(dateObj)) return '';
@@ -100,7 +100,7 @@ export function formatDateTimeForBackend(date: Date | string | null | undefined)
  */
 export function parseDateFromBackend(dateString: string | null | undefined): Date | null {
   if (!dateString) return null;
-  
+
   try {
     const parsed = parse(dateString, DATE_FORMATS.DATE, new Date());
     return isValid(parsed) ? parsed : null;
@@ -116,7 +116,7 @@ export function parseDateFromBackend(dateString: string | null | undefined): Dat
  */
 export function parseDateTimeFromBackend(dateTimeString: string | null | undefined): Date | null {
   if (!dateTimeString) return null;
-  
+
   try {
     const parsed = parse(dateTimeString, DATE_FORMATS.FULL, new Date());
     return isValid(parsed) ? parsed : null;
@@ -132,7 +132,7 @@ export function parseDateTimeFromBackend(dateTimeString: string | null | undefin
  */
 export function formatTime(date: Date | string | null | undefined): string {
   if (!date) return '';
-  
+
   try {
     const dateObj = typeof date === 'string' ? parseISO(date) : date;
     if (!isValid(dateObj)) return '';
@@ -149,7 +149,7 @@ export function formatTime(date: Date | string | null | undefined): string {
  */
 export function isValidDate(dateString: string | null | undefined): boolean {
   if (!dateString) return false;
-  
+
   try {
     const parsed = parseISO(dateString);
     return isValid(parsed);
@@ -181,11 +181,11 @@ export function getCurrentDateTime(): string {
  */
 export function formatTimestamp(date: Date | string | null | undefined): string {
   if (!date) return '';
-  
+
   try {
     const dateObj = typeof date === 'string' ? parseISO(date) : date;
     if (!isValid(dateObj)) return '';
-    
+
     return formatDistanceToNow(dateObj, { addSuffix: true });
   } catch {
     try {

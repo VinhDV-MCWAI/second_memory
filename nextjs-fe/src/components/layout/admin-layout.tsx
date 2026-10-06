@@ -1,11 +1,11 @@
-"use client";
+'use client';
 
-import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
-import { useAuth } from "@/shared/hooks";
-import { Sidebar } from "./sidebar";
-import { Header } from "./header";
-import { Content } from "./content";
+import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { useAuth } from '@/shared/hooks';
+import { Sidebar } from './sidebar';
+import { Header } from './header';
+import { Content } from './content';
 import type { AdminLayoutProps } from '@/shared/types/ui.types';
 import { useTranslations } from 'next-intl';
 
@@ -25,7 +25,7 @@ export function AdminLayout({ children, className }: AdminLayoutProps) {
 
   useEffect(() => {
     if (!isLoading && !isAuthenticated) {
-      router.push("/login");
+      router.push('/login');
     }
   }, [isLoading, isAuthenticated, router]);
 
@@ -40,9 +40,7 @@ export function AdminLayout({ children, className }: AdminLayoutProps) {
       <div className="flex h-screen items-center justify-center bg-white dark:bg-slate-950">
         <div className="text-center">
           <div className="mb-4 inline-block h-12 w-12 animate-spin rounded-full border-4 border-slate-200 border-t-blue-600 dark:border-slate-800 dark:border-t-blue-400" />
-          <p className="text-sm text-slate-600 dark:text-slate-400">
-            {tCommon('loading')}
-          </p>
+          <p className="text-sm text-slate-600 dark:text-slate-400">{tCommon('loading')}</p>
         </div>
       </div>
     );

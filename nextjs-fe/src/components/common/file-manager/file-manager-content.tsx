@@ -15,11 +15,23 @@ import { RenameDialog } from './dialogs/rename-dialog';
 import { DeleteConfirmDialog } from '@/components/common/file-manager/dialogs/delete-confirm-dialog';
 import { MoveCopyDialog } from './dialogs/move-copy-dialog';
 import { HeavyUploadNotification } from '@/components/common/HeavyUploadNotification';
-import type { MediaFile, FilterType, SortField, MoveCopyMode } from '@/shared/types/file-manager.types';
+import type {
+  MediaFile,
+  FilterType,
+  SortField,
+  MoveCopyMode,
+} from '@/shared/types/file-manager.types';
 import toast from 'react-hot-toast';
 import { useTranslations } from 'next-intl';
 import { SORT_ORDER } from '@/shared/config/constant';
-import { FILE_MANAGER_SORT_FIELDS, FILTER_TYPE, VIEW_MODE, FILE_TYPE, MOVE_COPY_MODE, UI_CONSTANTS } from '@/shared/config/constant';
+import {
+  FILE_MANAGER_SORT_FIELDS,
+  FILTER_TYPE,
+  VIEW_MODE,
+  FILE_TYPE,
+  MOVE_COPY_MODE,
+  UI_CONSTANTS,
+} from '@/shared/config/constant';
 
 export function FileManagerContent() {
   const {
@@ -62,20 +74,32 @@ export function FileManagerContent() {
   // Selection state for operations
   const [targetFile, setTargetFile] = useState<MediaFile | null>(null);
   const [previewFile, setPreviewFile] = useState<MediaFile | null>(null);
-  
+
   // Locking hooks
-  const { execute: executeDelete, isLoading: isDeleteProcessing } = useActionLock({ delay: UI_CONSTANTS.ACTION_DELAY_MS });
-  const { execute: executeMoveCopy, isLoading: isMoveCopyProcessing } = useActionLock({ delay: UI_CONSTANTS.ACTION_DELAY_MS });
-  const { execute: executeUpload, isLoading: isUploadProcessing } = useActionLock({ delay: UI_CONSTANTS.ACTION_DELAY_MS });
-  const { execute: executeCreateFolder, isLoading: isCreateFolderProcessing } = useActionLock({ delay: UI_CONSTANTS.ACTION_DELAY_MS });
-  const { execute: executeRename, isLoading: isRenameProcessing } = useActionLock({ delay: UI_CONSTANTS.ACTION_DELAY_MS });
+  const { execute: executeDelete, isLoading: isDeleteProcessing } = useActionLock({
+    delay: UI_CONSTANTS.ACTION_DELAY_MS,
+  });
+  const { execute: executeMoveCopy, isLoading: isMoveCopyProcessing } = useActionLock({
+    delay: UI_CONSTANTS.ACTION_DELAY_MS,
+  });
+  const { execute: executeUpload, isLoading: isUploadProcessing } = useActionLock({
+    delay: UI_CONSTANTS.ACTION_DELAY_MS,
+  });
+  const { execute: executeCreateFolder, isLoading: isCreateFolderProcessing } = useActionLock({
+    delay: UI_CONSTANTS.ACTION_DELAY_MS,
+  });
+  const { execute: executeRename, isLoading: isRenameProcessing } = useActionLock({
+    delay: UI_CONSTANTS.ACTION_DELAY_MS,
+  });
 
   const breadcrumbItems = buildBreadcrumb(currentPath);
 
   // Handlers
   const handleFileClick = (file: MediaFile) => {
     if (file.type === FILE_TYPE.FOLDER) {
-      setCurrentPath(file.folder_path === '/' ? `/${file.name}` : `${file.folder_path}/${file.name}`);
+      setCurrentPath(
+        file.folder_path === '/' ? `/${file.name}` : `${file.folder_path}/${file.name}`,
+      );
     } else {
       setPreviewFile(file);
     }
@@ -209,7 +233,7 @@ export function FileManagerContent() {
   // Preview Navigation
   const handlePreviewNext = () => {
     if (!previewFile) return;
-    const currentIndex = files.findIndex(f => f.id === previewFile.id);
+    const currentIndex = files.findIndex((f) => f.id === previewFile.id);
     if (currentIndex < files.length - 1) {
       setPreviewFile(files[currentIndex + 1]);
     }
@@ -217,18 +241,16 @@ export function FileManagerContent() {
 
   const handlePreviewPrev = () => {
     if (!previewFile) return;
-    const currentIndex = files.findIndex(f => f.id === previewFile.id);
+    const currentIndex = files.findIndex((f) => f.id === previewFile.id);
     if (currentIndex > 0) {
       setPreviewFile(files[currentIndex - 1]);
     }
   };
 
   const hasNextPreview = previewFile
-    ? files.findIndex(f => f.id === previewFile.id) < files.length - 1
+    ? files.findIndex((f) => f.id === previewFile.id) < files.length - 1
     : false;
-  const hasPrevPreview = previewFile
-    ? files.findIndex(f => f.id === previewFile.id) > 0
-    : false;
+  const hasPrevPreview = previewFile ? files.findIndex((f) => f.id === previewFile.id) > 0 : false;
 
   return (
     <div className="flex h-full flex-col overflow-hidden rounded-lg border border-border bg-background shadow-sm">
@@ -247,7 +269,10 @@ export function FileManagerContent() {
         selectedCount={selectedFiles.length}
         filterOptions={{ type: (filterType as FilterType) || FILTER_TYPE.ALL }}
         onFilterChange={(opts) => setFilterType(opts.type)}
-        sortOptions={{ field: (sortBy as SortField) || FILE_MANAGER_SORT_FIELDS.NAME, order: SORT_ORDER.ASC }}
+        sortOptions={{
+          field: (sortBy as SortField) || FILE_MANAGER_SORT_FIELDS.NAME,
+          order: SORT_ORDER.ASC,
+        }}
         onSortChange={(opts) => setSortBy(opts.field)}
       />
 
@@ -346,23 +371,24 @@ export function FileManagerContent() {
       />
 
       {/* Heavy Upload Notifications - WebSocket listeners for each heavy upload */}
-      {heavyUploads && heavyUploads.map((upload) => (
-        <HeavyUploadNotification
-          key={upload.roomId}
-          roomId={upload.roomId}
-          fileName={upload.fileName}
-          mediaId={upload.mediaId}
-          onComplete={() => {
-            // Remove from state and refresh file list
-            if (clearHeavyUpload) {
-              clearHeavyUpload(upload.roomId);
-            }
-            if (refreshFiles) {
-              refreshFiles();
-            }
-          }}
-        />
-      ))}
+      {heavyUploads &&
+        heavyUploads.map((upload) => (
+          <HeavyUploadNotification
+            key={upload.roomId}
+            roomId={upload.roomId}
+            fileName={upload.fileName}
+            mediaId={upload.mediaId}
+            onComplete={() => {
+              // Remove from state and refresh file list
+              if (clearHeavyUpload) {
+                clearHeavyUpload(upload.roomId);
+              }
+              if (refreshFiles) {
+                refreshFiles();
+              }
+            }}
+          />
+        ))}
     </div>
   );
 }

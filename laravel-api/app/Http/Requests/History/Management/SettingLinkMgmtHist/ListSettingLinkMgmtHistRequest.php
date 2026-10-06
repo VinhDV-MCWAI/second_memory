@@ -2,11 +2,8 @@
 
 namespace App\Http\Requests\History\Management\SettingLinkMgmtHist;
 
-use Illuminate\Foundation\Http\FormRequest;
 use App\Constants\CommonVal;
-use Illuminate\Validation\Rule;
-use Illuminate\Validation\Rules\Enum;
-use App\Models\History\Management\SettingLinkMgmtHist;
+use Illuminate\Foundation\Http\FormRequest;
 
 class ListSettingLinkMgmtHistRequest extends FormRequest
 {
@@ -26,23 +23,23 @@ class ListSettingLinkMgmtHistRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'setting_link_id' => ['nullable', 'integer', 'min:' . CommonVal::MIN_INTEGER, 'max:' . CommonVal::MAX_INTEGER,],
-            'key' => ['nullable', 'string', 'min:' . CommonVal::MIN_VARCHAR, 'max:30',],
-            'value' => ['nullable', 'string', 'min:' . CommonVal::MIN_VARCHAR, 'max:100',],
-            'action' => ['nullable',],
-            'author_id' => ['nullable', 'integer', 'min:' . CommonVal::MIN_INTEGER, 'max:' . CommonVal::MAX_INTEGER,],
+            'setting_link_id' => ['nullable', 'integer', 'min:'.CommonVal::MIN_INTEGER, 'max:'.CommonVal::MAX_INTEGER],
+            'key' => ['nullable', 'string', 'min:'.CommonVal::MIN_VARCHAR, 'max:30'],
+            'value' => ['nullable', 'string', 'min:'.CommonVal::MIN_VARCHAR, 'max:100'],
+            'action' => ['nullable'],
+            'author_id' => ['nullable', 'integer', 'min:'.CommonVal::MIN_INTEGER, 'max:'.CommonVal::MAX_INTEGER],
             'from_date' => [
                 'nullable',
-                'date_format:' . CommonVal::DATE_FORMAT,
-                'after_or_equal:' . CommonVal::MIN_DATE,
-                'before_or_equal:' . CommonVal::MAX_DATE,
+                'date_format:'.CommonVal::DATE_FORMAT,
+                'after_or_equal:'.CommonVal::MIN_DATE,
+                'before_or_equal:'.CommonVal::MAX_DATE,
             ],
             'to_date' => [
                 'nullable',
-                'date_format:' . CommonVal::DATE_FORMAT,
-                'after_or_equal:' . CommonVal::MIN_DATE,
-                'before_or_equal:' . CommonVal::MAX_DATE,
-                'after:from_date'
+                'date_format:'.CommonVal::DATE_FORMAT,
+                'after_or_equal:'.CommonVal::MIN_DATE,
+                'before_or_equal:'.CommonVal::MAX_DATE,
+                'after:from_date',
             ],
         ];
     }

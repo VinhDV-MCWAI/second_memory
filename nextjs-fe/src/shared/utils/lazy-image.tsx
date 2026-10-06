@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { useTranslations } from 'next-intl';
-import { cn } from "@/shared/utils";
+import { cn } from '@/shared/utils';
 import { LazyImageProps } from '@/shared/types/ui.types';
 
 export const LazyImage = ({ src, alt, className, ...props }: LazyImageProps) => {
@@ -25,7 +25,7 @@ export const LazyImage = ({ src, alt, className, ...props }: LazyImageProps) => 
       {
         rootMargin: '50px',
         threshold: 0.1,
-      }
+      },
     );
 
     if (imgRef.current) {
@@ -47,7 +47,7 @@ export const LazyImage = ({ src, alt, className, ...props }: LazyImageProps) => 
           alt={alt}
           className={cn(
             'h-full w-full object-cover transition-opacity duration-300',
-            isLoaded ? 'opacity-100' : 'opacity-0'
+            isLoaded ? 'opacity-100' : 'opacity-0',
           )}
           onLoad={() => {
             setIsLoaded(true);

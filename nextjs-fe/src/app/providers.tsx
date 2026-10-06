@@ -47,16 +47,15 @@ import { GlobalLoadingProvider } from '@/shared/providers/global-loading-provide
 // WebSocketNotification removed - WebSocket connections are now handled
 // per upload session in HeavyUploadNotification component
 
-export function Providers({ 
+export function Providers({
   children,
   locale = 'en',
-  messages
-}: { 
+  messages,
+}: {
   children: React.ReactNode;
   locale?: string;
   messages: AbstractIntlMessages;
 }) {
-
   const [currentLocale, setCurrentLocale] = useState(locale);
   const [currentMessages, setCurrentMessages] = useState(messages);
   const [isLoaded, setIsLoaded] = useState(true); // Default to true since we have initial messages
@@ -71,11 +70,11 @@ export function Providers({
   useEffect(() => {
     // Check for saved locale in localStorage only on mount
     const savedLocale = localStorage.getItem('locale');
-    
+
     if (savedLocale && savedLocale !== locale) {
       setIsLoaded(false);
       setCurrentLocale(savedLocale);
-      
+
       import(`@/../messages/${savedLocale}.json`)
         .then((m) => {
           setCurrentMessages(m.default);
@@ -140,9 +139,7 @@ export function Providers({
         </NextIntlClientProvider>
       </AuthProvider>
       {/* React Query Devtools - only in development */}
-      {process.env.NODE_ENV === 'development' && (
-        <ReactQueryDevtools initialIsOpen={false} />
-      )}
+      {process.env.NODE_ENV === 'development' && <ReactQueryDevtools initialIsOpen={false} />}
     </QueryClientProvider>
   );
 }

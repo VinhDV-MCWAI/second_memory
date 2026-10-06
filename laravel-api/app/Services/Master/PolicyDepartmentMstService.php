@@ -2,20 +2,19 @@
 
 namespace App\Services\Master;
 
-use App\Services\BaseService;
-use App\Interfaces\Master\PolicyDepartmentMstInterface;
-use App\Interfaces\History\Master\PolicyDepartmentMstHistInterface;
 use App\Enums\ActionType;
-use Illuminate\Http\Resources\Json\JsonResource;
 use App\Http\Resources\Master\PolicyDepartmentMstResource;
+use App\Interfaces\History\Master\PolicyDepartmentMstHistInterface;
+use App\Interfaces\Master\PolicyDepartmentMstInterface;
+use App\Services\BaseService;
+use Illuminate\Http\Resources\Json\JsonResource;
 
 class PolicyDepartmentMstService extends BaseService
 {
     public function __construct(
         protected PolicyDepartmentMstInterface $policyDepartmentMst,
         protected PolicyDepartmentMstHistInterface $policyDepartmentMstHist
-    ) {
-    }
+    ) {}
 
     protected function getHistoryRepository()
     {
@@ -29,9 +28,6 @@ class PolicyDepartmentMstService extends BaseService
 
     /**
      * Get policy department mst list
-     *
-     * @param array $payload
-     * @return JsonResource
      */
     public function list(array $payload): JsonResource
     {
@@ -42,9 +38,6 @@ class PolicyDepartmentMstService extends BaseService
 
     /**
      * Store policy department mst
-     *
-     * @param array $payload
-     * @return int
      */
     public function store(array $payload): int
     {
@@ -56,9 +49,6 @@ class PolicyDepartmentMstService extends BaseService
 
     /**
      * Update policy department mst
-     *
-     * @param array $payload
-     * @return int
      */
     public function update(array $payload): int
     {
@@ -71,14 +61,12 @@ class PolicyDepartmentMstService extends BaseService
 
     /**
      * Delete policy department mst
-     *
-     * @param array $payload
-     * @return void
      */
     public function delete(array $payload): void
     {
-        if (!isset($payload['ids']) || !is_array($payload['ids'])) {
+        if (! isset($payload['ids']) || ! is_array($payload['ids'])) {
             $this->policyDepartmentMst->executeDelete($payload['ids'] ?? []);
+
             return;
         }
 

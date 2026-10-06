@@ -1,18 +1,13 @@
 'use client';
 
 import { ArrowUp } from 'lucide-react';
-import { cn } from "@/shared/utils";
+import { cn } from '@/shared/utils';
 import { Button } from '@/components/ui/button';
 import { useEffect, useState } from 'react';
 import { UI_CONSTANTS } from '@/shared/config';
 import type { ContentProps } from '@/shared/types/ui.types';
 
-export function Content({ 
-  children, 
-  className, 
-  padded = true,
-  fullWidth = false 
-}: ContentProps) {
+export function Content({ children, className, padded = true, fullWidth = false }: ContentProps) {
   const [showScrollTop, setShowScrollTop] = useState(false);
 
   useEffect(() => {
@@ -39,23 +34,16 @@ export function Content({
       className={cn(
         'relative flex-1 overflow-auto bg-slate-50 dark:bg-slate-900',
         padded && 'p-4 lg:p-6',
-        className
+        className,
       )}
     >
-      <div
-        className={cn(
-          'mx-auto',
-          !fullWidth && 'max-w-screen-2xl'
-        )}
-      >
-        {children}
-      </div>
+      <div className={cn('mx-auto', !fullWidth && 'max-w-screen-2xl')}>{children}</div>
 
       {/* Scroll to Top Button */}
       {showScrollTop && (
         <Button
           size="icon"
-          className="fixed bottom-8 right-8 z-10 h-12 w-12 rounded-full shadow-lg transition-all hover:scale-110"
+          className="fixed right-8 bottom-8 z-10 h-12 w-12 rounded-full shadow-lg transition-all hover:scale-110"
           onClick={scrollToTop}
           aria-label="Scroll to top"
         >

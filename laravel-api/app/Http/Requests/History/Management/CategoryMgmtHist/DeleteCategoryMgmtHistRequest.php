@@ -2,13 +2,10 @@
 
 namespace App\Http\Requests\History\Management\CategoryMgmtHist;
 
-use Illuminate\Foundation\Http\FormRequest;
 use App\Constants\CommonVal;
-use Illuminate\Validation\Rule;
-use Illuminate\Validation\Rules\Enum;
 use App\Models\History\Management\CategoryMgmtHist;
-use App\Enums\StatusEnum;
-use App\Models\Management\CategoryMgmt;
+use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class DeleteCategoryMgmtHistRequest extends FormRequest
 {
@@ -29,7 +26,7 @@ class DeleteCategoryMgmtHistRequest extends FormRequest
     {
         return [
             'ids' => ['required', 'array'],
-            'ids.*' => ['required', 'integer', 'min:' . CommonVal::MIN_INTEGER, 'max:' . CommonVal::MAX_BIG_INTEGER, Rule::exists(CategoryMgmtHist::class, 'id')],
+            'ids.*' => ['required', 'integer', 'min:'.CommonVal::MIN_INTEGER, 'max:'.CommonVal::MAX_BIG_INTEGER, Rule::exists(CategoryMgmtHist::class, 'id')],
         ];
     }
 

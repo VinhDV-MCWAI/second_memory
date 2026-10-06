@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { ChevronRight, ChevronDown, Building2 } from 'lucide-react';
-import { cn } from "@/shared/utils";
+import { cn } from '@/shared/utils';
 import { useTranslations } from 'next-intl';
 import type { DepartmentMst } from '@/shared/types/models/master';
 import type { DepartmentTreeProps, TreeNodeProps } from '@/shared/types/data-table.types';
@@ -16,8 +16,8 @@ function TreeNode({ department, childNodes, level, onSelect, selectedId }: TreeN
     <div>
       <div
         className={cn(
-          'flex items-center gap-2 rounded-md px-2 py-1.5 hover:bg-muted cursor-pointer transition-colors',
-          isSelected && 'bg-primary/10 text-primary font-medium'
+          'flex cursor-pointer items-center gap-2 rounded-md px-2 py-1.5 transition-colors hover:bg-muted',
+          isSelected && 'bg-primary/10 font-medium text-primary',
         )}
         style={{ paddingLeft: `${level * 1.5}rem` }}
         onClick={() => onSelect?.(department)}
@@ -28,7 +28,7 @@ function TreeNode({ department, childNodes, level, onSelect, selectedId }: TreeN
               e.stopPropagation();
               setIsExpanded(!isExpanded);
             }}
-            className="p-0.5 hover:bg-muted-foreground/10 rounded"
+            className="rounded p-0.5 hover:bg-muted-foreground/10"
           >
             {isExpanded ? (
               <ChevronDown className="h-4 w-4" />
@@ -39,13 +39,13 @@ function TreeNode({ department, childNodes, level, onSelect, selectedId }: TreeN
         ) : (
           <div className="w-5" />
         )}
-        
+
         <Building2 className="h-4 w-4 text-muted-foreground" />
-        
+
         <span className="flex-1">{department.name}</span>
-        
+
         {department.description && (
-          <span className="text-xs text-muted-foreground hidden md:block">
+          <span className="hidden text-xs text-muted-foreground md:block">
             {department.description}
           </span>
         )}

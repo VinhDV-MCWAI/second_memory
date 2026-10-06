@@ -39,7 +39,9 @@ export function BulkActions({
   const t = useTranslations('bulkActions');
   const tCommon = useTranslations('common');
 
-  const { execute, isLoading: isExecuting } = useActionLock({ delay: UI_CONSTANTS.ACTION_DELAY_MS });
+  const { execute, isLoading: isExecuting } = useActionLock({
+    delay: UI_CONSTANTS.ACTION_DELAY_MS,
+  });
 
   const handleActionClick = (action: BulkAction) => {
     if (action.confirmMessage) {
@@ -56,7 +58,7 @@ export function BulkActions({
         await action.onClick(selectedIds);
         onClearSelection();
         setConfirmAction(null);
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
       } catch (_error) {
       } finally {
         hideGlobalLoading();
@@ -114,7 +116,7 @@ export function BulkActions({
         <span className="text-sm font-medium text-blue-900 dark:text-blue-100">
           {t('itemsSelected', { count: selectedIds.length })}
         </span>
-        
+
         <div className="ml-auto flex items-center gap-2">
           {allActions.slice(0, 2).map((action, index) => (
             <Button
@@ -129,15 +131,11 @@ export function BulkActions({
               {action.label}
             </Button>
           ))}
-          
+
           {allActions.length > 2 && (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button
-                  size="sm"
-                  variant="outline"
-                  disabled={isLoading || isExecuting}
-                >
+                <Button size="sm" variant="outline" disabled={isLoading || isExecuting}>
                   <MoreHorizontal className="h-4 w-4" />
                 </Button>
               </DropdownMenuTrigger>
@@ -157,7 +155,7 @@ export function BulkActions({
           )}
 
           <DropdownMenuSeparator className="h-6" />
-          
+
           <Button
             size="sm"
             variant="ghost"
@@ -173,12 +171,8 @@ export function BulkActions({
       <AlertDialog open={!!confirmAction} onOpenChange={() => setConfirmAction(null)}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>
-              {confirmAction?.confirmTitle || t('confirmAction')}
-            </AlertDialogTitle>
-            <AlertDialogDescription>
-              {confirmAction?.confirmMessage}
-            </AlertDialogDescription>
+            <AlertDialogTitle>{confirmAction?.confirmTitle || t('confirmAction')}</AlertDialogTitle>
+            <AlertDialogDescription>{confirmAction?.confirmMessage}</AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel disabled={isExecuting}>{tCommon('cancel')}</AlertDialogCancel>

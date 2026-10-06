@@ -8,9 +8,6 @@ trait HasStatus
 {
     /**
      * Scope a query to only include active records.
-     *
-     * @param Builder $query
-     * @return Builder
      */
     public function scopeActive(Builder $query): Builder
     {
@@ -19,9 +16,6 @@ trait HasStatus
 
     /**
      * Scope a query to only include inactive records.
-     *
-     * @param Builder $query
-     * @return Builder
      */
     public function scopeInactive(Builder $query): Builder
     {
@@ -30,10 +24,6 @@ trait HasStatus
 
     /**
      * Scope a query to filter by status.
-     *
-     * @param Builder $query
-     * @param int $status
-     * @return Builder
      */
     public function scopeByStatus(Builder $query, int $status): Builder
     {
@@ -42,8 +32,6 @@ trait HasStatus
 
     /**
      * Check if the model is active.
-     *
-     * @return bool
      */
     public function isActive(): bool
     {
@@ -52,23 +40,21 @@ trait HasStatus
 
     /**
      * Activate the model.
-     *
-     * @return bool
      */
     public function activate(): bool
     {
         $this->is_active = true;
+
         return $this->save();
     }
 
     /**
      * Deactivate the model.
-     *
-     * @return bool
      */
     public function deactivate(): bool
     {
         $this->is_active = false;
+
         return $this->save();
     }
 }

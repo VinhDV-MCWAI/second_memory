@@ -1,16 +1,16 @@
 /* Google Fonts - Direct import for CSR-only setup */
-@import url("https://fonts.googleapis.com/css2?family=Geist:wght@100..900&display=swap");
-@import url("https://fonts.googleapis.com/css2?family=Geist+Mono:wght@100..900&display=swap");
+@import url('https://fonts.googleapis.com/css2?family=Geist:wght@100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Geist+Mono:wght@100..900&display=swap');
 
-@import "tailwindcss";
+@import 'tailwindcss';
 
 /* stylelint-disable-next-line */
 @custom-variant dark (&:is(.dark *));
 
 /* stylelint-disable-next-line */
 @theme inline {
-  --font-sans: "Geist", ui-sans-serif, system-ui, sans-serif;
-  --font-mono: "Geist Mono", ui-monospace, monospace;
+  --font-sans: 'Geist', ui-sans-serif, system-ui, sans-serif;
+  --font-mono: 'Geist Mono', ui-monospace, monospace;
 
   --color-background: 0 0% 100%;
   --color-foreground: 222.2 84% 4.9%;

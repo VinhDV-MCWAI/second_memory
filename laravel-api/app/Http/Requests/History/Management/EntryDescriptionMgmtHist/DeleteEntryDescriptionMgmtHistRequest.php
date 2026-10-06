@@ -2,13 +2,10 @@
 
 namespace App\Http\Requests\History\Management\EntryDescriptionMgmtHist;
 
-use Illuminate\Foundation\Http\FormRequest;
 use App\Constants\CommonVal;
-use Illuminate\Validation\Rule;
-use Illuminate\Validation\Rules\Enum;
 use App\Models\History\Management\EntryDescriptionMgmtHist;
-use App\Enums\StatusEnum;
-use App\Models\Management\EntryDescriptionMgmt;
+use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class DeleteEntryDescriptionMgmtHistRequest extends FormRequest
 {
@@ -29,7 +26,7 @@ class DeleteEntryDescriptionMgmtHistRequest extends FormRequest
     {
         return [
             'ids' => ['required', 'array'],
-            'ids.*' => ['required', 'integer', 'min:' . CommonVal::MIN_INTEGER, 'max:' . CommonVal::MAX_BIG_INTEGER, Rule::exists(EntryDescriptionMgmtHist::class, 'id')],
+            'ids.*' => ['required', 'integer', 'min:'.CommonVal::MIN_INTEGER, 'max:'.CommonVal::MAX_BIG_INTEGER, Rule::exists(EntryDescriptionMgmtHist::class, 'id')],
         ];
     }
 

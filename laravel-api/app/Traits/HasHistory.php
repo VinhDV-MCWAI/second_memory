@@ -9,8 +9,6 @@ trait HasHistory
     /**
      * Get the history records for the model.
      * This method should be overridden in the model to specify the correct history model.
-     *
-     * @return HasMany
      */
     abstract public function history(): HasMany;
 
@@ -27,7 +25,6 @@ trait HasHistory
     /**
      * Get history records by action type.
      *
-     * @param int $actionType
      * @return mixed
      */
     public function historyByAction(int $actionType)

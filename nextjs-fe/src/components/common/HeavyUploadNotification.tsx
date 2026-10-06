@@ -15,15 +15,20 @@ interface HeavyUploadNotificationProps {
  * Component to handle WebSocket notification for heavy file upload
  * Automatically connects to room, listens for status updates, and disconnects
  * Uses cookie-based auth (HttpOnly cookie sent automatically)
- * 
+ *
  * Improvements:
  * - Proper cleanup to prevent memory leaks
  * - Timeout fallback if no response after 15 minutes
  * - Prevent duplicate notifications with better state management
  */
-export function HeavyUploadNotification({ roomId, fileName, mediaId, onComplete }: HeavyUploadNotificationProps) {
+export function HeavyUploadNotification({
+  roomId,
+  fileName,
+  mediaId,
+  onComplete,
+}: HeavyUploadNotificationProps) {
   console.log('[HeavyUploadNotification] Component mounted:', { roomId, fileName, mediaId });
-  
+
   // Pass roomId only - token will be sent via HttpOnly cookie automatically
   const { isConnected, lastMessage, leaveRoom } = useWebSocket({ roomId });
   const hasNotified = useRef(false);
@@ -31,33 +36,36 @@ export function HeavyUploadNotification({ roomId, fileName, mediaId, onComplete 
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   // Memoized complete handler to prevent re-creating
-  const handleComplete = useCallback((status: 'success' | 'error' | 'timeout', message: string) => {
-    if (hasNotified.current) return;
-    hasNotified.current = true;
+  const handleComplete = useCallback(
+    (status: 'success' | 'error' | 'timeout', message: string) => {
+      if (hasNotified.current) return;
+      hasNotified.current = true;
 
-    // Clear timeout if exists
-    if (timeoutRef.current) {
-      clearTimeout(timeoutRef.current);
-      timeoutRef.current = null;
-    }
+      // Clear timeout if exists
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+        timeoutRef.current = null;
+      }
 
-    // Leave WebSocket room to free resources
-    if (leaveRoom) {
-      leaveRoom();
-    }
+      // Leave WebSocket room to free resources
+      if (leaveRoom) {
+        leaveRoom();
+      }
 
-    // Show notification
-    if (status === 'success') {
-      notification.success(`✓ ${fileName}: ${message}`);
-    } else if (status === 'error') {
-      notification.error(`✗ ${fileName}: ${message}`);
-    } else {
-      // notification.warning(`⚠ ${fileName}: ${message}`);
-    }
+      // Show notification
+      if (status === 'success') {
+        notification.success(`✓ ${fileName}: ${message}`);
+      } else if (status === 'error') {
+        notification.error(`✗ ${fileName}: ${message}`);
+      } else {
+        // notification.warning(`⚠ ${fileName}: ${message}`);
+      }
 
-    // Cleanup
-    onComplete();
-  }, [fileName, onComplete, leaveRoom]);
+      // Cleanup
+      onComplete();
+    },
+    [fileName, onComplete, leaveRoom],
+  );
 
   // Listen for WebSocket messages
   useEffect(() => {
@@ -71,7 +79,7 @@ export function HeavyUploadNotification({ roomId, fileName, mediaId, onComplete 
     if (!lastMessage) return;
 
     console.log('[HeavyUploadNotification] Received WebSocket message:', lastMessage);
-    
+
     // Check if this is an upload status message for our room
     if (lastMessage.type === 'UPLOAD_STATUS' && lastMessage.roomId === roomId) {
       const { status, message } = lastMessage;
@@ -89,9 +97,12 @@ export function HeavyUploadNotification({ roomId, fileName, mediaId, onComplete 
 
   // Timeout fallback - if no response after 15 minutes, show warning
   useEffect(() => {
-    timeoutRef.current = setTimeout(() => {
-      handleComplete('timeout', 'Upload taking longer than expected. Check status later.');
-    }, 15 * 60 * 1000); // 15 minutes
+    timeoutRef.current = setTimeout(
+      () => {
+        handleComplete('timeout', 'Upload taking longer than expected. Check status later.');
+      },
+      15 * 60 * 1000,
+    ); // 15 minutes
 
     return () => {
       if (timeoutRef.current) {
@@ -113,7 +124,8 @@ export function HeavyUploadNotification({ roomId, fileName, mediaId, onComplete 
     // Import mediaFileService dynamically to avoid circular dependency
     import('@/shared/services/modules/media-file.service').then(({ mediaFileService }) => {
       // Check current upload status
-      mediaFileService.list({ id: mediaId })
+      mediaFileService
+        .list({ id: mediaId })
         .then((listResponse) => {
           // Extract media item from response
           let mediaItem: { upload_status?: number } | undefined;

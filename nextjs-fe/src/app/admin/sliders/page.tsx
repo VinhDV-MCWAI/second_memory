@@ -14,7 +14,14 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import type { SliderMgmt } from '@/shared/types/api';
 import { API_ENDPOINTS } from '@/shared/api';
-import { SORT_ORDER, SORT_FIELDS, type SortOrder, PAGINATION, ADMIN_ROUTES, UI_CONSTANTS } from '@/shared/config';
+import {
+  SORT_ORDER,
+  SORT_FIELDS,
+  type SortOrder,
+  PAGINATION,
+  ADMIN_ROUTES,
+  UI_CONSTANTS,
+} from '@/shared/config';
 import { IsActive, IsActiveLabels } from '@/shared/enums/enums';
 import Image from 'next/image';
 import { AdvancedSearch } from '@/components/common/advanced-search';
@@ -41,7 +48,7 @@ export default function SliderListPage() {
   const [sortBy, setSortBy] = useState<string>(SORT_FIELDS.ORDER);
   const [sortOrder, setSortOrder] = useState<SortOrder>(SORT_ORDER.ASC);
   const [selectedIds, setSelectedIds] = useState<number[]>([]);
-  
+
   // Dialog states
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [deleteIds, setDeleteIds] = useState<number[]>([]);
@@ -57,7 +64,7 @@ export default function SliderListPage() {
 
   const { data, loading, pagination, refetch } = useApiData<SliderMgmt>(
     API_ENDPOINTS.MANAGEMENT.SLIDER,
-    { page, per_page: perPage, filters, sort_by: sortBy, sort_order: sortOrder }
+    { page, per_page: perPage, filters, sort_by: sortBy, sort_order: sortOrder },
   );
 
   const { remove } = useCrud<SliderMgmt>(API_ENDPOINTS.MANAGEMENT.SLIDER);
@@ -81,7 +88,9 @@ export default function SliderListPage() {
     setDeleteDialogOpen(true);
   };
 
-  const { execute, isLoading: isDeleteProcessing } = useActionLock({ delay: UI_CONSTANTS.ACTION_DELAY_MS });
+  const { execute, isLoading: isDeleteProcessing } = useActionLock({
+    delay: UI_CONSTANTS.ACTION_DELAY_MS,
+  });
 
   const confirmDelete = async () => {
     try {
@@ -111,7 +120,7 @@ export default function SliderListPage() {
       key: 'image_url',
       label: tFields('image'),
       render: (slider) => (
-        <div className="relative w-20 h-12 rounded overflow-hidden">
+        <div className="relative h-12 w-20 overflow-hidden rounded">
           {slider.image ? (
             <Image
               src={slider.image}
@@ -121,7 +130,7 @@ export default function SliderListPage() {
               unoptimized
             />
           ) : (
-            <div className="w-full h-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center text-xs text-gray-400">
+            <div className="flex h-full w-full items-center justify-center bg-gray-200 text-xs text-gray-400 dark:bg-gray-700">
               {tCommon('noImage')}
             </div>
           )}
@@ -129,23 +138,22 @@ export default function SliderListPage() {
       ),
     },
     { key: 'title', label: tFields('title'), sortable: true },
-    { 
-      key: 'link_url', 
+    {
+      key: 'link_url',
       label: tFields('link'),
-      render: (slider) => (
+      render: (slider) =>
         slider.link ? (
-          <a 
-            href={slider.link} 
-            target="_blank" 
+          <a
+            href={slider.link}
+            target="_blank"
             rel="noopener noreferrer"
-            className="text-blue-600 hover:underline truncate max-w-xs block"
+            className="block max-w-xs truncate text-blue-600 hover:underline"
           >
             {slider.link}
           </a>
         ) : (
           <span className="text-gray-400">-</span>
-        )
-      ),
+        ),
     },
     { key: 'rank_order', label: tFields('order'), sortable: true },
     {
@@ -187,30 +195,39 @@ export default function SliderListPage() {
       type: 'select',
       options: Object.entries(IsActiveLabels).map(([value, label]) => ({
         value: value.toString(),
-        label
-      }))
+        label,
+      })),
     },
-    { key: 'created_at', label: tFields('createdAt'), type: 'date' }
+    { key: 'created_at', label: tFields('createdAt'), type: 'date' },
   ];
   const bulkActions: BulkAction[] = [
-    { 
-      label: tBulkActions('deleteSelected'), 
-      icon: <Trash2 className="h-4 w-4" />, 
-      variant: 'destructive', 
-      onClick: async (ids) => { await remove(ids); }, 
-      confirmMessage: tCrud('deleteConfirm', { count: selectedIds.length, entity: tEntities('slider').toLowerCase() }), 
-      confirmTitle: tCrud('deleteEntity', { entity: tEntities('sliders') }) 
-    }, 
-    { 
-      label: tBulkActions('activateSelected'), 
-      icon: <CheckCircle className="h-4 w-4" />, 
-      onClick: async () => { refetch(); } 
-    }, 
-    { 
-      label: tBulkActions('deactivateSelected'), 
-      icon: <XCircle className="h-4 w-4" />, 
-      onClick: async () => { refetch(); } 
-    }
+    {
+      label: tBulkActions('deleteSelected'),
+      icon: <Trash2 className="h-4 w-4" />,
+      variant: 'destructive',
+      onClick: async (ids) => {
+        await remove(ids);
+      },
+      confirmMessage: tCrud('deleteConfirm', {
+        count: selectedIds.length,
+        entity: tEntities('slider').toLowerCase(),
+      }),
+      confirmTitle: tCrud('deleteEntity', { entity: tEntities('sliders') }),
+    },
+    {
+      label: tBulkActions('activateSelected'),
+      icon: <CheckCircle className="h-4 w-4" />,
+      onClick: async () => {
+        refetch();
+      },
+    },
+    {
+      label: tBulkActions('deactivateSelected'),
+      icon: <XCircle className="h-4 w-4" />,
+      onClick: async () => {
+        refetch();
+      },
+    },
   ];
   const handleAdvancedSearch = (criteria: SearchCriteria[]) => {
     const newFilters = criteria.reduce((acc, c) => ({ ...acc, [c.field]: c.value }), {});
@@ -233,7 +250,8 @@ export default function SliderListPage() {
         ]}
         action={
           <Button onClick={handleCreate}>
-            <Plus className="mr-2 h-4 w-4" /> {tCrud('createEntity', { entity: tEntities('slider') })}
+            <Plus className="mr-2 h-4 w-4" />{' '}
+            {tCrud('createEntity', { entity: tEntities('slider') })}
           </Button>
         }
       />
@@ -241,13 +259,13 @@ export default function SliderListPage() {
       <div className="mt-6 space-y-4">
         <div className="flex gap-2">
           <AdvancedSearch fields={searchFields} onSearch={handleAdvancedSearch} />
-          <SavedFilters 
-            currentFilters={filters} 
-            onApplyFilter={(f) => { 
-              setFilters(f); 
-              setPage(PAGINATION.DEFAULT_PAGE); 
-            }} 
-            storageKey="slider-filters" 
+          <SavedFilters
+            currentFilters={filters}
+            onApplyFilter={(f) => {
+              setFilters(f);
+              setPage(PAGINATION.DEFAULT_PAGE);
+            }}
+            storageKey="slider-filters"
           />
           <ImportExport onImport={handleImport} />
         </div>
@@ -265,9 +283,15 @@ export default function SliderListPage() {
           fields={filterFields}
         />
 
-        <BulkActions selectedIds={selectedIds} onClearSelection={() => setSelectedIds([])} actions={bulkActions} isLoading={loading} />
+        <BulkActions
+          selectedIds={selectedIds}
+          onClearSelection={() => setSelectedIds([])}
+          actions={bulkActions}
+          isLoading={loading}
+        />
 
-        <DataTable data={data}
+        <DataTable
+          data={data}
           columns={columns}
           loading={loading}
           selectedIds={selectedIds}
@@ -276,7 +300,7 @@ export default function SliderListPage() {
           sortBy={sortBy}
           sortOrder={sortOrder}
           onEdit={(id) => {
-            const slider = data.find(s => s.id === id);
+            const slider = data.find((s) => s.id === id);
             if (slider) handleEdit(slider);
           }}
           onDelete={(id) => handleDelete([id])}
@@ -297,19 +321,25 @@ export default function SliderListPage() {
       {/* Create/Edit Slider Modal */}
       {/* Create/Edit Slider Modal */}
       <Dialog open={formDialogOpen} onOpenChange={setFormDialogOpen}>
-        <DialogContent className="max-w-4xl max-h-[90vh] p-0 flex flex-col gap-0 overflow-hidden">
+        <DialogContent className="flex max-h-[90vh] max-w-4xl flex-col gap-0 overflow-hidden p-0">
           {/* Header - Fixed */}
-          <div className="shrink-0 px-6 pt-6 pb-4 border-b bg-background">
+          <div className="shrink-0 border-b bg-background px-6 pt-6 pb-4">
             <DialogHeader>
-              <DialogTitle>{editingSlider ? tCrud('editEntity', { entity: tEntities('slider') }) : tCrud('createEntity', { entity: tEntities('slider') })}</DialogTitle>
+              <DialogTitle>
+                {editingSlider
+                  ? tCrud('editEntity', { entity: tEntities('slider') })
+                  : tCrud('createEntity', { entity: tEntities('slider') })}
+              </DialogTitle>
               <DialogDescription>
-                {editingSlider ? tCrud('editDescription', { entity: tEntities('slider').toLowerCase() }) : tCrud('createDescription', { entity: tEntities('slider').toLowerCase() })}
+                {editingSlider
+                  ? tCrud('editDescription', { entity: tEntities('slider').toLowerCase() })
+                  : tCrud('createDescription', { entity: tEntities('slider').toLowerCase() })}
               </DialogDescription>
             </DialogHeader>
           </div>
-          
+
           {/* Body - Scrollable */}
-          <div className="flex-1 overflow-y-auto min-h-0">
+          <div className="min-h-0 flex-1 overflow-y-auto">
             <div className="px-6 py-4">
               <SliderForm
                 initialData={editingSlider}
@@ -318,9 +348,9 @@ export default function SliderListPage() {
               />
             </div>
           </div>
-          
+
           {/* Footer - Fixed */}
-          <div className="shrink-0 px-6 py-4 border-t bg-muted/20">
+          <div className="shrink-0 border-t bg-muted/20 px-6 py-4">
             <DialogFooter>
               <Button type="button" variant="outline" onClick={() => setFormDialogOpen(false)}>
                 {tCommon('cancel')}
@@ -337,10 +367,12 @@ export default function SliderListPage() {
         open={deleteDialogOpen}
         onOpenChange={setDeleteDialogOpen}
         title={tCrud('deleteEntity', { entity: tEntities('slider') })}
-        description={tCrud('deleteConfirm', { count: deleteIds.length, entity: tEntities('slider').toLowerCase() })}
+        description={tCrud('deleteConfirm', {
+          count: deleteIds.length,
+          entity: tEntities('slider').toLowerCase(),
+        })}
         onConfirm={confirmDelete}
         confirmText={tCommon('delete')}
-
         variant="destructive"
         isLoading={isDeleteProcessing}
       />

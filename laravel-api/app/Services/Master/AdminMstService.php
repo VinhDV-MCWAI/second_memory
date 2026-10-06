@@ -2,20 +2,19 @@
 
 namespace App\Services\Master;
 
-use App\Services\BaseService;
-use App\Interfaces\Master\AdminMstInterface;
-use App\Interfaces\History\Master\AdminMstHistInterface;
 use App\Enums\ActionType;
-use Illuminate\Http\Resources\Json\JsonResource;
 use App\Http\Resources\Master\AdminMstResource;
+use App\Interfaces\History\Master\AdminMstHistInterface;
+use App\Interfaces\Master\AdminMstInterface;
+use App\Services\BaseService;
+use Illuminate\Http\Resources\Json\JsonResource;
 
 class AdminMstService extends BaseService
 {
     public function __construct(
         protected AdminMstInterface $adminMst,
         protected AdminMstHistInterface $adminMstHist
-    ) {
-    }
+    ) {}
 
     protected function getHistoryRepository()
     {
@@ -29,9 +28,6 @@ class AdminMstService extends BaseService
 
     /**
      * Get admin mst list
-     *
-     * @param array $payload
-     * @return JsonResource
      */
     public function list(array $payload): JsonResource
     {
@@ -42,9 +38,6 @@ class AdminMstService extends BaseService
 
     /**
      * Store admin mst
-     *
-     * @param array $payload
-     * @return int
      */
     public function store(array $payload): int
     {
@@ -56,9 +49,6 @@ class AdminMstService extends BaseService
 
     /**
      * Update admin mst
-     *
-     * @param array $payload
-     * @return int
      */
     public function update(array $payload): int
     {
@@ -71,14 +61,12 @@ class AdminMstService extends BaseService
 
     /**
      * Delete admin mst
-     *
-     * @param array $payload
-     * @return void
      */
     public function delete(array $payload): void
     {
-        if (!isset($payload['ids']) || !is_array($payload['ids'])) {
+        if (! isset($payload['ids']) || ! is_array($payload['ids'])) {
             $this->adminMst->executeDelete($payload['ids'] ?? []);
+
             return;
         }
 

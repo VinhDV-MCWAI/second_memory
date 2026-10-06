@@ -17,7 +17,9 @@ export interface ApiResponseError {
   };
 }
 
-const isFieldMap = (messages: ApiError['messages'] | undefined): messages is Record<string, string[]> =>
+const isFieldMap = (
+  messages: ApiError['messages'] | undefined,
+): messages is Record<string, string[]> =>
   typeof messages === 'object' && messages !== null && !Array.isArray(messages);
 
 /**
@@ -50,7 +52,7 @@ export const getApiErrorMessage = (error: unknown): string | undefined => {
  */
 export const handleBindErrors = <T extends FieldValues>(
   error: unknown,
-  setError: UseFormSetError<T>
+  setError: UseFormSetError<T>,
 ) => {
   const err = error as ApiResponseError;
   if (!err?.response?.data?.error) return;

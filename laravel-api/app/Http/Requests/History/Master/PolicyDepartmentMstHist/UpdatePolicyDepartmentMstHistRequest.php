@@ -2,13 +2,11 @@
 
 namespace App\Http\Requests\History\Master\PolicyDepartmentMstHist;
 
-use Illuminate\Foundation\Http\FormRequest;
 use App\Constants\CommonVal;
-use Illuminate\Validation\Rule;
-use Illuminate\Validation\Rules\Enum;
 use App\Models\History\Master\PolicyDepartmentMstHist;
-
 use App\Models\Master\PolicyDepartmentMst;
+use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class UpdatePolicyDepartmentMstHistRequest extends FormRequest
 {
@@ -29,11 +27,11 @@ class UpdatePolicyDepartmentMstHistRequest extends FormRequest
     {
         return [
             'id' => ['required', 'integer', 'min:1', Rule::exists(PolicyDepartmentMstHist::class, 'id')],
-            'policy_department_mst_id' => ['required', 'integer', 'min:' . CommonVal::MIN_INTEGER, 'max:' . CommonVal::MAX_INTEGER, Rule::exists(PolicyDepartmentMst::class, 'id'),],
-            'table_name' => ['integer', 'min:' . CommonVal::MIN_INTEGER, 'max:' . CommonVal::MAX_INTEGER,],
-            'row_id' => ['integer', 'min:' . CommonVal::MIN_INTEGER, 'max:' . CommonVal::MAX_INTEGER,],
-            'action' => ['required',],
-            'author_id' => ['required', 'integer', 'min:' . CommonVal::MIN_INTEGER, 'max:' . CommonVal::MAX_INTEGER,],
+            'policy_department_mst_id' => ['required', 'integer', 'min:'.CommonVal::MIN_INTEGER, 'max:'.CommonVal::MAX_INTEGER, Rule::exists(PolicyDepartmentMst::class, 'id')],
+            'table_name' => ['integer', 'min:'.CommonVal::MIN_INTEGER, 'max:'.CommonVal::MAX_INTEGER],
+            'row_id' => ['integer', 'min:'.CommonVal::MIN_INTEGER, 'max:'.CommonVal::MAX_INTEGER],
+            'action' => ['required'],
+            'author_id' => ['required', 'integer', 'min:'.CommonVal::MIN_INTEGER, 'max:'.CommonVal::MAX_INTEGER],
         ];
     }
 

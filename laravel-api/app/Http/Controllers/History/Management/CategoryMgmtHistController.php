@@ -2,27 +2,22 @@
 
 namespace App\Http\Controllers\History\Management;
 
+use App\Http\Controllers\Controller;
+use App\Http\Requests\History\Management\CategoryMgmtHist\DeleteCategoryMgmtHistRequest;
 use App\Http\Requests\History\Management\CategoryMgmtHist\ListCategoryMgmtHistRequest;
 use App\Http\Requests\History\Management\CategoryMgmtHist\StoreCategoryMgmtHistRequest;
 use App\Http\Requests\History\Management\CategoryMgmtHist\UpdateCategoryMgmtHistRequest;
-use App\Http\Requests\History\Management\CategoryMgmtHist\DeleteCategoryMgmtHistRequest;
 use App\Services\History\Management\CategoryMgmtHistService;
-use App\Http\Controllers\Controller;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class CategoryMgmtHistController extends Controller
 {
     public function __construct(
         protected CategoryMgmtHistService $categoryMgmtHist
-    )
-    {
-    }
-    
+    ) {}
+
     /**
      * CategoryMgmtHist list
-     *
-     * @param ListCategoryMgmtHistRequest $request
-     * @return JsonResource
      */
     public function list(ListCategoryMgmtHistRequest $request): JsonResource
     {
@@ -31,9 +26,6 @@ class CategoryMgmtHistController extends Controller
 
     /**
      * Store category mgmt hist
-     *
-     * @param StoreCategoryMgmtHistRequest $request
-     * @return int
      */
     public function store(StoreCategoryMgmtHistRequest $request): int
     {
@@ -42,10 +34,6 @@ class CategoryMgmtHistController extends Controller
 
     /**
      * Update category mgmt hist
-     *
-     * @param UpdateCategoryMgmtHistRequest $request
-     * @param string $id
-     * @return int
      */
     public function update(UpdateCategoryMgmtHistRequest $request, string $id): int
     {
@@ -57,9 +45,6 @@ class CategoryMgmtHistController extends Controller
 
     /**
      * Delete category mgmt hist
-     *
-     * @param DeleteCategoryMgmtHistRequest $request
-     * @return void
      */
     public function delete(DeleteCategoryMgmtHistRequest $request): void
     {

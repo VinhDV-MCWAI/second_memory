@@ -6,5 +6,5 @@ use Illuminate\Auth\Access\AuthorizationException;
 
 class LoginFailedException extends AuthorizationException
 {
-  //
+    //
 }

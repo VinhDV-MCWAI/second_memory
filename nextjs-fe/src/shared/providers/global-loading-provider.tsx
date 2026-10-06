@@ -24,7 +24,7 @@ export function GlobalLoadingProvider({ children }: { children: React.ReactNode 
       showGlobalLoading,
       hideGlobalLoading,
     }),
-    [isLoading, showGlobalLoading, hideGlobalLoading]
+    [isLoading, showGlobalLoading, hideGlobalLoading],
   );
 
   return (

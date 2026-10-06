@@ -40,7 +40,9 @@ export function UserForm({ initialData, onSuccess, onCancel }: UserFormProps) {
   const { create, update, loading } = useCrud<UserMgmt>(ENDPOINTS.MANAGEMENT.USER);
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [avatarFile, setAvatarFile] = useState<File | null>(null);
-  const [avatarPreview, setAvatarPreview] = useState<string | null>(() => initialData?.avatar || null);
+  const [avatarPreview, setAvatarPreview] = useState<string | null>(
+    () => initialData?.avatar || null,
+  );
 
   const {
     register,
@@ -92,43 +94,45 @@ export function UserForm({ initialData, onSuccess, onCancel }: UserFormProps) {
     }
   }, [initialData, reset]);
 
-  const { execute, isLoading: isActionProcessing } = useActionLock({ delay: UI_CONSTANTS.ACTION_DELAY_MS });
+  const { execute, isLoading: isActionProcessing } = useActionLock({
+    delay: UI_CONSTANTS.ACTION_DELAY_MS,
+  });
 
   const onSubmit = async (data: UserFormData) => {
     await execute(async () => {
       try {
         const { password, ...otherData } = data;
-      const payload: UserUpdatePayload | UserCreatePayload = {
-        ...otherData,
-        is_active: otherData.is_active ? IsActive.TRUE : IsActive.FALSE,
-      };
+        const payload: UserUpdatePayload | UserCreatePayload = {
+          ...otherData,
+          is_active: otherData.is_active ? IsActive.TRUE : IsActive.FALSE,
+        };
 
-      if (password) {
-        payload.password = password;
-      }
+        if (password) {
+          payload.password = password;
+        }
 
-      if (data.birth) {
-        payload.birth = formatDateForBackend(data.birth);
+        if (data.birth) {
+          payload.birth = formatDateForBackend(data.birth);
+        }
+
+        // Handle avatar upload logic or payload construction here if needed
+        // Currently just passing fields, assuming backend or pre-upload handles file
+        // NOTE: Real implementation would need FormData or separate upload call if file selected
+
+        if (isEdit && initialData) {
+          await update(initialData.id, { ...payload });
+        } else {
+          await create({
+            ...payload,
+            is_delete: false,
+          });
+        }
+        onSuccess();
+      } catch (error: unknown) {
+        console.error(error);
+        handleBindErrors(error, setError);
       }
-      
-      // Handle avatar upload logic or payload construction here if needed
-      // Currently just passing fields, assuming backend or pre-upload handles file
-      // NOTE: Real implementation would need FormData or separate upload call if file selected
-      
-      if (isEdit && initialData) {
-        await update(initialData.id, { ...payload });
-      } else {
-        await create({
-          ...payload,
-          is_delete: false,
-        });
-      }
-      onSuccess();
-    } catch (error: unknown) {
-      console.error(error);
-      handleBindErrors(error, setError);
-    }
-   });
+    });
   };
 
   // Use useWatch hook instead of watch() to avoid React Compiler issues
@@ -137,7 +141,7 @@ export function UserForm({ initialData, onSuccess, onCancel }: UserFormProps) {
 
   const FormContent = (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-      <div className="flex justify-center mb-4">
+      <div className="mb-4 flex justify-center">
         <AvatarUpload
           value={avatarPreview ?? undefined}
           onChange={(file, preview) => {
@@ -158,9 +162,7 @@ export function UserForm({ initialData, onSuccess, onCancel }: UserFormProps) {
             {...register('first_name')}
             className={errors.first_name ? 'border-red-500' : ''}
           />
-          {errors.first_name && (
-            <p className="text-sm text-red-500">{errors.first_name.message}</p>
-          )}
+          {errors.first_name && <p className="text-sm text-red-500">{errors.first_name.message}</p>}
         </div>
 
         <div className="space-y-2">
@@ -172,9 +174,7 @@ export function UserForm({ initialData, onSuccess, onCancel }: UserFormProps) {
             {...register('last_name')}
             className={errors.last_name ? 'border-red-500' : ''}
           />
-          {errors.last_name && (
-            <p className="text-sm text-red-500">{errors.last_name.message}</p>
-          )}
+          {errors.last_name && <p className="text-sm text-red-500">{errors.last_name.message}</p>}
         </div>
       </div>
 
@@ -187,9 +187,7 @@ export function UserForm({ initialData, onSuccess, onCancel }: UserFormProps) {
           {...register('user_name')}
           className={errors.user_name ? 'border-red-500' : ''}
         />
-        {errors.user_name && (
-          <p className="text-sm text-red-500">{errors.user_name.message}</p>
-        )}
+        {errors.user_name && <p className="text-sm text-red-500">{errors.user_name.message}</p>}
       </div>
 
       <div className="space-y-2">
@@ -202,14 +200,13 @@ export function UserForm({ initialData, onSuccess, onCancel }: UserFormProps) {
           {...register('email')}
           className={errors.email ? 'border-red-500' : ''}
         />
-        {errors.email && (
-          <p className="text-sm text-red-500">{errors.email.message}</p>
-        )}
+        {errors.email && <p className="text-sm text-red-500">{errors.email.message}</p>}
       </div>
 
       <div className="space-y-2">
         <Label htmlFor="password">
-          {isEdit ? tLabels('passwordOptional') : tLabels('password')} {(!isEdit) && <span className="text-red-500">*</span>}
+          {isEdit ? tLabels('passwordOptional') : tLabels('password')}{' '}
+          {!isEdit && <span className="text-red-500">*</span>}
         </Label>
         <Input
           id="password"
@@ -217,9 +214,7 @@ export function UserForm({ initialData, onSuccess, onCancel }: UserFormProps) {
           {...register('password')}
           className={errors.password ? 'border-red-500' : ''}
         />
-        {errors.password && (
-          <p className="text-sm text-red-500">{errors.password.message}</p>
-        )}
+        {errors.password && <p className="text-sm text-red-500">{errors.password.message}</p>}
       </div>
 
       <div className="grid grid-cols-2 gap-4">
@@ -242,9 +237,7 @@ export function UserForm({ initialData, onSuccess, onCancel }: UserFormProps) {
             {...register('birth')}
             className={errors.birth ? 'border-red-500' : ''}
           />
-          {errors.birth && (
-            <p className="text-sm text-red-500">{errors.birth.message}</p>
-          )}
+          {errors.birth && <p className="text-sm text-red-500">{errors.birth.message}</p>}
         </div>
       </div>
 
@@ -256,14 +249,14 @@ export function UserForm({ initialData, onSuccess, onCancel }: UserFormProps) {
           rows={2}
           className={errors.address ? 'border-red-500' : ''}
         />
-        {errors.address && (
-          <p className="text-sm text-red-500">{errors.address.message}</p>
-        )}
+        {errors.address && <p className="text-sm text-red-500">{errors.address.message}</p>}
       </div>
 
       <div className="grid grid-cols-2 gap-4">
         <div className="space-y-2">
-          <Label htmlFor="gender">{tLabels('gender')} <span className="text-red-500">*</span></Label>
+          <Label htmlFor="gender">
+            {tLabels('gender')} <span className="text-red-500">*</span>
+          </Label>
           <Select
             key={`gender-${String(genderValue)}`}
             value={genderValue !== undefined && genderValue !== null ? String(genderValue) : ''}
@@ -274,7 +267,9 @@ export function UserForm({ initialData, onSuccess, onCancel }: UserFormProps) {
             </SelectTrigger>
             <SelectContent>
               <SelectItem value={Gender.MALE.toString()}>{GenderLabels[Gender.MALE]}</SelectItem>
-              <SelectItem value={Gender.FEMALE.toString()}>{GenderLabels[Gender.FEMALE]}</SelectItem>
+              <SelectItem value={Gender.FEMALE.toString()}>
+                {GenderLabels[Gender.FEMALE]}
+              </SelectItem>
               <SelectItem value={Gender.OTHER.toString()}>{GenderLabels[Gender.OTHER]}</SelectItem>
             </SelectContent>
           </Select>
@@ -303,22 +298,28 @@ export function UserForm({ initialData, onSuccess, onCancel }: UserFormProps) {
         </div>
       </div>
 
-      <div className="flex items-center gap-2 mt-4">
-        <input
-          type="checkbox"
-          id="is_active"
-          {...register('is_active')}
-          className="rounded"
-        />
+      <div className="mt-4 flex items-center gap-2">
+        <input type="checkbox" id="is_active" {...register('is_active')} className="rounded" />
         <Label htmlFor="is_active">{tLabels('isActive')}</Label>
       </div>
 
       <div className="flex justify-end gap-2 pt-4">
-        <Button type="button" variant="outline" onClick={onCancel} disabled={loading || isActionProcessing}>
+        <Button
+          type="button"
+          variant="outline"
+          onClick={onCancel}
+          disabled={loading || isActionProcessing}
+        >
           {tCommon('cancel')}
         </Button>
         <Button type="submit" disabled={loading || isActionProcessing}>
-          {loading || isActionProcessing ? (isEdit ? tCommon('updating') : tCommon('creating')) : (isEdit ? tCommon('update') : tCommon('create'))}
+          {loading || isActionProcessing
+            ? isEdit
+              ? tCommon('updating')
+              : tCommon('creating')
+            : isEdit
+              ? tCommon('update')
+              : tCommon('create')}
         </Button>
       </div>
     </form>

@@ -43,21 +43,19 @@ export function Timeline({ history, className }: TimelineProps) {
           <Clock className="h-5 w-5" />
           {t('timeline')}
         </CardTitle>
-        <CardDescription>
-          {t('timelineDescription')}
-        </CardDescription>
+        <CardDescription>{t('timelineDescription')}</CardDescription>
       </CardHeader>
       <CardContent>
         <div className="relative space-y-6 pl-6">
           {/* Timeline line */}
-          <div className="absolute left-[11px] top-2 h-[calc(100%-1rem)] w-0.5 bg-border" />
+          <div className="absolute top-2 left-[11px] h-[calc(100%-1rem)] w-0.5 bg-border" />
 
           {history.map((item) => (
             <div key={item.id} className="relative">
               {/* Timeline dot */}
               <div
                 className={`absolute -left-6 mt-1.5 h-3 w-3 rounded-full border-2 border-background ${getActionColor(
-                  item.action
+                  item.action,
                 )}`}
               />
 

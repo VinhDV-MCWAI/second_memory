@@ -2,13 +2,13 @@
 
 namespace App\Http\Requests\History\Master\RoleMstHist;
 
-use Illuminate\Foundation\Http\FormRequest;
 use App\Constants\CommonVal;
+use App\Enums\IsActive;
+use App\Models\History\Master\RoleMstHist;
+use App\Models\Master\RoleMst;
+use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Enum;
-use App\Models\History\Master\RoleMstHist;
-use App\Enums\IsActive;
-use App\Models\Master\RoleMst;
 
 class UpdateRoleMstHistRequest extends FormRequest
 {
@@ -29,12 +29,12 @@ class UpdateRoleMstHistRequest extends FormRequest
     {
         return [
             'id' => ['required', 'integer', 'min:1', Rule::exists(RoleMstHist::class, 'id')],
-            'role_mst_id' => ['required', 'integer', 'min:' . CommonVal::MIN_INTEGER, 'max:' . CommonVal::MAX_INTEGER, Rule::exists(RoleMst::class, 'id'),],
-            'name' => ['string', 'min:' . CommonVal::MIN_VARCHAR, 'max:30',],
-            'permission' => ['string', 'min:' . CommonVal::MIN_VARCHAR, 'max:50',],
-            'is_active' => [new Enum(IsActive::class),],
-            'action' => ['required',],
-            'author_id' => ['required', 'integer', 'min:' . CommonVal::MIN_INTEGER, 'max:' . CommonVal::MAX_INTEGER,],
+            'role_mst_id' => ['required', 'integer', 'min:'.CommonVal::MIN_INTEGER, 'max:'.CommonVal::MAX_INTEGER, Rule::exists(RoleMst::class, 'id')],
+            'name' => ['string', 'min:'.CommonVal::MIN_VARCHAR, 'max:30'],
+            'permission' => ['string', 'min:'.CommonVal::MIN_VARCHAR, 'max:50'],
+            'is_active' => [new Enum(IsActive::class)],
+            'action' => ['required'],
+            'author_id' => ['required', 'integer', 'min:'.CommonVal::MIN_INTEGER, 'max:'.CommonVal::MAX_INTEGER],
         ];
     }
 

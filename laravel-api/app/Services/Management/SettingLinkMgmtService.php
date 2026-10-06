@@ -2,20 +2,19 @@
 
 namespace App\Services\Management;
 
-use App\Services\BaseService;
-use App\Interfaces\Management\SettingLinkMgmtInterface;
-use App\Interfaces\History\Management\SettingLinkMgmtHistInterface;
 use App\Enums\ActionType;
-use Illuminate\Http\Resources\Json\JsonResource;
 use App\Http\Resources\Management\SettingLinkMgmtResource;
+use App\Interfaces\History\Management\SettingLinkMgmtHistInterface;
+use App\Interfaces\Management\SettingLinkMgmtInterface;
+use App\Services\BaseService;
+use Illuminate\Http\Resources\Json\JsonResource;
 
 class SettingLinkMgmtService extends BaseService
 {
     public function __construct(
         protected SettingLinkMgmtInterface $settingLinkMgmt,
         protected SettingLinkMgmtHistInterface $settingLinkMgmtHist
-    ) {
-    }
+    ) {}
 
     protected function getHistoryRepository()
     {
@@ -29,9 +28,6 @@ class SettingLinkMgmtService extends BaseService
 
     /**
      * Get setting link mgmt list
-     *
-     * @param array $payload
-     * @return JsonResource
      */
     public function list(array $payload): JsonResource
     {
@@ -42,9 +38,6 @@ class SettingLinkMgmtService extends BaseService
 
     /**
      * Store setting link mgmt
-     *
-     * @param array $payload
-     * @return int
      */
     public function store(array $payload): int
     {
@@ -56,9 +49,6 @@ class SettingLinkMgmtService extends BaseService
 
     /**
      * Update setting link mgmt
-     *
-     * @param array $payload
-     * @return int
      */
     public function update(array $payload): int
     {
@@ -71,14 +61,12 @@ class SettingLinkMgmtService extends BaseService
 
     /**
      * Delete setting link mgmt
-     *
-     * @param array $payload
-     * @return void
      */
     public function delete(array $payload): void
     {
-        if (!isset($payload['ids']) || !is_array($payload['ids'])) {
+        if (! isset($payload['ids']) || ! is_array($payload['ids'])) {
             $this->settingLinkMgmt->executeDelete($payload['ids'] ?? []);
+
             return;
         }
 

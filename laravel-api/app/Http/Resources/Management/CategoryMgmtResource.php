@@ -16,16 +16,16 @@ class CategoryMgmtResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'id' => (int)$this->id,
-            'name' => (string)$this->name,
-            'slug' => (string)$this->slug,
-            'description' => (string)$this->description,
-            'status' => (string)$this->status,
-            'is_display' => (bool)$this->is_display,
-            'rank_order' => (string)$this->rank_order,
+            'id' => (int) $this->id,
+            'name' => (string) $this->name,
+            'slug' => (string) $this->slug,
+            'description' => (string) $this->description,
+            'status' => (string) $this->status,
+            'is_display' => (bool) $this->is_display,
+            'rank_order' => (string) $this->rank_order,
             'layout_structure' => $this->layout_structure,
-            'is_delete' => (bool)$this->is_delete,
-            'updated_at' => (string)date(CommonVal::DATE_FORMAT, strtotime($this->updated_at)),
+            'is_delete' => (bool) $this->is_delete,
+            'updated_at' => (string) date(CommonVal::DATE_FORMAT, strtotime($this->updated_at)),
         ];
     }
 }

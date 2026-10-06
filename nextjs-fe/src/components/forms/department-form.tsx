@@ -26,8 +26,6 @@ import { DepartmentStatus, DepartmentStatusLabels } from '@/shared/enums';
 import { getDepartmentSchema, type DepartmentFormData } from '@/shared/validation/validation';
 import type { DepartmentFormProps } from './types';
 
-
-
 export function DepartmentForm({ initialData, onSuccess, onCancel }: DepartmentFormProps) {
   const tCommon = useTranslations('common');
   const tLabels = useTranslations('forms.labels');
@@ -68,25 +66,27 @@ export function DepartmentForm({ initialData, onSuccess, onCancel }: DepartmentF
     }
   }, [initialData, reset]);
 
-  const { execute, isLoading: isActionProcessing } = useActionLock({ delay: UI_CONSTANTS.ACTION_DELAY_MS });
+  const { execute, isLoading: isActionProcessing } = useActionLock({
+    delay: UI_CONSTANTS.ACTION_DELAY_MS,
+  });
 
   const onSubmit = async (data: DepartmentFormData) => {
     await execute(async () => {
       try {
         const payload = { ...data };
-      
-      if (isEdit && initialData) {
-        if (!initialData) return;
-        await update(initialData.id, {
-          ...payload,
-          is_delete: initialData.is_delete || false,
-        });
-      } else {
-        await create({
-          ...payload,
-          is_delete: false,
-        });
-      }
+
+        if (isEdit && initialData) {
+          if (!initialData) return;
+          await update(initialData.id, {
+            ...payload,
+            is_delete: initialData.is_delete || false,
+          });
+        } else {
+          await create({
+            ...payload,
+            is_delete: false,
+          });
+        }
         onSuccess();
       } catch (error: unknown) {
         console.error(error);
@@ -111,23 +111,15 @@ export function DepartmentForm({ initialData, onSuccess, onCancel }: DepartmentF
             className={errors.code ? 'border-red-500' : ''}
             disabled={isEdit}
           />
-          {errors.code && (
-            <p className="text-sm text-red-500">{errors.code.message}</p>
-          )}
+          {errors.code && <p className="text-sm text-red-500">{errors.code.message}</p>}
         </div>
 
         <div className="space-y-2">
           <Label htmlFor="name">
             {tLabels('name')} <span className="text-red-500">*</span>
           </Label>
-          <Input
-            id="name"
-            {...register('name')}
-            className={errors.name ? 'border-red-500' : ''}
-          />
-          {errors.name && (
-            <p className="text-sm text-red-500">{errors.name.message}</p>
-          )}
+          <Input id="name" {...register('name')} className={errors.name ? 'border-red-500' : ''} />
+          {errors.name && <p className="text-sm text-red-500">{errors.name.message}</p>}
         </div>
       </div>
 
@@ -143,28 +135,44 @@ export function DepartmentForm({ initialData, onSuccess, onCancel }: DepartmentF
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value={DepartmentStatus.INACTIVE.toString()}>{DepartmentStatusLabels[DepartmentStatus.INACTIVE]}</SelectItem>
-            <SelectItem value={DepartmentStatus.ACTIVE.toString()}>{DepartmentStatusLabels[DepartmentStatus.ACTIVE]}</SelectItem>
-            <SelectItem value={DepartmentStatus.DRAFT.toString()}>{DepartmentStatusLabels[DepartmentStatus.DRAFT]}</SelectItem>
-            <SelectItem value={DepartmentStatus.ARCHIVED.toString()}>{DepartmentStatusLabels[DepartmentStatus.ARCHIVED]}</SelectItem>
+            <SelectItem value={DepartmentStatus.INACTIVE.toString()}>
+              {DepartmentStatusLabels[DepartmentStatus.INACTIVE]}
+            </SelectItem>
+            <SelectItem value={DepartmentStatus.ACTIVE.toString()}>
+              {DepartmentStatusLabels[DepartmentStatus.ACTIVE]}
+            </SelectItem>
+            <SelectItem value={DepartmentStatus.DRAFT.toString()}>
+              {DepartmentStatusLabels[DepartmentStatus.DRAFT]}
+            </SelectItem>
+            <SelectItem value={DepartmentStatus.ARCHIVED.toString()}>
+              {DepartmentStatusLabels[DepartmentStatus.ARCHIVED]}
+            </SelectItem>
             {/* Fallback for other existing values if any */}
             {!Object.values(DepartmentStatus).includes(Number(statusValue)) && statusValue && (
               <SelectItem value={statusValue.toString()}>{statusValue}</SelectItem>
             )}
           </SelectContent>
         </Select>
-        {errors.status && (
-          <p className="text-sm text-red-500">{errors.status.message}</p>
-        )}
+        {errors.status && <p className="text-sm text-red-500">{errors.status.message}</p>}
       </div>
 
-
       <div className="flex justify-end gap-2 pt-4">
-        <Button type="button" variant="outline" onClick={onCancel} disabled={loading || isActionProcessing}>
+        <Button
+          type="button"
+          variant="outline"
+          onClick={onCancel}
+          disabled={loading || isActionProcessing}
+        >
           {tCommon('cancel')}
         </Button>
         <Button type="submit" disabled={loading || isActionProcessing}>
-          {loading || isActionProcessing ? (isEdit ? tCommon('updating') : tCommon('creating')) : (isEdit ? tCommon('update') : tCommon('create'))}
+          {loading || isActionProcessing
+            ? isEdit
+              ? tCommon('updating')
+              : tCommon('creating')
+            : isEdit
+              ? tCommon('update')
+              : tCommon('create')}
         </Button>
       </div>
     </form>
@@ -181,7 +189,7 @@ export function DepartmentForm({ initialData, onSuccess, onCancel }: DepartmentF
         <TabsTrigger value="policy-departments">{tCommon('policyDepartments')}</TabsTrigger>
         <TabsTrigger value="history">{tCommon('history')}</TabsTrigger>
       </TabsList>
-      
+
       <TabsContent value="details" className="mt-4">
         {FormContent}
       </TabsContent>
@@ -189,7 +197,7 @@ export function DepartmentForm({ initialData, onSuccess, onCancel }: DepartmentF
       <TabsContent value="policy-departments" className="mt-4">
         <p className="text-muted-foreground">{tCommon('junctionManagementComingSoon')}</p>
       </TabsContent>
-      
+
       <TabsContent value="history" className="mt-4">
         <div className="h-[400px] overflow-y-auto pr-2">
           {initialData && (

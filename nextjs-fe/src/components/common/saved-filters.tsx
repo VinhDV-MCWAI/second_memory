@@ -44,7 +44,7 @@ export function SavedFilters({
       if (stored) {
         setSavedFilters(JSON.parse(stored));
       }
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (_error) {
       // Handle error silently
     }
@@ -52,14 +52,14 @@ export function SavedFilters({
 
   useEffect(() => {
     loadFilters();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const saveFilters = (filters: SavedFilter[]) => {
     try {
       localStorage.setItem(storageKey, JSON.stringify(filters));
       setSavedFilters(filters);
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (_error) {
       toast.error(t('savedFilters.failedToSaveFilter'));
     }
@@ -173,9 +173,7 @@ export function SavedFilters({
         <DialogContent>
           <DialogHeader>
             <DialogTitle>{t('savedFilters.saveFilterTitle')}</DialogTitle>
-            <DialogDescription>
-              {t('savedFilters.saveFilterDescription')}
-            </DialogDescription>
+            <DialogDescription>{t('savedFilters.saveFilterDescription')}</DialogDescription>
           </DialogHeader>
           <Input
             placeholder={t('savedFilters.filterName')}

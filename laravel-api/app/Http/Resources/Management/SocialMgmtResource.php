@@ -16,16 +16,16 @@ class SocialMgmtResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'id' => (string)$this->id,
-            'name' => (string)$this->name,
-            'slug' => (string)$this->slug,
-            'link' => (string)$this->link,
-            'image' => (string)$this->image,
-            'status' => (int)$this->status,
-            'is_display' => (bool)$this->is_display,
-            'rank_order' => (int)$this->rank_order,
-            'is_delete' => (bool)$this->is_delete,
-            'updated_at' => (string)date(CommonVal::DATE_FORMAT, strtotime($this->updated_at)),
+            'id' => (string) $this->id,
+            'name' => (string) $this->name,
+            'slug' => (string) $this->slug,
+            'link' => (string) $this->link,
+            'image' => (string) $this->image,
+            'status' => (int) $this->status,
+            'is_display' => (bool) $this->is_display,
+            'rank_order' => (int) $this->rank_order,
+            'is_delete' => (bool) $this->is_delete,
+            'updated_at' => (string) date(CommonVal::DATE_FORMAT, strtotime($this->updated_at)),
         ];
     }
 }

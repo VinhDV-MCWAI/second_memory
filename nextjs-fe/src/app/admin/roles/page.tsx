@@ -20,7 +20,14 @@ import { ImportExport } from '@/components/common/import-export';
 import { Trash2, CheckCircle, XCircle, Plus } from 'lucide-react';
 import type { RoleMst } from '@/shared/types/api';
 import { API_ENDPOINTS } from '@/shared/api';
-import { SORT_ORDER, SORT_FIELDS, type SortOrder, PAGINATION, ADMIN_ROUTES, UI_CONSTANTS } from '@/shared/config';
+import {
+  SORT_ORDER,
+  SORT_FIELDS,
+  type SortOrder,
+  PAGINATION,
+  ADMIN_ROUTES,
+  UI_CONSTANTS,
+} from '@/shared/config';
 import { RoleForm } from '@/components/forms/role-form';
 import { RoleWizardDialog } from '@/components/forms/role-wizard-dialog';
 import { useTranslations } from 'next-intl';
@@ -32,7 +39,7 @@ export default function RoleListPage() {
   const [sortBy, setSortBy] = useState<string>(SORT_FIELDS.CREATED_AT);
   const [sortOrder, setSortOrder] = useState<SortOrder>(SORT_ORDER.DESC);
   const [selectedIds, setSelectedIds] = useState<number[]>([]);
-  
+
   // Dialog states
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [deleteIds, setDeleteIds] = useState<number[]>([]);
@@ -46,10 +53,13 @@ export default function RoleListPage() {
   const tCrud = useTranslations('crud');
   const tBulkActions = useTranslations('bulkActions');
 
-  const { data, loading, pagination, refetch } = useApiData<RoleMst>(
-    API_ENDPOINTS.MASTER.ROLE,
-    { page, per_page: perPage, filters, sort_by: sortBy, sort_order: sortOrder }
-  );
+  const { data, loading, pagination, refetch } = useApiData<RoleMst>(API_ENDPOINTS.MASTER.ROLE, {
+    page,
+    per_page: perPage,
+    filters,
+    sort_by: sortBy,
+    sort_order: sortOrder,
+  });
 
   const { remove } = useCrud<RoleMst>(API_ENDPOINTS.MASTER.ROLE);
 
@@ -73,7 +83,9 @@ export default function RoleListPage() {
     setDeleteDialogOpen(true);
   };
 
-  const { execute, isLoading: isDeleteProcessing } = useActionLock({ delay: UI_CONSTANTS.ACTION_DELAY_MS });
+  const { execute, isLoading: isDeleteProcessing } = useActionLock({
+    delay: UI_CONSTANTS.ACTION_DELAY_MS,
+  });
 
   const confirmDelete = async () => {
     try {
@@ -130,19 +142,28 @@ export default function RoleListPage() {
       label: tBulkActions('deleteSelected'),
       icon: <Trash2 className="h-4 w-4" />,
       variant: 'destructive',
-      onClick: async (ids) => { await remove(ids); },
-      confirmMessage: tCrud('deleteConfirm', { count: selectedIds.length, entity: tEntities('role').toLowerCase() }),
+      onClick: async (ids) => {
+        await remove(ids);
+      },
+      confirmMessage: tCrud('deleteConfirm', {
+        count: selectedIds.length,
+        entity: tEntities('role').toLowerCase(),
+      }),
       confirmTitle: tCrud('deleteEntity', { entity: tEntities('roles') }),
     },
-    { 
-      label: tBulkActions('activateSelected'), 
-      icon: <CheckCircle className="h-4 w-4" />, 
-      onClick: async () => { refetch(); } 
+    {
+      label: tBulkActions('activateSelected'),
+      icon: <CheckCircle className="h-4 w-4" />,
+      onClick: async () => {
+        refetch();
+      },
     },
-    { 
-      label: tBulkActions('deactivateSelected'), 
-      icon: <XCircle className="h-4 w-4" />, 
-      onClick: async () => { refetch(); } 
+    {
+      label: tBulkActions('deactivateSelected'),
+      icon: <XCircle className="h-4 w-4" />,
+      onClick: async () => {
+        refetch();
+      },
     },
   ];
 
@@ -175,13 +196,13 @@ export default function RoleListPage() {
       <div className="mt-6 space-y-4">
         <div className="flex gap-2">
           <AdvancedSearch fields={searchFields} onSearch={handleAdvancedSearch} />
-          <SavedFilters 
-            currentFilters={filters} 
-            onApplyFilter={(f) => { 
-              setFilters(f); 
-              setPage(PAGINATION.DEFAULT_PAGE); 
-            }} 
-            storageKey="role-filters" 
+          <SavedFilters
+            currentFilters={filters}
+            onApplyFilter={(f) => {
+              setFilters(f);
+              setPage(PAGINATION.DEFAULT_PAGE);
+            }}
+            storageKey="role-filters"
           />
           <ImportExport onImport={handleImport} />
         </div>
@@ -199,9 +220,15 @@ export default function RoleListPage() {
           fields={filterFields}
         />
 
-        <BulkActions selectedIds={selectedIds} onClearSelection={() => setSelectedIds([])} actions={bulkActions} isLoading={loading} />
+        <BulkActions
+          selectedIds={selectedIds}
+          onClearSelection={() => setSelectedIds([])}
+          actions={bulkActions}
+          isLoading={loading}
+        />
 
-        <DataTable data={data}
+        <DataTable
+          data={data}
           columns={columns}
           loading={loading}
           selectedIds={selectedIds}
@@ -210,7 +237,7 @@ export default function RoleListPage() {
           sortBy={sortBy}
           sortOrder={sortOrder}
           onEdit={(id) => {
-            const role = data.find(r => r.id === id);
+            const role = data.find((r) => r.id === id);
             if (role) handleEdit(role);
           }}
           onDelete={(id) => handleDelete([id])}
@@ -241,9 +268,11 @@ export default function RoleListPage() {
         open={deleteDialogOpen}
         onOpenChange={setDeleteDialogOpen}
         title={tCrud('deleteEntity', { entity: tEntities('role') + '(s)' })}
-        description={tCrud('deleteConfirm', { count: deleteIds.length, entity: tEntities('role').toLowerCase() })}
+        description={tCrud('deleteConfirm', {
+          count: deleteIds.length,
+          entity: tEntities('role').toLowerCase(),
+        })}
         onConfirm={confirmDelete}
-
         variant="destructive"
         isLoading={isDeleteProcessing}
       />

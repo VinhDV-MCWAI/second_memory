@@ -11,7 +11,6 @@ use App\Repositories\BaseRepository;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Arr;
 
-
 class SocialMgmtRepository extends BaseRepository implements SocialMgmtInterface
 {
     public function __construct(SocialMgmt $model)
@@ -21,9 +20,6 @@ class SocialMgmtRepository extends BaseRepository implements SocialMgmtInterface
 
     /**
      * Get list with pagination
-     *
-     * @param array $payload
-     * @return LengthAwarePaginator
      */
     public function list(array $payload): LengthAwarePaginator
     {
@@ -69,9 +65,6 @@ class SocialMgmtRepository extends BaseRepository implements SocialMgmtInterface
 
     /**
      * Create new record
-     *
-     * @param array $payload
-     * @return int
      */
     public function executeStore(array $payload): int
     {
@@ -84,12 +77,8 @@ class SocialMgmtRepository extends BaseRepository implements SocialMgmtInterface
         return $model->id;
     }
 
-
     /**
      * Update record
-     *
-     * @param array $payload
-     * @return int
      */
     public function executeUpdate(array $payload): int
     {
@@ -107,9 +96,6 @@ class SocialMgmtRepository extends BaseRepository implements SocialMgmtInterface
 
     /**
      * Delete record (soft delete)
-     *
-     * @param array $ids
-     * @return void
      */
     public function executeDelete(array $ids): void
     {
@@ -118,5 +104,4 @@ class SocialMgmtRepository extends BaseRepository implements SocialMgmtInterface
             ->notDeleted()
             ->update(['is_delete' => IsDelete::TRUE->value]);
     }
-
 }

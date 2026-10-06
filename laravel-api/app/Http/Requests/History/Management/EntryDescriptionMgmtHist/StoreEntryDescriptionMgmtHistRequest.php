@@ -2,14 +2,13 @@
 
 namespace App\Http\Requests\History\Management\EntryDescriptionMgmtHist;
 
-use Illuminate\Foundation\Http\FormRequest;
 use App\Constants\CommonVal;
-use Illuminate\Validation\Rule;
-use Illuminate\Validation\Rules\Enum;
-use App\Models\History\Management\EntryDescriptionMgmtHist;
 use App\Enums\IsActive;
 use App\Enums\StatusEnum;
 use App\Models\Management\EntryDescriptionMgmt;
+use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
+use Illuminate\Validation\Rules\Enum;
 
 class StoreEntryDescriptionMgmtHistRequest extends FormRequest
 {
@@ -29,17 +28,17 @@ class StoreEntryDescriptionMgmtHistRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'entry_description_mgmt_id' => ['required', 'integer', 'min:' . CommonVal::MIN_INTEGER, 'max:' . CommonVal::MAX_INTEGER, Rule::exists(EntryDescriptionMgmt::class, 'id'),],
-            'parent_id' => ['integer', 'min:' . CommonVal::MIN_INTEGER, 'max:' . CommonVal::MAX_INTEGER,],
-            'title' => ['string', 'min:' . CommonVal::MIN_VARCHAR, 'max:100',],
-            'summary' => ['string', 'min:' . CommonVal::MIN_VARCHAR, 'max:255',],
-            'article' => ['string', 'min:' . CommonVal::MIN_VARCHAR, 'max:' . CommonVal::MAX_VARCHAR,],
-            'status' => [new Enum(StatusEnum::class),],
-            'is_display' => [new Enum(IsActive::class),],
+            'entry_description_mgmt_id' => ['required', 'integer', 'min:'.CommonVal::MIN_INTEGER, 'max:'.CommonVal::MAX_INTEGER, Rule::exists(EntryDescriptionMgmt::class, 'id')],
+            'parent_id' => ['integer', 'min:'.CommonVal::MIN_INTEGER, 'max:'.CommonVal::MAX_INTEGER],
+            'title' => ['string', 'min:'.CommonVal::MIN_VARCHAR, 'max:100'],
+            'summary' => ['string', 'min:'.CommonVal::MIN_VARCHAR, 'max:255'],
+            'article' => ['string', 'min:'.CommonVal::MIN_VARCHAR, 'max:'.CommonVal::MAX_VARCHAR],
+            'status' => [new Enum(StatusEnum::class)],
+            'is_display' => [new Enum(IsActive::class)],
             'rank_order' => [],
-            'entry_id' => ['integer', 'min:' . CommonVal::MIN_INTEGER, 'max:' . CommonVal::MAX_INTEGER,],
-            'action' => ['required',],
-            'author_id' => ['required', 'integer', 'min:' . CommonVal::MIN_INTEGER, 'max:' . CommonVal::MAX_INTEGER,],
+            'entry_id' => ['integer', 'min:'.CommonVal::MIN_INTEGER, 'max:'.CommonVal::MAX_INTEGER],
+            'action' => ['required'],
+            'author_id' => ['required', 'integer', 'min:'.CommonVal::MIN_INTEGER, 'max:'.CommonVal::MAX_INTEGER],
         ];
     }
 

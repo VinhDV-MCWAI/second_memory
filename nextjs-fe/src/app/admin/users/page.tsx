@@ -14,7 +14,14 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import type { UserMgmt } from '@/shared/types/api';
 import { API_ENDPOINTS } from '@/shared/api';
-import { SORT_ORDER, SORT_FIELDS, type SortOrder, ADMIN_ROUTES, PAGINATION, UI_CONSTANTS } from '@/shared/config';
+import {
+  SORT_ORDER,
+  SORT_FIELDS,
+  type SortOrder,
+  ADMIN_ROUTES,
+  PAGINATION,
+  UI_CONSTANTS,
+} from '@/shared/config';
 import { Gender, GenderLabels, UserStatus, UserStatusLabels } from '@/shared/enums/enums';
 import { AdvancedSearch } from '@/components/common/advanced-search';
 import type { SearchField, SearchCriteria } from '@/shared/types/data-table.types';
@@ -40,7 +47,7 @@ export default function UsersPage() {
   const [sortBy, setSortBy] = useState<string>(SORT_FIELDS.CREATED_AT);
   const [sortOrder, setSortOrder] = useState<SortOrder>(SORT_ORDER.DESC);
   const [selectedIds, setSelectedIds] = useState<number[]>([]);
-  
+
   // Dialog states
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [deleteIds, setDeleteIds] = useState<number[]>([]);
@@ -56,7 +63,7 @@ export default function UsersPage() {
 
   const { data, loading, pagination, refetch } = useApiData<UserMgmt>(
     API_ENDPOINTS.MANAGEMENT.USER,
-    { page, per_page: perPage, filters, sort_by: sortBy, sort_order: sortOrder }
+    { page, per_page: perPage, filters, sort_by: sortBy, sort_order: sortOrder },
   );
 
   const { remove } = useCrud<UserMgmt>(API_ENDPOINTS.MANAGEMENT.USER);
@@ -80,7 +87,9 @@ export default function UsersPage() {
     setDeleteDialogOpen(true);
   };
 
-  const { execute, isLoading: isDeleteProcessing } = useActionLock({ delay: UI_CONSTANTS.ACTION_DELAY_MS });
+  const { execute, isLoading: isDeleteProcessing } = useActionLock({
+    delay: UI_CONSTANTS.ACTION_DELAY_MS,
+  });
 
   const confirmDelete = async () => {
     try {
@@ -152,7 +161,7 @@ export default function UsersPage() {
       type: 'select',
       options: Object.entries(UserStatusLabels).map(([value, label]) => ({
         value: Number(value),
-        label
+        label,
       })),
     },
   ];
@@ -167,8 +176,8 @@ export default function UsersPage() {
       type: 'select',
       options: Object.entries(UserStatusLabels).map(([value, label]) => ({
         value: value.toString(),
-        label
-      }))
+        label,
+      })),
     },
     { key: 'created_at', label: tFields('createdAt'), type: 'date' },
   ];
@@ -178,19 +187,28 @@ export default function UsersPage() {
       label: tBulkActions('deleteSelected'),
       icon: <Trash2 className="h-4 w-4" />,
       variant: 'destructive',
-      onClick: async (_ids) => { await remove(_ids); },
-      confirmMessage: tCrud('deleteConfirm', { count: selectedIds.length, entity: tEntities('user').toLowerCase() }),
+      onClick: async (_ids) => {
+        await remove(_ids);
+      },
+      confirmMessage: tCrud('deleteConfirm', {
+        count: selectedIds.length,
+        entity: tEntities('user').toLowerCase(),
+      }),
       confirmTitle: tCrud('deleteEntity', { entity: tEntities('users') }),
     },
     {
       label: tBulkActions('activateSelected'),
       icon: <CheckCircle className="h-4 w-4" />,
-      onClick: async () => { /* Implement activate */ },
+      onClick: async () => {
+        /* Implement activate */
+      },
     },
     {
       label: tBulkActions('deactivateSelected'),
       icon: <XCircle className="h-4 w-4" />,
-      onClick: async () => { /* Implement deactivate */ },
+      onClick: async () => {
+        /* Implement deactivate */
+      },
     },
   ];
 
@@ -223,7 +241,14 @@ export default function UsersPage() {
       <div className="mt-6 space-y-4">
         <div className="flex gap-2">
           <AdvancedSearch fields={searchFields} onSearch={handleAdvancedSearch} />
-          <SavedFilters currentFilters={filters} onApplyFilter={(f) => { setFilters(f); setPage(PAGINATION.DEFAULT_PAGE); }} storageKey="user-filters" />
+          <SavedFilters
+            currentFilters={filters}
+            onApplyFilter={(f) => {
+              setFilters(f);
+              setPage(PAGINATION.DEFAULT_PAGE);
+            }}
+            storageKey="user-filters"
+          />
           <ImportExport onImport={handleImport} />
         </div>
 
@@ -240,9 +265,15 @@ export default function UsersPage() {
           fields={filterFields}
         />
 
-        <BulkActions selectedIds={selectedIds} onClearSelection={() => setSelectedIds([])} actions={bulkActions} isLoading={loading} />
+        <BulkActions
+          selectedIds={selectedIds}
+          onClearSelection={() => setSelectedIds([])}
+          actions={bulkActions}
+          isLoading={loading}
+        />
 
-        <DataTable data={data}
+        <DataTable
+          data={data}
           columns={columns}
           loading={loading}
           selectedIds={selectedIds}
@@ -251,7 +282,7 @@ export default function UsersPage() {
           sortBy={sortBy}
           sortOrder={sortOrder}
           onEdit={(id) => {
-            const user = data.find(u => u.id === id);
+            const user = data.find((u) => u.id === id);
             if (user) handleEdit(user);
           }}
           onDelete={(id) => handleDelete([id])}
@@ -271,19 +302,25 @@ export default function UsersPage() {
 
       {/* Create/Edit User Modal */}
       <Dialog open={formDialogOpen} onOpenChange={setFormDialogOpen}>
-        <DialogContent className="max-w-4xl max-h-[90vh] p-0 flex flex-col gap-0 overflow-hidden">
+        <DialogContent className="flex max-h-[90vh] max-w-4xl flex-col gap-0 overflow-hidden p-0">
           {/* Header - Fixed */}
-          <div className="shrink-0 px-6 pt-6 pb-4 border-b bg-background">
+          <div className="shrink-0 border-b bg-background px-6 pt-6 pb-4">
             <DialogHeader>
-              <DialogTitle>{editingUser ? tCrud('editEntity', { entity: tEntities('user') }) : tCrud('createEntity', { entity: tEntities('user') })}</DialogTitle>
+              <DialogTitle>
+                {editingUser
+                  ? tCrud('editEntity', { entity: tEntities('user') })
+                  : tCrud('createEntity', { entity: tEntities('user') })}
+              </DialogTitle>
               <DialogDescription>
-                {editingUser ? tCrud('editDescription', { entity: tEntities('user').toLowerCase() }) : tCrud('createDescription', { entity: tEntities('user').toLowerCase() })}
+                {editingUser
+                  ? tCrud('editDescription', { entity: tEntities('user').toLowerCase() })
+                  : tCrud('createDescription', { entity: tEntities('user').toLowerCase() })}
               </DialogDescription>
             </DialogHeader>
           </div>
-          
+
           {/* Body - Scrollable */}
-          <div className="flex-1 overflow-y-auto min-h-0">
+          <div className="min-h-0 flex-1 overflow-y-auto">
             <div className="px-6 py-4">
               <UserForm
                 initialData={editingUser}
@@ -292,9 +329,9 @@ export default function UsersPage() {
               />
             </div>
           </div>
-          
+
           {/* Footer - Fixed */}
-          <div className="shrink-0 px-6 py-4 border-t bg-muted/20">
+          <div className="shrink-0 border-t bg-muted/20 px-6 py-4">
             <DialogFooter>
               <Button type="button" variant="outline" onClick={() => setFormDialogOpen(false)}>
                 {tCommon('cancel')}
@@ -311,7 +348,10 @@ export default function UsersPage() {
         open={deleteDialogOpen}
         onOpenChange={setDeleteDialogOpen}
         title={tCrud('deleteEntity', { entity: tEntities('user') + '(s)' })}
-        description={tCrud('deleteConfirm', { count: deleteIds.length, entity: tEntities('user').toLowerCase() })}
+        description={tCrud('deleteConfirm', {
+          count: deleteIds.length,
+          entity: tEntities('user').toLowerCase(),
+        })}
         onConfirm={confirmDelete}
         confirmText={tCommon('delete')}
         variant="destructive"

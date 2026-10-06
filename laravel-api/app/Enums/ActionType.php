@@ -27,7 +27,6 @@ enum ActionType: int
      */
     case DELETE = 3;
 
-
     public static function getLabel(self|int $value): string
     {
         if (is_int($value)) {

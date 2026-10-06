@@ -20,7 +20,7 @@ export default function FileManagerPage() {
         description={tManagement('description', { entity: tEntities('fileManager').toLowerCase() })}
         breadcrumbs={[
           { label: tCommon('admin'), href: ADMIN_ROUTES.DASHBOARD },
-          { label: tEntities('fileManager'), isActive: true }
+          { label: tEntities('fileManager'), isActive: true },
         ]}
       />
 

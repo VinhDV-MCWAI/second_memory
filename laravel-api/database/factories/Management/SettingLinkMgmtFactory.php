@@ -7,14 +7,14 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 
 class SettingLinkMgmtFactory extends Factory
 {
-  protected $model = SettingLinkMgmt::class;
+    protected $model = SettingLinkMgmt::class;
 
-  public function definition()
-  {
-    return [
-      'key' => $this->faker->unique()->word,
-      'value' => $this->faker->url,
-      'is_delete' => false,
-    ];
-  }
+    public function definition()
+    {
+        return [
+            'key' => $this->faker->unique()->word,
+            'value' => $this->faker->url,
+            'is_delete' => false,
+        ];
+    }
 }

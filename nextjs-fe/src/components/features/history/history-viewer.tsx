@@ -96,9 +96,7 @@ export function HistoryViewer({
           <History className="h-5 w-5" />
           {t('history.title')}
         </CardTitle>
-        <CardDescription>
-          {t('history.description')}
-        </CardDescription>
+        <CardDescription>{t('history.description')}</CardDescription>
       </CardHeader>
       <CardContent>
         <div className="space-y-4">
@@ -114,17 +112,17 @@ export function HistoryViewer({
                       {(() => {
                         try {
                           const date = item.changed_at ? new Date(item.changed_at) : null;
-                          return date && !isNaN(date.getTime()) 
+                          return date && !isNaN(date.getTime())
                             ? formatDistanceToNow(date, { addSuffix: true })
                             : t('history.unknownTime');
-                        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+                          // eslint-disable-next-line @typescript-eslint/no-unused-vars
                         } catch (e) {
                           return t('history.invalidDate');
                         }
                       })()}
                     </span>
                   </div>
-                  
+
                   <div className="mt-2 flex items-center gap-4 text-sm">
                     <div className="flex items-center gap-1 text-muted-foreground">
                       <User className="h-4 w-4" />
@@ -134,15 +132,15 @@ export function HistoryViewer({
                       <Calendar className="h-4 w-4" />
                       <span>
                         {(() => {
-                           try {
-                             const date = item.changed_at ? new Date(item.changed_at) : null;
-                             return date && !isNaN(date.getTime())
-                               ? date.toLocaleString()
-                               : t('history.unknownDate');
-                           // eslint-disable-next-line @typescript-eslint/no-unused-vars
-                           } catch (e) {
-                             return t('history.invalidDate');
-                           }
+                          try {
+                            const date = item.changed_at ? new Date(item.changed_at) : null;
+                            return date && !isNaN(date.getTime())
+                              ? date.toLocaleString()
+                              : t('history.unknownDate');
+                            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+                          } catch (e) {
+                            return t('history.invalidDate');
+                          }
                         })()}
                       </span>
                     </div>
@@ -156,25 +154,17 @@ export function HistoryViewer({
                 </div>
 
                 <div className="flex gap-2">
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    onClick={() => setSelectedHistory(item)}
-                  >
+                  <Button size="sm" variant="outline" onClick={() => setSelectedHistory(item)}>
                     <Eye className="h-4 w-4" />
                   </Button>
                   {item.action !== 'delete' && onRestore && (
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      onClick={() => handleRestore(item.id)}
-                    >
+                    <Button size="sm" variant="outline" onClick={() => handleRestore(item.id)}>
                       <RotateCcw className="h-4 w-4" />
                     </Button>
                   )}
                 </div>
               </div>
-              
+
               {index < history.length - 1 && <Separator className="mt-4" />}
             </div>
           ))}

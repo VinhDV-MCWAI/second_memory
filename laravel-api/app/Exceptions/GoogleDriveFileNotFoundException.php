@@ -11,13 +11,13 @@ use Exception;
 class GoogleDriveFileNotFoundException extends Exception
 {
     protected $code = 404;
-    
+
     public function __construct(string $fileId, string $fileName = '')
     {
-        $message = $fileName 
+        $message = $fileName
             ? "File '{$fileName}' (ID: {$fileId}) not found on Google Drive"
             : "File (ID: {$fileId}) not found on Google Drive";
-            
+
         parent::__construct($message, $this->code);
     }
 }

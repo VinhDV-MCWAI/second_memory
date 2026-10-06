@@ -14,13 +14,13 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import type { EntryMgmt } from '@/shared/types/api';
 import { API_ENDPOINTS } from '@/shared/api';
-import { 
-  SORT_ORDER, 
+import {
+  SORT_ORDER,
   SORT_FIELDS,
-  type SortOrder, 
-  PAGINATION, 
+  type SortOrder,
+  PAGINATION,
   ADMIN_ROUTES,
-  UI_CONSTANTS 
+  UI_CONSTANTS,
 } from '@/shared/config';
 import { IsDisplay, IsDisplayLabels } from '@/shared/enums/enums';
 import { AdvancedSearch } from '@/components/common/advanced-search';
@@ -63,7 +63,7 @@ export default function EntryListPage() {
 
   const { data, loading, pagination, refetch } = useApiData<EntryMgmt>(
     API_ENDPOINTS.MANAGEMENT.ENTRY,
-    { page, per_page: perPage, filters, sort_by: sortBy, sort_order: sortOrder }
+    { page, per_page: perPage, filters, sort_by: sortBy, sort_order: sortOrder },
   );
 
   const { remove } = useCrud<EntryMgmt>(API_ENDPOINTS.MANAGEMENT.ENTRY);
@@ -87,7 +87,9 @@ export default function EntryListPage() {
     setDeleteDialogOpen(true);
   };
 
-  const { execute, isLoading: isDeleteProcessing } = useActionLock({ delay: UI_CONSTANTS.ACTION_DELAY_MS });
+  const { execute, isLoading: isDeleteProcessing } = useActionLock({
+    delay: UI_CONSTANTS.ACTION_DELAY_MS,
+  });
 
   const confirmDelete = async () => {
     try {
@@ -136,27 +138,36 @@ export default function EntryListPage() {
   const searchFields: SearchField[] = [
     { key: 'name', label: tFields('name'), type: 'text' },
     { key: 'slug', label: tFields('slug'), type: 'text' },
-    { key: 'created_at', label: tFields('createdAt'), type: 'date' }
+    { key: 'created_at', label: tFields('createdAt'), type: 'date' },
   ];
   const bulkActions: BulkAction[] = [
     {
       label: tBulkActions('deleteSelected'),
       icon: <Trash2 className="h-4 w-4" />,
       variant: 'destructive',
-      onClick: async (ids) => { await remove(ids); },
-      confirmMessage: tCrud('deleteConfirm', { count: selectedIds.length, entity: tEntities('entry').toLowerCase() }),
-      confirmTitle: tCrud('deleteEntity', { entity: tEntities('entries') })
+      onClick: async (ids) => {
+        await remove(ids);
+      },
+      confirmMessage: tCrud('deleteConfirm', {
+        count: selectedIds.length,
+        entity: tEntities('entry').toLowerCase(),
+      }),
+      confirmTitle: tCrud('deleteEntity', { entity: tEntities('entries') }),
     },
     {
       label: tBulkActions('activateSelected'),
       icon: <CheckCircle className="h-4 w-4" />,
-      onClick: async () => { refetch(); }
+      onClick: async () => {
+        refetch();
+      },
     },
     {
       label: tBulkActions('deactivateSelected'),
       icon: <XCircle className="h-4 w-4" />,
-      onClick: async () => { refetch(); }
-    }
+      onClick: async () => {
+        refetch();
+      },
+    },
   ];
 
   const handleAdvancedSearch = (criteria: SearchCriteria[]) => {
@@ -180,7 +191,8 @@ export default function EntryListPage() {
         ]}
         action={
           <Button onClick={handleCreate}>
-            <Plus className="mr-2 h-4 w-4" /> {tCrud('createEntity', { entity: tEntities('entry') })}
+            <Plus className="mr-2 h-4 w-4" />{' '}
+            {tCrud('createEntity', { entity: tEntities('entry') })}
           </Button>
         }
       />
@@ -188,13 +200,13 @@ export default function EntryListPage() {
       <div className="mt-6 space-y-4">
         <div className="flex gap-2">
           <AdvancedSearch fields={searchFields} onSearch={handleAdvancedSearch} />
-          <SavedFilters 
-            currentFilters={filters} 
-            onApplyFilter={(f) => { 
-              setFilters(f); 
-              setPage(PAGINATION.DEFAULT_PAGE); 
-            }} 
-            storageKey="entry-filters" 
+          <SavedFilters
+            currentFilters={filters}
+            onApplyFilter={(f) => {
+              setFilters(f);
+              setPage(PAGINATION.DEFAULT_PAGE);
+            }}
+            storageKey="entry-filters"
           />
           <ImportExport onImport={handleImport} />
         </div>
@@ -212,9 +224,15 @@ export default function EntryListPage() {
           fields={filterFields}
         />
 
-        <BulkActions selectedIds={selectedIds} onClearSelection={() => setSelectedIds([])} actions={bulkActions} isLoading={loading} />
+        <BulkActions
+          selectedIds={selectedIds}
+          onClearSelection={() => setSelectedIds([])}
+          actions={bulkActions}
+          isLoading={loading}
+        />
 
-        <DataTable data={data}
+        <DataTable
+          data={data}
           columns={columns}
           loading={loading}
           selectedIds={selectedIds}
@@ -223,7 +241,7 @@ export default function EntryListPage() {
           sortBy={sortBy}
           sortOrder={sortOrder}
           onEdit={(id) => {
-            const entry = data.find(s => s.id === id);
+            const entry = data.find((s) => s.id === id);
             if (entry) handleEdit(entry);
           }}
           onDelete={(id) => handleDelete([id])}
@@ -243,19 +261,25 @@ export default function EntryListPage() {
 
       {/* Create/Edit Entry Modal */}
       <Dialog open={formDialogOpen} onOpenChange={setFormDialogOpen}>
-        <DialogContent className="max-w-2xl max-h-[90vh] p-0 flex flex-col gap-0 overflow-hidden">
+        <DialogContent className="flex max-h-[90vh] max-w-2xl flex-col gap-0 overflow-hidden p-0">
           {/* Header - Fixed */}
-          <div className="shrink-0 px-6 pt-6 pb-4 border-b bg-background">
+          <div className="shrink-0 border-b bg-background px-6 pt-6 pb-4">
             <DialogHeader>
-              <DialogTitle>{editingEntry ? tCrud('editEntity', { entity: tEntities('entry') }) : tCrud('createEntity', { entity: tEntities('entry') })}</DialogTitle>
+              <DialogTitle>
+                {editingEntry
+                  ? tCrud('editEntity', { entity: tEntities('entry') })
+                  : tCrud('createEntity', { entity: tEntities('entry') })}
+              </DialogTitle>
               <DialogDescription>
-                {editingEntry ? tCrud('editDescription', { entity: tEntities('entry').toLowerCase() }) : tCrud('createDescription', { entity: tEntities('entry').toLowerCase() })}
+                {editingEntry
+                  ? tCrud('editDescription', { entity: tEntities('entry').toLowerCase() })
+                  : tCrud('createDescription', { entity: tEntities('entry').toLowerCase() })}
               </DialogDescription>
             </DialogHeader>
           </div>
-          
+
           {/* Body - Scrollable */}
-          <div className="flex-1 overflow-y-auto min-h-0">
+          <div className="min-h-0 flex-1 overflow-y-auto">
             <div className="px-6 py-4">
               <EntryForm
                 initialData={editingEntry}
@@ -265,9 +289,9 @@ export default function EntryListPage() {
               />
             </div>
           </div>
-          
+
           {/* Footer - Fixed */}
-          <div className="shrink-0 px-6 py-4 border-t bg-muted/20">
+          <div className="shrink-0 border-t bg-muted/20 px-6 py-4">
             <DialogFooter>
               <Button type="button" variant="outline" onClick={() => setFormDialogOpen(false)}>
                 {tCommon('cancel')}
@@ -284,10 +308,12 @@ export default function EntryListPage() {
         open={deleteDialogOpen}
         onOpenChange={setDeleteDialogOpen}
         title={tCrud('deleteEntity', { entity: tEntities('entry') })}
-        description={tCrud('deleteConfirm', { count: deleteIds.length, entity: tEntities('entry').toLowerCase() })}
+        description={tCrud('deleteConfirm', {
+          count: deleteIds.length,
+          entity: tEntities('entry').toLowerCase(),
+        })}
         onConfirm={confirmDelete}
         confirmText={tCommon('delete')}
-
         variant="destructive"
         isLoading={isDeleteProcessing}
       />

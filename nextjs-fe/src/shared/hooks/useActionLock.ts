@@ -15,32 +15,35 @@ export function useActionLock(options: UseActionLockOptions = {}): UseActionLock
     };
   }, []);
 
-  const execute = useCallback(async <T>(action: () => Promise<T>): Promise<T | undefined> => {
-    if (isLocked.current) {
-      return undefined;
-    }
+  const execute = useCallback(
+    async <T>(action: () => Promise<T>): Promise<T | undefined> => {
+      if (isLocked.current) {
+        return undefined;
+      }
 
-    isLocked.current = true;
-    if (isMounted.current) setIsLoading(true);
+      isLocked.current = true;
+      if (isMounted.current) setIsLoading(true);
 
-    try {
-      return await action();
-    } finally {
-      if (delay > 0 && isMounted.current) {
-        // Keep locked for a cooldown period
-        setTimeout(() => {
+      try {
+        return await action();
+      } finally {
+        if (delay > 0 && isMounted.current) {
+          // Keep locked for a cooldown period
+          setTimeout(() => {
             isLocked.current = false;
             // Only update state if still mounted
             if (isMounted.current) {
-                setIsLoading(false);
+              setIsLoading(false);
             }
-        }, delay);
-      } else {
-        isLocked.current = false;
-        if (isMounted.current) setIsLoading(false);
+          }, delay);
+        } else {
+          isLocked.current = false;
+          if (isMounted.current) setIsLoading(false);
+        }
       }
-    }
-  }, [delay]);
+    },
+    [delay],
+  );
 
   return { isLoading, execute };
 }

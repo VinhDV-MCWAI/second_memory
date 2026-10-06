@@ -72,7 +72,7 @@ export interface ListQueryParams {
   page?: number;
   per_page?: number;
   sort_by?: string;
-  sort_order?: typeof SORT_ORDER[keyof typeof SORT_ORDER];
+  sort_order?: (typeof SORT_ORDER)[keyof typeof SORT_ORDER];
   from_date?: string; // Format: d/m/Y
   to_date?: string; // Format: d/m/Y
   [key: string]: FilterValue;
@@ -86,7 +86,7 @@ export interface UseApiDataOptions {
   page?: number;
   per_page?: number;
   sort_by?: string;
-  sort_order?: typeof SORT_ORDER[keyof typeof SORT_ORDER];
+  sort_order?: (typeof SORT_ORDER)[keyof typeof SORT_ORDER];
   from_date?: string;
   to_date?: string;
   filters?: Record<string, FilterValue>;
@@ -129,7 +129,7 @@ export interface UseCrudOptions {
    * Example: ['users'] will invalidate all user-related queries
    */
   invalidateKeys?: string[];
-  
+
   /**
    * Custom success messages
    */
@@ -268,8 +268,6 @@ export interface PolicyDepartmentMst {
   // Relationships
   departments?: DepartmentMst[];
 }
-
-
 
 /**
  * Management Data Models
@@ -417,8 +415,6 @@ export interface DepartmentManagementMst {
   policy_department_mst_id: number;
 }
 
-
-
 export interface CategoryEntryMgmt {
   category_mgmt_id: number;
   entry_mgmt_id: number;
@@ -459,8 +455,6 @@ export interface AuthUser {
   roles?: RoleMst[];
   departments?: DepartmentMst[];
 }
-
-
 
 /**
  * API Endpoint Paths Constants

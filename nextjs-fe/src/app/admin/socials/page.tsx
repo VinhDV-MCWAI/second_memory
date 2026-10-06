@@ -13,13 +13,13 @@ import { ConfirmDialog } from '@/components/ui/confirm-dialog';
 import { Button } from '@/components/ui/button';
 import type { SocialMgmt } from '@/shared/types/api';
 import { API_ENDPOINTS } from '@/shared/api';
-import { 
-  SORT_ORDER, 
+import {
+  SORT_ORDER,
   SORT_FIELDS,
-  type SortOrder, 
-  PAGINATION, 
+  type SortOrder,
+  PAGINATION,
   ADMIN_ROUTES,
-  UI_CONSTANTS 
+  UI_CONSTANTS,
 } from '@/shared/config';
 import { AdvancedSearch } from '@/components/common/advanced-search';
 import type { SearchField, SearchCriteria } from '@/shared/types/data-table.types';
@@ -45,7 +45,7 @@ export default function SocialListPage() {
   const [sortBy, setSortBy] = useState<string>(SORT_FIELDS.ORDER);
   const [sortOrder, setSortOrder] = useState<SortOrder>(SORT_ORDER.ASC);
   const [selectedIds, setSelectedIds] = useState<number[]>([]);
-  
+
   // Dialog states
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [deleteIds, setDeleteIds] = useState<number[]>([]);
@@ -61,7 +61,7 @@ export default function SocialListPage() {
 
   const { data, loading, pagination, refetch } = useApiData<SocialMgmt>(
     API_ENDPOINTS.MANAGEMENT.SOCIAL,
-    { page, per_page: perPage, filters, sort_by: sortBy, sort_order: sortOrder }
+    { page, per_page: perPage, filters, sort_by: sortBy, sort_order: sortOrder },
   );
 
   const { remove } = useCrud<SocialMgmt>(API_ENDPOINTS.MANAGEMENT.SOCIAL);
@@ -85,7 +85,9 @@ export default function SocialListPage() {
     setDeleteDialogOpen(true);
   };
 
-  const { execute, isLoading: isDeleteProcessing } = useActionLock({ delay: UI_CONSTANTS.ACTION_DELAY_MS });
+  const { execute, isLoading: isDeleteProcessing } = useActionLock({
+    delay: UI_CONSTANTS.ACTION_DELAY_MS,
+  });
 
   const confirmDelete = async () => {
     try {
@@ -126,37 +128,46 @@ export default function SocialListPage() {
     { key: 'name', label: tFields('name'), type: 'text' },
     { key: 'slug', label: tFields('slug'), type: 'text' },
     { key: 'link', label: tFields('link'), type: 'text' },
-    { key: 'created_at', label: tFields('createdAt'), type: 'date' }
+    { key: 'created_at', label: tFields('createdAt'), type: 'date' },
   ];
   const bulkActions: BulkAction[] = [
-    { 
-      label: tBulkActions('deleteSelected'), 
-      icon: <Trash2 className="h-4 w-4" />, 
-      variant: 'destructive', 
-      onClick: async (ids) => { await remove(ids); }, 
-      confirmMessage: tCrud('deleteConfirm', { count: selectedIds.length, entity: tEntities('social').toLowerCase() }), 
-      confirmTitle: tCrud('deleteEntity', { entity: tEntities('socials') }) 
-    }, 
-    { 
-      label: tBulkActions('activateSelected'), 
-      icon: <CheckCircle className="h-4 w-4" />, 
-      onClick: async () => { refetch(); } 
-    }, 
-    { 
-      label: tBulkActions('deactivateSelected'), 
-      icon: <XCircle className="h-4 w-4" />, 
-      onClick: async () => { refetch(); } 
-    }
+    {
+      label: tBulkActions('deleteSelected'),
+      icon: <Trash2 className="h-4 w-4" />,
+      variant: 'destructive',
+      onClick: async (ids) => {
+        await remove(ids);
+      },
+      confirmMessage: tCrud('deleteConfirm', {
+        count: selectedIds.length,
+        entity: tEntities('social').toLowerCase(),
+      }),
+      confirmTitle: tCrud('deleteEntity', { entity: tEntities('socials') }),
+    },
+    {
+      label: tBulkActions('activateSelected'),
+      icon: <CheckCircle className="h-4 w-4" />,
+      onClick: async () => {
+        refetch();
+      },
+    },
+    {
+      label: tBulkActions('deactivateSelected'),
+      icon: <XCircle className="h-4 w-4" />,
+      onClick: async () => {
+        refetch();
+      },
+    },
   ];
 
-  const handleAdvancedSearch = (criteria: SearchCriteria[]) => { 
-    const newFilters = criteria.reduce((acc, c) => ({ ...acc, [c.field]: c.value }), {}); 
-    setFilters(newFilters); 
-    setPage(PAGINATION.DEFAULT_PAGE); 
+  const handleAdvancedSearch = (criteria: SearchCriteria[]) => {
+    const newFilters = criteria.reduce((acc, c) => ({ ...acc, [c.field]: c.value }), {});
+    setFilters(newFilters);
+    setPage(PAGINATION.DEFAULT_PAGE);
   };
 
-  const handleImport = async () => { 
-    refetch(); 
+  const handleImport = async () => {
+    refetch();
   };
 
   return (
@@ -170,7 +181,8 @@ export default function SocialListPage() {
         ]}
         action={
           <Button onClick={handleCreate}>
-            <Plus className="mr-2 h-4 w-4" /> {tCrud('createEntity', { entity: tEntities('social') })}
+            <Plus className="mr-2 h-4 w-4" />{' '}
+            {tCrud('createEntity', { entity: tEntities('social') })}
           </Button>
         }
       />
@@ -178,13 +190,13 @@ export default function SocialListPage() {
       <div className="mt-6 space-y-4">
         <div className="flex gap-2">
           <AdvancedSearch fields={searchFields} onSearch={handleAdvancedSearch} />
-          <SavedFilters 
-            currentFilters={filters} 
-            onApplyFilter={(f) => { 
-              setFilters(f); 
-              setPage(PAGINATION.DEFAULT_PAGE); 
-            }} 
-            storageKey="social-filters" 
+          <SavedFilters
+            currentFilters={filters}
+            onApplyFilter={(f) => {
+              setFilters(f);
+              setPage(PAGINATION.DEFAULT_PAGE);
+            }}
+            storageKey="social-filters"
           />
           <ImportExport onImport={handleImport} />
         </div>
@@ -202,9 +214,15 @@ export default function SocialListPage() {
           fields={filterFields}
         />
 
-        <BulkActions selectedIds={selectedIds} onClearSelection={() => setSelectedIds([])} actions={bulkActions} isLoading={loading} />
+        <BulkActions
+          selectedIds={selectedIds}
+          onClearSelection={() => setSelectedIds([])}
+          actions={bulkActions}
+          isLoading={loading}
+        />
 
-        <DataTable data={data}
+        <DataTable
+          data={data}
           columns={columns}
           loading={loading}
           selectedIds={selectedIds}
@@ -213,7 +231,7 @@ export default function SocialListPage() {
           sortBy={sortBy}
           sortOrder={sortOrder}
           onEdit={(id) => {
-            const social = data.find(s => s.id === id);
+            const social = data.find((s) => s.id === id);
             if (social) handleEdit(social);
           }}
           onDelete={(id) => handleDelete([id])}
@@ -234,19 +252,25 @@ export default function SocialListPage() {
       {/* Create/Edit Social Modal */}
       {/* Create/Edit Social Modal */}
       <Dialog open={formDialogOpen} onOpenChange={setFormDialogOpen}>
-        <DialogContent className="max-w-xl max-h-[90vh] p-0 flex flex-col gap-0 overflow-hidden">
+        <DialogContent className="flex max-h-[90vh] max-w-xl flex-col gap-0 overflow-hidden p-0">
           {/* Header - Fixed */}
-          <div className="shrink-0 px-6 pt-6 pb-4 border-b bg-background">
+          <div className="shrink-0 border-b bg-background px-6 pt-6 pb-4">
             <DialogHeader>
-              <DialogTitle>{editingSocial ? tCrud('editEntity', { entity: tEntities('social') }) : tCrud('createEntity', { entity: tEntities('social') })}</DialogTitle>
+              <DialogTitle>
+                {editingSocial
+                  ? tCrud('editEntity', { entity: tEntities('social') })
+                  : tCrud('createEntity', { entity: tEntities('social') })}
+              </DialogTitle>
               <DialogDescription>
-                {editingSocial ? tCrud('editDescription', { entity: tEntities('social').toLowerCase() }) : tCrud('createDescription', { entity: tEntities('social').toLowerCase() })}
+                {editingSocial
+                  ? tCrud('editDescription', { entity: tEntities('social').toLowerCase() })
+                  : tCrud('createDescription', { entity: tEntities('social').toLowerCase() })}
               </DialogDescription>
             </DialogHeader>
           </div>
-          
+
           {/* Body - Scrollable */}
-          <div className="flex-1 overflow-y-auto min-h-0">
+          <div className="min-h-0 flex-1 overflow-y-auto">
             <div className="px-6 py-4">
               <SocialForm
                 initialData={editingSocial}
@@ -255,9 +279,9 @@ export default function SocialListPage() {
               />
             </div>
           </div>
-          
+
           {/* Footer - Fixed */}
-          <div className="shrink-0 px-6 py-4 border-t bg-muted/20">
+          <div className="shrink-0 border-t bg-muted/20 px-6 py-4">
             <DialogFooter>
               <Button type="button" variant="outline" onClick={() => setFormDialogOpen(false)}>
                 {tCommon('cancel')}
@@ -274,10 +298,12 @@ export default function SocialListPage() {
         open={deleteDialogOpen}
         onOpenChange={setDeleteDialogOpen}
         title={tCrud('deleteEntity', { entity: tEntities('social') })}
-        description={tCrud('deleteConfirm', { count: deleteIds.length, entity: tEntities('social').toLowerCase() })}
+        description={tCrud('deleteConfirm', {
+          count: deleteIds.length,
+          entity: tEntities('social').toLowerCase(),
+        })}
         onConfirm={confirmDelete}
         confirmText={tCommon('delete')}
-
         variant="destructive"
         isLoading={isDeleteProcessing}
       />

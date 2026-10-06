@@ -36,8 +36,7 @@ export function BannerForm({ initialData, onSuccess, onCancel }: BannerFormProps
   const tValidation = useTranslations('validation');
   const isEdit = !!initialData;
   const { create, update, loading } = useCrud<BannerMgmt>(ENDPOINTS.MANAGEMENT.BANNER);
-  
-  
+
   const [uploadedMediaId, setUploadedMediaId] = useState<number | null>(null);
 
   const {
@@ -58,7 +57,7 @@ export function BannerForm({ initialData, onSuccess, onCancel }: BannerFormProps
   // Watch title to auto-generate slug
   // Use useWatch to avoid React Compiler warning
   const titleValue = useWatch({ control, name: 'title' });
-  
+
   // Watch image for preview
   const imagePreview = useWatch({ control, name: 'image' });
 
@@ -67,15 +66,15 @@ export function BannerForm({ initialData, onSuccess, onCancel }: BannerFormProps
     // Only auto-update if strictly needed or just always mirror for now if that's what user wants
     // User said "update modal seems not synchronous with create modal"
     // So we enable it for both.
-    // However, to prevent overwriting existing custom slugs in Edit mode on load, 
+    // However, to prevent overwriting existing custom slugs in Edit mode on load,
     // we should strictly check if title changed.
     // Since titleValue updates on mount from defaultValues, this might overwrite.
     // But defaultValues come from initialData.
     // So if initialData.slug exists and matches slugify(initialData.title), it is fine.
-    // If it doesn't match, we might overwrite it. 
+    // If it doesn't match, we might overwrite it.
     // Let's rely on user intention: "Synchronize slug function".
     if (titleValue) {
-        setValue('slug', slugify(titleValue), { shouldDirty: true });
+      setValue('slug', slugify(titleValue), { shouldDirty: true });
     }
   }, [titleValue, setValue]);
 
@@ -102,31 +101,31 @@ export function BannerForm({ initialData, onSuccess, onCancel }: BannerFormProps
     }
   }, [initialData, reset]);
 
-
-
-  const { execute, isLoading: isActionProcessing } = useActionLock({ delay: UI_CONSTANTS.ACTION_DELAY_MS });
+  const { execute, isLoading: isActionProcessing } = useActionLock({
+    delay: UI_CONSTANTS.ACTION_DELAY_MS,
+  });
 
   const onSubmit = async (data: BannerFormData) => {
     await execute(async () => {
-        try {
+      try {
         const payload: BannerFormData & { media_id?: number } = { ...data };
         if (uploadedMediaId) {
-            payload.media_id = uploadedMediaId;
+          payload.media_id = uploadedMediaId;
         }
 
         if (isEdit && initialData) {
-            await update(initialData.id, payload);
+          await update(initialData.id, payload);
         } else {
-            await create({
+          await create({
             ...payload,
             is_delete: false,
-            });
+          });
         }
         onSuccess();
-        } catch (error: unknown) {
+      } catch (error: unknown) {
         console.error(error);
         handleBindErrors(error, setError);
-        }
+      }
     });
   };
 
@@ -137,9 +136,9 @@ export function BannerForm({ initialData, onSuccess, onCancel }: BannerFormProps
     <div className="relative">
       {isActionProcessing && <LoadingOverlay variant="absolute" />}
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div className="space-y-2">
-            <ImagePicker 
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+          <div className="space-y-2">
+            <ImagePicker
               label={tFields('image')}
               required
               value={imagePreview}
@@ -160,67 +159,110 @@ export function BannerForm({ initialData, onSuccess, onCancel }: BannerFormProps
                 I will keep it or rely on Controller. Since I'm using setValue, register is less critical for value tracking but good for validation mode 'onChange'.
             */}
             <input type="hidden" {...register('image')} />
+          </div>
+
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="title">
+                {tLabels('title')} <span className="text-red-500">*</span>
+              </Label>
+              <Input
+                id="title"
+                {...register('title')}
+                className={errors.title ? 'border-red-500' : ''}
+              />
+              {errors.title && <p className="text-sm text-red-500">{errors.title.message}</p>}
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="slug">
+                {tLabels('slug')} <span className="text-red-500">*</span>
+              </Label>
+              <Input
+                id="slug"
+                {...register('slug')}
+                className={errors.slug ? 'border-red-500' : ''}
+              />
+              {errors.slug && <p className="text-sm text-red-500">{errors.slug.message}</p>}
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="position">
+                {tLabels('position')} <span className="text-red-500">*</span>
+              </Label>
+              <Input
+                id="position"
+                {...register('position')}
+                className={errors.position ? 'border-red-500' : ''}
+              />
+              {errors.position && <p className="text-sm text-red-500">{errors.position.message}</p>}
+            </div>
+          </div>
         </div>
 
-        
-        <div className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="title">{tLabels('title')} <span className="text-red-500">*</span></Label>
-            <Input id="title" {...register('title')} className={errors.title ? 'border-red-500' : ''} />
-            {errors.title && <p className="text-sm text-red-500">{errors.title.message}</p>}
-          </div>
-
-           <div className="space-y-2">
-            <Label htmlFor="slug">{tLabels('slug')} <span className="text-red-500">*</span></Label>
-            <Input id="slug" {...register('slug')} className={errors.slug ? 'border-red-500' : ''} />
-            {errors.slug && <p className="text-sm text-red-500">{errors.slug.message}</p>}
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="position">{tLabels('position')} <span className="text-red-500">*</span></Label>
-            <Input id="position" {...register('position')} className={errors.position ? 'border-red-500' : ''} />
-             {errors.position && <p className="text-sm text-red-500">{errors.position.message}</p>}
-          </div>
-        </div>
-      </div>
-
-      <div className="space-y-2">
-        <Label htmlFor="description">{tLabels('description')} <span className="text-red-500">*</span></Label>
-        <Textarea id="description" {...register('description')} className={errors.description ? 'border-red-500' : ''} />
-        {errors.description && <p className="text-sm text-red-500">{errors.description.message}</p>}
-      </div>
-
-      <div className="grid grid-cols-2 gap-4">
         <div className="space-y-2">
-            <Label htmlFor="status">{tLabels('status')} <span className="text-red-500">*</span></Label>
-            <Select value={statusValue?.toString()} onValueChange={(value) => setValue('status', Number(value) as StatusEnum)}>
-              <SelectTrigger><SelectValue /></SelectTrigger>
+          <Label htmlFor="description">
+            {tLabels('description')} <span className="text-red-500">*</span>
+          </Label>
+          <Textarea
+            id="description"
+            {...register('description')}
+            className={errors.description ? 'border-red-500' : ''}
+          />
+          {errors.description && (
+            <p className="text-sm text-red-500">{errors.description.message}</p>
+          )}
+        </div>
+
+        <div className="grid grid-cols-2 gap-4">
+          <div className="space-y-2">
+            <Label htmlFor="status">
+              {tLabels('status')} <span className="text-red-500">*</span>
+            </Label>
+            <Select
+              value={statusValue?.toString()}
+              onValueChange={(value) => setValue('status', Number(value) as StatusEnum)}
+            >
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
               <SelectContent>
                 {Object.values(StatusEnum)
-                    .filter((value) => typeof value === 'number')
-                    .map((value) => (
-                      <SelectItem key={value} value={value.toString()}>
-                        {StatusEnumLabels[value as StatusEnum]}
-                      </SelectItem>
-                    ))}
+                  .filter((value) => typeof value === 'number')
+                  .map((value) => (
+                    <SelectItem key={value} value={value.toString()}>
+                      {StatusEnumLabels[value as StatusEnum]}
+                    </SelectItem>
+                  ))}
               </SelectContent>
             </Select>
           </div>
-      </div>
+        </div>
 
-      <div className="flex justify-end gap-2 pt-4">
-        <Button type="button" variant="outline" onClick={onCancel} disabled={loading || isActionProcessing}>
-          {tCommon('cancel')}
-        </Button>
-        <SafeButton 
-          type="submit" 
-          disabled={loading || isActionProcessing}
-          // Note: We use standard type="submit" here but the form onSubmit is handled wrapped
-        >
-          {loading || isActionProcessing ? (isEdit ? tCommon('updating') : tCommon('creating')) : (isEdit ? tCommon('update') : tCommon('create'))}
-        </SafeButton>
-      </div>
-    </form>
+        <div className="flex justify-end gap-2 pt-4">
+          <Button
+            type="button"
+            variant="outline"
+            onClick={onCancel}
+            disabled={loading || isActionProcessing}
+          >
+            {tCommon('cancel')}
+          </Button>
+          <SafeButton
+            type="submit"
+            disabled={loading || isActionProcessing}
+            // Note: We use standard type="submit" here but the form onSubmit is handled wrapped
+          >
+            {loading || isActionProcessing
+              ? isEdit
+                ? tCommon('updating')
+                : tCommon('creating')
+              : isEdit
+                ? tCommon('update')
+                : tCommon('create')}
+          </SafeButton>
+        </div>
+      </form>
     </div>
   );
 }

@@ -2,20 +2,19 @@
 
 namespace App\Services\Master;
 
-use App\Services\BaseService;
-use App\Interfaces\Master\DepartmentMstInterface;
-use App\Interfaces\History\Master\DepartmentMstHistInterface;
 use App\Enums\ActionType;
-use Illuminate\Http\Resources\Json\JsonResource;
 use App\Http\Resources\Master\DepartmentMstResource;
+use App\Interfaces\History\Master\DepartmentMstHistInterface;
+use App\Interfaces\Master\DepartmentMstInterface;
+use App\Services\BaseService;
+use Illuminate\Http\Resources\Json\JsonResource;
 
 class DepartmentMstService extends BaseService
 {
     public function __construct(
         protected DepartmentMstInterface $departmentMst,
         protected DepartmentMstHistInterface $departmentMstHist
-    ) {
-    }
+    ) {}
 
     protected function getHistoryRepository()
     {
@@ -29,9 +28,6 @@ class DepartmentMstService extends BaseService
 
     /**
      * Get department mst list
-     *
-     * @param array $payload
-     * @return JsonResource
      */
     public function list(array $payload): JsonResource
     {
@@ -42,9 +38,6 @@ class DepartmentMstService extends BaseService
 
     /**
      * Store department mst
-     *
-     * @param array $payload
-     * @return int
      */
     public function store(array $payload): int
     {
@@ -56,9 +49,6 @@ class DepartmentMstService extends BaseService
 
     /**
      * Update department mst
-     *
-     * @param array $payload
-     * @return int
      */
     public function update(array $payload): int
     {
@@ -71,14 +61,12 @@ class DepartmentMstService extends BaseService
 
     /**
      * Delete department mst
-     *
-     * @param array $payload
-     * @return void
      */
     public function delete(array $payload): void
     {
-        if (!isset($payload['ids']) || !is_array($payload['ids'])) {
+        if (! isset($payload['ids']) || ! is_array($payload['ids'])) {
             $this->departmentMst->executeDelete($payload['ids'] ?? []);
+
             return;
         }
 

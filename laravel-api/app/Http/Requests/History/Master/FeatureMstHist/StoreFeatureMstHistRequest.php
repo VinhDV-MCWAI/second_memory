@@ -2,13 +2,12 @@
 
 namespace App\Http\Requests\History\Master\FeatureMstHist;
 
-use Illuminate\Foundation\Http\FormRequest;
 use App\Constants\CommonVal;
-use Illuminate\Validation\Rule;
-use Illuminate\Validation\Rules\Enum;
-use App\Models\History\Master\FeatureMstHist;
 use App\Enums\StatusEnum;
 use App\Models\Master\FeatureMst;
+use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
+use Illuminate\Validation\Rules\Enum;
 
 class StoreFeatureMstHistRequest extends FormRequest
 {
@@ -28,13 +27,13 @@ class StoreFeatureMstHistRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'feature_mst_id' => ['required', 'integer', 'min:' . CommonVal::MIN_INTEGER, 'max:' . CommonVal::MAX_INTEGER, Rule::exists(FeatureMst::class, 'id'),],
-            'name' => ['string', 'min:' . CommonVal::MIN_VARCHAR, 'max:50',],
-            'group_name' => ['string', 'min:' . CommonVal::MIN_VARCHAR, 'max:50',],
-            'description' => ['string', 'min:' . CommonVal::MIN_VARCHAR, 'max:100',],
-            'status' => [new Enum(StatusEnum::class),],
-            'action' => ['required',],
-            'author_id' => ['required', 'integer', 'min:' . CommonVal::MIN_INTEGER, 'max:' . CommonVal::MAX_INTEGER,],
+            'feature_mst_id' => ['required', 'integer', 'min:'.CommonVal::MIN_INTEGER, 'max:'.CommonVal::MAX_INTEGER, Rule::exists(FeatureMst::class, 'id')],
+            'name' => ['string', 'min:'.CommonVal::MIN_VARCHAR, 'max:50'],
+            'group_name' => ['string', 'min:'.CommonVal::MIN_VARCHAR, 'max:50'],
+            'description' => ['string', 'min:'.CommonVal::MIN_VARCHAR, 'max:100'],
+            'status' => [new Enum(StatusEnum::class)],
+            'action' => ['required'],
+            'author_id' => ['required', 'integer', 'min:'.CommonVal::MIN_INTEGER, 'max:'.CommonVal::MAX_INTEGER],
         ];
     }
 

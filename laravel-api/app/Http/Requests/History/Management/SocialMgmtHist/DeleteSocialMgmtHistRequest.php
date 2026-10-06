@@ -2,13 +2,10 @@
 
 namespace App\Http\Requests\History\Management\SocialMgmtHist;
 
-use Illuminate\Foundation\Http\FormRequest;
 use App\Constants\CommonVal;
-use Illuminate\Validation\Rule;
-use Illuminate\Validation\Rules\Enum;
 use App\Models\History\Management\SocialMgmtHist;
-use App\Enums\StatusEnum;
-use App\Models\Management\SocialMgmt;
+use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class DeleteSocialMgmtHistRequest extends FormRequest
 {
@@ -29,7 +26,7 @@ class DeleteSocialMgmtHistRequest extends FormRequest
     {
         return [
             'ids' => ['required', 'array'],
-            'ids.*' => ['required', 'integer', 'min:' . CommonVal::MIN_INTEGER, 'max:' . CommonVal::MAX_BIG_INTEGER, Rule::exists(SocialMgmtHist::class, 'id')],
+            'ids.*' => ['required', 'integer', 'min:'.CommonVal::MIN_INTEGER, 'max:'.CommonVal::MAX_BIG_INTEGER, Rule::exists(SocialMgmtHist::class, 'id')],
         ];
     }
 

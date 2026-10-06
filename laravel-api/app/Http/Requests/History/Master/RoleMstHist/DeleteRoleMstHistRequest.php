@@ -2,13 +2,10 @@
 
 namespace App\Http\Requests\History\Master\RoleMstHist;
 
-use Illuminate\Foundation\Http\FormRequest;
 use App\Constants\CommonVal;
-use Illuminate\Validation\Rule;
-use Illuminate\Validation\Rules\Enum;
 use App\Models\History\Master\RoleMstHist;
-use App\Enums\IsActive;
-use App\Models\Master\RoleMst;
+use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class DeleteRoleMstHistRequest extends FormRequest
 {
@@ -29,7 +26,7 @@ class DeleteRoleMstHistRequest extends FormRequest
     {
         return [
             'ids' => ['required', 'array'],
-            'ids.*' => ['required', 'integer', 'min:' . CommonVal::MIN_INTEGER, 'max:' . CommonVal::MAX_BIG_INTEGER, Rule::exists(RoleMstHist::class, 'id')],
+            'ids.*' => ['required', 'integer', 'min:'.CommonVal::MIN_INTEGER, 'max:'.CommonVal::MAX_BIG_INTEGER, Rule::exists(RoleMstHist::class, 'id')],
         ];
     }
 

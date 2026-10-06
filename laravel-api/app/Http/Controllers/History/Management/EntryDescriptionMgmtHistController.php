@@ -2,27 +2,22 @@
 
 namespace App\Http\Controllers\History\Management;
 
+use App\Http\Controllers\Controller;
+use App\Http\Requests\History\Management\EntryDescriptionMgmtHist\DeleteEntryDescriptionMgmtHistRequest;
 use App\Http\Requests\History\Management\EntryDescriptionMgmtHist\ListEntryDescriptionMgmtHistRequest;
 use App\Http\Requests\History\Management\EntryDescriptionMgmtHist\StoreEntryDescriptionMgmtHistRequest;
 use App\Http\Requests\History\Management\EntryDescriptionMgmtHist\UpdateEntryDescriptionMgmtHistRequest;
-use App\Http\Requests\History\Management\EntryDescriptionMgmtHist\DeleteEntryDescriptionMgmtHistRequest;
 use App\Services\History\Management\EntryDescriptionMgmtHistService;
-use App\Http\Controllers\Controller;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class EntryDescriptionMgmtHistController extends Controller
 {
     public function __construct(
         protected EntryDescriptionMgmtHistService $entryDescriptionMgmtHist
-    )
-    {
-    }
-    
+    ) {}
+
     /**
      * EntryDescriptionMgmtHist list
-     *
-     * @param ListEntryDescriptionMgmtHistRequest $request
-     * @return JsonResource
      */
     public function list(ListEntryDescriptionMgmtHistRequest $request): JsonResource
     {
@@ -31,9 +26,6 @@ class EntryDescriptionMgmtHistController extends Controller
 
     /**
      * Store entry description mgmt hist
-     *
-     * @param StoreEntryDescriptionMgmtHistRequest $request
-     * @return int
      */
     public function store(StoreEntryDescriptionMgmtHistRequest $request): int
     {
@@ -42,10 +34,6 @@ class EntryDescriptionMgmtHistController extends Controller
 
     /**
      * Update entry description mgmt hist
-     *
-     * @param UpdateEntryDescriptionMgmtHistRequest $request
-     * @param string $id
-     * @return int
      */
     public function update(UpdateEntryDescriptionMgmtHistRequest $request, string $id): int
     {
@@ -57,9 +45,6 @@ class EntryDescriptionMgmtHistController extends Controller
 
     /**
      * Delete entry description mgmt hist
-     *
-     * @param DeleteEntryDescriptionMgmtHistRequest $request
-     * @return void
      */
     public function delete(DeleteEntryDescriptionMgmtHistRequest $request): void
     {

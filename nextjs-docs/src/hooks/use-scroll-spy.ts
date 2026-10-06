@@ -1,16 +1,13 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef } from 'react';
 
 interface UseScrollSpyOptions {
   rootMargin?: string;
   threshold?: number | number[];
 }
 
-export function useScrollSpy(
-  ids: string[],
-  options: UseScrollSpyOptions = {}
-): string | null {
+export function useScrollSpy(ids: string[], options: UseScrollSpyOptions = {}): string | null {
   const [activeId, setActiveId] = useState<string | null>(null);
-  
+
   // Use a ref to store all current intersections to avoid closure issues
   const visibleItems = useRef<Set<string>>(new Set());
 
@@ -29,15 +26,15 @@ export function useScrollSpy(
 
         // Find the "best" active ID from the visible ones
         // We pick the first one that appears in the 'ids' array order
-        const firstVisible = ids.find(id => visibleItems.current.has(id));
+        const firstVisible = ids.find((id) => visibleItems.current.has(id));
         if (firstVisible) {
           setActiveId(firstVisible);
         }
       },
       {
-        rootMargin: options.rootMargin || "-100px 0px -80% 0px",
+        rootMargin: options.rootMargin || '-100px 0px -80% 0px',
         threshold: options.threshold || 0,
-      }
+      },
     );
 
     ids.forEach((id) => {

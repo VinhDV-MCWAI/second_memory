@@ -31,14 +31,16 @@ export function LanguageSwitcher() {
     window.location.reload();
   };
 
-  const currentLanguage = LANGUAGES.find(lang => lang.code === currentLocale) || LANGUAGES[0];
+  const currentLanguage = LANGUAGES.find((lang) => lang.code === currentLocale) || LANGUAGES[0];
 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" size="sm" className="gap-2">
           <Globe className="h-4 w-4" />
-          <span className="hidden sm:inline">{currentLanguage.flag} {currentLanguage.name}</span>
+          <span className="hidden sm:inline">
+            {currentLanguage.flag} {currentLanguage.name}
+          </span>
           <span className="sm:hidden">{currentLanguage.flag}</span>
         </Button>
       </DropdownMenuTrigger>

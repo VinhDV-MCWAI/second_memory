@@ -2,12 +2,10 @@
 
 namespace App\Http\Requests\Management\SettingLinkMgmt;
 
-use Illuminate\Foundation\Http\FormRequest;
 use App\Constants\CommonVal;
-use Illuminate\Validation\Rule;
-use Illuminate\Validation\Rules\Enum;
-use App\Models\Management\SettingLinkMgmt;
 use App\Enums\IsDelete;
+use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rules\Enum;
 
 class StoreSettingLinkMgmtRequest extends FormRequest
 {
@@ -27,9 +25,9 @@ class StoreSettingLinkMgmtRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'key' => ['required', 'string', 'min:' . CommonVal::MIN_VARCHAR, 'max:30',],
-            'value' => ['required', 'string', 'min:' . CommonVal::MIN_VARCHAR, 'max:100',],
-            'is_delete' => ['required', new Enum(IsDelete::class),],
+            'key' => ['required', 'string', 'min:'.CommonVal::MIN_VARCHAR, 'max:30'],
+            'value' => ['required', 'string', 'min:'.CommonVal::MIN_VARCHAR, 'max:100'],
+            'is_delete' => ['required', new Enum(IsDelete::class)],
         ];
     }
 

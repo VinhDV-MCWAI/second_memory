@@ -14,7 +14,7 @@ import { getPaginationInfo } from '@/shared/utils/pagination';
 /**
  * Generic hook for fetching paginated data from API using TanStack Query
  * Supports pagination, filtering, sorting, and date range
- * 
+ *
  * Benefits over old implementation:
  * - Automatic caching and background refetching
  * - Request deduplication
@@ -25,7 +25,7 @@ import { getPaginationInfo } from '@/shared/utils/pagination';
 const EMPTY_ARRAY: never[] = [];
 export function useApiData<T>(
   endpoint: string,
-  options: UseApiDataOptions = {}
+  options: UseApiDataOptions = {},
 ): UseApiDataReturn<T> {
   const {
     page = PAGINATION.DEFAULT_PAGE,
@@ -66,10 +66,7 @@ export function useApiData<T>(
     if (from_date) params.from_date = from_date;
     if (to_date) params.to_date = to_date;
 
-    const response = await apiClient.get<PaginatedResponse<T>>(
-      `${endpoint}/list`,
-      { params }
-    );
+    const response = await apiClient.get<PaginatedResponse<T>>(`${endpoint}/list`, { params });
 
     return response.data;
   };
@@ -88,8 +85,6 @@ export function useApiData<T>(
   // Extract pagination info
 
   const responseData = query.data;
-
-
 
   const paginationInfo = getPaginationInfo(responseData);
 

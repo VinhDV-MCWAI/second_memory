@@ -41,10 +41,7 @@ export function useHistory<T extends BaseHistory = BaseHistory>({
           to_date: filters?.to_date,
         };
 
-        const response = await apiClient.get<PaginatedResponse<T>>(
-          `${baseUrl}/list`,
-          { params }
-        );
+        const response = await apiClient.get<PaginatedResponse<T>>(`${baseUrl}/list`, { params });
 
         setHistory(response.data.data);
         const paginationInfo = getPaginationInfo(response.data);
@@ -59,7 +56,7 @@ export function useHistory<T extends BaseHistory = BaseHistory>({
         setIsLoading(false);
       }
     },
-    [baseUrl, recordId, pagination.page, pagination.perPage, t]
+    [baseUrl, recordId, pagination.page, pagination.perPage, t],
   );
 
   const compareVersions = useCallback((oldVersion: T, newVersion: T): HistoryDiff[] => {
@@ -68,10 +65,7 @@ export function useHistory<T extends BaseHistory = BaseHistory>({
     const newValues = newVersion.new_values || {};
 
     // Get all unique keys from both versions
-    const allKeys = new Set([
-      ...Object.keys(oldValues),
-      ...Object.keys(newValues),
-    ]);
+    const allKeys = new Set([...Object.keys(oldValues), ...Object.keys(newValues)]);
 
     allKeys.forEach((key) => {
       const oldValue = oldValues[key];
@@ -101,7 +95,7 @@ export function useHistory<T extends BaseHistory = BaseHistory>({
         throw err instanceof Error ? err : new Error(t('failedToRestoreVersion'));
       }
     },
-    [baseUrl, fetchHistory, t]
+    [baseUrl, fetchHistory, t],
   );
 
   return {

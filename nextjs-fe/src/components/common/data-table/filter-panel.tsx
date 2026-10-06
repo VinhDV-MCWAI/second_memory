@@ -18,12 +18,7 @@ import { FilterField, FilterPanelProps } from '@/shared/types';
 
 export type { FilterField };
 
-export function FilterPanel({
-  filters,
-  onFilterChange,
-  onReset,
-  fields = [],
-}: FilterPanelProps) {
+export function FilterPanel({ filters, onFilterChange, onReset, fields = [] }: FilterPanelProps) {
   const [isExpanded, setIsExpanded] = useState(false);
   const [localFilters, setLocalFilters] = useState(filters);
   const t = useTranslations('filters');
@@ -45,35 +40,29 @@ export function FilterPanel({
   };
 
   const activeFilterCount = Object.keys(filters).filter(
-    (key) => filters[key] !== undefined && filters[key] !== ''
+    (key) => filters[key] !== undefined && filters[key] !== '',
   ).length;
 
   return (
-    <Card className="p-4 mb-6">
-      <div className="flex items-center justify-between mb-4">
+    <Card className="mb-6 p-4">
+      <div className="mb-4 flex items-center justify-between">
         <div className="flex items-center gap-2">
           <Filter className="h-5 w-5 text-slate-600 dark:text-slate-400" />
-          <h3 className="font-semibold text-slate-900 dark:text-white">
-            {t('title')}
-          </h3>
+          <h3 className="font-semibold text-slate-900 dark:text-white">{t('title')}</h3>
           {activeFilterCount > 0 && (
-            <span className="px-2 py-1 text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200 rounded-full">
+            <span className="rounded-full bg-blue-100 px-2 py-1 text-xs font-medium text-blue-800 dark:bg-blue-900 dark:text-blue-200">
               {activeFilterCount} {t('active')}
             </span>
           )}
         </div>
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={() => setIsExpanded(!isExpanded)}
-        >
+        <Button variant="ghost" size="sm" onClick={() => setIsExpanded(!isExpanded)}>
           {isExpanded ? t('hide') : t('show')}
         </Button>
       </div>
 
       {isExpanded && (
         <>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-4">
+          <div className="mb-4 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
             {fields.map((field) => (
               <div key={field.key} className="space-y-2">
                 <Label htmlFor={field.key}>{field.label}</Label>
@@ -81,7 +70,10 @@ export function FilterPanel({
                   <Input
                     id={field.key}
                     type="text"
-                    placeholder={field.placeholder || `${t('searchPlaceholder').replace('{field}', field.label.toLowerCase())}`}
+                    placeholder={
+                      field.placeholder ||
+                      `${t('searchPlaceholder').replace('{field}', field.label.toLowerCase())}`
+                    }
                     value={(localFilters[field.key] as string) || ''}
                     onChange={(e) => handleChange(field.key, e.target.value)}
                   />
@@ -92,15 +84,17 @@ export function FilterPanel({
                     onValueChange={(value) => handleChange(field.key, value)}
                   >
                     <SelectTrigger>
-                      <SelectValue placeholder={t('selectPlaceholder').replace('{field}', field.label.toLowerCase())} />
+                      <SelectValue
+                        placeholder={t('selectPlaceholder').replace(
+                          '{field}',
+                          field.label.toLowerCase(),
+                        )}
+                      />
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="">{t('all')}</SelectItem>
                       {field.options.map((option) => (
-                        <SelectItem
-                          key={option.value}
-                          value={option.value.toString()}
-                        >
+                        <SelectItem key={option.value} value={option.value.toString()}>
                           {option.label}
                         </SelectItem>
                       ))}
@@ -118,9 +112,7 @@ export function FilterPanel({
                 {field.type === 'boolean' && (
                   <Select
                     value={(localFilters[field.key] as boolean)?.toString() || ''}
-                    onValueChange={(value) =>
-                      handleChange(field.key, value === 'true')
-                    }
+                    onValueChange={(value) => handleChange(field.key, value === 'true')}
                   >
                     <SelectTrigger>
                       <SelectValue placeholder={t('all')} />
@@ -138,11 +130,11 @@ export function FilterPanel({
 
           <div className="flex items-center gap-2">
             <Button onClick={handleApply} size="sm">
-              <Search className="h-4 w-4 mr-2" />
+              <Search className="mr-2 h-4 w-4" />
               {t('applyFilters')}
             </Button>
             <Button onClick={handleReset} variant="outline" size="sm">
-              <X className="h-4 w-4 mr-2" />
+              <X className="mr-2 h-4 w-4" />
               {t('clearAll')}
             </Button>
           </div>

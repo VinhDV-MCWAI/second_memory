@@ -11,7 +11,7 @@ import type { UseCrudReturn, UseCrudOptions } from '@/shared/types/api';
 /**
  * Generic CRUD operations hook using TanStack Query mutations
  * Handles create, update, delete with loading states and notifications
- * 
+ *
  * Benefits over old implementation:
  * - Automatic query invalidation after mutations
  * - Better error handling
@@ -19,10 +19,7 @@ import type { UseCrudReturn, UseCrudOptions } from '@/shared/types/api';
  * - Mutation state tracking
  * - i18n support for messages
  */
-export function useCrud<T>(
-  endpoint: string,
-  options: UseCrudOptions = {}
-): UseCrudReturn<T> {
+export function useCrud<T>(endpoint: string, options: UseCrudOptions = {}): UseCrudReturn<T> {
   const queryClient = useQueryClient();
   const t = useTranslations('common');
   const { invalidateKeys = [endpoint], messages = {} } = options;
@@ -52,7 +49,13 @@ export function useCrud<T>(
    * Update mutation
    */
   const updateMutation = useMutation({
-    mutationFn: async ({ id, data }: { id: number; data: Record<string, unknown> }): Promise<number> => {
+    mutationFn: async ({
+      id,
+      data,
+    }: {
+      id: number;
+      data: Record<string, unknown>;
+    }): Promise<number> => {
       const response = await apiClient.put<number>(`${endpoint}/update/${id}`, {
         id,
         ...data,
@@ -84,9 +87,10 @@ export function useCrud<T>(
       await apiClient.post(`${endpoint}/delete`, { ids });
     },
     onSuccess: (_, ids) => {
-      const defaultMessage = ids.length > 1
-        ? t('deletedItemsSuccessfully', { count: ids.length })
-        : t('deletedSuccessfully');
+      const defaultMessage =
+        ids.length > 1
+          ? t('deletedItemsSuccessfully', { count: ids.length })
+          : t('deletedSuccessfully');
       notification.success(messages.delete || defaultMessage);
       invalidateKeys.forEach((key) => {
         queryClient.invalidateQueries({ queryKey: [key] });
@@ -112,9 +116,11 @@ export function useCrud<T>(
 
   // Combine loading states
   const loading = createMutation.isPending || updateMutation.isPending || deleteMutation.isPending;
-  
+
   // Combine errors (return the first error if any)
-  const error = (createMutation.error || updateMutation.error || deleteMutation.error) as Error | null;
+  const error = (createMutation.error ||
+    updateMutation.error ||
+    deleteMutation.error) as Error | null;
 
   return {
     create,

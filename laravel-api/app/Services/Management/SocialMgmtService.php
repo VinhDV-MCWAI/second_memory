@@ -2,20 +2,19 @@
 
 namespace App\Services\Management;
 
-use App\Services\BaseService;
-use App\Interfaces\Management\SocialMgmtInterface;
-use App\Interfaces\History\Management\SocialMgmtHistInterface;
 use App\Enums\ActionType;
-use Illuminate\Http\Resources\Json\JsonResource;
 use App\Http\Resources\Management\SocialMgmtResource;
+use App\Interfaces\History\Management\SocialMgmtHistInterface;
+use App\Interfaces\Management\SocialMgmtInterface;
+use App\Services\BaseService;
+use Illuminate\Http\Resources\Json\JsonResource;
 
 class SocialMgmtService extends BaseService
 {
     public function __construct(
         protected SocialMgmtInterface $socialMgmt,
         protected SocialMgmtHistInterface $socialMgmtHist
-    ) {
-    }
+    ) {}
 
     protected function getHistoryRepository()
     {
@@ -29,9 +28,6 @@ class SocialMgmtService extends BaseService
 
     /**
      * Get social mgmt list
-     *
-     * @param array $payload
-     * @return JsonResource
      */
     public function list(array $payload): JsonResource
     {
@@ -42,9 +38,6 @@ class SocialMgmtService extends BaseService
 
     /**
      * Store social mgmt
-     *
-     * @param array $payload
-     * @return int
      */
     public function store(array $payload): int
     {
@@ -56,9 +49,6 @@ class SocialMgmtService extends BaseService
 
     /**
      * Update social mgmt
-     *
-     * @param array $payload
-     * @return int
      */
     public function update(array $payload): int
     {
@@ -71,14 +61,12 @@ class SocialMgmtService extends BaseService
 
     /**
      * Delete social mgmt
-     *
-     * @param array $payload
-     * @return void
      */
     public function delete(array $payload): void
     {
-        if (!isset($payload['ids']) || !is_array($payload['ids'])) {
+        if (! isset($payload['ids']) || ! is_array($payload['ids'])) {
             $this->socialMgmt->executeDelete($payload['ids'] ?? []);
+
             return;
         }
 

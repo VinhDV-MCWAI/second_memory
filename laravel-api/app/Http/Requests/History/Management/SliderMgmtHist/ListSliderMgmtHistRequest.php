@@ -2,13 +2,10 @@
 
 namespace App\Http\Requests\History\Management\SliderMgmtHist;
 
-use Illuminate\Foundation\Http\FormRequest;
 use App\Constants\CommonVal;
-use Illuminate\Validation\Rule;
-use Illuminate\Validation\Rules\Enum;
-use App\Models\History\Management\SliderMgmtHist;
 use App\Enums\StatusEnum;
-use App\Models\Management\SliderMgmt;
+use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rules\Enum;
 
 class ListSliderMgmtHistRequest extends FormRequest
 {
@@ -28,26 +25,26 @@ class ListSliderMgmtHistRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'slider_mgmt_id' => ['nullable', 'integer', 'min:' . CommonVal::MIN_INTEGER, 'max:' . CommonVal::MAX_INTEGER,],
-            'title' => ['nullable', 'string', 'min:' . CommonVal::MIN_VARCHAR, 'max:50',],
-            'slug' => ['nullable', 'string', 'min:' . CommonVal::MIN_VARCHAR, 'max:50',],
-            'link' => ['nullable', 'string', 'min:' . CommonVal::MIN_VARCHAR, 'max:100',],
-            'image' => ['nullable', 'string', 'min:' . CommonVal::MIN_VARCHAR, 'max:100',],
-            'status' => ['nullable', new Enum(StatusEnum::class),],
-            'action' => ['nullable',],
-            'author_id' => ['nullable', 'integer', 'min:' . CommonVal::MIN_INTEGER, 'max:' . CommonVal::MAX_INTEGER,],
+            'slider_mgmt_id' => ['nullable', 'integer', 'min:'.CommonVal::MIN_INTEGER, 'max:'.CommonVal::MAX_INTEGER],
+            'title' => ['nullable', 'string', 'min:'.CommonVal::MIN_VARCHAR, 'max:50'],
+            'slug' => ['nullable', 'string', 'min:'.CommonVal::MIN_VARCHAR, 'max:50'],
+            'link' => ['nullable', 'string', 'min:'.CommonVal::MIN_VARCHAR, 'max:100'],
+            'image' => ['nullable', 'string', 'min:'.CommonVal::MIN_VARCHAR, 'max:100'],
+            'status' => ['nullable', new Enum(StatusEnum::class)],
+            'action' => ['nullable'],
+            'author_id' => ['nullable', 'integer', 'min:'.CommonVal::MIN_INTEGER, 'max:'.CommonVal::MAX_INTEGER],
             'from_date' => [
                 'nullable',
-                'date_format:' . CommonVal::DATE_FORMAT,
-                'after_or_equal:' . CommonVal::MIN_DATE,
-                'before_or_equal:' . CommonVal::MAX_DATE,
+                'date_format:'.CommonVal::DATE_FORMAT,
+                'after_or_equal:'.CommonVal::MIN_DATE,
+                'before_or_equal:'.CommonVal::MAX_DATE,
             ],
             'to_date' => [
                 'nullable',
-                'date_format:' . CommonVal::DATE_FORMAT,
-                'after_or_equal:' . CommonVal::MIN_DATE,
-                'before_or_equal:' . CommonVal::MAX_DATE,
-                'after:from_date'
+                'date_format:'.CommonVal::DATE_FORMAT,
+                'after_or_equal:'.CommonVal::MIN_DATE,
+                'before_or_equal:'.CommonVal::MAX_DATE,
+                'after:from_date',
             ],
         ];
     }

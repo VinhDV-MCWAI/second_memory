@@ -8,14 +8,14 @@ use Illuminate\Support\Str;
 
 class PolicyDepartmentMstFactory extends Factory
 {
-  protected $model = PolicyDepartmentMst::class;
+    protected $model = PolicyDepartmentMst::class;
 
-  public function definition()
-  {
-    return [
-      'table_name' => 'table_' . Str::random(5),
-      'row_id' => $this->faker->randomNumber(),
-      'is_delete' => 0,
-    ];
-  }
+    public function definition()
+    {
+        return [
+            'table_name' => 'table_'.Str::random(5),
+            'row_id' => $this->faker->randomNumber(),
+            'is_delete' => 0,
+        ];
+    }
 }

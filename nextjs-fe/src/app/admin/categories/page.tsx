@@ -14,12 +14,12 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import type { CategoryMgmt } from '@/shared/types/api';
 import { API_ENDPOINTS } from '@/shared/api';
-import { 
-  SORT_ORDER, 
-  type SortOrder, 
-  PAGINATION, 
+import {
+  SORT_ORDER,
+  type SortOrder,
+  PAGINATION,
   ADMIN_ROUTES,
-  UI_CONSTANTS 
+  UI_CONSTANTS,
 } from '@/shared/config';
 import { IsActive, IsActiveLabels } from '@/shared/enums/enums';
 import { AdvancedSearch } from '@/components/common/advanced-search';
@@ -46,7 +46,7 @@ export default function CategoryListPage() {
   const [sortBy, setSortBy] = useState('rank_order');
   const [sortOrder, setSortOrder] = useState<SortOrder>(SORT_ORDER.ASC);
   const [selectedIds, setSelectedIds] = useState<number[]>([]);
-  
+
   // Dialog states
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [deleteIds, setDeleteIds] = useState<number[]>([]);
@@ -62,11 +62,11 @@ export default function CategoryListPage() {
 
   const { data, loading, pagination, refetch } = useApiData<CategoryMgmt>(
     API_ENDPOINTS.MANAGEMENT.CATEGORY,
-    { page, per_page: perPage, filters, sort_by: sortBy, sort_order: sortOrder }
+    { page, per_page: perPage, filters, sort_by: sortBy, sort_order: sortOrder },
   );
 
   const { remove } = useCrud<CategoryMgmt>(API_ENDPOINTS.MANAGEMENT.CATEGORY);
-  
+
   // Ref to trigger form submission from outside (for EDIT mode in Dialog)
   const submitTriggerRef = useRef<(() => void) | null>(null);
 
@@ -79,7 +79,7 @@ export default function CategoryListPage() {
     setEditingCategory(category);
     setFormDialogOpen(true);
   };
-  
+
   const handleDialogUpdate = () => {
     if (submitTriggerRef.current) {
       submitTriggerRef.current();
@@ -96,7 +96,9 @@ export default function CategoryListPage() {
     setDeleteDialogOpen(true);
   };
 
-  const { execute, isLoading: isDeleteProcessing } = useActionLock({ delay: UI_CONSTANTS.ACTION_DELAY_MS });
+  const { execute, isLoading: isDeleteProcessing } = useActionLock({
+    delay: UI_CONSTANTS.ACTION_DELAY_MS,
+  });
 
   const confirmDelete = async () => {
     try {
@@ -161,46 +163,43 @@ export default function CategoryListPage() {
       type: 'select',
       options: Object.entries(IsActiveLabels).map(([value, label]) => ({
         value: value.toString(),
-        label
-      }))
+        label,
+      })),
     },
-    { key: 'created_at', label: tFields('createdAt'), type: 'date' }
+    { key: 'created_at', label: tFields('createdAt'), type: 'date' },
   ];
   const bulkActions: BulkAction[] = [
-    { 
-      label: tBulkActions('deleteSelected'), 
-      icon: <Trash2 className="h-4 w-4" />, 
-      variant: 'destructive', 
-      onClick: async (ids) => { 
-        await remove(ids); 
-      }, 
-      confirmMessage: tCrud('deleteConfirm', { 
-        count: selectedIds.length, 
-        entity: tEntities('category').toLowerCase() 
-      }), 
-      confirmTitle: tCrud('deleteEntity', { entity: tEntities('categories') }) 
-    }, 
-    { 
-      label: tBulkActions('activateSelected'), 
-      icon: <CheckCircle className="h-4 w-4" />, 
-      onClick: async () => { 
-        refetch(); 
-      } 
-    }, 
-    { 
-      label: tBulkActions('deactivateSelected'), 
-      icon: <XCircle className="h-4 w-4" />, 
-      onClick: async () => { 
-        refetch(); 
-      } 
-    }
+    {
+      label: tBulkActions('deleteSelected'),
+      icon: <Trash2 className="h-4 w-4" />,
+      variant: 'destructive',
+      onClick: async (ids) => {
+        await remove(ids);
+      },
+      confirmMessage: tCrud('deleteConfirm', {
+        count: selectedIds.length,
+        entity: tEntities('category').toLowerCase(),
+      }),
+      confirmTitle: tCrud('deleteEntity', { entity: tEntities('categories') }),
+    },
+    {
+      label: tBulkActions('activateSelected'),
+      icon: <CheckCircle className="h-4 w-4" />,
+      onClick: async () => {
+        refetch();
+      },
+    },
+    {
+      label: tBulkActions('deactivateSelected'),
+      icon: <XCircle className="h-4 w-4" />,
+      onClick: async () => {
+        refetch();
+      },
+    },
   ];
 
   const handleAdvancedSearch = (criteria: SearchCriteria[]) => {
-    const newFilters = criteria.reduce(
-      (acc, c) => ({ ...acc, [c.field]: c.value }), 
-      {}
-    );
+    const newFilters = criteria.reduce((acc, c) => ({ ...acc, [c.field]: c.value }), {});
     setFilters(newFilters);
     setPage(PAGINATION.DEFAULT_PAGE);
   };
@@ -220,7 +219,8 @@ export default function CategoryListPage() {
         ]}
         action={
           <Button onClick={handleCreate}>
-            <Plus className="mr-2 h-4 w-4" /> {tCrud('createEntity', { entity: tEntities('category') })}
+            <Plus className="mr-2 h-4 w-4" />{' '}
+            {tCrud('createEntity', { entity: tEntities('category') })}
           </Button>
         }
       />
@@ -228,17 +228,17 @@ export default function CategoryListPage() {
       <div className="mt-6 space-y-4">
         <div className="flex gap-2">
           <AdvancedSearch fields={searchFields} onSearch={handleAdvancedSearch} />
-          <SavedFilters 
-            currentFilters={filters} 
-            onApplyFilter={(f) => { 
-              setFilters(f); 
-              setPage(PAGINATION.DEFAULT_PAGE); 
-            }} 
-            storageKey="category-filters" 
+          <SavedFilters
+            currentFilters={filters}
+            onApplyFilter={(f) => {
+              setFilters(f);
+              setPage(PAGINATION.DEFAULT_PAGE);
+            }}
+            storageKey="category-filters"
           />
           <ImportExport onImport={handleImport} />
         </div>
-        
+
         <FilterPanel
           filters={filters}
           onFilterChange={(newFilters) => {
@@ -252,9 +252,15 @@ export default function CategoryListPage() {
           fields={filterFields}
         />
 
-        <BulkActions selectedIds={selectedIds} onClearSelection={() => setSelectedIds([])} actions={bulkActions} isLoading={loading} />
+        <BulkActions
+          selectedIds={selectedIds}
+          onClearSelection={() => setSelectedIds([])}
+          actions={bulkActions}
+          isLoading={loading}
+        />
 
-        <DataTable data={data}
+        <DataTable
+          data={data}
           columns={columns}
           loading={loading}
           selectedIds={selectedIds}
@@ -263,7 +269,7 @@ export default function CategoryListPage() {
           sortBy={sortBy}
           sortOrder={sortOrder}
           onEdit={(id) => {
-            const category = data.find(c => c.id === id);
+            const category = data.find((c) => c.id === id);
             if (category) handleEdit(category);
           }}
           onDelete={(id) => handleDelete([id])}
@@ -283,33 +289,39 @@ export default function CategoryListPage() {
 
       {/* Create/Edit Category Modal */}
       <Dialog open={formDialogOpen} onOpenChange={setFormDialogOpen}>
-        <DialogContent className="max-w-4xl max-h-[90vh] p-0 flex flex-col gap-0 overflow-hidden">
+        <DialogContent className="flex max-h-[90vh] max-w-4xl flex-col gap-0 overflow-hidden p-0">
           {/* Header - Fixed */}
-          <div className="shrink-0 px-6 pt-6 pb-4 border-b bg-background">
+          <div className="shrink-0 border-b bg-background px-6 pt-6 pb-4">
             <DialogHeader>
-              <DialogTitle>{editingCategory ? tCrud('editEntity', { entity: tEntities('category') }) : tCrud('createEntity', { entity: tEntities('category') })}</DialogTitle>
+              <DialogTitle>
+                {editingCategory
+                  ? tCrud('editEntity', { entity: tEntities('category') })
+                  : tCrud('createEntity', { entity: tEntities('category') })}
+              </DialogTitle>
               <DialogDescription>
-                {editingCategory ? tCrud('editDescription', { entity: tEntities('category').toLowerCase() }) : tCrud('createDescription', { entity: tEntities('category').toLowerCase() })}
+                {editingCategory
+                  ? tCrud('editDescription', { entity: tEntities('category').toLowerCase() })
+                  : tCrud('createDescription', { entity: tEntities('category').toLowerCase() })}
               </DialogDescription>
             </DialogHeader>
           </div>
-          
+
           {/* Body - Scrollable */}
-          <div className="flex-1 overflow-y-auto min-h-0">
+          <div className="min-h-0 flex-1 overflow-y-auto">
             <div className="px-6 py-4">
               <CategoryForm
                 initialData={editingCategory}
                 onSuccess={handleFormSuccess}
                 onCancel={() => setFormDialogOpen(false)}
-                renderActions={false}  // Never render actions inside form when in dialog
-                hideActions={true}  // Hide any action buttons
-                submitTriggerRef={editingCategory ? submitTriggerRef : undefined}  // Pass ref for EDIT mode
+                renderActions={false} // Never render actions inside form when in dialog
+                hideActions={true} // Hide any action buttons
+                submitTriggerRef={editingCategory ? submitTriggerRef : undefined} // Pass ref for EDIT mode
               />
             </div>
           </div>
-          
+
           {/* Footer - Fixed */}
-          <div className="shrink-0 px-6 py-4 border-t bg-muted/20">
+          <div className="shrink-0 border-t bg-muted/20 px-6 py-4">
             <DialogFooter>
               <Button type="button" variant="outline" onClick={() => setFormDialogOpen(false)}>
                 {tCommon('cancel')}
@@ -323,7 +335,7 @@ export default function CategoryListPage() {
                     handleDialogUpdate();
                   }}
                   disabled={false}
-                  className="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-9 px-4 py-2"
+                  className="inline-flex h-9 items-center justify-center gap-2 rounded-md bg-primary px-4 py-2 text-sm font-medium whitespace-nowrap text-primary-foreground transition-all hover:bg-primary/90 disabled:pointer-events-none disabled:opacity-50"
                 >
                   {tCommon('update')}
                 </button>
@@ -338,7 +350,7 @@ export default function CategoryListPage() {
                       form.requestSubmit();
                     }
                   }}
-                  className="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-9 px-4 py-2"
+                  className="inline-flex h-9 items-center justify-center gap-2 rounded-md bg-primary px-4 py-2 text-sm font-medium whitespace-nowrap text-primary-foreground transition-all hover:bg-primary/90 disabled:pointer-events-none disabled:opacity-50"
                 >
                   {tCommon('create')}
                 </Button>
@@ -352,10 +364,12 @@ export default function CategoryListPage() {
         open={deleteDialogOpen}
         onOpenChange={setDeleteDialogOpen}
         title={tCrud('deleteEntity', { entity: tEntities('category') })}
-        description={tCrud('deleteConfirm', { count: deleteIds.length, entity: tEntities('category').toLowerCase() })}
+        description={tCrud('deleteConfirm', {
+          count: deleteIds.length,
+          entity: tEntities('category').toLowerCase(),
+        })}
         onConfirm={confirmDelete}
         confirmText={tCommon('delete')}
-
         variant="destructive"
         isLoading={isDeleteProcessing}
       />

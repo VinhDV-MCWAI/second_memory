@@ -3,72 +3,69 @@
 namespace App\Models\Management;
 
 use App\Models\History\Management\BannerMgmtHist;
+use App\Traits\HasHistory;
 use App\Traits\HasSoftDelete;
 use App\Traits\HasStatus;
-use App\Traits\HasHistory;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-
 class BannerMgmt extends Model
 {
-  use HasSoftDelete, HasStatus, HasHistory, HasFactory;
+    use HasFactory, HasHistory, HasSoftDelete, HasStatus;
 
-  protected $table = 'banner_mgmt';
+    protected $table = 'banner_mgmt';
 
-  /**
-   * The attributes that are mass assignable.
-   *
-   * @var string[]
-   */
-  protected $fillable = [
-    'title',
-    'slug',
-    'description',
-    'position',
-    'status',
-    'is_delete',
-    'media_id',
-    'status',
-    'is_delete',
-    'media_id',
-  ];
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var string[]
+     */
+    protected $fillable = [
+        'title',
+        'slug',
+        'description',
+        'position',
+        'status',
+        'is_delete',
+        'media_id',
+        'status',
+        'is_delete',
+        'media_id',
+    ];
 
-  /**
-   * The attributes that should be cast.
-   *
-   * @var array
-   */
-  protected $casts = [
-    'id' => 'integer',
-    'title' => 'string',
-    'slug' => 'string',
-    'description' => 'string',
-    'position' => 'string',
-    'position' => 'string',
-    'status' => 'integer',
-    'is_delete' => 'boolean',
-    'media_id' => 'integer',
-    'created_at' => 'datetime',
-    'updated_at' => 'datetime',
-  ];
+    /**
+     * The attributes that should be cast.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'id' => 'integer',
+        'title' => 'string',
+        'slug' => 'string',
+        'description' => 'string',
+        'position' => 'string',
+        'position' => 'string',
+        'status' => 'integer',
+        'is_delete' => 'boolean',
+        'media_id' => 'integer',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+    ];
 
-  /**
-   * Get the history records for the banner.
-   *
-   * @return HasMany
-   */
-  public function history(): HasMany
-  {
-    return $this->hasMany(BannerMgmtHist::class, 'banner_mgmt_id');
-  }
+    /**
+     * Get the history records for the banner.
+     */
+    public function history(): HasMany
+    {
+        return $this->hasMany(BannerMgmtHist::class, 'banner_mgmt_id');
+    }
 
-  /**
-   * Get the media record.
-   */
-  public function media()
-  {
-    return $this->belongsTo(\App\Models\Management\MediaMgmt::class, 'media_id');
-  }
+    /**
+     * Get the media record.
+     */
+    public function media()
+    {
+        return $this->belongsTo(\App\Models\Management\MediaMgmt::class, 'media_id');
+    }
 }

@@ -35,10 +35,12 @@ export function TokenForm({ initialData, onSuccess, onCancel }: TokenFormProps) 
   const { create, update, loading } = useCrud<TokenMst>(ENDPOINTS.MASTER.TOKEN);
 
   // Fetch admins for the dropdown
-  const { data: admins, loading: adminsLoading } = useApiData<AdminMst>(
-    ENDPOINTS.MASTER.ADMIN,
-    { page: PAGINATION.DEFAULT_PAGE, per_page: PAGINATION.MAX_PER_PAGE, sort_by: 'email', sort_order: SORT_ORDER.ASC }
-  );
+  const { data: admins, loading: adminsLoading } = useApiData<AdminMst>(ENDPOINTS.MASTER.ADMIN, {
+    page: PAGINATION.DEFAULT_PAGE,
+    per_page: PAGINATION.MAX_PER_PAGE,
+    sort_by: 'email',
+    sort_order: SORT_ORDER.ASC,
+  });
 
   const {
     register,
@@ -74,29 +76,31 @@ export function TokenForm({ initialData, onSuccess, onCancel }: TokenFormProps) 
     }
   }, [initialData, reset]);
 
-  const { execute, isLoading: isActionProcessing } = useActionLock({ delay: UI_CONSTANTS.ACTION_DELAY_MS });
+  const { execute, isLoading: isActionProcessing } = useActionLock({
+    delay: UI_CONSTANTS.ACTION_DELAY_MS,
+  });
 
   const onSubmit = async (data: TokenFormData) => {
     await execute(async () => {
       try {
         // Convert string to number for account_id
         const payload = {
-        ...data,
-        account_id: Number(data.account_id),
-        // Format date to dd/MM/yyyy for backend
-        expired_at: data.expired_at ? formatDateForBackend(data.expired_at) : '',
-      };
-      
-      if (isEdit && initialData) {
-        await update(initialData.id, payload);
-      } else {
-        await create(payload);
+          ...data,
+          account_id: Number(data.account_id),
+          // Format date to dd/MM/yyyy for backend
+          expired_at: data.expired_at ? formatDateForBackend(data.expired_at) : '',
+        };
+
+        if (isEdit && initialData) {
+          await update(initialData.id, payload);
+        } else {
+          await create(payload);
+        }
+        onSuccess();
+      } catch (error: unknown) {
+        console.error(error);
+        handleBindErrors(error, setError);
       }
-      onSuccess();
-    } catch (error: unknown) {
-      console.error(error);
-      handleBindErrors(error, setError);
-    }
     });
   };
 
@@ -115,7 +119,9 @@ export function TokenForm({ initialData, onSuccess, onCancel }: TokenFormProps) 
           disabled={adminsLoading}
         >
           <SelectTrigger>
-            <SelectValue placeholder={adminsLoading ? tCommon('loading') : tForms('selectAccount')} />
+            <SelectValue
+              placeholder={adminsLoading ? tCommon('loading') : tForms('selectAccount')}
+            />
           </SelectTrigger>
           <SelectContent>
             {admins.map((admin) => (
@@ -125,9 +131,7 @@ export function TokenForm({ initialData, onSuccess, onCancel }: TokenFormProps) 
             ))}
           </SelectContent>
         </Select>
-        {errors.account_id && (
-          <p className="text-sm text-red-500">{errors.account_id.message}</p>
-        )}
+        {errors.account_id && <p className="text-sm text-red-500">{errors.account_id.message}</p>}
       </div>
 
       <div className="space-y-2">
@@ -140,39 +144,36 @@ export function TokenForm({ initialData, onSuccess, onCancel }: TokenFormProps) 
           className={errors.device_name ? 'border-red-500' : ''}
           placeholder={tForms('deviceName')}
         />
-        {errors.device_name && (
-          <p className="text-sm text-red-500">{errors.device_name.message}</p>
-        )}
+        {errors.device_name && <p className="text-sm text-red-500">{errors.device_name.message}</p>}
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="ip_address">
-          {tLabels('ipAddress')}
-        </Label>
-        <Input
-          id="ip_address"
-          {...register('ip_address')}
-          placeholder={tForms('ipAddress')}
-        />
+        <Label htmlFor="ip_address">{tLabels('ipAddress')}</Label>
+        <Input id="ip_address" {...register('ip_address')} placeholder={tForms('ipAddress')} />
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="expired_at">
-          {tLabels('expiredAt')}
-        </Label>
-        <Input
-          id="expired_at"
-          type="datetime-local"
-          {...register('expired_at')}
-        />
+        <Label htmlFor="expired_at">{tLabels('expiredAt')}</Label>
+        <Input id="expired_at" type="datetime-local" {...register('expired_at')} />
       </div>
 
       <div className="flex justify-end gap-2 pt-4">
-        <Button type="button" variant="outline" onClick={onCancel} disabled={loading || isActionProcessing}>
+        <Button
+          type="button"
+          variant="outline"
+          onClick={onCancel}
+          disabled={loading || isActionProcessing}
+        >
           {tCommon('cancel')}
         </Button>
         <Button type="submit" disabled={loading || isActionProcessing}>
-          {loading || isActionProcessing ? (isEdit ? tCommon('updating') : tCommon('creating')) : (isEdit ? tCommon('update') : tCommon('create'))}
+          {loading || isActionProcessing
+            ? isEdit
+              ? tCommon('updating')
+              : tCommon('creating')
+            : isEdit
+              ? tCommon('update')
+              : tCommon('create')}
         </Button>
       </div>
     </form>

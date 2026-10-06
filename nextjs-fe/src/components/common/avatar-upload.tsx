@@ -4,7 +4,7 @@ import { useState, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { X, Image as ImageIcon } from 'lucide-react';
-import { cn } from "@/shared/utils";
+import { cn } from '@/shared/utils';
 import toast from 'react-hot-toast';
 import { useTranslations } from 'next-intl';
 import { MIME_TYPE_PREFIX } from '@/shared/config/constant';
@@ -83,12 +83,12 @@ export function AvatarUpload({
   return (
     <div className={cn('space-y-2', className)}>
       <Label>{t('upload.avatar')}</Label>
-      
+
       <div
         className={cn(
           'relative flex h-40 w-40 cursor-pointer items-center justify-center rounded-full border-2 border-dashed transition-colors',
           isDragging ? 'border-primary bg-primary/10' : 'border-gray-300 hover:border-primary',
-          preview && 'border-solid'
+          preview && 'border-solid',
         )}
         onDrop={handleDrop}
         onDragOver={handleDragOver}
@@ -115,7 +115,7 @@ export function AvatarUpload({
               type="button"
               variant="destructive"
               size="icon"
-              className="absolute -right-2 -top-2 h-8 w-8 rounded-full"
+              className="absolute -top-2 -right-2 h-8 w-8 rounded-full"
               onClick={(e) => {
                 e.stopPropagation();
                 handleRemove();

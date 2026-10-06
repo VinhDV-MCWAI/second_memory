@@ -14,13 +14,13 @@ import { Button } from '@/components/ui/button';
 import type { EntryDescriptionMgmt } from '@/shared/types/api';
 import { StatusEnum, StatusEnumLabels } from '@/shared/enums';
 import { API_ENDPOINTS } from '@/shared/api';
-import { 
-  SORT_ORDER, 
+import {
+  SORT_ORDER,
   SORT_FIELDS,
-  type SortOrder, 
-  PAGINATION, 
+  type SortOrder,
+  PAGINATION,
   ADMIN_ROUTES,
-  UI_CONSTANTS 
+  UI_CONSTANTS,
 } from '@/shared/config';
 import { AdvancedSearch } from '@/components/common/advanced-search';
 import type { SearchField, SearchCriteria } from '@/shared/types/data-table.types';
@@ -62,7 +62,7 @@ export default function EntryDescriptionListPage() {
 
   const { data, loading, pagination, refetch } = useApiData<EntryDescriptionMgmt>(
     API_ENDPOINTS.MANAGEMENT.ENTRY_DESCRIPTION,
-    { page, per_page: perPage, filters, sort_by: sortBy, sort_order: sortOrder }
+    { page, per_page: perPage, filters, sort_by: sortBy, sort_order: sortOrder },
   );
 
   const { remove } = useCrud<EntryDescriptionMgmt>(API_ENDPOINTS.MANAGEMENT.ENTRY_DESCRIPTION);
@@ -86,7 +86,9 @@ export default function EntryDescriptionListPage() {
     setDeleteDialogOpen(true);
   };
 
-  const { execute, isLoading: isDeleteProcessing } = useActionLock({ delay: UI_CONSTANTS.ACTION_DELAY_MS });
+  const { execute, isLoading: isDeleteProcessing } = useActionLock({
+    delay: UI_CONSTANTS.ACTION_DELAY_MS,
+  });
 
   const confirmDelete = async () => {
     try {
@@ -117,22 +119,26 @@ export default function EntryDescriptionListPage() {
       label: tFields('status'),
       sortable: true,
       render: (item) => (
-        <span className={`px-2 py-1 rounded-full text-xs ${
-          item.status === StatusEnum.PUBLISHED ? 'bg-green-100 text-green-800' : 
-          item.status === StatusEnum.ARCHIVED ? 'bg-gray-100 text-gray-800' : 
-          'bg-yellow-100 text-yellow-800'
-        }`}>
+        <span
+          className={`rounded-full px-2 py-1 text-xs ${
+            item.status === StatusEnum.PUBLISHED
+              ? 'bg-green-100 text-green-800'
+              : item.status === StatusEnum.ARCHIVED
+                ? 'bg-gray-100 text-gray-800'
+                : 'bg-yellow-100 text-yellow-800'
+          }`}
+        >
           {StatusEnumLabels[item.status as StatusEnum] || tCommon('unknown')}
         </span>
       ),
     },
-    { 
-      key: 'title', 
-      label: tFields('title'), 
-      sortable: true 
+    {
+      key: 'title',
+      label: tFields('title'),
+      sortable: true,
     },
-    { 
-      key: 'summary', 
+    {
+      key: 'summary',
       label: tFields('summary'),
       render: (item) => (
         <div className="max-w-md truncate" title={item.summary || ''}>
@@ -156,27 +162,36 @@ export default function EntryDescriptionListPage() {
     { key: 'entry_mgmt_id', label: tFields('entryId'), type: 'text' },
     { key: 'title', label: tFields('title'), type: 'text' },
     { key: 'summary', label: tFields('summary'), type: 'text' },
-    { key: 'created_at', label: tFields('createdAt'), type: 'date' }
+    { key: 'created_at', label: tFields('createdAt'), type: 'date' },
   ];
   const bulkActions: BulkAction[] = [
-    { 
-      label: tBulkActions('deleteSelected'), 
-      icon: <Trash2 className="h-4 w-4" />, 
-      variant: 'destructive', 
-      onClick: async (ids) => { await remove(ids); }, 
-      confirmMessage: tCrud('deleteConfirm', { count: selectedIds.length, entity: tEntities('entryDescription').toLowerCase() }), 
-      confirmTitle: tCrud('deleteEntity', { entity: tEntities('entryDescriptions') }) 
-    }, 
-    { 
-      label: tBulkActions('activateSelected'), 
-      icon: <CheckCircle className="h-4 w-4" />, 
-      onClick: async () => { refetch(); } 
-    }, 
-    { 
-      label: tBulkActions('deactivateSelected'), 
-      icon: <XCircle className="h-4 w-4" />, 
-      onClick: async () => { refetch(); } 
-    }
+    {
+      label: tBulkActions('deleteSelected'),
+      icon: <Trash2 className="h-4 w-4" />,
+      variant: 'destructive',
+      onClick: async (ids) => {
+        await remove(ids);
+      },
+      confirmMessage: tCrud('deleteConfirm', {
+        count: selectedIds.length,
+        entity: tEntities('entryDescription').toLowerCase(),
+      }),
+      confirmTitle: tCrud('deleteEntity', { entity: tEntities('entryDescriptions') }),
+    },
+    {
+      label: tBulkActions('activateSelected'),
+      icon: <CheckCircle className="h-4 w-4" />,
+      onClick: async () => {
+        refetch();
+      },
+    },
+    {
+      label: tBulkActions('deactivateSelected'),
+      icon: <XCircle className="h-4 w-4" />,
+      onClick: async () => {
+        refetch();
+      },
+    },
   ];
 
   const handleAdvancedSearch = (criteria: SearchCriteria[]) => {
@@ -193,14 +208,17 @@ export default function EntryDescriptionListPage() {
     <AdminLayout>
       <PageHeader
         title={tManagement('title', { entity: tEntities('entryDescriptions') })}
-        description={tManagement('description', { entity: tEntities('entryDescriptions').toLowerCase() })}
+        description={tManagement('description', {
+          entity: tEntities('entryDescriptions').toLowerCase(),
+        })}
         breadcrumbs={[
           { label: tCommon('admin'), href: ADMIN_ROUTES.DASHBOARD },
           { label: tEntities('entryDescriptions'), isActive: true },
         ]}
         action={
           <Button onClick={handleCreate}>
-            <Plus className="mr-2 h-4 w-4" /> {tCrud('createEntity', { entity: tEntities('entryDescription') })}
+            <Plus className="mr-2 h-4 w-4" />{' '}
+            {tCrud('createEntity', { entity: tEntities('entryDescription') })}
           </Button>
         }
       />
@@ -208,13 +226,13 @@ export default function EntryDescriptionListPage() {
       <div className="mt-6 space-y-4">
         <div className="flex gap-2">
           <AdvancedSearch fields={searchFields} onSearch={handleAdvancedSearch} />
-          <SavedFilters 
-            currentFilters={filters} 
-            onApplyFilter={(f) => { 
-              setFilters(f); 
-              setPage(PAGINATION.DEFAULT_PAGE); 
-            }} 
-            storageKey="entry-description-filters" 
+          <SavedFilters
+            currentFilters={filters}
+            onApplyFilter={(f) => {
+              setFilters(f);
+              setPage(PAGINATION.DEFAULT_PAGE);
+            }}
+            storageKey="entry-description-filters"
           />
           <ImportExport onImport={handleImport} />
         </div>
@@ -232,9 +250,15 @@ export default function EntryDescriptionListPage() {
           fields={filterFields}
         />
 
-        <BulkActions selectedIds={selectedIds} onClearSelection={() => setSelectedIds([])} actions={bulkActions} isLoading={loading} />
+        <BulkActions
+          selectedIds={selectedIds}
+          onClearSelection={() => setSelectedIds([])}
+          actions={bulkActions}
+          isLoading={loading}
+        />
 
-        <DataTable data={data}
+        <DataTable
+          data={data}
           columns={columns}
           loading={loading}
           selectedIds={selectedIds}
@@ -243,7 +267,7 @@ export default function EntryDescriptionListPage() {
           sortBy={sortBy}
           sortOrder={sortOrder}
           onEdit={(id) => {
-            const desc = data.find(d => d.id === id);
+            const desc = data.find((d) => d.id === id);
             if (desc) handleEdit(desc);
           }}
           onDelete={(id) => handleDelete([id])}
@@ -263,19 +287,29 @@ export default function EntryDescriptionListPage() {
 
       {/* Create/Edit Entry Description Modal */}
       <Dialog open={formDialogOpen} onOpenChange={setFormDialogOpen}>
-        <DialogContent className="max-w-4xl max-h-[90vh] p-0 flex flex-col gap-0 overflow-hidden">
+        <DialogContent className="flex max-h-[90vh] max-w-4xl flex-col gap-0 overflow-hidden p-0">
           {/* Header - Fixed */}
-          <div className="shrink-0 px-6 pt-6 pb-4 border-b bg-background">
+          <div className="shrink-0 border-b bg-background px-6 pt-6 pb-4">
             <DialogHeader>
-              <DialogTitle>{editingDescription ? tCrud('editEntity', { entity: tEntities('entryDescription') }) : tCrud('createEntity', { entity: tEntities('entryDescription') })}</DialogTitle>
+              <DialogTitle>
+                {editingDescription
+                  ? tCrud('editEntity', { entity: tEntities('entryDescription') })
+                  : tCrud('createEntity', { entity: tEntities('entryDescription') })}
+              </DialogTitle>
               <DialogDescription>
-                {editingDescription ? tCrud('editDescription', { entity: tEntities('entryDescription').toLowerCase() }) : tCrud('createDescription', { entity: tEntities('entryDescription').toLowerCase() })}
+                {editingDescription
+                  ? tCrud('editDescription', {
+                      entity: tEntities('entryDescription').toLowerCase(),
+                    })
+                  : tCrud('createDescription', {
+                      entity: tEntities('entryDescription').toLowerCase(),
+                    })}
               </DialogDescription>
             </DialogHeader>
           </div>
-          
+
           {/* Body - Scrollable */}
-          <div className="flex-1 overflow-y-auto min-h-0">
+          <div className="min-h-0 flex-1 overflow-y-auto">
             <div className="px-6 py-4">
               <EntryDescriptionForm
                 initialData={editingDescription}
@@ -285,9 +319,9 @@ export default function EntryDescriptionListPage() {
               />
             </div>
           </div>
-          
+
           {/* Footer - Fixed */}
-          <div className="shrink-0 px-6 py-4 border-t bg-muted/20">
+          <div className="shrink-0 border-t bg-muted/20 px-6 py-4">
             <DialogFooter>
               <Button type="button" variant="outline" onClick={() => setFormDialogOpen(false)}>
                 {tCommon('cancel')}
@@ -304,10 +338,12 @@ export default function EntryDescriptionListPage() {
         open={deleteDialogOpen}
         onOpenChange={setDeleteDialogOpen}
         title={tCrud('deleteEntity', { entity: tEntities('entryDescriptions') })}
-        description={tCrud('deleteConfirm', { count: deleteIds.length, entity: tEntities('entryDescription').toLowerCase() })}
+        description={tCrud('deleteConfirm', {
+          count: deleteIds.length,
+          entity: tEntities('entryDescription').toLowerCase(),
+        })}
         onConfirm={confirmDelete}
         confirmText={tCommon('delete')}
-
         variant="destructive"
         isLoading={isDeleteProcessing}
       />

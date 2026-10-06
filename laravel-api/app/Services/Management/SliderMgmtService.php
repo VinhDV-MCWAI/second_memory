@@ -2,20 +2,19 @@
 
 namespace App\Services\Management;
 
-use App\Services\BaseService;
-use App\Interfaces\Management\SliderMgmtInterface;
-use App\Interfaces\History\Management\SliderMgmtHistInterface;
 use App\Enums\ActionType;
-use Illuminate\Http\Resources\Json\JsonResource;
 use App\Http\Resources\Management\SliderMgmtResource;
+use App\Interfaces\History\Management\SliderMgmtHistInterface;
+use App\Interfaces\Management\SliderMgmtInterface;
+use App\Services\BaseService;
+use Illuminate\Http\Resources\Json\JsonResource;
 
 class SliderMgmtService extends BaseService
 {
     public function __construct(
         protected SliderMgmtInterface $sliderMgmt,
         protected SliderMgmtHistInterface $sliderMgmtHist
-    ) {
-    }
+    ) {}
 
     protected function getHistoryRepository()
     {
@@ -29,9 +28,6 @@ class SliderMgmtService extends BaseService
 
     /**
      * Get slider mgmt list
-     *
-     * @param array $payload
-     * @return JsonResource
      */
     public function list(array $payload): JsonResource
     {
@@ -42,9 +38,6 @@ class SliderMgmtService extends BaseService
 
     /**
      * Store slider mgmt
-     *
-     * @param array $payload
-     * @return int
      */
     public function store(array $payload): int
     {
@@ -56,9 +49,6 @@ class SliderMgmtService extends BaseService
 
     /**
      * Update slider mgmt
-     *
-     * @param array $payload
-     * @return int
      */
     public function update(array $payload): int
     {
@@ -71,14 +61,12 @@ class SliderMgmtService extends BaseService
 
     /**
      * Delete slider mgmt
-     *
-     * @param array $payload
-     * @return void
      */
     public function delete(array $payload): void
     {
-        if (!isset($payload['ids']) || !is_array($payload['ids'])) {
+        if (! isset($payload['ids']) || ! is_array($payload['ids'])) {
             $this->sliderMgmt->executeDelete($payload['ids'] ?? []);
+
             return;
         }
 

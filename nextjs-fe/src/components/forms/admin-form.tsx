@@ -44,7 +44,9 @@ export function AdminForm({ initialData, onSuccess, onCancel }: AdminFormProps) 
   });
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [avatarFile, setAvatarFile] = useState<File | null>(null);
-  const [avatarPreview, setAvatarPreview] = useState<string | null>(() => initialData?.avatar ?? null);
+  const [avatarPreview, setAvatarPreview] = useState<string | null>(
+    () => initialData?.avatar ?? null,
+  );
 
   // Role data
   const { data: roles } = useApiData<RoleMst>(ENDPOINTS.MASTER.ROLE, {
@@ -56,7 +58,6 @@ export function AdminForm({ initialData, onSuccess, onCancel }: AdminFormProps) 
     refetchOnMount: 'always',
   });
 
-
   // Fetch assigned roles for Edit mode
   const { data: assignedRoles } = useApiData<{ admin_mst_id: number; role_mst_id: number }>(
     ENDPOINTS.JUNCTION.ADMIN_ROLE,
@@ -67,7 +68,7 @@ export function AdminForm({ initialData, onSuccess, onCancel }: AdminFormProps) 
       enabled: isEdit && !!initialData?.id,
       staleTime: 0,
       refetchOnMount: 'always',
-    }
+    },
   );
 
   const [selectedRoleIds, setSelectedRoleIds] = useState<(string | number)[]>([]);
@@ -76,8 +77,8 @@ export function AdminForm({ initialData, onSuccess, onCancel }: AdminFormProps) 
   // Initialize selected roles when data is fetched
   useEffect(() => {
     if (assignedRoles && isEdit) {
-      const roleIds = assignedRoles.map(item => item.role_mst_id);
-      
+      const roleIds = assignedRoles.map((item) => item.role_mst_id);
+
       // Use JSON.stringify for array comparison to prevent infinite loops
       // caused by unstable object references from useApiData
       if (JSON.stringify(roleIds) !== JSON.stringify(initialRoleIds)) {
@@ -88,9 +89,9 @@ export function AdminForm({ initialData, onSuccess, onCancel }: AdminFormProps) 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [assignedRoles, isEdit]); // Exclude initialRoleIds to prevent potential cycles if calculations are slightly off, though check guards it.
 
-  const roleOptions = roles.map(role => ({
+  const roleOptions = roles.map((role) => ({
     value: role.id,
-    label: role.name
+    label: role.name,
   }));
 
   const {
@@ -145,7 +146,9 @@ export function AdminForm({ initialData, onSuccess, onCancel }: AdminFormProps) 
     }
   }, [initialData, reset]);
 
-  const { execute, isLoading: isActionProcessing } = useActionLock({ delay: UI_CONSTANTS.ACTION_DELAY_MS });
+  const { execute, isLoading: isActionProcessing } = useActionLock({
+    delay: UI_CONSTANTS.ACTION_DELAY_MS,
+  });
 
   const onSubmit = async (data: AdminFormData) => {
     await execute(async () => {
@@ -188,54 +191,52 @@ export function AdminForm({ initialData, onSuccess, onCancel }: AdminFormProps) 
 
         // Handle role assignment
         if (adminId) {
-            try {
-                const currentRoleIds = selectedRoleIds.map(Number);
-                
-                if (isEdit) {
-                    // Calculate diffs for Edit mode
-                    const toInsert = currentRoleIds
-                        .filter(id => !initialRoleIds.includes(id))
-                        .map(roleId => ({
-                            admin_mst_id: adminId!,
-                            role_mst_id: roleId
-                        }));
+          try {
+            const currentRoleIds = selectedRoleIds.map(Number);
 
-                    const toDelete = initialRoleIds
-                        .filter(id => !currentRoleIds.includes(id))
-                        .map(roleId => ({
-                            admin_mst_id: adminId!,
-                            role_mst_id: roleId
-                        }));
+            if (isEdit) {
+              // Calculate diffs for Edit mode
+              const toInsert = currentRoleIds
+                .filter((id) => !initialRoleIds.includes(id))
+                .map((roleId) => ({
+                  admin_mst_id: adminId!,
+                  role_mst_id: roleId,
+                }));
 
-                    if (toInsert.length > 0 || toDelete.length > 0) {
-                        await apiClient.put(`${ENDPOINTS.JUNCTION.ADMIN_ROLE}/update`, {
-                            insert: toInsert.length > 0 ? toInsert : undefined,
-                            delete: toDelete.length > 0 ? toDelete : undefined,
-                        });
-                        // Update initial state after successful save
-                        setInitialRoleIds(currentRoleIds); 
-                    }
-                } else if (selectedRoleIds.length > 0) {
-                    // Create mode - only insert
-                    await apiClient.put(`${ENDPOINTS.JUNCTION.ADMIN_ROLE}/update`, {
-                      insert: selectedRoleIds.map(roleId => ({
-                        admin_mst_id: adminId!,
-                        role_mst_id: Number(roleId)
-                      }))
-                    });
-                }
-            } catch (roleError) {
-                console.error('Failed to assign roles:', roleError);
-                // We don't block success if role assignment fails
+              const toDelete = initialRoleIds
+                .filter((id) => !currentRoleIds.includes(id))
+                .map((roleId) => ({
+                  admin_mst_id: adminId!,
+                  role_mst_id: roleId,
+                }));
+
+              if (toInsert.length > 0 || toDelete.length > 0) {
+                await apiClient.put(`${ENDPOINTS.JUNCTION.ADMIN_ROLE}/update`, {
+                  insert: toInsert.length > 0 ? toInsert : undefined,
+                  delete: toDelete.length > 0 ? toDelete : undefined,
+                });
+                // Update initial state after successful save
+                setInitialRoleIds(currentRoleIds);
+              }
+            } else if (selectedRoleIds.length > 0) {
+              // Create mode - only insert
+              await apiClient.put(`${ENDPOINTS.JUNCTION.ADMIN_ROLE}/update`, {
+                insert: selectedRoleIds.map((roleId) => ({
+                  admin_mst_id: adminId!,
+                  role_mst_id: Number(roleId),
+                })),
+              });
             }
+          } catch (roleError) {
+            console.error('Failed to assign roles:', roleError);
+            // We don't block success if role assignment fails
+          }
         }
-
-
 
         // Manually invalidate list query after all operations (admin + roles) are complete
         await Promise.all([
-            queryClient.invalidateQueries({ queryKey: [ENDPOINTS.MASTER.ADMIN] }),
-            queryClient.invalidateQueries({ queryKey: [ENDPOINTS.JUNCTION.ADMIN_ROLE] })
+          queryClient.invalidateQueries({ queryKey: [ENDPOINTS.MASTER.ADMIN] }),
+          queryClient.invalidateQueries({ queryKey: [ENDPOINTS.JUNCTION.ADMIN_ROLE] }),
         ]);
         onSuccess();
       } catch (error: unknown) {
@@ -251,7 +252,7 @@ export function AdminForm({ initialData, onSuccess, onCancel }: AdminFormProps) 
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-      <div className="flex justify-center mb-4">
+      <div className="mb-4 flex justify-center">
         <AvatarUpload
           value={avatarPreview ?? undefined}
           onChange={(file, preview) => {
@@ -273,9 +274,7 @@ export function AdminForm({ initialData, onSuccess, onCancel }: AdminFormProps) 
             {...register('first_name')}
             className={errors.first_name ? 'border-red-500' : ''}
           />
-          {errors.first_name && (
-            <p className="text-sm text-red-500">{errors.first_name.message}</p>
-          )}
+          {errors.first_name && <p className="text-sm text-red-500">{errors.first_name.message}</p>}
         </div>
         <div className="space-y-2">
           <Label htmlFor="last_name">
@@ -286,9 +285,7 @@ export function AdminForm({ initialData, onSuccess, onCancel }: AdminFormProps) 
             {...register('last_name')}
             className={errors.last_name ? 'border-red-500' : ''}
           />
-          {errors.last_name && (
-            <p className="text-sm text-red-500">{errors.last_name.message}</p>
-          )}
+          {errors.last_name && <p className="text-sm text-red-500">{errors.last_name.message}</p>}
         </div>
       </div>
 
@@ -303,9 +300,7 @@ export function AdminForm({ initialData, onSuccess, onCancel }: AdminFormProps) 
             {...register('email')}
             className={errors.email ? 'border-red-500' : ''}
           />
-          {errors.email && (
-            <p className="text-sm text-red-500">{errors.email.message}</p>
-          )}
+          {errors.email && <p className="text-sm text-red-500">{errors.email.message}</p>}
         </div>
         <div className="space-y-2">
           <Label htmlFor="user_name">
@@ -316,15 +311,18 @@ export function AdminForm({ initialData, onSuccess, onCancel }: AdminFormProps) 
             {...register('user_name')}
             className={errors.user_name ? 'border-red-500' : ''}
           />
-          {errors.user_name && (
-            <p className="text-sm text-red-500">{errors.user_name.message}</p>
-          )}
+          {errors.user_name && <p className="text-sm text-red-500">{errors.user_name.message}</p>}
         </div>
       </div>
 
       <div className="space-y-2">
         <Label htmlFor="password">
-          {tLabels('password')} {isEdit ? `(${tForms('leaveBlankToKeepCurrent')})` : <span className="text-red-500">*</span>}
+          {tLabels('password')}{' '}
+          {isEdit ? (
+            `(${tForms('leaveBlankToKeepCurrent')})`
+          ) : (
+            <span className="text-red-500">*</span>
+          )}
         </Label>
         <Input
           id="password"
@@ -333,9 +331,7 @@ export function AdminForm({ initialData, onSuccess, onCancel }: AdminFormProps) 
           className={errors.password ? 'border-red-500' : ''}
           placeholder={isEdit ? tForms('passwordHidden') : tCommon('enterPassword')}
         />
-        {errors.password && (
-          <p className="text-sm text-red-500">{errors.password.message}</p>
-        )}
+        {errors.password && <p className="text-sm text-red-500">{errors.password.message}</p>}
       </div>
 
       <div className="grid grid-cols-2 gap-4">
@@ -358,9 +354,7 @@ export function AdminForm({ initialData, onSuccess, onCancel }: AdminFormProps) 
             {...register('birth')}
             className={errors.birth ? 'border-red-500' : ''}
           />
-          {errors.birth && (
-            <p className="text-sm text-red-500">{errors.birth.message}</p>
-          )}
+          {errors.birth && <p className="text-sm text-red-500">{errors.birth.message}</p>}
         </div>
       </div>
 
@@ -371,9 +365,7 @@ export function AdminForm({ initialData, onSuccess, onCancel }: AdminFormProps) 
           {...register('address')}
           className={errors.address ? 'border-red-500' : ''}
         />
-        {errors.address && (
-          <p className="text-sm text-red-500">{errors.address.message}</p>
-        )}
+        {errors.address && <p className="text-sm text-red-500">{errors.address.message}</p>}
       </div>
 
       <div className="grid grid-cols-2 gap-4">
@@ -391,13 +383,13 @@ export function AdminForm({ initialData, onSuccess, onCancel }: AdminFormProps) 
             </SelectTrigger>
             <SelectContent>
               <SelectItem value={Gender.MALE.toString()}>{GenderLabels[Gender.MALE]}</SelectItem>
-              <SelectItem value={Gender.FEMALE.toString()}>{GenderLabels[Gender.FEMALE]}</SelectItem>
+              <SelectItem value={Gender.FEMALE.toString()}>
+                {GenderLabels[Gender.FEMALE]}
+              </SelectItem>
               <SelectItem value={Gender.OTHER.toString()}>{GenderLabels[Gender.OTHER]}</SelectItem>
             </SelectContent>
           </Select>
-          {errors.gender && (
-            <p className="text-sm text-red-500">{errors.gender.message}</p>
-          )}
+          {errors.gender && <p className="text-sm text-red-500">{errors.gender.message}</p>}
         </div>
         <div className="space-y-2">
           <Label htmlFor="status">
@@ -412,15 +404,21 @@ export function AdminForm({ initialData, onSuccess, onCancel }: AdminFormProps) 
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value={AdminStatus.ACTIVE.toString()}>{AdminStatusLabels[AdminStatus.ACTIVE]}</SelectItem>
-              <SelectItem value={AdminStatus.INACTIVE.toString()}>{AdminStatusLabels[AdminStatus.INACTIVE]}</SelectItem>
-              <SelectItem value={AdminStatus.WAITING.toString()}>{AdminStatusLabels[AdminStatus.WAITING]}</SelectItem>
-              <SelectItem value={AdminStatus.SUSPENDED.toString()}>{AdminStatusLabels[AdminStatus.SUSPENDED]}</SelectItem>
+              <SelectItem value={AdminStatus.ACTIVE.toString()}>
+                {AdminStatusLabels[AdminStatus.ACTIVE]}
+              </SelectItem>
+              <SelectItem value={AdminStatus.INACTIVE.toString()}>
+                {AdminStatusLabels[AdminStatus.INACTIVE]}
+              </SelectItem>
+              <SelectItem value={AdminStatus.WAITING.toString()}>
+                {AdminStatusLabels[AdminStatus.WAITING]}
+              </SelectItem>
+              <SelectItem value={AdminStatus.SUSPENDED.toString()}>
+                {AdminStatusLabels[AdminStatus.SUSPENDED]}
+              </SelectItem>
             </SelectContent>
           </Select>
-          {errors.status && (
-            <p className="text-sm text-red-500">{errors.status.message}</p>
-          )}
+          {errors.status && <p className="text-sm text-red-500">{errors.status.message}</p>}
         </div>
       </div>
 
@@ -434,22 +432,28 @@ export function AdminForm({ initialData, onSuccess, onCancel }: AdminFormProps) 
         />
       </div>
 
-      <div className="flex items-center gap-2 mt-4">
-        <input
-          type="checkbox"
-          id="is_active"
-          {...register('is_active')}
-          className="rounded"
-        />
+      <div className="mt-4 flex items-center gap-2">
+        <input type="checkbox" id="is_active" {...register('is_active')} className="rounded" />
         <Label htmlFor="is_active">{tLabels('isActive')}</Label>
       </div>
 
       <div className="flex justify-end gap-2 pt-4">
-        <Button type="button" variant="outline" onClick={onCancel} disabled={loading || isActionProcessing}>
+        <Button
+          type="button"
+          variant="outline"
+          onClick={onCancel}
+          disabled={loading || isActionProcessing}
+        >
           {tCommon('cancel')}
         </Button>
         <Button type="submit" disabled={loading || isActionProcessing}>
-          {loading || isActionProcessing ? (isEdit ? tCommon('updating') : tCommon('creating')) : (isEdit ? tCommon('update') : tCommon('create'))}
+          {loading || isActionProcessing
+            ? isEdit
+              ? tCommon('updating')
+              : tCommon('creating')
+            : isEdit
+              ? tCommon('update')
+              : tCommon('create')}
         </Button>
       </div>
     </form>

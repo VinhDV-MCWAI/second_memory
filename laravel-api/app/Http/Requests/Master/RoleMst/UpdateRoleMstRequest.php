@@ -2,13 +2,13 @@
 
 namespace App\Http\Requests\Master\RoleMst;
 
-use Illuminate\Foundation\Http\FormRequest;
 use App\Constants\CommonVal;
-use Illuminate\Validation\Rule;
-use Illuminate\Validation\Rules\Enum;
-use App\Models\Master\RoleMst;
 use App\Enums\IsActive;
 use App\Enums\IsDelete;
+use App\Models\Master\RoleMst;
+use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
+use Illuminate\Validation\Rules\Enum;
 
 class UpdateRoleMstRequest extends FormRequest
 {
@@ -29,10 +29,10 @@ class UpdateRoleMstRequest extends FormRequest
     {
         return [
             'id' => ['required', 'integer', 'min:1', Rule::exists(RoleMst::class, 'id')],
-            'name' => ['required', 'string', 'min:' . CommonVal::MIN_VARCHAR, 'max:30',],
-            'permission' => ['required', 'string', 'min:' . CommonVal::MIN_VARCHAR, 'max:50',],
-            'is_active' => ['required', new Enum(IsActive::class),],
-            'is_delete' => ['required', new Enum(IsDelete::class),],
+            'name' => ['required', 'string', 'min:'.CommonVal::MIN_VARCHAR, 'max:30'],
+            'permission' => ['required', 'string', 'min:'.CommonVal::MIN_VARCHAR, 'max:50'],
+            'is_active' => ['required', new Enum(IsActive::class)],
+            'is_delete' => ['required', new Enum(IsDelete::class)],
         ];
     }
 

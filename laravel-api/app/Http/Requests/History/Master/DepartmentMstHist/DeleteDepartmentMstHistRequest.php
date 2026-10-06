@@ -2,13 +2,10 @@
 
 namespace App\Http\Requests\History\Master\DepartmentMstHist;
 
-use Illuminate\Foundation\Http\FormRequest;
 use App\Constants\CommonVal;
-use Illuminate\Validation\Rule;
-use Illuminate\Validation\Rules\Enum;
 use App\Models\History\Master\DepartmentMstHist;
-use App\Enums\StatusEnum;
-use App\Models\Master\DepartmentMst;
+use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class DeleteDepartmentMstHistRequest extends FormRequest
 {
@@ -29,7 +26,7 @@ class DeleteDepartmentMstHistRequest extends FormRequest
     {
         return [
             'ids' => ['required', 'array'],
-            'ids.*' => ['required', 'integer', 'min:' . CommonVal::MIN_INTEGER, 'max:' . CommonVal::MAX_BIG_INTEGER, Rule::exists(DepartmentMstHist::class, 'id')],
+            'ids.*' => ['required', 'integer', 'min:'.CommonVal::MIN_INTEGER, 'max:'.CommonVal::MAX_BIG_INTEGER, Rule::exists(DepartmentMstHist::class, 'id')],
         ];
     }
 

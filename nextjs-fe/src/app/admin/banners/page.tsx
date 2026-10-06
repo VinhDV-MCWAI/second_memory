@@ -14,13 +14,13 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import type { BannerMgmt } from '@/shared/types/api';
 import { API_ENDPOINTS } from '@/shared/api';
-import { 
-  SORT_ORDER, 
-  type SortOrder, 
-  PAGINATION, 
+import {
+  SORT_ORDER,
+  type SortOrder,
+  PAGINATION,
   ADMIN_ROUTES,
   TIME_CONSTANTS,
-  UI_CONSTANTS
+  UI_CONSTANTS,
 } from '@/shared/config';
 import { IsActive, IsActiveLabels } from '@/shared/enums/enums';
 import Image from 'next/image';
@@ -48,7 +48,7 @@ export default function BannerListPage() {
   const [sortBy, setSortBy] = useState('rank_order');
   const [sortOrder, setSortOrder] = useState<SortOrder>(SORT_ORDER.ASC);
   const [selectedIds, setSelectedIds] = useState<number[]>([]);
-  
+
   // Dialog states
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [deleteIds, setDeleteIds] = useState<number[]>([]);
@@ -64,7 +64,14 @@ export default function BannerListPage() {
 
   const { data, loading, pagination, refetch } = useApiData<BannerMgmt>(
     API_ENDPOINTS.MANAGEMENT.BANNER,
-    { page, per_page: perPage, filters, sort_by: sortBy, sort_order: sortOrder, staleTime: TIME_CONSTANTS.STALE_TIME }
+    {
+      page,
+      per_page: perPage,
+      filters,
+      sort_by: sortBy,
+      sort_order: sortOrder,
+      staleTime: TIME_CONSTANTS.STALE_TIME,
+    },
   );
 
   const { remove } = useCrud<BannerMgmt>(API_ENDPOINTS.MANAGEMENT.BANNER);
@@ -89,18 +96,20 @@ export default function BannerListPage() {
     setDeleteDialogOpen(true);
   };
 
-  const { execute, isLoading: isDeleteProcessing } = useActionLock({ delay: UI_CONSTANTS.ACTION_DELAY_MS });
+  const { execute, isLoading: isDeleteProcessing } = useActionLock({
+    delay: UI_CONSTANTS.ACTION_DELAY_MS,
+  });
 
   const confirmDelete = async () => {
     try {
       await execute(async () => {
-          await remove(deleteIds);
-          setSelectedIds([]);
-          setDeleteIds([]);
-          setDeleteDialogOpen(false);
+        await remove(deleteIds);
+        setSelectedIds([]);
+        setDeleteIds([]);
+        setDeleteDialogOpen(false);
       });
     } catch {
-       // Global Error Handler will pick it up
+      // Global Error Handler will pick it up
     }
   };
 
@@ -119,7 +128,7 @@ export default function BannerListPage() {
       key: 'image',
       label: tFields('image'),
       render: (banner) => (
-        <div className="relative w-20 h-12 rounded overflow-hidden">
+        <div className="relative h-12 w-20 overflow-hidden rounded">
           {banner.image ? (
             <Image
               src={banner.image}
@@ -129,7 +138,7 @@ export default function BannerListPage() {
               unoptimized
             />
           ) : (
-            <div className="w-full h-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center text-xs text-gray-400">
+            <div className="flex h-full w-full items-center justify-center bg-gray-200 text-xs text-gray-400 dark:bg-gray-700">
               {tCommon('noImage')}
             </div>
           )}
@@ -178,48 +187,49 @@ export default function BannerListPage() {
       type: 'select',
       options: Object.entries(IsActiveLabels).map(([value, label]) => ({
         value: value.toString(),
-        label
-      }))
+        label,
+      })),
     },
-    { key: 'created_at', label: tFields('createdAt'), type: 'date' }
+    { key: 'created_at', label: tFields('createdAt'), type: 'date' },
   ];
   const bulkActions: BulkAction[] = [
-    { 
-      label: tBulkActions('deleteSelected'), 
-      icon: <Trash2 className="h-4 w-4" />, 
-      variant: 'destructive', 
-      onClick: async (ids) => { 
-        await remove(ids); 
-      }, 
-      confirmMessage: tCrud('deleteConfirm', { 
-        count: selectedIds.length, 
-        entity: tEntities('banner').toLowerCase() 
-      }), 
-      confirmTitle: tCrud('deleteEntity', { entity: tEntities('banners') }) 
-    }, 
-    { 
-      label: tBulkActions('activateSelected'), 
-      icon: <CheckCircle className="h-4 w-4" />, 
-      onClick: async () => { refetch(); } 
-    }, 
-    { 
-      label: tBulkActions('deactivateSelected'), 
-      icon: <XCircle className="h-4 w-4" />, 
-      onClick: async () => { refetch(); } 
-    }
+    {
+      label: tBulkActions('deleteSelected'),
+      icon: <Trash2 className="h-4 w-4" />,
+      variant: 'destructive',
+      onClick: async (ids) => {
+        await remove(ids);
+      },
+      confirmMessage: tCrud('deleteConfirm', {
+        count: selectedIds.length,
+        entity: tEntities('banner').toLowerCase(),
+      }),
+      confirmTitle: tCrud('deleteEntity', { entity: tEntities('banners') }),
+    },
+    {
+      label: tBulkActions('activateSelected'),
+      icon: <CheckCircle className="h-4 w-4" />,
+      onClick: async () => {
+        refetch();
+      },
+    },
+    {
+      label: tBulkActions('deactivateSelected'),
+      icon: <XCircle className="h-4 w-4" />,
+      onClick: async () => {
+        refetch();
+      },
+    },
   ];
 
   const handleAdvancedSearch = (criteria: SearchCriteria[]) => {
-    const newFilters = criteria.reduce(
-      (acc, c) => ({ ...acc, [c.field]: c.value }), 
-      {}
-    );
+    const newFilters = criteria.reduce((acc, c) => ({ ...acc, [c.field]: c.value }), {});
     setFilters(newFilters);
     setPage(PAGINATION.DEFAULT_PAGE);
   };
 
-  const handleImport = async () => { 
-    refetch(); 
+  const handleImport = async () => {
+    refetch();
   };
 
   return (
@@ -233,7 +243,8 @@ export default function BannerListPage() {
         ]}
         action={
           <Button onClick={handleCreate}>
-            <Plus className="mr-2 h-4 w-4" /> {tCrud('createEntity', { entity: tEntities('banner') })}
+            <Plus className="mr-2 h-4 w-4" />{' '}
+            {tCrud('createEntity', { entity: tEntities('banner') })}
           </Button>
         }
       />
@@ -241,13 +252,13 @@ export default function BannerListPage() {
       <div className="mt-6 space-y-4">
         <div className="flex gap-2">
           <AdvancedSearch fields={searchFields} onSearch={handleAdvancedSearch} />
-          <SavedFilters 
-            currentFilters={filters} 
-            onApplyFilter={(f) => { 
-              setFilters(f); 
-              setPage(PAGINATION.DEFAULT_PAGE); 
-            }} 
-            storageKey="banner-filters" 
+          <SavedFilters
+            currentFilters={filters}
+            onApplyFilter={(f) => {
+              setFilters(f);
+              setPage(PAGINATION.DEFAULT_PAGE);
+            }}
+            storageKey="banner-filters"
           />
           <ImportExport onImport={handleImport} />
         </div>
@@ -265,9 +276,15 @@ export default function BannerListPage() {
           fields={filterFields}
         />
 
-        <BulkActions selectedIds={selectedIds} onClearSelection={() => setSelectedIds([])} actions={bulkActions} isLoading={loading} />
+        <BulkActions
+          selectedIds={selectedIds}
+          onClearSelection={() => setSelectedIds([])}
+          actions={bulkActions}
+          isLoading={loading}
+        />
 
-        <DataTable data={data}
+        <DataTable
+          data={data}
           columns={columns}
           loading={loading}
           selectedIds={selectedIds}
@@ -276,7 +293,7 @@ export default function BannerListPage() {
           sortBy={sortBy}
           sortOrder={sortOrder}
           onEdit={(id) => {
-            const banner = data.find(b => b.id === id);
+            const banner = data.find((b) => b.id === id);
             if (banner) handleEdit(banner);
           }}
           onDelete={(id) => handleDelete([id])}
@@ -296,27 +313,25 @@ export default function BannerListPage() {
 
       {/* Create/Edit Banner Modal */}
       <Dialog open={formDialogOpen} onOpenChange={setFormDialogOpen}>
-        <DialogContent className="max-w-4xl max-h-[90vh] p-0 flex flex-col gap-0 overflow-hidden">
+        <DialogContent className="flex max-h-[90vh] max-w-4xl flex-col gap-0 overflow-hidden p-0">
           {/* Header - Fixed */}
-          <div className="shrink-0 px-6 pt-6 pb-4 border-b bg-background">
+          <div className="shrink-0 border-b bg-background px-6 pt-6 pb-4">
             <DialogHeader>
               <DialogTitle>
-                {editingBanner 
-                  ? tCrud('editEntity', { entity: tEntities('banner') }) 
-                  : tCrud('createEntity', { entity: tEntities('banner') })
-                }
+                {editingBanner
+                  ? tCrud('editEntity', { entity: tEntities('banner') })
+                  : tCrud('createEntity', { entity: tEntities('banner') })}
               </DialogTitle>
               <DialogDescription>
-                {editingBanner 
-                  ? tCrud('editDescription', { entity: tEntities('banner').toLowerCase() }) 
-                  : tCrud('createDescription', { entity: tEntities('banner').toLowerCase() })
-                }
+                {editingBanner
+                  ? tCrud('editDescription', { entity: tEntities('banner').toLowerCase() })
+                  : tCrud('createDescription', { entity: tEntities('banner').toLowerCase() })}
               </DialogDescription>
             </DialogHeader>
           </div>
-          
+
           {/* Body - Scrollable */}
-          <div className="flex-1 overflow-y-auto min-h-0">
+          <div className="min-h-0 flex-1 overflow-y-auto">
             <div className="px-6 py-4">
               <BannerForm
                 initialData={editingBanner}
@@ -325,9 +340,9 @@ export default function BannerListPage() {
               />
             </div>
           </div>
-          
+
           {/* Footer - Fixed */}
-          <div className="shrink-0 px-6 py-4 border-t bg-muted/20">
+          <div className="shrink-0 border-t bg-muted/20 px-6 py-4">
             <DialogFooter>
               <Button type="button" variant="outline" onClick={() => setFormDialogOpen(false)}>
                 {tCommon('cancel')}
@@ -344,9 +359,9 @@ export default function BannerListPage() {
         open={deleteDialogOpen}
         onOpenChange={setDeleteDialogOpen}
         title={tCrud('deleteEntity', { entity: tEntities('banner') })}
-        description={tCrud('deleteConfirm', { 
-          count: deleteIds.length, 
-          entity: tEntities('banner').toLowerCase() 
+        description={tCrud('deleteConfirm', {
+          count: deleteIds.length,
+          entity: tEntities('banner').toLowerCase(),
         })}
         onConfirm={confirmDelete}
         confirmText={tCommon('delete')}

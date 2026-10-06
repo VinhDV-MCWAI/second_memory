@@ -2,20 +2,19 @@
 
 namespace App\Services\Management;
 
-use App\Services\BaseService;
-use App\Interfaces\Management\EntryDescriptionMgmtInterface;
-use App\Interfaces\History\Management\EntryDescriptionMgmtHistInterface;
 use App\Enums\ActionType;
-use Illuminate\Http\Resources\Json\JsonResource;
 use App\Http\Resources\Management\EntryDescriptionMgmtResource;
+use App\Interfaces\History\Management\EntryDescriptionMgmtHistInterface;
+use App\Interfaces\Management\EntryDescriptionMgmtInterface;
+use App\Services\BaseService;
+use Illuminate\Http\Resources\Json\JsonResource;
 
 class EntryDescriptionMgmtService extends BaseService
 {
     public function __construct(
         protected EntryDescriptionMgmtInterface $entryDescriptionMgmt,
         protected EntryDescriptionMgmtHistInterface $entryDescriptionMgmtHist
-    ) {
-    }
+    ) {}
 
     protected function getHistoryRepository()
     {
@@ -29,9 +28,6 @@ class EntryDescriptionMgmtService extends BaseService
 
     /**
      * Get entry description mgmt list
-     *
-     * @param array $payload
-     * @return JsonResource
      */
     public function list(array $payload): JsonResource
     {
@@ -42,9 +38,6 @@ class EntryDescriptionMgmtService extends BaseService
 
     /**
      * Store entry description mgmt
-     *
-     * @param array $payload
-     * @return int
      */
     public function store(array $payload): int
     {
@@ -56,9 +49,6 @@ class EntryDescriptionMgmtService extends BaseService
 
     /**
      * Update entry description mgmt
-     *
-     * @param array $payload
-     * @return int
      */
     public function update(array $payload): int
     {
@@ -71,14 +61,12 @@ class EntryDescriptionMgmtService extends BaseService
 
     /**
      * Delete entry description mgmt
-     *
-     * @param array $payload
-     * @return void
      */
     public function delete(array $payload): void
     {
-        if (!isset($payload['ids']) || !is_array($payload['ids'])) {
+        if (! isset($payload['ids']) || ! is_array($payload['ids'])) {
             $this->entryDescriptionMgmt->executeDelete($payload['ids'] ?? []);
+
             return;
         }
 

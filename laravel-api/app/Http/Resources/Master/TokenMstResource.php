@@ -16,12 +16,12 @@ class TokenMstResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'id' => (int)$this->id,
-            'account_id' => (int)$this->account_id,
-            'device_name' => (string)$this->device_name,
-            'ip_address' => (string)$this->ip_address,
-            'expired_at' => (string)$this->expired_at,
-            'updated_at' => (string)date(CommonVal::DATE_FORMAT, strtotime($this->updated_at)),
+            'id' => (int) $this->id,
+            'account_id' => (int) $this->account_id,
+            'device_name' => (string) $this->device_name,
+            'ip_address' => (string) $this->ip_address,
+            'expired_at' => (string) $this->expired_at,
+            'updated_at' => (string) date(CommonVal::DATE_FORMAT, strtotime($this->updated_at)),
         ];
     }
 }

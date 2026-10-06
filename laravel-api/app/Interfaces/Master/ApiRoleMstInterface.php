@@ -5,48 +5,33 @@ declare(strict_types=1);
 namespace App\Interfaces\Master;
 
 use App\Interfaces\BaseInterface;
-use Illuminate\Support\Collection;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Collection;
 
 interface ApiRoleMstInterface extends BaseInterface
 {
-  /**
-   * Get list
-   *
-   * @param array $payload
-   * @return LengthAwarePaginator
-   */
-  public function list(array $payload): LengthAwarePaginator;
+    /**
+     * Get list
+     */
+    public function list(array $payload): LengthAwarePaginator;
 
-  /**
-   * Store record
-   *
-   * @param array $payload
-   * @return void
-   */
-  public function executeStore(array $payload): void;
+    /**
+     * Store record
+     */
+    public function executeStore(array $payload): void;
 
-  /**
-   * Delete record
-   *
-   * @param array $payload
-   * @return void
-   */
-  public function executeDelete(array $payload): void;
+    /**
+     * Delete record
+     */
+    public function executeDelete(array $payload): void;
 
-  /**
-   * Get ids
-   *
-   * @param array $tuples
-   * @return Collection
-   */
-  public function getApiRoleMstId(array $tuples): Collection;
+    /**
+     * Get ids
+     */
+    public function getApiRoleMstId(array $tuples): Collection;
 
-  /**
-   * Check if the role belongs to current user
-   *
-   * @param array $payload
-   * @return bool
-   */
-  public function isMyRole(array $payload): bool;
+    /**
+     * Check if the role belongs to current user
+     */
+    public function isMyRole(array $payload): bool;
 }

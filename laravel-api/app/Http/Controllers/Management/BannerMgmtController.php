@@ -2,27 +2,22 @@
 
 namespace App\Http\Controllers\Management;
 
+use App\Http\Controllers\Controller;
+use App\Http\Requests\Management\BannerMgmt\DeleteBannerMgmtRequest;
 use App\Http\Requests\Management\BannerMgmt\ListBannerMgmtRequest;
 use App\Http\Requests\Management\BannerMgmt\StoreBannerMgmtRequest;
 use App\Http\Requests\Management\BannerMgmt\UpdateBannerMgmtRequest;
-use App\Http\Requests\Management\BannerMgmt\DeleteBannerMgmtRequest;
 use App\Services\Management\BannerMgmtService;
-use App\Http\Controllers\Controller;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class BannerMgmtController extends Controller
 {
     public function __construct(
         protected BannerMgmtService $bannerMgmt
-    )
-    {
-    }
-    
+    ) {}
+
     /**
      * BannerMgmt list
-     *
-     * @param ListBannerMgmtRequest $request
-     * @return JsonResource
      */
     public function list(ListBannerMgmtRequest $request): JsonResource
     {
@@ -31,9 +26,6 @@ class BannerMgmtController extends Controller
 
     /**
      * Store banner mgmt
-     *
-     * @param StoreBannerMgmtRequest $request
-     * @return int
      */
     public function store(StoreBannerMgmtRequest $request): int
     {
@@ -42,10 +34,6 @@ class BannerMgmtController extends Controller
 
     /**
      * Update banner mgmt
-     *
-     * @param UpdateBannerMgmtRequest $request
-     * @param string $id
-     * @return int
      */
     public function update(UpdateBannerMgmtRequest $request, string $id): int
     {
@@ -57,9 +45,6 @@ class BannerMgmtController extends Controller
 
     /**
      * Delete banner mgmt
-     *
-     * @param DeleteBannerMgmtRequest $request
-     * @return void
      */
     public function delete(DeleteBannerMgmtRequest $request): void
     {

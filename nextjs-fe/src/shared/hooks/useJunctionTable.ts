@@ -16,7 +16,7 @@ export function useJunctionTable<T = unknown>(
   allItemsEndpoint: string,
   parentIdKey: string,
   childIdKey: string,
-  parentId: number
+  parentId: number,
 ): UseJunctionTableReturn<T> {
   const t = useTranslations('common');
   const [allItems, setAllItems] = useState<T[]>([]);
@@ -33,24 +33,31 @@ export function useJunctionTable<T = unknown>(
       setLoading(true);
 
       // Fetch all available items (e.g., all roles)
-      const allItemsResponse = await apiClient.get<PaginatedResponse<T> | T[]>(`${allItemsEndpoint}/list`, {
-        params: {
-          per_page: PAGINATION.MAX_PER_PAGE,
-        }
-      });
+      const allItemsResponse = await apiClient.get<PaginatedResponse<T> | T[]>(
+        `${allItemsEndpoint}/list`,
+        {
+          params: {
+            per_page: PAGINATION.MAX_PER_PAGE,
+          },
+        },
+      );
       const data = allItemsResponse.data;
       setAllItems(Array.isArray(data) ? data : (data as PaginatedResponse<T>).data || []);
 
       // Fetch assigned relationships
-      const assignedResponse = await apiClient.get<PaginatedResponse<Record<string, number>> | Record<string, number>[]>(`${junctionEndpoint}/list`, {
+      const assignedResponse = await apiClient.get<
+        PaginatedResponse<Record<string, number>> | Record<string, number>[]
+      >(`${junctionEndpoint}/list`, {
         params: {
           [parentIdKey]: parentId,
           per_page: PAGINATION.MAX_PER_PAGE,
-        }
+        },
       });
 
       const assignedData = assignedResponse.data;
-      const assigned = Array.isArray(assignedData) ? assignedData : (assignedData as PaginatedResponse<Record<string, number>>).data || [];
+      const assigned = Array.isArray(assignedData)
+        ? assignedData
+        : (assignedData as PaginatedResponse<Record<string, number>>).data || [];
       const assignedItemIds = assigned.map((item: Record<string, number>) => item[childIdKey]);
 
       setAssignedIds(assignedItemIds);
@@ -70,9 +77,7 @@ export function useJunctionTable<T = unknown>(
    * Toggle selection of an item
    */
   const toggleSelection = useCallback((id: number) => {
-    setSelectedIds((prev) =>
-      prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id]
-    );
+    setSelectedIds((prev) => (prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id]));
   }, []);
 
   /**
@@ -119,15 +124,7 @@ export function useJunctionTable<T = unknown>(
     } finally {
       setSaving(false);
     }
-  }, [
-    junctionEndpoint,
-    parentIdKey,
-    childIdKey,
-    parentId,
-    assignedIds,
-    selectedIds,
-    t,
-  ]);
+  }, [junctionEndpoint, parentIdKey, childIdKey, parentId, assignedIds, selectedIds, t]);
 
   return {
     allItems,

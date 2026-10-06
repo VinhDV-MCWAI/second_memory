@@ -18,17 +18,12 @@ export const SafeButton = React.forwardRef<HTMLButtonElement, SafeButtonProps>(
     };
 
     return (
-      <Button
-        ref={ref}
-        disabled={disabled || isLoading}
-        onClick={handleClick}
-        {...props}
-      >
+      <Button ref={ref} disabled={disabled || isLoading} onClick={handleClick} {...props}>
         {isLoading && showLoading && <LoadingSpinner size="sm" />}
         {children}
       </Button>
     );
-  }
+  },
 );
 
 SafeButton.displayName = 'SafeButton';

@@ -45,15 +45,15 @@ export const METHOD_TO_API_TYPE: Record<string, number> = {
 
 export const ROLE_WIZARD_LAYOUT = {
   // Step 2 dual layout percentages
-  LEFT_PANEL_WIDTH: '30%',   // Features list
-  RIGHT_PANEL_WIDTH: '70%',  // APIs list
-  
+  LEFT_PANEL_WIDTH: '30%', // Features list
+  RIGHT_PANEL_WIDTH: '70%', // APIs list
+
   // Container dimensions
   MIN_HEIGHT: '400px',
   CONTENT_HEIGHT: 'h-[500px]',
   MAX_WIDTH: 'max-w-4xl',
   MAX_HEIGHT: 'max-h-[90vh]',
-  
+
   // Step heights
   REVIEW_CONTENT_MAX_HEIGHT: 'max-h-[600px]',
 } as const;
@@ -69,4 +69,4 @@ export const WIZARD_STEPS = {
   TOTAL_STEPS: 3,
 } as const;
 
-export type WizardStep = typeof WIZARD_STEPS[keyof Omit<typeof WIZARD_STEPS, 'TOTAL_STEPS'>];
+export type WizardStep = (typeof WIZARD_STEPS)[keyof Omit<typeof WIZARD_STEPS, 'TOTAL_STEPS'>];

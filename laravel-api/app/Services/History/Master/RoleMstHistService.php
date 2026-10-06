@@ -2,24 +2,18 @@
 
 namespace App\Services\History\Master;
 
-use App\Interfaces\History\Master\RoleMstHistInterface;
-
-use Illuminate\Http\Resources\Json\JsonResource;
 use App\Http\Resources\History\Master\RoleMstHistResource;
+use App\Interfaces\History\Master\RoleMstHistInterface;
+use Illuminate\Http\Resources\Json\JsonResource;
 
 class RoleMstHistService
 {
     public function __construct(
         protected RoleMstHistInterface $roleMstHist
-    )
-    {
-    }
+    ) {}
 
     /**
      * Get role mst hist list
-     *
-     * @param array $payload
-     * @return JsonResource
      */
     public function list(array $payload): JsonResource
     {
@@ -30,9 +24,6 @@ class RoleMstHistService
 
     /**
      * Store role mst hist
-     *
-     * @param array $payload
-     * @return int
      */
     public function store(array $payload): int
     {
@@ -41,9 +32,6 @@ class RoleMstHistService
 
     /**
      * Update role mst hist
-     *
-     * @param array $payload
-     * @return int
      */
     public function update(array $payload): int
     {
@@ -52,9 +40,6 @@ class RoleMstHistService
 
     /**
      * Delete role mst hist
-     *
-     * @param array $payload
-     * @return void
      */
     public function delete(array $payload): void
     {

@@ -2,27 +2,22 @@
 
 namespace App\Http\Controllers\History\Master;
 
+use App\Http\Controllers\Controller;
+use App\Http\Requests\History\Master\DepartmentMstHist\DeleteDepartmentMstHistRequest;
 use App\Http\Requests\History\Master\DepartmentMstHist\ListDepartmentMstHistRequest;
 use App\Http\Requests\History\Master\DepartmentMstHist\StoreDepartmentMstHistRequest;
 use App\Http\Requests\History\Master\DepartmentMstHist\UpdateDepartmentMstHistRequest;
-use App\Http\Requests\History\Master\DepartmentMstHist\DeleteDepartmentMstHistRequest;
 use App\Services\History\Master\DepartmentMstHistService;
-use App\Http\Controllers\Controller;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class DepartmentMstHistController extends Controller
 {
     public function __construct(
         protected DepartmentMstHistService $departmentMstHist
-    )
-    {
-    }
-    
+    ) {}
+
     /**
      * DepartmentMstHist list
-     *
-     * @param ListDepartmentMstHistRequest $request
-     * @return JsonResource
      */
     public function list(ListDepartmentMstHistRequest $request): JsonResource
     {
@@ -31,9 +26,6 @@ class DepartmentMstHistController extends Controller
 
     /**
      * Store department mst hist
-     *
-     * @param StoreDepartmentMstHistRequest $request
-     * @return int
      */
     public function store(StoreDepartmentMstHistRequest $request): int
     {
@@ -42,10 +34,6 @@ class DepartmentMstHistController extends Controller
 
     /**
      * Update department mst hist
-     *
-     * @param UpdateDepartmentMstHistRequest $request
-     * @param string $id
-     * @return int
      */
     public function update(UpdateDepartmentMstHistRequest $request, string $id): int
     {
@@ -57,9 +45,6 @@ class DepartmentMstHistController extends Controller
 
     /**
      * Delete department mst hist
-     *
-     * @param DeleteDepartmentMstHistRequest $request
-     * @return void
      */
     public function delete(DeleteDepartmentMstHistRequest $request): void
     {

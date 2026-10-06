@@ -178,13 +178,13 @@ export interface TreeNodeProps {
 /**
  * Field Renderer Types
  */
-export type FieldType = 
-  | 'text' 
-  | 'email' 
-  | 'password' 
+export type FieldType =
+  | 'text'
+  | 'email'
+  | 'password'
   | 'number'
-  | 'textarea' 
-  | 'select' 
+  | 'textarea'
+  | 'select'
   | 'checkbox'
   | 'date'
   | 'datetime'

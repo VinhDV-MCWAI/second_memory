@@ -31,8 +31,14 @@ import type { CategoryFormProps } from './types';
 import { LayoutStructureEditor } from './layout-structure-editor';
 import { IsActive } from '@/shared/enums/enums';
 
-export function CategoryForm({ initialData, onSuccess, onCancel, renderActions = true, submitTriggerRef, hideActions = false }: CategoryFormProps) {
-  
+export function CategoryForm({
+  initialData,
+  onSuccess,
+  onCancel,
+  renderActions = true,
+  submitTriggerRef,
+  hideActions = false,
+}: CategoryFormProps) {
   const tCommon = useTranslations('common');
   const tForms = useTranslations('forms.placeholders');
   const tLabels = useTranslations('forms.labels');
@@ -50,11 +56,11 @@ export function CategoryForm({ initialData, onSuccess, onCancel, renderActions =
   // Fetch available entries for layout structure
   const { data: availableEntries, loading: entriesLoading } = useApiData<EntryMgmt>(
     ENDPOINTS.MANAGEMENT.ENTRY,
-    { 
-      page: 1, 
-      per_page: 100, 
-      filters: entrySearchQuery ? { name: entrySearchQuery } : {} 
-    }
+    {
+      page: 1,
+      per_page: 100,
+      filters: entrySearchQuery ? { name: entrySearchQuery } : {},
+    },
   );
 
   const {
@@ -91,17 +97,18 @@ export function CategoryForm({ initialData, onSuccess, onCancel, renderActions =
       // Defer state update to avoid cascading renders
       queueMicrotask(() => {
         // Transform old schema (entry_id) to new schema (entry_mgmt_id) and add ui_id
-        const transformedStructure = initialData.layout_structure?.map(item => {
-          const legacyItem = item as { entry_id?: number };
-          return {
-            ui_id: item.ui_id || uuidv4(),
-            entry_mgmt_id: item.entry_mgmt_id || legacyItem.entry_id,
-            entry_desc_id: item.entry_desc_id,
-            name: item.name,
-            slug: item.slug,
-            children: item.children,
-          };
-        }) || [];
+        const transformedStructure =
+          initialData.layout_structure?.map((item) => {
+            const legacyItem = item as { entry_id?: number };
+            return {
+              ui_id: item.ui_id || uuidv4(),
+              entry_mgmt_id: item.entry_mgmt_id || legacyItem.entry_id,
+              entry_desc_id: item.entry_desc_id,
+              name: item.name,
+              slug: item.slug,
+              children: item.children,
+            };
+          }) || [];
         setLayoutStructure(transformedStructure);
       });
     } else {
@@ -121,49 +128,52 @@ export function CategoryForm({ initialData, onSuccess, onCancel, renderActions =
     }
   }, [initialData, reset]);
 
-  const { execute, isLoading: isActionProcessing } = useActionLock({ delay: UI_CONSTANTS.ACTION_DELAY_MS });
+  const { execute, isLoading: isActionProcessing } = useActionLock({
+    delay: UI_CONSTANTS.ACTION_DELAY_MS,
+  });
 
-  const onSubmit = useCallback(async (data: CategoryFormData) => {
-    await execute(async () => {
-      try {
-        // Convert form data to API payload format
-        const payload = {
-          ...data,
-          rank_order: Number(data.rank_order),
-          status: Number(data.status),
-          is_display: data.is_display ? IsActive.TRUE : IsActive.FALSE,
-          layout_structure: layoutStructure,
-        };
-        
-      if (isEdit && initialData) {
-        await update(initialData.id, payload);
-      } else {
-        await create(payload);
-      }
-      onSuccess();
-    } catch (error: unknown) {
-      console.error('[CategoryForm] Submit error:', error);
-      handleBindErrors(error, setError);
-    }
-    });
-  }, [execute, isEdit, initialData, update, create, onSuccess, setError, layoutStructure]);
+  const onSubmit = useCallback(
+    async (data: CategoryFormData) => {
+      await execute(async () => {
+        try {
+          // Convert form data to API payload format
+          const payload = {
+            ...data,
+            rank_order: Number(data.rank_order),
+            status: Number(data.status),
+            is_display: data.is_display ? IsActive.TRUE : IsActive.FALSE,
+            layout_structure: layoutStructure,
+          };
+
+          if (isEdit && initialData) {
+            await update(initialData.id, payload);
+          } else {
+            await create(payload);
+          }
+          onSuccess();
+        } catch (error: unknown) {
+          console.error('[CategoryForm] Submit error:', error);
+          handleBindErrors(error, setError);
+        }
+      });
+    },
+    [execute, isEdit, initialData, update, create, onSuccess, setError, layoutStructure],
+  );
 
   // Expose submit function via ref (must be after onSubmit is defined)
   useEffect(() => {
     if (submitTriggerRef && typeof submitTriggerRef !== 'function') {
       submitTriggerRef.current = () => {
-        
         // Call handleSubmit with both success and error handlers
         handleSubmit(
           (data) => {
             void onSubmit(data as unknown as CategoryFormData);
           },
-          () => {
-          }
+          () => {},
         )();
       };
     }
-    
+
     return () => {
       if (submitTriggerRef && typeof submitTriggerRef !== 'function') {
         submitTriggerRef.current = null;
@@ -189,9 +199,7 @@ export function CategoryForm({ initialData, onSuccess, onCancel, renderActions =
           })}
           className={errors.name ? 'border-red-500' : ''}
         />
-        {errors.name && (
-          <p className="text-sm text-red-500">{errors.name.message}</p>
-        )}
+        {errors.name && <p className="text-sm text-red-500">{errors.name.message}</p>}
       </div>
 
       <div className="space-y-2">
@@ -201,16 +209,16 @@ export function CategoryForm({ initialData, onSuccess, onCancel, renderActions =
 
       <div className="grid grid-cols-2 gap-4">
         <div className="space-y-2">
-          <Label htmlFor="slug">{tLabels('slug')} <span className="text-red-500">*</span></Label>
+          <Label htmlFor="slug">
+            {tLabels('slug')} <span className="text-red-500">*</span>
+          </Label>
           <Input
             id="slug"
             {...register('slug')}
             placeholder={tForms('slugExample')}
             className={errors.slug ? 'border-red-500' : ''}
           />
-          {errors.slug && (
-            <p className="text-sm text-red-500">{errors.slug.message}</p>
-          )}
+          {errors.slug && <p className="text-sm text-red-500">{errors.slug.message}</p>}
         </div>
 
         <div className="space-y-2">
@@ -223,9 +231,7 @@ export function CategoryForm({ initialData, onSuccess, onCancel, renderActions =
             {...register('rank_order', { valueAsNumber: true })}
             className={errors.rank_order ? 'border-red-500' : ''}
           />
-          {errors.rank_order && (
-            <p className="text-sm text-red-500">{errors.rank_order.message}</p>
-          )}
+          {errors.rank_order && <p className="text-sm text-red-500">{errors.rank_order.message}</p>}
         </div>
       </div>
 
@@ -242,19 +248,18 @@ export function CategoryForm({ initialData, onSuccess, onCancel, renderActions =
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value={CategoryStatus.ACTIVE.toString()}>{CategoryStatusLabels[CategoryStatus.ACTIVE]}</SelectItem>
-              <SelectItem value={CategoryStatus.INACTIVE.toString()}>{CategoryStatusLabels[CategoryStatus.INACTIVE]}</SelectItem>
+              <SelectItem value={CategoryStatus.ACTIVE.toString()}>
+                {CategoryStatusLabels[CategoryStatus.ACTIVE]}
+              </SelectItem>
+              <SelectItem value={CategoryStatus.INACTIVE.toString()}>
+                {CategoryStatusLabels[CategoryStatus.INACTIVE]}
+              </SelectItem>
             </SelectContent>
           </Select>
         </div>
 
-        <div className="flex items-center gap-2 mt-8">
-          <input
-            type="checkbox"
-            id="is_display"
-            {...register('is_display')}
-            className="rounded"
-          />
+        <div className="mt-8 flex items-center gap-2">
+          <input type="checkbox" id="is_display" {...register('is_display')} className="rounded" />
           <Label htmlFor="is_display">{tLabels('isDisplay')}</Label>
         </div>
       </div>
@@ -269,7 +274,12 @@ export function CategoryForm({ initialData, onSuccess, onCancel, renderActions =
         {FormFields}
         {!hideActions && (
           <div className="flex justify-end gap-2 pt-4">
-            <Button type="button" variant="outline" onClick={onCancel} disabled={loading || isActionProcessing}>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={onCancel}
+              disabled={loading || isActionProcessing}
+            >
               {tCommon('cancel')}
             </Button>
             <Button type="submit" disabled={loading || isActionProcessing}>
@@ -281,24 +291,34 @@ export function CategoryForm({ initialData, onSuccess, onCancel, renderActions =
     );
   }
 
-  // For edit mode, show tabs with fields and layout structure  
-  
+  // For edit mode, show tabs with fields and layout structure
+
   return (
     <div className="flex flex-col">
-      <Tabs key={`category-tabs-${initialData?.id || 'new'}`} value={activeTab} onValueChange={setActiveTab} className="w-full flex flex-col">
-        <TabsList className="grid w-full grid-cols-2 mb-4">
-          <TabsTrigger value="details" type="button">{tCommon('details')}</TabsTrigger>
-          <TabsTrigger value="entries" type="button">{tCommon('entries')}</TabsTrigger>
+      <Tabs
+        key={`category-tabs-${initialData?.id || 'new'}`}
+        value={activeTab}
+        onValueChange={setActiveTab}
+        className="flex w-full flex-col"
+      >
+        <TabsList className="mb-4 grid w-full grid-cols-2">
+          <TabsTrigger value="details" type="button">
+            {tCommon('details')}
+          </TabsTrigger>
+          <TabsTrigger value="entries" type="button">
+            {tCommon('entries')}
+          </TabsTrigger>
         </TabsList>
-        
-        <TabsContent value="details" className="space-y-4 m-0">
+
+        <TabsContent value="details" className="m-0 space-y-4">
           {FormFields}
         </TabsContent>
 
         <TabsContent value="entries" className="m-0">
           <div className="space-y-4">
-            <div className="text-sm text-muted-foreground mb-4">
-              Manage the layout structure for entries in this category. Drag and drop to reorder or change hierarchy.
+            <div className="mb-4 text-sm text-muted-foreground">
+              Manage the layout structure for entries in this category. Drag and drop to reorder or
+              change hierarchy.
             </div>
             <LayoutStructureEditor
               type="entry"
@@ -311,11 +331,16 @@ export function CategoryForm({ initialData, onSuccess, onCancel, renderActions =
           </div>
         </TabsContent>
       </Tabs>
-      
+
       {/* Action buttons - only render if renderActions is true and hideActions is false */}
       {renderActions && !hideActions && (
-        <div className="flex justify-end gap-2 pt-4 border-t mt-4">
-          <Button type="button" variant="outline" onClick={onCancel} disabled={loading || isActionProcessing}>
+        <div className="mt-4 flex justify-end gap-2 border-t pt-4">
+          <Button
+            type="button"
+            variant="outline"
+            onClick={onCancel}
+            disabled={loading || isActionProcessing}
+          >
             {tCommon('cancel')}
           </Button>
           <Button

@@ -2,13 +2,11 @@
 
 namespace App\Http\Requests\Management\SliderMgmt;
 
-use Illuminate\Foundation\Http\FormRequest;
 use App\Constants\CommonVal;
-use Illuminate\Validation\Rule;
-use Illuminate\Validation\Rules\Enum;
-use App\Models\Management\SliderMgmt;
 use App\Enums\IsDelete;
 use App\Enums\StatusEnum;
+use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rules\Enum;
 
 class ListSliderMgmtRequest extends FormRequest
 {
@@ -28,24 +26,24 @@ class ListSliderMgmtRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'title' => ['nullable', 'string', 'min:' . CommonVal::MIN_VARCHAR, 'max:50',],
-            'slug' => ['nullable', 'string', 'min:' . CommonVal::MIN_VARCHAR, 'max:50',],
-            'link' => ['nullable', 'string', 'min:' . CommonVal::MIN_VARCHAR, 'max:100',],
-            'image' => ['nullable', 'string', 'min:' . CommonVal::MIN_VARCHAR, 'max:100',],
-            'status' => ['nullable', new Enum(StatusEnum::class),],
-            'is_delete' => ['nullable', new Enum(IsDelete::class),],
+            'title' => ['nullable', 'string', 'min:'.CommonVal::MIN_VARCHAR, 'max:50'],
+            'slug' => ['nullable', 'string', 'min:'.CommonVal::MIN_VARCHAR, 'max:50'],
+            'link' => ['nullable', 'string', 'min:'.CommonVal::MIN_VARCHAR, 'max:100'],
+            'image' => ['nullable', 'string', 'min:'.CommonVal::MIN_VARCHAR, 'max:100'],
+            'status' => ['nullable', new Enum(StatusEnum::class)],
+            'is_delete' => ['nullable', new Enum(IsDelete::class)],
             'from_date' => [
                 'nullable',
-                'date_format:' . CommonVal::DATE_FORMAT,
-                'after_or_equal:' . CommonVal::MIN_DATE,
-                'before_or_equal:' . CommonVal::MAX_DATE,
+                'date_format:'.CommonVal::DATE_FORMAT,
+                'after_or_equal:'.CommonVal::MIN_DATE,
+                'before_or_equal:'.CommonVal::MAX_DATE,
             ],
             'to_date' => [
                 'nullable',
-                'date_format:' . CommonVal::DATE_FORMAT,
-                'after_or_equal:' . CommonVal::MIN_DATE,
-                'before_or_equal:' . CommonVal::MAX_DATE,
-                'after:from_date'
+                'date_format:'.CommonVal::DATE_FORMAT,
+                'after_or_equal:'.CommonVal::MIN_DATE,
+                'before_or_equal:'.CommonVal::MAX_DATE,
+                'after:from_date',
             ],
         ];
     }

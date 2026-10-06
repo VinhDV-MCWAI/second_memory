@@ -27,8 +27,6 @@ export const RenameDialog = ({
   const [newName, setNewName] = useState(file?.name || '');
   const [error, setError] = useState('');
 
-
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!file) return;

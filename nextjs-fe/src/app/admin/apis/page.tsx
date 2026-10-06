@@ -15,13 +15,13 @@ import { Badge } from '@/components/ui/badge';
 import type { ApiMst } from '@/shared/types/api';
 import { API_ENDPOINTS } from '@/shared/api';
 import { TypeOfMethod, TypeOfMethodLabels } from '@/shared/enums';
-import { 
-  SORT_ORDER, 
-  SORT_FIELDS, 
-  type SortOrder, 
-  PAGINATION, 
+import {
+  SORT_ORDER,
+  SORT_FIELDS,
+  type SortOrder,
+  PAGINATION,
   ADMIN_ROUTES,
-  UI_CONSTANTS 
+  UI_CONSTANTS,
 } from '@/shared/config';
 import { IsActive, IsActiveLabels } from '@/shared/enums/enums';
 import { AdvancedSearch } from '@/components/common/advanced-search';
@@ -48,7 +48,7 @@ export default function ApiListPage() {
   const [sortBy, setSortBy] = useState<string>(SORT_FIELDS.CREATED_AT);
   const [sortOrder, setSortOrder] = useState<SortOrder>(SORT_ORDER.DESC);
   const [selectedIds, setSelectedIds] = useState<number[]>([]);
-  
+
   // Dialog states
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [deleteIds, setDeleteIds] = useState<number[]>([]);
@@ -62,10 +62,13 @@ export default function ApiListPage() {
   const tCrud = useTranslations('crud');
   const tBulkActions = useTranslations('bulkActions');
 
-  const { data, loading, pagination, refetch } = useApiData<ApiMst>(
-    API_ENDPOINTS.MASTER.API,
-    { page, per_page: perPage, filters, sort_by: sortBy, sort_order: sortOrder }
-  );
+  const { data, loading, pagination, refetch } = useApiData<ApiMst>(API_ENDPOINTS.MASTER.API, {
+    page,
+    per_page: perPage,
+    filters,
+    sort_by: sortBy,
+    sort_order: sortOrder,
+  });
 
   const { remove } = useCrud<ApiMst>(API_ENDPOINTS.MASTER.API);
 
@@ -88,7 +91,9 @@ export default function ApiListPage() {
     setDeleteDialogOpen(true);
   };
 
-  const { execute, isLoading: isDeleteProcessing } = useActionLock({ delay: UI_CONSTANTS.ACTION_DELAY_MS });
+  const { execute, isLoading: isDeleteProcessing } = useActionLock({
+    delay: UI_CONSTANTS.ACTION_DELAY_MS,
+  });
 
   const confirmDelete = async () => {
     try {
@@ -116,11 +121,11 @@ export default function ApiListPage() {
     { key: 'id', label: tFields('id'), sortable: true },
     { key: 'name', label: tFields('name'), sortable: true },
     { key: 'path', label: tFields('path'), sortable: true },
-    { 
-      key: 'type', 
-      label: tFields('method'), 
+    {
+      key: 'type',
+      label: tFields('method'),
       sortable: true,
-      render: (item) => TypeOfMethodLabels[item.type as TypeOfMethod] || tCommon('unknown')
+      render: (item) => TypeOfMethodLabels[item.type as TypeOfMethod] || tCommon('unknown'),
     },
     {
       key: 'is_active',
@@ -143,45 +148,45 @@ export default function ApiListPage() {
   const searchFields: SearchField[] = [
     { key: 'name', label: tFields('name'), type: 'text' },
     { key: 'path', label: tFields('path'), type: 'text' },
-    { 
-      key: 'type', 
-      label: tFields('method'), 
-      type: 'select', 
+    {
+      key: 'type',
+      label: tFields('method'),
+      type: 'select',
       options: Object.entries(TypeOfMethodLabels).map(([value, label]) => ({
         value: value.toString(),
-        label
-      }))
+        label,
+      })),
     },
-    { key: SORT_FIELDS.CREATED_AT, label: tFields('createdAt'), type: 'date' }
+    { key: SORT_FIELDS.CREATED_AT, label: tFields('createdAt'), type: 'date' },
   ];
   const bulkActions: BulkAction[] = [
-    { 
-      label: tBulkActions('deleteSelected'), 
-      icon: <Trash2 className="h-4 w-4" />, 
-      variant: 'destructive', 
-      onClick: async (ids) => { 
-        await remove(ids); 
-      }, 
-      confirmMessage: tCrud('deleteConfirm', { 
-        count: selectedIds.length, 
-        entity: tEntities('api').toLowerCase() 
-      }), 
-      confirmTitle: tCrud('deleteEntity', { entity: tEntities('apis') }) 
-    }, 
-    { 
-      label: tBulkActions('activateSelected'), 
-      icon: <CheckCircle className="h-4 w-4" />, 
-      onClick: async () => { 
-        /* Implement activate */ 
-      } 
-    }, 
-    { 
-      label: tBulkActions('deactivateSelected'), 
-      icon: <XCircle className="h-4 w-4" />, 
-      onClick: async () => { 
-        /* Implement deactivate */ 
-      } 
-    }
+    {
+      label: tBulkActions('deleteSelected'),
+      icon: <Trash2 className="h-4 w-4" />,
+      variant: 'destructive',
+      onClick: async (ids) => {
+        await remove(ids);
+      },
+      confirmMessage: tCrud('deleteConfirm', {
+        count: selectedIds.length,
+        entity: tEntities('api').toLowerCase(),
+      }),
+      confirmTitle: tCrud('deleteEntity', { entity: tEntities('apis') }),
+    },
+    {
+      label: tBulkActions('activateSelected'),
+      icon: <CheckCircle className="h-4 w-4" />,
+      onClick: async () => {
+        /* Implement activate */
+      },
+    },
+    {
+      label: tBulkActions('deactivateSelected'),
+      icon: <XCircle className="h-4 w-4" />,
+      onClick: async () => {
+        /* Implement deactivate */
+      },
+    },
   ];
 
   const handleAdvancedSearch = (criteria: SearchCriteria[]) => {
@@ -213,13 +218,13 @@ export default function ApiListPage() {
       <div className="mt-6 space-y-4">
         <div className="flex gap-2">
           <AdvancedSearch fields={searchFields} onSearch={handleAdvancedSearch} />
-          <SavedFilters 
-            currentFilters={filters} 
-            onApplyFilter={(f) => { 
-              setFilters(f); 
-              setPage(PAGINATION.DEFAULT_PAGE); 
-            }} 
-            storageKey="api-filters" 
+          <SavedFilters
+            currentFilters={filters}
+            onApplyFilter={(f) => {
+              setFilters(f);
+              setPage(PAGINATION.DEFAULT_PAGE);
+            }}
+            storageKey="api-filters"
           />
           <ImportExport onImport={handleImport} />
         </div>
@@ -237,9 +242,15 @@ export default function ApiListPage() {
           fields={filterFields}
         />
 
-        <BulkActions selectedIds={selectedIds} onClearSelection={() => setSelectedIds([])} actions={bulkActions} isLoading={loading} />
+        <BulkActions
+          selectedIds={selectedIds}
+          onClearSelection={() => setSelectedIds([])}
+          actions={bulkActions}
+          isLoading={loading}
+        />
 
-        <DataTable data={data}
+        <DataTable
+          data={data}
           columns={columns}
           loading={loading}
           selectedIds={selectedIds}
@@ -248,7 +259,7 @@ export default function ApiListPage() {
           sortBy={sortBy}
           sortOrder={sortOrder}
           onEdit={(id) => {
-            const api = data.find(a => a.id === id);
+            const api = data.find((a) => a.id === id);
             if (api) handleEdit(api);
           }}
           onDelete={(id) => handleDelete([id])}
@@ -269,19 +280,25 @@ export default function ApiListPage() {
       {/* Create/Edit API Modal */}
       {/* Create/Edit API Modal */}
       <Dialog open={formDialogOpen} onOpenChange={setFormDialogOpen}>
-        <DialogContent className="max-w-xl max-h-[90vh] p-0 flex flex-col gap-0 overflow-hidden">
+        <DialogContent className="flex max-h-[90vh] max-w-xl flex-col gap-0 overflow-hidden p-0">
           {/* Header - Fixed */}
-          <div className="shrink-0 px-6 pt-6 pb-4 border-b bg-background">
+          <div className="shrink-0 border-b bg-background px-6 pt-6 pb-4">
             <DialogHeader>
-              <DialogTitle>{editingApi ? tCrud('editEntity', { entity: tEntities('api') }) : tCrud('createEntity', { entity: tEntities('api') })}</DialogTitle>
+              <DialogTitle>
+                {editingApi
+                  ? tCrud('editEntity', { entity: tEntities('api') })
+                  : tCrud('createEntity', { entity: tEntities('api') })}
+              </DialogTitle>
               <DialogDescription>
-                {editingApi ? tCrud('editDescription', { entity: tEntities('api').toLowerCase() }) : tCrud('createDescription', { entity: tEntities('api').toLowerCase() })}
+                {editingApi
+                  ? tCrud('editDescription', { entity: tEntities('api').toLowerCase() })
+                  : tCrud('createDescription', { entity: tEntities('api').toLowerCase() })}
               </DialogDescription>
             </DialogHeader>
           </div>
-          
+
           {/* Body - Scrollable */}
-          <div className="flex-1 overflow-y-auto min-h-0">
+          <div className="min-h-0 flex-1 overflow-y-auto">
             <div className="px-6 py-4">
               <ApiForm
                 initialData={editingApi}
@@ -290,9 +307,9 @@ export default function ApiListPage() {
               />
             </div>
           </div>
-          
+
           {/* Footer - Fixed */}
-          <div className="shrink-0 px-6 py-4 border-t bg-muted/20">
+          <div className="shrink-0 border-t bg-muted/20 px-6 py-4">
             <DialogFooter>
               <Button type="button" variant="outline" onClick={() => setFormDialogOpen(false)}>
                 {tCommon('cancel')}
@@ -309,10 +326,12 @@ export default function ApiListPage() {
         open={deleteDialogOpen}
         onOpenChange={setDeleteDialogOpen}
         title={tCrud('deleteEntity', { entity: tEntities('api') })}
-        description={tCrud('deleteConfirm', { count: deleteIds.length, entity: tEntities('api').toLowerCase() })}
+        description={tCrud('deleteConfirm', {
+          count: deleteIds.length,
+          entity: tEntities('api').toLowerCase(),
+        })}
         onConfirm={confirmDelete}
         confirmText={tCommon('delete')}
-
         variant="destructive"
         isLoading={isDeleteProcessing}
       />

@@ -16,18 +16,18 @@ class BannerMgmtHistResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'id' => (int)$this->id,
-            'banner_mgmt_id' => (int)$this->banner_mgmt_id,
-            'title' => (string)$this->title,
-            'slug' => (string)$this->slug,
-            'description' => (string)$this->description,
-            'link' => (string)$this->link,
-            'image' => (string)$this->image,
-            'position' => (string)$this->position,
-            'status' => (string)$this->status,
-            'action' => (string)$this->action,
-            'author_id' => (int)$this->author_id,
-            'created_at' => (string)date(CommonVal::DATE_FORMAT, strtotime($this->created_at)),
+            'id' => (int) $this->id,
+            'banner_mgmt_id' => (int) $this->banner_mgmt_id,
+            'title' => (string) $this->title,
+            'slug' => (string) $this->slug,
+            'description' => (string) $this->description,
+            'link' => (string) $this->link,
+            'image' => (string) $this->image,
+            'position' => (string) $this->position,
+            'status' => (string) $this->status,
+            'action' => (string) $this->action,
+            'author_id' => (int) $this->author_id,
+            'created_at' => (string) date(CommonVal::DATE_FORMAT, strtotime($this->created_at)),
         ];
     }
 }

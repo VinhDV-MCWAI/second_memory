@@ -20,6 +20,7 @@ This application is built using:
 - ✅ Ideal for applications with authentication and dynamic content
 
 ### Single Source of Truth for Docker
+
 Note that all Docker-related configuration (`Dockerfile`, `docker-compose.yml`) is removed from this directory to enforce a single source of truth. The `.dockerignore` remains here as required by the Docker build context. All Docker commands must be run from the root `docker/` directory.
 
 ## 🚀 Getting Started
@@ -34,6 +35,7 @@ docker compose up ml-nextjs
 ```
 
 The application will be available at:
+
 - Via nginx: `http://localhost:81`
 - Direct access: `http://localhost:3456`
 
@@ -94,6 +96,7 @@ npm run build
 ```
 
 This will generate static HTML/CSS/JS files in the `out/` directory, which can be deployed to:
+
 - Any static hosting service (Vercel, Netlify, etc.)
 - CDN (CloudFront, Cloudflare, etc.)
 - Web servers (nginx, Apache, etc.)
@@ -108,6 +111,7 @@ The Docker setup includes:
 - **Optimized volume mounts** for better performance
 
 Performance metrics:
+
 - Container startup: < 3 seconds
 - Container restart: ~1.5 seconds
 - Server ready: ~2 seconds
@@ -123,6 +127,7 @@ To learn more about Next.js and SPA development:
 ## 🔐 Authentication
 
 Default credentials for development:
+
 - Username: `root`
 - Password: `12345678`
 

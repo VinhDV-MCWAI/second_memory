@@ -16,8 +16,15 @@ import {
 import { API_ENDPOINTS } from '@/shared/api';
 import type { ApiMst, FeatureMst } from '@/shared/types/api';
 import { Search } from 'lucide-react';
-import { HTTP_METHODS, HTTP_METHOD_LABELS, API_TYPE_TO_METHOD } from '@/shared/config/role-wizard.constant';
-import type { Step2PermissionSetupProps, GroupedApisByFeature } from '@/shared/types/role-wizard.types';
+import {
+  HTTP_METHODS,
+  HTTP_METHOD_LABELS,
+  API_TYPE_TO_METHOD,
+} from '@/shared/config/role-wizard.constant';
+import type {
+  Step2PermissionSetupProps,
+  GroupedApisByFeature,
+} from '@/shared/types/role-wizard.types';
 
 export function Step2PermissionSetup({
   selectedApiIds,
@@ -31,15 +38,14 @@ export function Step2PermissionSetup({
   const [methodFilter, setMethodFilter] = useState<string>('*');
 
   // Fetch APIs
-  const { data: allApis, loading: apisLoading } = useApiData<ApiMst>(
-    API_ENDPOINTS.MASTER.API,
-    { per_page: 1000 }
-  );
+  const { data: allApis, loading: apisLoading } = useApiData<ApiMst>(API_ENDPOINTS.MASTER.API, {
+    per_page: 1000,
+  });
 
   // Fetch Features
   const { data: allFeatures, loading: featuresLoading } = useApiData<FeatureMst>(
     API_ENDPOINTS.MASTER.FEATURE,
-    { per_page: 1000 }
+    { per_page: 1000 },
   );
 
   // Group APIs by Feature
@@ -68,10 +74,7 @@ export function Step2PermissionSetup({
 
     Object.entries(groupedApis).forEach(([featureId, { feature, apis }]) => {
       // Filter by feature name search
-      if (
-        searchFeature &&
-        !feature.name.toLowerCase().includes(searchFeature.toLowerCase())
-      ) {
+      if (searchFeature && !feature.name.toLowerCase().includes(searchFeature.toLowerCase())) {
         return;
       }
 
@@ -110,9 +113,7 @@ export function Step2PermissionSetup({
   const highlightedFeatures = useMemo(() => {
     const featured = new Set<number>();
     Object.entries(groupedApis).forEach(([featureId, { apis }]) => {
-      const hasCheckedApi = apis.some((api: ApiMst) =>
-        selectedApiIds.includes(api.id)
-      );
+      const hasCheckedApi = apis.some((api: ApiMst) => selectedApiIds.includes(api.id));
       if (hasCheckedApi) {
         featured.add(parseInt(featureId));
       }
@@ -125,25 +126,19 @@ export function Step2PermissionSetup({
     (featureId: number) => {
       const featureApis = groupedApis[featureId]?.apis || [];
       const featureApiIds = featureApis.map((api) => api.id);
-      const allChecked = featureApiIds.every((id) =>
-        selectedApiIds.includes(id)
-      );
+      const allChecked = featureApiIds.every((id) => selectedApiIds.includes(id));
 
       if (allChecked) {
         // Uncheck all
-        const newSelected = selectedApiIds.filter(
-          (id) => !featureApiIds.includes(id)
-        );
+        const newSelected = selectedApiIds.filter((id) => !featureApiIds.includes(id));
         onSelectedApisChange(newSelected);
       } else {
         // Check all
-        const newSelected = Array.from(
-          new Set([...selectedApiIds, ...featureApiIds])
-        );
+        const newSelected = Array.from(new Set([...selectedApiIds, ...featureApiIds]));
         onSelectedApisChange(newSelected);
       }
     },
-    [groupedApis, selectedApiIds, onSelectedApisChange]
+    [groupedApis, selectedApiIds, onSelectedApisChange],
   );
 
   // Toggle API checkbox
@@ -155,7 +150,7 @@ export function Step2PermissionSetup({
         onSelectedApisChange([...selectedApiIds, apiId]);
       }
     },
-    [selectedApiIds, onSelectedApisChange]
+    [selectedApiIds, onSelectedApisChange],
   );
 
   // Scroll feature into view from right panel
@@ -172,17 +167,18 @@ export function Step2PermissionSetup({
   const isLoading = apisLoading || featuresLoading;
 
   return (
-    <div className="w-full flex flex-col space-y-4 overflow-hidden h-full">
-
-
+    <div className="flex h-full w-full flex-col space-y-4 overflow-hidden">
       {/* Main content with dual layout */}
-      <div className="flex gap-4 flex-1 border rounded-lg overflow-hidden min-h-0" style={{ minHeight: 0 }}>
+      <div
+        className="flex min-h-0 flex-1 gap-4 overflow-hidden rounded-lg border"
+        style={{ minHeight: 0 }}
+      >
         {/* Left panel - Features (30%) */}
-        <div className="w-[30%] border-r flex flex-col min-w-0 overflow-hidden">
+        <div className="flex w-[30%] min-w-0 flex-col overflow-hidden border-r">
           {/* Search */}
-          <div className="p-3 border-b shrink-0">
+          <div className="shrink-0 border-b p-3">
             <div className="relative">
-              <Search className="absolute left-2 top-2.5 h-4 w-4 text-gray-400" />
+              <Search className="absolute top-2.5 left-2 h-4 w-4 text-gray-400" />
               <Input
                 placeholder={tWizard('searchFeature')}
                 value={searchFeature}
@@ -193,11 +189,9 @@ export function Step2PermissionSetup({
           </div>
 
           {/* Features list */}
-          <div className="flex-1 overflow-y-auto min-h-0">
+          <div className="min-h-0 flex-1 overflow-y-auto">
             {isLoading ? (
-              <div className="p-4 text-center text-sm text-gray-500">
-                {tCommon('loading')}...
-              </div>
+              <div className="p-4 text-center text-sm text-gray-500">{tCommon('loading')}...</div>
             ) : (
               <div className="space-y-1 p-2">
                 {Object.entries(filteredGroupedApis).map(([featureId, { feature }]) => {
@@ -208,18 +202,17 @@ export function Step2PermissionSetup({
                     <button
                       key={feature.id}
                       onClick={() => scrollFeatureIntoView(feature.id)}
-                      className={`w-full text-left px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+                      className={`w-full rounded-md px-3 py-2 text-left text-sm font-medium transition-colors ${
                         isHighlighted
                           ? 'bg-blue-100 text-blue-900'
-                          : 'hover:bg-gray-100 text-gray-700'
+                          : 'text-gray-700 hover:bg-gray-100'
                       }`}
                     >
                       {feature.name}
                       {isHighlighted && (
                         <Badge className="ml-2 text-xs" variant="default">
-                          {featureApis.filter((api) =>
-                            selectedApiIds.includes(api.id)
-                          ).length}/{featureApis.length}
+                          {featureApis.filter((api) => selectedApiIds.includes(api.id)).length}/
+                          {featureApis.length}
                         </Badge>
                       )}
                     </button>
@@ -231,13 +224,13 @@ export function Step2PermissionSetup({
         </div>
 
         {/* Right panel - APIs (70%) */}
-        <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
+        <div className="flex min-w-0 flex-1 flex-col overflow-hidden">
           {/* Search and Filters */}
           {/* Search and Filters */}
-          <div className="p-3 border-b space-y-3 shrink-0">
+          <div className="shrink-0 space-y-3 border-b p-3">
             <div className="flex gap-2">
               <div className="relative flex-1">
-                <Search className="absolute left-2 top-2.5 h-4 w-4 text-gray-400" />
+                <Search className="absolute top-2.5 left-2 h-4 w-4 text-gray-400" />
                 <Input
                   placeholder={tWizard('searchApi')}
                   value={searchApi}
@@ -246,7 +239,7 @@ export function Step2PermissionSetup({
                 />
               </div>
               <Select value={methodFilter} onValueChange={setMethodFilter}>
-                <SelectTrigger className="w-[150px] h-9 text-sm">
+                <SelectTrigger className="h-9 w-[150px] text-sm">
                   <SelectValue placeholder={tWizard('filterByMethod')} />
                 </SelectTrigger>
                 <SelectContent>
@@ -260,68 +253,69 @@ export function Step2PermissionSetup({
               </Select>
             </div>
             <div className="flex items-center justify-between">
-               <div className="flex items-center gap-2">
-                 <Checkbox 
-                    id="toggle-all-visible" 
-                    checked={
-                      Object.keys(filteredGroupedApis).length > 0 &&
-                      Object.values(filteredGroupedApis).every(({ apis }) =>
-                        apis.every((api: ApiMst) => selectedApiIds.includes(api.id))
-                      )
-                    }
-                    onCheckedChange={(checked) => {
-                      const allVisibleApis = Object.values(filteredGroupedApis).flatMap(g => g.apis);
-                      const allVisibleApiIds = allVisibleApis.map(api => api.id);
-                      
-                      if (checked) {
-                        // Select all visible
-                        const newSelected = Array.from(new Set([...selectedApiIds, ...allVisibleApiIds]));
-                        onSelectedApisChange(newSelected);
-                      } else {
-                         // Deselect all visible
-                         const newSelected = selectedApiIds.filter(id => !allVisibleApiIds.includes(id));
-                         onSelectedApisChange(newSelected);
-                      }
-                    }}
-                 />
-                 <label htmlFor="toggle-all-visible" className="text-sm font-medium cursor-pointer">
-                   {tWizard('all')}
-                 </label>
-               </div>
+              <div className="flex items-center gap-2">
+                <Checkbox
+                  id="toggle-all-visible"
+                  checked={
+                    Object.keys(filteredGroupedApis).length > 0 &&
+                    Object.values(filteredGroupedApis).every(({ apis }) =>
+                      apis.every((api: ApiMst) => selectedApiIds.includes(api.id)),
+                    )
+                  }
+                  onCheckedChange={(checked) => {
+                    const allVisibleApis = Object.values(filteredGroupedApis).flatMap(
+                      (g) => g.apis,
+                    );
+                    const allVisibleApiIds = allVisibleApis.map((api) => api.id);
 
-               <div className="flex h-9 items-center justify-center px-3 rounded-md border text-sm min-w-[80px]">
-                 <span className="font-semibold">{selectedCount}</span> <span className="text-muted-foreground mx-1">/</span> <span className="font-semibold">{totalApis}</span>
+                    if (checked) {
+                      // Select all visible
+                      const newSelected = Array.from(
+                        new Set([...selectedApiIds, ...allVisibleApiIds]),
+                      );
+                      onSelectedApisChange(newSelected);
+                    } else {
+                      // Deselect all visible
+                      const newSelected = selectedApiIds.filter(
+                        (id) => !allVisibleApiIds.includes(id),
+                      );
+                      onSelectedApisChange(newSelected);
+                    }
+                  }}
+                />
+                <label htmlFor="toggle-all-visible" className="cursor-pointer text-sm font-medium">
+                  {tWizard('all')}
+                </label>
+              </div>
+
+              <div className="flex h-9 min-w-[80px] items-center justify-center rounded-md border px-3 text-sm">
+                <span className="font-semibold">{selectedCount}</span>{' '}
+                <span className="mx-1 text-muted-foreground">/</span>{' '}
+                <span className="font-semibold">{totalApis}</span>
               </div>
             </div>
           </div>
 
           {/* APIs grouped by feature */}
-          <div className="flex-1 overflow-y-auto min-h-0 p-3 space-y-4">
+          <div className="min-h-0 flex-1 space-y-4 overflow-y-auto p-3">
             {isLoading ? (
-              <div className="text-center text-sm text-gray-500">
-                {tCommon('loading')}...
-              </div>
+              <div className="text-center text-sm text-gray-500">{tCommon('loading')}...</div>
             ) : Object.keys(filteredGroupedApis).length === 0 ? (
-              <div className="text-center text-sm text-gray-500 py-8">
-                {tWizard('noApis')}
-              </div>
+              <div className="py-8 text-center text-sm text-gray-500">{tWizard('noApis')}</div>
             ) : (
               Object.entries(filteredGroupedApis).map(([featureId, { feature, apis }]) => {
-                const allChecked = apis.every((api: ApiMst) =>
-                  selectedApiIds.includes(api.id)
-                );
+                const allChecked = apis.every((api: ApiMst) => selectedApiIds.includes(api.id));
                 const someChecked =
-                  !allChecked &&
-                  apis.some((api: ApiMst) => selectedApiIds.includes(api.id));
+                  !allChecked && apis.some((api: ApiMst) => selectedApiIds.includes(api.id));
 
                 return (
                   <div
                     key={feature.id}
                     id={`feature-${feature.id}`}
-                    className="space-y-2 pb-4 border-b last:border-b-0"
+                    className="space-y-2 border-b pb-4 last:border-b-0"
                   >
                     {/* Feature header with checkbox */}
-                    <div className="flex items-center gap-2 mb-3">
+                    <div className="mb-3 flex items-center gap-2">
                       <Checkbox
                         id={`feature-${feature.id}`}
                         checked={allChecked}
@@ -329,7 +323,7 @@ export function Step2PermissionSetup({
                       />
                       <label
                         htmlFor={`feature-${feature.id}`}
-                        className="font-semibold text-sm text-gray-700 cursor-pointer"
+                        className="cursor-pointer text-sm font-semibold text-gray-700"
                       >
                         {feature.name}
                       </label>
@@ -351,7 +345,7 @@ export function Step2PermissionSetup({
                         return (
                           <div
                             key={api.id}
-                            className="flex items-start gap-3 p-2 rounded-md hover:bg-gray-50 transition-colors"
+                            className="flex items-start gap-3 rounded-md p-2 transition-colors hover:bg-gray-50"
                           >
                             <Checkbox
                               id={`api-${api.id}`}
@@ -361,20 +355,18 @@ export function Step2PermissionSetup({
                             />
                             <label
                               htmlFor={`api-${api.id}`}
-                              className="flex-1 cursor-pointer flex items-start gap-2"
+                              className="flex flex-1 cursor-pointer items-start gap-2"
                             >
-                              <div className="flex-1 min-w-0">
-                                <div className="flex items-center gap-2 mb-1">
+                              <div className="min-w-0 flex-1">
+                                <div className="mb-1 flex items-center gap-2">
                                   <Badge className={`text-xs ${methodInfo.color}`}>
                                     {methodInfo.label}
                                   </Badge>
-                                  <span className="font-semibold text-sm text-gray-900">
+                                  <span className="text-sm font-semibold text-gray-900">
                                     {api.name}
                                   </span>
                                 </div>
-                                <p className="text-xs text-gray-500 break-words">
-                                  {api.path}
-                                </p>
+                                <p className="text-xs break-words text-gray-500">{api.path}</p>
                               </div>
                             </label>
                           </div>
@@ -390,7 +382,6 @@ export function Step2PermissionSetup({
       </div>
 
       {/* Info box */}
-
     </div>
   );
 }

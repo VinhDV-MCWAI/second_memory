@@ -16,139 +16,126 @@ use Illuminate\Support\Facades\Hash;
 
 class UserMgmtRepository extends BaseRepository implements UserMgmtInterface
 {
-  public function __construct(UserMgmt $model)
-  {
-    parent::__construct($model);
-  }
-
-  /**
-   * Get list with pagination
-   *
-   * @param array $payload
-   * @return LengthAwarePaginator
-   */
-  public function list(array $payload): LengthAwarePaginator
-  {
-    $query = $this->model->query()
-      ->select([
-        'id',
-        'email',
-        'user_name',
-        'first_name',
-        'last_name',
-        'address',
-        'phone_number',
-        'birth',
-        'gender',
-        'status',
-        'is_active',
-        'avatar',
-        'updated_at',
-      ])
-      ->notDeleted();
-
-    // Apply filters
-    $this->applyFilters($query, $payload, [
-      'id',
-      'email',
-      'phone_number',
-      'birth',
-      'gender',
-      'status',
-      'is_active',
-      'avatar',
-    ], [
-      'user_name',
-      'first_name',
-      'last_name',
-      'address',
-    ]);
-
-    // Apply date range
-    $this->applyDateRange($query, $payload);
-
-    // Apply sorting
-    $this->applySorting($query, $payload);
-
-    // Pagination
-    $perPage = $payload['per_page'] ?? 15;
-    $page = $payload['page'] ?? 1;
-
-    // dump($query->toSql(), $query->getBindings());
-
-    return $query->paginate($perPage, ['*'], 'page', $page);
-  }
-
-  /**
-   * Create new record
-   *
-   * @param array $payload
-   * @return int
-   */
-  public function executeStore(array $payload): int
-  {
-    // Format birth date if provided
-    if (isset($payload['birth']) && !empty($payload['birth'])) {
-      $payload['birth'] = Carbon::createFromFormat(CommonVal::DATE_FORMAT, $payload['birth'])->format('Y-m-d');
+    public function __construct(UserMgmt $model)
+    {
+        parent::__construct($model);
     }
 
-    $model = $this->model->newInstance()->fill(
-      Arr::only($payload, $this->model->getFillable())
-    );
+    /**
+     * Get list with pagination
+     */
+    public function list(array $payload): LengthAwarePaginator
+    {
+        $query = $this->model->query()
+            ->select([
+                'id',
+                'email',
+                'user_name',
+                'first_name',
+                'last_name',
+                'address',
+                'phone_number',
+                'birth',
+                'gender',
+                'status',
+                'is_active',
+                'avatar',
+                'updated_at',
+            ])
+            ->notDeleted();
 
-    // Hash password if provided
-    if (isset($payload['password']) && !empty($payload['password'])) {
-      $model->password = Hash::make($payload['password']);
+        // Apply filters
+        $this->applyFilters($query, $payload, [
+            'id',
+            'email',
+            'phone_number',
+            'birth',
+            'gender',
+            'status',
+            'is_active',
+            'avatar',
+        ], [
+            'user_name',
+            'first_name',
+            'last_name',
+            'address',
+        ]);
+
+        // Apply date range
+        $this->applyDateRange($query, $payload);
+
+        // Apply sorting
+        $this->applySorting($query, $payload);
+
+        // Pagination
+        $perPage = $payload['per_page'] ?? 15;
+        $page = $payload['page'] ?? 1;
+
+        // dump($query->toSql(), $query->getBindings());
+
+        return $query->paginate($perPage, ['*'], 'page', $page);
     }
 
-    $model->save();
+    /**
+     * Create new record
+     */
+    public function executeStore(array $payload): int
+    {
+        // Format birth date if provided
+        if (isset($payload['birth']) && ! empty($payload['birth'])) {
+            $payload['birth'] = Carbon::createFromFormat(CommonVal::DATE_FORMAT, $payload['birth'])->format('Y-m-d');
+        }
 
-    return $model->id;
-  }
+        $model = $this->model->newInstance()->fill(
+            Arr::only($payload, $this->model->getFillable())
+        );
 
+        // Hash password if provided
+        if (isset($payload['password']) && ! empty($payload['password'])) {
+            $model->password = Hash::make($payload['password']);
+        }
 
-  /**
-   * Update record
-   *
-   * @param array $payload
-   * @return int
-   */
-  public function executeUpdate(array $payload): int
-  {
-    $model = $this->model->findOrFail($payload['id']);
+        $model->save();
 
-    if ($model->isDeleted()) {
-      throw new \LogicException('Cannot update deleted record');
+        return $model->id;
     }
 
-    // Format birth date if provided
-    if (isset($payload['birth']) && !empty($payload['birth'])) {
-      $payload['birth'] = Carbon::createFromFormat(CommonVal::DATE_FORMAT, $payload['birth'])->format('Y-m-d');
+    /**
+     * Update record
+     */
+    public function executeUpdate(array $payload): int
+    {
+        $model = $this->model->findOrFail($payload['id']);
+
+        if ($model->isDeleted()) {
+            throw new \LogicException('Cannot update deleted record');
+        }
+
+        // Format birth date if provided
+        if (isset($payload['birth']) && ! empty($payload['birth'])) {
+            $payload['birth'] = Carbon::createFromFormat(CommonVal::DATE_FORMAT, $payload['birth'])->format('Y-m-d');
+        }
+
+        $model->fill(Arr::only($payload, $this->model->getFillable()));
+
+        // Hash password if provided
+        if (isset($payload['password']) && ! empty($payload['password'])) {
+            $model->password = Hash::make($payload['password']);
+        }
+
+        $model->save();
+
+        return $model->id;
     }
 
-    $model->fill(Arr::only($payload, $this->model->getFillable()));
-
-    // Hash password if provided
-    if (isset($payload['password']) && !empty($payload['password'])) {
-      $model->password = Hash::make($payload['password']);
+    /**
+     * Delete record (soft delete)
+     */
+    public function executeDelete(array $ids): void
+    {
+        // Soft delete
+        $this->model->whereIn('id', $ids)
+            ->notDeleted()
+            ->update(['is_delete' => IsDelete::TRUE->value]);
     }
-
-    $model->save();
-
-    return $model->id;
-  }
-
-  /**
-   * Delete record (soft delete)
-   *
-   * @param array $ids
-   * @return void
-   */
-  public function executeDelete(array $ids): void
-  {
-    // Soft delete
-    $this->model->whereIn('id', $ids)
-      ->notDeleted()
-      ->update(['is_delete' => IsDelete::TRUE->value]);
-  }
 }

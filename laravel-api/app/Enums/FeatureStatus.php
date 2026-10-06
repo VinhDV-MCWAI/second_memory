@@ -36,8 +36,6 @@ enum FeatureStatus: int
 
     /**
      * Get all status options as array
-     *
-     * @return array
      */
     public static function getAll(): array
     {
@@ -45,7 +43,7 @@ enum FeatureStatus: int
             self::INACTIVE => 'Inactive',
             self::ACTIVE => 'Active',
             self::DRAFT => 'Draft',
-            self::ARCHIVED => 'Archived'
+            self::ARCHIVED => 'Archived',
         ];
     }
 }

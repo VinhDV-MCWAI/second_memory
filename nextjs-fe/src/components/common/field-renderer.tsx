@@ -2,10 +2,16 @@
 
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
-import { cn } from "@/shared/utils";
+import { cn } from '@/shared/utils';
 import { useTranslations } from 'next-intl';
 import type { FieldRendererProps } from '@/shared/types/data-table.types';
 
@@ -13,7 +19,7 @@ export type { FieldType, FieldConfig } from '@/shared/types/data-table.types';
 
 export function FieldRenderer({ field, value, onChange, error }: FieldRendererProps) {
   const t = useTranslations('common');
-  
+
   const renderField = () => {
     switch (field.type) {
       case 'text':
@@ -84,10 +90,7 @@ export function FieldRenderer({ field, value, onChange, error }: FieldRendererPr
               disabled={field.disabled}
               className={cn(error && 'border-red-500')}
             />
-            <Label
-              htmlFor={field.name}
-              className="text-sm font-normal cursor-pointer"
-            >
+            <Label htmlFor={field.name} className="cursor-pointer text-sm font-normal">
               {field.label}
             </Label>
           </div>
@@ -129,7 +132,7 @@ export function FieldRenderer({ field, value, onChange, error }: FieldRendererPr
                 <img
                   src={value}
                   alt={t('preview')}
-                  className="h-32 w-32 object-cover rounded-md border"
+                  className="h-32 w-32 rounded-md border object-cover"
                 />
               </div>
             ) : null}
@@ -157,9 +160,7 @@ export function FieldRenderer({ field, value, onChange, error }: FieldRendererPr
     return (
       <div className="space-y-2">
         {renderField()}
-        {field.description && (
-          <p className="text-sm text-muted-foreground">{field.description}</p>
-        )}
+        {field.description && <p className="text-sm text-muted-foreground">{field.description}</p>}
         {error && <p className="text-sm text-red-500">{error}</p>}
       </div>
     );
@@ -169,12 +170,10 @@ export function FieldRenderer({ field, value, onChange, error }: FieldRendererPr
     <div className="space-y-2">
       <Label htmlFor={field.name}>
         {field.label}
-        {field.required && <span className="text-red-500 ml-1">*</span>}
+        {field.required && <span className="ml-1 text-red-500">*</span>}
       </Label>
       {renderField()}
-      {field.description && (
-        <p className="text-sm text-muted-foreground">{field.description}</p>
-      )}
+      {field.description && <p className="text-sm text-muted-foreground">{field.description}</p>}
       {error && <p className="text-sm text-red-500">{error}</p>}
     </div>
   );

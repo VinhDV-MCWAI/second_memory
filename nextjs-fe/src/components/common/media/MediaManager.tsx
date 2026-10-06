@@ -158,9 +158,12 @@ export function MediaManager() {
           {/* Files Grid */}
           <div className="mb-6 grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {files.map((file) => (
-              <Card key={file.id} className="group relative overflow-hidden transition-shadow hover:shadow-lg">
+              <Card
+                key={file.id}
+                className="group relative overflow-hidden transition-shadow hover:shadow-lg"
+              >
                 {/* Checkbox */}
-                <div className="absolute left-3 top-3 z-10">
+                <div className="absolute top-3 left-3 z-10">
                   <input
                     type="checkbox"
                     checked={selectedFiles.has(file.id)}
@@ -194,7 +197,8 @@ export function MediaManager() {
                     {file.original_name}
                   </p>
                   <p className="text-sm text-slate-500 dark:text-slate-400">
-                    {mediaFileService.formatFileSize(file.size || 0)} • {new Date(file.created_at).toLocaleDateString()}
+                    {mediaFileService.formatFileSize(file.size || 0)} •{' '}
+                    {new Date(file.created_at).toLocaleDateString()}
                   </p>
                 </div>
 

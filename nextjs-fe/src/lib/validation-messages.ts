@@ -8,7 +8,7 @@ import { ValidationRules } from './validation-rules.js';
 /**
  * Get validation message key with parameters
  * Usage in components with useTranslations:
- * 
+ *
  * const t = useTranslations();
  * const errorMessage = t(error.message, { min: ValidationRules.PASSWORD_MIN });
  */
@@ -105,7 +105,7 @@ export const ValidationMessages = {
 /**
  * Helper function to format validation messages with parameters
  * This is used when displaying errors in forms
- * 
+ *
  * @param messageKey - The validation message key (e.g., 'validation.email.maxLength')
  * @param params - Parameters to replace in the message (e.g., { max: 255 })
  * @param t - The translation function from useTranslations()
@@ -114,7 +114,7 @@ export const ValidationMessages = {
 export function formatValidationMessage(
   messageKey: string,
   params: Record<string, string | number>,
-  t: (key: string, params?: Record<string, string | number>) => string
+  t: (key: string, params?: Record<string, string | number>) => string,
 ): string {
   return t(messageKey, params);
 }

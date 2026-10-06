@@ -16,14 +16,14 @@ class SliderMgmtResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'id' => (int)$this->id,
-            'title' => (string)$this->title,
-            'slug' => (string)$this->slug,
-            'link' => (string)$this->link,
-            'image' => (string)$this->image,
-            'status' => (string)$this->status,
-            'is_delete' => (bool)$this->is_delete,
-            'updated_at' => (string)date(CommonVal::DATE_FORMAT, strtotime($this->updated_at)),
+            'id' => (int) $this->id,
+            'title' => (string) $this->title,
+            'slug' => (string) $this->slug,
+            'link' => (string) $this->link,
+            'image' => (string) $this->image,
+            'status' => (string) $this->status,
+            'is_delete' => (bool) $this->is_delete,
+            'updated_at' => (string) date(CommonVal::DATE_FORMAT, strtotime($this->updated_at)),
         ];
     }
 }

@@ -2,14 +2,13 @@
 
 namespace App\Http\Requests\History\Master\ApiMstHist;
 
-use Illuminate\Foundation\Http\FormRequest;
 use App\Constants\CommonVal;
-use Illuminate\Validation\Rule;
-use Illuminate\Validation\Rules\Enum;
-use App\Models\History\Master\ApiMstHist;
 use App\Enums\IsActive;
 use App\Models\Master\ApiMst;
 use App\Models\Master\FeatureMst;
+use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
+use Illuminate\Validation\Rules\Enum;
 
 class StoreApiMstHistRequest extends FormRequest
 {
@@ -29,14 +28,14 @@ class StoreApiMstHistRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'api_mst_id' => ['required', 'integer', 'min:' . CommonVal::MIN_INTEGER, 'max:' . CommonVal::MAX_INTEGER, Rule::exists(ApiMst::class, 'id'),],
+            'api_mst_id' => ['required', 'integer', 'min:'.CommonVal::MIN_INTEGER, 'max:'.CommonVal::MAX_INTEGER, Rule::exists(ApiMst::class, 'id')],
             'type' => [],
-            'name' => ['string', 'min:' . CommonVal::MIN_VARCHAR, 'max:50',],
-            'path' => ['string', 'min:' . CommonVal::MIN_VARCHAR, 'max:100',],
-            'is_active' => [new Enum(IsActive::class),],
-            'feature_mst_id' => ['required', 'integer', 'min:' . CommonVal::MIN_INTEGER, 'max:' . CommonVal::MAX_INTEGER, Rule::exists(FeatureMst::class, 'id'),],
-            'action' => ['required',],
-            'author_id' => ['required', 'integer', 'min:' . CommonVal::MIN_INTEGER, 'max:' . CommonVal::MAX_INTEGER,],
+            'name' => ['string', 'min:'.CommonVal::MIN_VARCHAR, 'max:50'],
+            'path' => ['string', 'min:'.CommonVal::MIN_VARCHAR, 'max:100'],
+            'is_active' => [new Enum(IsActive::class)],
+            'feature_mst_id' => ['required', 'integer', 'min:'.CommonVal::MIN_INTEGER, 'max:'.CommonVal::MAX_INTEGER, Rule::exists(FeatureMst::class, 'id')],
+            'action' => ['required'],
+            'author_id' => ['required', 'integer', 'min:'.CommonVal::MIN_INTEGER, 'max:'.CommonVal::MAX_INTEGER],
         ];
     }
 

@@ -34,7 +34,6 @@ enum AdminStatus: int
      */
     case SUSPENDED = 3;
 
-
     public static function getLabel(self|int $value): string
     {
         if (is_int($value)) {
@@ -59,6 +58,7 @@ enum AdminStatus: int
     {
         return array_reduce(self::cases(), function ($carry, $case) {
             $carry[$case->value] = self::getLabel($case);
+
             return $carry;
         }, []);
     }

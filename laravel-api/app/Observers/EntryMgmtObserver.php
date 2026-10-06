@@ -2,8 +2,8 @@
 
 namespace App\Observers;
 
-use App\Models\Management\EntryMgmt;
 use App\Models\Management\CategoryMgmt;
+use App\Models\Management\EntryMgmt;
 use Illuminate\Support\Facades\Log;
 
 class EntryMgmtObserver
@@ -11,9 +11,6 @@ class EntryMgmtObserver
     /**
      * Handle the EntryMgmt "deleted" event.
      * Clean up all parent categories' layout_structure when an entry is deleted.
-     *
-     * @param EntryMgmt $entryMgmt
-     * @return void
      */
     public function deleted(EntryMgmt $entryMgmt): void
     {
@@ -25,29 +22,26 @@ class EntryMgmtObserver
 
             foreach ($categories as $category) {
                 $layoutStructure = $category->layout_structure;
-                
-                if (is_array($layoutStructure) && !empty($layoutStructure)) {
+
+                if (is_array($layoutStructure) && ! empty($layoutStructure)) {
                     $updated = $this->removeEntryFromStructure($layoutStructure, $entryMgmt->id);
-                    
+
                     if ($updated) {
                         $category->layout_structure = $layoutStructure;
                         $category->save();
-                        
+
                         Log::info("Cleaned entry_mgmt_id {$entryMgmt->id} from category {$category->id} layout_structure");
                     }
                 }
             }
         } catch (\Exception $e) {
-            Log::error("Failed to clean layout_structure after entry deletion: " . $e->getMessage());
+            Log::error('Failed to clean layout_structure after entry deletion: '.$e->getMessage());
         }
     }
 
     /**
      * Handle the EntryMgmt "updated" event.
      * Soft delete handling - when is_delete is set to true.
-     *
-     * @param EntryMgmt $entryMgmt
-     * @return void
      */
     public function updated(EntryMgmt $entryMgmt): void
     {
@@ -60,8 +54,6 @@ class EntryMgmtObserver
     /**
      * Recursively remove entry from layout structure
      *
-     * @param array &$structure
-     * @param int $entryId
      * @return bool True if structure was modified
      */
     private function removeEntryFromStructure(array &$structure, int $entryId): bool
@@ -73,6 +65,7 @@ class EntryMgmtObserver
             if (isset($item['entry_mgmt_id']) && $item['entry_mgmt_id'] === $entryId) {
                 unset($structure[$key]);
                 $modified = true;
+
                 continue;
             }
 

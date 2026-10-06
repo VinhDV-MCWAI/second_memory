@@ -74,9 +74,9 @@ export class UploadDebugger {
 
 /**
  * Usage in component or hook:
- * 
+ *
  * import { UploadDebugger } from '@/shared/utils/upload-debug';
- * 
+ *
  * const result = await mediaFileService.upload({ ... });
  * UploadDebugger.logStoreResponse(result);
  */

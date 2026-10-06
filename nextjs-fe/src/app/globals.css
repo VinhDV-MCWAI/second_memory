@@ -2,8 +2,8 @@
 @import url('https://fonts.googleapis.com/css2?family=Geist:wght@100..900&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Geist+Mono:wght@100..900&display=swap');
 
-@import "tailwindcss";
-@import "tw-animate-css";
+@import 'tailwindcss';
+@import 'tw-animate-css';
 
 @custom-variant dark (&:is(.dark *));
 
@@ -130,32 +130,32 @@
   .prose {
     /* Headings */
     h1 {
-      @apply text-4xl font-bold mt-6 mb-4;
+      @apply mt-6 mb-4 text-4xl font-bold;
     }
     h2 {
-      @apply text-3xl font-bold mt-5 mb-3;
+      @apply mt-5 mb-3 text-3xl font-bold;
     }
     h3 {
-      @apply text-2xl font-bold mt-4 mb-2;
+      @apply mt-4 mb-2 text-2xl font-bold;
     }
     h4 {
-      @apply text-xl font-semibold mt-3 mb-2;
+      @apply mt-3 mb-2 text-xl font-semibold;
     }
     h5 {
-      @apply text-lg font-semibold mt-2 mb-1;
+      @apply mt-2 mb-1 text-lg font-semibold;
     }
     h6 {
-      @apply text-base font-semibold mt-2 mb-1;
+      @apply mt-2 mb-1 text-base font-semibold;
     }
 
     /* Lists */
     ul {
-      @apply list-disc my-4 pl-6;
+      @apply my-4 list-disc pl-6;
       list-style-position: outside;
       display: block !important;
     }
     ol {
-      @apply list-decimal my-4 pl-6;
+      @apply my-4 list-decimal pl-6;
       list-style-position: outside;
       display: block !important;
     }
@@ -167,7 +167,7 @@
     li > ol {
       @apply my-2 mt-2;
     }
-    
+
     /* Ensure list markers are visible in dark mode */
     ul li::marker {
       @apply text-gray-700 dark:text-gray-300;
@@ -178,15 +178,15 @@
 
     /* Blockquote */
     blockquote {
-      @apply border-l-4 border-gray-300 dark:border-gray-600 pl-4 py-2 my-4 italic text-gray-700 dark:text-gray-300;
+      @apply my-4 border-l-4 border-gray-300 py-2 pl-4 text-gray-700 italic dark:border-gray-600 dark:text-gray-300;
     }
 
     /* Code */
     code {
-      @apply bg-gray-100 dark:bg-gray-800 px-2 py-1 rounded text-sm font-mono;
+      @apply rounded bg-gray-100 px-2 py-1 font-mono text-sm dark:bg-gray-800;
     }
     pre {
-      @apply bg-gray-100 dark:bg-gray-800 p-4 rounded my-4 overflow-x-auto;
+      @apply my-4 overflow-x-auto rounded bg-gray-100 p-4 dark:bg-gray-800;
     }
     pre code {
       @apply bg-transparent p-0;
@@ -194,7 +194,7 @@
 
     /* Links */
     a {
-      @apply text-blue-600 dark:text-blue-400 underline hover:text-blue-800 dark:hover:text-blue-300;
+      @apply text-blue-600 underline hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300;
     }
 
     /* Paragraphs */
@@ -218,7 +218,7 @@
 
     /* Highlight */
     mark {
-      @apply bg-yellow-200 dark:bg-yellow-700 px-1;
+      @apply bg-yellow-200 px-1 dark:bg-yellow-700;
     }
 
     /* Horizontal rule */
@@ -228,24 +228,29 @@
 
     /* Images */
     img {
-      @apply rounded-lg my-4 max-w-full h-auto;
+      @apply my-4 h-auto max-w-full rounded-lg;
     }
 
     /* Tables */
     table {
-      @apply w-full border-collapse my-4;
+      @apply my-4 w-full border-collapse;
     }
     th {
-      @apply border border-gray-300 dark:border-gray-600 px-4 py-2 bg-gray-100 dark:bg-gray-800 font-semibold text-left;
+      @apply border border-gray-300 bg-gray-100 px-4 py-2 text-left font-semibold dark:border-gray-600 dark:bg-gray-800;
     }
     td {
-      @apply border border-gray-300 dark:border-gray-600 px-4 py-2;
+      @apply border border-gray-300 px-4 py-2 dark:border-gray-600;
     }
   }
 
   /* Dark mode specific prose adjustments */
   .dark .prose {
-    h1, h2, h3, h4, h5, h6 {
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
       @apply text-gray-100;
     }
     p {
@@ -255,33 +260,34 @@
       @apply text-gray-200;
     }
   }
-  
+
   /* Specific ProseMirror editor styles to ensure lists display correctly */
   .ProseMirror {
-    ul, ol {
+    ul,
+    ol {
       display: block !important;
       list-style-position: outside !important;
       margin-left: 1.5rem !important;
       padding-left: 0.5rem !important;
     }
-    
+
     ul {
       list-style-type: disc !important;
     }
-    
+
     ol {
       list-style-type: decimal !important;
     }
-    
+
     li {
       display: list-item !important;
     }
-    
+
     ul ul {
       list-style-type: circle !important;
       margin-top: 0.5rem !important;
     }
-    
+
     ol ol {
       list-style-type: lower-alpha !important;
       margin-top: 0.5rem !important;

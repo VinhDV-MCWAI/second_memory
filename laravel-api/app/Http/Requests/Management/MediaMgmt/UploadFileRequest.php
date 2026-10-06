@@ -25,8 +25,8 @@ class UploadFileRequest extends FormRequest
             'file' => [
                 'required',
                 'file',
-                'max:' . (MediaConst::MAX_FILE_SIZE / 1024), // Convert to KB
-                'mimes:' . implode(',', $allExtensions),
+                'max:'.(MediaConst::MAX_FILE_SIZE / 1024), // Convert to KB
+                'mimes:'.implode(',', $allExtensions),
             ],
             'parent_path' => 'nullable|string',
             'workspace_id' => 'nullable|integer',

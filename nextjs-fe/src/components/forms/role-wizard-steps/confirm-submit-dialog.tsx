@@ -30,14 +30,10 @@ export function ConfirmSubmitDialog({
             <CheckCircle className="h-5 w-5 text-green-600" />
             <AlertDialogTitle>{tWizard('confirmSubmit')}</AlertDialogTitle>
           </div>
-          <AlertDialogDescription>
-            {tWizard('submitConfirmMessage')}
-          </AlertDialogDescription>
+          <AlertDialogDescription>{tWizard('submitConfirmMessage')}</AlertDialogDescription>
         </AlertDialogHeader>
         <div className="flex justify-end gap-3">
-          <AlertDialogCancel disabled={isLoading}>
-            {tCommon('back')}
-          </AlertDialogCancel>
+          <AlertDialogCancel disabled={isLoading}>{tCommon('back')}</AlertDialogCancel>
           <AlertDialogAction
             onClick={onConfirm}
             disabled={isLoading}

@@ -46,10 +46,9 @@ abstract class BaseRepository implements BaseInterface
     /**
      * Apply dynamic filters to query based on payload
      *
-     * @param \Illuminate\Database\Eloquent\Builder $query
-     * @param array $payload
-     * @param array $exactMatchFields Fields that should use exact match (=)
-     * @param array $likeFields Fields that should use LIKE search
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @param  array  $exactMatchFields  Fields that should use exact match (=)
+     * @param  array  $likeFields  Fields that should use LIKE search
      * @return void
      *
      * Fields are payload keys; use `'payload_key' => 'table.column'` to filter
@@ -67,7 +66,7 @@ abstract class BaseRepository implements BaseInterface
         foreach ($likeFields as $key => $column) {
             $key = is_int($key) ? $column : $key;
             if (isset($payload[$key])) {
-                $query->where($column, 'like', '%' . $payload[$key] . '%');
+                $query->where($column, 'like', '%'.$payload[$key].'%');
             }
         }
     }
@@ -75,10 +74,8 @@ abstract class BaseRepository implements BaseInterface
     /**
      * Apply date range filter to query
      *
-     * @param \Illuminate\Database\Eloquent\Builder $query
-     * @param array $payload
-     * @param string $dateField The field to filter on (default: 'updated_at')
-     * @return void
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @param  string  $dateField  The field to filter on (default: 'updated_at')
      */
     protected function applyDateRange($query, array $payload, string $dateField = 'updated_at'): void
     {
@@ -96,11 +93,9 @@ abstract class BaseRepository implements BaseInterface
     /**
      * Apply sorting to query
      *
-     * @param \Illuminate\Database\Eloquent\Builder $query
-     * @param array $payload
-     * @param string $defaultSortBy Default field to sort by
-     * @param string $defaultSortOrder Default sort order (asc/desc)
-     * @return void
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @param  string  $defaultSortBy  Default field to sort by
+     * @param  string  $defaultSortOrder  Default sort order (asc/desc)
      */
     protected function applySorting($query, array $payload, string $defaultSortBy = 'id', string $defaultSortOrder = 'asc'): void
     {
@@ -111,7 +106,7 @@ abstract class BaseRepository implements BaseInterface
         $sortOrder = in_array(strtolower($sortOrder), ['asc', 'desc']) ? $sortOrder : $defaultSortOrder;
 
         // Validate sort column exists in table to prevent SQL injection
-        if (!\Schema::hasColumn($this->model->getTable(), $sortBy)) {
+        if (! \Schema::hasColumn($this->model->getTable(), $sortBy)) {
             $sortBy = $defaultSortBy;
         }
 
@@ -121,9 +116,8 @@ abstract class BaseRepository implements BaseInterface
     /**
      * Validate that foreign key references exist
      *
-     * @param array $foreignKeys Array of ['field' => 'ModelClass']
-     * @param array $payload
-     * @return void
+     * @param  array  $foreignKeys  Array of ['field' => 'ModelClass']
+     *
      * @throws ModelNotFoundException
      */
     protected function validateForeignKeys(array $foreignKeys, array $payload): void
@@ -134,9 +128,9 @@ abstract class BaseRepository implements BaseInterface
                     ->where('is_delete', IsDelete::FALSE->value)
                     ->exists();
 
-                if (!$exists) {
+                if (! $exists) {
                     throw new ModelNotFoundException(
-                        ucfirst(str_replace('_id', '', $field)) . ' not found'
+                        ucfirst(str_replace('_id', '', $field)).' not found'
                     );
                 }
             }
@@ -146,9 +140,8 @@ abstract class BaseRepository implements BaseInterface
     /**
      * Check if records can be deleted (no dependent records)
      *
-     * @param array $ids
-     * @param array $relationships Array of relationship names to check
-     * @return void
+     * @param  array  $relationships  Array of relationship names to check
+     *
      * @throws \LogicException
      */
     protected function checkCanDelete(array $ids, array $relationships = []): void
@@ -162,10 +155,9 @@ abstract class BaseRepository implements BaseInterface
 
             if ($hasRelated) {
                 throw new \LogicException(
-                    'Cannot delete record(s) with existing ' . $relationship
+                    'Cannot delete record(s) with existing '.$relationship
                 );
             }
         }
     }
 }
-

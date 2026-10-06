@@ -1,6 +1,6 @@
 /**
  * Type Guards for Runtime Type Checking
- * 
+ *
  * These functions help ensure type safety at runtime,
  * especially when dealing with API responses or user input.
  */
@@ -74,10 +74,7 @@ export function isUrl(value: unknown): value is string {
 /**
  * Check if object has required keys
  */
-export function hasKeys<T extends string>(
-  obj: unknown,
-  keys: T[]
-): obj is Record<T, unknown> {
+export function hasKeys<T extends string>(obj: unknown, keys: T[]): obj is Record<T, unknown> {
   if (!isObject(obj)) return false;
   return keys.every((key) => key in obj);
 }
@@ -92,12 +89,11 @@ export function isDefined<T>(value: T | null | undefined): value is T {
 /**
  * Check if error is an Axios error with response
  */
-export function isAxiosError(error: unknown): error is { response: { data: { message?: string } } } {
+export function isAxiosError(
+  error: unknown,
+): error is { response: { data: { message?: string } } } {
   return (
-    isObject(error) &&
-    'response' in error &&
-    isObject(error.response) &&
-    'data' in error.response
+    isObject(error) && 'response' in error && isObject(error.response) && 'data' in error.response
   );
 }
 

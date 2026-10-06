@@ -8,7 +8,11 @@ import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { Upload, X, Image as ImageIcon } from 'lucide-react';
 import Image from 'next/image';
-import type { UploadResponse, SimpleFileUploadProps as FileUploadProps, MediaFile } from '@/shared/types/media-file.types';
+import type {
+  UploadResponse,
+  SimpleFileUploadProps as FileUploadProps,
+  MediaFile,
+} from '@/shared/types/media-file.types';
 import { UploadStatus } from '@/shared/enums/enums';
 import { useTranslations } from 'next-intl';
 
@@ -27,101 +31,106 @@ export function FileUpload({
   const [preview, setPreview] = useState<string | null>(value || null);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const validateFile = useCallback((file: File): boolean => {
-    // Check file type
-    if (accept && !file.type.match(accept.replace('*', '.*'))) {
-      notification.error(t('media.invalidFileType', { accept }));
-      return false;
-    }
-
-    // Check file size
-    const fileSizeMB = file.size / (1024 * 1024);
-    if (fileSizeMB > maxSize) {
-      notification.error(t('media.fileSizeExceeded', { maxSize }));
-      return false;
-    }
-
-    return true;
-  }, [accept, maxSize, t]);
-
-  const uploadFile = useCallback(async (file: File) => {
-    if (!validateFile(file)) return;
-
-    try {
-      setUploading(true);
-      setProgress(0);
-
-      const formData = new FormData();
-      formData.append('file', file);
-
-      // Simulate progress (since we don't have real upload progress from API)
-      const progressInterval = setInterval(() => {
-        setProgress((prev) => {
-          if (prev >= 90) {
-            clearInterval(progressInterval);
-            return 90;
-          }
-          return prev + 10;
-        });
-      }, 100);
-
-      const response = await apiClient.post<UploadResponse>(ENDPOINTS.MEDIA.UPLOAD, formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      });
-
-      clearInterval(progressInterval);
-      setProgress(100);
-
-      const data = response.data;
-
-      // Handle Post-processing for large files
-      if (data.room_id && data.media_id && data.upload_status === UploadStatus.PROCESSING) {
-        try {
-          // Check status immediately as requested
-          const listResponse = await apiClient.get<MediaFile[]>(ENDPOINTS.MEDIA.FILES, {
-            params: { id: data.media_id }
-          });
-          
-          const mediaItem = listResponse.data?.[0];
-
-          // upload_status: 1 = Processing, 2 = Completed, 3 = Failed
-          if (mediaItem && mediaItem.upload_status !== UploadStatus.PROCESSING) {
-            if (mediaItem.upload_status === UploadStatus.COMPLETED) {
-               notification.success(t('media.fileUploadedSuccessfully'));
-               if (mediaItem.url) {
-                 setPreview(mediaItem.url);
-                 onChange(mediaItem.url);
-               }
-            } else {
-               notification.error(t('media.failedToUploadFile'));
-            }
-          } else {
-            // Still processing: User said "do nothing" if status is 1
-            // But we should probably show the server message at least
-            notification.info(data.message || t('media.fileProcessing'), { duration: Infinity });
-          }
-        } catch (err) {
-          console.error('Failed to check media status', err);
-          // Fallback to showing processing message
-          notification.info(data.message || t('media.fileProcessing'), { duration: Infinity });
-        }
-      } else {
-        // Normal/Light file upload
-        const uploadedUrl = data.url || '';
-        setPreview(uploadedUrl);
-        onChange(uploadedUrl);
-        notification.success(t('media.fileUploadedSuccessfully'));
+  const validateFile = useCallback(
+    (file: File): boolean => {
+      // Check file type
+      if (accept && !file.type.match(accept.replace('*', '.*'))) {
+        notification.error(t('media.invalidFileType', { accept }));
+        return false;
       }
 
-    } catch (error: unknown) {
-      notification.error(getApiErrorMessage(error) ?? t('media.failedToUploadFile'));
-    } finally {
-      setUploading(false);
-      setProgress(0);
-    }
-  }, [validateFile, onChange, t]);
+      // Check file size
+      const fileSizeMB = file.size / (1024 * 1024);
+      if (fileSizeMB > maxSize) {
+        notification.error(t('media.fileSizeExceeded', { maxSize }));
+        return false;
+      }
+
+      return true;
+    },
+    [accept, maxSize, t],
+  );
+
+  const uploadFile = useCallback(
+    async (file: File) => {
+      if (!validateFile(file)) return;
+
+      try {
+        setUploading(true);
+        setProgress(0);
+
+        const formData = new FormData();
+        formData.append('file', file);
+
+        // Simulate progress (since we don't have real upload progress from API)
+        const progressInterval = setInterval(() => {
+          setProgress((prev) => {
+            if (prev >= 90) {
+              clearInterval(progressInterval);
+              return 90;
+            }
+            return prev + 10;
+          });
+        }, 100);
+
+        const response = await apiClient.post<UploadResponse>(ENDPOINTS.MEDIA.UPLOAD, formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        });
+
+        clearInterval(progressInterval);
+        setProgress(100);
+
+        const data = response.data;
+
+        // Handle Post-processing for large files
+        if (data.room_id && data.media_id && data.upload_status === UploadStatus.PROCESSING) {
+          try {
+            // Check status immediately as requested
+            const listResponse = await apiClient.get<MediaFile[]>(ENDPOINTS.MEDIA.FILES, {
+              params: { id: data.media_id },
+            });
+
+            const mediaItem = listResponse.data?.[0];
+
+            // upload_status: 1 = Processing, 2 = Completed, 3 = Failed
+            if (mediaItem && mediaItem.upload_status !== UploadStatus.PROCESSING) {
+              if (mediaItem.upload_status === UploadStatus.COMPLETED) {
+                notification.success(t('media.fileUploadedSuccessfully'));
+                if (mediaItem.url) {
+                  setPreview(mediaItem.url);
+                  onChange(mediaItem.url);
+                }
+              } else {
+                notification.error(t('media.failedToUploadFile'));
+              }
+            } else {
+              // Still processing: User said "do nothing" if status is 1
+              // But we should probably show the server message at least
+              notification.info(data.message || t('media.fileProcessing'), { duration: Infinity });
+            }
+          } catch (err) {
+            console.error('Failed to check media status', err);
+            // Fallback to showing processing message
+            notification.info(data.message || t('media.fileProcessing'), { duration: Infinity });
+          }
+        } else {
+          // Normal/Light file upload
+          const uploadedUrl = data.url || '';
+          setPreview(uploadedUrl);
+          onChange(uploadedUrl);
+          notification.success(t('media.fileUploadedSuccessfully'));
+        }
+      } catch (error: unknown) {
+        notification.error(getApiErrorMessage(error) ?? t('media.failedToUploadFile'));
+      } finally {
+        setUploading(false);
+        setProgress(0);
+      }
+    },
+    [validateFile, onChange, t],
+  );
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -153,7 +162,7 @@ export function FileUpload({
         uploadFile(file);
       }
     },
-    [disabled, uploading, uploadFile]
+    [disabled, uploading, uploadFile],
   );
 
   const handleRemove = () => {
@@ -175,12 +184,7 @@ export function FileUpload({
       {/* Upload Area */}
       {!preview && (
         <div
-          className={`
-            relative border-2 border-dashed rounded-lg p-8 text-center cursor-pointer
-            transition-colors duration-200
-            ${dragActive ? 'border-primary bg-primary/5' : 'border-gray-300 dark:border-gray-700'}
-            ${disabled ? 'opacity-50 cursor-not-allowed' : 'hover:border-primary hover:bg-primary/5'}
-          `}
+          className={`relative cursor-pointer rounded-lg border-2 border-dashed p-8 text-center transition-colors duration-200 ${dragActive ? 'border-primary bg-primary/5' : 'border-gray-300 dark:border-gray-700'} ${disabled ? 'cursor-not-allowed opacity-50' : 'hover:border-primary hover:bg-primary/5'} `}
           onDragEnter={handleDrag}
           onDragLeave={handleDrag}
           onDragOver={handleDrag}
@@ -199,7 +203,8 @@ export function FileUpload({
           <div className="flex flex-col items-center gap-2">
             <Upload className="h-10 w-10 text-gray-400" />
             <div className="text-sm text-gray-600 dark:text-gray-400">
-              <span className="font-semibold text-primary">{t('media.clickToUpload')}</span> {t('media.orDragAndDrop')}
+              <span className="font-semibold text-primary">{t('media.clickToUpload')}</span>{' '}
+              {t('media.orDragAndDrop')}
             </div>
             <div className="text-xs text-gray-500">
               {accept} ({t('media.maxFileSize', { maxSize })})
@@ -221,16 +226,10 @@ export function FileUpload({
 
       {/* Image Preview */}
       {preview && !uploading && (
-        <div className="relative group">
+        <div className="group relative">
           <div className="relative aspect-video w-full max-w-md overflow-hidden rounded-lg border border-gray-200 dark:border-gray-700">
             {accept.includes('image') ? (
-              <Image
-                src={preview}
-                alt="Preview"
-                fill
-                className="object-cover"
-                unoptimized
-              />
+              <Image src={preview} alt="Preview" fill className="object-cover" unoptimized />
             ) : (
               <div className="flex h-full items-center justify-center bg-gray-100 dark:bg-gray-800">
                 <ImageIcon className="h-16 w-16 text-gray-400" />
@@ -243,7 +242,7 @@ export function FileUpload({
             type="button"
             variant="destructive"
             size="icon"
-            className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity"
+            className="absolute top-2 right-2 opacity-0 transition-opacity group-hover:opacity-100"
             onClick={handleRemove}
             disabled={disabled}
           >

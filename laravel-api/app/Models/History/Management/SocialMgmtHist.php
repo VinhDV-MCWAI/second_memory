@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class SocialMgmtHist extends Model
 {
     protected $table = 'social_mgmt_hist';
+
     const UPDATED_AT = null;
 
     /**

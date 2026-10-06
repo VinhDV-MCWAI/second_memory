@@ -16,11 +16,11 @@ class SettingLinkMgmtResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'id' => (int)$this->id,
-            'key' => (string)$this->key,
-            'value' => (string)$this->value,
-            'is_delete' => (bool)$this->is_delete,
-            'updated_at' => (string)date(CommonVal::DATE_FORMAT, strtotime($this->updated_at)),
+            'id' => (int) $this->id,
+            'key' => (string) $this->key,
+            'value' => (string) $this->value,
+            'is_delete' => (bool) $this->is_delete,
+            'updated_at' => (string) date(CommonVal::DATE_FORMAT, strtotime($this->updated_at)),
         ];
     }
 }

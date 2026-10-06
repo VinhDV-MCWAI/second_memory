@@ -2,20 +2,19 @@
 
 namespace App\Services\Management;
 
-use App\Services\BaseService;
-use App\Interfaces\Management\EntryMgmtInterface;
-use App\Interfaces\History\Management\EntryMgmtHistInterface;
 use App\Enums\ActionType;
-use Illuminate\Http\Resources\Json\JsonResource;
 use App\Http\Resources\Management\EntryMgmtResource;
+use App\Interfaces\History\Management\EntryMgmtHistInterface;
+use App\Interfaces\Management\EntryMgmtInterface;
+use App\Services\BaseService;
+use Illuminate\Http\Resources\Json\JsonResource;
 
 class EntryMgmtService extends BaseService
 {
     public function __construct(
         protected EntryMgmtInterface $entryMgmt,
         protected EntryMgmtHistInterface $entryMgmtHist
-    ) {
-    }
+    ) {}
 
     protected function getHistoryRepository()
     {
@@ -29,9 +28,6 @@ class EntryMgmtService extends BaseService
 
     /**
      * Get entry mgmt list
-     *
-     * @param array $payload
-     * @return JsonResource
      */
     public function list(array $payload): JsonResource
     {
@@ -42,9 +38,6 @@ class EntryMgmtService extends BaseService
 
     /**
      * Store entry mgmt
-     *
-     * @param array $payload
-     * @return int
      */
     public function store(array $payload): int
     {
@@ -56,9 +49,6 @@ class EntryMgmtService extends BaseService
 
     /**
      * Update entry mgmt
-     *
-     * @param array $payload
-     * @return int
      */
     public function update(array $payload): int
     {
@@ -71,14 +61,12 @@ class EntryMgmtService extends BaseService
 
     /**
      * Delete entry mgmt
-     *
-     * @param array $payload
-     * @return void
      */
     public function delete(array $payload): void
     {
-        if (!isset($payload['ids']) || !is_array($payload['ids'])) {
+        if (! isset($payload['ids']) || ! is_array($payload['ids'])) {
             $this->entryMgmt->executeDelete($payload['ids'] ?? []);
+
             return;
         }
 

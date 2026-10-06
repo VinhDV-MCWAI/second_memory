@@ -65,7 +65,7 @@ export function useDebounce<T>(value: T, delay: number = 500): T {
  */
 export function useThrottle<T extends (...args: unknown[]) => unknown>(
   callback: T,
-  delay: number = 1000
+  delay: number = 1000,
 ): T {
   const lastRun = useRef(0);
 
@@ -76,7 +76,7 @@ export function useThrottle<T extends (...args: unknown[]) => unknown>(
         lastRun.current = Date.now();
       }
     },
-    [callback, delay]
+    [callback, delay],
   ) as T;
 }
 
@@ -97,7 +97,7 @@ export function useLazyLoad(ref: React.RefObject<HTMLElement>) {
           }
         });
       },
-      { rootMargin: '50px' }
+      { rootMargin: '50px' },
     );
 
     if (ref.current) {
@@ -117,14 +117,14 @@ export class PerformanceMonitor {
 
   start(label: string): () => void {
     const startTime = performance.now();
-    
+
     return () => {
       const duration = performance.now() - startTime;
       const existing = this.metrics.get(label) || [];
       this.metrics.set(label, [...existing, duration]);
-      
+
       if (duration > 1000) {
-}
+      }
     };
   }
 
@@ -159,7 +159,7 @@ export class RequestBatcher {
 
   constructor(
     private batchFn: (keys: string[]) => Promise<unknown[]>,
-    private delay: number = 50
+    private delay: number = 50,
   ) {}
 
   request(key: string): Promise<unknown> {

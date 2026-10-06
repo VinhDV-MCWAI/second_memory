@@ -29,9 +29,7 @@ export function Step1RoleSetup({ data, onChange }: Step1RoleSetupProps) {
           value={data.name || ''}
           onChange={(e) => onChange({ ...data, name: e.target.value })}
         />
-        <p className="text-xs text-gray-500">
-          {tWizard('roleNameHelp')}
-        </p>
+        <p className="text-xs text-gray-500">{tWizard('roleNameHelp')}</p>
       </div>
 
       <div className="space-y-2">
@@ -44,9 +42,7 @@ export function Step1RoleSetup({ data, onChange }: Step1RoleSetupProps) {
           value={data.permission || ''}
           onChange={(e) => onChange({ ...data, permission: e.target.value })}
         />
-        <p className="text-xs text-gray-500">
-          {tWizard('permissionHelp')}
-        </p>
+        <p className="text-xs text-gray-500">{tWizard('permissionHelp')}</p>
       </div>
 
       <div className="space-y-2">
@@ -71,9 +67,7 @@ export function Step1RoleSetup({ data, onChange }: Step1RoleSetupProps) {
             </SelectItem>
           </SelectContent>
         </Select>
-        <p className="text-xs text-gray-500">
-          {tWizard('statusHelp')}
-        </p>
+        <p className="text-xs text-gray-500">{tWizard('statusHelp')}</p>
       </div>
     </form>
   );

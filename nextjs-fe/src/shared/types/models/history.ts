@@ -39,8 +39,6 @@ export interface FeatureMstHist extends BaseHistory {
   feature_mst_id: number;
 }
 
-
-
 // ============================================
 // MANAGEMENT HISTORY MODELS
 // ============================================

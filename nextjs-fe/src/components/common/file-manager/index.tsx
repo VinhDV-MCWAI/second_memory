@@ -16,11 +16,23 @@ import { RenameDialog } from './dialogs/rename-dialog';
 import { DeleteConfirmDialog } from './dialogs/delete-confirm-dialog';
 import { MoveCopyDialog } from './dialogs/move-copy-dialog';
 import { HeavyUploadNotification } from '@/components/common/HeavyUploadNotification';
-import type { MediaFile, FilterType, SortField, MoveCopyMode } from '@/shared/types/file-manager.types';
+import type {
+  MediaFile,
+  FilterType,
+  SortField,
+  MoveCopyMode,
+} from '@/shared/types/file-manager.types';
 import toast from 'react-hot-toast';
 import { useTranslations } from 'next-intl';
 import { SORT_ORDER } from '@/shared/config/constant';
-import { FILE_MANAGER_SORT_FIELDS, FILTER_TYPE, VIEW_MODE, FILE_TYPE, INITIAL_PAGINATION, MOVE_COPY_MODE } from '@/shared/config/constant';
+import {
+  FILE_MANAGER_SORT_FIELDS,
+  FILTER_TYPE,
+  VIEW_MODE,
+  FILE_TYPE,
+  INITIAL_PAGINATION,
+  MOVE_COPY_MODE,
+} from '@/shared/config/constant';
 
 export default function FileManager() {
   const t = useTranslations();
@@ -70,7 +82,9 @@ export default function FileManager() {
   // Handlers
   const handleFileClick = (file: MediaFile) => {
     if (file.type === FILE_TYPE.FOLDER) {
-      setCurrentPath(file.folder_path === '/' ? `/${file.name}` : `${file.folder_path}/${file.name}`);
+      setCurrentPath(
+        file.folder_path === '/' ? `/${file.name}` : `${file.folder_path}/${file.name}`,
+      );
     } else {
       setPreviewFile(file);
     }
@@ -199,7 +213,7 @@ export default function FileManager() {
   // Preview Navigation
   const handlePreviewNext = () => {
     if (!previewFile) return;
-    const currentIndex = files.findIndex(f => f.id === previewFile.id);
+    const currentIndex = files.findIndex((f) => f.id === previewFile.id);
     if (currentIndex < files.length - 1) {
       setPreviewFile(files[currentIndex + 1]);
     }
@@ -207,18 +221,16 @@ export default function FileManager() {
 
   const handlePreviewPrev = () => {
     if (!previewFile) return;
-    const currentIndex = files.findIndex(f => f.id === previewFile.id);
+    const currentIndex = files.findIndex((f) => f.id === previewFile.id);
     if (currentIndex > 0) {
       setPreviewFile(files[currentIndex - 1]);
     }
   };
 
   const hasNextPreview = previewFile
-    ? files.findIndex(f => f.id === previewFile.id) < files.length - 1
+    ? files.findIndex((f) => f.id === previewFile.id) < files.length - 1
     : false;
-  const hasPrevPreview = previewFile
-    ? files.findIndex(f => f.id === previewFile.id) > 0
-    : false;
+  const hasPrevPreview = previewFile ? files.findIndex((f) => f.id === previewFile.id) > 0 : false;
 
   return (
     <div className="flex h-[calc(100vh-4rem)] overflow-hidden bg-background">
@@ -239,13 +251,15 @@ export default function FileManager() {
           onDelete={() => handleDelete()}
           onMove={() => handleMove()}
           onCopy={() => handleCopy()}
-
           onSearchChange={setSearchQuery}
           searchQuery={searchQuery}
           selectedCount={selectedFiles.length}
           filterOptions={{ type: (filterType as FilterType) || FILTER_TYPE.ALL }}
           onFilterChange={(opts) => setFilterOptions?.(opts)}
-          sortOptions={{ field: (sortBy as SortField) || FILE_MANAGER_SORT_FIELDS.NAME, order: SORT_ORDER.ASC }}
+          sortOptions={{
+            field: (sortBy as SortField) || FILE_MANAGER_SORT_FIELDS.NAME,
+            order: SORT_ORDER.ASC,
+          }}
           onSortChange={(opts) => setSortOptions?.(opts)}
         />
 
@@ -276,10 +290,12 @@ export default function FileManager() {
               isLoading={isLoading}
               sortField={(sortBy as SortField) || FILE_MANAGER_SORT_FIELDS.NAME}
               sortOrder={SORT_ORDER.ASC}
-              onSort={(field) => setSortOptions?.({
-                field: field as SortField,
-                order: SORT_ORDER.ASC
-              })}
+              onSort={(field) =>
+                setSortOptions?.({
+                  field: field as SortField,
+                  order: SORT_ORDER.ASC,
+                })
+              }
               onPreview={setPreviewFile}
               onRename={handleRename}
               onMove={handleMove}

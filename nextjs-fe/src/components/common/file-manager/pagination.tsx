@@ -38,9 +38,7 @@ export const Pagination = ({ pagination, onPageChange }: PaginationProps) => {
         >
           <ChevronLeft className="h-4 w-4" />
         </Button>
-        <div className="text-sm font-medium">
-          {t('page', { current: page, total: totalPages })}
-        </div>
+        <div className="text-sm font-medium">{t('page', { current: page, total: totalPages })}</div>
         <Button
           variant="outline"
           size="icon"

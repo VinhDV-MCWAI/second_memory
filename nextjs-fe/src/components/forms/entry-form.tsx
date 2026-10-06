@@ -26,12 +26,21 @@ import type { EntryMgmt, LayoutStructureItem, EntryDescriptionMgmt } from '@/sha
 import { ENDPOINTS } from '@/shared/api';
 import { FORM_DEFAULTS } from '@/shared/config/constant';
 import { EntryStatus, EntryStatusLabels } from '@/shared/enums';
-import { getEntrySchema, type EntryFormData, type EntryFormInput } from '@/shared/validation/validation';
+import {
+  getEntrySchema,
+  type EntryFormData,
+  type EntryFormInput,
+} from '@/shared/validation/validation';
 import { slugify } from '@/shared/utils/string-utils';
 import type { EntryFormProps } from './types';
 import { LayoutStructureEditor } from './layout-structure-editor';
 
-export function EntryForm({ initialData, onSuccess, onCancel, hideActions = false }: EntryFormProps) {
+export function EntryForm({
+  initialData,
+  onSuccess,
+  onCancel,
+  hideActions = false,
+}: EntryFormProps) {
   const tCommon = useTranslations('common');
   const tForms = useTranslations('forms.placeholders');
   const tValidation = useTranslations('validation');
@@ -42,18 +51,16 @@ export function EntryForm({ initialData, onSuccess, onCancel, hideActions = fals
   const [descSearchQuery, setDescSearchQuery] = useState('');
 
   // Fetch available entry descriptions for layout structure
-  const { data: availableDescriptions, loading: descriptionsLoading } = useApiData<EntryDescriptionMgmt>(
-    ENDPOINTS.MANAGEMENT.ENTRY_DESCRIPTION,
-    { 
-      page: 1, 
-      per_page: 100, 
-      filters: descSearchQuery ? { title: descSearchQuery } : {} 
-    }
-  );
+  const { data: availableDescriptions, loading: descriptionsLoading } =
+    useApiData<EntryDescriptionMgmt>(ENDPOINTS.MANAGEMENT.ENTRY_DESCRIPTION, {
+      page: 1,
+      per_page: 100,
+      filters: descSearchQuery ? { title: descSearchQuery } : {},
+    });
 
   // Map descriptions to match LayoutStructureEditor's expected format
   const mappedDescriptions = useMemo(() => {
-    return (availableDescriptions || []).map(desc => ({
+    return (availableDescriptions || []).map((desc) => ({
       id: desc.id,
       name: desc.title,
     }));
@@ -102,7 +109,9 @@ export function EntryForm({ initialData, onSuccess, onCancel, hideActions = fals
     }
   }, [initialData, reset]);
 
-  const { execute, isLoading: isActionProcessing } = useActionLock({ delay: UI_CONSTANTS.ACTION_DELAY_MS });
+  const { execute, isLoading: isActionProcessing } = useActionLock({
+    delay: UI_CONSTANTS.ACTION_DELAY_MS,
+  });
 
   const onSubmit = async (data: EntryFormData) => {
     await execute(async () => {
@@ -116,17 +125,17 @@ export function EntryForm({ initialData, onSuccess, onCancel, hideActions = fals
           is_delete: false,
           layout_structure: layoutStructure,
         };
-      
-      if (isEdit && initialData) {
-        await update(initialData.id, payload);
-      } else {
-        await create(payload);
+
+        if (isEdit && initialData) {
+          await update(initialData.id, payload);
+        } else {
+          await create(payload);
+        }
+        onSuccess();
+      } catch (error: unknown) {
+        console.error(error);
+        handleBindErrors(error, setError);
       }
-      onSuccess();
-    } catch (error: unknown) {
-      console.error(error);
-      handleBindErrors(error, setError);
-    }
     });
   };
 
@@ -148,9 +157,7 @@ export function EntryForm({ initialData, onSuccess, onCancel, hideActions = fals
           })}
           className={errors.name ? 'border-red-500' : ''}
         />
-        {errors.name && (
-          <p className="text-sm text-red-500">{errors.name.message}</p>
-        )}
+        {errors.name && <p className="text-sm text-red-500">{errors.name.message}</p>}
       </div>
 
       <div className="space-y-2">
@@ -169,9 +176,7 @@ export function EntryForm({ initialData, onSuccess, onCancel, hideActions = fals
             {...register('rank_order', { valueAsNumber: true })}
             className={errors.rank_order ? 'border-red-500' : ''}
           />
-          {errors.rank_order && (
-            <p className="text-sm text-red-500">{errors.rank_order.message}</p>
-          )}
+          {errors.rank_order && <p className="text-sm text-red-500">{errors.rank_order.message}</p>}
         </div>
 
         <div className="space-y-2">
@@ -186,30 +191,40 @@ export function EntryForm({ initialData, onSuccess, onCancel, hideActions = fals
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value={EntryStatus.ACTIVE.toString()}>{EntryStatusLabels[EntryStatus.ACTIVE]}</SelectItem>
-              <SelectItem value={EntryStatus.INACTIVE.toString()}>{EntryStatusLabels[EntryStatus.INACTIVE]}</SelectItem>
+              <SelectItem value={EntryStatus.ACTIVE.toString()}>
+                {EntryStatusLabels[EntryStatus.ACTIVE]}
+              </SelectItem>
+              <SelectItem value={EntryStatus.INACTIVE.toString()}>
+                {EntryStatusLabels[EntryStatus.INACTIVE]}
+              </SelectItem>
             </SelectContent>
           </Select>
         </div>
       </div>
 
-      <div className="flex items-center gap-2 mt-4">
-        <input
-          type="checkbox"
-          id="is_display"
-          {...register('is_display')}
-          className="rounded"
-        />
+      <div className="mt-4 flex items-center gap-2">
+        <input type="checkbox" id="is_display" {...register('is_display')} className="rounded" />
         <Label htmlFor="is_display">{tCommon('isDisplay')}</Label>
       </div>
 
       {!hideActions && (
         <div className="flex justify-end gap-2 pt-4">
-          <Button type="button" variant="outline" onClick={onCancel} disabled={loading || isActionProcessing}>
+          <Button
+            type="button"
+            variant="outline"
+            onClick={onCancel}
+            disabled={loading || isActionProcessing}
+          >
             {tCommon('cancel')}
           </Button>
           <Button type="submit" disabled={loading || isActionProcessing}>
-            {loading || isActionProcessing ? (isEdit ? tCommon('updating') : tCommon('creating')) : (isEdit ? tCommon('update') : tCommon('create'))}
+            {loading || isActionProcessing
+              ? isEdit
+                ? tCommon('updating')
+                : tCommon('creating')
+              : isEdit
+                ? tCommon('update')
+                : tCommon('create')}
           </Button>
         </div>
       )}
@@ -233,14 +248,13 @@ export function EntryForm({ initialData, onSuccess, onCancel, hideActions = fals
           <TabsTrigger value="history">{tCommon('history')}</TabsTrigger>
         </TabsList>
         <TabsContent value="details" className="mt-4">
-          <div className="space-y-4">
-            {FormContent}
-          </div>
+          <div className="space-y-4">{FormContent}</div>
         </TabsContent>
         <TabsContent value="descriptions" className="mt-4">
           <div className="space-y-4">
-            <div className="text-sm text-muted-foreground mb-4">
-              Manage the layout structure for descriptions in this entry. Drag and drop to reorder or change hierarchy.
+            <div className="mb-4 text-sm text-muted-foreground">
+              Manage the layout structure for descriptions in this entry. Drag and drop to reorder
+              or change hierarchy.
             </div>
             <LayoutStructureEditor
               type="entry_desc"
@@ -265,14 +279,16 @@ export function EntryForm({ initialData, onSuccess, onCancel, hideActions = fals
         </TabsContent>
       </Tabs>
       {!hideActions && (
-        <div className="flex justify-end gap-2 pt-4 border-t">
-          <Button type="button" variant="outline" onClick={onCancel} disabled={loading || isActionProcessing}>
-            {tCommon('cancel')}
-          </Button>
-          <Button 
-            type="submit" 
+        <div className="flex justify-end gap-2 border-t pt-4">
+          <Button
+            type="button"
+            variant="outline"
+            onClick={onCancel}
             disabled={loading || isActionProcessing}
           >
+            {tCommon('cancel')}
+          </Button>
+          <Button type="submit" disabled={loading || isActionProcessing}>
             {loading || isActionProcessing ? tCommon('updating') : tCommon('update')}
           </Button>
         </div>

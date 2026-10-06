@@ -2,27 +2,22 @@
 
 namespace App\Http\Controllers\History\Management;
 
+use App\Http\Controllers\Controller;
+use App\Http\Requests\History\Management\EntryMgmtHist\DeleteEntryMgmtHistRequest;
 use App\Http\Requests\History\Management\EntryMgmtHist\ListEntryMgmtHistRequest;
 use App\Http\Requests\History\Management\EntryMgmtHist\StoreEntryMgmtHistRequest;
 use App\Http\Requests\History\Management\EntryMgmtHist\UpdateEntryMgmtHistRequest;
-use App\Http\Requests\History\Management\EntryMgmtHist\DeleteEntryMgmtHistRequest;
 use App\Services\History\Management\EntryMgmtHistService;
-use App\Http\Controllers\Controller;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class EntryMgmtHistController extends Controller
 {
     public function __construct(
         protected EntryMgmtHistService $entryMgmtHist
-    )
-    {
-    }
-    
+    ) {}
+
     /**
      * EntryMgmtHist list
-     *
-     * @param ListEntryMgmtHistRequest $request
-     * @return JsonResource
      */
     public function list(ListEntryMgmtHistRequest $request): JsonResource
     {
@@ -31,9 +26,6 @@ class EntryMgmtHistController extends Controller
 
     /**
      * Store entry mgmt hist
-     *
-     * @param StoreEntryMgmtHistRequest $request
-     * @return int
      */
     public function store(StoreEntryMgmtHistRequest $request): int
     {
@@ -42,10 +34,6 @@ class EntryMgmtHistController extends Controller
 
     /**
      * Update entry mgmt hist
-     *
-     * @param UpdateEntryMgmtHistRequest $request
-     * @param string $id
-     * @return int
      */
     public function update(UpdateEntryMgmtHistRequest $request, string $id): int
     {
@@ -57,9 +45,6 @@ class EntryMgmtHistController extends Controller
 
     /**
      * Delete entry mgmt hist
-     *
-     * @param DeleteEntryMgmtHistRequest $request
-     * @return void
      */
     public function delete(DeleteEntryMgmtHistRequest $request): void
     {

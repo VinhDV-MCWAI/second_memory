@@ -6,23 +6,23 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-  /**
-   * Run the migrations.
-   */
-  public function up(): void
-  {
-    Schema::table('media_mgmt', function (Blueprint $table) {
-      $table->integer('upload_status')->default(1)->comment('1: Processing, 2: Completed, 3: Failed');
-    });
-  }
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        Schema::table('media_mgmt', function (Blueprint $table) {
+            $table->integer('upload_status')->default(1)->comment('1: Processing, 2: Completed, 3: Failed');
+        });
+    }
 
-  /**
-   * Reverse the migrations.
-   */
-  public function down(): void
-  {
-    Schema::table('media_mgmt', function (Blueprint $table) {
-      $table->dropColumn('upload_status');
-    });
-  }
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::table('media_mgmt', function (Blueprint $table) {
+            $table->dropColumn('upload_status');
+        });
+    }
 };

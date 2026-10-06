@@ -6,7 +6,7 @@ namespace App\Enums;
 
 enum IsDelete: int
 {
-/**
+    /**
      * false
      *
      * @var int

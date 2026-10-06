@@ -2,27 +2,22 @@
 
 namespace App\Http\Controllers\History\Management;
 
+use App\Http\Controllers\Controller;
+use App\Http\Requests\History\Management\SliderMgmtHist\DeleteSliderMgmtHistRequest;
 use App\Http\Requests\History\Management\SliderMgmtHist\ListSliderMgmtHistRequest;
 use App\Http\Requests\History\Management\SliderMgmtHist\StoreSliderMgmtHistRequest;
 use App\Http\Requests\History\Management\SliderMgmtHist\UpdateSliderMgmtHistRequest;
-use App\Http\Requests\History\Management\SliderMgmtHist\DeleteSliderMgmtHistRequest;
 use App\Services\History\Management\SliderMgmtHistService;
-use App\Http\Controllers\Controller;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class SliderMgmtHistController extends Controller
 {
     public function __construct(
         protected SliderMgmtHistService $sliderMgmtHist
-    )
-    {
-    }
-    
+    ) {}
+
     /**
      * SliderMgmtHist list
-     *
-     * @param ListSliderMgmtHistRequest $request
-     * @return JsonResource
      */
     public function list(ListSliderMgmtHistRequest $request): JsonResource
     {
@@ -31,9 +26,6 @@ class SliderMgmtHistController extends Controller
 
     /**
      * Store slider mgmt hist
-     *
-     * @param StoreSliderMgmtHistRequest $request
-     * @return int
      */
     public function store(StoreSliderMgmtHistRequest $request): int
     {
@@ -42,10 +34,6 @@ class SliderMgmtHistController extends Controller
 
     /**
      * Update slider mgmt hist
-     *
-     * @param UpdateSliderMgmtHistRequest $request
-     * @param string $id
-     * @return int
      */
     public function update(UpdateSliderMgmtHistRequest $request, string $id): int
     {
@@ -57,9 +45,6 @@ class SliderMgmtHistController extends Controller
 
     /**
      * Delete slider mgmt hist
-     *
-     * @param DeleteSliderMgmtHistRequest $request
-     * @return void
      */
     public function delete(DeleteSliderMgmtHistRequest $request): void
     {

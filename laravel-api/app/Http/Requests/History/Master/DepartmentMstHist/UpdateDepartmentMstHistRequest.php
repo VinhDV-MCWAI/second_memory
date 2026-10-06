@@ -2,13 +2,13 @@
 
 namespace App\Http\Requests\History\Master\DepartmentMstHist;
 
-use Illuminate\Foundation\Http\FormRequest;
 use App\Constants\CommonVal;
+use App\Enums\StatusEnum;
+use App\Models\History\Master\DepartmentMstHist;
+use App\Models\Master\DepartmentMst;
+use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Enum;
-use App\Models\History\Master\DepartmentMstHist;
-use App\Enums\StatusEnum;
-use App\Models\Master\DepartmentMst;
 
 class UpdateDepartmentMstHistRequest extends FormRequest
 {
@@ -29,12 +29,12 @@ class UpdateDepartmentMstHistRequest extends FormRequest
     {
         return [
             'id' => ['required', 'integer', 'min:1', Rule::exists(DepartmentMstHist::class, 'id')],
-            'department_mst_id' => ['required', 'integer', 'min:' . CommonVal::MIN_INTEGER, 'max:' . CommonVal::MAX_INTEGER, Rule::exists(DepartmentMst::class, 'id'),],
-            'code' => ['string', 'min:' . CommonVal::MIN_VARCHAR, 'max:50',],
-            'name' => ['string', 'min:' . CommonVal::MIN_VARCHAR, 'max:50',],
-            'status' => [new Enum(StatusEnum::class),],
-            'action' => ['required',],
-            'author_id' => ['required', 'integer', 'min:' . CommonVal::MIN_INTEGER, 'max:' . CommonVal::MAX_INTEGER,],
+            'department_mst_id' => ['required', 'integer', 'min:'.CommonVal::MIN_INTEGER, 'max:'.CommonVal::MAX_INTEGER, Rule::exists(DepartmentMst::class, 'id')],
+            'code' => ['string', 'min:'.CommonVal::MIN_VARCHAR, 'max:50'],
+            'name' => ['string', 'min:'.CommonVal::MIN_VARCHAR, 'max:50'],
+            'status' => [new Enum(StatusEnum::class)],
+            'action' => ['required'],
+            'author_id' => ['required', 'integer', 'min:'.CommonVal::MIN_INTEGER, 'max:'.CommonVal::MAX_INTEGER],
         ];
     }
 

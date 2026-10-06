@@ -10,13 +10,13 @@ use Exception;
 class GoogleDrivePermissionException extends Exception
 {
     protected $code = 403;
-    
+
     public function __construct(string $fileId = '', string $operation = '')
     {
         $message = $operation && $fileId
             ? "Permission denied to {$operation} file (ID: {$fileId}) on Google Drive"
-            : "Permission denied on Google Drive";
-            
+            : 'Permission denied on Google Drive';
+
         parent::__construct($message, $this->code);
     }
 }

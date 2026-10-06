@@ -16,12 +16,12 @@ class RoleMstResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'id' => (int)$this->id,
-            'name' => (string)$this->name,
-            'permission' => (string)$this->permission,
-            'is_active' => (bool)$this->is_active,
-            'is_delete' => (bool)$this->is_delete,
-            'updated_at' => (string)date(CommonVal::DATE_FORMAT, strtotime($this->updated_at)),
+            'id' => (int) $this->id,
+            'name' => (string) $this->name,
+            'permission' => (string) $this->permission,
+            'is_active' => (bool) $this->is_active,
+            'is_delete' => (bool) $this->is_delete,
+            'updated_at' => (string) date(CommonVal::DATE_FORMAT, strtotime($this->updated_at)),
         ];
     }
 }

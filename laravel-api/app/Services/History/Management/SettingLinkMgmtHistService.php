@@ -2,24 +2,18 @@
 
 namespace App\Services\History\Management;
 
-use App\Interfaces\History\Management\SettingLinkMgmtHistInterface;
-
-use Illuminate\Http\Resources\Json\JsonResource;
 use App\Http\Resources\History\Management\SettingLinkMgmtHistResource;
+use App\Interfaces\History\Management\SettingLinkMgmtHistInterface;
+use Illuminate\Http\Resources\Json\JsonResource;
 
 class SettingLinkMgmtHistService
 {
     public function __construct(
         protected SettingLinkMgmtHistInterface $settingLinkMgmtHist
-    )
-    {
-    }
+    ) {}
 
     /**
      * Get setting link mgmt hist list
-     *
-     * @param array $payload
-     * @return JsonResource
      */
     public function list(array $payload): JsonResource
     {
@@ -30,9 +24,6 @@ class SettingLinkMgmtHistService
 
     /**
      * Store setting link mgmt hist
-     *
-     * @param array $payload
-     * @return int
      */
     public function store(array $payload): int
     {
@@ -41,9 +32,6 @@ class SettingLinkMgmtHistService
 
     /**
      * Update setting link mgmt hist
-     *
-     * @param array $payload
-     * @return int
      */
     public function update(array $payload): int
     {
@@ -52,9 +40,6 @@ class SettingLinkMgmtHistService
 
     /**
      * Delete setting link mgmt hist
-     *
-     * @param array $payload
-     * @return void
      */
     public function delete(array $payload): void
     {

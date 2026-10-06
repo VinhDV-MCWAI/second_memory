@@ -17,13 +17,13 @@ import { Badge } from '@/components/ui/badge';
 import type { AdminMst } from '@/shared/types/api';
 import { API_ENDPOINTS } from '@/shared/api';
 import { AdminStatus, AdminStatusLabels } from '@/shared/enums';
-import { 
-  SORT_ORDER, 
-  SORT_FIELDS, 
-  type SortOrder, 
-  PAGINATION, 
+import {
+  SORT_ORDER,
+  SORT_FIELDS,
+  type SortOrder,
+  PAGINATION,
   ADMIN_ROUTES,
-  UI_CONSTANTS
+  UI_CONSTANTS,
 } from '@/shared/config';
 import { AdvancedSearch } from '@/components/common/advanced-search';
 import type { SearchField, SearchCriteria } from '@/shared/types/data-table.types';
@@ -49,7 +49,7 @@ export default function AdminListPage() {
   const [sortBy, setSortBy] = useState<string>(SORT_FIELDS.CREATED_AT);
   const [sortOrder, setSortOrder] = useState<SortOrder>(SORT_ORDER.DESC);
   const [selectedIds, setSelectedIds] = useState<number[]>([]);
-  
+
   // Dialog states
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [deleteIds, setDeleteIds] = useState<number[]>([]);
@@ -63,10 +63,13 @@ export default function AdminListPage() {
   const tCrud = useTranslations('crud');
   const tBulkActions = useTranslations('bulkActions');
 
-  const { data, loading, pagination, refetch } = useApiData<AdminMst>(
-    API_ENDPOINTS.MASTER.ADMIN,
-    { page, per_page: perPage, filters, sort_by: sortBy, sort_order: sortOrder }
-  );
+  const { data, loading, pagination, refetch } = useApiData<AdminMst>(API_ENDPOINTS.MASTER.ADMIN, {
+    page,
+    per_page: perPage,
+    filters,
+    sort_by: sortBy,
+    sort_order: sortOrder,
+  });
 
   const { remove } = useCrud<AdminMst>(API_ENDPOINTS.MASTER.ADMIN);
 
@@ -89,7 +92,9 @@ export default function AdminListPage() {
     setDeleteDialogOpen(true);
   };
 
-  const { execute, isLoading: isDeleteProcessing } = useActionLock({ delay: UI_CONSTANTS.ACTION_DELAY_MS });
+  const { execute, isLoading: isDeleteProcessing } = useActionLock({
+    delay: UI_CONSTANTS.ACTION_DELAY_MS,
+  });
 
   const confirmDelete = async () => {
     try {
@@ -111,15 +116,13 @@ export default function AdminListPage() {
           apiClient.put(`${API_ENDPOINTS.MASTER.ADMIN}/update/${id}`, {
             id,
             is_active: isActive,
-          })
-        )
+          }),
+        ),
       );
-      notification.success(
-        tCommon('updatedSuccessfully')
-      );
+      notification.success(tCommon('updatedSuccessfully'));
       refetch();
     } catch {
-       notification.error(tCommon('somethingWentWrong'));
+      notification.error(tCommon('somethingWentWrong'));
     }
   };
 
@@ -167,14 +170,14 @@ export default function AdminListPage() {
   const searchFields: SearchField[] = [
     { key: 'first_name', label: tFields('firstName'), type: 'text' },
     { key: 'email', label: tFields('email'), type: 'text' },
-    { 
-      key: 'status', 
-      label: tFields('status'), 
-      type: 'select', 
+    {
+      key: 'status',
+      label: tFields('status'),
+      type: 'select',
       options: [
         { value: AdminStatus.ACTIVE.toString(), label: AdminStatusLabels[AdminStatus.ACTIVE] },
         { value: AdminStatus.INACTIVE.toString(), label: AdminStatusLabels[AdminStatus.INACTIVE] },
-      ]
+      ],
     },
     { key: SORT_FIELDS.CREATED_AT, label: tFields('createdAt'), type: 'date' },
   ];
@@ -184,29 +187,31 @@ export default function AdminListPage() {
       label: tBulkActions('deleteSelected'),
       icon: <Trash2 className="h-4 w-4" />,
       variant: 'destructive',
-      onClick: async (_ids) => { await remove(_ids); },
-      confirmMessage: tCrud('deleteConfirm', { count: selectedIds.length, entity: tEntities('admin').toLowerCase() }),
+      onClick: async (_ids) => {
+        await remove(_ids);
+      },
+      confirmMessage: tCrud('deleteConfirm', {
+        count: selectedIds.length,
+        entity: tEntities('admin').toLowerCase(),
+      }),
       confirmTitle: tCrud('deleteEntity', { entity: tEntities('admins') }),
     },
-    { 
-      label: tBulkActions('activateSelected'), 
-      icon: <CheckCircle className="h-4 w-4" />, 
+    {
+      label: tBulkActions('activateSelected'),
+      icon: <CheckCircle className="h-4 w-4" />,
       onClick: async (ids) => handleBulkStatusChange(ids, true),
       confirmMessage: tBulkActions('activateConfirm', { count: selectedIds.length }),
     },
-    { 
-      label: tBulkActions('deactivateSelected'), 
-      icon: <XCircle className="h-4 w-4" />, 
+    {
+      label: tBulkActions('deactivateSelected'),
+      icon: <XCircle className="h-4 w-4" />,
       onClick: async (ids) => handleBulkStatusChange(ids, false),
       confirmMessage: tBulkActions('deactivateConfirm', { count: selectedIds.length }),
     },
   ];
 
   const handleAdvancedSearch = (criteria: SearchCriteria[]) => {
-    const newFilters = criteria.reduce(
-      (acc, c) => ({ ...acc, [c.field]: c.value }), 
-      {}
-    );
+    const newFilters = criteria.reduce((acc, c) => ({ ...acc, [c.field]: c.value }), {});
     setFilters(newFilters);
     setPage(PAGINATION.DEFAULT_PAGE);
   };
@@ -234,7 +239,8 @@ export default function AdminListPage() {
         ]}
         action={
           <Button onClick={handleCreate}>
-            <Plus className="mr-2 h-4 w-4" /> {tCrud('createEntity', { entity: tEntities('admin') })}
+            <Plus className="mr-2 h-4 w-4" />{' '}
+            {tCrud('createEntity', { entity: tEntities('admin') })}
           </Button>
         }
       />
@@ -242,15 +248,19 @@ export default function AdminListPage() {
       <div className="mt-6 space-y-4">
         <div className="flex gap-2">
           <AdvancedSearch fields={searchFields} onSearch={handleAdvancedSearch} />
-          <SavedFilters 
-            currentFilters={filters} 
-            onApplyFilter={(f) => { 
-              setFilters(f); 
-              setPage(PAGINATION.DEFAULT_PAGE); 
-            }} 
-            storageKey="admin-filters" 
+          <SavedFilters
+            currentFilters={filters}
+            onApplyFilter={(f) => {
+              setFilters(f);
+              setPage(PAGINATION.DEFAULT_PAGE);
+            }}
+            storageKey="admin-filters"
           />
-          <ImportExport onExport={handleExport} onImport={handleImport} moduleName={tEntities('admins')} />
+          <ImportExport
+            onExport={handleExport}
+            onImport={handleImport}
+            moduleName={tEntities('admins')}
+          />
         </div>
 
         <FilterPanel
@@ -266,9 +276,15 @@ export default function AdminListPage() {
           fields={filterFields}
         />
 
-        <BulkActions selectedIds={selectedIds} onClearSelection={() => setSelectedIds([])} actions={bulkActions} isLoading={loading} />
+        <BulkActions
+          selectedIds={selectedIds}
+          onClearSelection={() => setSelectedIds([])}
+          actions={bulkActions}
+          isLoading={loading}
+        />
 
-        <DataTable data={data}
+        <DataTable
+          data={data}
           columns={columns}
           loading={loading}
           selectedIds={selectedIds}
@@ -298,19 +314,25 @@ export default function AdminListPage() {
       {/* Create/Edit Admin Modal */}
       {/* Create/Edit Admin Modal */}
       <Dialog open={formDialogOpen} onOpenChange={setFormDialogOpen}>
-        <DialogContent className="max-w-2xl max-h-[90vh] p-0 flex flex-col gap-0 overflow-hidden">
+        <DialogContent className="flex max-h-[90vh] max-w-2xl flex-col gap-0 overflow-hidden p-0">
           {/* Header - Fixed */}
-          <div className="shrink-0 px-6 pt-6 pb-4 border-b bg-background">
+          <div className="shrink-0 border-b bg-background px-6 pt-6 pb-4">
             <DialogHeader>
-              <DialogTitle>{editingAdmin ? tCrud('editEntity', { entity: tEntities('admin') }) : tCrud('createEntity', { entity: tEntities('admin') })}</DialogTitle>
+              <DialogTitle>
+                {editingAdmin
+                  ? tCrud('editEntity', { entity: tEntities('admin') })
+                  : tCrud('createEntity', { entity: tEntities('admin') })}
+              </DialogTitle>
               <DialogDescription>
-                {editingAdmin ? tCrud('editDescription', { entity: tEntities('admin').toLowerCase() }) : tCrud('createDescription', { entity: tEntities('admin').toLowerCase() })}
+                {editingAdmin
+                  ? tCrud('editDescription', { entity: tEntities('admin').toLowerCase() })
+                  : tCrud('createDescription', { entity: tEntities('admin').toLowerCase() })}
               </DialogDescription>
             </DialogHeader>
           </div>
-          
+
           {/* Body - Scrollable */}
-          <div className="flex-1 overflow-y-auto min-h-0">
+          <div className="min-h-0 flex-1 overflow-y-auto">
             <div className="px-6 py-4">
               <AdminForm
                 initialData={editingAdmin}
@@ -319,9 +341,9 @@ export default function AdminListPage() {
               />
             </div>
           </div>
-          
+
           {/* Footer - Fixed */}
-          <div className="shrink-0 px-6 py-4 border-t bg-muted/20">
+          <div className="shrink-0 border-t bg-muted/20 px-6 py-4">
             <DialogFooter>
               <Button type="button" variant="outline" onClick={() => setFormDialogOpen(false)}>
                 {tCommon('cancel')}
@@ -338,10 +360,12 @@ export default function AdminListPage() {
         open={deleteDialogOpen}
         onOpenChange={setDeleteDialogOpen}
         title={tCrud('deleteEntity', { entity: tEntities('admin') + '(s)' })}
-        description={tCrud('deleteConfirm', { count: deleteIds.length, entity: tEntities('admin').toLowerCase() })}
+        description={tCrud('deleteConfirm', {
+          count: deleteIds.length,
+          entity: tEntities('admin').toLowerCase(),
+        })}
         onConfirm={confirmDelete}
         confirmText={tCommon('delete')}
-
         variant="destructive"
         isLoading={isDeleteProcessing}
       />

@@ -6,5 +6,11 @@ export { Toolbar } from './toolbar';
 export { FileGrid } from './file-grid';
 export { FileList } from './file-list';
 export { PreviewModal } from './preview-modal';
-export type { MediaFile, Folder, FileManagerContextType, FileType, ViewMode } from '@/shared/types/file-manager.types';
+export type {
+  MediaFile,
+  Folder,
+  FileManagerContextType,
+  FileType,
+  ViewMode,
+} from '@/shared/types/file-manager.types';
 export { formatFileSize, getFileIcon, getMimeTypeLabel, filterFiles, sortFiles } from './utils';

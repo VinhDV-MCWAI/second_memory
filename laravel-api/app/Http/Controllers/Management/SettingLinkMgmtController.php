@@ -2,27 +2,22 @@
 
 namespace App\Http\Controllers\Management;
 
+use App\Http\Controllers\Controller;
+use App\Http\Requests\Management\SettingLinkMgmt\DeleteSettingLinkMgmtRequest;
 use App\Http\Requests\Management\SettingLinkMgmt\ListSettingLinkMgmtRequest;
 use App\Http\Requests\Management\SettingLinkMgmt\StoreSettingLinkMgmtRequest;
 use App\Http\Requests\Management\SettingLinkMgmt\UpdateSettingLinkMgmtRequest;
-use App\Http\Requests\Management\SettingLinkMgmt\DeleteSettingLinkMgmtRequest;
 use App\Services\Management\SettingLinkMgmtService;
-use App\Http\Controllers\Controller;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class SettingLinkMgmtController extends Controller
 {
     public function __construct(
         protected SettingLinkMgmtService $settingLinkMgmt
-    )
-    {
-    }
-    
+    ) {}
+
     /**
      * SettingLinkMgmt list
-     *
-     * @param ListSettingLinkMgmtRequest $request
-     * @return JsonResource
      */
     public function list(ListSettingLinkMgmtRequest $request): JsonResource
     {
@@ -31,9 +26,6 @@ class SettingLinkMgmtController extends Controller
 
     /**
      * Store setting link mgmt
-     *
-     * @param StoreSettingLinkMgmtRequest $request
-     * @return int
      */
     public function store(StoreSettingLinkMgmtRequest $request): int
     {
@@ -42,10 +34,6 @@ class SettingLinkMgmtController extends Controller
 
     /**
      * Update setting link mgmt
-     *
-     * @param UpdateSettingLinkMgmtRequest $request
-     * @param string $id
-     * @return int
      */
     public function update(UpdateSettingLinkMgmtRequest $request, string $id): int
     {
@@ -57,9 +45,6 @@ class SettingLinkMgmtController extends Controller
 
     /**
      * Delete setting link mgmt
-     *
-     * @param DeleteSettingLinkMgmtRequest $request
-     * @return void
      */
     public function delete(DeleteSettingLinkMgmtRequest $request): void
     {

@@ -10,12 +10,12 @@ enum SocialStatus: int
      * Inactive
      */
     case INACTIVE = 0;
-    
+
     /**
      * Active
      */
     case ACTIVE = 1;
-    
+
     /**
      * Pending
      */

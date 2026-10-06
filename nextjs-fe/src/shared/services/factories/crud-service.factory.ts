@@ -14,13 +14,13 @@ import { API_PATHS } from '@/shared/types/api';
 
 /**
  * Creates a CRUD service with standard operations
- * 
+ *
  * @example
  * // Without suffix (direct endpoint)
  * const userService = createCrudService<UserMgmt>({
  *   endpoint: ENDPOINTS.MANAGEMENT.USER
  * });
- * 
+ *
  * @example
  * // With suffix pattern
  * const tokenService = createCrudService<TokenMst>({
@@ -35,7 +35,8 @@ export function createCrudService<T>(config: ServiceConfig): CrudServiceOperatio
   const endpoints = {
     list: useSuffix ? `${endpoint}${API_PATHS.LIST}` : endpoint,
     store: useSuffix ? `${endpoint}${API_PATHS.STORE}` : endpoint,
-    update: (id: number) => useSuffix ? `${endpoint}${API_PATHS.UPDATE}/${id}` : `${endpoint}/${id}`,
+    update: (id: number) =>
+      useSuffix ? `${endpoint}${API_PATHS.UPDATE}/${id}` : `${endpoint}/${id}`,
     delete: useSuffix ? `${endpoint}${API_PATHS.DELETE}` : endpoint,
   };
 

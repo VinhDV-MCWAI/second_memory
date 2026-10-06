@@ -36,7 +36,7 @@ export function RoleForm({ initialData, onSuccess, onCancel }: RoleFormProps) {
           initialData={initialData}
           onSuccess={handleWizardSuccess}
         />
-        
+
         {/* History tab is shown in the parent role list page */}
       </>
     );

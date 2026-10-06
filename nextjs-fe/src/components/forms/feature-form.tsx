@@ -30,7 +30,7 @@ export function FeatureForm({ initialData, onSuccess, onCancel }: FeatureFormPro
   const tCommon = useTranslations('common');
   const tLabels = useTranslations('forms.labels');
   const tValidation = useTranslations('validation');
-  
+
   const isEdit = !!initialData;
   const { create, update, loading } = useCrud<FeatureMst>(ENDPOINTS.MASTER.FEATURE);
 
@@ -65,31 +65,33 @@ export function FeatureForm({ initialData, onSuccess, onCancel }: FeatureFormPro
     }
   }, [initialData, reset]);
 
-  const { execute, isLoading: isActionProcessing } = useActionLock({ delay: UI_CONSTANTS.ACTION_DELAY_MS });
+  const { execute, isLoading: isActionProcessing } = useActionLock({
+    delay: UI_CONSTANTS.ACTION_DELAY_MS,
+  });
 
   const onSubmit = async (data: FeatureFormData) => {
     await execute(async () => {
       try {
         const payload = { ...data };
 
-      if (isEdit && initialData) {
-        if (!initialData) return;
-        await update(initialData.id, {
-          ...payload,
-          is_delete: initialData.is_delete || false,
-        });
-      } else {
-        await create({
-          ...payload,
-          is_delete: false,
-        });
+        if (isEdit && initialData) {
+          if (!initialData) return;
+          await update(initialData.id, {
+            ...payload,
+            is_delete: initialData.is_delete || false,
+          });
+        } else {
+          await create({
+            ...payload,
+            is_delete: false,
+          });
+        }
+        onSuccess();
+      } catch (error: unknown) {
+        // Error is handled by useCrud toast
+        console.error(error);
+        handleBindErrors(error, setError);
       }
-      onSuccess();
-    } catch (error: unknown) {
-      // Error is handled by useCrud toast
-      console.error(error);
-      handleBindErrors(error, setError);
-    }
     });
   };
 
@@ -102,14 +104,8 @@ export function FeatureForm({ initialData, onSuccess, onCancel }: FeatureFormPro
         <Label htmlFor="name">
           {tLabels('name')} <span className="text-red-500">*</span>
         </Label>
-        <Input
-          id="name"
-          {...register('name')}
-          className={errors.name ? 'border-red-500' : ''}
-        />
-        {errors.name && (
-          <p className="text-sm text-red-500">{errors.name.message}</p>
-        )}
+        <Input id="name" {...register('name')} className={errors.name ? 'border-red-500' : ''} />
+        {errors.name && <p className="text-sm text-red-500">{errors.name.message}</p>}
       </div>
 
       <div className="space-y-2">
@@ -121,12 +117,8 @@ export function FeatureForm({ initialData, onSuccess, onCancel }: FeatureFormPro
           {...register('group_name')}
           className={errors.group_name ? 'border-red-500' : ''}
         />
-        {errors.group_name && (
-          <p className="text-sm text-red-500">{errors.group_name.message}</p>
-        )}
+        {errors.group_name && <p className="text-sm text-red-500">{errors.group_name.message}</p>}
       </div>
-
-
 
       <div className="grid grid-cols-2 gap-4">
         <div className="space-y-2">
@@ -141,20 +133,34 @@ export function FeatureForm({ initialData, onSuccess, onCancel }: FeatureFormPro
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value={FeatureStatus.ACTIVE.toString()}>{FeatureStatusLabels[FeatureStatus.ACTIVE]}</SelectItem>
-              <SelectItem value={FeatureStatus.INACTIVE.toString()}>{FeatureStatusLabels[FeatureStatus.INACTIVE]}</SelectItem>
+              <SelectItem value={FeatureStatus.ACTIVE.toString()}>
+                {FeatureStatusLabels[FeatureStatus.ACTIVE]}
+              </SelectItem>
+              <SelectItem value={FeatureStatus.INACTIVE.toString()}>
+                {FeatureStatusLabels[FeatureStatus.INACTIVE]}
+              </SelectItem>
             </SelectContent>
           </Select>
         </div>
-
       </div>
 
       <div className="flex justify-end gap-2 pt-4">
-        <Button type="button" variant="outline" onClick={onCancel} disabled={loading || isActionProcessing}>
+        <Button
+          type="button"
+          variant="outline"
+          onClick={onCancel}
+          disabled={loading || isActionProcessing}
+        >
           {tCommon('cancel')}
         </Button>
         <Button type="submit" disabled={loading || isActionProcessing}>
-          {loading || isActionProcessing ? (isEdit ? tCommon('updating') : tCommon('creating')) : (isEdit ? tCommon('update') : tCommon('create'))}
+          {loading || isActionProcessing
+            ? isEdit
+              ? tCommon('updating')
+              : tCommon('creating')
+            : isEdit
+              ? tCommon('update')
+              : tCommon('create')}
         </Button>
       </div>
     </form>
