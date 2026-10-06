@@ -245,8 +245,6 @@ services:
       NODE_ENV: development
       PORT: ${NEXTJS_PORT_INSIDE_ENV}
       HOSTNAME: 0.0.0.0
-      WATCHPACK_POLLING: true
-      CHOKIDAR_USEPOLLING: true
       # Memory optimization for dev mode
       NODE_OPTIONS: "--max-old-space-size=1536"
     ports:
@@ -293,8 +291,6 @@ services:
       NODE_ENV: development
       PORT: ${NEXTJS_DOCS_PORT_INSIDE_ENV}
       HOSTNAME: 0.0.0.0
-      WATCHPACK_POLLING: true
-      CHOKIDAR_USEPOLLING: true
       NEXT_PUBLIC_API_URL: http://localhost:81/api
     ports:
       - "${NEXTJS_DOCS_PORT_OUTSIDE_ENV}:${NEXTJS_DOCS_PORT_INSIDE_ENV}"

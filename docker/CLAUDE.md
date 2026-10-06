@@ -5,3 +5,4 @@
 - `ci-cd/deploy.sh` runs on the self-hosted runner after `.github/workflows/cd.yml` pushes images to GHCR.
 - `backup/backup.sh` / `restore.sh` — PostgreSQL + MinIO backup. Test restore after any change.
 - Conventions: `.claude/rules/infra.md`.
+- Next.js dev runs Turbopack with native file watching (Turbopack's `watchOptions.pollIntervalMs` did not pick up changes in Docker). Keep the checkout on the Linux/WSL filesystem (e.g. `~/second_memory`, not `/mnt/c/...`) or hot reload won't see edits.

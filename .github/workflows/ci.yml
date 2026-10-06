@@ -38,7 +38,7 @@ jobs:
         uses: actions/setup-node@v5
         with:
           # Matches the Docker images; moves to 24 with U2
-          node-version: "22"
+          node-version: "24"
           cache: pnpm
           cache-dependency-path: pnpm-lock.yaml
 

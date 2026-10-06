@@ -14,9 +14,9 @@
   },
   "scripts": {
     "predev": "node -e \"const fs=require('fs'); if(!fs.existsSync('.env') && fs.existsSync('.tenv.example')) fs.copyFileSync('.tenv.example', '.env')\"",
-    "dev": "next dev --webpack",
+    "dev": "next dev",
     "prebuild": "node -e \"const fs=require('fs'); if(!fs.existsSync('.env') && fs.existsSync('.tenv.example')) fs.copyFileSync('.tenv.example', '.env')\"",
-    "build": "next build --webpack",
+    "build": "next build",
     "start": "next start",
     "lint": "eslint",
     "test": "vitest",
@@ -76,8 +76,9 @@
     "zod": "^4.1.12"
   },
   "devDependencies": {
+    "babel-plugin-react-compiler": "^1.0.0",
     "@tailwindcss/postcss": "^4",
-    "@types/node": "^20",
+    "@types/node": "^24",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "@types/uuid": "^11.0.0",

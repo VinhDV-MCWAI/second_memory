@@ -22,28 +22,8 @@ const nextConfig: NextConfig = {
     unoptimized: true,
   },
 
-  // Disable server-side features
-  experimental: {
-    // Add experimental features as needed
-  },
-
-  // Development mode optimizations (only used during 'next dev')
-  // These settings help with hot-reload in Docker environment
-  webpack: (config, { dev, isServer }) => {
-    if (dev && !isServer) {
-      // Enable file watching with polling for Docker environments
-      // Required because Docker's file system events don't propagate to containers
-      if (process.env.WATCHPACK_POLLING === 'true') {
-        config.watchOptions = {
-          poll: 1000, // Check for changes every 1 second
-          aggregateTimeout: 300, // Delay rebuild after detecting changes
-          ignored: /node_modules/, // Don't watch node_modules
-        };
-      }
-    }
-
-    return config;
-  },
+  // Auto-memoization (replaces most hand-written useMemo/useCallback)
+  reactCompiler: true,
 };
 
 export default withNextIntl(nextConfig);
