@@ -56,7 +56,7 @@ Workflow: `/refactor-item <ID…>`. Only `approved` items may be started.
 | ID | Item | Done when | Depends | Status |
 |---|---|---|---|---|
 | U1 | PHP 8.5 image; Laravel 11 → 12 → 13 (Rector sets + upgrade guides), unpin exact versions to `^`, Reverb stable, Sanctum latest; PHPUnit 12 **or** convert to Pest 4 (option) | All tests green on 13 | F2, F4 | done (`refactor/p2-upgrades`: Laravel 13.35, PHP 8.5.11, PHPUnit 12.5, 593 pass) |
-| U2 | Next 16.3 with Turbopack (drop `--webpack`; keep polling for Docker via env), enable React Compiler, Vitest 4, Node 24 images | Both apps build & run in Docker | S1, F3 | proposed |
+| U2 | Next 16.3 with Turbopack (drop `--webpack`; keep polling for Docker via env), enable React Compiler, Vitest 4, Node 24 images | Both apps build & run in Docker | S1, F3 | done (`refactor/p2-upgrades`: Turbopack + React Compiler, Node 24) |
 
 ## P3 — Backend architecture
 

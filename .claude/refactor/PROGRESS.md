@@ -76,6 +76,7 @@ User delegated all P2+ items on 2026-10-06 ("toàn quyền thực hiện, không
 | ID | Status | Notes |
 |---|---|---|
 | U1 Laravel 13 / PHP 8.5 | done (verified) | Laravel 11.57 → **13.35** directly (11→12→13 guides: nothing applicable beyond Rector's CSRF rename; config files are published so default changes don't apply), Reverb ^1.12, Sanctum ^4.3, Tinker 3, Predis 3, **PHPUnit 12.5** (no docblock annotations in tests, so nothing silently skipped: still 593). Rector php83 + `UP_TO_LARAVEL_130_WITHOUT_ATTRIBUTES` applied (69 files: `casts()` methods, `Queueable` trait, `fake()`), auth files now in Rector `withSkip`. Pint 1.18 → 1.32 restyled 183 files (FQCN imports) in its own commit, added to `.git-blame-ignore-revs`. Larastan baseline regenerated (637): `casts()` exposed int→bool cast assignments that `$casts` hid. Docker: `PHP_VERSION` arg now actually used, PHP **8.5.11**, phpredis 6.3.0, Xdebug 3.5, Composer 2; CI on 8.5. Verified: 593 pass, Larastan ✓, Pint ✓, Rector dry-run clean, API 200 via nginx, queue + reverb up on 8.5. `composer audit`: only firebase/php-jwt (auth guide). Not verified: production image build (CI docker job) |
+| U2 Next/Turbopack/React Compiler/Node 24 | done (verified) | `--webpack` + webpack polling hook removed; Turbopack for dev and build. **Turbopack `watchOptions.pollIntervalMs` did not detect edits in Docker** (probe route stayed stale), native watching does on the WSL filesystem → polling env vars removed from compose, note in `docker/CLAUDE.md` (keep the checkout off `/mnt/c`). `reactCompiler: true` + `babel-plugin-react-compiler` in both apps. Node 24 image/CI/engines, `@types/node` 24 (lockfile diff minimal). Vitest 4 was already done in F3. Verified: lint 0 errors (20/5 warnings, the react-hooks 7.1.1 errors do not appear with the locked plugin), tsc ✓ both, Vitest 10/10, FE prod image builds and serves `/login` 200 on Node 24, docs `next build` (Turbopack) ✓, dev `/login` `/admin` `/docs` 200 |
 
 ## Log
 
@@ -108,6 +109,7 @@ User delegated all P2+ items on 2026-10-06 ("toàn quyền thực hiện, không
 
 - 2026-10-06 — Rule: no `Co-Authored-By: Claude` trailer (settings `attribution.commit: ""`, CLAUDE.md, workflow rule, local `commit-msg` hook). All 46 earlier commits rewritten without it (tree identical; old tips kept in branch `backup/pre-msg-rewrite`). **38 of them are already on `origin/developer`** → the remote still has the old messages until someone force-pushes `developer` (user decision).
 - 2026-10-06 — U1 done (Laravel 13, PHP 8.5, PHPUnit 12).
+- 2026-10-06 — U2 done.
 
 ## Next step
 
