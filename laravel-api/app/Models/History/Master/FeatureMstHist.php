@@ -25,6 +25,7 @@ class FeatureMstHist extends Model
         'status',
         'action',
         'author_id',
+        'created_at',
     ];
 
     public function featureMst()

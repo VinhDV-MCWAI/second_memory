@@ -28,6 +28,7 @@ class SocialMgmtHist extends Model
         'rank_order',
         'action',
         'author_id',
+        'created_at',
     ];
 
     public function socialMgmt()

@@ -31,7 +31,7 @@ class DeleteApiMstTest extends TestCase
     {
         $rootRole = RoleMst::where('name', 'root')->first();
         if (! $rootRole) {
-            $rootRole = RoleMst::create(['name' => 'root', 'permission' => '{}', 'status' => 1, 'is_active' => 1, 'is_delete' => 0]);
+            $rootRole = RoleMst::create(['name' => 'root', 'permission' => '{}', 'is_active' => 1, 'is_delete' => 0]);
         }
 
         // Grant access to POST .../delete

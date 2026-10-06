@@ -36,6 +36,7 @@ class UserMgmtHist extends Model
         'remember_token',
         'action',
         'author_id',
+        'created_at',
     ];
 
     /**

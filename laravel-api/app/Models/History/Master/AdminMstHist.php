@@ -34,6 +34,7 @@ class AdminMstHist extends Model
         'remember_token',
         'action',
         'author_id',
+        'created_at',
     ];
 
     public function adminMst()

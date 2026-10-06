@@ -26,6 +26,7 @@ class CategoryMgmtHist extends Model
         'layout_structure',
         'action',
         'author_id',
+        'created_at',
     ];
 
     const UPDATED_AT = null;

@@ -49,7 +49,6 @@ abstract class BaseService
             $historyPayload[$this->getHistoryForeignKey()] = $id;
             $historyPayload['action'] = $action;
             $historyPayload['author_id'] = $payload['author_id'] ?? request()->attributes->get('current_admin_id') ?? request()->user()?->id;
-            $historyPayload['created_at'] = now()->format('Y-m-d H:i:s');
 
             // Call history repository
             $this->getHistoryRepository()->executeStore($historyPayload);

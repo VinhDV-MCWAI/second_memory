@@ -24,6 +24,7 @@ class DepartmentMstHist extends Model
         'status',
         'action',
         'author_id',
+        'created_at',
     ];
 
     public function departmentMst()

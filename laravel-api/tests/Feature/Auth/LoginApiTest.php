@@ -496,7 +496,7 @@ class LoginApiTest extends TestCase
             'password' => Hash::make('password'),
         ]);
 
-        $role = RoleMst::firstOrCreate(['name' => 'root'], ['note' => 'test', 'permission' => '{}', 'is_active' => 1, 'is_delete' => 0]);
+        $role = RoleMst::firstOrCreate(['name' => 'root'], ['permission' => '{}', 'is_active' => 1, 'is_delete' => 0]);
         DB::table('admin_role_mst')->insert([
             'admin_mst_id' => $admin->id,
             'role_mst_id' => $role->id,

@@ -26,6 +26,7 @@ class ApiMstHist extends Model
         'feature_mst_id',
         'action',
         'author_id',
+        'created_at',
     ];
 
     public function apiMst()
