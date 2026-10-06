@@ -3,13 +3,13 @@
 namespace App\Services\History\Master;
 
 use App\Http\Resources\History\Master\ApiMstHistResource;
-use App\Interfaces\History\Master\ApiMstHistInterface;
+use App\Repositories\History\Master\ApiMstHistRepository;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class ApiMstHistService
 {
     public function __construct(
-        protected ApiMstHistInterface $apiMstHist
+        protected ApiMstHistRepository $apiMstHist
     ) {}
 
     /**

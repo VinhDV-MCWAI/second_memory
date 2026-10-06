@@ -5,13 +5,12 @@ declare(strict_types=1);
 namespace App\Repositories\Master;
 
 use App\Enums\IsDelete;
-use App\Interfaces\Master\FeatureMstInterface;
 use App\Models\Master\FeatureMst;
 use App\Repositories\BaseRepository;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Arr;
 
-class FeatureMstRepository extends BaseRepository implements FeatureMstInterface
+class FeatureMstRepository extends BaseRepository
 {
     public function __construct(FeatureMst $model)
     {

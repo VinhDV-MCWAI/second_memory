@@ -4,13 +4,12 @@ declare(strict_types=1);
 
 namespace App\Repositories\History\Master;
 
-use App\Interfaces\History\Master\FeatureMstHistInterface;
 use App\Models\History\Master\FeatureMstHist;
 use App\Repositories\BaseRepository;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Arr;
 
-class FeatureMstHistRepository extends BaseRepository implements FeatureMstHistInterface
+class FeatureMstHistRepository extends BaseRepository
 {
     public function __construct(FeatureMstHist $model)
     {

@@ -6,17 +6,17 @@ use App\Http\Resources\Docs\CategoryResource;
 use App\Http\Resources\Docs\EntryDetailResource;
 use App\Http\Resources\Docs\EntryResource;
 use App\Http\Resources\Docs\SearchResultResource;
-use App\Interfaces\Management\CategoryMgmtInterface;
-use App\Interfaces\Management\EntryDescriptionMgmtInterface;
-use App\Interfaces\Management\EntryMgmtInterface;
+use App\Repositories\Management\CategoryMgmtRepository;
+use App\Repositories\Management\EntryDescriptionMgmtRepository;
+use App\Repositories\Management\EntryMgmtRepository;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class DocsService
 {
     public function __construct(
-        protected CategoryMgmtInterface $categoryMgmt,
-        protected EntryMgmtInterface $entryMgmt,
-        protected EntryDescriptionMgmtInterface $entryDescriptionMgmt
+        protected CategoryMgmtRepository $categoryMgmt,
+        protected EntryMgmtRepository $entryMgmt,
+        protected EntryDescriptionMgmtRepository $entryDescriptionMgmt
     ) {}
 
     /**

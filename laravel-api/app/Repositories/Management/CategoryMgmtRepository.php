@@ -5,14 +5,13 @@ declare(strict_types=1);
 namespace App\Repositories\Management;
 
 use App\Enums\IsDelete;
-use App\Interfaces\Management\CategoryMgmtInterface;
 use App\Models\Management\CategoryMgmt;
 use App\Repositories\BaseRepository;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 
-class CategoryMgmtRepository extends BaseRepository implements CategoryMgmtInterface
+class CategoryMgmtRepository extends BaseRepository
 {
     public function __construct(CategoryMgmt $model)
     {

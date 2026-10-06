@@ -4,16 +4,16 @@ namespace App\Services\Management;
 
 use App\Enums\ActionType;
 use App\Http\Resources\Management\UserMgmtResource;
-use App\Interfaces\History\Management\UserMgmtHistInterface;
-use App\Interfaces\Management\UserMgmtInterface;
+use App\Repositories\History\Management\UserMgmtHistRepository;
+use App\Repositories\Management\UserMgmtRepository;
 use App\Services\BaseService;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class UserMgmtService extends BaseService
 {
     public function __construct(
-        protected UserMgmtInterface $userMgmt,
-        protected UserMgmtHistInterface $userMgmtHist
+        protected UserMgmtRepository $userMgmt,
+        protected UserMgmtHistRepository $userMgmtHist
     ) {}
 
     protected function getHistoryRepository()

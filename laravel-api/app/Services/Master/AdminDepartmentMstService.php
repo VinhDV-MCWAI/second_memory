@@ -3,14 +3,14 @@
 namespace App\Services\Master;
 
 use App\Http\Resources\Master\AdminDepartmentMstResource;
-use App\Interfaces\Master\AdminDepartmentMstInterface;
+use App\Repositories\Master\AdminDepartmentMstRepository;
 use App\Services\BaseJunctionService;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class AdminDepartmentMstService extends BaseJunctionService
 {
     public function __construct(
-        protected AdminDepartmentMstInterface $adminDepartmentMst
+        protected AdminDepartmentMstRepository $adminDepartmentMst
     ) {}
 
     /**

@@ -4,16 +4,16 @@ namespace App\Services\Master;
 
 use App\Enums\ActionType;
 use App\Http\Resources\Master\DepartmentMstResource;
-use App\Interfaces\History\Master\DepartmentMstHistInterface;
-use App\Interfaces\Master\DepartmentMstInterface;
+use App\Repositories\History\Master\DepartmentMstHistRepository;
+use App\Repositories\Master\DepartmentMstRepository;
 use App\Services\BaseService;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class DepartmentMstService extends BaseService
 {
     public function __construct(
-        protected DepartmentMstInterface $departmentMst,
-        protected DepartmentMstHistInterface $departmentMstHist
+        protected DepartmentMstRepository $departmentMst,
+        protected DepartmentMstHistRepository $departmentMstHist
     ) {}
 
     protected function getHistoryRepository()

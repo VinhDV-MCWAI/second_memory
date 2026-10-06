@@ -5,14 +5,13 @@ declare(strict_types=1);
 namespace App\Repositories\Management;
 
 use App\Enums\IsDelete;
-use App\Interfaces\Management\EntryDescriptionMgmtInterface;
 use App\Models\Management\EntryDescriptionMgmt;
 use App\Repositories\BaseRepository;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 
-class EntryDescriptionMgmtRepository extends BaseRepository implements EntryDescriptionMgmtInterface
+class EntryDescriptionMgmtRepository extends BaseRepository
 {
     public function __construct(EntryDescriptionMgmt $model)
     {

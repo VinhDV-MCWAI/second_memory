@@ -4,16 +4,16 @@ namespace App\Services\Management;
 
 use App\Enums\ActionType;
 use App\Http\Resources\Management\BannerMgmtResource;
-use App\Interfaces\History\Management\BannerMgmtHistInterface;
-use App\Interfaces\Management\BannerMgmtInterface;
+use App\Repositories\History\Management\BannerMgmtHistRepository;
+use App\Repositories\Management\BannerMgmtRepository;
 use App\Services\BaseService;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class BannerMgmtService extends BaseService
 {
     public function __construct(
-        protected BannerMgmtInterface $bannerMgmt,
-        protected BannerMgmtHistInterface $bannerMgmtHist,
+        protected BannerMgmtRepository $bannerMgmt,
+        protected BannerMgmtHistRepository $bannerMgmtHist,
         protected MediaMgmtService $mediaService
     ) {}
 

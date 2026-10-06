@@ -3,13 +3,13 @@
 namespace App\Services\History\Master;
 
 use App\Http\Resources\History\Master\RoleMstHistResource;
-use App\Interfaces\History\Master\RoleMstHistInterface;
+use App\Repositories\History\Master\RoleMstHistRepository;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class RoleMstHistService
 {
     public function __construct(
-        protected RoleMstHistInterface $roleMstHist
+        protected RoleMstHistRepository $roleMstHist
     ) {}
 
     /**

@@ -4,16 +4,16 @@ namespace App\Services\Master;
 
 use App\Enums\ActionType;
 use App\Http\Resources\Master\FeatureMstResource;
-use App\Interfaces\History\Master\FeatureMstHistInterface;
-use App\Interfaces\Master\FeatureMstInterface;
+use App\Repositories\History\Master\FeatureMstHistRepository;
+use App\Repositories\Master\FeatureMstRepository;
 use App\Services\BaseService;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class FeatureMstService extends BaseService
 {
     public function __construct(
-        protected FeatureMstInterface $featureMst,
-        protected FeatureMstHistInterface $featureMstHist
+        protected FeatureMstRepository $featureMst,
+        protected FeatureMstHistRepository $featureMstHist
     ) {}
 
     protected function getHistoryRepository()

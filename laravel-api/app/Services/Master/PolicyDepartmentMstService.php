@@ -4,16 +4,16 @@ namespace App\Services\Master;
 
 use App\Enums\ActionType;
 use App\Http\Resources\Master\PolicyDepartmentMstResource;
-use App\Interfaces\History\Master\PolicyDepartmentMstHistInterface;
-use App\Interfaces\Master\PolicyDepartmentMstInterface;
+use App\Repositories\History\Master\PolicyDepartmentMstHistRepository;
+use App\Repositories\Master\PolicyDepartmentMstRepository;
 use App\Services\BaseService;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class PolicyDepartmentMstService extends BaseService
 {
     public function __construct(
-        protected PolicyDepartmentMstInterface $policyDepartmentMst,
-        protected PolicyDepartmentMstHistInterface $policyDepartmentMstHist
+        protected PolicyDepartmentMstRepository $policyDepartmentMst,
+        protected PolicyDepartmentMstHistRepository $policyDepartmentMstHist
     ) {}
 
     protected function getHistoryRepository()

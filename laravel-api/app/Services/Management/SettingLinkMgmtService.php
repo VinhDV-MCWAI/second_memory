@@ -4,16 +4,16 @@ namespace App\Services\Management;
 
 use App\Enums\ActionType;
 use App\Http\Resources\Management\SettingLinkMgmtResource;
-use App\Interfaces\History\Management\SettingLinkMgmtHistInterface;
-use App\Interfaces\Management\SettingLinkMgmtInterface;
+use App\Repositories\History\Management\SettingLinkMgmtHistRepository;
+use App\Repositories\Management\SettingLinkMgmtRepository;
 use App\Services\BaseService;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class SettingLinkMgmtService extends BaseService
 {
     public function __construct(
-        protected SettingLinkMgmtInterface $settingLinkMgmt,
-        protected SettingLinkMgmtHistInterface $settingLinkMgmtHist
+        protected SettingLinkMgmtRepository $settingLinkMgmt,
+        protected SettingLinkMgmtHistRepository $settingLinkMgmtHist
     ) {}
 
     protected function getHistoryRepository()

@@ -5,7 +5,7 @@ namespace App\Services\Master;
 use App\Constants\CommonVal;
 use App\Constants\Messages;
 use App\Http\Resources\Master\ApiRoleMstResource;
-use App\Interfaces\Master\ApiRoleMstInterface;
+use App\Repositories\Master\ApiRoleMstRepository;
 use App\Services\BaseJunctionService;
 use Illuminate\Http\Resources\Json\JsonResource;
 use LogicException;
@@ -13,7 +13,7 @@ use LogicException;
 class ApiRoleMstService extends BaseJunctionService
 {
     public function __construct(
-        protected ApiRoleMstInterface $apiRoleMst
+        protected ApiRoleMstRepository $apiRoleMst
     ) {}
 
     /**

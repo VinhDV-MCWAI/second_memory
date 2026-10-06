@@ -3,14 +3,13 @@
 namespace App\Repositories;
 
 use App\Enums\IsDelete;
-use App\Interfaces\BaseInterface;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Collection;
 
-abstract class BaseRepository implements BaseInterface
+abstract class BaseRepository
 {
     public function __construct(protected Model $model) {}
 

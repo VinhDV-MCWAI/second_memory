@@ -5,13 +5,12 @@ declare(strict_types=1);
 namespace App\Repositories\Management;
 
 use App\Enums\IsDelete;
-use App\Interfaces\Management\SliderMgmtInterface;
 use App\Models\Management\SliderMgmt;
 use App\Repositories\BaseRepository;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Arr;
 
-class SliderMgmtRepository extends BaseRepository implements SliderMgmtInterface
+class SliderMgmtRepository extends BaseRepository
 {
     public function __construct(SliderMgmt $model)
     {

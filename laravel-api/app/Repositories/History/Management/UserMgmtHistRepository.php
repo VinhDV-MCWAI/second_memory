@@ -4,14 +4,13 @@ declare(strict_types=1);
 
 namespace App\Repositories\History\Management;
 
-use App\Interfaces\History\Management\UserMgmtHistInterface;
 use App\Models\History\Management\UserMgmtHist;
 use App\Repositories\BaseRepository;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Hash;
 
-class UserMgmtHistRepository extends BaseRepository implements UserMgmtHistInterface
+class UserMgmtHistRepository extends BaseRepository
 {
     public function __construct(UserMgmtHist $model)
     {

@@ -4,16 +4,16 @@ namespace App\Services\Master;
 
 use App\Enums\ActionType;
 use App\Http\Resources\Master\ApiMstResource;
-use App\Interfaces\History\Master\ApiMstHistInterface;
-use App\Interfaces\Master\ApiMstInterface;
+use App\Repositories\History\Master\ApiMstHistRepository;
+use App\Repositories\Master\ApiMstRepository;
 use App\Services\BaseService;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class ApiMstService extends BaseService
 {
     public function __construct(
-        protected ApiMstInterface $apiMst,
-        protected ApiMstHistInterface $apiMstHist
+        protected ApiMstRepository $apiMst,
+        protected ApiMstHistRepository $apiMstHist
     ) {}
 
     protected function getHistoryRepository()

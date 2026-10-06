@@ -3,13 +3,13 @@
 namespace App\Services\History\Management;
 
 use App\Http\Resources\History\Management\SocialMgmtHistResource;
-use App\Interfaces\History\Management\SocialMgmtHistInterface;
+use App\Repositories\History\Management\SocialMgmtHistRepository;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class SocialMgmtHistService
 {
     public function __construct(
-        protected SocialMgmtHistInterface $socialMgmtHist
+        protected SocialMgmtHistRepository $socialMgmtHist
     ) {}
 
     /**

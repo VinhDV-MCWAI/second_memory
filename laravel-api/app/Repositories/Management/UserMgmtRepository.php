@@ -6,7 +6,6 @@ namespace App\Repositories\Management;
 
 use App\Constants\CommonVal;
 use App\Enums\IsDelete;
-use App\Interfaces\Management\UserMgmtInterface;
 use App\Models\Management\UserMgmt;
 use App\Repositories\BaseRepository;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
@@ -14,7 +13,7 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Hash;
 
-class UserMgmtRepository extends BaseRepository implements UserMgmtInterface
+class UserMgmtRepository extends BaseRepository
 {
     public function __construct(UserMgmt $model)
     {

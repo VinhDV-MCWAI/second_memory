@@ -3,13 +3,13 @@
 namespace App\Services\History\Master;
 
 use App\Http\Resources\History\Master\AdminMstHistResource;
-use App\Interfaces\History\Master\AdminMstHistInterface;
+use App\Repositories\History\Master\AdminMstHistRepository;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class AdminMstHistService
 {
     public function __construct(
-        protected AdminMstHistInterface $adminMstHist
+        protected AdminMstHistRepository $adminMstHist
     ) {}
 
     /**

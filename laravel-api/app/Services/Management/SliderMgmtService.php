@@ -4,16 +4,16 @@ namespace App\Services\Management;
 
 use App\Enums\ActionType;
 use App\Http\Resources\Management\SliderMgmtResource;
-use App\Interfaces\History\Management\SliderMgmtHistInterface;
-use App\Interfaces\Management\SliderMgmtInterface;
+use App\Repositories\History\Management\SliderMgmtHistRepository;
+use App\Repositories\Management\SliderMgmtRepository;
 use App\Services\BaseService;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class SliderMgmtService extends BaseService
 {
     public function __construct(
-        protected SliderMgmtInterface $sliderMgmt,
-        protected SliderMgmtHistInterface $sliderMgmtHist
+        protected SliderMgmtRepository $sliderMgmt,
+        protected SliderMgmtHistRepository $sliderMgmtHist
     ) {}
 
     protected function getHistoryRepository()

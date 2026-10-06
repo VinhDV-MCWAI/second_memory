@@ -5,14 +5,13 @@ declare(strict_types=1);
 namespace App\Repositories\Master;
 
 use App\Constants\CommonVal;
-use App\Interfaces\Master\TokenMstInterface;
 use App\Models\Master\TokenMst;
 use App\Repositories\BaseRepository;
 use Carbon\Carbon;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Arr;
 
-class TokenMstRepository extends BaseRepository implements TokenMstInterface
+class TokenMstRepository extends BaseRepository
 {
     public function __construct(TokenMst $model)
     {

@@ -4,16 +4,16 @@ namespace App\Services\Management;
 
 use App\Enums\ActionType;
 use App\Http\Resources\Management\SocialMgmtResource;
-use App\Interfaces\History\Management\SocialMgmtHistInterface;
-use App\Interfaces\Management\SocialMgmtInterface;
+use App\Repositories\History\Management\SocialMgmtHistRepository;
+use App\Repositories\Management\SocialMgmtRepository;
 use App\Services\BaseService;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class SocialMgmtService extends BaseService
 {
     public function __construct(
-        protected SocialMgmtInterface $socialMgmt,
-        protected SocialMgmtHistInterface $socialMgmtHist
+        protected SocialMgmtRepository $socialMgmt,
+        protected SocialMgmtHistRepository $socialMgmtHist
     ) {}
 
     protected function getHistoryRepository()

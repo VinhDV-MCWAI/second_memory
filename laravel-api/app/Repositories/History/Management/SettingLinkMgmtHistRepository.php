@@ -4,13 +4,12 @@ declare(strict_types=1);
 
 namespace App\Repositories\History\Management;
 
-use App\Interfaces\History\Management\SettingLinkMgmtHistInterface;
 use App\Models\History\Management\SettingLinkMgmtHist;
 use App\Repositories\BaseRepository;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Arr;
 
-class SettingLinkMgmtHistRepository extends BaseRepository implements SettingLinkMgmtHistInterface
+class SettingLinkMgmtHistRepository extends BaseRepository
 {
     public function __construct(SettingLinkMgmtHist $model)
     {

@@ -3,13 +3,13 @@
 namespace App\Services\History\Management;
 
 use App\Http\Resources\History\Management\EntryMgmtHistResource;
-use App\Interfaces\History\Management\EntryMgmtHistInterface;
+use App\Repositories\History\Management\EntryMgmtHistRepository;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class EntryMgmtHistService
 {
     public function __construct(
-        protected EntryMgmtHistInterface $entryMgmtHist
+        protected EntryMgmtHistRepository $entryMgmtHist
     ) {}
 
     /**

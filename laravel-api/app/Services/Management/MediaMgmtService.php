@@ -5,8 +5,8 @@ namespace App\Services\Management;
 use App\Constants\MediaConst;
 use App\Enums\UploadStatus;
 use App\Http\Resources\Management\MediaFileResource;
-use App\Interfaces\Management\MediaMgmtInterface;
 use App\Jobs\Media\ProcessLargeFile;
+use App\Repositories\Management\MediaMgmtRepository;
 use App\Services\BaseService;
 use App\Services\MinioService;
 use Exception;
@@ -15,7 +15,7 @@ use Illuminate\Support\Str;
 class MediaMgmtService extends BaseService
 {
     public function __construct(
-        protected MediaMgmtInterface $mediaMgmt,
+        protected MediaMgmtRepository $mediaMgmt,
         protected MinioService $minioService
     ) {}
 

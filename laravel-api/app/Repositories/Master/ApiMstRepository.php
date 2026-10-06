@@ -5,14 +5,13 @@ declare(strict_types=1);
 namespace App\Repositories\Master;
 
 use App\Enums\IsDelete;
-use App\Interfaces\Master\ApiMstInterface;
 use App\Models\Master\ApiMst;
 use App\Models\Master\FeatureMst;
 use App\Repositories\BaseRepository;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Arr;
 
-class ApiMstRepository extends BaseRepository implements ApiMstInterface
+class ApiMstRepository extends BaseRepository
 {
     public function __construct(ApiMst $model)
     {

@@ -4,13 +4,12 @@ declare(strict_types=1);
 
 namespace App\Repositories\History\Management;
 
-use App\Interfaces\History\Management\SliderMgmtHistInterface;
 use App\Models\History\Management\SliderMgmtHist;
 use App\Repositories\BaseRepository;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Arr;
 
-class SliderMgmtHistRepository extends BaseRepository implements SliderMgmtHistInterface
+class SliderMgmtHistRepository extends BaseRepository
 {
     public function __construct(SliderMgmtHist $model)
     {

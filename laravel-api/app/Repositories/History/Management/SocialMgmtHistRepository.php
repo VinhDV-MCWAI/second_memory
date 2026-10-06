@@ -4,13 +4,12 @@ declare(strict_types=1);
 
 namespace App\Repositories\History\Management;
 
-use App\Interfaces\History\Management\SocialMgmtHistInterface;
 use App\Models\History\Management\SocialMgmtHist;
 use App\Repositories\BaseRepository;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Arr;
 
-class SocialMgmtHistRepository extends BaseRepository implements SocialMgmtHistInterface
+class SocialMgmtHistRepository extends BaseRepository
 {
     public function __construct(SocialMgmtHist $model)
     {

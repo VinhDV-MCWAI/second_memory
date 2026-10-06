@@ -4,16 +4,16 @@ namespace App\Services\Management;
 
 use App\Enums\ActionType;
 use App\Http\Resources\Management\CategoryMgmtResource;
-use App\Interfaces\History\Management\CategoryMgmtHistInterface;
-use App\Interfaces\Management\CategoryMgmtInterface;
+use App\Repositories\History\Management\CategoryMgmtHistRepository;
+use App\Repositories\Management\CategoryMgmtRepository;
 use App\Services\BaseService;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class CategoryMgmtService extends BaseService
 {
     public function __construct(
-        protected CategoryMgmtInterface $categoryMgmt,
-        protected CategoryMgmtHistInterface $categoryMgmtHist
+        protected CategoryMgmtRepository $categoryMgmt,
+        protected CategoryMgmtHistRepository $categoryMgmtHist
     ) {}
 
     protected function getHistoryRepository()

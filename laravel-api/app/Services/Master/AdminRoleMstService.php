@@ -5,7 +5,7 @@ namespace App\Services\Master;
 use App\Constants\CommonVal;
 use App\Constants\Messages;
 use App\Http\Resources\Master\AdminRoleMstResource;
-use App\Interfaces\Master\AdminRoleMstInterface;
+use App\Repositories\Master\AdminRoleMstRepository;
 use App\Services\BaseJunctionService;
 use Illuminate\Http\Resources\Json\JsonResource;
 use LogicException;
@@ -13,7 +13,7 @@ use LogicException;
 class AdminRoleMstService extends BaseJunctionService
 {
     public function __construct(
-        protected AdminRoleMstInterface $adminRoleMst
+        protected AdminRoleMstRepository $adminRoleMst
     ) {}
 
     /**

@@ -6,13 +6,12 @@ namespace App\Repositories\Management;
 
 use App\Enums\IsDelete;
 use App\Enums\UploadStatus;
-use App\Interfaces\Management\MediaMgmtInterface;
 use App\Models\Management\MediaMgmt;
 use App\Repositories\BaseRepository;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 
-class MediaMgmtRepository extends BaseRepository implements MediaMgmtInterface
+class MediaMgmtRepository extends BaseRepository
 {
     public function __construct(MediaMgmt $model)
     {

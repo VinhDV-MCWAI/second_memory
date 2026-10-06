@@ -5,13 +5,12 @@ declare(strict_types=1);
 namespace App\Repositories\Master;
 
 use App\Enums\IsDelete;
-use App\Interfaces\Master\RoleMstInterface;
 use App\Models\Master\RoleMst;
 use App\Repositories\BaseRepository;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Arr;
 
-class RoleMstRepository extends BaseRepository implements RoleMstInterface
+class RoleMstRepository extends BaseRepository
 {
     public function __construct(RoleMst $model)
     {

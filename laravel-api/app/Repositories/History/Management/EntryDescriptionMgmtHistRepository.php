@@ -4,13 +4,12 @@ declare(strict_types=1);
 
 namespace App\Repositories\History\Management;
 
-use App\Interfaces\History\Management\EntryDescriptionMgmtHistInterface;
 use App\Models\History\Management\EntryDescriptionMgmtHist;
 use App\Repositories\BaseRepository;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Arr;
 
-class EntryDescriptionMgmtHistRepository extends BaseRepository implements EntryDescriptionMgmtHistInterface
+class EntryDescriptionMgmtHistRepository extends BaseRepository
 {
     public function __construct(EntryDescriptionMgmtHist $model)
     {

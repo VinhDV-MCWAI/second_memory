@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Repositories\Management;
 
 use App\Enums\IsDelete;
-use App\Interfaces\Management\EntryMgmtInterface;
 use App\Models\Management\CategoryMgmt;
 use App\Models\Management\EntryDescriptionMgmt;
 use App\Models\Management\EntryMgmt;
@@ -15,7 +14,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 
-class EntryMgmtRepository extends BaseRepository implements EntryMgmtInterface
+class EntryMgmtRepository extends BaseRepository
 {
     public function __construct(EntryMgmt $model)
     {

@@ -5,13 +5,12 @@ declare(strict_types=1);
 namespace App\Repositories\Management;
 
 use App\Enums\IsDelete;
-use App\Interfaces\Management\SocialMgmtInterface;
 use App\Models\Management\SocialMgmt;
 use App\Repositories\BaseRepository;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Arr;
 
-class SocialMgmtRepository extends BaseRepository implements SocialMgmtInterface
+class SocialMgmtRepository extends BaseRepository
 {
     public function __construct(SocialMgmt $model)
     {

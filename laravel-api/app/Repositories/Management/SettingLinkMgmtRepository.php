@@ -5,13 +5,12 @@ declare(strict_types=1);
 namespace App\Repositories\Management;
 
 use App\Enums\IsDelete;
-use App\Interfaces\Management\SettingLinkMgmtInterface;
 use App\Models\Management\SettingLinkMgmt;
 use App\Repositories\BaseRepository;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Arr;
 
-class SettingLinkMgmtRepository extends BaseRepository implements SettingLinkMgmtInterface
+class SettingLinkMgmtRepository extends BaseRepository
 {
     public function __construct(SettingLinkMgmt $model)
     {

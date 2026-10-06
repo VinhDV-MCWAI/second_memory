@@ -4,14 +4,13 @@ declare(strict_types=1);
 
 namespace App\Repositories\Master;
 
-use App\Interfaces\Master\AdminRoleMstInterface;
 use App\Models\Master\AdminRoleMst;
 use App\Repositories\BaseRepository;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 
-class AdminRoleMstRepository extends BaseRepository implements AdminRoleMstInterface
+class AdminRoleMstRepository extends BaseRepository
 {
     public function __construct(AdminRoleMst $model)
     {

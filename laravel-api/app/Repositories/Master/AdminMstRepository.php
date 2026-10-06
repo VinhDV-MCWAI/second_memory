@@ -6,7 +6,6 @@ namespace App\Repositories\Master;
 
 use App\Constants\CommonVal;
 use App\Enums\IsDelete;
-use App\Interfaces\Master\AdminMstInterface;
 use App\Models\Master\AdminMst;
 use App\Repositories\BaseRepository;
 use Carbon\Carbon;
@@ -14,7 +13,7 @@ use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Hash;
 
-class AdminMstRepository extends BaseRepository implements AdminMstInterface
+class AdminMstRepository extends BaseRepository
 {
     public function __construct(AdminMst $model)
     {

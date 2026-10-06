@@ -4,16 +4,16 @@ namespace App\Services\Master;
 
 use App\Enums\ActionType;
 use App\Http\Resources\Master\RoleMstResource;
-use App\Interfaces\History\Master\RoleMstHistInterface;
-use App\Interfaces\Master\RoleMstInterface;
+use App\Repositories\History\Master\RoleMstHistRepository;
+use App\Repositories\Master\RoleMstRepository;
 use App\Services\BaseService;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class RoleMstService extends BaseService
 {
     public function __construct(
-        protected RoleMstInterface $roleMst,
-        protected RoleMstHistInterface $roleMstHist
+        protected RoleMstRepository $roleMst,
+        protected RoleMstHistRepository $roleMstHist
     ) {}
 
     protected function getHistoryRepository()

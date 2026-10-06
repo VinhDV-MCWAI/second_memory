@@ -5,13 +5,12 @@ declare(strict_types=1);
 namespace App\Repositories\Master;
 
 use App\Enums\IsDelete;
-use App\Interfaces\Master\DepartmentMstInterface;
 use App\Models\Master\DepartmentMst;
 use App\Repositories\BaseRepository;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Arr;
 
-class DepartmentMstRepository extends BaseRepository implements DepartmentMstInterface
+class DepartmentMstRepository extends BaseRepository
 {
     public function __construct(DepartmentMst $model)
     {

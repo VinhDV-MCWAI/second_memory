@@ -4,13 +4,12 @@ declare(strict_types=1);
 
 namespace App\Repositories\History\Master;
 
-use App\Interfaces\History\Master\PolicyDepartmentMstHistInterface;
 use App\Models\History\Master\PolicyDepartmentMstHist;
 use App\Repositories\BaseRepository;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Arr;
 
-class PolicyDepartmentMstHistRepository extends BaseRepository implements PolicyDepartmentMstHistInterface
+class PolicyDepartmentMstHistRepository extends BaseRepository
 {
     public function __construct(PolicyDepartmentMstHist $model)
     {

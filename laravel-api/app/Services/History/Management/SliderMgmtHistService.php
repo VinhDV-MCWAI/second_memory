@@ -3,13 +3,13 @@
 namespace App\Services\History\Management;
 
 use App\Http\Resources\History\Management\SliderMgmtHistResource;
-use App\Interfaces\History\Management\SliderMgmtHistInterface;
+use App\Repositories\History\Management\SliderMgmtHistRepository;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class SliderMgmtHistService
 {
     public function __construct(
-        protected SliderMgmtHistInterface $sliderMgmtHist
+        protected SliderMgmtHistRepository $sliderMgmtHist
     ) {}
 
     /**

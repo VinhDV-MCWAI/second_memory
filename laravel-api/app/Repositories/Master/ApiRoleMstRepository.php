@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Repositories\Master;
 
-use App\Interfaces\Master\ApiRoleMstInterface;
 use App\Models\Master\ApiRoleMst;
 use App\Repositories\BaseRepository;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
@@ -12,7 +11,7 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
-class ApiRoleMstRepository extends BaseRepository implements ApiRoleMstInterface
+class ApiRoleMstRepository extends BaseRepository
 {
     public function __construct(ApiRoleMst $model)
     {

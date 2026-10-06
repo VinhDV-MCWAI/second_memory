@@ -5,13 +5,12 @@ declare(strict_types=1);
 namespace App\Repositories\Management;
 
 use App\Enums\IsDelete;
-use App\Interfaces\Management\BannerMgmtInterface;
 use App\Models\Management\BannerMgmt;
 use App\Repositories\BaseRepository;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Arr;
 
-class BannerMgmtRepository extends BaseRepository implements BannerMgmtInterface
+class BannerMgmtRepository extends BaseRepository
 {
     public function __construct(BannerMgmt $model)
     {

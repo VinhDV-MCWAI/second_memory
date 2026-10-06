@@ -3,13 +3,13 @@
 namespace App\Services\History\Management;
 
 use App\Http\Resources\History\Management\SettingLinkMgmtHistResource;
-use App\Interfaces\History\Management\SettingLinkMgmtHistInterface;
+use App\Repositories\History\Management\SettingLinkMgmtHistRepository;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class SettingLinkMgmtHistService
 {
     public function __construct(
-        protected SettingLinkMgmtHistInterface $settingLinkMgmtHist
+        protected SettingLinkMgmtHistRepository $settingLinkMgmtHist
     ) {}
 
     /**

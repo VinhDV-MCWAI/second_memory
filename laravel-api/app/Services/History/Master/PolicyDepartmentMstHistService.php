@@ -3,13 +3,13 @@
 namespace App\Services\History\Master;
 
 use App\Http\Resources\History\Master\PolicyDepartmentMstHistResource;
-use App\Interfaces\History\Master\PolicyDepartmentMstHistInterface;
+use App\Repositories\History\Master\PolicyDepartmentMstHistRepository;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class PolicyDepartmentMstHistService
 {
     public function __construct(
-        protected PolicyDepartmentMstHistInterface $policyDepartmentMstHist
+        protected PolicyDepartmentMstHistRepository $policyDepartmentMstHist
     ) {}
 
     /**

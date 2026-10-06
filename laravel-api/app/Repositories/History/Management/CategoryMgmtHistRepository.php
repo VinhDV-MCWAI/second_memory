@@ -4,13 +4,12 @@ declare(strict_types=1);
 
 namespace App\Repositories\History\Management;
 
-use App\Interfaces\History\Management\CategoryMgmtHistInterface;
 use App\Models\History\Management\CategoryMgmtHist;
 use App\Repositories\BaseRepository;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Arr;
 
-class CategoryMgmtHistRepository extends BaseRepository implements CategoryMgmtHistInterface
+class CategoryMgmtHistRepository extends BaseRepository
 {
     public function __construct(CategoryMgmtHist $model)
     {

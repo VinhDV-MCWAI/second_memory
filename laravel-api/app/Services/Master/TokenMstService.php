@@ -3,14 +3,14 @@
 namespace App\Services\Master;
 
 use App\Http\Resources\Master\TokenMstResource;
-use App\Interfaces\Master\TokenMstInterface;
+use App\Repositories\Master\TokenMstRepository;
 use App\Services\BaseService;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class TokenMstService extends BaseService
 {
     public function __construct(
-        protected TokenMstInterface $tokenMst
+        protected TokenMstRepository $tokenMst
     ) {}
 
     protected function getHistoryRepository()

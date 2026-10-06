@@ -4,16 +4,16 @@ namespace App\Services\Master;
 
 use App\Enums\ActionType;
 use App\Http\Resources\Master\AdminMstResource;
-use App\Interfaces\History\Master\AdminMstHistInterface;
-use App\Interfaces\Master\AdminMstInterface;
+use App\Repositories\History\Master\AdminMstHistRepository;
+use App\Repositories\Master\AdminMstRepository;
 use App\Services\BaseService;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class AdminMstService extends BaseService
 {
     public function __construct(
-        protected AdminMstInterface $adminMst,
-        protected AdminMstHistInterface $adminMstHist
+        protected AdminMstRepository $adminMst,
+        protected AdminMstHistRepository $adminMstHist
     ) {}
 
     protected function getHistoryRepository()

@@ -4,13 +4,12 @@ declare(strict_types=1);
 
 namespace App\Repositories\History\Management;
 
-use App\Interfaces\History\Management\BannerMgmtHistInterface;
 use App\Models\History\Management\BannerMgmtHist;
 use App\Repositories\BaseRepository;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Arr;
 
-class BannerMgmtHistRepository extends BaseRepository implements BannerMgmtHistInterface
+class BannerMgmtHistRepository extends BaseRepository
 {
     public function __construct(BannerMgmtHist $model)
     {

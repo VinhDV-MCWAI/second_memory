@@ -4,13 +4,12 @@ declare(strict_types=1);
 
 namespace App\Repositories\Master;
 
-use App\Interfaces\Master\AdminDepartmentMstInterface;
 use App\Models\Master\AdminDepartmentMst;
 use App\Repositories\BaseRepository;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 
-class AdminDepartmentMstRepository extends BaseRepository implements AdminDepartmentMstInterface
+class AdminDepartmentMstRepository extends BaseRepository
 {
     public function __construct(AdminDepartmentMst $model)
     {

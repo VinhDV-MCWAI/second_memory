@@ -3,13 +3,13 @@
 namespace App\Services\History\Management;
 
 use App\Http\Resources\History\Management\BannerMgmtHistResource;
-use App\Interfaces\History\Management\BannerMgmtHistInterface;
+use App\Repositories\History\Management\BannerMgmtHistRepository;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class BannerMgmtHistService
 {
     public function __construct(
-        protected BannerMgmtHistInterface $bannerMgmtHist
+        protected BannerMgmtHistRepository $bannerMgmtHist
     ) {}
 
     /**

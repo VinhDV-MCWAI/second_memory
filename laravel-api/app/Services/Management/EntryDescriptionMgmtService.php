@@ -4,16 +4,16 @@ namespace App\Services\Management;
 
 use App\Enums\ActionType;
 use App\Http\Resources\Management\EntryDescriptionMgmtResource;
-use App\Interfaces\History\Management\EntryDescriptionMgmtHistInterface;
-use App\Interfaces\Management\EntryDescriptionMgmtInterface;
+use App\Repositories\History\Management\EntryDescriptionMgmtHistRepository;
+use App\Repositories\Management\EntryDescriptionMgmtRepository;
 use App\Services\BaseService;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class EntryDescriptionMgmtService extends BaseService
 {
     public function __construct(
-        protected EntryDescriptionMgmtInterface $entryDescriptionMgmt,
-        protected EntryDescriptionMgmtHistInterface $entryDescriptionMgmtHist
+        protected EntryDescriptionMgmtRepository $entryDescriptionMgmt,
+        protected EntryDescriptionMgmtHistRepository $entryDescriptionMgmtHist
     ) {}
 
     protected function getHistoryRepository()
