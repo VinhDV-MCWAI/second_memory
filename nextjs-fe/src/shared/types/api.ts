@@ -169,22 +169,6 @@ export interface UseHistoryReturn<T extends BaseHistory> {
  * useJunctionTable Hook Types
  */
 
-export interface UseJunctionTableReturn<T = Record<string, unknown>> {
-  allItems: T[];
-  assignedIds: number[];
-  selectedIds: number[];
-  loading: boolean;
-  saving: boolean;
-  setSelectedIds: (ids: number[]) => void;
-  toggleSelection: (id: number) => void;
-  save: () => Promise<void>;
-  refetch: () => Promise<void>;
-}
-
-/**
- * Master Data Models
- */
-
 export interface AdminMst {
   id: number;
   email: string;
@@ -464,10 +448,6 @@ export const API_PATHS = {
   STORE: '/store',
   UPDATE: '/update',
   DELETE: '/delete',
-  VIEW: '/view',
-  DOWNLOAD: '/download',
-  EXPORT: '/export',
-  IMPORT: '/import',
   PREPARE_UPLOAD: '/prepare-upload',
   INIT_MULTIPART_UPLOAD: '/init-multipart-upload',
   GET_MULTIPART_URL: '/get-multipart-url',

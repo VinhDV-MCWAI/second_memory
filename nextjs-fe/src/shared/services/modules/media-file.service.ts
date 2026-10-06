@@ -5,11 +5,10 @@
 
 import { apiClient } from '@/shared/api/client';
 import { ENDPOINTS } from '@/shared/api';
-import { MIME_TYPE_PREFIX, FILE_SIZE_UNITS, FILE_SIZE_MULTIPLIER } from '@/shared/config/constant';
+import { FILE_SIZE_UNITS, FILE_SIZE_MULTIPLIER } from '@/shared/config/constant';
 import { API_PATHS } from '@/shared/types/api';
 import messages from '../../../../messages/en.json';
 import type {
-  MediaFile,
   UploadFileParams,
   ListFilesParams,
   RenameFileParams,
@@ -192,46 +191,9 @@ class MediaFileService {
     return response.data;
   }
 
-  /**
-   * Get single media file by ID
-   */
-  async get(id: number): Promise<MediaFile> {
-    const response = await apiClient.get<MediaFile>(`${this.baseUrl}/${id}`);
-    return response.data;
-  }
 
-  /**
-   * Get file view URL
-   */
-  getViewUrl(id: number): string {
-    return `${this.baseUrl}/${id}${API_PATHS.VIEW}`;
-  }
 
-  /**
-   * Get file download URL
-   */
-  getDownloadUrl(id: number): string {
-    return `${this.baseUrl}/${id}${API_PATHS.DOWNLOAD}`;
-  }
 
-  /**
-   * Download file
-   */
-  async download(id: number, filename?: string): Promise<void> {
-    const url = this.getDownloadUrl(id);
-    const response = await fetch(url);
-    const blob = await response.blob();
-
-    // Create download link
-    const downloadUrl = window.URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = downloadUrl;
-    link.download = filename || `file-${id}`;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    window.URL.revokeObjectURL(downloadUrl);
-  }
 
   /**
    * Rename file or folder
@@ -264,24 +226,7 @@ class MediaFileService {
     });
   }
 
-  /**
-   * Delete single file
-   */
-  async deleteSingle(id: number): Promise<void> {
-    await apiClient.delete(`${this.baseUrl}${API_PATHS.DELETE}/${id}`);
-  }
 
-  /**
-   * Get file type icon based on MIME type
-   */
-  getFileTypeIcon(mimeType: string): string {
-    if (mimeType.startsWith(MIME_TYPE_PREFIX.IMAGE)) return '🖼️';
-    if (mimeType.startsWith(MIME_TYPE_PREFIX.VIDEO)) return '🎥';
-    if (mimeType.includes('pdf')) return '📄';
-    if (mimeType.includes('word') || mimeType.includes('document')) return '📝';
-    if (mimeType.includes('sheet') || mimeType.includes('excel')) return '📊';
-    return '📁';
-  }
 
   /**
    * Format file size to human readable format
