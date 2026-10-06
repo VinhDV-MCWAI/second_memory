@@ -4,8 +4,6 @@ import { QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { Toaster } from 'react-hot-toast';
 import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { setNavigateFunction, clearNavigateFunction } from '@/shared/utils/navigation';
 import { QueryClient } from '@tanstack/react-query';
 import { ThemeProvider } from 'next-themes';
 import { NextIntlClientProvider, AbstractIntlMessages } from 'next-intl';
@@ -23,23 +21,6 @@ const queryClient = new QueryClient({
     },
   },
 });
-
-function NavigationProvider() {
-  const router = useRouter();
-
-  useEffect(() => {
-    // Set navigation function for use in sagas and interceptors
-    setNavigateFunction((path: string) => {
-      router.push(path);
-    });
-
-    return () => {
-      clearNavigateFunction();
-    };
-  }, [router]);
-
-  return null;
-}
 
 import { AuthProvider } from '@/providers/auth-provider';
 import { GlobalLoadingProvider } from '@/shared/providers/global-loading-provider';
@@ -105,10 +86,7 @@ export function Providers({
             enableSystem
             disableTransitionOnChange={false}
           >
-            <GlobalLoadingProvider>
-              <NavigationProvider />
-              {children}
-            </GlobalLoadingProvider>
+            <GlobalLoadingProvider>{children}</GlobalLoadingProvider>
             <Toaster
               position="top-right"
               reverseOrder={false}

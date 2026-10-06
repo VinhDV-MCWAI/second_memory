@@ -39,18 +39,3 @@ export const ValidationRules = {
   CODE_MAX: 50,
   ICON_MAX: 50,
 } as const;
-
-/**
- * Format error messages consistently
- */
-export const ErrorMessages = {
-  required: (field: string) => `${field} is required`,
-  minLength: (field: string, min: number) => `${field} must be at least ${min} characters`,
-  maxLength: (field: string, max: number) => `${field} must be at most ${max} characters`,
-  email: 'Invalid email format',
-  url: 'Invalid URL format',
-  integer: 'Must be a valid integer',
-  minValue: (min: number) => `Must be at least ${min}`,
-  maxValue: (max: number) => `Must be at most ${max}`,
-  invalidEnum: (field: string) => `Invalid ${field} value`,
-} as const;

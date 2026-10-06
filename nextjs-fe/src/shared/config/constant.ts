@@ -142,15 +142,6 @@ export const PAGINATION = {
   DEFAULT_TO: 0,
 } as const;
 
-// Media manager config (using same pagination defaults)
-export const MEDIA_MANAGER_CONFIG = {
-  MIN_PAGE: 1,
-} as const;
-
-// ============================================================================
-// FORMS
-// ============================================================================
-
 // Default values for forms
 export const FORM_DEFAULTS = {
   RANK_ORDER: 0,
@@ -258,17 +249,6 @@ export const EXPORT_FORMATS = {
 export type ExportFormat = (typeof EXPORT_FORMATS)[keyof typeof EXPORT_FORMATS];
 export type ImportFormat = typeof EXPORT_FORMATS.CSV | typeof EXPORT_FORMATS.EXCEL;
 
-// Drag and drop events
-export const DRAG_EVENTS = {
-  ENTER: 'dragenter',
-  OVER: 'dragover',
-  LEAVE: 'dragleave',
-  DROP: 'drop',
-} as const;
-
-// File type filters (for media)
-export const MEDIA_FILE_TYPES = ['all', 'images', 'videos', 'documents'] as const;
-
 // MIME type prefixes
 export const MIME_TYPE_PREFIX = {
   IMAGE: 'image/',
@@ -308,9 +288,6 @@ export const FILE_MANAGER_SORT_FIELDS = {
   SIZE: 'size',
   TYPE: 'type',
 } as const;
-
-export type FileManagerSortField =
-  (typeof FILE_MANAGER_SORT_FIELDS)[keyof typeof FILE_MANAGER_SORT_FIELDS];
 
 // File manager view modes
 export const VIEW_MODE = {
@@ -359,14 +336,6 @@ export const MOVE_COPY_MODE = {
 
 export type MoveCopyMode = (typeof MOVE_COPY_MODE)[keyof typeof MOVE_COPY_MODE];
 
-// Translation keys for file manager
-export const TRANSLATION_KEY = {
-  MOVE_FAILED: 'moveFailed',
-  COPY_FAILED: 'copyFailed',
-  MOVE_SUCCESS: 'moveSuccess',
-  COPY_SUCCESS: 'copySuccess',
-} as const;
-
 // Initial pagination state for file manager (same values as PAGINATION defaults)
 export const INITIAL_PAGINATION = {
   page: PAGINATION.DEFAULT_PAGE,
@@ -374,19 +343,6 @@ export const INITIAL_PAGINATION = {
   total: 0,
   totalPages: PAGINATION.DEFAULT_TOTAL_PAGES,
 } as const;
-
-// Default sidebar folders for file manager
-export const DEFAULT_SIDEBAR_FOLDERS = [
-  { id: '1', nameKey: 'sidebar.images', path: '/images/2025' },
-  { id: '2', nameKey: 'sidebar.videos', path: '/videos' },
-  { id: '3', nameKey: 'sidebar.documents', path: '/documents' },
-  { id: '4', nameKey: 'sidebar.recent', path: '/recent' },
-  { id: '5', nameKey: 'sidebar.shared', path: '/shared' },
-] as const;
-
-// ============================================================================
-// UI & UX
-// ============================================================================
 
 // UI Constants
 export const UI_CONSTANTS = {
@@ -415,8 +371,6 @@ export const KEYBOARD_KEYS = {
   ARROW_RIGHT: 'ArrowRight',
 } as const;
 
-export type KeyboardKey = (typeof KEYBOARD_KEYS)[keyof typeof KEYBOARD_KEYS];
-
 // Keyboard events
 export const KEYBOARD_EVENT = {
   KEYDOWN: 'keydown',
@@ -434,12 +388,6 @@ export const THEME = {
   DARK: 'dark',
   SYSTEM: 'system',
 } as const;
-
-export type ThemeMode = (typeof THEME)[keyof typeof THEME];
-
-// ============================================================================
-// ROUTING
-// ============================================================================
 
 // Admin Routes
 export const ADMIN_ROUTES = {

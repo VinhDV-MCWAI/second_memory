@@ -31,42 +31,9 @@ export const API_TYPE_TO_METHOD: Record<number, string> = {
   5: HTTP_METHODS.DELETE,
 };
 
-export const METHOD_TO_API_TYPE: Record<string, number> = {
-  [HTTP_METHODS.GET]: 1,
-  [HTTP_METHODS.POST]: 2,
-  [HTTP_METHODS.PUT]: 3,
-  [HTTP_METHODS.PATCH]: 4,
-  [HTTP_METHODS.DELETE]: 5,
-};
-
-// ============================================================================
-// WIZARD DIMENSIONS & LAYOUT
-// ============================================================================
-
-export const ROLE_WIZARD_LAYOUT = {
-  // Step 2 dual layout percentages
-  LEFT_PANEL_WIDTH: '30%', // Features list
-  RIGHT_PANEL_WIDTH: '70%', // APIs list
-
-  // Container dimensions
-  MIN_HEIGHT: '400px',
-  CONTENT_HEIGHT: 'h-[500px]',
-  MAX_WIDTH: 'max-w-4xl',
-  MAX_HEIGHT: 'max-h-[90vh]',
-
-  // Step heights
-  REVIEW_CONTENT_MAX_HEIGHT: 'max-h-[600px]',
-} as const;
-
-// ============================================================================
-// WIZARD STATE
-// ============================================================================
-
 export const WIZARD_STEPS = {
   ROLE_SETUP: 1,
   PERMISSION_SETUP: 2,
   REVIEW_CONFIRM: 3,
   TOTAL_STEPS: 3,
 } as const;
-
-export type WizardStep = (typeof WIZARD_STEPS)[keyof Omit<typeof WIZARD_STEPS, 'TOTAL_STEPS'>];
