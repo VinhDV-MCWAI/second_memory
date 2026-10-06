@@ -8,7 +8,7 @@ REST API for Second Memory. Conventions: `.claude/rules/backend-laravel.md` (aut
 docker exec ml-php composer check                        # lint + analyse + test
 docker exec ml-php composer test -- --filter=CategoryMgmt
 docker exec ml-php composer lint                         # pint --test (format: composer format)
-docker exec ml-php composer analyse                      # Larastan level 5 + phpstan-baseline.neon
+docker exec ml-php composer analyse                      # Larastan level 6 + phpstan-baseline.neon
 docker exec ml-php composer rector                       # Rector dry run (auth files are skipped)
 docker exec ml-php php artisan route:list --path=api/admin
 docker exec ml-php php artisan migrate:fresh --seed      # DEV ONLY, destroys data

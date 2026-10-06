@@ -62,11 +62,11 @@ Workflow: `/refactor-item <ID…>`. Only `approved` items may be started.
 
 | ID | Item | Done when | Depends | Status |
 |---|---|---|---|---|
-| B1 | **Generic CRUD core**: `BaseCrudController` / `BaseCrudService` / `BaseRepository` with list/store/update/delete; entities declare only model, resource, filters, rules. Consider `spatie/laravel-query-builder` for allow-listed filter/sort/include (replaces `applyFilters`/`applySorting`/`Schema::hasColumn`). Contract unchanged | ~60% fewer per-entity files; all feature tests green | U1 | proposed |
+| B1 | **Generic CRUD core**: `BaseCrudController` / `BaseCrudService` / `BaseRepository` with list/store/update/delete; entities declare only model, resource, filters, rules. Consider `spatie/laravel-query-builder` for allow-listed filter/sort/include (replaces `applyFilters`/`applySorting`/`Schema::hasColumn`). Contract unchanged | ~60% fewer per-entity files; all feature tests green | U1 | done (`refactor/p3-backend`) |
 | B2 | History via model trait/observer (`Auditable`) instead of manual `recordHistory()` in each service | History tests green; no `recordHistory` calls in services | B1 | proposed |
 | B3 | Enums: shared `HasLabel` trait, native enum casts on models, `Rule::enum` in requests | No duplicated `getLabel()` | U1 | done (`refactor/p3-backend`) |
 | B4 | Routing: split `routes/api.php` into `routes/api/{master,management,history,docs}.php`, middleware aliases in `bootstrap/app.php` | `route:list` identical before/after (diff) | – | done (`refactor/p3-backend`: route:list identical) |
-| B5 | `Model::shouldBeStrict()` in non-prod, `$request->validated()` everywhere, `declare(strict_types=1)` everywhere | Larastan level raised to 6+ | F2 | proposed |
+| B5 | `Model::shouldBeStrict()` in non-prod, `$request->validated()` everywhere, `declare(strict_types=1)` everywhere | Larastan level raised to 6+ | F2 | done (`refactor/p3-backend`: Larastan level 6) |
 | B6 | OpenAPI via **Scramble** at `/docs/api` (admin-only), export spec in CI | Spec generated; consumed by FE4 | B1 | proposed |
 | B7 | *(optional, large)* Custom `is_delete` → Laravel `SoftDeletes` (`deleted_at`) with data migration | Migration reversible; tests green | B1 | proposed |
 
