@@ -38,6 +38,7 @@ class BannerMgmtRepository extends BaseRepository implements BannerMgmtInterface
                 'banner_mgmt.is_delete',
             ])
             ->leftJoin('media_mgmt', 'banner_mgmt.media_id', '=', 'media_mgmt.id')
+            ->with('media:id,url') // BannerMgmtResource reads media->url
             ->where('banner_mgmt.is_delete', IsDelete::FALSE->value);
 
         // Apply filters
