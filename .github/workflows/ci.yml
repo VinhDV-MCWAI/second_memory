@@ -149,6 +149,12 @@ jobs:
         # lands (docs/auth/AUTH-GUIDE.md, A13). Remove the exclusion then.
         run: php artisan test --exclude-filter 'RefreshTokenApiTest::test_t0(04|05|06|19)_'
 
+      - name: OpenAPI spec is up to date
+        # Runs after the tests so the testing DB has the schema Scramble inspects
+        run: |
+          php artisan scramble:export
+          git diff --exit-code openapi.json || { echo "::error::openapi.json is stale, run 'make openapi' and commit it"; exit 1; }
+
       - name: Audit dependencies
         run: composer audit
         continue-on-error: true

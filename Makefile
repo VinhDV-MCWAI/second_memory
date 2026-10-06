@@ -60,6 +60,10 @@ pint: ## Format PHP code
 analyse: ## Static analysis (Larastan)
 	$(PHP) composer analyse
 
+.PHONY: openapi
+openapi: ## Regenerate laravel-api/openapi.json (commit it; CI checks it is current)
+	$(PHP) php artisan scramble:export
+
 .PHONY: rector
 rector: ## Preview automated refactors (dry run)
 	$(PHP) composer rector
