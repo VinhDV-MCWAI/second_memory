@@ -4,7 +4,6 @@ import { useState } from 'react';
 import { useApiData } from '@/shared/hooks/useApiData';
 import { useCrud } from '@/shared/hooks/useCrud';
 import { useActionLock } from '@/shared/hooks/useActionLock';
-import { AdminLayout } from '@/components/layout/admin-layout';
 import { PageHeader } from '@/components/layout/page-header';
 import { DataTable, type Column } from '@/components/common/data-table/data-table';
 import { Pagination } from '@/components/common/data-table/pagination';
@@ -223,7 +222,7 @@ export default function UsersPage() {
   };
 
   return (
-    <AdminLayout>
+    <>
       <PageHeader
         title={tManagement('title', { entity: tEntities('users') })}
         description={tManagement('description', { entity: tEntities('users').toLowerCase() })}
@@ -357,6 +356,6 @@ export default function UsersPage() {
         variant="destructive"
         isLoading={isDeleteProcessing}
       />
-    </AdminLayout>
+    </>
   );
 }

@@ -4,7 +4,6 @@ import { useState, useRef } from 'react';
 import { useApiData } from '@/shared/hooks/useApiData';
 import { useCrud } from '@/shared/hooks/useCrud';
 import { useActionLock } from '@/shared/hooks/useActionLock';
-import { AdminLayout } from '@/components/layout/admin-layout';
 import { PageHeader } from '@/components/layout/page-header';
 import { DataTable, type Column } from '@/components/common/data-table/data-table';
 import { Pagination } from '@/components/common/data-table/pagination';
@@ -209,7 +208,7 @@ export default function CategoryListPage() {
   };
 
   return (
-    <AdminLayout>
+    <>
       <PageHeader
         title={tManagement('title', { entity: tEntities('categories') })}
         description={tManagement('description', { entity: tEntities('categories').toLowerCase() })}
@@ -373,6 +372,6 @@ export default function CategoryListPage() {
         variant="destructive"
         isLoading={isDeleteProcessing}
       />
-    </AdminLayout>
+    </>
   );
 }

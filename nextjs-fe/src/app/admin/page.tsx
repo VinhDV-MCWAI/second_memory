@@ -1,6 +1,5 @@
 'use client';
 
-import { AdminLayout } from '@/components/layout/admin-layout';
 import { PageHeader } from '@/components/layout/page-header';
 import { SearchFilter } from '@/components/layout/search-filter';
 import { Button } from '@/components/ui/button';
@@ -22,7 +21,7 @@ export default function AdminDashboard() {
   ];
 
   return (
-    <AdminLayout>
+    <>
       {/* Page Header */}
       <PageHeader
         title={tCommon('dashboard')}
@@ -125,6 +124,6 @@ export default function AdminDashboard() {
           </div>
         </Card>
       </div>
-    </AdminLayout>
+    </>
   );
 }

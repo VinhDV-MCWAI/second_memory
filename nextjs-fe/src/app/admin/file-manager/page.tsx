@@ -1,6 +1,5 @@
 'use client';
 
-import { AdminLayout } from '@/components/layout/admin-layout';
 import { PageHeader } from '@/components/layout/page-header';
 import { FileManagerContent } from '@/components/common/file-manager/file-manager-content';
 import { FileManagerProvider } from '@/components/common/file-manager/context';
@@ -13,7 +12,7 @@ export default function FileManagerPage() {
   const tManagement = useTranslations('management');
 
   return (
-    <AdminLayout>
+    <>
       {/* Page Header */}
       <PageHeader
         title={tManagement('title', { entity: tEntities('fileManager') })}
@@ -30,6 +29,6 @@ export default function FileManagerPage() {
           <FileManagerContent />
         </FileManagerProvider>
       </div>
-    </AdminLayout>
+    </>
   );
 }

@@ -6,7 +6,6 @@ import { useCrud } from '@/shared/hooks/useCrud';
 import { useActionLock } from '@/shared/hooks/useActionLock';
 import { apiClient } from '@/shared/api/client';
 import { notification } from '@/shared/utils';
-import { AdminLayout } from '@/components/layout/admin-layout';
 import { PageHeader } from '@/components/layout/page-header';
 import { DataTable, type Column } from '@/components/common/data-table/data-table';
 import { Pagination } from '@/components/common/data-table/pagination';
@@ -229,7 +228,7 @@ export default function AdminListPage() {
   };
 
   return (
-    <AdminLayout>
+    <>
       <PageHeader
         title={tManagement('title', { entity: tEntities('admins') })}
         description={tManagement('description', { entity: tEntities('admins').toLowerCase() })}
@@ -369,6 +368,6 @@ export default function AdminListPage() {
         variant="destructive"
         isLoading={isDeleteProcessing}
       />
-    </AdminLayout>
+    </>
   );
 }
