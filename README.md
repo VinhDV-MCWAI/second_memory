@@ -49,7 +49,7 @@ Tạo ra một "Di sản số cá nhân" - một nền tảng hợp nhất để
                               │
                     ┌─────────▼─────────┐
                     │   Laravel API     │
-                    │   PHP 8.3 + FPM   │
+                    │   PHP 8.5 + FPM   │
                     │   (Business Logic)│
                     └─────────┬─────────┘
                               │
@@ -67,7 +67,7 @@ Tạo ra một "Di sản số cá nhân" - một nền tảng hợp nhất để
 |:-----------|:----------|:-----|:------|
 | **Dashboard** | Next.js 16 + React 19 | 3000 | Giao diện quản trị (Admin Panel) |
 | **Documentation** | Next.js 16 + React 19 | 3457 | Giao diện hiển thị tài liệu công khai |
-| **API Backend** | Laravel 11 (PHP 8.3) | 9000 | RESTful API, Business Logic |
+| **API Backend** | Laravel 13 (PHP 8.5) | 9000 | RESTful API, Business Logic |
 | **Database** | PostgreSQL 16 Alpine | 5555 | Lưu trữ dữ liệu có cấu trúc |
 | **Cache** | Redis 7 Alpine | 6379 | Cache và Session Management |
 | **Object Storage** | MinIO | 9001 | S3-compatible File/Media Storage |
@@ -92,8 +92,8 @@ Tạo ra một "Di sản số cá nhân" - một nền tảng hợp nhất để
 
 ### Backend
 
-- **Framework**: Laravel 11.34
-- **Language**: PHP 8.3 (JIT enabled)
+- **Framework**: Laravel 13
+- **Language**: PHP 8.5
 - **Database ORM**: Eloquent
 - **Authentication**: JWT (Firebase JWT 6.10)
 - **Queue**: Laravel Queue (Redis driver)
@@ -161,7 +161,7 @@ second-memory/
 │   ├── redis/                 # Redis configuration
 │   └── minio/                 # MinIO configuration & scripts
 │
-├── laravel-api/               # Backend API (Laravel 11)
+├── laravel-api/               # Backend API (Laravel 13)
 │   ├── app/                   # Application code
 │   │   ├── Http/Controllers   # API Controllers
 │   │   ├── Models/            # Eloquent Models

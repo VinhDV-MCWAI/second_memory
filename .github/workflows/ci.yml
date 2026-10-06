@@ -119,7 +119,7 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           # Matches docker/laravel/Dockerfile
-          php-version: "8.3"
+          php-version: "8.5"
           extensions: pdo_pgsql, pgsql, redis, zip, exif, pcntl, bcmath, gd
           coverage: none
           tools: composer:v2

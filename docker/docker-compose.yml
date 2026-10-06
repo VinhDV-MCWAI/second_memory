@@ -70,7 +70,7 @@ services:
       dockerfile: ../docker/laravel/Dockerfile
       target: development
       args:
-        PHP_VERSION: "8.3"
+        PHP_VERSION: "8.5"
     restart: unless-stopped
     working_dir: /var/www/laravel-api
     volumes:
@@ -129,7 +129,7 @@ services:
       dockerfile: ../docker/laravel/Dockerfile
       target: development
       args:
-        PHP_VERSION: "8.3"
+        PHP_VERSION: "8.5"
     restart: unless-stopped
     working_dir: /var/www/laravel-api
     command: php artisan reverb:start --debug
@@ -179,7 +179,7 @@ services:
       dockerfile: ../docker/laravel/Dockerfile
       target: development
       args:
-        PHP_VERSION: "8.3"
+        PHP_VERSION: "8.5"
     restart: unless-stopped
     working_dir: /var/www/laravel-api
     command: php artisan queue:work --verbose --tries=3 --timeout=900
