@@ -77,8 +77,6 @@
     "entries": "Entries",
     "descriptions": "Descriptions",
     "entriesManagementComingSoon": "Entries Management Coming Soon",
-    "policyDepartments": "Policy Departments",
-    "junctionManagementComingSoon": "Junction Management Coming Soon",
     "entry": "Entry",
     "parentId": "Parent ID",
     "review": "Review",
@@ -216,8 +214,6 @@
     "roles": "Roles",
     "category": "Category",
     "categories": "Categories",
-    "department": "Department",
-    "departments": "Departments",
     "feature": "Feature",
     "features": "Features",
     "entry": "Entry",
@@ -232,8 +228,6 @@
     "tokens": "Tokens",
     "api": "API",
     "apis": "APIs",
-    "policyDepartment": "Policy Department",
-    "policyDepartments": "Policy Departments",
     "file": "File",
     "files": "Files",
     "fileManager": "File Manager"
@@ -259,15 +253,12 @@
     "value": "Value",
     "path": "Path",
     "method": "Method",
-    "code": "Code",
     "platform": "Platform",
     "adminId": "Admin ID",
     "token": "Token",
     "entryId": "Entry ID",
     "image": "Image",
     "link": "Link",
-    "tableName": "Table Name",
-    "rowId": "Row ID",
     "summary": "Summary",
     "slug": "Slug",
     "accountId": "Account ID",
@@ -522,9 +513,6 @@
       "slug": "Slug",
       "displayOrder": "Display Order",
       "isDisplay": "Is Display",
-      "code": "Code",
-      "tableName": "Table Name",
-      "rowId": "Row ID",
       "permission": "Permission"
     },
     "placeholders": {
@@ -624,10 +612,6 @@
     "order": {
       "min": "Order must be {min} or greater"
     },
-    "code": {
-      "required": "Code is required",
-      "maxLength": "Code cannot exceed {max} characters"
-    },
     "permission": {
       "required": "Permission is required",
       "maxLength": "Permission cannot exceed {max} characters"
@@ -656,12 +640,6 @@
     },
     "path": {
       "required": "Path is required"
-    },
-    "tableName": {
-      "required": "Table name is required"
-    },
-    "rowId": {
-      "required": "Row ID is required"
     },
     "invalidEmail": "Invalid Email",
     "saving": "Saving",

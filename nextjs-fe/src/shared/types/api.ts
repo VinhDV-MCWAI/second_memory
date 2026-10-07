@@ -3,7 +3,7 @@
  */
 
 import { SORT_ORDER } from '@/shared/config';
-import type { DepartmentMst, RoleMst } from './models';
+import type { RoleMst } from './models';
 
 export interface ApiResponse<T> {
   data: T;
@@ -180,7 +180,6 @@ export interface AuthUser {
   last_name: string;
   avatar?: string;
   roles?: RoleMst[];
-  departments?: DepartmentMst[];
 }
 
 /**

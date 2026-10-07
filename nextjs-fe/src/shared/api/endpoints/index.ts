@@ -10,11 +10,9 @@ export const API_ENDPOINTS = {
   MASTER: {
     ADMIN: '/admin/admin-mst',
     ROLE: '/admin/role-mst',
-    DEPARTMENT: '/admin/department-mst',
     FEATURE: '/admin/feature-mst',
     API: '/admin/api-mst',
     TOKEN: '/admin/token-mst',
-    POLICY_DEPARTMENT: '/admin/policy-department-mst',
   },
   MANAGEMENT: {
     CATEGORY: '/admin/category-mgmt',
@@ -23,9 +21,7 @@ export const API_ENDPOINTS = {
   },
   JUNCTION: {
     ADMIN_ROLE: '/admin/admin-role-mst',
-    ADMIN_DEPARTMENT: '/admin/admin-department-mst',
     API_ROLE: '/admin/api-role-mst',
-    DEPARTMENT_MANAGEMENT: '/admin/department-management-mst',
     CATEGORY_ENTRY: '/admin/category-entry-mgmt',
   },
   MEDIA: {

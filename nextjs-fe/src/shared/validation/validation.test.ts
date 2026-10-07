@@ -3,11 +3,9 @@ import {
   getAdminSchema,
   getApiSchema,
   getCategorySchema,
-  getDepartmentSchema,
   getEntryDescriptionSchema,
   getEntrySchema,
   getFeatureSchema,
-  getPolicyDepartmentSchema,
   getRoleSchema,
   getTokenSchema,
 } from './validation';
@@ -79,18 +77,15 @@ describe('content schemas', () => {
 });
 
 describe('master data schemas', () => {
-  it('enforce role and department limits', () => {
+  it('enforce role limits', () => {
     expect(
       messagesOf(
         getRoleSchema(t).safeParse({ name: 'x'.repeat(31), permission: '', is_active: true }),
       ),
     ).toEqual(['name.maxLength:{"max":30}', 'permission.required']);
-    expect(
-      messagesOf(getDepartmentSchema(t).safeParse({ code: '', name: 'Sales', status: 1 })),
-    ).toEqual(['code.required']);
   });
 
-  it('validate features, APIs, tokens and policies', () => {
+  it('validate features, APIs and tokens', () => {
     expect(
       messagesOf(getFeatureSchema(t).safeParse({ name: 'Users', group_name: '', status: 1 })),
     ).toEqual(['groupName.required']);
@@ -120,8 +115,5 @@ describe('master data schemas', () => {
       'account.required',
       'deviceName.required',
     ]);
-    expect(
-      messagesOf(getPolicyDepartmentSchema(t).safeParse({ table_name: '', row_id: 0 })),
-    ).toEqual(['tableName.required', 'rowId.required']);
   });
 });

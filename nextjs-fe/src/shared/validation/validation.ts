@@ -4,7 +4,6 @@ import {
   StatusEnum,
   AdminStatus,
   CategoryStatus,
-  DepartmentStatus,
   FeatureStatus,
   EntryStatus,
 } from '@/shared/enums';
@@ -82,7 +81,6 @@ export const categoryStatusValidation = z.preprocess(
   (val) => (typeof val === 'string' ? Number(val) : val),
   z.nativeEnum(CategoryStatus),
 );
-export const departmentStatusValidation = z.nativeEnum(DepartmentStatus);
 export const featureStatusValidation = z.nativeEnum(FeatureStatus);
 export const entryStatusValidation = z.preprocess(
   (val) => (typeof val === 'string' ? Number(val) : val),
@@ -151,19 +149,6 @@ export const getRoleSchema = (t: Translator) =>
 
 export type RoleFormData = z.infer<ReturnType<typeof getRoleSchema>>;
 
-// Department schema
-export const getDepartmentSchema = (t: Translator) =>
-  z.object({
-    code: z
-      .string()
-      .min(1, t('code.required'))
-      .max(50, t('code.maxLength', { max: 50 })),
-    name: z.string().min(1, t('name.required')),
-    status: departmentStatusValidation,
-  });
-
-export type DepartmentFormData = z.infer<ReturnType<typeof getDepartmentSchema>>;
-
 // Feature schema
 export const getFeatureSchema = (t: Translator) =>
   z.object({
@@ -214,12 +199,3 @@ export const getTokenSchema = (t: Translator) =>
   });
 
 export type TokenFormData = z.infer<ReturnType<typeof getTokenSchema>>;
-
-// Policy Department schema
-export const getPolicyDepartmentSchema = (t: Translator) =>
-  z.object({
-    table_name: z.string().min(1, t('tableName.required')),
-    row_id: z.number().min(1, t('rowId.required')),
-  });
-
-export type PolicyDepartmentFormData = z.infer<ReturnType<typeof getPolicyDepartmentSchema>>;

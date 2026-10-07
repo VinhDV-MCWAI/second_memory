@@ -158,24 +158,6 @@ export interface BulkActionsProps {
 }
 
 /**
- * Department Tree Component Props
- */
-export interface DepartmentTreeProps {
-  departments: import('./models/master').DepartmentMst[];
-  onSelect?: (department: import('./models/master').DepartmentMst) => void;
-  selectedId?: number;
-  className?: string;
-}
-
-export interface TreeNodeProps {
-  department: import('./models/master').DepartmentMst;
-  childNodes: import('./models/master').DepartmentMst[];
-  level: number;
-  onSelect?: (department: import('./models/master').DepartmentMst) => void;
-  selectedId?: number;
-}
-
-/**
  * Field Renderer Types
  */
 export type FieldType =

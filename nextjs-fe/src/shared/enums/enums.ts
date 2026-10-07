@@ -101,23 +101,6 @@ export const CategoryStatusLabels: Record<CategoryStatus, string> = {
 };
 
 // ==========================================
-// DepartmentStatus (app/Enums/DepartmentStatus.php)
-// ==========================================
-export enum DepartmentStatus {
-  INACTIVE = 0,
-  ACTIVE = 1,
-  DRAFT = 2,
-  ARCHIVED = 3,
-}
-
-export const DepartmentStatusLabels: Record<DepartmentStatus, string> = {
-  [DepartmentStatus.INACTIVE]: 'Inactive',
-  [DepartmentStatus.ACTIVE]: 'Active',
-  [DepartmentStatus.DRAFT]: 'Draft',
-  [DepartmentStatus.ARCHIVED]: 'Archived',
-};
-
-// ==========================================
 // FeatureStatus (app/Enums/FeatureStatus.php)
 // ==========================================
 export enum FeatureStatus {
