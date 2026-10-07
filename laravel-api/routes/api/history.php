@@ -2,13 +2,9 @@
 
 declare(strict_types=1);
 
-use App\Http\Controllers\History\Management\BannerMgmtHistController;
 use App\Http\Controllers\History\Management\CategoryMgmtHistController;
 use App\Http\Controllers\History\Management\EntryDescriptionMgmtHistController;
 use App\Http\Controllers\History\Management\EntryMgmtHistController;
-use App\Http\Controllers\History\Management\SettingLinkMgmtHistController;
-use App\Http\Controllers\History\Management\SliderMgmtHistController;
-use App\Http\Controllers\History\Management\SocialMgmtHistController;
 use App\Http\Controllers\History\Management\UserMgmtHistController;
 use App\Http\Controllers\History\Master\AdminMstHistController;
 use App\Http\Controllers\History\Master\ApiMstHistController;
@@ -26,13 +22,9 @@ foreach ([
     'feature-mst-hist' => FeatureMstHistController::class,
     'policy-department-mst-hist' => PolicyDepartmentMstHistController::class,
     'role-mst-hist' => RoleMstHistController::class,
-    'banner-mgmt-hist' => BannerMgmtHistController::class,
     'category-mgmt-hist' => CategoryMgmtHistController::class,
-    'setting-link-mgmt-hist' => SettingLinkMgmtHistController::class,
     'entry-description-mgmt-hist' => EntryDescriptionMgmtHistController::class,
     'entry-mgmt-hist' => EntryMgmtHistController::class,
-    'slider-mgmt-hist' => SliderMgmtHistController::class,
-    'social-mgmt-hist' => SocialMgmtHistController::class,
     'user-mgmt-hist' => UserMgmtHistController::class,
 ] as $resource => $controller) {
     Route::get("{$resource}/list", [$controller, 'list']);

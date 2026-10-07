@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Tests\Feature\Requests;
 
-use App\Models\Management\BannerMgmt;
 use App\Models\Master\AdminMst;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\Concerns\GrantsApiAccess;
@@ -19,12 +18,12 @@ final class ListPagingTest extends TestCase
     use GrantsApiAccess;
     use RefreshDatabase;
 
-    private const LIST_URI = 'api/admin/banner-mgmt/list';
+    private const LIST_URI = 'api/admin/admin-mst/list';
 
     public function test_paging_and_sorting_reach_the_repository(): void
     {
         $admin = AdminMst::factory()->create();
-        $banners = BannerMgmt::factory()->count(3)->create();
+        $others = AdminMst::factory()->count(3)->create();
         $cookies = $this->loginWithAccess($admin, [['GET', self::LIST_URI]]);
 
         $response = $this->call('GET', self::LIST_URI, [
@@ -36,7 +35,7 @@ final class ListPagingTest extends TestCase
 
         $response->assertOk();
         $ids = array_column($response->json('data.data'), 'id');
-        $this->assertSame([$banners[2]->id, $banners[1]->id], $ids);
+        $this->assertSame([$others[2]->id, $others[1]->id], $ids);
     }
 
     public function test_invalid_page_is_rejected(): void
