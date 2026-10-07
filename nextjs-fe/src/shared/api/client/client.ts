@@ -5,11 +5,14 @@ import axios, {
   AxiosRequestConfig,
 } from 'axios';
 import { ApiResponse } from '@/shared/types/api';
-import { authLock } from '@/shared/utils/auth-lock';
 import { API_ENDPOINTS, API_BASE_URL } from '@/shared/api/endpoints';
+
+// Auth calls handle their own 401 (wrong password, no session yet)
+const AUTH_PATHS: string[] = Object.values(API_ENDPOINTS.AUTH);
 
 class ApiClient {
   private client: AxiosInstance;
+  private unauthorizedHandler: (() => void) | null = null;
 
   constructor() {
     this.client = axios.create({
@@ -19,7 +22,8 @@ class ApiClient {
         'Content-Type': 'application/json',
         Accept: 'application/json',
       },
-      withCredentials: true, // Always send cookies
+      withCredentials: true, // Session cookie (Sanctum SPA auth)
+      withXSRFToken: true, // Send the XSRF-TOKEN cookie back as X-XSRF-TOKEN
     });
 
     this.setupInterceptors();
@@ -56,48 +60,11 @@ class ApiClient {
         }
         return response;
       },
-      async (error: AxiosError) => {
-        const originalRequest = error.config as InternalAxiosRequestConfig & {
-          _retry?: boolean;
-        };
-
-        if (error.response?.status === 401 && originalRequest && !originalRequest._retry) {
-          if (
-            originalRequest.url?.includes(API_ENDPOINTS.AUTH.REFRESH) ||
-            originalRequest.url?.includes(API_ENDPOINTS.AUTH.LOGIN)
-          ) {
-            return Promise.reject(error);
-          }
-
-          originalRequest._retry = true;
-
-          try {
-            if (authLock.isLocked()) {
-              await this.waitForLock();
-              return this.client(originalRequest);
-            }
-
-            if (await authLock.acquire()) {
-              try {
-                await axios.post(
-                  `${this.client.defaults.baseURL}${API_ENDPOINTS.AUTH.REFRESH}`,
-                  {},
-                  { withCredentials: true },
-                );
-
-                return this.client(originalRequest);
-              } catch (refreshError) {
-                return Promise.reject(refreshError);
-              } finally {
-                authLock.release();
-              }
-            } else {
-              await this.waitForLock();
-              return this.client(originalRequest);
-            }
-          } catch (err) {
-            return Promise.reject(err);
-          }
+      (error: AxiosError) => {
+        // The session ended (logout elsewhere, expired, admin disabled): let the auth provider sign out
+        const url = error.config?.url ?? '';
+        if (error.response?.status === 401 && !AUTH_PATHS.some((path) => url.includes(path))) {
+          this.unauthorizedHandler?.();
         }
 
         // Error toasts are shown by the caller (see getApiErrorMessage), which knows the context.
@@ -106,15 +73,9 @@ class ApiClient {
     );
   }
 
-  private async waitForLock(): Promise<void> {
-    const checkInterval = 100;
-    const maxWait = 5000;
-    let waited = 0;
-
-    while (authLock.isLocked() && waited < maxWait) {
-      await new Promise((resolve) => setTimeout(resolve, checkInterval));
-      waited += checkInterval;
-    }
+  /** Called on a 401 from any non-auth endpoint. */
+  onUnauthorized(handler: (() => void) | null): void {
+    this.unauthorizedHandler = handler;
   }
 
   async get<T>(url: string, config?: AxiosRequestConfig): Promise<ApiResponse<T>> {

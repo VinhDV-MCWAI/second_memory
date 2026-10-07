@@ -183,39 +183,6 @@ export interface AuthUser {
 }
 
 /**
- * User Type
- */
-export interface User {
-  id: string | number;
-  email: string;
-  name: string;
-  avatar?: string;
-  role?: string;
-  permissions?: string[];
-  created_at?: string;
-  updated_at?: string;
-}
-
-/**
- * Auth Service Response Types
- */
-export interface LoginApiResponse {
-  user: User;
-  expires_at: number;
-  token?: string;
-}
-
-export interface RefreshApiResponse {
-  expires_at: number;
-  token?: string;
-}
-
-export interface MeApiResponse {
-  user: User;
-  expires_at: number;
-}
-
-/**
  * Service Query Parameters
  * Extended query params for service-specific filtering
  */

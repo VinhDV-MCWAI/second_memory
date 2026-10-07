@@ -2,9 +2,9 @@ export const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost
 
 export const API_ENDPOINTS = {
   AUTH: {
+    CSRF_COOKIE: '/sanctum/csrf-cookie',
     LOGIN: '/admin/credential/login',
-    LOGOUT: '/admin/credential/trust/logout',
-    REFRESH: '/admin/credential/trust/refresh-token',
+    LOGOUT: '/admin/credential/logout',
     ME: '/admin/credential/me',
   },
   MASTER: {

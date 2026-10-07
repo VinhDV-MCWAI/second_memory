@@ -175,6 +175,9 @@ export const THEME = {
   SYSTEM: 'system',
 } as const;
 
+// Laravel session cookie (config('session.cookie') in laravel-api); only its presence is checked here
+export const SESSION_COOKIE_NAME = 'laravel_session';
+
 // Admin Routes
 export const ADMIN_ROUTES = {
   DASHBOARD: '/admin',

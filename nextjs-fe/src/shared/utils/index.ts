@@ -6,6 +6,5 @@
 export * from './date-formatter';
 export * from './error-handler';
 export * from './type-guards';
-export * from './auth-lock';
 export * from './notification';
 export * from './cn';
