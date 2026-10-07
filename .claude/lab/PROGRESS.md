@@ -34,6 +34,11 @@
 
 - 2026-10-07 — RFC-001 slice 2 (remove sliders, banners, setting links, socials) **started, uncommitted, not verified**: API controllers/requests/resources/models/repos/services/factories/tests deleted, routes edited, migration `2026_10_07_100001_drop_site_decoration_tables.php`, `app/Support/`, `BulkDeleteHistoryTest` moved to `Master/AdminMst`; FE pages/forms deleted, navigation/endpoints/enums/types/validation/messages trimmed. Backlog P2-06/07/09 set to `doing`.
 
+- 2026-10-07 — Slice 2 committed as **WIP, not verified** (Docker stack went down: `ml-php`, `ml-postgres`, `ml-nginx`, `ml-redis` exited 127): `6113376` refactor(api)! (124 files, −12k lines; drop migration ran once on dev DB), `70b3f96` refactor(fe). The owner rejected running `migrate:rollback` on the dev DB → test `down()` on a scratch / `testing` DB instead.
+
 ## Next step
 
-Finish slice 2 from the working tree (owner has the implementation plan): review the WIP, run `make verify`, test the drop migration's `down()`, then commit as `refactor(api)` / `refactor(fe)` / drop-migration commits. Then slices 3–10 of RFC-001 §5.
+1. `make up` (stack is down), then `make openapi` (regenerates `laravel-api/openapi.json` + `nextjs-fe/src/shared/types/openapi.d.ts`; both are stale after slice 2) and commit it.
+2. `make verify`; fix anything it finds in a `fix`/`refactor` commit.
+3. Test the drop migration's `down()` on the `testing` DB, not the dev DB (owner's preference), e.g. `docker exec ml-php php artisan migrate:rollback --step=1 --database=<testing connection>` then migrate again.
+4. Mark P2-06/07/09 slice 2 done in `docs/plan/03-backlog.md`; continue RFC-001 §5 slice 3 (end-user management).
