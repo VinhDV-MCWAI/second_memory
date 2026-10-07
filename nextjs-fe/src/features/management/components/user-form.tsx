@@ -16,13 +16,8 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { FormField } from '@/components/common/form-field';
 import { Textarea } from '@/components/ui/textarea';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
+import { OptionSelect } from '@/components/common/option-select';
+import { enumOptions } from '@/shared/utils/enum-options';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { HistoryViewer } from '@/features/history/components/history-viewer';
 import { AvatarUpload } from '@/components/common/avatar-upload';
@@ -249,49 +244,21 @@ export function UserForm({ initialData, onSuccess, onCancel }: ResourceFormProps
       </FormField>
 
       <div className="grid grid-cols-2 gap-4">
-        <div className="space-y-2">
-          <Label htmlFor="gender">
-            {tLabels('gender')} <span className="text-red-500">*</span>
-          </Label>
-          <Select
-            key={`gender-${String(genderValue)}`}
-            value={genderValue !== undefined && genderValue !== null ? String(genderValue) : ''}
-            onValueChange={(value) => setValue('gender', Number(value) as Gender)}
-          >
-            <SelectTrigger>
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value={Gender.MALE.toString()}>{GenderLabels[Gender.MALE]}</SelectItem>
-              <SelectItem value={Gender.FEMALE.toString()}>
-                {GenderLabels[Gender.FEMALE]}
-              </SelectItem>
-              <SelectItem value={Gender.OTHER.toString()}>{GenderLabels[Gender.OTHER]}</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
+        <FormField id="gender" label={tLabels('gender')} required>
+          <OptionSelect
+            value={genderValue}
+            onChange={(value) => setValue('gender', Number(value) as Gender)}
+            options={enumOptions(GenderLabels)}
+          />
+        </FormField>
 
-        <div className="space-y-2">
-          <Label htmlFor="status">
-            {tLabels('status')} <span className="text-red-500">*</span>
-          </Label>
-          <Select
-            key={`status-${String(statusValue)}`}
-            value={statusValue !== undefined && statusValue !== null ? String(statusValue) : ''}
-            onValueChange={(value) => setValue('status', Number(value) as UserStatus)}
-          >
-            <SelectTrigger>
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              {Object.entries(UserStatusLabels).map(([value, label]) => (
-                <SelectItem key={value} value={value.toString()}>
-                  {label}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
+        <FormField id="status" label={tLabels('status')} required>
+          <OptionSelect
+            value={statusValue}
+            onChange={(value) => setValue('status', Number(value) as UserStatus)}
+            options={enumOptions(UserStatusLabels)}
+          />
+        </FormField>
       </div>
 
       <div className="mt-4 flex items-center gap-2">

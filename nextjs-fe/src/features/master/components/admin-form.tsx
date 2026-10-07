@@ -15,23 +15,24 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { FormField } from '@/components/common/form-field';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
+import { OptionSelect } from '@/components/common/option-select';
+import { enumOptions } from '@/shared/utils/enum-options';
 import { MultiSelect } from '@/components/common/multi-select';
 import { AvatarUpload } from '@/components/common/avatar-upload';
-import { apiClient } from '@/shared/api/client';
-import { useApiData } from '@/shared/hooks/use-api-data';
-import type { RoleMst, AdminMst } from '@/shared/types/api';
+import type { AdminMst } from '@/shared/types/api';
 import { ENDPOINTS, queryKeys } from '@/shared/api';
 import { AdminStatus, Gender, GenderLabels, AdminStatusLabels } from '@/shared/enums';
 import { UPLOAD_CONFIG } from '@/shared/config/constant';
 import { getAdminSchema, type AdminFormData } from '@/shared/validation/validation';
 import type { ResourceFormProps } from '@/components/common/resource-list-page';
+import { useAdminRoles } from '@/features/master/hooks/use-admin-roles';
+
+const STATUS_OPTIONS = [
+  AdminStatus.ACTIVE,
+  AdminStatus.INACTIVE,
+  AdminStatus.WAITING,
+  AdminStatus.SUSPENDED,
+].map((value) => ({ value, label: AdminStatusLabels[value] }));
 
 export function AdminForm({ initialData, onSuccess, onCancel }: ResourceFormProps<AdminMst>) {
   const tCommon = useTranslations('common');
@@ -43,57 +44,13 @@ export function AdminForm({ initialData, onSuccess, onCancel }: ResourceFormProp
   const { create, update, loading } = useCrud(ENDPOINTS.MASTER.ADMIN, {
     invalidateKeys: [], // Disable auto-invalidation to ensure sequence: Create/Update -> Role Update -> List Refresh
   });
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [avatarFile, setAvatarFile] = useState<File | null>(null);
   const [avatarPreview, setAvatarPreview] = useState<string | null>(
     () => initialData?.avatar ?? null,
   );
 
-  // Role data
-  const { data: roles } = useApiData<RoleMst>(ENDPOINTS.MASTER.ROLE, {
-    page: 1,
-    per_page: 100,
-    sort_by: 'created_at',
-    sort_order: 'desc',
-    staleTime: 0,
-    refetchOnMount: 'always',
-  });
-
-  // Fetch assigned roles for Edit mode
-  const { data: assignedRoles } = useApiData<{ admin_mst_id: number; role_mst_id: number }>(
-    ENDPOINTS.JUNCTION.ADMIN_ROLE,
-    {
-      filters: {
-        admin_mst_id: initialData?.id,
-      },
-      enabled: isEdit && !!initialData?.id,
-      staleTime: 0,
-      refetchOnMount: 'always',
-    },
+  const { roleOptions, selectedRoleIds, setSelectedRoleIds, resetRoles, saveRoles } = useAdminRoles(
+    initialData?.id,
   );
-
-  const [selectedRoleIds, setSelectedRoleIds] = useState<(string | number)[]>([]);
-  const [initialRoleIds, setInitialRoleIds] = useState<number[]>([]);
-
-  // Initialize selected roles when data is fetched
-  useEffect(() => {
-    if (assignedRoles && isEdit) {
-      const roleIds = assignedRoles.map((item) => item.role_mst_id);
-
-      // Use JSON.stringify for array comparison to prevent infinite loops
-      // caused by unstable object references from useApiData
-      if (JSON.stringify(roleIds) !== JSON.stringify(initialRoleIds)) {
-        setSelectedRoleIds(roleIds);
-        setInitialRoleIds(roleIds);
-      }
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [assignedRoles, isEdit]); // Exclude initialRoleIds to prevent potential cycles if calculations are slightly off, though check guards it.
-
-  const roleOptions = roles.map((role) => ({
-    value: role.id,
-    label: role.name,
-  }));
 
   const {
     register,
@@ -142,10 +99,9 @@ export function AdminForm({ initialData, onSuccess, onCancel }: ResourceFormProp
         is_active: true,
         avatar: '',
       });
-      setSelectedRoleIds([]);
-      setInitialRoleIds([]);
+      resetRoles();
     }
-  }, [initialData, reset]);
+  }, [initialData, reset, resetRoles]);
 
   const { execute, isLoading: isActionProcessing } = useActionLock({
     delay: UI_CONSTANTS.ACTION_DELAY_MS,
@@ -159,13 +115,7 @@ export function AdminForm({ initialData, onSuccess, onCancel }: ResourceFormProp
       }
 
       try {
-        // TODO: Handle avatar upload if avatarFile is present
-        // For now, we'll just pass the data. Real implementation would look like:
-        // if (avatarFile) {
-        //   const uploadData = await upload(avatarFile);
-        //   data.avatar = uploadData.url;
-        // }
-
+        // Avatar upload is not implemented: only the preview is shown
         const payload = {
           ...data,
           is_active: data.is_active ? IsActive.TRUE : IsActive.FALSE,
@@ -190,47 +140,12 @@ export function AdminForm({ initialData, onSuccess, onCancel }: ResourceFormProp
           });
         }
 
-        // Handle role assignment
+        // Role assignment failures do not block the save
         if (adminId) {
           try {
-            const currentRoleIds = selectedRoleIds.map(Number);
-
-            if (isEdit) {
-              // Calculate diffs for Edit mode
-              const toInsert = currentRoleIds
-                .filter((id) => !initialRoleIds.includes(id))
-                .map((roleId) => ({
-                  admin_mst_id: adminId!,
-                  role_mst_id: roleId,
-                }));
-
-              const toDelete = initialRoleIds
-                .filter((id) => !currentRoleIds.includes(id))
-                .map((roleId) => ({
-                  admin_mst_id: adminId!,
-                  role_mst_id: roleId,
-                }));
-
-              if (toInsert.length > 0 || toDelete.length > 0) {
-                await apiClient.put(`${ENDPOINTS.JUNCTION.ADMIN_ROLE}/update`, {
-                  insert: toInsert.length > 0 ? toInsert : undefined,
-                  delete: toDelete.length > 0 ? toDelete : undefined,
-                });
-                // Update initial state after successful save
-                setInitialRoleIds(currentRoleIds);
-              }
-            } else if (selectedRoleIds.length > 0) {
-              // Create mode - only insert
-              await apiClient.put(`${ENDPOINTS.JUNCTION.ADMIN_ROLE}/update`, {
-                insert: selectedRoleIds.map((roleId) => ({
-                  admin_mst_id: adminId!,
-                  role_mst_id: Number(roleId),
-                })),
-              });
-            }
+            await saveRoles(adminId);
           } catch (roleError) {
             console.error('Failed to assign roles:', roleError);
-            // We don't block success if role assignment fails
           }
         }
 
@@ -258,11 +173,7 @@ export function AdminForm({ initialData, onSuccess, onCancel }: ResourceFormProp
       <div className="mb-4 flex justify-center">
         <AvatarUpload
           value={avatarPreview ?? undefined}
-          onChange={(file, preview) => {
-            setAvatarFile(file);
-            setAvatarPreview(preview);
-            // In a real scenario, we might upload immediately or wait for submit
-          }}
+          onChange={(_file, preview) => setAvatarPreview(preview)}
           maxSize={UPLOAD_CONFIG.DEFAULT_AVATAR_MAX_SIZE_MB}
         />
       </div>
@@ -368,47 +279,18 @@ export function AdminForm({ initialData, onSuccess, onCancel }: ResourceFormProp
 
       <div className="grid grid-cols-2 gap-4">
         <FormField id="gender" label={tLabels('gender')} required error={errors.gender?.message}>
-          <Select
-            key={String(genderValue)}
-            value={genderValue !== undefined && genderValue !== null ? String(genderValue) : ''}
-            onValueChange={(value) => setValue('gender', Number(value) as Gender)}
-          >
-            <SelectTrigger>
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value={Gender.MALE.toString()}>{GenderLabels[Gender.MALE]}</SelectItem>
-              <SelectItem value={Gender.FEMALE.toString()}>
-                {GenderLabels[Gender.FEMALE]}
-              </SelectItem>
-              <SelectItem value={Gender.OTHER.toString()}>{GenderLabels[Gender.OTHER]}</SelectItem>
-            </SelectContent>
-          </Select>
+          <OptionSelect
+            value={genderValue}
+            onChange={(value) => setValue('gender', Number(value) as Gender)}
+            options={enumOptions(GenderLabels)}
+          />
         </FormField>
         <FormField id="status" label={tLabels('status')} required error={errors.status?.message}>
-          <Select
-            key={String(statusValue)}
-            value={statusValue !== undefined && statusValue !== null ? String(statusValue) : ''}
-            onValueChange={(value) => setValue('status', Number(value) as AdminStatus)}
-          >
-            <SelectTrigger>
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value={AdminStatus.ACTIVE.toString()}>
-                {AdminStatusLabels[AdminStatus.ACTIVE]}
-              </SelectItem>
-              <SelectItem value={AdminStatus.INACTIVE.toString()}>
-                {AdminStatusLabels[AdminStatus.INACTIVE]}
-              </SelectItem>
-              <SelectItem value={AdminStatus.WAITING.toString()}>
-                {AdminStatusLabels[AdminStatus.WAITING]}
-              </SelectItem>
-              <SelectItem value={AdminStatus.SUSPENDED.toString()}>
-                {AdminStatusLabels[AdminStatus.SUSPENDED]}
-              </SelectItem>
-            </SelectContent>
-          </Select>
+          <OptionSelect
+            value={statusValue}
+            onChange={(value) => setValue('status', Number(value) as AdminStatus)}
+            options={STATUS_OPTIONS}
+          />
         </FormField>
       </div>
 
