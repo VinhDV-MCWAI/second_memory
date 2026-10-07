@@ -84,6 +84,8 @@
 - Checks: migrations up → down → up on `testing` (down restores all 9 tables, view, trigger, `limit_access`; second up identical schema); backfill checked on `testing` (root holder → owner, others viewer; no root holder → oldest active admin). Curl through nginx with a temporary owner (deleted after): viewer created with role 200, viewer GET 200 / POST 403, last owner deleting itself 422. A git slip on the way: the FE commit first picked up staged backend deletions — undone with `reset --soft` before anything else, committed again cleanly.
 - `make verify` exit 0: Pint ✓, Larastan ✓, backend 73 passed (was 190; the removed modules' tests), ESLint 0 problems, tsc ✓ both apps, Vitest 51 (14 files), FE coverage 89.25%.
 
+- 2026-10-07 — P2-08 (slice 9) started. Baseline = the green `make verify` at `d977e93` (nothing changed since). Finding: the FE `HistoryViewer` is not mounted on any page. Step 1/6 done: ADR-0006 (one `audit_log`, events incl. login, expand/contract plan with a temporary `legacy_hist_id`).
+
 ## Next step
 
 RFC-001 slice 9 = backlog **P2-08**: `audit_log` replaces the last history table. Only `admin_mst_hist` is left (+ `AuditedCrudService`, `features/history` viewer, `/api/admin/admin-mst-hist/*`). Documents first: ADR-0006 (audit log design: `auditable_type`, `auditable_id`, `event`, `old_values`, `new_values`, `admin_mst_id`, `created_at` — see RFC-001 §4 to-be ERD; consider recording login success/failure as PRB-001 §9 asks). Then expand → dual-write → backfill from `admin_mst_hist` → switch reads (API + FE history viewer) → contract (drop `admin_mst_hist`), each step its own commit, migrations tested up → down → up on `testing`. Then slice 10 (P2-13: `scripts/metrics.sh` after-metrics, regression, `v2.0.0` notes, retro).
