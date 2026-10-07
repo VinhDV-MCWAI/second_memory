@@ -1,3 +1,7 @@
+> **Archived 2026-10-07.** Historical document from the CMS era, kept for reference; it may not match the code. Current docs: [docs/README.md](../../README.md).
+>
+> 🇻🇳 **Đã lưu trữ 2026-10-07.** Tài liệu lịch sử thời CMS, có thể không khớp code. Tài liệu hiện hành: [docs/README.md](../../README.md).
+
 # 08. Tổ Chức Components & Cấu Trúc Code - Code Organization
 
 > Cấu trúc thư mục, design patterns, naming conventions và best practices

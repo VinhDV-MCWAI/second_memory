@@ -193,17 +193,7 @@ second-memory/
 │   ├── backup.sh              # Automated backup script
 │   └── restore.sh             # Restore script
 │
-├── docs/                      # Project documentation
-│   ├── 01-overview.md
-│   ├── 02-architecture.md
-│   ├── 03-tech-stack.md
-│   ├── 04-database.md
-│   ├── 05-system-config.md
-│   ├── 06-build-deployment.md
-│   ├── 07-features.md
-│   ├── 08-component-organization.md
-│   ├── 09-security-backup.md
-│   └── 10-roadmap-lessons.md
+├── docs/                      # Engineering Lab docs: plan, ADRs, handbook, archive (see docs/README.md)
 │
 ├── pnpm-workspace.yaml        # pnpm monorepo config
 ├── package.json               # Root package.json
@@ -398,18 +388,7 @@ php artisan migrate:fresh --seed
 
 ## 📚 Documentation
 
-Chi tiết tài liệu kỹ thuật:
-
-- [01. Tổng quan hệ thống](docs/01-overview.md)
-- [02. Kiến trúc](docs/02-architecture.md)
-- [03. Tech Stack](docs/03-tech-stack.md)
-- [04. Database Design](docs/04-database.md)
-- [05. System Configuration](docs/05-system-config.md)
-- [06. Build & Deployment](docs/06-build-deployment.md)
-- [07. Features](docs/07-features.md)
-- [08. Component Organization](docs/08-component-organization.md)
-- [09. Security & Backup](docs/09-security-backup.md)
-- [10. Roadmap & Lessons](docs/10-roadmap-lessons.md)
+Start at [docs/README.md](docs/README.md): plan, roadmap, ADRs and templates. The original architecture docs (Vietnamese, partly outdated) are archived in [docs/archive/legacy-architecture/](docs/archive/legacy-architecture/); the current snapshot is [docs/architecture/as-is.md](docs/architecture/as-is.md).
 
 ---
 

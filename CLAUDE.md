@@ -9,7 +9,7 @@
 | `nextjs-docs/` | Next.js App Router, Tiptap renderer | Public docs site (:3457) | [nextjs-docs/CLAUDE.md](nextjs-docs/CLAUDE.md) |
 | `docker/`, `ci-cd/`, `.github/`, `backup/` | Docker Compose, GitHub Actions (self-hosted deploy), shell | Runtime & ops | [docker/CLAUDE.md](docker/CLAUDE.md) |
 
-Root `0X-*.md` files are architecture docs (Vietnamese, may be outdated — code wins).
+All docs live in `docs/` (start at [docs/README.md](docs/README.md)). The old Vietnamese architecture docs are archived in `docs/archive/legacy-architecture/` (outdated — code wins).
 
 ## Running things
 
@@ -25,13 +25,11 @@ make fresh       # DEV ONLY: wipe, re-migrate and seed the dev DB (asks first)
 
 Use the `/verify` skill to run the full check suite before declaring work done.
 
-## Ongoing refactor
+## Engineering Lab roadmap
 
-A staged refactor is tracked in [.claude/refactor/PLAN.md](.claude/refactor/PLAN.md). Before working on any item, read the plan, follow the `/refactor-item` skill, and update the item's status when done. Do not start items the user has not approved.
+The project is being repurposed into an Engineering Lab ([ADR-0001](docs/adr/0001-engineering-lab-direction.md)). The single plan is [docs/plan/](docs/plan/) (analysis, roadmap, backlog); the handoff log for resuming work is [.claude/lab/PROGRESS.md](.claude/lab/PROGRESS.md) — read it first and update it after every task. Work items with the `/lab-task` skill. Docs conventions (bilingual EN + `> 🇻🇳` VI lines, IDs, templates): [docs/README.md](docs/README.md).
 
-## New direction: Engineering Lab
-
-The project is being repurposed (accepted, [docs/adr/0001-engineering-lab-direction.md](docs/adr/0001-engineering-lab-direction.md)). Plan: [docs/plan/](docs/plan/) (analysis, roadmap, backlog). Docs conventions (bilingual EN + `> 🇻🇳` VI lines, IDs, templates): [docs/README.md](docs/README.md).
+The 2026-10 refactor ([.claude/refactor/PLAN.md](.claude/refactor/PLAN.md)) is **frozen**; its open items moved into the roadmap.
 
 ## Global rules
 

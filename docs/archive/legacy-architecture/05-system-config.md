@@ -1,3 +1,7 @@
+> **Archived 2026-10-07.** Historical document from the CMS era, kept for reference; it may not match the code. Current docs: [docs/README.md](../../README.md).
+>
+> 🇻🇳 **Đã lưu trữ 2026-10-07.** Tài liệu lịch sử thời CMS, có thể không khớp code. Tài liệu hiện hành: [docs/README.md](../../README.md).
+
 # 05. Cấu Hình Hệ Thống - System Configuration
 
 > Chi tiết về cấu hình môi trường, Docker, biến môi trường và các file config quan trọng
