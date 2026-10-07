@@ -12,6 +12,7 @@ import { handleBindErrors } from '@/shared/utils/error-handler';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { FormField } from '@/components/common/form-field';
 import {
   Select,
   SelectContent,
@@ -106,18 +107,14 @@ export function SocialForm({ initialData, onSuccess, onCancel }: ResourceFormPro
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
       <div className="grid grid-cols-2 gap-4">
-        <div className="space-y-2">
-          <Label htmlFor="name">
-            {tCommon('name')} <span className="text-red-500">*</span>
-          </Label>
+        <FormField id="name" label={tCommon('name')} required error={errors.name?.message}>
           <Input
             id="name"
             {...register('name')}
             className={errors.name ? 'border-red-500' : ''}
             placeholder={tForms('socialName')}
           />
-          {errors.name && <p className="text-sm text-red-500">{errors.name.message}</p>}
-        </div>
+        </FormField>
 
         <div className="space-y-2">
           <Label htmlFor="image">{tLabels('iconImageUrl')}</Label>
@@ -125,32 +122,29 @@ export function SocialForm({ initialData, onSuccess, onCancel }: ResourceFormPro
         </div>
       </div>
 
-      <div className="space-y-2">
-        <Label htmlFor="link">
-          {tCommon('link')} <span className="text-red-500">*</span>
-        </Label>
+      <FormField id="link" label={tCommon('link')} required error={errors.link?.message}>
         <Input
           id="link"
           {...register('link')}
           className={errors.link ? 'border-red-500' : ''}
           placeholder={tForms('socialUrl')}
         />
-        {errors.link && <p className="text-sm text-red-500">{errors.link.message}</p>}
-      </div>
+      </FormField>
 
       <div className="grid grid-cols-2 gap-4">
-        <div className="space-y-2">
-          <Label htmlFor="rank_order">
-            {tCommon('displayOrder')} <span className="text-red-500">*</span>
-          </Label>
+        <FormField
+          id="rank_order"
+          label={tCommon('displayOrder')}
+          required
+          error={errors.rank_order?.message}
+        >
           <Input
             id="rank_order"
             type="number"
             {...register('rank_order')}
             className={errors.rank_order ? 'border-red-500' : ''}
           />
-          {errors.rank_order && <p className="text-sm text-red-500">{errors.rank_order.message}</p>}
-        </div>
+        </FormField>
 
         <div className="space-y-2">
           <Label htmlFor="status">

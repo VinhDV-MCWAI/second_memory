@@ -11,6 +11,7 @@ import { handleBindErrors } from '@/shared/utils/error-handler';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { FormField } from '@/components/common/form-field';
 import {
   Select,
   SelectContent,
@@ -118,17 +119,13 @@ export function SliderForm({ initialData, onSuccess, onCancel }: ResourceFormPro
         </div>
 
         <div className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="title">
-              {tCommon('title')} <span className="text-red-500">*</span>
-            </Label>
+          <FormField id="title" label={tCommon('title')} required error={errors.title?.message}>
             <Input
               id="title"
               {...register('title')}
               className={errors.title ? 'border-red-500' : ''}
             />
-            {errors.title && <p className="text-sm text-red-500">{errors.title.message}</p>}
-          </div>
+          </FormField>
 
           <div className="space-y-2">
             <Label htmlFor="link">{tCommon('linkUrl')}</Label>

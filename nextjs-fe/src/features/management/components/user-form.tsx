@@ -14,6 +14,7 @@ import { formatDateForBackend } from '@/shared/utils/date-formatter';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { FormField } from '@/components/common/form-field';
 import { Textarea } from '@/components/ui/textarea';
 import {
   Select,
@@ -153,55 +154,54 @@ export function UserForm({ initialData, onSuccess, onCancel }: ResourceFormProps
       </div>
 
       <div className="grid grid-cols-2 gap-4">
-        <div className="space-y-2">
-          <Label htmlFor="first_name">
-            {tLabels('firstName')} <span className="text-red-500">*</span>
-          </Label>
+        <FormField
+          id="first_name"
+          label={tLabels('firstName')}
+          required
+          error={errors.first_name?.message}
+        >
           <Input
             id="first_name"
             {...register('first_name')}
             className={errors.first_name ? 'border-red-500' : ''}
           />
-          {errors.first_name && <p className="text-sm text-red-500">{errors.first_name.message}</p>}
-        </div>
+        </FormField>
 
-        <div className="space-y-2">
-          <Label htmlFor="last_name">
-            {tLabels('lastName')} <span className="text-red-500">*</span>
-          </Label>
+        <FormField
+          id="last_name"
+          label={tLabels('lastName')}
+          required
+          error={errors.last_name?.message}
+        >
           <Input
             id="last_name"
             {...register('last_name')}
             className={errors.last_name ? 'border-red-500' : ''}
           />
-          {errors.last_name && <p className="text-sm text-red-500">{errors.last_name.message}</p>}
-        </div>
+        </FormField>
       </div>
 
-      <div className="space-y-2">
-        <Label htmlFor="user_name">
-          {tLabels('username')} <span className="text-red-500">*</span>
-        </Label>
+      <FormField
+        id="user_name"
+        label={tLabels('username')}
+        required
+        error={errors.user_name?.message}
+      >
         <Input
           id="user_name"
           {...register('user_name')}
           className={errors.user_name ? 'border-red-500' : ''}
         />
-        {errors.user_name && <p className="text-sm text-red-500">{errors.user_name.message}</p>}
-      </div>
+      </FormField>
 
-      <div className="space-y-2">
-        <Label htmlFor="email">
-          {tLabels('email')} <span className="text-red-500">*</span>
-        </Label>
+      <FormField id="email" label={tLabels('email')} required error={errors.email?.message}>
         <Input
           id="email"
           type="email"
           {...register('email')}
           className={errors.email ? 'border-red-500' : ''}
         />
-        {errors.email && <p className="text-sm text-red-500">{errors.email.message}</p>}
-      </div>
+      </FormField>
 
       <div className="space-y-2">
         <Label htmlFor="password">
@@ -218,39 +218,35 @@ export function UserForm({ initialData, onSuccess, onCancel }: ResourceFormProps
       </div>
 
       <div className="grid grid-cols-2 gap-4">
-        <div className="space-y-2">
-          <Label htmlFor="phone_number">{tLabels('phoneNumber')}</Label>
+        <FormField
+          id="phone_number"
+          label={tLabels('phoneNumber')}
+          error={errors.phone_number?.message}
+        >
           <Input
             id="phone_number"
             {...register('phone_number')}
             className={errors.phone_number ? 'border-red-500' : ''}
           />
-          {errors.phone_number && (
-            <p className="text-sm text-red-500">{errors.phone_number.message}</p>
-          )}
-        </div>
-        <div className="space-y-2">
-          <Label htmlFor="birth">{tLabels('birthDate')}</Label>
+        </FormField>
+        <FormField id="birth" label={tLabels('birthDate')} error={errors.birth?.message}>
           <Input
             id="birth"
             type="date"
             {...register('birth')}
             className={errors.birth ? 'border-red-500' : ''}
           />
-          {errors.birth && <p className="text-sm text-red-500">{errors.birth.message}</p>}
-        </div>
+        </FormField>
       </div>
 
-      <div className="space-y-2">
-        <Label htmlFor="address">{tLabels('address')}</Label>
+      <FormField id="address" label={tLabels('address')} error={errors.address?.message}>
         <Textarea
           id="address"
           {...register('address')}
           rows={2}
           className={errors.address ? 'border-red-500' : ''}
         />
-        {errors.address && <p className="text-sm text-red-500">{errors.address.message}</p>}
-      </div>
+      </FormField>
 
       <div className="grid grid-cols-2 gap-4">
         <div className="space-y-2">

@@ -10,7 +10,7 @@ import { UI_CONSTANTS } from '@/shared/config';
 import { handleBindErrors } from '@/shared/utils/error-handler';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
+import { FormField } from '@/components/common/form-field';
 import {
   Select,
   SelectContent,
@@ -105,32 +105,21 @@ export function DepartmentForm({
   const FormContent = (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
       <div className="grid grid-cols-2 gap-4">
-        <div className="space-y-2">
-          <Label htmlFor="code">
-            {tLabels('code')} <span className="text-red-500">*</span>
-          </Label>
+        <FormField id="code" label={tLabels('code')} required error={errors.code?.message}>
           <Input
             id="code"
             {...register('code')}
             className={errors.code ? 'border-red-500' : ''}
             disabled={isEdit}
           />
-          {errors.code && <p className="text-sm text-red-500">{errors.code.message}</p>}
-        </div>
+        </FormField>
 
-        <div className="space-y-2">
-          <Label htmlFor="name">
-            {tLabels('name')} <span className="text-red-500">*</span>
-          </Label>
+        <FormField id="name" label={tLabels('name')} required error={errors.name?.message}>
           <Input id="name" {...register('name')} className={errors.name ? 'border-red-500' : ''} />
-          {errors.name && <p className="text-sm text-red-500">{errors.name.message}</p>}
-        </div>
+        </FormField>
       </div>
 
-      <div className="space-y-2">
-        <Label htmlFor="status">
-          {tLabels('status')} <span className="text-red-500">*</span>
-        </Label>
+      <FormField id="status" label={tLabels('status')} required error={errors.status?.message}>
         <Select
           value={statusValue?.toString()}
           onValueChange={(value) => setValue('status', Number(value))}
@@ -157,8 +146,7 @@ export function DepartmentForm({
             )}
           </SelectContent>
         </Select>
-        {errors.status && <p className="text-sm text-red-500">{errors.status.message}</p>}
-      </div>
+      </FormField>
 
       <div className="flex justify-end gap-2 pt-4">
         <Button

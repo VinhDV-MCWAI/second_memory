@@ -11,6 +11,7 @@ import { handleBindErrors } from '@/shared/utils/error-handler';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { FormField } from '@/components/common/form-field';
 import {
   Select,
   SelectContent,
@@ -141,10 +142,12 @@ export function ApiForm({ initialData, onSuccess, onCancel }: ResourceFormProps<
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-      <div className="space-y-2">
-        <Label htmlFor="feature_mst_id">
-          {tLabels('feature')} <span className="text-red-500">*</span>
-        </Label>
+      <FormField
+        id="feature_mst_id"
+        label={tLabels('feature')}
+        required
+        error={errors.feature_mst_id?.message}
+      >
         <Select
           value={currentFeatureId ? String(currentFeatureId) : ''}
           onValueChange={(value) => {
@@ -166,41 +169,27 @@ export function ApiForm({ initialData, onSuccess, onCancel }: ResourceFormProps<
             )}
           </SelectContent>
         </Select>
-        {errors.feature_mst_id && (
-          <p className="text-sm text-red-500">{errors.feature_mst_id.message}</p>
-        )}
-      </div>
+      </FormField>
 
-      <div className="space-y-2">
-        <Label htmlFor="name">
-          {tLabels('name')} <span className="text-red-500">*</span>
-        </Label>
+      <FormField id="name" label={tLabels('name')} required error={errors.name?.message}>
         <Input
           id="name"
           {...register('name')}
           className={errors.name ? 'border-red-500' : ''}
           placeholder={tForms('apiName')}
         />
-        {errors.name && <p className="text-sm text-red-500">{errors.name.message}</p>}
-      </div>
+      </FormField>
 
-      <div className="space-y-2">
-        <Label htmlFor="path">
-          {tLabels('path')} <span className="text-red-500">*</span>
-        </Label>
+      <FormField id="path" label={tLabels('path')} required error={errors.path?.message}>
         <Input
           id="path"
           {...register('path')}
           className={errors.path ? 'border-red-500' : ''}
           placeholder={tForms('apiPath')}
         />
-        {errors.path && <p className="text-sm text-red-500">{errors.path.message}</p>}
-      </div>
+      </FormField>
 
-      <div className="space-y-2">
-        <Label htmlFor="method">
-          {tLabels('method')} <span className="text-red-500">*</span>
-        </Label>
+      <FormField id="method" label={tLabels('method')} required error={errors.method?.message}>
         <Select
           value={methodValue}
           onValueChange={(value) => {
@@ -239,8 +228,7 @@ export function ApiForm({ initialData, onSuccess, onCancel }: ResourceFormProps<
             <SelectItem value={HTTP_METHODS.PATCH}>{HTTP_METHODS.PATCH}</SelectItem>
           </SelectContent>
         </Select>
-        {errors.method && <p className="text-sm text-red-500">{errors.method.message}</p>}
-      </div>
+      </FormField>
 
       <div className="space-y-2">
         <Label htmlFor="is_active">

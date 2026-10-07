@@ -10,7 +10,7 @@ import { UI_CONSTANTS } from '@/shared/config';
 import { handleBindErrors } from '@/shared/utils/error-handler';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
+import { FormField } from '@/components/common/form-field';
 import { ENDPOINTS } from '@/shared/api';
 import { IsDelete } from '@/shared/enums';
 import { getSettingLinkSchema, type SettingLinkFormData } from '@/shared/validation/validation';
@@ -66,31 +66,23 @@ export function SettingLinkForm({
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-      <div className="space-y-2">
-        <Label htmlFor="key">
-          {tFields('key')} <span className="text-red-500">*</span>
-        </Label>
+      <FormField id="key" label={tFields('key')} required error={errors.key?.message}>
         <Input
           id="key"
           {...register('key')}
           className={errors.key ? 'border-red-500' : ''}
           placeholder={tForms('settingKey')}
         />
-        {errors.key && <p className="text-sm text-red-500">{errors.key.message}</p>}
-      </div>
+      </FormField>
 
-      <div className="space-y-2">
-        <Label htmlFor="value">
-          {tFields('value')} <span className="text-red-500">*</span>
-        </Label>
+      <FormField id="value" label={tFields('value')} required error={errors.value?.message}>
         <Input
           id="value"
           {...register('value')}
           className={errors.value ? 'border-red-500' : ''}
           placeholder={tForms('settingValue')}
         />
-        {errors.value && <p className="text-sm text-red-500">{errors.value.message}</p>}
-      </div>
+      </FormField>
 
       <div className="flex justify-end gap-2 pt-4">
         <Button

@@ -12,6 +12,7 @@ import { handleBindErrors } from '@/shared/utils/error-handler';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { FormField } from '@/components/common/form-field';
 import {
   Select,
   SelectContent,
@@ -109,10 +110,12 @@ export function TokenForm({ initialData, onSuccess, onCancel }: ResourceFormProp
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-      <div className="space-y-2">
-        <Label htmlFor="account_id">
-          {tLabels('account')} <span className="text-red-500">*</span>
-        </Label>
+      <FormField
+        id="account_id"
+        label={tLabels('account')}
+        required
+        error={errors.account_id?.message}
+      >
         <Select
           value={accountIdValue?.toString()}
           onValueChange={(value) => setValue('account_id', Number(value))}
@@ -131,21 +134,21 @@ export function TokenForm({ initialData, onSuccess, onCancel }: ResourceFormProp
             ))}
           </SelectContent>
         </Select>
-        {errors.account_id && <p className="text-sm text-red-500">{errors.account_id.message}</p>}
-      </div>
+      </FormField>
 
-      <div className="space-y-2">
-        <Label htmlFor="device_name">
-          {tLabels('deviceName')} <span className="text-red-500">*</span>
-        </Label>
+      <FormField
+        id="device_name"
+        label={tLabels('deviceName')}
+        required
+        error={errors.device_name?.message}
+      >
         <Input
           id="device_name"
           {...register('device_name')}
           className={errors.device_name ? 'border-red-500' : ''}
           placeholder={tForms('deviceName')}
         />
-        {errors.device_name && <p className="text-sm text-red-500">{errors.device_name.message}</p>}
-      </div>
+      </FormField>
 
       <div className="space-y-2">
         <Label htmlFor="ip_address">{tLabels('ipAddress')}</Label>

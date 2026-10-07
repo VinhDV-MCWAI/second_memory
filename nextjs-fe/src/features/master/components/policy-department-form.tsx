@@ -10,7 +10,7 @@ import { UI_CONSTANTS } from '@/shared/config';
 import { handleBindErrors } from '@/shared/utils/error-handler';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
+import { FormField } from '@/components/common/form-field';
 import { ENDPOINTS } from '@/shared/api';
 import {
   getPolicyDepartmentSchema,
@@ -87,31 +87,28 @@ export function PolicyDepartmentForm({
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-      <div className="space-y-2">
-        <Label htmlFor="table_name">
-          {tLabels('tableName')} <span className="text-red-500">*</span>
-        </Label>
+      <FormField
+        id="table_name"
+        label={tLabels('tableName')}
+        required
+        error={errors.table_name?.message}
+      >
         <Input
           id="table_name"
           {...register('table_name')}
           className={errors.table_name ? 'border-red-500' : ''}
           placeholder={tForms('termsOfService')}
         />
-        {errors.table_name && <p className="text-sm text-red-500">{errors.table_name.message}</p>}
-      </div>
+      </FormField>
 
-      <div className="space-y-2">
-        <Label htmlFor="row_id">
-          {tLabels('rowId')} <span className="text-red-500">*</span>
-        </Label>
+      <FormField id="row_id" label={tLabels('rowId')} required error={errors.row_id?.message}>
         <Input
           id="row_id"
           type="number"
           {...register('row_id')}
           className={errors.row_id ? 'border-red-500' : ''}
         />
-        {errors.row_id && <p className="text-sm text-red-500">{errors.row_id.message}</p>}
-      </div>
+      </FormField>
 
       <div className="flex justify-end gap-2 pt-4">
         <Button

@@ -9,6 +9,7 @@ import { handleBindErrors } from '@/shared/utils/error-handler';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { FormField } from '@/components/common/form-field';
 import { Textarea } from '@/components/ui/textarea';
 import {
   Select,
@@ -162,57 +163,49 @@ export function BannerForm({ initialData, onSuccess, onCancel }: ResourceFormPro
           </div>
 
           <div className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="title">
-                {tLabels('title')} <span className="text-red-500">*</span>
-              </Label>
+            <FormField id="title" label={tLabels('title')} required error={errors.title?.message}>
               <Input
                 id="title"
                 {...register('title')}
                 className={errors.title ? 'border-red-500' : ''}
               />
-              {errors.title && <p className="text-sm text-red-500">{errors.title.message}</p>}
-            </div>
+            </FormField>
 
-            <div className="space-y-2">
-              <Label htmlFor="slug">
-                {tLabels('slug')} <span className="text-red-500">*</span>
-              </Label>
+            <FormField id="slug" label={tLabels('slug')} required error={errors.slug?.message}>
               <Input
                 id="slug"
                 {...register('slug')}
                 className={errors.slug ? 'border-red-500' : ''}
               />
-              {errors.slug && <p className="text-sm text-red-500">{errors.slug.message}</p>}
-            </div>
+            </FormField>
 
-            <div className="space-y-2">
-              <Label htmlFor="position">
-                {tLabels('position')} <span className="text-red-500">*</span>
-              </Label>
+            <FormField
+              id="position"
+              label={tLabels('position')}
+              required
+              error={errors.position?.message}
+            >
               <Input
                 id="position"
                 {...register('position')}
                 className={errors.position ? 'border-red-500' : ''}
               />
-              {errors.position && <p className="text-sm text-red-500">{errors.position.message}</p>}
-            </div>
+            </FormField>
           </div>
         </div>
 
-        <div className="space-y-2">
-          <Label htmlFor="description">
-            {tLabels('description')} <span className="text-red-500">*</span>
-          </Label>
+        <FormField
+          id="description"
+          label={tLabels('description')}
+          required
+          error={errors.description?.message}
+        >
           <Textarea
             id="description"
             {...register('description')}
             className={errors.description ? 'border-red-500' : ''}
           />
-          {errors.description && (
-            <p className="text-sm text-red-500">{errors.description.message}</p>
-          )}
-        </div>
+        </FormField>
 
         <div className="grid grid-cols-2 gap-4">
           <div className="space-y-2">

@@ -11,6 +11,7 @@ import { handleBindErrors } from '@/shared/utils/error-handler';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { FormField } from '@/components/common/form-field';
 import {
   Select,
   SelectContent,
@@ -100,25 +101,22 @@ export function FeatureForm({ initialData, onSuccess, onCancel }: ResourceFormPr
 
   const FormContent = (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-      <div className="space-y-2">
-        <Label htmlFor="name">
-          {tLabels('name')} <span className="text-red-500">*</span>
-        </Label>
+      <FormField id="name" label={tLabels('name')} required error={errors.name?.message}>
         <Input id="name" {...register('name')} className={errors.name ? 'border-red-500' : ''} />
-        {errors.name && <p className="text-sm text-red-500">{errors.name.message}</p>}
-      </div>
+      </FormField>
 
-      <div className="space-y-2">
-        <Label htmlFor="group_name">
-          {tLabels('groupName')} <span className="text-red-500">*</span>
-        </Label>
+      <FormField
+        id="group_name"
+        label={tLabels('groupName')}
+        required
+        error={errors.group_name?.message}
+      >
         <Input
           id="group_name"
           {...register('group_name')}
           className={errors.group_name ? 'border-red-500' : ''}
         />
-        {errors.group_name && <p className="text-sm text-red-500">{errors.group_name.message}</p>}
-      </div>
+      </FormField>
 
       <div className="grid grid-cols-2 gap-4">
         <div className="space-y-2">

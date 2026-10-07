@@ -13,6 +13,7 @@ import { handleBindErrors } from '@/shared/utils/error-handler';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { FormField } from '@/components/common/form-field';
 import { Textarea } from '@/components/ui/textarea';
 import {
   Select,
@@ -162,10 +163,7 @@ export function CategoryForm({
 
   const FormFields = (
     <>
-      <div className="space-y-2">
-        <Label htmlFor="name">
-          {tLabels('name')} <span className="text-red-500">*</span>
-        </Label>
+      <FormField id="name" label={tLabels('name')} required error={errors.name?.message}>
         <Input
           id="name"
           {...register('name', {
@@ -175,8 +173,7 @@ export function CategoryForm({
           })}
           className={errors.name ? 'border-red-500' : ''}
         />
-        {errors.name && <p className="text-sm text-red-500">{errors.name.message}</p>}
-      </div>
+      </FormField>
 
       <div className="space-y-2">
         <Label htmlFor="description">{tLabels('description')}</Label>
@@ -184,31 +181,28 @@ export function CategoryForm({
       </div>
 
       <div className="grid grid-cols-2 gap-4">
-        <div className="space-y-2">
-          <Label htmlFor="slug">
-            {tLabels('slug')} <span className="text-red-500">*</span>
-          </Label>
+        <FormField id="slug" label={tLabels('slug')} required error={errors.slug?.message}>
           <Input
             id="slug"
             {...register('slug')}
             placeholder={tForms('slugExample')}
             className={errors.slug ? 'border-red-500' : ''}
           />
-          {errors.slug && <p className="text-sm text-red-500">{errors.slug.message}</p>}
-        </div>
+        </FormField>
 
-        <div className="space-y-2">
-          <Label htmlFor="rank_order">
-            {tLabels('displayOrder')} <span className="text-red-500">*</span>
-          </Label>
+        <FormField
+          id="rank_order"
+          label={tLabels('displayOrder')}
+          required
+          error={errors.rank_order?.message}
+        >
           <Input
             id="rank_order"
             type="number"
             {...register('rank_order', { valueAsNumber: true })}
             className={errors.rank_order ? 'border-red-500' : ''}
           />
-          {errors.rank_order && <p className="text-sm text-red-500">{errors.rank_order.message}</p>}
-        </div>
+        </FormField>
       </div>
 
       <div className="grid grid-cols-2 gap-4">

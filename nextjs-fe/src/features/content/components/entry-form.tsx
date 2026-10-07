@@ -13,6 +13,7 @@ import { handleBindErrors } from '@/shared/utils/error-handler';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { FormField } from '@/components/common/form-field';
 import {
   Select,
   SelectContent,
@@ -139,10 +140,7 @@ export function EntryForm({ initialData, onSuccess, onCancel }: ResourceFormProp
 
   const FormContent = (
     <>
-      <div className="space-y-2">
-        <Label htmlFor="name">
-          {tCommon('name')} <span className="text-red-500">*</span>
-        </Label>
+      <FormField id="name" label={tCommon('name')} required error={errors.name?.message}>
         <Input
           id="name"
           {...register('name', {
@@ -152,8 +150,7 @@ export function EntryForm({ initialData, onSuccess, onCancel }: ResourceFormProp
           })}
           className={errors.name ? 'border-red-500' : ''}
         />
-        {errors.name && <p className="text-sm text-red-500">{errors.name.message}</p>}
-      </div>
+      </FormField>
 
       <div className="space-y-2">
         <Label htmlFor="slug">{tCommon('slug')}</Label>
@@ -161,18 +158,19 @@ export function EntryForm({ initialData, onSuccess, onCancel }: ResourceFormProp
       </div>
 
       <div className="grid grid-cols-2 gap-4">
-        <div className="space-y-2">
-          <Label htmlFor="rank_order">
-            {tCommon('displayOrder')} <span className="text-red-500">*</span>
-          </Label>
+        <FormField
+          id="rank_order"
+          label={tCommon('displayOrder')}
+          required
+          error={errors.rank_order?.message}
+        >
           <Input
             id="rank_order"
             type="number"
             {...register('rank_order', { valueAsNumber: true })}
             className={errors.rank_order ? 'border-red-500' : ''}
           />
-          {errors.rank_order && <p className="text-sm text-red-500">{errors.rank_order.message}</p>}
-        </div>
+        </FormField>
 
         <div className="space-y-2">
           <Label htmlFor="status">
