@@ -7,7 +7,7 @@
 
 | | |
 |---|---|
-| Active phase | P2 Slim down (P0, P1 done locally) |
+| Active phase | P2 Slim down (P0, P1 done locally). P2-01…P2-07, P2-09 done (RFC-001 slices 1–6). Left: P2-10/11 auth (slice 7), P2-12 roles (slice 8), P2-08 audit log (slice 9), P2-13 release (slice 10) |
 | Working branch | `refactor/p2-slim-down` (from `docs/p1-handbook`); `docs/p1-handbook` (stacked on `chore/p0-baseline`, tag `v1.0.0`); `chore/p0-baseline` (from `refactor/fe6-features` ← `fix/security-deps` ← `developer`); local only, nothing pushed |
 | Old refactor | Frozen (`.claude/refactor/PLAN.md`, `PROGRESS.md`) |
 | Owner defaults | 8–10 h/week, backend role, §4 remove list accepted, Obsidian vault private (see analysis §9) |
@@ -20,6 +20,8 @@
 4. Remote branch cleanup (P0-09): commands in `.claude/refactor/PROGRESS.md` → "Branches".
 5. Still open from the refactor: rotate secrets on any real deployment; browser check while logged in.
 6. When ready: push `refactor/p2-slim-down` (stacked on `docs/p1-handbook`); PRs only after the branches below it are merged.
+7. Before upgrading any deployed environment to v2.0.0: deploy `v1.2.0` and run `docs/runbooks/content-export.md` (the export command is gone after slice 5). `v1.2.0` has a tag but no release notes file yet (`docs/releases/v1.2.0.md`).
+8. Open decision (does not block P2): remove the media API, or keep it for Skill Ledger evidence files — see RFC-001 §3 correction.
 
 ## Environment gotchas (read before running anything)
 
@@ -63,7 +65,13 @@
 - `make verify` exit 0: backend 242 passed, Vitest 98 (19 files), FE coverage 80.69% (gate 80 — slice 6 must not lower it; add tests if it does), lint 0 errors (old `auth-provider.tsx` warning).
 - Found, left for P4 (Docker hardening), not in RFC-001: (1) `ml-nextjs-docs` is always `unhealthy` — the app listens on 3457 (`next dev -p 3457`, nginx upstream 3457) but compose sets `PORT`/healthcheck/port mapping to `NEXTJS_DOCS_PORT_INSIDE_ENV` (3001); already noted as item 17 in `.claude/refactor/PROGRESS.md`. (2) The docs app's production Docker stage cannot build (`output: 'standalone'` missing, no `public/`); CD never builds a docs image, so production has no docs site at all.
 
+- 2026-10-07 — RFC-001 slice 6 (file-manager explorer) done: `066e750` refactor(fe) (`/admin/file-manager`, all of `features/media`, `useWebSocket` hook, FE media endpoints, multipart/MIME/file-size constants, 110 message keys incl. the whole `fileManager` namespace). Media API, `media_mgmt` and MinIO objects kept; `make openapi` unchanged. Finding: avatar upload was never wired up (`admin-form.tsx` shows a preview only), so RFC-001's reason for keeping the media API was wrong — correction note added to RFC-001 §3; kept anyway per REQ-001 Q3/US-3. Side commits: `62ddd1a` refactor(fe) — `ImageUpload` component was already dead before slice 5; `0790528` build(deps) — `laravel-echo`, `pusher-js` (frozen install + FE production build OK; the API still broadcasts upload progress over Reverb with no listener).
+- `make verify` exit 0: backend 242 passed, Vitest 61 (16 files), FE coverage 81.23%, lint 0 errors (old `auth-provider.tsx` warning). Backlog: P2-06, P2-07, P2-09 → done.
+
 ## Next step
 
-1. RFC-001 slice 6: remove the file-manager explorer UI (`/admin/file-manager`, the `features/media` explorer, its nav entry and messages) but **keep the media API** (avatar upload in the admin form uses `/admin/media-mgmt/*` and the image picker/upload pieces it needs). Check what `admin-form` imports from `features/media` before deleting. No tables are dropped (`media_mgmt` stays; MinIO objects untouched, REQ-001 US-3). Watch the 80% FE coverage gate. Then `make openapi` (should be unchanged if no API changes), `make verify`.
-2. Then slice 7 (Sanctum, P2-10/11) starts with PRB-001 + ADR-0004 docs first.
+RFC-001 slice 7 = backlog **P2-10 then P2-11** (largest risk in P2). Do the documents first, as their own commit, before any code:
+
+1. **P2-10 (docs only):** `PRB-001` from `docs/templates/problem-record.md` (problem: hand-written JWT + Redis permission table — cost, risks, test failures `RefreshTokenApiTest` t004/005/006/019 that `make test-ci` skips) and `ADR-0004` from `docs/templates/adr.md` (decision: Laravel Sanctum SPA cookie auth; options considered; consequences: Reverb channel auth, FE auth provider, `token_mst` goes in slice 8). Archive `laravel-api/docs/auth/AUTH-GUIDE.md` as a learning record (the owner hand-coded this auth to learn; keep the write-up, mark it historical — do not delete it). Bilingual per `docs/README.md`.
+2. **P2-11 (code), after the ADR:** install Sanctum (say why — new dependency), cookie/session login for the SPA, replace `AdminMiddleware`/`BroadcastingAuthMiddleware`/`CredentialService`/`JsonWebToken`, migrate `nextjs-fe/src/providers/auth-provider.tsx` (+ the refresh-token interceptor in `src/shared/api/client`), new auth feature tests (401/403/login/logout/me), remove the AUTH_TODO exclusion from `make test-ci` once the old tests are gone. Keep the HTTP envelope. Login must keep working through nginx (`/api/admin/credential/*` paths may change → update FE in the same change, `make openapi`). Note: `admin_permission_view` is still read by login today; RBAC tables stay until slice 8.
+3. Then slice 8 (P2-12 roles `owner`/`viewer`), slice 9 (P2-08 audit log), slice 10 (P2-13 metrics + `v2.0.0`).

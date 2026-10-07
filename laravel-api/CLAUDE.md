@@ -40,4 +40,4 @@ docker exec ml-php php artisan migrate:fresh --seed      # DEV ONLY, destroys da
 - New Larastan errors must be fixed, not added to the baseline; regenerate it only when the baseline shrinks (`composer analyse -- --generate-baseline=phpstan-baseline.neon`).
 - Tests hit a real PostgreSQL `testing` DB (see `phpunit.xml`), run inside `ml-php`.
 - DB view `admin_permission_view` and trigger `after_api_insert` (migrations `..._000046`, `..._000048`) sit on the RBAC tables; changing those tables means checking them too. Removed modules are dropped by `2026_10_07_*_drop_*` migrations whose `down()` replays the original ones (`App\Support\Database\ReplaysMigrations`).
-- Media upload goes to MinIO via `Services/MinioService.php` with queued jobs in `Jobs/Media`; broadcast progress over Reverb.
+- Media upload goes to MinIO via `Services/MinioService.php` with queued jobs in `Jobs/Media`; progress is broadcast over Reverb. Since RFC-001 slice 6 no FE screen calls the media API (the file manager is gone and avatar upload was never wired up); the API, `media_mgmt` and the MinIO objects are kept on purpose (REQ-001 US-3).

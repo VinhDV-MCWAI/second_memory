@@ -42,6 +42,10 @@ Totals before the change are in §9 (P2-05).
 
 > 🇻🇳 Phát hiện quan trọng: view `admin_policy_view` không được code nào dùng, nên department/policy xoá độc lập được. View `admin_permission_view` thì login đang dùng, nên chỉ gỡ được sau khi chuyển sang Sanctum. API upload media phải giữ vì avatar admin dùng nó.
 
+**Correction (2026-10-07, slice 6):** the "avatar upload uses the media API" row above is wrong. Avatar upload was never wired up (`admin-form.tsx` only shows a preview), so after slice 6 no screen calls the media API. The API, `media_mgmt` and the MinIO objects are still kept, because REQ-001 Q3 / US-3 asks to keep the files. Whether to remove the media API (or reuse it, e.g. for Skill Ledger evidence files) is an open decision for the owner; it does not block P2.
+
+> 🇻🇳 **Đính chính (slice 6):** dòng "avatar dùng media API" ở trên là sai — upload avatar chưa từng được nối (form chỉ hiện ảnh xem trước). Sau slice 6 không màn hình nào gọi media API. Vẫn giữ API, bảng `media_mgmt` và file MinIO theo REQ-001 câu 3 / US-3. Xoá hay tái dùng media API (ví dụ cho file minh chứng của Skill Ledger) là quyết định mở cho owner, không chặn P2.
+
 ## 4. Data model (P2-03)
 
 ### As-is (v1.0.0, simplified — history tables, timestamps and audit columns omitted)
