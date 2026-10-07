@@ -1,0 +1,32 @@
+name: Requirement (REQ)
+description: A new need or a change request
+title: "REQ: "
+labels: ["type:req"]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem and goal
+      description: What problem, for whom, how we know it is solved.
+    validations:
+      required: true
+  - type: textarea
+    id: scope
+    attributes:
+      label: Scope
+      description: In scope / out of scope.
+  - type: textarea
+    id: stories
+    attributes:
+      label: User stories and acceptance criteria
+      description: "As a … I want … so that …  /  Given … When … Then …"
+  - type: dropdown
+    id: size
+    attributes:
+      label: Size
+      options: [small, normal, large (needs RFC)]
+  - type: dropdown
+    id: role
+    attributes:
+      label: Raised by
+      options: [PO, QA, Ops, Security, User, Dev]

@@ -29,8 +29,8 @@ docs/
 ├── releases/            release notes per version tag
 ├── adr/                 Architecture Decision Records: one decision per file, never edited after "Accepted"
 ├── architecture/        system snapshots: as-is.md (v1.0.0), later to-be.md
-├── templates/           copy these to start a new record
-├── handbook/            (planned, Phase 1) how we work: team, git, requests, QA, reports, coding standards
+├── templates/           copy these to start a new record (REQ, RFC, ADR, PRB, INC, postmortem, runbook, reports)
+├── handbook/            how we work: team, intake, design, git, coding, QA, release, operations, reporting, docs & data
 ├── requirements/        (planned, Phase 2+) REQ-xxx: request → clarification → user stories → acceptance criteria
 ├── design/              (planned, Phase 2+) design docs / RFCs, ERD, API contracts, sequence diagrams
 ├── problems/            (planned, Phase 1+) PRB-xxx: problem records (origin → impact → solution → follow-ups)

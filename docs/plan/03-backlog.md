@@ -28,19 +28,19 @@ Status: `todo` → `doing` → `done` | `cut` (with reason). When GitHub Project
 
 | ID | Task | Output | Status |
 |---|---|---|---|
-| P1-01 | Team model + RACI matrix | `handbook/01-team.md` | todo |
-| P1-02 | Work intake: request flow, clarification question bank, Definition of Ready, estimation, prioritisation (MoSCoW / RICE) | `handbook/02-intake.md` | todo |
-| P1-03 | Design: when to write RFC/ADR, how to present and get approval, diagram types (C4, ERD, sequence) | `handbook/03-design.md` | todo |
-| P1-04 | Git & review: branch model and protection, Conventional Commits, PR size, review checklist, conflict resolution, branch deletion | `handbook/04-git.md` | todo |
-| P1-05 | Coding standards PHP / TS (+ placeholders for Go / Python), naming, errors, logging, "no magic values" | `handbook/05-coding.md` | todo |
-| P1-06 | Testing & QA: test pyramid by risk, Definition of Done, QA flow, bug template, severity vs priority | `handbook/06-testing-qa.md` | todo |
-| P1-07 | Release & deploy, environments, rollback, migration safety | `handbook/07-release.md` | todo |
-| P1-08 | Operations: severity matrix, incident roles, communication, postmortem rules | `handbook/08-operations.md` | todo |
-| P1-09 | Reporting: daily / weekly / time log, escalation path | `handbook/09-reporting.md` | todo |
-| P1-10 | Documentation map (REQ / RFC / ADR / PRB / INC / runbook) + data rules | `handbook/10-docs-and-data.md` | todo |
-| P1-11 | Templates: requirement, design doc, ADR ✓, problem record ✓, incident, postmortem, runbook, daily, weekly, retro | `docs/templates/` | doing |
-| P1-12 | GitHub templates: issue forms (REQ, BUG, TASK, SPIKE, INC), PR template, CODEOWNERS | `.github/` | todo |
-| P1-13 | AI stakeholder skills: `simulate-po`, `simulate-qa`, `simulate-ops` (role, tone, what they ask, what they never reveal) | `.claude/skills/` | todo |
+| P1-01 | Team model + RACI matrix | `handbook/01-team.md` | done |
+| P1-02 | Work intake: request flow, clarification question bank, Definition of Ready, estimation, prioritisation (MoSCoW / RICE) | `handbook/02-intake.md` | done |
+| P1-03 | Design: when to write RFC/ADR, how to present and get approval, diagram types (C4, ERD, sequence) | `handbook/03-design.md` | done |
+| P1-04 | Git & review: branch model and protection, Conventional Commits, PR size, review checklist, conflict resolution, branch deletion | `handbook/04-git.md` | done |
+| P1-05 | Coding standards PHP / TS (+ placeholders for Go / Python), naming, errors, logging, "no magic values" | `handbook/05-coding.md` | done |
+| P1-06 | Testing & QA: test pyramid by risk, Definition of Done, QA flow, bug template, severity vs priority | `handbook/06-testing-qa.md` | done |
+| P1-07 | Release & deploy, environments, rollback, migration safety | `handbook/07-release.md` | done |
+| P1-08 | Operations: severity matrix, incident roles, communication, postmortem rules | `handbook/08-operations.md` | done |
+| P1-09 | Reporting: daily / weekly / time log, escalation path | `handbook/09-reporting.md` | done |
+| P1-10 | Documentation map (REQ / RFC / ADR / PRB / INC / runbook) + data rules | `handbook/10-docs-and-data.md` | done |
+| P1-11 | Templates: requirement, design doc, ADR ✓, problem record ✓, incident, postmortem, runbook, daily, weekly, retro | `docs/templates/` | done |
+| P1-12 | GitHub templates: issue forms (REQ, BUG, TASK, SPIKE, INC), PR template, CODEOWNERS | `.github/` | done |
+| P1-13 | AI stakeholder skills: `simulate-po`, `simulate-qa`, `simulate-ops` (role, tone, what they ask, what they never reveal) | `.claude/skills/` | done |
 | P1-14 | Dry run: one simulated request through intake to "Ready"; first daily + weekly report; P1 retro | Reports | todo |
 
 ## P2 — Slim down

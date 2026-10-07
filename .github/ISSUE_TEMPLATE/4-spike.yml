@@ -1,0 +1,21 @@
+name: Spike
+description: Time-boxed research to answer a question
+title: "SPIKE: "
+labels: ["type:spike"]
+body:
+  - type: textarea
+    id: question
+    attributes:
+      label: Question to answer
+    validations:
+      required: true
+  - type: input
+    id: timebox
+    attributes:
+      label: Time box (sessions)
+      placeholder: "2"
+  - type: textarea
+    id: output
+    attributes:
+      label: Expected output
+      description: e.g. a recommendation, an ADR draft, a prototype branch.

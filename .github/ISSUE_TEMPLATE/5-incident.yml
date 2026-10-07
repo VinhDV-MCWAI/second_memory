@@ -1,0 +1,24 @@
+name: Incident (INC)
+description: Production-like environment is broken or degraded
+title: "INC: "
+labels: ["type:incident"]
+body:
+  - type: dropdown
+    id: severity
+    attributes:
+      label: Severity
+      options: [SEV-1, SEV-2, SEV-3, SEV-4]
+    validations:
+      required: true
+  - type: textarea
+    id: impact
+    attributes:
+      label: Impact
+      description: What users see, since when.
+    validations:
+      required: true
+  - type: textarea
+    id: timeline
+    attributes:
+      label: Timeline
+      value: "| Time | Event |\n|---|---|\n| HH:MM | Detected by … |"

@@ -111,3 +111,6 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
+
+# Simulated stakeholder sealed briefs (local only, revealed at review time)
+.claude/sim/sealed/

@@ -7,8 +7,8 @@
 
 | | |
 |---|---|
-| Active phase | P0 Baseline & close-out |
-| Working branch | `chore/p0-baseline` (from `refactor/fe6-features` ← `fix/security-deps` ← `developer`); local only, nothing pushed |
+| Active phase | P1 Handbook (P0 done locally) |
+| Working branch | `docs/p1-handbook` (stacked on `chore/p0-baseline`, tag `v1.0.0`); `chore/p0-baseline` (from `refactor/fe6-features` ← `fix/security-deps` ← `developer`); local only, nothing pushed |
 | Old refactor | Frozen (`.claude/refactor/PLAN.md`, `PROGRESS.md`) |
 | Owner defaults | 8–10 h/week, backend role, §4 remove list accepted, Obsidian vault private (see analysis §9) |
 
@@ -26,6 +26,8 @@
 
 - 2026-10-07 — P0 done locally: as-is architecture, root docs archived, old plan frozen (open items mapped), `refactor-item` skill → `lab-task`, ADR-0002, GitHub setup guide, v1.0.0 release notes. `make verify` exit 0 (Pint ✓, Larastan ✓, backend 598 tests, FE lint 0 errors, tsc ✓, Vitest 106). Tag `v1.0.0` (local).
 
+- 2026-10-07 — P1-01…P1-13 done: handbook (10 chapters), templates (REQ, RFC, INC, postmortem, runbook, daily, weekly, retro), GitHub issue forms + PR template + CODEOWNERS, skills `simulate-po` / `simulate-qa` / `simulate-ops` (sealed briefs in gitignored `.claude/sim/sealed/`).
+
 ## Next step
 
-P1 handbook on branch `docs/p1-handbook` (stacked on `chore/p0-baseline`).
+P1-14 dry run: `simulate-po` raises REQ-001 (slim down) → intake to Ready, first daily + weekly report, P1 retro, release notes `v1.1.0`. Then P2 on `refactor/p2-slim-down`.
