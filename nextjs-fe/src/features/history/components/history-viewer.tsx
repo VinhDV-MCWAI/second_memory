@@ -7,7 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Separator } from '@/components/ui/separator';
 import { useApiData } from '@/shared/hooks/use-api-data';
 import { ActionType } from '@/shared/enums';
-import { SORT_ORDER } from '@/shared/config/constant';
+import { SORT_ORDER } from '@/shared/config';
 import type { HistoryRecord } from '@/shared/types/models';
 import type { HistoryViewerProps } from '@/shared/types/data-table.types';
 

@@ -17,7 +17,7 @@ import {
   SORT_ORDER,
   INITIAL_PAGINATION,
   PAGINATION,
-} from '@/shared/config/constant';
+} from '@/shared/config';
 import { useTranslations } from 'next-intl';
 import { extractList, processFiles, toMediaFile } from '@/features/media/utils/file-list';
 import { uploadMediaFile, type HeavyUpload } from '@/features/media/utils/upload-media-file';

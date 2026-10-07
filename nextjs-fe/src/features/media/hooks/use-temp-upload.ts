@@ -1,6 +1,6 @@
 import { useCallback, useState } from 'react';
 import { useTranslations } from 'next-intl';
-import { UPLOAD_CONFIG } from '@/shared/config/constant';
+import { UPLOAD_CONFIG } from '@/shared/config';
 import type { ExtendedFile, UploadedFileData } from '@/features/media/types/file-manager.types';
 import { mediaFileService } from '@/features/media/services/media-file.service';
 import { MultipartUploader } from '@/features/media/services/multipart-uploader';

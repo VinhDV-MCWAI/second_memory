@@ -23,7 +23,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { ENDPOINTS } from '@/shared/api';
-import { FORM_DEFAULTS } from '@/shared/config/constant';
+import { FORM_DEFAULTS } from '@/shared/config';
 import { StatusEnum, StatusEnumLabels, IsActive } from '@/shared/enums';
 import {
   getEntryDescriptionSchema,

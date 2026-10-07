@@ -5,7 +5,7 @@
 
 import { apiClient } from '@/shared/api/client';
 import { ENDPOINTS } from '@/shared/api';
-import { FILE_SIZE_UNITS, FILE_SIZE_MULTIPLIER } from '@/shared/config/constant';
+import { FILE_SIZE_UNITS, FILE_SIZE_MULTIPLIER } from '@/shared/config';
 import { API_PATHS } from '@/shared/types/api';
 import messages from '@/../messages/en.json';
 import type {

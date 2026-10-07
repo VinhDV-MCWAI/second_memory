@@ -7,12 +7,7 @@ import { X, Image as ImageIcon } from 'lucide-react';
 import { cn } from '@/shared/utils';
 import toast from 'react-hot-toast';
 import { useTranslations } from 'next-intl';
-import {
-  UPLOAD_CONFIG,
-  IMAGE_SHAPES,
-  MIME_TYPE_PREFIX,
-  type ImageShape,
-} from '@/shared/config/constant';
+import { UPLOAD_CONFIG, IMAGE_SHAPES, MIME_TYPE_PREFIX, type ImageShape } from '@/shared/config';
 import type { ImageUploadProps } from '@/shared/types/data-table.types';
 
 export function ImageUpload({

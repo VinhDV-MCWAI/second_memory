@@ -22,12 +22,7 @@ import { formatFileSize, getFileIcon, getMimeTypeLabel } from './utils';
 import { format } from 'date-fns';
 import { FileContextMenu } from './context-menu';
 import { useTranslations } from 'next-intl';
-import {
-  DATE_FORMATS,
-  SORT_ORDER,
-  FILE_TYPE,
-  FILE_MANAGER_SORT_FIELDS,
-} from '@/shared/config/constant';
+import { DATE_FORMATS, SORT_ORDER, FILE_TYPE, FILE_MANAGER_SORT_FIELDS } from '@/shared/config';
 import type { FileListProps } from '@/features/media/types/file-manager.types';
 
 export const FileList = ({

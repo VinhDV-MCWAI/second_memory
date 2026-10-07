@@ -2,7 +2,7 @@
  * API Response Types
  */
 
-import { SORT_ORDER } from '../config/constant';
+import { SORT_ORDER } from '@/shared/config';
 import type { DepartmentMst, RoleMst } from './models';
 
 export interface ApiResponse<T> {

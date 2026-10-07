@@ -9,7 +9,7 @@ import {
 import { Eye, Pencil, Move, Copy, Trash, Download } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import type { FileContextMenuProps } from '@/features/media/types/file-manager.types';
-import { KEYBOARD_KEYS } from '@/shared/config/constant';
+import { KEYBOARD_KEYS } from '@/shared/config';
 
 export const FileContextMenu = ({
   children,

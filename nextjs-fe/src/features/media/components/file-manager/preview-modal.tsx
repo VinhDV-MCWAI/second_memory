@@ -18,12 +18,7 @@ import toast from 'react-hot-toast';
 import { useEffect } from 'react';
 import { useTranslations } from 'next-intl';
 import type { PreviewModalProps } from '@/features/media/types/file-manager.types';
-import {
-  DATE_FORMATS,
-  KEYBOARD_KEYS,
-  KEYBOARD_EVENT,
-  MIME_TYPE_PREFIX,
-} from '@/shared/config/constant';
+import { DATE_FORMATS, KEYBOARD_KEYS, KEYBOARD_EVENT, MIME_TYPE_PREFIX } from '@/shared/config';
 
 export const PreviewModal = ({
   file,

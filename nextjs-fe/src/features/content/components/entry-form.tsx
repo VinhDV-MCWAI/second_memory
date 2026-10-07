@@ -25,7 +25,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { HistoryViewer } from '@/features/history/components/history-viewer';
 import type { LayoutStructureItem, EntryDescriptionMgmt, EntryMgmt } from '@/shared/types/api';
 import { ENDPOINTS } from '@/shared/api';
-import { FORM_DEFAULTS } from '@/shared/config/constant';
+import { FORM_DEFAULTS } from '@/shared/config';
 import { EntryStatus, EntryStatusLabels } from '@/shared/enums';
 import {
   getEntrySchema,

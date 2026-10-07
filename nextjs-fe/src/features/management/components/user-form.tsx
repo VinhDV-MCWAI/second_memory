@@ -23,7 +23,7 @@ import { HistoryViewer } from '@/features/history/components/history-viewer';
 import { AvatarUpload } from '@/components/common/avatar-upload';
 import { ENDPOINTS } from '@/shared/api';
 import { Gender, GenderLabels, UserStatus, UserStatusLabels } from '@/shared/enums/enums';
-import { FILE_UPLOAD } from '@/shared/config/constant';
+import { FILE_UPLOAD } from '@/shared/config';
 import { getUserSchema, type UserFormData } from '@/shared/validation/validation';
 import type { UserMgmt } from '@/shared/types/api';
 import type { ResourceFormProps } from '@/components/common/resource-list-page';

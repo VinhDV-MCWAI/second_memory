@@ -23,7 +23,7 @@ import type {
 } from '@/features/media/types/file-manager.types';
 import toast from 'react-hot-toast';
 import { useTranslations } from 'next-intl';
-import { SORT_ORDER } from '@/shared/config/constant';
+import { SORT_ORDER } from '@/shared/config';
 import {
   FILE_MANAGER_SORT_FIELDS,
   FILTER_TYPE,
@@ -31,7 +31,7 @@ import {
   FILE_TYPE,
   MOVE_COPY_MODE,
   UI_CONSTANTS,
-} from '@/shared/config/constant';
+} from '@/shared/config';
 
 export function FileManagerContent() {
   const {

@@ -8,13 +8,8 @@ import {
   FileCode,
   Folder,
 } from 'lucide-react';
-import { SORT_ORDER, MIME_TYPE_PREFIX } from '@/shared/config/constant';
-import {
-  FILTER_TYPE,
-  FILE_TYPE,
-  FILE_SIZE_UNITS,
-  MIME_TYPE_LABELS,
-} from '@/shared/config/constant';
+import { SORT_ORDER, MIME_TYPE_PREFIX } from '@/shared/config';
+import { FILTER_TYPE, FILE_TYPE, FILE_SIZE_UNITS, MIME_TYPE_LABELS } from '@/shared/config';
 import type {
   MediaFile,
   FilterOptions,

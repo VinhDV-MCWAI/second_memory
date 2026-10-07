@@ -12,7 +12,7 @@ import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { Upload, X, AlertCircle } from 'lucide-react';
 import { useTranslations } from 'next-intl';
-import { UPLOAD_CONFIG } from '@/shared/config/constant';
+import { UPLOAD_CONFIG } from '@/shared/config';
 import { cn } from '@/shared/utils';
 import type { UploadDialogProps, ExtendedFile } from '@/features/media/types/file-manager.types';
 import { useTempUpload } from '@/features/media/hooks/use-temp-upload';

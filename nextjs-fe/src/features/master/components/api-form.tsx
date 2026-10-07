@@ -22,7 +22,7 @@ import {
 import type { FeatureMst, ApiMst } from '@/shared/types/api';
 import { ENDPOINTS } from '@/shared/api';
 import { UI_CONSTANTS } from '@/shared/config';
-import { SORT_ORDER, SORT_FIELDS, HTTP_METHODS } from '@/shared/config/constant';
+import { SORT_ORDER, SORT_FIELDS, HTTP_METHODS } from '@/shared/config';
 import { IsActive, IsActiveLabels, TypeOfMethod } from '@/shared/enums';
 import { getApiSchema, type ApiFormData } from '@/shared/validation/validation';
 import type { ResourceFormProps } from '@/components/common/resource-list-page';

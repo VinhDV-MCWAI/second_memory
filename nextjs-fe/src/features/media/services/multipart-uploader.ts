@@ -5,7 +5,7 @@ import {
   UploadProgress,
   HeavyUploadResult,
 } from '@/features/media/types/media-file.types';
-import { MULTIPART_UPLOAD_CONFIG } from '@/shared/config/constant';
+import { MULTIPART_UPLOAD_CONFIG } from '@/shared/config';
 import en from '@/../messages/en.json';
 
 export class MultipartUploader {

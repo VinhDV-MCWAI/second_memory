@@ -24,8 +24,8 @@ import {
   DropdownMenuRadioItem,
 } from '@/components/ui/dropdown-menu';
 import { useTranslations } from 'next-intl';
-import { SORT_ORDER } from '@/shared/config/constant';
-import { FILE_MANAGER_SORT_FIELDS, VIEW_MODE } from '@/shared/config/constant';
+import { SORT_ORDER } from '@/shared/config';
+import { FILE_MANAGER_SORT_FIELDS, VIEW_MODE } from '@/shared/config';
 import type {
   ToolbarProps,
   SortField,

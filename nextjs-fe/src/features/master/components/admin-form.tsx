@@ -22,7 +22,7 @@ import { AvatarUpload } from '@/components/common/avatar-upload';
 import type { AdminMst } from '@/shared/types/api';
 import { ENDPOINTS, queryKeys } from '@/shared/api';
 import { AdminStatus, Gender, GenderLabels, AdminStatusLabels } from '@/shared/enums';
-import { UPLOAD_CONFIG } from '@/shared/config/constant';
+import { UPLOAD_CONFIG } from '@/shared/config';
 import { getAdminSchema, type AdminFormData } from '@/shared/validation/validation';
 import type { ResourceFormProps } from '@/components/common/resource-list-page';
 import { useAdminRoles } from '@/features/master/hooks/use-admin-roles';

@@ -10,7 +10,7 @@ import {
 } from '@/components/ui/select';
 import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight } from 'lucide-react';
 import { useTranslations } from 'next-intl';
-import { PAGINATION } from '@/shared/config/constant';
+import { PAGINATION } from '@/shared/config';
 import { PaginationProps } from '@/shared/types';
 
 export function Pagination({

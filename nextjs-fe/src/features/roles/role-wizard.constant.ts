@@ -5,7 +5,7 @@
  * Constants, types and interfaces for Role Wizard feature
  */
 
-import { HTTP_METHODS } from '@/shared/config/constant';
+import { HTTP_METHODS } from '@/shared/config';
 
 // Re-export HTTP_METHODS for convenience
 export { HTTP_METHODS };

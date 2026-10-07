@@ -13,8 +13,8 @@ vi.mock('./media-file.service', () => ({
 }));
 
 // Retry instantly and give up after two attempts so failure paths stay fast.
-vi.mock('@/shared/config/constant', async (importOriginal) => {
-  const actual = await importOriginal<typeof import('@/shared/config/constant')>();
+vi.mock('@/shared/config', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('@/shared/config')>();
   return {
     ...actual,
     MULTIPART_UPLOAD_CONFIG: {

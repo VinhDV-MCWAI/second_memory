@@ -9,7 +9,7 @@ import {
   FILTER_TYPE,
   MIME_TYPE_PREFIX,
   SORT_ORDER,
-} from '@/shared/config/constant';
+} from '@/shared/config';
 
 /** Rows of a media list response: either the array itself or `{ data: [...] }`. */
 export function extractList(response: unknown): unknown[] {

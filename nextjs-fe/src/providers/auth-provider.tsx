@@ -3,7 +3,7 @@
 import React, { useReducer, useEffect, useRef, useCallback, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import { authService } from '@/shared/services/modules/auth.service';
-import { ADMIN_ROUTES } from '@/shared/config/constant';
+import { ADMIN_ROUTES } from '@/shared/config';
 import {
   AuthState,
   AuthAction,

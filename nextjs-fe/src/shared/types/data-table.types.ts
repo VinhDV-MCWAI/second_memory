@@ -1,5 +1,5 @@
 import { ReactNode } from 'react';
-import type { SortOrder, ImageShape } from '../config/constant';
+import type { SortOrder, ImageShape } from '@/shared/config';
 
 /**
  * Data Table Column Definition
