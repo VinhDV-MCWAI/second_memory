@@ -99,17 +99,3 @@ export function isRouteActive(currentPath: string, targetPath?: string): boolean
   // Check if current path starts with target path (for nested routes)
   return currentPath.startsWith(targetPath + '/');
 }
-
-// Helper function to find active menu item
-export function findActiveMenuItem(menuItems: MenuItem[], currentPath: string): MenuItem | null {
-  for (const item of menuItems) {
-    if (item.href && isRouteActive(currentPath, item.href)) {
-      return item;
-    }
-    if (item.children) {
-      const activeChild = findActiveMenuItem(item.children, currentPath);
-      if (activeChild) return activeChild;
-    }
-  }
-  return null;
-}
