@@ -121,6 +121,7 @@ User delegated all P2+ items on 2026-10-06 ("toàn quyền thực hiện, không
 27. Paging/sorting were never validated (any value reached `paginate()`/`orderBy`); now `ListRequest` validates them leniently. Sorting still uses `Schema::hasColumn` per request (allow-list = follow-up, see rules/backend-laravel.md).
 28. **`useHistory.restoreVersion` calls `POST {history}/restore/{id}`, which no backend route serves** → restore in the history viewer always 404s. Kept (spec documents the current call); fix needs a backend restore endpoint or removing the button (feature decision).
 29. `media-mgmt` keeps REST-style routes (`PUT update/{id}`, `DELETE delete/{id}` with `ids` body) unlike the other resources (`POST {res}/delete`). Consistent between FE and BE, so left as is.
+30. **Security (fixed `63933d0`):** `AdminMstResource`, `UserMgmtResource` and their history Resources returned the bcrypt `password` hash in every list response. Removed; regression tests in `ListAdminMstTest` / `ListUserMgmtTest`. Backend 597 pass.
 
 - 2026-10-06 — Rule: no `Co-Authored-By: Claude` trailer (settings `attribution.commit: ""`, CLAUDE.md, workflow rule, local `commit-msg` hook). All 46 earlier commits rewritten without it (tree identical; old tips kept in branch `backup/pre-msg-rewrite`). **38 of them are already on `origin/developer`** → the remote still has the old messages until someone force-pushes `developer` (user decision).
 - 2026-10-06 — U1 done (Laravel 13, PHP 8.5, PHPUnit 12).
