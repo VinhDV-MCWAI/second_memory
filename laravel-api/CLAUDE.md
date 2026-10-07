@@ -18,22 +18,22 @@ docker exec ml-php php artisan migrate:fresh --seed      # DEV ONLY, destroys da
 
 `Route → Middleware → Controller → FormRequest → Service → Repository → Model`
 
-- **Module scopes:** `Master` (`*Mst` — admins only), `Management` (`*Mgmt` — media only), `History` (`*Hist` — `admin_mst_hist` only).
-- Each entity has: Controller, `List/Store/Update/Delete` FormRequests, Repository, Service, Resource, Model, Factory, Feature tests under `tests/Feature/{Master,Management,History}`. Services type-hint the concrete repository (no interfaces).
+- **Module scopes:** `Master` (`*Mst` — admins only), `Management` (`*Mgmt` — media only), `Audit` (`audit_log`, read-only list; ADR-0006).
+- Each entity has: Controller, `List/Store/Update/Delete` FormRequests, Repository, Service, Resource, Model, Factory, Feature tests under `tests/Feature/{Master,Management,Audit,Auth}`. Services type-hint the concrete repository (no interfaces).
 - **Controllers** stay explicit (typed FormRequests, `$request->validated()` only). **List requests** extend `Http/Requests/ListRequest` (shared `id`/`page`/`per_page`/`sort_by`/`sort_order` rules) and declare `filters()`. A field without a rule never reaches the service.
-- **Services:** `CrudService` (list/store/update/delete via `$resource`) or `AuditedCrudService` (also writes a `*_hist` row per create/update/delete; set `$historyForeignKey`). Entity services usually only declare those properties and a constructor.
-- **Repositories:** `CrudRepository` (hard delete; history tables) or `SoftDeleteCrudRepository` (`is_delete` flag, refuses updates of deleted rows, `$deleteBlockedBy` relations). Entities implement `list()` and override `fillable()` to normalize payloads (password hashing, date formats). `BaseRepository` has `applyFilters`, `applyDateRange`, `applySorting`, `validateForeignKeys`, `checkCanDelete`.
+- **Services:** `CrudService` (list/store/update/delete via `$resource`) or `AuditedCrudService` (also writes an `audit_log` row per create/update/delete through `AuditLogger`; set `$auditableType`, e.g. `admin`; updates log only the changed fields, secrets never). Entity services usually only declare those properties and a constructor.
+- **Repositories:** `CrudRepository` (hard delete) or `SoftDeleteCrudRepository` (`is_delete` flag, refuses updates of deleted rows, `$deleteBlockedBy` relations). Entities implement `list()` and override `fillable()` to normalize payloads (password hashing, date formats). `BaseRepository` has `applyFilters`, `applyDateRange`, `applySorting`, `validateForeignKeys`, `checkCanDelete`.
 - Soft delete = `is_delete` column + `Traits/HasSoftDelete` (`notDeleted()` scope).
 - Enums: one `label()` per enum; `status`/`gender` are cast to enums on management/master models (not `AdminMst`), Resources emit `->value`.
 - Outside production Eloquent throws on lazy loading and on non-fillable mass assignment (`AppServiceProvider`): eager-load what Resources read.
 
 ## HTTP contract (FE depends on it — do not break)
 
-- Routes live in `routes/api.php` (credential + admin group) which loads `routes/api/{master,management,history}.php`; standard resources are declared in a `$resource => Controller` list. Middleware aliases (`api.response`, `db.transaction`, `auth.admin`) are in `bootstrap/app.php`; `statefulApi()` adds Sanctum's session + CSRF middleware for requests from the SPA.
+- Routes live in `routes/api.php` (credential + admin group) which loads `routes/api/{master,management}.php` and the `audit-log/list` route; standard resources are declared in a `$resource => Controller` list. Middleware aliases (`api.response`, `db.transaction`, `auth.admin`) are in `bootstrap/app.php`; `statefulApi()` adds Sanctum's session + CSRF middleware for requests from the SPA.
 - Route shape: `GET {resource}/list`, `POST {resource}/store`, `PUT {resource}/update/{id}`, `POST {resource}/delete` (body `{ ids: [] }`). Admin routes under `/api/admin`; there is no public API since RFC-001 slice 5.
 - Envelope (`GenerateResponseMiddleware` + `bootstrap/app.php`): `{ "data": ..., "error": { "status": bool, "code": int, "messages": string|object|null } }`. Validation errors → 422 with field map in `error.messages`.
 - Auth (ADR-0004): Sanctum SPA session. The SPA calls `GET /api/sanctum/csrf-cookie`, then `POST /api/admin/credential/login`; the `laravel_session` cookie + `X-XSRF-TOKEN` header authenticate later calls through `auth:sanctum` (guard `admin`, provider `active-admins` = not deleted and active). Roles (ADR-0005): `admin_mst.role` is `owner` or `viewer`; `AdminMiddleware` lets reads (GET/HEAD/OPTIONS) through and authorizes every other method with the `write` Gate (owner only): 401 = no session, 403 = viewer writing. The last active owner cannot be demoted, deactivated or deleted (422, `AdminMstService`). Login is throttled per user name + IP (`CommonVal::LOGIN_*`). Use `Auth::id()` for the current admin.
-- Writes run inside `TransactionMiddleware` (commit on success, rollback on any error).
+- Writes run inside `TransactionMiddleware` (commit on success, rollback on any error), except the credential routes: a failed login's `login_failed` audit row must survive the 401.
 
 ## Gotchas
 

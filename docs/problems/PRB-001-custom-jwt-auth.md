@@ -102,7 +102,7 @@ Commits on `refactor/p2-slim-down`: `23fbaac` refactor(api)! (Sanctum session au
 ## 9. Follow-up improvements
 
 - Login throttling with Laravel's `RateLimiter` (time-limited, same message for every failure) — part of P2-11.
-- Login audit events (who, IP, when) go into the `audit_log` of P2-08.
+- Login audit events (who, IP, when) go into the `audit_log` of P2-08 — done 2026-10-07 (`3e90988`: `logged_in`, `logged_out`, `login_failed` with the user name only).
 - P8 security review checks session cookie flags (`Secure`, `HttpOnly`, `SameSite`) against OWASP ASVS chapter 3.
 
 > 🇻🇳 Cải tiến tiếp theo: giới hạn đăng nhập bằng `RateLimiter` (P2-11); ghi sự kiện đăng nhập vào `audit_log` (P2-08); P8 kiểm tra cờ cookie session theo OWASP ASVS chương 3.
