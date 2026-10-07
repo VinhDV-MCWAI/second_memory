@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Models\Master;
 
+use App\Enums\AdminRole;
 use App\Models\History\Master\AdminMstHist;
 use App\Traits\HasHistory;
 use App\Traits\HasSoftDelete;
@@ -12,9 +13,11 @@ use Illuminate\Auth\Authenticatable;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
+/**
+ * @property AdminRole $role
+ */
 class AdminMst extends Model implements AuthenticatableContract
 {
     use Authenticatable, HasFactory, HasHistory, HasSoftDelete, HasStatus;
@@ -38,24 +41,12 @@ class AdminMst extends Model implements AuthenticatableContract
         'gender',
         'status',
         'is_active',
+        'role',
         'avatar',
         'email_verified_at',
         'is_delete',
         'remember_token',
     ];
-
-    /**
-     * Get the roles associated with the admin.
-     */
-    public function roles(): BelongsToMany
-    {
-        return $this->belongsToMany(
-            RoleMst::class,
-            'admin_role_mst',
-            'admin_mst_id',
-            'role_mst_id'
-        )->withTimestamps();
-    }
 
     /**
      * Get the history records for the admin.
@@ -83,6 +74,7 @@ class AdminMst extends Model implements AuthenticatableContract
             'gender' => 'integer',
             'status' => 'integer',
             'is_active' => 'boolean',
+            'role' => AdminRole::class,
             'avatar' => 'string',
             'email_verified_at' => 'datetime',
             'is_delete' => 'boolean',

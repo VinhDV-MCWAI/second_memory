@@ -60,6 +60,8 @@ class Messages
 
     const E0020 = '{attributes} exist in {tableName}';      // Exit in table
 
+    const E0021 = 'At least one active owner must remain';
+
     /**
      * Errors http messages
      */

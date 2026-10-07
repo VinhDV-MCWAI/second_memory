@@ -6,19 +6,18 @@ namespace Tests\Feature\Master\AdminMst;
 
 use App\Constants\CommonVal;
 use App\Enums\ActionType;
+use App\Enums\AdminRole;
 use App\Models\Master\AdminMst;
-use App\Models\Master\RoleMst;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Redis;
-use Tests\Concerns\GrantsApiAccess;
+use Tests\Concerns\AuthenticatesAdmins;
 use Tests\TestCase;
 
 class UpdateAdminMstTest extends TestCase
 {
+    use AuthenticatesAdmins;
     use DatabaseTransactions;
-    use GrantsApiAccess;
 
     protected string $loginUrl = '/api/admin/credential/login';
 
@@ -35,32 +34,7 @@ class UpdateAdminMstTest extends TestCase
 
     protected function getAuthCookies(AdminMst $admin): array
     {
-        $rootRole = RoleMst::where('name', 'root')->first();
-        if (! $rootRole) {
-            $rootRole = RoleMst::create(['name' => 'root', 'permission' => '{}', 'is_active' => 1, 'is_delete' => 0]);
-        }
-        $this->grantAccessTo($rootRole, 'PUT', 'api/admin/admin-mst/update/{id}');
-
-        if (! DB::table('admin_role_mst')->where('admin_mst_id', $admin->id)->where('role_mst_id', $rootRole->id)->exists()) {
-            DB::table('admin_role_mst')->insert([
-                'admin_mst_id' => $admin->id,
-                'role_mst_id' => $rootRole->id,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ]);
-        }
-
-        $response = $this->postJson($this->loginUrl, [
-            'user_name' => $admin->user_name,
-            'password' => 'password',
-        ]);
-
-        $cookies = [];
-        foreach ($response->headers->getCookies() as $cookie) {
-            $cookies[$cookie->getName()] = $cookie->getValue();
-        }
-
-        return $cookies;
+        return $this->loginAsOwner($admin);
     }
 
     /**
@@ -184,6 +158,33 @@ class UpdateAdminMstTest extends TestCase
             'action' => ActionType::UPDATE->value,
             'first_name' => 'Updated',
         ]);
+    }
+
+    public function test_the_last_active_owner_cannot_demote_or_deactivate_themselves()
+    {
+        $owner = AdminMst::factory()->create();
+        $cookies = $this->getAuthCookies($owner);
+
+        $demote = [...$this->getValidPayload($owner), 'role' => AdminRole::VIEWER->value];
+        $this->assertCustomValidationErrors($this->call('PUT', $this->getUpdateUrl($owner->id), $demote, $cookies), 'role');
+
+        $deactivate = [...$this->getValidPayload($owner), 'is_active' => 0];
+        $this->assertCustomValidationErrors($this->call('PUT', $this->getUpdateUrl($owner->id), $deactivate, $cookies), 'role');
+
+        $this->assertSame(AdminRole::OWNER, $owner->fresh()->role);
+    }
+
+    public function test_an_owner_can_change_another_admins_role()
+    {
+        $owner = AdminMst::factory()->create();
+        $cookies = $this->getAuthCookies($owner);
+        $viewer = AdminMst::factory()->create();
+
+        $promote = [...$this->getValidPayload($viewer), 'role' => AdminRole::OWNER->value];
+        $this->call('PUT', $this->getUpdateUrl($viewer->id), $promote, $cookies)->assertStatus(CommonVal::HTTP_OK);
+
+        $this->assertSame(AdminRole::OWNER, $viewer->fresh()->role);
+        $this->assertDatabaseHas('admin_mst_hist', ['admin_mst_id' => $viewer->id, 'role' => AdminRole::OWNER->value]);
     }
 
     private function getValidPayload($admin): array

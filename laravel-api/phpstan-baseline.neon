@@ -187,12 +187,6 @@ parameters:
 			path: app/Http/Resources/Management/MediaFileResource.php
 
 		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\Master\\FeatureMstResource\:\:\$description\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/Master/FeatureMstResource.php
-
-		-
 			message: '#^Property App\\Models\\Management\\MediaMgmt\:\:\$upload_status \(int\) does not accept App\\Enums\\UploadStatus\:\:COMPLETED\.$#'
 			identifier: assign.propertyType
 			count: 1
@@ -209,24 +203,6 @@ parameters:
 			identifier: property.phpDocType
 			count: 1
 			path: app/Models/History/Master/AdminMstHist.php
-
-		-
-			message: '#^PHPDoc type array\<string\> of property App\\Models\\History\\Master\\ApiMstHist\:\:\$fillable is not covariant with PHPDoc type list\<string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$fillable\.$#'
-			identifier: property.phpDocType
-			count: 1
-			path: app/Models/History/Master/ApiMstHist.php
-
-		-
-			message: '#^PHPDoc type array\<string\> of property App\\Models\\History\\Master\\FeatureMstHist\:\:\$fillable is not covariant with PHPDoc type list\<string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$fillable\.$#'
-			identifier: property.phpDocType
-			count: 1
-			path: app/Models/History/Master/FeatureMstHist.php
-
-		-
-			message: '#^PHPDoc type array\<string\> of property App\\Models\\History\\Master\\RoleMstHist\:\:\$fillable is not covariant with PHPDoc type list\<string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$fillable\.$#'
-			identifier: property.phpDocType
-			count: 1
-			path: app/Models/History/Master/RoleMstHist.php
 
 		-
 			message: '#^Method App\\Models\\Management\\MediaMgmt\:\:children\(\) has no return type specified\.$#'
@@ -251,66 +227,6 @@ parameters:
 			identifier: assign.propertyType
 			count: 2
 			path: app/Models/Master/AdminMst.php
-
-		-
-			message: '#^PHPDoc type array\<string\> of property App\\Models\\Master\\AdminRoleMst\:\:\$fillable is not covariant with PHPDoc type list\<string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$fillable\.$#'
-			identifier: property.phpDocType
-			count: 1
-			path: app/Models/Master/AdminRoleMst.php
-
-		-
-			message: '#^PHPDoc type array\<string\> of property App\\Models\\Master\\ApiMst\:\:\$fillable is not covariant with PHPDoc type list\<string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$fillable\.$#'
-			identifier: property.phpDocType
-			count: 1
-			path: app/Models/Master/ApiMst.php
-
-		-
-			message: '#^Property App\\Models\\Master\\ApiMst\:\:\$is_delete \(bool\) does not accept int\.$#'
-			identifier: assign.propertyType
-			count: 2
-			path: app/Models/Master/ApiMst.php
-
-		-
-			message: '#^PHPDoc type array\<string\> of property App\\Models\\Master\\ApiRoleMst\:\:\$fillable is not covariant with PHPDoc type list\<string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$fillable\.$#'
-			identifier: property.phpDocType
-			count: 1
-			path: app/Models/Master/ApiRoleMst.php
-
-		-
-			message: '#^Access to an undefined property App\\Models\\Master\\FeatureMst\:\:\$is_active\.$#'
-			identifier: property.notFound
-			count: 3
-			path: app/Models/Master/FeatureMst.php
-
-		-
-			message: '#^PHPDoc type array\<string\> of property App\\Models\\Master\\FeatureMst\:\:\$fillable is not covariant with PHPDoc type list\<string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$fillable\.$#'
-			identifier: property.phpDocType
-			count: 1
-			path: app/Models/Master/FeatureMst.php
-
-		-
-			message: '#^Property App\\Models\\Master\\FeatureMst\:\:\$is_delete \(bool\) does not accept int\.$#'
-			identifier: assign.propertyType
-			count: 2
-			path: app/Models/Master/FeatureMst.php
-
-		-
-			message: '#^PHPDoc type array\<string\> of property App\\Models\\Master\\RoleMst\:\:\$fillable is not covariant with PHPDoc type list\<string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$fillable\.$#'
-			identifier: property.phpDocType
-			count: 1
-			path: app/Models/Master/RoleMst.php
-
-		-
-			message: '#^Property App\\Models\\Master\\RoleMst\:\:\$is_delete \(bool\) does not accept int\.$#'
-			identifier: assign.propertyType
-			count: 2
-			path: app/Models/Master/RoleMst.php
-
-		-
-			message: '#^PHPDoc type array\<string\> of property App\\Models\\Master\\TokenMst\:\:\$fillable is not covariant with PHPDoc type list\<string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$fillable\.$#'
-			identifier: property.phpDocType
-			count: 1
-			path: app/Models/Master/TokenMst.php
 
 		-
 			message: '#^PHPDoc type array\<int, string\> of property App\\Models\\User\:\:\$fillable is not covariant with PHPDoc type list\<string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$fillable\.$#'
@@ -367,90 +283,6 @@ parameters:
 			path: app/Repositories/Master/AdminMstRepository.php
 
 		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$admin_mst_id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Repositories/Master/AdminRoleMstRepository.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$role_mst_id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Repositories/Master/AdminRoleMstRepository.php
-
-		-
-			message: '#^Parameter \#1 \$callback of method Illuminate\\Database\\Eloquent\\Collection\<int,Illuminate\\Database\\Eloquent\\Model\>\:\:map\(\) contains unresolvable type\.$#'
-			identifier: argument.unresolvableType
-			count: 1
-			path: app/Repositories/Master/AdminRoleMstRepository.php
-
-		-
-			message: '#^Return type of call to method Illuminate\\Database\\Eloquent\\Collection\<int,Illuminate\\Database\\Eloquent\\Model\>\:\:map\(\) contains unresolvable type\.$#'
-			identifier: method.unresolvableReturnType
-			count: 1
-			path: app/Repositories/Master/AdminRoleMstRepository.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Collection\<int, Illuminate\\Database\\Eloquent\\Model\>\|Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Repositories/Master/ApiMstRepository.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Repositories/Master/ApiMstRepository.php
-
-		-
-			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Builder\<Illuminate\\Database\\Eloquent\\Model\>\:\:notDeleted\(\)\.$#'
-			identifier: method.notFound
-			count: 1
-			path: app/Repositories/Master/ApiMstRepository.php
-
-		-
-			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Collection\<int, Illuminate\\Database\\Eloquent\\Model\>\|Illuminate\\Database\\Eloquent\\Model\:\:isDeleted\(\)\.$#'
-			identifier: method.notFound
-			count: 1
-			path: app/Repositories/Master/ApiMstRepository.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$api_mst_id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Repositories/Master/ApiRoleMstRepository.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$role_mst_id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Repositories/Master/ApiRoleMstRepository.php
-
-		-
-			message: '#^Parameter \#1 \$callback of method Illuminate\\Database\\Eloquent\\Collection\<int,Illuminate\\Database\\Eloquent\\Model\>\:\:map\(\) contains unresolvable type\.$#'
-			identifier: argument.unresolvableType
-			count: 1
-			path: app/Repositories/Master/ApiRoleMstRepository.php
-
-		-
-			message: '#^Return type of call to method Illuminate\\Database\\Eloquent\\Collection\<int,Illuminate\\Database\\Eloquent\\Model\>\:\:map\(\) contains unresolvable type\.$#'
-			identifier: method.unresolvableReturnType
-			count: 1
-			path: app/Repositories/Master/ApiRoleMstRepository.php
-
-		-
-			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Builder\<Illuminate\\Database\\Eloquent\\Model\>\:\:notDeleted\(\)\.$#'
-			identifier: method.notFound
-			count: 1
-			path: app/Repositories/Master/FeatureMstRepository.php
-
-		-
-			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Builder\<Illuminate\\Database\\Eloquent\\Model\>\:\:notDeleted\(\)\.$#'
-			identifier: method.notFound
-			count: 1
-			path: app/Repositories/Master/RoleMstRepository.php
-
-		-
 			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Builder\<Illuminate\\Database\\Eloquent\\Model\>\:\:notDeleted\(\)\.$#'
 			identifier: method.notFound
 			count: 1
@@ -473,27 +305,3 @@ parameters:
 			identifier: property.phpDocType
 			count: 1
 			path: database/factories/Master/AdminMstFactory.php
-
-		-
-			message: '#^PHPDoc type string of property Database\\Factories\\Master\\ApiMstFactory\:\:\$model is not covariant with PHPDoc type class\-string\<App\\Models\\Master\\ApiMst\> of overridden property Illuminate\\Database\\Eloquent\\Factories\\Factory\<App\\Models\\Master\\ApiMst\>\:\:\$model\.$#'
-			identifier: property.phpDocType
-			count: 1
-			path: database/factories/Master/ApiMstFactory.php
-
-		-
-			message: '#^PHPDoc type string of property Database\\Factories\\Master\\FeatureMstFactory\:\:\$model is not covariant with PHPDoc type class\-string\<App\\Models\\Master\\FeatureMst\> of overridden property Illuminate\\Database\\Eloquent\\Factories\\Factory\<App\\Models\\Master\\FeatureMst\>\:\:\$model\.$#'
-			identifier: property.phpDocType
-			count: 1
-			path: database/factories/Master/FeatureMstFactory.php
-
-		-
-			message: '#^PHPDoc type string of property Database\\Factories\\Master\\TokenMstFactory\:\:\$model is not covariant with PHPDoc type class\-string\<App\\Models\\Master\\TokenMst\> of overridden property Illuminate\\Database\\Eloquent\\Factories\\Factory\<App\\Models\\Master\\TokenMst\>\:\:\$model\.$#'
-			identifier: property.phpDocType
-			count: 1
-			path: database/factories/Master/TokenMstFactory.php
-
-		-
-			message: '#^Argument of an invalid type Illuminate\\Routing\\RouteCollectionInterface supplied for foreach, only iterables are supported\.$#'
-			identifier: foreach.nonIterable
-			count: 1
-			path: database/seeders/RootAccountSeeder.php

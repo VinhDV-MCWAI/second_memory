@@ -7,12 +7,12 @@ namespace Tests\Feature\Auth;
 use App\Constants\CommonVal;
 use App\Constants\Messages;
 use App\Models\Master\AdminMst;
-use Tests\Concerns\GrantsApiAccess;
+use Tests\Concerns\AuthenticatesAdmins;
 use Tests\TestCase;
 
 final class LoginApiTest extends TestCase
 {
-    use GrantsApiAccess;
+    use AuthenticatesAdmins;
 
     private const string LOGIN_URL = '/api/admin/credential/login';
 

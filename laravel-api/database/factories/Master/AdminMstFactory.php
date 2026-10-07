@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Database\Factories\Master;
 
+use App\Enums\AdminRole;
 use App\Enums\Gender;
 use App\Models\Master\AdminMst;
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -41,10 +42,19 @@ class AdminMstFactory extends Factory
             'gender' => fake()->randomElement([Gender::MALE->value, Gender::FEMALE->value]),
             'status' => 1,
             'is_active' => true,
+            'role' => AdminRole::VIEWER,
             'avatar' => null,
             'email_verified_at' => now(),
             'is_delete' => false,
             'remember_token' => Str::random(10),
         ];
+    }
+
+    /**
+     * An admin who may change data (ADR-0005).
+     */
+    public function owner(): static
+    {
+        return $this->state(fn (): array => ['role' => AdminRole::OWNER]);
     }
 }

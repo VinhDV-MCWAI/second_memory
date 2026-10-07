@@ -6,7 +6,7 @@ namespace Tests\Feature\Requests;
 
 use App\Models\Master\AdminMst;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Tests\Concerns\GrantsApiAccess;
+use Tests\Concerns\AuthenticatesAdmins;
 use Tests\TestCase;
 
 /**
@@ -15,7 +15,7 @@ use Tests\TestCase;
  */
 final class ListPagingTest extends TestCase
 {
-    use GrantsApiAccess;
+    use AuthenticatesAdmins;
     use RefreshDatabase;
 
     private const LIST_URI = 'api/admin/admin-mst/list';
@@ -24,7 +24,7 @@ final class ListPagingTest extends TestCase
     {
         $admin = AdminMst::factory()->create();
         $others = AdminMst::factory()->count(3)->create();
-        $cookies = $this->loginWithAccess($admin, [['GET', self::LIST_URI]]);
+        $cookies = $this->loginAs($admin);
 
         $response = $this->call('GET', self::LIST_URI, [
             'per_page' => 2,
@@ -41,7 +41,7 @@ final class ListPagingTest extends TestCase
     public function test_invalid_page_is_rejected(): void
     {
         $admin = AdminMst::factory()->create();
-        $cookies = $this->loginWithAccess($admin, [['GET', self::LIST_URI]]);
+        $cookies = $this->loginAs($admin);
 
         $this->call('GET', self::LIST_URI, ['page' => 0], $cookies)->assertStatus(422);
     }

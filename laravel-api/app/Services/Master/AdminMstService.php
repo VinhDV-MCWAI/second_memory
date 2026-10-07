@@ -4,10 +4,14 @@ declare(strict_types=1);
 
 namespace App\Services\Master;
 
+use App\Constants\Messages;
+use App\Enums\AdminRole;
+use App\Enums\IsActive;
 use App\Http\Resources\Master\AdminMstResource;
 use App\Repositories\History\Master\AdminMstHistRepository;
 use App\Repositories\Master\AdminMstRepository;
 use App\Services\AuditedCrudService;
+use Illuminate\Validation\ValidationException;
 
 class AdminMstService extends AuditedCrudService
 {
@@ -15,8 +19,47 @@ class AdminMstService extends AuditedCrudService
 
     protected string $historyForeignKey = 'admin_mst_id';
 
-    public function __construct(AdminMstRepository $adminMst, AdminMstHistRepository $adminMstHist)
+    public function __construct(private readonly AdminMstRepository $adminMst, AdminMstHistRepository $adminMstHist)
     {
         parent::__construct($adminMst, $adminMstHist);
+    }
+
+    /**
+     * @throws ValidationException when the last active owner would be demoted or deactivated
+     */
+    public function update(array $payload): int
+    {
+        $losesOwnerRights = (isset($payload['role']) && $payload['role'] !== AdminRole::OWNER->value)
+            || (isset($payload['is_active']) && (int) $payload['is_active'] !== IsActive::TRUE->value);
+
+        if ($losesOwnerRights) {
+            $this->ensureAnOwnerRemains([(int) $payload['id']], 'role');
+        }
+
+        return parent::update($payload);
+    }
+
+    /**
+     * @throws ValidationException when the last active owner would be deleted
+     */
+    public function delete(array $payload): void
+    {
+        $this->ensureAnOwnerRemains($payload['ids'] ?? [], 'ids');
+
+        parent::delete($payload);
+    }
+
+    /**
+     * ADR-0005: the system must always keep one active owner, or nobody could change data again.
+     *
+     * @param  array<int, int|string>  $changedIds
+     *
+     * @throws ValidationException
+     */
+    private function ensureAnOwnerRemains(array $changedIds, string $field): void
+    {
+        if ($this->adminMst->countActiveOwnersExcept($changedIds) === 0) {
+            throw ValidationException::withMessages([$field => Messages::E0021]);
+        }
     }
 }

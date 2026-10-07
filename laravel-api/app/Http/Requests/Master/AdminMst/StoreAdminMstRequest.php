@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Requests\Master\AdminMst;
 
 use App\Constants\CommonVal;
+use App\Enums\AdminRole;
 use App\Enums\AdminStatus;
 use App\Enums\Gender;
 use App\Enums\IsActive;
@@ -43,6 +44,7 @@ class StoreAdminMstRequest extends FormRequest
             'gender' => ['required', Rule::enum(Gender::class)],
             'status' => ['required', Rule::enum(AdminStatus::class)],
             'is_active' => ['required', Rule::enum(IsActive::class)],
+            'role' => ['sometimes', Rule::enum(AdminRole::class)],
             'avatar' => ['nullable', 'string', 'min:'.CommonVal::MIN_VARCHAR, 'max:30'],
             'is_delete' => ['required', Rule::enum(IsDelete::class)],
         ];
@@ -62,6 +64,7 @@ class StoreAdminMstRequest extends FormRequest
             'gender' => __('messages.gender'),
             'status' => __('messages.status'),
             'is_active' => __('messages.is_active'),
+            'role' => __('messages.role'),
             'avatar' => __('messages.avatar'),
             'is_delete' => __('messages.is_delete'),
         ];

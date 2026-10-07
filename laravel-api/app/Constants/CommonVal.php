@@ -122,6 +122,8 @@ class CommonVal
      */
     public const ADMIN_GUARD = 'admin';
 
+    public const GATE_WRITE = 'write';
+
     public const LOGIN_MAX_ATTEMPTS = 5;
 
     public const LOGIN_LOCK_SECONDS = 60 * 15; // 15 min

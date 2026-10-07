@@ -5,17 +5,20 @@ declare(strict_types=1);
 namespace Tests\Feature\Auth;
 
 use App\Constants\CommonVal;
+use App\Enums\AdminRole;
 use App\Models\Master\AdminMst;
-use Tests\Concerns\GrantsApiAccess;
+use Tests\Concerns\AuthenticatesAdmins;
 use Tests\TestCase;
 
 final class MeApiTest extends TestCase
 {
-    use GrantsApiAccess;
+    use AuthenticatesAdmins;
 
     private const string ME_URL = '/api/admin/credential/me';
 
-    private const string PROTECTED_URL = 'api/admin/token-mst/list';
+    private const string LIST_URL = 'api/admin/admin-mst/list';
+
+    private const string DELETE_URL = 'api/admin/admin-mst/delete';
 
     public function test_me_without_a_session_is_401(): void
     {
@@ -55,24 +58,31 @@ final class MeApiTest extends TestCase
         $this->call('GET', self::ME_URL, [], $cookies)->assertStatus(CommonVal::HTTP_UNAUTHORIZED);
     }
 
-    public function test_protected_route_is_401_without_session_and_403_without_permission(): void
+    public function test_protected_route_is_401_without_a_session(): void
     {
-        $this->getJson(self::PROTECTED_URL)->assertStatus(CommonVal::HTTP_UNAUTHORIZED);
-
-        $cookies = $this->loginAs(AdminMst::factory()->create());
-
-        $this->call('GET', self::PROTECTED_URL, [], $cookies)->assertStatus(CommonVal::HTTP_FORBIDDEN);
+        $this->getJson(self::LIST_URL)->assertStatus(CommonVal::HTTP_UNAUTHORIZED);
     }
 
-    public function test_a_granted_permission_applies_without_logging_in_again(): void
+    public function test_a_viewer_may_read_but_not_write(): void
     {
+        $cookies = $this->loginAs(AdminMst::factory()->create());
+        $other = AdminMst::factory()->create();
+
+        $this->call('GET', self::LIST_URL, [], $cookies)->assertOk();
+        $this->call('POST', self::DELETE_URL, ['ids' => [$other->id]], $cookies)->assertStatus(CommonVal::HTTP_FORBIDDEN);
+    }
+
+    public function test_a_role_change_applies_without_logging_in_again(): void
+    {
+        AdminMst::factory()->owner()->create();
         $admin = AdminMst::factory()->create();
-        $cookies = $this->loginWithAccess($admin, []);
-        $this->call('GET', self::PROTECTED_URL, [], $cookies)->assertStatus(CommonVal::HTTP_FORBIDDEN);
+        $cookies = $this->loginAs($admin);
+        $other = AdminMst::factory()->create();
+        $this->call('POST', self::DELETE_URL, ['ids' => [$other->id]], $cookies)->assertStatus(CommonVal::HTTP_FORBIDDEN);
 
-        $this->loginWithAccess($admin, [['GET', self::PROTECTED_URL]]);
+        $admin->update(['role' => AdminRole::OWNER]);
 
-        // The permission is read per request (no cache to clear, AUTH-GUIDE A7)
-        $this->call('GET', self::PROTECTED_URL, [], $cookies)->assertOk();
+        // The role is read from the admin row on every request (ADR-0005)
+        $this->call('POST', self::DELETE_URL, ['ids' => [$other->id]], $cookies)->assertOk();
     }
 }

@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Http\Middleware;
 
 use App\Constants\CommonVal;
-use App\Enums\TypeOfMethod;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -43,14 +42,7 @@ class TransactionMiddleware
      */
     protected function isWriteOperation(Request $request): bool
     {
-        $writeMethods = [
-            TypeOfMethod::POST->label(),
-            TypeOfMethod::PUT->label(),
-            TypeOfMethod::PATCH->label(),
-            TypeOfMethod::DELETE->label(),
-        ];
-
-        return in_array($request->method(), $writeMethods);
+        return ! $request->isMethodSafe();
     }
 
     /**

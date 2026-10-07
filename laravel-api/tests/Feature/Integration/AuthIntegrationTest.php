@@ -4,138 +4,51 @@ declare(strict_types=1);
 
 namespace Tests\Feature\Integration;
 
+use App\Enums\AdminRole;
 use App\Models\Master\AdminMst;
-use App\Models\Master\ApiMst;
-use App\Models\Master\FeatureMst;
-use App\Models\Master\RoleMst;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Redis;
+use Tests\Concerns\AuthenticatesAdmins;
 use Tests\TestCase;
 
+/**
+ * Roles end to end (ADR-0005): an owner creates an admin, who starts as a read-only viewer.
+ */
 class AuthIntegrationTest extends TestCase
 {
+    use AuthenticatesAdmins;
     use RefreshDatabase;
 
-    private string $loginUrl = '/api/admin/credential/login';
-
-    protected function setUp(): void
+    public function test_owner_creates_an_admin_who_is_a_viewer_by_default()
     {
-        parent::setUp();
-        Redis::flushdb();
-        if (! RoleMst::where('name', 'root')->exists()) {
-            RoleMst::create(['name' => 'root', 'permission' => '{}', 'is_active' => 1, 'is_delete' => 0]);
-        }
-    }
+        $ownerCookies = $this->loginAsOwner(AdminMst::factory()->create());
 
-    private function ensureRootAccess(AdminMst $admin, string $method, string $path)
-    {
-        $role = RoleMst::where('name', 'root')->first();
-
-        if (! DB::table('admin_role_mst')->where('admin_mst_id', $admin->id)->exists()) {
-            DB::table('admin_role_mst')->insert([
-                'admin_mst_id' => $admin->id,
-                'role_mst_id' => $role->id,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ]);
-        }
-
-        $feature = FeatureMst::firstOrCreate(['name' => 'System'], [
-            'name' => 'System',
-            'group_name' => 'System',
-            'status' => 1,
-            'is_delete' => 0,
-        ]);
-
-        $typeMap = ['GET' => 0, 'POST' => 1, 'PUT' => 2, 'DELETE' => 4];
-        $type = $typeMap[strtoupper($method)] ?? 0;
-
-        $api = ApiMst::firstOrCreate(
-            ['path' => $path, 'type' => $type],
-            [
-                'name' => "API $method $path",
-                'is_active' => 1,
-                'feature_mst_id' => $feature->id,
-                'is_delete' => 0,
-            ]
-        );
-
-        DB::table('api_role_mst')->insertOrIgnore([
-            'api_mst_id' => $api->id,
-            'role_mst_id' => $role->id,
-            'created_at' => now(),
-            'updated_at' => now(),
-        ]);
-    }
-
-    public function test_auth_rbac_lifecycle()
-    {
-        // 1. Setup Root Admin & Permissions
-        $rootParams = ['user_name' => 'root_integration'];
-        $rootAdmin = AdminMst::factory()->create($rootParams);
-
-        // Pre-grant ALL necessary permissions for Root Flow
-        $this->ensureRootAccess($rootAdmin, 'POST', 'api/admin/role-mst/store');
-        $this->ensureRootAccess($rootAdmin, 'POST', 'api/admin/admin-mst/store');
-
-        // Login
-        $response = $this->postJson($this->loginUrl, [
-            'user_name' => $rootAdmin->user_name,
+        $this->call('POST', 'api/admin/admin-mst/store', [
+            'email' => 'new.viewer@gmail.com',
+            'user_name' => 'new_viewer',
             'password' => 'password',
-        ]);
-        $rootCookies = [];
-        foreach ($response->headers->getCookies() as $cookie) {
-            $rootCookies[$cookie->getName()] = $cookie->getValue();
-        }
-        $this->assertNotNull($rootCookies[config('session.cookie')] ?? null, 'Root login failed');
-
-        // 2. Define New Access (Role + API) for Sub Admin
-        $targetUrl = 'api/admin/token-mst/list';
-
-        $rolePayload = [
-            'name' => 'Integration Tester Role',
-            'permission' => '{}',
+            'first_name' => 'New',
+            'last_name' => 'Viewer',
+            'gender' => 1,
+            'status' => 1,
             'is_active' => 1,
             'is_delete' => 0,
-        ];
-        $roleResp = $this->call('POST', 'api/admin/role-mst/store', $rolePayload, $rootCookies);
-        $roleResp->assertStatus(200);
+        ], $ownerCookies)->assertStatus(200);
+
+        $viewer = AdminMst::where('user_name', 'new_viewer')->firstOrFail();
+        $this->assertSame(AdminRole::VIEWER, $viewer->role);
+
+        $viewerCookies = $this->loginAs($viewer);
+        $this->call('GET', 'api/admin/admin-mst/list', [], $viewerCookies)->assertStatus(200);
+        $this->call('POST', 'api/admin/admin-mst/delete', ['ids' => [$viewer->id]], $viewerCookies)->assertStatus(403);
     }
 
     public function test_login_failure_invalid_credentials()
     {
-        $admin = AdminMst::factory()->create(['password' => bcrypt('password')]);
-
-        $response = $this->postJson($this->loginUrl, [
-            'user_name' => $admin->user_name,
-            'password' => 'wrong_password',
-        ]);
-
-        // Expect 401 Unauthorized for invalid credentials
-        $response->assertStatus(401);
-    }
-
-    public function test_access_denied_without_permission()
-    {
         $admin = AdminMst::factory()->create();
 
-        // Login
-        $loginResp = $this->postJson($this->loginUrl, [
+        $this->postJson('/api/admin/credential/login', [
             'user_name' => $admin->user_name,
-            'password' => 'password',
-        ]);
-
-        $cookies = [];
-        foreach ($loginResp->headers->getCookies() as $cookie) {
-            $cookies[$cookie->getName()] = $cookie->getValue();
-        }
-
-        // Try to access endpoints NOT granted
-        // e.g. 'api/admin/admin-mst/list'
-        $response = $this->call('GET', 'api/admin/admin-mst/list', [], $cookies);
-
-        // Signed in but not allowed: 403
-        $response->assertStatus(403);
+            'password' => 'wrong_password',
+        ])->assertStatus(401);
     }
 }
