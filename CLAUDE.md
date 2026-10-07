@@ -29,6 +29,10 @@ Use the `/verify` skill to run the full check suite before declaring work done.
 
 A staged refactor is tracked in [.claude/refactor/PLAN.md](.claude/refactor/PLAN.md). Before working on any item, read the plan, follow the `/refactor-item` skill, and update the item's status when done. Do not start items the user has not approved.
 
+## New direction: Engineering Lab
+
+The project is being repurposed (accepted, [docs/adr/0001-engineering-lab-direction.md](docs/adr/0001-engineering-lab-direction.md)). Plan: [docs/plan/](docs/plan/) (analysis, roadmap, backlog). Docs conventions (bilingual EN + `> 🇻🇳` VI lines, IDs, templates): [docs/README.md](docs/README.md).
+
 ## Global rules
 
 Detailed, path-scoped conventions live in `.claude/rules/`. The essentials:
