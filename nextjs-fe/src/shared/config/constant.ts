@@ -224,16 +224,6 @@ export const IMAGE_SHAPES = {
 
 export type ImageShape = (typeof IMAGE_SHAPES)[keyof typeof IMAGE_SHAPES];
 
-// Export/Import formats
-export const EXPORT_FORMATS = {
-  CSV: 'csv',
-  EXCEL: 'excel',
-  JSON: 'json',
-} as const;
-
-export type ExportFormat = (typeof EXPORT_FORMATS)[keyof typeof EXPORT_FORMATS];
-export type ImportFormat = typeof EXPORT_FORMATS.CSV | typeof EXPORT_FORMATS.EXCEL;
-
 // MIME type prefixes
 export const MIME_TYPE_PREFIX = {
   IMAGE: 'image/',

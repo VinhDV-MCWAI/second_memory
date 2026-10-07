@@ -577,25 +577,6 @@
       "delete": "Deleted"
     }
   },
-  "importExport": {
-    "exportFailed": "Export failed",
-    "importFailed": "Import failed",
-    "selectFile": "Please select a file",
-    "exported": "Exported {moduleName} as {format}",
-    "imported": "Imported {moduleName} successfully",
-    "templateDownloaded": "Downloaded {format} template",
-    "templateDownloadFailed": "Template download failed",
-    "title": "Title",
-    "description": "Description",
-    "export": "Export",
-    "import": "Import",
-    "selectFormat": "Select Format",
-    "exportDescription": "Export Description",
-    "selected": "Selected",
-    "importAs": "Import As",
-    "or": "Or",
-    "downloadTemplate": "Download Template"
-  },
   "validation": {
     "required": "{field} is required",
     "email": {

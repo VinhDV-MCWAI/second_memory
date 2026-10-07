@@ -10,7 +10,6 @@ import { FilterPanel, type FilterField } from '@/components/common/data-table/fi
 import { AdvancedSearch } from '@/components/common/advanced-search';
 import { SavedFilters } from '@/components/common/saved-filters';
 import { BulkActions, type BulkAction } from '@/components/common/bulk-actions';
-import { ImportExport } from '@/components/common/import-export';
 import { ConfirmDialog } from '@/components/ui/confirm-dialog';
 import { Button } from '@/components/ui/button';
 import {
@@ -193,7 +192,6 @@ export function ResourceListPage<T extends { id: number }>({
             onApplyFilter={(f) => applyFilters(f as Record<string, FilterValue>)}
             storageKey={filtersKey}
           />
-          <ImportExport onImport={async () => refetch()} />
         </div>
 
         <FilterPanel

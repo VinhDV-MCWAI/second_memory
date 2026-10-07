@@ -1,5 +1,5 @@
 import { ReactNode } from 'react';
-import type { SortOrder, ExportFormat, ImportFormat, ImageShape } from '../config/constant';
+import type { SortOrder, ImageShape } from '../config/constant';
 
 /**
  * Data Table Column Definition
@@ -113,7 +113,7 @@ export interface AdvancedSearchProps {
 /**
  * Import/Export Types (re-exported from constants for backward compatibility)
  */
-export type { ExportFormat, ImportFormat, ImageShape };
+export type { ImageShape };
 
 /**
  * Avatar Upload Component Props
@@ -242,18 +242,6 @@ export interface FormBuilderProps {
   cancelLabel?: string;
   isLoading?: boolean;
   className?: string;
-}
-
-/**
- * Import/Export Component Props
- */
-export interface ImportExportProps {
-  onExport?: (format: ExportFormat) => Promise<void> | void;
-  onImport?: (file: File, format: ImportFormat) => Promise<void> | void;
-  onDownloadTemplate?: (format: ImportFormat) => Promise<void> | void;
-  exportFormats?: ExportFormat[];
-  importFormats?: ImportFormat[];
-  moduleName?: string;
 }
 
 /**
