@@ -10,7 +10,6 @@ export const FILE_UPLOAD = {
 
 // Upload progress & configuration
 export const UPLOAD_CONFIG = {
-  DEFAULT_IMAGE_MAX_SIZE_MB: 5, // 5MB (same as FILE_UPLOAD.MAX_IMAGE_SIZE_MB)
   DEFAULT_AVATAR_MAX_SIZE_MB: 5, // 5MB (same as FILE_UPLOAD.MAX_AVATAR_SIZE_MB)
   PROGRESS_INCREMENT: 10,
   PROGRESS_INTERVAL_MS: 200,
@@ -18,15 +17,6 @@ export const UPLOAD_CONFIG = {
   COMPLETE_DELAY_MS: 500,
   HEAVY_FILE_THRESHOLD_BYTES: 100 * 1024 * 1024, // 100MB
 } as const;
-
-// Image shapes
-export const IMAGE_SHAPES = {
-  SQUARE: 'square',
-  RECTANGLE: 'rectangle',
-  CIRCLE: 'circle',
-} as const;
-
-export type ImageShape = (typeof IMAGE_SHAPES)[keyof typeof IMAGE_SHAPES];
 
 // MIME type prefixes
 export const MIME_TYPE_PREFIX = {

@@ -1,5 +1,5 @@
 import { ReactNode } from 'react';
-import type { SortOrder, ImageShape } from '@/shared/config';
+import type { SortOrder } from '@/shared/config';
 
 /**
  * Data Table Column Definition
@@ -111,11 +111,6 @@ export interface AdvancedSearchProps {
 }
 
 /**
- * Import/Export Types (re-exported from constants for backward compatibility)
- */
-export type { ImageShape };
-
-/**
  * Avatar Upload Component Props
  */
 export interface AvatarUploadProps {
@@ -123,19 +118,6 @@ export interface AvatarUploadProps {
   onChange: (file: File | null, previewUrl: string | null) => void;
   maxSize?: number;
   className?: string;
-}
-
-/**
- * Image Upload Component Props
- */
-export interface ImageUploadProps {
-  value?: string;
-  onChange: (file: File | null, previewUrl: string | null) => void;
-  maxSize?: number;
-  className?: string;
-  label?: string;
-  shape?: ImageShape;
-  aspectRatio?: string;
 }
 
 /**

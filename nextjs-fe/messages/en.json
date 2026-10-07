@@ -256,7 +256,6 @@
     "all": "All",
     "clickToUpload": "Click to upload",
     "orDragAndDrop": "or drag and drop",
-    "preview": "Preview",
     "avatarPreview": "Avatar preview",
     "invalidFileType": "Invalid file type. Accepted: {accept}",
     "selectImageFile": "Please select an image file",
@@ -288,7 +287,6 @@
   },
   "upload": {
     "avatar": "Avatar",
-    "image": "Image",
     "imageFormats": "PNG, JPG, GIF up to {maxSize}MB"
   },
   "forms": {
