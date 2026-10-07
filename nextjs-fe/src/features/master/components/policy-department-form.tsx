@@ -16,13 +16,14 @@ import {
   getPolicyDepartmentSchema,
   type PolicyDepartmentFormData,
 } from '@/shared/validation/validation';
-import type { PolicyDepartmentFormProps } from '@/components/forms/types';
+import type { PolicyDepartmentMst } from '@/shared/types/api';
+import type { ResourceFormProps } from '@/components/common/resource-list-page';
 
 export function PolicyDepartmentForm({
   initialData,
   onSuccess,
   onCancel,
-}: PolicyDepartmentFormProps) {
+}: ResourceFormProps<PolicyDepartmentMst>) {
   const tCommon = useTranslations('common');
   const tForms = useTranslations('forms.placeholders');
   const tLabels = useTranslations('forms.labels');

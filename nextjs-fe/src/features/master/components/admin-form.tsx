@@ -25,14 +25,14 @@ import { MultiSelect } from '@/components/common/multi-select';
 import { AvatarUpload } from '@/components/common/avatar-upload';
 import { apiClient } from '@/shared/api/client';
 import { useApiData } from '@/shared/hooks/use-api-data';
-import type { RoleMst } from '@/shared/types/api';
+import type { RoleMst, AdminMst } from '@/shared/types/api';
 import { ENDPOINTS, queryKeys } from '@/shared/api';
 import { AdminStatus, Gender, GenderLabels, AdminStatusLabels } from '@/shared/enums';
 import { UPLOAD_CONFIG } from '@/shared/config/constant';
 import { getAdminSchema, type AdminFormData } from '@/shared/validation/validation';
-import type { AdminFormProps } from '@/components/forms/types';
+import type { ResourceFormProps } from '@/components/common/resource-list-page';
 
-export function AdminForm({ initialData, onSuccess, onCancel }: AdminFormProps) {
+export function AdminForm({ initialData, onSuccess, onCancel }: ResourceFormProps<AdminMst>) {
   const tCommon = useTranslations('common');
   const tForms = useTranslations('forms.placeholders');
   const tLabels = useTranslations('forms.labels');

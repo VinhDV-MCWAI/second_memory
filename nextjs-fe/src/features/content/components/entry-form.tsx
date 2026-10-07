@@ -22,7 +22,7 @@ import {
 } from '@/components/ui/select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { HistoryViewer } from '@/features/history/components/history-viewer';
-import type { LayoutStructureItem, EntryDescriptionMgmt } from '@/shared/types/api';
+import type { LayoutStructureItem, EntryDescriptionMgmt, EntryMgmt } from '@/shared/types/api';
 import { ENDPOINTS } from '@/shared/api';
 import { FORM_DEFAULTS } from '@/shared/config/constant';
 import { EntryStatus, EntryStatusLabels } from '@/shared/enums';
@@ -32,15 +32,10 @@ import {
   type EntryFormInput,
 } from '@/shared/validation/validation';
 import { slugify } from '@/shared/utils/string-utils';
-import type { EntryFormProps } from '@/components/forms/types';
+import type { ResourceFormProps } from '@/components/common/resource-list-page';
 import { LayoutStructureEditor } from './layout-structure-editor';
 
-export function EntryForm({
-  initialData,
-  onSuccess,
-  onCancel,
-  hideActions = false,
-}: EntryFormProps) {
+export function EntryForm({ initialData, onSuccess, onCancel }: ResourceFormProps<EntryMgmt>) {
   const tCommon = useTranslations('common');
   const tForms = useTranslations('forms.placeholders');
   const tValidation = useTranslations('validation');
@@ -207,27 +202,25 @@ export function EntryForm({
         <Label htmlFor="is_display">{tCommon('isDisplay')}</Label>
       </div>
 
-      {!hideActions && (
-        <div className="flex justify-end gap-2 pt-4">
-          <Button
-            type="button"
-            variant="outline"
-            onClick={onCancel}
-            disabled={loading || isActionProcessing}
-          >
-            {tCommon('cancel')}
-          </Button>
-          <Button type="submit" disabled={loading || isActionProcessing}>
-            {loading || isActionProcessing
-              ? isEdit
-                ? tCommon('updating')
-                : tCommon('creating')
-              : isEdit
-                ? tCommon('update')
-                : tCommon('create')}
-          </Button>
-        </div>
-      )}
+      <div className="flex justify-end gap-2 pt-4">
+        <Button
+          type="button"
+          variant="outline"
+          onClick={onCancel}
+          disabled={loading || isActionProcessing}
+        >
+          {tCommon('cancel')}
+        </Button>
+        <Button type="submit" disabled={loading || isActionProcessing}>
+          {loading || isActionProcessing
+            ? isEdit
+              ? tCommon('updating')
+              : tCommon('creating')
+            : isEdit
+              ? tCommon('update')
+              : tCommon('create')}
+        </Button>
+      </div>
     </>
   );
 
@@ -278,21 +271,19 @@ export function EntryForm({
           </div>
         </TabsContent>
       </Tabs>
-      {!hideActions && (
-        <div className="flex justify-end gap-2 border-t pt-4">
-          <Button
-            type="button"
-            variant="outline"
-            onClick={onCancel}
-            disabled={loading || isActionProcessing}
-          >
-            {tCommon('cancel')}
-          </Button>
-          <Button type="submit" disabled={loading || isActionProcessing}>
-            {loading || isActionProcessing ? tCommon('updating') : tCommon('update')}
-          </Button>
-        </div>
-      )}
+      <div className="flex justify-end gap-2 border-t pt-4">
+        <Button
+          type="button"
+          variant="outline"
+          onClick={onCancel}
+          disabled={loading || isActionProcessing}
+        >
+          {tCommon('cancel')}
+        </Button>
+        <Button type="submit" disabled={loading || isActionProcessing}>
+          {loading || isActionProcessing ? tCommon('updating') : tCommon('update')}
+        </Button>
+      </div>
     </form>
   );
 }

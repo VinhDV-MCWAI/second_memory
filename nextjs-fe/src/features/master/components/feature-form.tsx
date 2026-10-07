@@ -23,9 +23,10 @@ import { HistoryViewer } from '@/features/history/components/history-viewer';
 import { ENDPOINTS } from '@/shared/api';
 import { FeatureStatus, FeatureStatusLabels } from '@/shared/enums';
 import { getFeatureSchema, type FeatureFormData } from '@/shared/validation/validation';
-import type { FeatureFormProps } from '@/components/forms/types';
+import type { FeatureMst } from '@/shared/types/api';
+import type { ResourceFormProps } from '@/components/common/resource-list-page';
 
-export function FeatureForm({ initialData, onSuccess, onCancel }: FeatureFormProps) {
+export function FeatureForm({ initialData, onSuccess, onCancel }: ResourceFormProps<FeatureMst>) {
   const tCommon = useTranslations('common');
   const tLabels = useTranslations('forms.labels');
   const tValidation = useTranslations('validation');

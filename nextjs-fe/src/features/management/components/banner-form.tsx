@@ -26,9 +26,10 @@ import { getBannerSchema, type BannerFormData } from '@/shared/validation/valida
 import { slugify } from '@/shared/utils/string-utils';
 import { LoadingOverlay } from '@/components/ui/loading';
 import { UI_CONSTANTS } from '@/shared/config';
-import type { BannerFormProps } from '@/components/forms/types';
+import type { BannerMgmt } from '@/shared/types/api';
+import type { ResourceFormProps } from '@/components/common/resource-list-page';
 
-export function BannerForm({ initialData, onSuccess, onCancel }: BannerFormProps) {
+export function BannerForm({ initialData, onSuccess, onCancel }: ResourceFormProps<BannerMgmt>) {
   const tCommon = useTranslations('common');
   const tLabels = useTranslations('forms.labels');
   const tFields = useTranslations('fields');

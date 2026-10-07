@@ -29,9 +29,10 @@ import { ENDPOINTS } from '@/shared/api';
 import { Gender, GenderLabels, UserStatus, UserStatusLabels } from '@/shared/enums/enums';
 import { FILE_UPLOAD } from '@/shared/config/constant';
 import { getUserSchema, type UserFormData } from '@/shared/validation/validation';
-import type { UserFormProps } from '@/components/forms/types';
+import type { UserMgmt } from '@/shared/types/api';
+import type { ResourceFormProps } from '@/components/common/resource-list-page';
 
-export function UserForm({ initialData, onSuccess, onCancel }: UserFormProps) {
+export function UserForm({ initialData, onSuccess, onCancel }: ResourceFormProps<UserMgmt>) {
   const tCommon = useTranslations('common');
   const tLabels = useTranslations('forms.labels');
   const tValidation = useTranslations('validation');

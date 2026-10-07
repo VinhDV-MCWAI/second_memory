@@ -28,11 +28,10 @@ import {
   getEntryDescriptionSchema,
   type EntryDescriptionFormData,
 } from '@/shared/validation/validation';
-import type { EntryDescriptionFormProps } from '@/components/forms/types';
+import type { EntryDescriptionMgmt } from '@/shared/types/api';
+import type { ResourceFormProps } from '@/components/common/resource-list-page';
 
-const getFormValues = (
-  data: EntryDescriptionFormProps['initialData'],
-): EntryDescriptionFormData => {
+const getFormValues = (data: EntryDescriptionMgmt | null | undefined): EntryDescriptionFormData => {
   if (data) {
     return {
       title: data.title,
@@ -57,8 +56,7 @@ export function EntryDescriptionForm({
   initialData,
   onSuccess,
   onCancel,
-  hideActions = false,
-}: EntryDescriptionFormProps) {
+}: ResourceFormProps<EntryDescriptionMgmt>) {
   const tCommon = useTranslations('common');
   const tValidation = useTranslations('validation');
   const isEdit = !!initialData;
@@ -209,27 +207,25 @@ export function EntryDescriptionForm({
         <Label htmlFor="is_display">{tCommon('isDisplay')}</Label>
       </div>
 
-      {!hideActions && (
-        <div className="flex justify-end gap-2 pt-4">
-          <Button
-            type="button"
-            variant="outline"
-            onClick={onCancel}
-            disabled={loading || isActionProcessing}
-          >
-            {tCommon('cancel')}
-          </Button>
-          <Button type="submit" disabled={loading || isActionProcessing}>
-            {loading || isActionProcessing
-              ? isEdit
-                ? tCommon('updating')
-                : tCommon('creating')
-              : isEdit
-                ? tCommon('update')
-                : tCommon('create')}
-          </Button>
-        </div>
-      )}
+      <div className="flex justify-end gap-2 pt-4">
+        <Button
+          type="button"
+          variant="outline"
+          onClick={onCancel}
+          disabled={loading || isActionProcessing}
+        >
+          {tCommon('cancel')}
+        </Button>
+        <Button type="submit" disabled={loading || isActionProcessing}>
+          {loading || isActionProcessing
+            ? isEdit
+              ? tCommon('updating')
+              : tCommon('creating')
+            : isEdit
+              ? tCommon('update')
+              : tCommon('create')}
+        </Button>
+      </div>
     </form>
   );
 }

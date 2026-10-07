@@ -19,14 +19,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import type { AdminMst } from '@/shared/types/api';
+import type { AdminMst, TokenMst } from '@/shared/types/api';
 import { ENDPOINTS } from '@/shared/api';
 import { SORT_ORDER, PAGINATION } from '@/shared/config/constant';
 import { getTokenSchema, type TokenFormData } from '@/shared/validation/validation';
-import type { TokenFormProps } from '@/components/forms/types';
+import type { ResourceFormProps } from '@/components/common/resource-list-page';
 import { formatDateForBackend } from '@/shared/utils/date-formatter';
 
-export function TokenForm({ initialData, onSuccess, onCancel }: TokenFormProps) {
+export function TokenForm({ initialData, onSuccess, onCancel }: ResourceFormProps<TokenMst>) {
   const tCommon = useTranslations('common');
   const tForms = useTranslations('forms.placeholders');
   const tLabels = useTranslations('forms.labels');

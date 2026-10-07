@@ -18,15 +18,15 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import type { FeatureMst } from '@/shared/types/api';
+import type { FeatureMst, ApiMst } from '@/shared/types/api';
 import { ENDPOINTS } from '@/shared/api';
 import { UI_CONSTANTS } from '@/shared/config';
 import { SORT_ORDER, SORT_FIELDS, HTTP_METHODS } from '@/shared/config/constant';
 import { IsActive, IsActiveLabels, TypeOfMethod } from '@/shared/enums';
 import { getApiSchema, type ApiFormData } from '@/shared/validation/validation';
-import type { ApiFormProps } from '@/components/forms/types';
+import type { ResourceFormProps } from '@/components/common/resource-list-page';
 
-export function ApiForm({ initialData, onSuccess, onCancel }: ApiFormProps) {
+export function ApiForm({ initialData, onSuccess, onCancel }: ResourceFormProps<ApiMst>) {
   const tCommon = useTranslations('common');
   const tForms = useTranslations('forms.placeholders');
   const tLabels = useTranslations('forms.labels');

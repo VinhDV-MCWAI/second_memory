@@ -22,9 +22,10 @@ import { ImageUpload } from '@/components/common/image-upload';
 import { ENDPOINTS } from '@/shared/api';
 import { StatusEnum, StatusEnumLabels } from '@/shared/enums';
 import { getSliderSchema, type SliderFormData } from '@/shared/validation/validation';
-import type { SliderFormProps } from '@/components/forms/types';
+import type { SliderMgmt } from '@/shared/types/api';
+import type { ResourceFormProps } from '@/components/common/resource-list-page';
 
-export function SliderForm({ initialData, onSuccess, onCancel }: SliderFormProps) {
+export function SliderForm({ initialData, onSuccess, onCancel }: ResourceFormProps<SliderMgmt>) {
   const tCommon = useTranslations('common');
   const tForms = useTranslations('forms.placeholders');
   const tValidation = useTranslations('validation');

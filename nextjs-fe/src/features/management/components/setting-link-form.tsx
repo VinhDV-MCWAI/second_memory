@@ -14,9 +14,14 @@ import { Label } from '@/components/ui/label';
 import { ENDPOINTS } from '@/shared/api';
 import { IsDelete } from '@/shared/enums';
 import { getSettingLinkSchema, type SettingLinkFormData } from '@/shared/validation/validation';
-import type { SettingLinkFormProps } from '@/components/forms/types';
+import type { SettingLinkMgmt } from '@/shared/types/api';
+import type { ResourceFormProps } from '@/components/common/resource-list-page';
 
-export function SettingLinkForm({ initialData, onSuccess, onCancel }: SettingLinkFormProps) {
+export function SettingLinkForm({
+  initialData,
+  onSuccess,
+  onCancel,
+}: ResourceFormProps<SettingLinkMgmt>) {
   const tCommon = useTranslations('common');
   const tFields = useTranslations('fields');
   const tForms = useTranslations('forms.placeholders');

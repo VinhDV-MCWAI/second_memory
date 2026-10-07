@@ -23,9 +23,14 @@ import { HistoryViewer } from '@/features/history/components/history-viewer';
 import { ENDPOINTS } from '@/shared/api';
 import { DepartmentStatus, DepartmentStatusLabels } from '@/shared/enums';
 import { getDepartmentSchema, type DepartmentFormData } from '@/shared/validation/validation';
-import type { DepartmentFormProps } from '@/components/forms/types';
+import type { DepartmentMst } from '@/shared/types/api';
+import type { ResourceFormProps } from '@/components/common/resource-list-page';
 
-export function DepartmentForm({ initialData, onSuccess, onCancel }: DepartmentFormProps) {
+export function DepartmentForm({
+  initialData,
+  onSuccess,
+  onCancel,
+}: ResourceFormProps<DepartmentMst>) {
   const tCommon = useTranslations('common');
   const tLabels = useTranslations('forms.labels');
   const tValidation = useTranslations('validation');

@@ -22,12 +22,12 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import type { LayoutStructureItem, EntryMgmt } from '@/shared/types/api';
+import type { LayoutStructureItem, EntryMgmt, CategoryMgmt } from '@/shared/types/api';
 import { ENDPOINTS } from '@/shared/api';
 import { CategoryStatus, CategoryStatusLabels } from '@/shared/enums';
 import { getCategorySchema, type CategoryFormData } from '@/shared/validation/validation';
 import { slugify } from '@/shared/utils/string-utils';
-import type { CategoryFormProps } from '@/components/forms/types';
+import type { ResourceFormProps } from '@/components/common/resource-list-page';
 import { LayoutStructureEditor } from './layout-structure-editor';
 import { IsActive } from '@/shared/enums/enums';
 
@@ -35,10 +35,7 @@ export function CategoryForm({
   initialData,
   onSuccess,
   onCancel,
-  renderActions = true,
-  submitTriggerRef,
-  hideActions = false,
-}: CategoryFormProps) {
+}: ResourceFormProps<CategoryMgmt>) {
   const tCommon = useTranslations('common');
   const tForms = useTranslations('forms.placeholders');
   const tLabels = useTranslations('forms.labels');
@@ -160,27 +157,6 @@ export function CategoryForm({
     [execute, isEdit, initialData, update, create, onSuccess, setError, layoutStructure],
   );
 
-  // Expose submit function via ref (must be after onSubmit is defined)
-  useEffect(() => {
-    if (submitTriggerRef && typeof submitTriggerRef !== 'function') {
-      submitTriggerRef.current = () => {
-        // Call handleSubmit with both success and error handlers
-        handleSubmit(
-          (data) => {
-            void onSubmit(data as unknown as CategoryFormData);
-          },
-          () => {},
-        )();
-      };
-    }
-
-    return () => {
-      if (submitTriggerRef && typeof submitTriggerRef !== 'function') {
-        submitTriggerRef.current = null;
-      }
-    };
-  }, [submitTriggerRef, handleSubmit, onSubmit, errors, control]);
-
   // Use useWatch hook instead of watch() to avoid React Compiler issues
   const statusValue = useWatch({ control, name: 'status' });
 
@@ -272,21 +248,19 @@ export function CategoryForm({
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       <form onSubmit={handleSubmit(onSubmit as any)} className="space-y-4">
         {FormFields}
-        {!hideActions && (
-          <div className="flex justify-end gap-2 pt-4">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={onCancel}
-              disabled={loading || isActionProcessing}
-            >
-              {tCommon('cancel')}
-            </Button>
-            <Button type="submit" disabled={loading || isActionProcessing}>
-              {loading || isActionProcessing ? tCommon('creating') : tCommon('create')}
-            </Button>
-          </div>
-        )}
+        <div className="flex justify-end gap-2 pt-4">
+          <Button
+            type="button"
+            variant="outline"
+            onClick={onCancel}
+            disabled={loading || isActionProcessing}
+          >
+            {tCommon('cancel')}
+          </Button>
+          <Button type="submit" disabled={loading || isActionProcessing}>
+            {loading || isActionProcessing ? tCommon('creating') : tCommon('create')}
+          </Button>
+        </div>
       </form>
     );
   }
@@ -332,29 +306,26 @@ export function CategoryForm({
         </TabsContent>
       </Tabs>
 
-      {/* Action buttons - only render if renderActions is true and hideActions is false */}
-      {renderActions && !hideActions && (
-        <div className="mt-4 flex justify-end gap-2 border-t pt-4">
-          <Button
-            type="button"
-            variant="outline"
-            onClick={onCancel}
-            disabled={loading || isActionProcessing}
-          >
-            {tCommon('cancel')}
-          </Button>
-          <Button
-            type="button"
-            onClick={() => {
-              // eslint-disable-next-line @typescript-eslint/no-explicit-any
-              handleSubmit(onSubmit as any)();
-            }}
-            disabled={loading || isActionProcessing}
-          >
-            {loading || isActionProcessing ? tCommon('updating') : tCommon('update')}
-          </Button>
-        </div>
-      )}
+      <div className="mt-4 flex justify-end gap-2 border-t pt-4">
+        <Button
+          type="button"
+          variant="outline"
+          onClick={onCancel}
+          disabled={loading || isActionProcessing}
+        >
+          {tCommon('cancel')}
+        </Button>
+        <Button
+          type="button"
+          onClick={() => {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            handleSubmit(onSubmit as any)();
+          }}
+          disabled={loading || isActionProcessing}
+        >
+          {loading || isActionProcessing ? tCommon('updating') : tCommon('update')}
+        </Button>
+      </div>
     </div>
   );
 }
