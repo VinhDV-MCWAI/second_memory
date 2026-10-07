@@ -283,9 +283,9 @@ export interface SavedFiltersProps {
  * History Components Types
  */
 export interface HistoryViewerProps {
-  /** The `*-hist` resource endpoint, e.g. `/admin/entry-mgmt-hist`. */
+  /** The `*-hist` resource endpoint, e.g. `/admin/admin-mst-hist`. */
   endpoint: string;
-  /** History column that references the audited row, e.g. `entry_mgmt_id`. */
+  /** History column that references the audited row, e.g. `admin_mst_id`. */
   foreignKey: string;
   recordId: number;
   className?: string;

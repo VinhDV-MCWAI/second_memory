@@ -1,12 +1,5 @@
 import { z } from 'zod';
-import {
-  Gender,
-  StatusEnum,
-  AdminStatus,
-  CategoryStatus,
-  FeatureStatus,
-  EntryStatus,
-} from '@/shared/enums';
+import { Gender, AdminStatus, FeatureStatus } from '@/shared/enums';
 import { ValidationRules } from './validation-rules';
 
 type Translator = (key: string, params?: Record<string, string | number>) => string;
@@ -75,17 +68,8 @@ export const getAvatarValidation = (t: Translator) =>
 
 // Forced casting to ZodType to ensure TS infers the Enum type instead of unknown
 export const genderValidation = z.nativeEnum(Gender);
-export const statusValidation = z.nativeEnum(StatusEnum);
 export const adminStatusValidation = z.nativeEnum(AdminStatus);
-export const categoryStatusValidation = z.preprocess(
-  (val) => (typeof val === 'string' ? Number(val) : val),
-  z.nativeEnum(CategoryStatus),
-);
 export const featureStatusValidation = z.nativeEnum(FeatureStatus);
-export const entryStatusValidation = z.preprocess(
-  (val) => (typeof val === 'string' ? Number(val) : val),
-  z.nativeEnum(EntryStatus),
-);
 
 // Admin schema matching StoreAdminMstRequest
 export const getAdminSchema = (t: Translator) =>
@@ -105,33 +89,6 @@ export const getAdminSchema = (t: Translator) =>
   });
 
 export type AdminFormData = z.infer<ReturnType<typeof getAdminSchema>>;
-
-// Category schema
-export const getCategorySchema = (t: Translator) =>
-  z.object({
-    name: z.string().min(1, t('name.required')),
-    slug: z.string().min(1, t('slug.required')),
-    description: z.string().optional(),
-    status: categoryStatusValidation,
-    is_display: z.boolean(),
-    rank_order: z.number().min(0, t('order.min', { min: 0 })),
-    is_delete: z.boolean(),
-  });
-
-export type CategoryFormData = z.infer<ReturnType<typeof getCategorySchema>>;
-
-// Entry schema
-export const getEntrySchema = (t: Translator) =>
-  z.object({
-    name: z.string().min(1, t('name.required')),
-    slug: z.string().optional(),
-    rank_order: z.number().min(0, t('order.min', { min: 0 })),
-    status: entryStatusValidation,
-    is_display: z.boolean().optional(),
-  });
-
-export type EntryFormData = z.infer<ReturnType<typeof getEntrySchema>>;
-export type EntryFormInput = z.input<ReturnType<typeof getEntrySchema>>;
 
 // Role schema
 export const getRoleSchema = (t: Translator) =>
@@ -161,19 +118,6 @@ export const getFeatureSchema = (t: Translator) =>
   });
 
 export type FeatureFormData = z.infer<ReturnType<typeof getFeatureSchema>>;
-
-// Entry Description schema
-export const getEntryDescriptionSchema = (t: Translator) =>
-  z.object({
-    title: z.string().min(1, t('title.required')),
-    summary: z.string().optional(),
-    article: z.string().optional(),
-    rank_order: z.number().min(0, t('order.min', { min: 0 })),
-    status: statusValidation,
-    is_display: z.boolean().optional(),
-  });
-
-export type EntryDescriptionFormData = z.infer<ReturnType<typeof getEntryDescriptionSchema>>;
 
 // API schema
 export const getApiSchema = (t: Translator) =>

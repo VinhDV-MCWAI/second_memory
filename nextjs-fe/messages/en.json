@@ -38,9 +38,7 @@
     "name": "Name",
     "description": "Description",
     "status": "Status",
-    "displayOrder": "Display Order",
     "isActive": "Is Active",
-    "isDisplay": "Is Display",
     "email": "Email",
     "password": "Password",
     "enterPassword": "Enter password",
@@ -48,11 +46,8 @@
     "link": "Link",
     "linkUrl": "Link URL",
     "title": "Title",
-    "slug": "Slug",
     "icon": "Icon",
     "image": "Image",
-    "article": "Article",
-    "summary": "Summary",
     "details": "Details",
     "history": "History",
     "required": "*",
@@ -74,10 +69,6 @@
     "reset": "Reset",
     "preview": "Preview",
     "passwordRequired": "Password Required",
-    "entries": "Entries",
-    "descriptions": "Descriptions",
-    "entriesManagementComingSoon": "Entries Management Coming Soon",
-    "entry": "Entry",
     "parentId": "Parent ID",
     "review": "Review",
     "next": "Next",
@@ -141,8 +132,7 @@
     "adminDashboard": "Admin Dashboard",
     "dashboard": "Dashboard",
     "fileManager": "File Manager",
-    "masterData": "Master Data",
-    "contentManagement": "Content Management"
+    "masterData": "Master Data"
   },
   "search": {
     "placeholder": "Search...",
@@ -212,14 +202,8 @@
     "admins": "Admins",
     "role": "Role",
     "roles": "Roles",
-    "category": "Category",
-    "categories": "Categories",
     "feature": "Feature",
     "features": "Features",
-    "entry": "Entry",
-    "entries": "Entries",
-    "entryDescription": "Entry Description",
-    "entryDescriptions": "Entry Descriptions",
     "skill": "Skill",
     "skills": "Skills",
     "skillDescription": "Skill Description",
@@ -247,7 +231,6 @@
     "title": "Title",
     "url": "URL",
     "icon": "Icon",
-    "order": "Order",
     "type": "Type",
     "key": "Key",
     "value": "Value",
@@ -256,11 +239,8 @@
     "platform": "Platform",
     "adminId": "Admin ID",
     "token": "Token",
-    "entryId": "Entry ID",
     "image": "Image",
     "link": "Link",
-    "summary": "Summary",
-    "slug": "Slug",
     "accountId": "Account ID",
     "deviceName": "Device Name",
     "ipAddress": "IP Address",
@@ -510,9 +490,6 @@
       "title": "Title",
       "linkUrl": "Link URL",
       "position": "Position",
-      "slug": "Slug",
-      "displayOrder": "Display Order",
-      "isDisplay": "Is Display",
       "permission": "Permission"
     },
     "placeholders": {
@@ -521,12 +498,10 @@
       "urlExample": "https://example.com",
       "iconExample": "e.g., 📱 or fa-mobile",
       "termsOfService": "e.g. Terms of Service",
-      "slugExample": "e.g. javascript",
       "enterToken": "Enter token key",
       "passwordHidden": "••••••••",
       "leaveBlankToKeepCurrent": "Leave Blank To Keep Current",
       "selectFeature": "Select Feature",
-      "selectEntry": "Select Entry",
       "selectAccount": "Select Account",
       "deviceName": "Device Name",
       "ipAddress": "IP Address",
@@ -590,9 +565,6 @@
     "content": {
       "required": "Content is required"
     },
-    "slug": {
-      "required": "Slug is required"
-    },
     "description": {
       "required": "Description is required"
     },
@@ -609,21 +581,12 @@
       "required": "URL is required",
       "invalid": "Must be a valid URL"
     },
-    "order": {
-      "min": "Order must be {min} or greater"
-    },
     "permission": {
       "required": "Permission is required",
       "maxLength": "Permission cannot exceed {max} characters"
     },
-    "entry": {
-      "required": "Entry is required"
-    },
     "feature": {
       "required": "Feature is required"
-    },
-    "category": {
-      "required": "Category is required"
     },
     "account": {
       "required": "Account is required"

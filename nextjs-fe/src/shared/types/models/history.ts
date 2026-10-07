@@ -5,6 +5,6 @@
 import type { components } from '@/shared/types/openapi';
 
 export type HistoryRecord = Pick<
-  components['schemas']['EntryMgmtHistResource'],
+  components['schemas']['AdminMstHistResource'],
   'id' | 'action' | 'author_id' | 'created_at'
 >;

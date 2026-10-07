@@ -2,9 +2,6 @@ import { describe, expect, it } from 'vitest';
 import {
   getAdminSchema,
   getApiSchema,
-  getCategorySchema,
-  getEntryDescriptionSchema,
-  getEntrySchema,
   getFeatureSchema,
   getRoleSchema,
   getTokenSchema,
@@ -55,27 +52,6 @@ describe('admin schema', () => {
   });
 });
 
-describe('content schemas', () => {
-  it('coerce string statuses for categories and entries', () => {
-    const category = getCategorySchema(t).parse({
-      name: 'Docs',
-      slug: 'docs',
-      status: '1',
-      is_display: true,
-      rank_order: 0,
-      is_delete: false,
-    });
-    expect(category.status).toBe(1);
-    expect(getEntrySchema(t).parse({ name: 'Intro', rank_order: 1, status: '0' }).status).toBe(0);
-  });
-
-  it('require the visible fields', () => {
-    expect(
-      messagesOf(getEntryDescriptionSchema(t).safeParse({ title: '', rank_order: -1, status: 0 })),
-    ).toEqual(['title.required', 'order.min:{"min":0}']);
-  });
-});
-
 describe('master data schemas', () => {
   it('enforce role limits', () => {
     expect(
@@ -91,8 +67,8 @@ describe('master data schemas', () => {
     ).toEqual(['groupName.required']);
     expect(
       getApiSchema(t).safeParse({
-        name: 'List users',
-        path: '/admin/user-mgmt/list',
+        name: 'List admins',
+        path: '/admin/admin-mst/list',
         type: 1,
         method: 'GET',
         feature_mst_id: 1,

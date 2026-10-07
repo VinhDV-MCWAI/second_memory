@@ -2,15 +2,11 @@ import {
   LayoutDashboard,
   FolderOpen,
   Database,
-  Package,
   Shield,
   Code,
   Sparkles,
   Key,
   UserCog,
-  Grid3x3,
-  Briefcase,
-  Layers,
 } from 'lucide-react';
 import { MenuItem } from '@/shared/types';
 import { ADMIN_ROUTES } from '@/shared/config';
@@ -54,27 +50,6 @@ export const NAVIGATION_MENU: MenuItem[] = [
         label: 'entities.tokens',
         icon: Key,
         href: ADMIN_ROUTES.TOKENS,
-      },
-    ],
-  },
-  {
-    label: 'navigation.contentManagement',
-    icon: Package,
-    children: [
-      {
-        label: 'entities.categories',
-        icon: Grid3x3,
-        href: ADMIN_ROUTES.CATEGORIES,
-      },
-      {
-        label: 'entities.entries',
-        icon: Briefcase,
-        href: ADMIN_ROUTES.ENTRIES,
-      },
-      {
-        label: 'entities.entryDescriptions',
-        icon: Layers,
-        href: ADMIN_ROUTES.ENTRY_DESCRIPTIONS,
       },
     ],
   },

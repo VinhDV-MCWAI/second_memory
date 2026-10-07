@@ -188,11 +188,8 @@ export const THEME = {
 export const ADMIN_ROUTES = {
   DASHBOARD: '/admin',
   APIS: '/admin/apis',
-  CATEGORIES: '/admin/categories',
   FEATURES: '/admin/features',
-  ENTRIES: '/admin/entries',
   TOKENS: '/admin/tokens',
-  ENTRY_DESCRIPTIONS: '/admin/entry-descriptions',
   FILE_MANAGER: '/admin/file-manager',
   ADMINS: '/admin/admins',
   ROLES: '/admin/roles',

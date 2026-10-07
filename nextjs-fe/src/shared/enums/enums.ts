@@ -86,21 +86,6 @@ export enum UploadStatus {
 }
 
 // ==========================================
-// CategoryStatus (app/Enums/CategoryStatus.php)
-// ==========================================
-export enum CategoryStatus {
-  INACTIVE = 0,
-  ACTIVE = 1,
-  ARCHIVED = 2,
-}
-
-export const CategoryStatusLabels: Record<CategoryStatus, string> = {
-  [CategoryStatus.INACTIVE]: 'Inactive',
-  [CategoryStatus.ACTIVE]: 'Active',
-  [CategoryStatus.ARCHIVED]: 'Archived',
-};
-
-// ==========================================
 // FeatureStatus (app/Enums/FeatureStatus.php)
 // ==========================================
 export enum FeatureStatus {
@@ -115,23 +100,6 @@ export const FeatureStatusLabels: Record<FeatureStatus, string> = {
   [FeatureStatus.ACTIVE]: 'Active',
   [FeatureStatus.DRAFT]: 'Draft',
   [FeatureStatus.ARCHIVED]: 'Archived',
-};
-
-// ==========================================
-// EntryStatus (app/Enums/EntryStatus.php)
-// ==========================================
-export enum EntryStatus {
-  INACTIVE = 0,
-  ACTIVE = 1,
-  WAITING = 2,
-  SUSPENDED = 3,
-}
-
-export const EntryStatusLabels: Record<EntryStatus, string> = {
-  [EntryStatus.INACTIVE]: 'Inactive',
-  [EntryStatus.ACTIVE]: 'Active',
-  [EntryStatus.WAITING]: 'Waiting',
-  [EntryStatus.SUSPENDED]: 'Suspended',
 };
 
 // ==========================================
@@ -168,21 +136,7 @@ export const TypeOfMethodLabels: Record<TypeOfMethod, string> = {
 // DEPRECATED - Remove after migration
 // Legacy Status enum (use IsActive or specific status enums instead)
 // ==========================================
-/** @deprecated Use IsActive or specific status enums like AdminStatus, CategoryStatus, etc. */
+/** @deprecated Use IsActive or specific status enums like AdminStatus, FeatureStatus, etc. */
 export const Status = IsActive;
 /** @deprecated Use IsActiveLabels or specific status labels */
 export const StatusLabels = IsActiveLabels;
-
-// ==========================================
-// IsDisplay (app/Enums/IsDisplay.php)
-// Boolean-like status for display visibility
-// ==========================================
-export enum IsDisplay {
-  FALSE = 0,
-  TRUE = 1,
-}
-
-export const IsDisplayLabels: Record<IsDisplay, string> = {
-  [IsDisplay.FALSE]: 'Hidden',
-  [IsDisplay.TRUE]: 'Visible',
-};
