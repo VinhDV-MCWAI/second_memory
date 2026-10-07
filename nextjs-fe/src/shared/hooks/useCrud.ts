@@ -2,6 +2,7 @@
 
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { apiClient } from '@/shared/api/client';
+import { queryKeys } from '@/shared/api/query-keys';
 import { notification, getApiErrorMessage } from '../utils';
 import { AxiosError } from 'axios';
 import { useTranslations } from 'next-intl';
@@ -35,7 +36,7 @@ export function useCrud<T>(endpoint: string, options: UseCrudOptions = {}): UseC
     onSuccess: () => {
       notification.success(messages.create || t('createdSuccessfully'));
       invalidateKeys.forEach((key) => {
-        queryClient.invalidateQueries({ queryKey: [key] });
+        queryClient.invalidateQueries({ queryKey: queryKeys.resource(key) });
       });
     },
     onError: (err: AxiosError) => {
@@ -65,7 +66,7 @@ export function useCrud<T>(endpoint: string, options: UseCrudOptions = {}): UseC
     onSuccess: () => {
       notification.success(messages.update || t('updatedSuccessfully'));
       invalidateKeys.forEach((key) => {
-        queryClient.invalidateQueries({ queryKey: [key] });
+        queryClient.invalidateQueries({ queryKey: queryKeys.resource(key) });
       });
     },
     onError: (err: AxiosError) => {
@@ -93,7 +94,7 @@ export function useCrud<T>(endpoint: string, options: UseCrudOptions = {}): UseC
           : t('deletedSuccessfully');
       notification.success(messages.delete || defaultMessage);
       invalidateKeys.forEach((key) => {
-        queryClient.invalidateQueries({ queryKey: [key] });
+        queryClient.invalidateQueries({ queryKey: queryKeys.resource(key) });
       });
     },
     onError: (err: AxiosError) => {

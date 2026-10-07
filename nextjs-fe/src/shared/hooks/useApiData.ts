@@ -2,6 +2,7 @@
 
 import { useQuery } from '@tanstack/react-query';
 import { apiClient } from '@/shared/api/client';
+import { queryKeys } from '@/shared/api/query-keys';
 import type {
   PaginatedResponse,
   UseApiDataOptions,
@@ -39,19 +40,15 @@ export function useApiData<T>(
     staleTime,
   } = options;
 
-  // Build query key for caching
-  const queryKey = [
-    endpoint,
-    {
-      page,
-      per_page,
-      filters,
-      sort_by,
-      sort_order,
-      from_date,
-      to_date,
-    },
-  ];
+  const queryKey = queryKeys.list(endpoint, {
+    page,
+    per_page,
+    filters,
+    sort_by,
+    sort_order,
+    from_date,
+    to_date,
+  });
 
   // Fetch function
   const fetchData = async (): Promise<PaginatedResponse<T>> => {

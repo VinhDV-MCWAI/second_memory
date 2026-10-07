@@ -26,7 +26,7 @@ import { AvatarUpload } from '@/components/common/avatar-upload';
 import { apiClient } from '@/shared/api/client';
 import { useApiData } from '@/shared/hooks/useApiData';
 import type { AdminMst, RoleMst } from '@/shared/types/api';
-import { ENDPOINTS } from '@/shared/api';
+import { ENDPOINTS, queryKeys } from '@/shared/api';
 import { AdminStatus, Gender, GenderLabels, AdminStatusLabels } from '@/shared/enums';
 import { UPLOAD_CONFIG } from '@/shared/config/constant';
 import { getAdminSchema, type AdminFormData } from '@/shared/validation/validation';
@@ -235,8 +235,10 @@ export function AdminForm({ initialData, onSuccess, onCancel }: AdminFormProps) 
 
         // Manually invalidate list query after all operations (admin + roles) are complete
         await Promise.all([
-          queryClient.invalidateQueries({ queryKey: [ENDPOINTS.MASTER.ADMIN] }),
-          queryClient.invalidateQueries({ queryKey: [ENDPOINTS.JUNCTION.ADMIN_ROLE] }),
+          queryClient.invalidateQueries({ queryKey: queryKeys.resource(ENDPOINTS.MASTER.ADMIN) }),
+          queryClient.invalidateQueries({
+            queryKey: queryKeys.resource(ENDPOINTS.JUNCTION.ADMIN_ROLE),
+          }),
         ]);
         onSuccess();
       } catch (error: unknown) {

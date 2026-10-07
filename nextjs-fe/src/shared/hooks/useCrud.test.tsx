@@ -1,7 +1,8 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { act, renderHook } from '@testing-library/react';
+import { act, renderHook, waitFor } from '@testing-library/react';
 import { http, HttpResponse } from 'msw';
 import { useCrud } from './useCrud';
+import { useApiData } from './useApiData';
 import { notification } from '@/shared/utils/notification';
 import { apiUrl, envelope, errorEnvelope, server } from '@/test/server';
 import { createQueryWrapper } from '@/test/query-wrapper';
@@ -103,5 +104,29 @@ describe('useCrud', () => {
       await expect(result.current.create({})).rejects.toBeTruthy();
     });
     expect(notification.error).not.toHaveBeenCalled();
+  });
+
+  it('refetches lists of the same resource after a mutation', async () => {
+    let listCalls = 0;
+    server.use(
+      http.get(apiUrl(`${ENDPOINT}/list`), () => {
+        listCalls++;
+        return HttpResponse.json(envelope({ data: [] }));
+      }),
+      http.post(apiUrl(`${ENDPOINT}/store`), () => HttpResponse.json(envelope(1))),
+    );
+    const { Wrapper } = createQueryWrapper();
+    const { result } = renderHook(
+      () => ({ list: useApiData(ENDPOINT, { page: 2 }), crud: useCrud(ENDPOINT) }),
+      { wrapper: Wrapper },
+    );
+    await waitFor(() => expect(result.current.list.loading).toBe(false));
+    expect(listCalls).toBe(1);
+
+    await act(async () => {
+      await result.current.crud.create({ title: 'x' });
+    });
+
+    await waitFor(() => expect(listCalls).toBe(2));
   });
 });
