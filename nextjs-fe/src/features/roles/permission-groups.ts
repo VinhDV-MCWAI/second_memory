@@ -1,7 +1,8 @@
 import type { ApiMst, FeatureMst } from '@/shared/types/api';
 import type { GroupedApisByFeature } from '@/features/roles/role-wizard.types';
+import { API_TYPE_TO_METHOD, HTTP_METHODS } from '@/features/roles/role-wizard.constant';
 
-/** Method filter value meaning "all methods". */
+/** Method filter value meaning "all methods"; other values are `HTTP_METHODS`. */
 export const ALL_METHODS = '*';
 
 export interface PermissionFilter {
@@ -47,7 +48,10 @@ export function filterGroupedApis(
       ) {
         return false;
       }
-      return method === ALL_METHODS || api.type === parseInt(method);
+      // Same mapping as the method badge: unknown types show as GET
+      return (
+        method === ALL_METHODS || (API_TYPE_TO_METHOD[api.type] || HTTP_METHODS.GET) === method
+      );
     });
 
     if (filteredApis.length > 0 || (!searchApi && method === ALL_METHODS)) {

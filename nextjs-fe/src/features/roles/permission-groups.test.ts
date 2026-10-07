@@ -35,6 +35,14 @@ describe('permission groups', () => {
     ]);
   });
 
+  it('filters by HTTP method name', () => {
+    expect(idsOf(filterGroupedApis(grouped, { ...noFilter, method: 'POST' }))).toEqual([[1, [11]]]);
+    expect(idsOf(filterGroupedApis(grouped, { ...noFilter, method: 'GET' }))).toEqual([
+      [1, [10]],
+      [2, [20]],
+    ]);
+  });
+
   it('keeps empty features only while no API filter is active', () => {
     const empty = groupApisByFeature([feature(5, 'Empty')], []);
     expect(idsOf(filterGroupedApis(empty, noFilter))).toEqual([[5, []]]);
