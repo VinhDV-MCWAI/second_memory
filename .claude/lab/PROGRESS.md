@@ -7,7 +7,7 @@
 
 | | |
 |---|---|
-| Active phase | P1 Handbook (P0 done locally) |
+| Active phase | P2 Slim down (P0, P1 done locally) |
 | Working branch | `docs/p1-handbook` (stacked on `chore/p0-baseline`, tag `v1.0.0`); `chore/p0-baseline` (from `refactor/fe6-features` ← `fix/security-deps` ← `developer`); local only, nothing pushed |
 | Old refactor | Frozen (`.claude/refactor/PLAN.md`, `PROGRESS.md`) |
 | Owner defaults | 8–10 h/week, backend role, §4 remove list accepted, Obsidian vault private (see analysis §9) |
@@ -28,6 +28,8 @@
 
 - 2026-10-07 — P1-01…P1-13 done: handbook (10 chapters), templates (REQ, RFC, INC, postmortem, runbook, daily, weekly, retro), GitHub issue forms + PR template + CODEOWNERS, skills `simulate-po` / `simulate-qa` / `simulate-ops` (sealed briefs in gitignored `.claude/sim/sealed/`).
 
+- 2026-10-07 — P1-14 dry run: REQ-001 Ready (7 clarification questions; hidden needs surfaced: content export → new task P2-05b, keep MinIO files, "moved" page for /docs). Daily + weekly report, retro P0–P1, `v1.1.0` notes + local tag. Dev DB has no content/admin rows → export tested with factories.
+
 ## Next step
 
-P1-14 dry run: `simulate-po` raises REQ-001 (slim down) → intake to Ready, first daily + weekly report, P1 retro, release notes `v1.1.0`. Then P2 on `refactor/p2-slim-down`.
+P2 on `refactor/p2-slim-down` (from `docs/p1-handbook`): P2-02 impact analysis → P2-03 ERD → P2-04 RFC-001/ADR-0003 → P2-05 metrics → P2-05b export → removals.

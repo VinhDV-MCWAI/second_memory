@@ -41,17 +41,18 @@ Status: `todo` → `doing` → `done` | `cut` (with reason). When GitHub Project
 | P1-11 | Templates: requirement, design doc, ADR ✓, problem record ✓, incident, postmortem, runbook, daily, weekly, retro | `docs/templates/` | done |
 | P1-12 | GitHub templates: issue forms (REQ, BUG, TASK, SPIKE, INC), PR template, CODEOWNERS | `.github/` | done |
 | P1-13 | AI stakeholder skills: `simulate-po`, `simulate-qa`, `simulate-ops` (role, tone, what they ask, what they never reveal) | `.claude/skills/` | done |
-| P1-14 | Dry run: one simulated request through intake to "Ready"; first daily + weekly report; P1 retro | Reports | todo |
+| P1-14 | Dry run: one simulated request through intake to "Ready"; first daily + weekly report; P1 retro | REQ-001 Ready, reports, retro, `v1.1.0` notes | done |
 
 ## P2 — Slim down
 
 | ID | Task | Output | Status |
 |---|---|---|---|
-| P2-01 | `REQ-001` from simulated PO: "the CMS is replaced by Obsidian; remove what is no longer needed" + clarification log | Requirement | todo |
+| P2-01 | `REQ-001` from simulated PO: "the CMS is replaced by Obsidian; remove what is no longer needed" + clarification log | [REQ-001](../requirements/REQ-001-slim-down.md) | done (in P1-14 dry run) |
 | P2-02 | Impact analysis: per module → tables, routes, FE pages, jobs, tests, data to keep | Impact doc | todo |
 | P2-03 | ERD as-is / to-be (generated from the schema, then edited) | Diagrams | todo |
 | P2-04 | Design doc + ADR-0003 (what is removed, order, rollback plan) | RFC + ADR | todo |
 | P2-05 | Before-metrics snapshot (LOC, tables, endpoints, tests, test time, image size, startup time) | Metrics table | todo |
+| P2-05b | Artisan command exporting categories/entries/descriptions to Markdown (frontmatter, idempotent), tested with factories; run on deployed data before the drop (REQ-001 US-2) | Command + test | todo |
 | P2-06 | Remove FE: sliders, banners, setting links, socials, users, departments, content CMS, file-manager tree | PRs | todo |
 | P2-07 | Remove API + tests for the same modules | PRs | todo |
 | P2-08 | Expand/contract: create `audit_log`, dual-write, backfill, switch reads, drop `*_hist` tables | Migrations + PRB | todo |
