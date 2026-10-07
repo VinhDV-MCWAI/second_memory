@@ -154,8 +154,8 @@ jobs:
         run: composer analyse -- --no-progress --error-format=github
 
       - name: Tests
-        # The 4 RefreshTokenApiTest cases fail until the manual auth rework
-        # lands (docs/auth/AUTH-GUIDE.md, A13). Remove the exclusion then.
+        # The 4 RefreshTokenApiTest cases fail until Sanctum replaces the custom
+        # JWT (PRB-001, backlog P2-11). Remove the exclusion then.
         run: php artisan test --exclude-filter 'RefreshTokenApiTest::test_t0(04|05|06|19)_'
 
       - name: OpenAPI spec is up to date

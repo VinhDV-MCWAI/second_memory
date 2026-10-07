@@ -33,11 +33,11 @@ docs/
 ├── handbook/            how we work: team, intake, design, git, coding, QA, release, operations, reporting, docs & data
 ├── requirements/        (planned, Phase 2+) REQ-xxx: request → clarification → user stories → acceptance criteria
 ├── design/              (planned, Phase 2+) design docs / RFCs, ERD, API contracts, sequence diagrams
-├── problems/            (planned, Phase 1+) PRB-xxx: problem records (origin → impact → solution → follow-ups)
+├── problems/            PRB-xxx: problem records (origin → impact → solution → follow-ups)
 ├── incidents/           (planned, Phase 7) INC-xxx: incident reports and postmortems
 ├── runbooks/            (planned, Phase 6) step-by-step operational procedures
 ├── reports/             (planned, Phase 1) daily / weekly reports, retrospectives
-└── archive/             outdated docs kept for history (legacy-architecture/ = the old root 01–10 files)
+└── archive/             outdated docs kept for history (legacy-architecture/ = the old root 01–10 files, learning/ = write-ups of replaced hand-built code)
 ```
 
 ## Writing conventions

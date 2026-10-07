@@ -1,3 +1,7 @@
+> **Historical learning record (archived 2026-10-07).** This guide describes the hand-written JWT auth that the owner built to learn how token authentication works. It was replaced by Laravel Sanctum SPA cookie auth: see [PRB-001](../../problems/PRB-001-custom-jwt-auth.md) and [ADR-0004](../../adr/0004-sanctum-spa-cookie-auth.md). File paths below refer to the code at tag `v1.0.0` (`laravel-api/…`); the exercises in §5 are no longer planned. Kept unchanged otherwise.
+>
+> 🇻🇳 **Tài liệu học tập, đã lưu trữ (2026-10-07).** Hướng dẫn này mô tả phần xác thực JWT owner tự viết để học. Đã được thay bằng Sanctum SPA (xem PRB-001, ADR-0004). Đường dẫn file trong bài là code ở tag `v1.0.0`; các bài tập ở mục 5 không còn trong kế hoạch. Nội dung còn lại giữ nguyên.
+
 # Xác thực (Authentication) — Hướng dẫn làm thủ công
 
 > Tài liệu học tập cho việc tự refactor phần xác thực của `laravel-api`.
@@ -24,14 +28,14 @@ Khi làm xong một bước, có thể nhờ Claude review: *"review bước A3 
 
 | Thành phần | File | Vai trò |
 |---|---|---|
-| JWT tự viết | [`app/Utilities/JsonWebToken.php`](../../app/Utilities/JsonWebToken.php) | encode/decode HS256, kiểm tra `exp`, `iat` |
-| Service | [`app/Services/Custom/CredentialService.php`](../../app/Services/Custom/CredentialService.php) | login, refresh, logout, me; ghi Redis + `token_mst` |
-| Controller | [`app/Http/Controllers/Custom/CredentialController.php`](../../app/Http/Controllers/Custom/CredentialController.php) | mỏng, gọi service |
-| Middleware xác thực + phân quyền | [`app/Http/Middleware/AdminMiddleware.php`](../../app/Http/Middleware/AdminMiddleware.php) | đọc cookie, verify JWT, kiểm tra Redis, kiểm tra quyền theo route |
-| Middleware websocket | [`app/Http/Middleware/BroadcastingAuthMiddleware.php`](../../app/Http/Middleware/BroadcastingAuthMiddleware.php) | bản sao rút gọn của AdminMiddleware cho `/broadcasting/auth` |
+| JWT tự viết | `laravel-api/app/Utilities/JsonWebToken.php` | encode/decode HS256, kiểm tra `exp`, `iat` |
+| Service | `laravel-api/app/Services/Custom/CredentialService.php` | login, refresh, logout, me; ghi Redis + `token_mst` |
+| Controller | `laravel-api/app/Http/Controllers/Custom/CredentialController.php` | mỏng, gọi service |
+| Middleware xác thực + phân quyền | `laravel-api/app/Http/Middleware/AdminMiddleware.php` | đọc cookie, verify JWT, kiểm tra Redis, kiểm tra quyền theo route |
+| Middleware websocket | `laravel-api/app/Http/Middleware/BroadcastingAuthMiddleware.php` | bản sao rút gọn của AdminMiddleware cho `/broadcasting/auth` |
 | Bảng refresh token | `token_mst` (migration `..._000018`) | lưu `md5(refresh_token)`, thiết bị, IP, hạn |
 | View phân quyền | `admin_permission_view` (migration `..._000048`) | admin → (method, path) được phép |
-| Cấu hình TTL | [`app/Constants/CommonVal.php`](../../app/Constants/CommonVal.php) | access 5 phút, refresh 3 ngày, khóa sau 5 lần sai |
+| Cấu hình TTL | `laravel-api/app/Constants/CommonVal.php` | access 5 phút, refresh 3 ngày, khóa sau 5 lần sai |
 | FE interceptor | `nextjs-fe/src/shared/api/client/client.ts` | gặp 401 → gọi refresh một lần (có lock) → gọi lại request |
 
 ### 2.2 Luồng

@@ -14,7 +14,7 @@ All tooling runs inside containers; the host has no PHP/Node.
 ```bash
 docker exec ml-php ./vendor/bin/pint --test
 docker exec ml-php ./vendor/bin/phpstan analyse --memory-limit=1G
-docker exec ml-php php artisan test                                  # paratest not installed: no --parallel; baseline = 4 known auth failures (AUTH-GUIDE A13)
+docker exec ml-php php artisan test                                  # paratest not installed: no --parallel; baseline = 4 known auth failures (PRB-001, fixed by P2-11)
 ```
 
 ## Admin FE (`nextjs-fe/` changed)

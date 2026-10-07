@@ -8,7 +8,7 @@ COMPOSE := docker compose -f docker/docker-compose.yml
 PHP     := docker exec ml-php
 FE      := docker exec ml-nextjs
 DOCS    := docker exec ml-nextjs-docs
-# Same exclusion as CI: these auth cases fail until the manual auth rework (AUTH-GUIDE A13)
+# Same exclusion as CI: these auth cases fail until Sanctum replaces the custom JWT (PRB-001, P2-11)
 AUTH_TODO := RefreshTokenApiTest::test_t0(04|05|06|19)_
 
 ##@ Environment

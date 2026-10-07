@@ -15,7 +15,7 @@ return RectorConfig::configure()
         __DIR__.'/routes',
         __DIR__.'/tests',
     ])
-    // Auth code is reworked by hand (docs/auth/AUTH-GUIDE.md) — keep Rector out of it.
+    // Auth code is replaced by Sanctum in P2-11 (ADR-0004) — keep Rector out of it.
     ->withSkip([
         __DIR__.'/app/Utilities/JsonWebToken.php',
         __DIR__.'/app/Services/Custom/CredentialService.php',
