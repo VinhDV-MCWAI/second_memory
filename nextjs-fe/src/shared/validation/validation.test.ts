@@ -80,7 +80,6 @@ describe('content schemas', () => {
       messagesOf(getEntryDescriptionSchema(t).safeParse({ title: '', rank_order: -1, status: 0 })),
     ).toEqual(['title.required', 'order.min:{"min":0}']);
   });
-
 });
 
 describe('master data schemas', () => {
