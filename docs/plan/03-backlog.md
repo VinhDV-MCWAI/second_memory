@@ -58,7 +58,7 @@ Status: `todo` → `doing` → `done` | `cut` (with reason). When GitHub Project
 | P2-08 | Expand/contract: create `audit_log`, dual-write, backfill, switch reads, drop `*_hist` tables | Migrations + PRB | todo |
 | P2-09 | Drop removed tables, triggers and views (after backup; down-migration tested) | Migrations | done (RFC-001 slices 2–5; slice 6 drops nothing) |
 | P2-10 | PRB-001 + ADR-0004: replace custom JWT with Sanctum SPA cookies; archive AUTH-GUIDE as learning record | [PRB-001](../problems/PRB-001-custom-jwt-auth.md), [ADR-0004](../adr/0004-sanctum-spa-cookie-auth.md), [learning record](../archive/learning/AUTH-GUIDE.md) | done |
-| P2-11 | Implement Sanctum, migrate FE auth provider, delete custom auth code; unblock old FE3 (route guard) | PRs | todo |
+| P2-11 | Implement Sanctum, migrate FE auth provider, delete custom auth code; unblock old FE3 (route guard) | PRs | done (RFC-001 slice 7; [PRB-001 §7](../problems/PRB-001-custom-jwt-auth.md#7-implementation-and-verification); side finding [PRB-002](../problems/PRB-002-tests-used-dev-database.md)) |
 | P2-12 | RBAC → Gates/Policies with `owner` / `viewer` | PR | todo |
 | P2-13 | Regression run, after-metrics, release `v2.0.0` with notes, retro | Release | todo |
 

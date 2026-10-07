@@ -7,7 +7,7 @@
 
 | | |
 |---|---|
-| Active phase | P2 Slim down (P0, P1 done locally). P2-01…P2-07, P2-09, P2-10 done (RFC-001 slices 1–6 + auth docs). Left: P2-11 auth code (slice 7), P2-12 roles (slice 8), P2-08 audit log (slice 9), P2-13 release (slice 10) |
+| Active phase | P2 Slim down (P0, P1 done locally). P2-01…P2-07, P2-09…P2-11 done (RFC-001 slices 1–7). Left: P2-12 roles (slice 8), P2-08 audit log (slice 9), P2-13 release (slice 10) |
 | Working branch | `refactor/p2-slim-down` (from `docs/p1-handbook`); `docs/p1-handbook` (stacked on `chore/p0-baseline`, tag `v1.0.0`); `chore/p0-baseline` (from `refactor/fe6-features` ← `fix/security-deps` ← `developer`); local only, nothing pushed |
 | Old refactor | Frozen (`.claude/refactor/PLAN.md`, `PROGRESS.md`) |
 | Owner defaults | 8–10 h/week, backend role, §4 remove list accepted, Obsidian vault private (see analysis §9) |
@@ -22,12 +22,17 @@
 6. When ready: push `refactor/p2-slim-down` (stacked on `docs/p1-handbook`); PRs only after the branches below it are merged.
 7. Before upgrading any deployed environment to v2.0.0: deploy `v1.2.0` and run `docs/runbooks/content-export.md` (the export command is gone after slice 5). `v1.2.0` has a tag but no release notes file yet (`docs/releases/v1.2.0.md`).
 8. Open decision (does not block P2): remove the media API, or keep it for Skill Ledger evidence files — see RFC-001 §3 correction.
+9. Dev DB is empty (PRB-002: test runs wiped it). To use the admin UI: `docker exec ml-php php artisan db:seed --class=RootAccountSeeder` (check the seeder first), then log in.
+10. To store sessions in Redis as ADR-0004 says: `make setup` (regenerates `laravel-api/.env` from `.env.example`, `SESSION_DRIVER=redis`) and `make restart`. Until then sessions use the `database` driver, which also works. Old `LARAVEL_*_TOKEN_SECRET` lines in `docker/.env` can be deleted by hand.
+11. Browser check of the new login (log in, reload, log out in one tab → the other tab goes to login on its next request); only curl was used here.
 
 ## Environment gotchas (read before running anything)
 
 - **Containers exit 127** after a Docker Desktop / WSL restart (stale bind mounts, e.g. `pg_hba.conf`): just `make up` to recreate them.
 - **`make up` fails with "ml-redis is unhealthy"**: Redis is still replaying a large AOF (`LOADING` on ping). Wait until `redis-cli ping` answers `PONG`, run `BGREWRITEAOF` to compact it, then `make up` again. Root cause (tests flushing dev Redis) fixed in `0b1a294`; tests now use Redis DBs 14/15.
 - **`make openapi` exit 137** right after start-up: transient, rerun it.
+- **Tests and the dev DB:** since `e58b418` tests really use the `testing` DB (`TestEnvironmentTest` guards it). Before that, every local test run did `migrate:fresh` on `ml_pg_db` (PRB-002).
+- **Auth by curl** (no browser): `GET /api/sanctum/csrf-cookie` with a `Referer: http://localhost:81/…` header and a cookie jar, then send the URL-decoded `XSRF-TOKEN` cookie as `X-XSRF-TOKEN` on POSTs.
 - **Dev DB is off-limits for rollbacks** (owner's rule). Test migrations on the `testing` DB: `docker exec -e DB_DATABASE=testing ml-php php artisan migrate|migrate:rollback --step=1 --force` (no config cache, so the override works; confirm with `tinker --execute 'echo DB::connection()->getDatabaseName();'`).
 - After removing a module: drop its stale entries from `laravel-api/phpstan-baseline.neon` (don't regenerate the whole baseline) and grep FE tests for fixtures that used the removed names.
 
@@ -70,9 +75,16 @@
 
 - 2026-10-07 — P2-10 done (docs only): `docs/problems/PRB-001-custom-jwt-auth.md`, `docs/adr/0004-sanctum-spa-cookie-auth.md` (Accepted; implementation rules for P2-11 listed in its Decision section), AUTH-GUIDE moved to `docs/archive/learning/AUTH-GUIDE.md` with a historical header (links now plain paths at tag `v1.0.0`). `docs/README.md` folder map; comments pointing at the old path now cite PRB-001 / ADR-0004 (`Makefile` `AUTH_TODO`, `ci.yml` test step, `rector.php`, `verify` skill; frozen refactor docs and the as-is snapshot left as they were); backlog P2-10 → done. Finding: `laravel/sanctum` ^4.3 is **already** in `composer.json` (+ `config/sanctum.php`), so P2-11 adds no dependency; `firebase/php-jwt` 6.10.2 is unused and goes in P2-11. No `/verify` (docs only).
 
+- 2026-10-07 — P2-11 done (RFC-001 slice 7). Baseline `make verify` exit 0 (242 / Vitest 61 / 81.23%). Commits: `e58b418` fix(api) — **PRB-002**: tests had always run with `APP_ENV=local` on the dev DB `ml_pg_db` (container env in `$_SERVER` beats `<env force>`); now `<server force>` too, verified 242 green on `testing` before going on. `23fbaac` refactor(api)! — Sanctum SPA session (guard `admin`, provider `active-admins`, `statefulApi()`, CSRF cookie at `/api/sanctum/csrf-cookie`), RateLimiter login lock (5 tries / 15 min, `Retry-After`), idempotent logout at `POST /api/admin/credential/logout`, refresh route gone, `AdminMiddleware` = per-request permission check → 403, JSON-only errors on `api/*`, `Auth::id()` instead of `current_admin_id`; new Login/Me/Logout tests; `AUTH_TODO` exclusion removed from Makefile + CI; OpenAPI regenerated. `148af31` refactor(fe) — auth provider without refresh, `apiClient.onUnauthorized`, CSRF-first login, `User` = generated `AdminMst`, `src/proxy.ts` route guard (closes old FE3). `fe34cfc` build(deps) — direct `firebase/php-jwt` pin dropped (still pulled by `google/apiclient`, now v7.2.1, `composer audit` clean). `027e0af` chore(env) — token secrets out of `.env.example`/`setup-env.sh`, `SESSION_DRIVER=redis`. Docs commit: PRB-001 → Solved with §7, PRB-002, CLAUDE.md files, README auth lines, `TestEnvironmentTest`.
+- Checked by curl through nginx: CSRF 204 → login without `X-XSRF-TOKEN` 419 → login 200 → me 200 → no permission 403 → `/admin` 200 with cookie / 307 to `/login?redirect=` without → logout 200 → me 401 (temporary admin created and deleted).
+- `make verify` exit 0: Pint ✓, Larastan ✓ (4 stale baseline entries removed), backend 189 passed with no exclusion (+1 guard test after), ESLint 0 problems (the old `auth-provider.tsx` warning is gone), tsc ✓, Vitest 62 (17 files), coverage 83.19%.
+- Left for slice 8: `admin_mst.limit_access` unused; `token_mst` CRUD + FE tokens page; `admin_permission_view` read per request. Not done: browser check (owner, item 11).
+
 ## Next step
 
-RFC-001 slice 7 continues with **P2-11** (largest risk in P2). Follow ADR-0004 "Decision → Rules":
+RFC-001 slice 8 = backlog **P2-12**: RBAC → Gates/Policies with roles `owner` / `viewer`. Documents first (own commit): ADR-0005 (roles; RFC-001 lists it), from `docs/templates/adr.md`. Then code:
 
-1. **P2-11 (code):** Sanctum is already installed (no new dependency); cookie/session login for the SPA, replace `AdminMiddleware`/`BroadcastingAuthMiddleware`/`CredentialService`/`JsonWebToken`, migrate `nextjs-fe/src/providers/auth-provider.tsx` (+ the refresh-token interceptor in `src/shared/api/client`), new auth feature tests (401/403/login/logout/me), remove the AUTH_TODO exclusion from `make test-ci` once the old tests are gone. Keep the HTTP envelope. Login must keep working through nginx (`/api/admin/credential/*` paths may change → update FE in the same change, `make openapi`). Note: `admin_permission_view` is still read by login today; RBAC tables stay until slice 8.
-3. Then slice 8 (P2-12 roles `owner`/`viewer`), slice 9 (P2-08 audit log), slice 10 (P2-13 metrics + `v2.0.0`).
+1. A `role` column on `admin_mst` (enum `owner` | `viewer`, backfilled: admins holding the `root` role → `owner`, others → `viewer`), Gates/Policies: `viewer` = GET only, `owner` = everything; replace `AdminMiddleware` (route permission) with them; 403 stays 403.
+2. Drop (new migration, `down()` replays, test up → down → up on `testing`): `role_mst`, `admin_role_mst`, `feature_mst`, `api_mst`, `api_role_mst`, their `*_hist`, `token_mst` (+hist), view `admin_permission_view`, trigger `after_api_insert`; column `admin_mst.limit_access`.
+3. Remove the matching API modules + tests, FE pages (roles wizard, features, APIs, tokens), nav, endpoints, types, messages; rework test helpers (`GrantsApiAccess` → set `role`). `make openapi`, `make verify`, watch the FE coverage gate (80%).
+4. Then slice 9 (P2-08 audit log), slice 10 (P2-13 metrics + `v2.0.0`).

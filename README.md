@@ -95,7 +95,7 @@ Tạo ra một "Di sản số cá nhân" - một nền tảng hợp nhất để
 - **Framework**: Laravel 13
 - **Language**: PHP 8.5
 - **Database ORM**: Eloquent
-- **Authentication**: JWT (Firebase JWT 6.10)
+- **Authentication**: Laravel Sanctum (SPA session cookie + CSRF)
 - **Queue**: Laravel Queue (Redis driver)
 - **WebSocket**: Laravel Reverb
 - **Real-time Broadcasting**: Reverb + Redis
@@ -343,7 +343,7 @@ php artisan migrate:fresh --seed
   - Rich text editor (Tiptap) với markdown support
   
 - ✅ **Authentication & Authorization**
-  - JWT-based authentication
+  - Session authentication (Laravel Sanctum SPA)
   - Role-based access control (RBAC)
   - Admin, Editor, Viewer roles
   
@@ -427,7 +427,7 @@ php artisan test --coverage
 
 ## 🔒 Security
 
-- ✅ JWT-based authentication với token refresh
+- ✅ Session authentication (Sanctum SPA cookie + CSRF), login rate limiting
 - ✅ CORS configuration
 - ✅ Rate limiting (Laravel)
 - ✅ SQL injection protection (Eloquent ORM)

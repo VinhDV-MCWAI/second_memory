@@ -29,15 +29,15 @@ docker exec ml-php php artisan migrate:fresh --seed      # DEV ONLY, destroys da
 
 ## HTTP contract (FE depends on it — do not break)
 
-- Routes live in `routes/api.php` (credential + admin group) which loads `routes/api/{master,management,history}.php`; standard resources are declared in a `$resource => Controller` list. Middleware aliases (`api.response`, `db.transaction`, `auth.admin`, `auth.broadcasting`) are in `bootstrap/app.php`.
+- Routes live in `routes/api.php` (credential + admin group) which loads `routes/api/{master,management,history}.php`; standard resources are declared in a `$resource => Controller` list. Middleware aliases (`api.response`, `db.transaction`, `auth.admin`) are in `bootstrap/app.php`; `statefulApi()` adds Sanctum's session + CSRF middleware for requests from the SPA.
 - Route shape: `GET {resource}/list`, `POST {resource}/store`, `PUT {resource}/update/{id}`, `POST {resource}/delete` (body `{ ids: [] }`). Admin routes under `/api/admin`; there is no public API since RFC-001 slice 5.
 - Envelope (`GenerateResponseMiddleware` + `bootstrap/app.php`): `{ "data": ..., "error": { "status": bool, "code": int, "messages": string|object|null } }`. Validation errors → 422 with field map in `error.messages`.
-- Auth: `access_token` httpOnly cookie (JWT) → `AdminMiddleware` checks Redis key `admin:{id}:{token}` and the per-admin permission hash `admin:{id}:<ADMIN_PERMISSION_TABLE>` (method → allowed route URIs).
-- Writes run inside `TransactionMiddleware`; `LoginFailedException` commits instead of rolling back.
+- Auth (ADR-0004): Sanctum SPA session. The SPA calls `GET /api/sanctum/csrf-cookie`, then `POST /api/admin/credential/login`; the `laravel_session` cookie + `X-XSRF-TOKEN` header authenticate later calls through `auth:sanctum` (guard `admin`, provider `active-admins` = not deleted and active). `AdminMiddleware` then checks the route against `admin_permission_view` per request: 401 = no session, 403 = no permission. Login is throttled per user name + IP (`CommonVal::LOGIN_*`). Use `Auth::id()` for the current admin.
+- Writes run inside `TransactionMiddleware` (commit on success, rollback on any error).
 
 ## Gotchas
 
 - New Larastan errors must be fixed, not added to the baseline; regenerate it only when the baseline shrinks (`composer analyse -- --generate-baseline=phpstan-baseline.neon`).
-- Tests hit a real PostgreSQL `testing` DB (see `phpunit.xml`), run inside `ml-php`.
+- Tests hit a real PostgreSQL `testing` DB (see `phpunit.xml`), run inside `ml-php`. Variables the container exports (`APP_ENV`, `DB_DATABASE`, `BROADCAST_CONNECTION`) must be forced as `<server>` in `phpunit.xml`, because Laravel reads `$_SERVER` before `$_ENV`. `Tests\TestCase` sends a `Referer` so Sanctum starts a session, and resets the auth guards before each request.
 - DB view `admin_permission_view` and trigger `after_api_insert` (migrations `..._000046`, `..._000048`) sit on the RBAC tables; changing those tables means checking them too. Removed modules are dropped by `2026_10_07_*_drop_*` migrations whose `down()` replays the original ones (`App\Support\Database\ReplaysMigrations`).
 - Media upload goes to MinIO via `Services/MinioService.php` with queued jobs in `Jobs/Media`; progress is broadcast over Reverb. Since RFC-001 slice 6 no FE screen calls the media API (the file manager is gone and avatar upload was never wired up); the API, `media_mgmt` and the MinIO objects are kept on purpose (REQ-001 US-3).

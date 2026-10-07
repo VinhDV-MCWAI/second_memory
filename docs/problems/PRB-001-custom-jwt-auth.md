@@ -4,7 +4,7 @@
 
 | | |
 |---|---|
-| Status | Investigating (solution chosen in ADR-0004, implementation is backlog P2-11) |
+| Status | Solved (2026-10-07, backlog P2-11) |
 | Found | 2026-10-05 (AUTH-GUIDE review), recorded 2026-10-07, by TL |
 | Area | auth |
 | Related | [REQ-001](../requirements/REQ-001-slim-down.md), [RFC-001](../design/RFC-001-slim-down.md) slice 7, [ADR-0004](../adr/0004-sanctum-spa-cookie-auth.md), [AUTH-GUIDE (learning record)](../archive/learning/AUTH-GUIDE.md) |
@@ -79,20 +79,25 @@ Option D, recorded as [ADR-0004](../adr/0004-sanctum-spa-cookie-auth.md). The ha
 
 ## 7. Implementation and verification
 
-To be filled in by backlog P2-11 (RFC-001 slice 7). Planned checks:
+Commits on `refactor/p2-slim-down`: `23fbaac` refactor(api)! (Sanctum session auth, new auth tests, OpenAPI), `148af31` refactor(fe) (auth provider, axios client, `proxy.ts` route guard), `fe34cfc` build(deps), `027e0af` chore(env).
 
-- New feature tests: login success / wrong password / throttled, `me` 200 and 401, logout, protected route 401 without a session, 403 for a disabled admin, CSRF rejected without the `X-XSRF-TOKEN` header.
-- The `AUTH_TODO` exclusion is removed from the `Makefile` and CI; `make verify` green.
-- Manual check through nginx: log in, reload (session survives), log out in one tab (other tab is sent to login on its next request).
+> 🇻🇳 Các commit trên nhánh `refactor/p2-slim-down`: API, FE, dependency, env.
 
-> 🇻🇳 Phần này điền khi làm P2-11. Kiểm tra dự kiến: test mới cho login/me/logout/401/403/CSRF; bỏ loại trừ `AUTH_TODO`; `make verify` xanh; thử tay qua nginx.
+- Guard `admin` (session driver, provider `active-admins`) behind `auth:sanctum`; the ADR's "guard `web`" became a dedicated `admin` guard because `web` points at the unused `users` table.
+- Feature tests: login (success, session ID regenerated, same 401 body for wrong password / unknown / deleted / disabled admin, 5 failures → 429 with `Retry-After`, lock expires after 15 min, request from outside the SPA refused), me (401 without session, deleted or disabled admin loses the session, 403 without permission, a new permission applies without logging in again), logout (ends the session, works without one, keeps other devices). CSRF itself is skipped by Laravel under PHPUnit, so it was checked by hand.
+- The `AUTH_TODO` exclusion is gone from `make test-ci` and CI. `make verify` green (numbers in the handoff log).
+- Manual check through nginx (`localhost:81`, curl): CSRF cookie 204 → login without `X-XSRF-TOKEN` 419 → login 200 → me 200 → route without permission 403 → `/admin` page 200 with the cookie, 307 to `/login?redirect=…` without → logout 200 → me 401.
+
+> 🇻🇳 Guard riêng `admin` (thay vì `web` như ADR ghi) vì `web` trỏ vào bảng `users` không dùng. Test mới bao phủ login/me/logout, khoá đăng nhập có thời hạn, admin bị xoá/khoá mất session ngay. CSRF bị Laravel bỏ qua khi chạy PHPUnit nên đã kiểm tra tay qua nginx bằng curl (thiếu header XSRF → 419). Bỏ loại trừ `AUTH_TODO`.
 
 ## 8. New problems that appeared
 
-- Login still loads the Redis permission table from `admin_permission_view`. Slice 7 keeps permission checks working; slice 8 (P2-12, roles `owner` / `viewer`) replaces them with Gates/Policies and drops `token_mst` and the RBAC tables.
+- While making the tests pass, it turned out the test suite had always run against the **dev** database: [PRB-002](PRB-002-tests-used-dev-database.md).
+- `admin_mst.limit_access` (the old failure counter) is no longer used; it goes with the `admin_mst` changes in slice 8.
+- Route permissions still come from `admin_permission_view` (now read per request by `AdminMiddleware`, no Redis cache). Slice 8 (P2-12, roles `owner` / `viewer`) replaces them with Gates/Policies and drops `token_mst` and the RBAC tables.
 - The API still broadcasts media upload progress over Reverb, but since RFC-001 slice 6 no screen listens. Channel auth only needs to keep working, not to be redesigned.
 
-> 🇻🇳 Vấn đề phát sinh: login vẫn nạp bảng quyền từ `admin_permission_view` — slice 7 giữ kiểm tra quyền, slice 8 thay bằng Gate/Policy và xoá `token_mst` cùng các bảng RBAC. API vẫn broadcast tiến độ upload qua Reverb nhưng không còn màn hình nào nghe; chỉ cần giữ cho channel auth chạy được.
+> 🇻🇳 Vấn đề phát sinh: phát hiện bộ test luôn chạy trên DB dev (PRB-002); cột `limit_access` không còn dùng, xoá ở slice 8; quyền theo route vẫn đọc từ `admin_permission_view` (mỗi request, không còn cache Redis) — slice 8 thay bằng Gate/Policy và xoá `token_mst` cùng các bảng RBAC. API vẫn broadcast tiến độ upload qua Reverb nhưng không còn màn hình nào nghe; chỉ cần giữ cho channel auth chạy được.
 
 ## 9. Follow-up improvements
 
