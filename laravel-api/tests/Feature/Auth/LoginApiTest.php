@@ -25,7 +25,7 @@ class LoginApiTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        Redis::flushall();
+        Redis::flushdb();
     }
 
     // Helper to assert custom validation errors

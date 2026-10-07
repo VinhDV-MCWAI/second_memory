@@ -27,7 +27,7 @@ class MeApiTest extends TestCase
     {
         parent::setUp();
         // Flush Redis to ensure clean state for each test
-        Redis::flushall();
+        Redis::flushdb();
 
         // Create Role
         $role = RoleMst::create([

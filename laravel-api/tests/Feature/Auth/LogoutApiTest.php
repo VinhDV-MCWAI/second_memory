@@ -25,7 +25,7 @@ class LogoutApiTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        Redis::flushall();
+        Redis::flushdb();
     }
 
     // Helper to get authenticated cookies

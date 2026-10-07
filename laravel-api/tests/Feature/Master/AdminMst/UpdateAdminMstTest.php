@@ -25,7 +25,7 @@ class UpdateAdminMstTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        Redis::flushall();
+        Redis::flushdb();
     }
 
     protected function getUpdateUrl($id)

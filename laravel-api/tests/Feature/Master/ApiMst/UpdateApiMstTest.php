@@ -29,7 +29,7 @@ class UpdateApiMstTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        Redis::flushall();
+        Redis::flushdb();
     }
 
     protected function getAuthCookies(AdminMst $admin): array
