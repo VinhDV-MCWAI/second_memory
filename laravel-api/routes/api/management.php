@@ -6,7 +6,6 @@ use App\Http\Controllers\Management\CategoryMgmtController;
 use App\Http\Controllers\Management\EntryDescriptionMgmtController;
 use App\Http\Controllers\Management\EntryMgmtController;
 use App\Http\Controllers\Management\MediaMgmtController;
-use App\Http\Controllers\Management\UserMgmtController;
 use Illuminate\Support\Facades\Route;
 
 // Management data: list / store / update / delete per resource. Loaded inside the authenticated admin group.
@@ -14,7 +13,6 @@ foreach ([
     'category-mgmt' => CategoryMgmtController::class,
     'entry-mgmt' => EntryMgmtController::class,
     'entry-description-mgmt' => EntryDescriptionMgmtController::class,
-    'user-mgmt' => UserMgmtController::class,
 ] as $resource => $controller) {
     Route::get("{$resource}/list", [$controller, 'list']);
     Route::post("{$resource}/store", [$controller, 'store']);

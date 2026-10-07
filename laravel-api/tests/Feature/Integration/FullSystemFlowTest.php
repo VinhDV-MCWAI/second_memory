@@ -87,49 +87,6 @@ class FullSystemFlowTest extends TestCase
         ]);
     }
 
-    public function test_scenario_1_admin_provisioning_flow()
-    {
-        // 1. Root Login setup
-        $rootAdmin = AdminMst::factory()->create(['user_name' => 'root_user']);
-
-        // Grant permissions needed
-        $storeUserUrl = 'api/admin/user-mgmt/store';
-        $this->grantAccessToAdmin($rootAdmin, 'POST', $this->loginUrl);
-        $this->grantAccessToAdmin($rootAdmin, 'POST', $storeUserUrl);
-        $this->grantAccessToAdmin($rootAdmin, 'PUT', 'api/admin/user-mgmt/update/{id}');
-
-        // Login (After granting perms)
-        $rootCookies = $this->getAuthCookies($rootAdmin);
-
-        $newUserPayload = [
-            'email' => 'integration_new@gmail.com', // Use real domain for DNS validation
-            'user_name' => 'new_admin',
-            'password' => 'Password123!',
-            'first_name' => 'New',
-            'last_name' => 'Admin',
-            'status' => 1,
-            'is_active' => 1,
-            'is_delete' => 0,
-            'gender' => 1,
-            'birth' => '01/01/2000',
-            'phone_number' => '0901234567',
-        ];
-
-        $response = $this->call('POST', $storeUserUrl, $newUserPayload, $rootCookies);
-        $response->assertStatus(200);
-        $userId = $response->json('data');
-
-        // Verify User Created
-        $this->assertDatabaseHas('user_mgmt', ['email' => 'integration_new@gmail.com']);
-
-        // Update User
-        $updatePayload = array_merge($newUserPayload, ['id' => $userId, 'first_name' => 'Updated']);
-        $response = $this->call('PUT', 'api/admin/user-mgmt/update/'.$userId, $updatePayload, $rootCookies);
-        $response->assertStatus(200);
-
-        $this->assertDatabaseHas('user_mgmt', ['id' => $userId, 'first_name' => 'Updated']);
-    }
-
     public function test_scenario_3_token_security()
     {
         $admin = AdminMst::factory()->create();

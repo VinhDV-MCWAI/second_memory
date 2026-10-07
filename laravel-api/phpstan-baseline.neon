@@ -241,12 +241,6 @@ parameters:
 			path: app/Models/History/Management/EntryMgmtHist.php
 
 		-
-			message: '#^PHPDoc type array\<string\> of property App\\Models\\History\\Management\\UserMgmtHist\:\:\$fillable is not covariant with PHPDoc type list\<string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$fillable\.$#'
-			identifier: property.phpDocType
-			count: 1
-			path: app/Models/History/Management/UserMgmtHist.php
-
-		-
 			message: '#^PHPDoc type array\<string\> of property App\\Models\\History\\Master\\AdminMstHist\:\:\$fillable is not covariant with PHPDoc type list\<string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$fillable\.$#'
 			identifier: property.phpDocType
 			count: 1
@@ -347,18 +341,6 @@ parameters:
 			identifier: assign.propertyType
 			count: 2
 			path: app/Models/Management/MediaMgmt.php
-
-		-
-			message: '#^PHPDoc type array\<string\> of property App\\Models\\Management\\UserMgmt\:\:\$fillable is not covariant with PHPDoc type list\<string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$fillable\.$#'
-			identifier: property.phpDocType
-			count: 1
-			path: app/Models/Management/UserMgmt.php
-
-		-
-			message: '#^Property App\\Models\\Management\\UserMgmt\:\:\$is_delete \(bool\) does not accept int\.$#'
-			identifier: assign.propertyType
-			count: 2
-			path: app/Models/Management/UserMgmt.php
 
 		-
 			message: '#^PHPDoc type array\<string\> of property App\\Models\\Master\\AdminDepartmentMst\:\:\$fillable is not covariant with PHPDoc type list\<string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$fillable\.$#'
@@ -556,42 +538,6 @@ parameters:
 			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Collection\<int, Illuminate\\Database\\Eloquent\\Model\>\|Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
 			identifier: property.notFound
 			count: 1
-			path: app/Repositories/Management/UserMgmtRepository.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Collection\<int, Illuminate\\Database\\Eloquent\\Model\>\|Illuminate\\Database\\Eloquent\\Model\:\:\$password\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Repositories/Management/UserMgmtRepository.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Repositories/Management/UserMgmtRepository.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$password\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Repositories/Management/UserMgmtRepository.php
-
-		-
-			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Builder\<Illuminate\\Database\\Eloquent\\Model\>\:\:notDeleted\(\)\.$#'
-			identifier: method.notFound
-			count: 1
-			path: app/Repositories/Management/UserMgmtRepository.php
-
-		-
-			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Collection\<int, Illuminate\\Database\\Eloquent\\Model\>\|Illuminate\\Database\\Eloquent\\Model\:\:isDeleted\(\)\.$#'
-			identifier: method.notFound
-			count: 1
-			path: app/Repositories/Management/UserMgmtRepository.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Collection\<int, Illuminate\\Database\\Eloquent\\Model\>\|Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
-			identifier: property.notFound
-			count: 1
 			path: app/Repositories/Master/AdminMstRepository.php
 
 		-
@@ -779,12 +725,6 @@ parameters:
 			identifier: property.phpDocType
 			count: 1
 			path: database/factories/Management/CategoryMgmtFactory.php
-
-		-
-			message: '#^PHPDoc type string of property Database\\Factories\\Management\\UserMgmtFactory\:\:\$model is not covariant with PHPDoc type class\-string\<App\\Models\\Management\\UserMgmt\> of overridden property Illuminate\\Database\\Eloquent\\Factories\\Factory\<App\\Models\\Management\\UserMgmt\>\:\:\$model\.$#'
-			identifier: property.phpDocType
-			count: 1
-			path: database/factories/Management/UserMgmtFactory.php
 
 		-
 			message: '#^PHPDoc type string of property Database\\Factories\\Master\\AdminMstFactory\:\:\$model is not covariant with PHPDoc type class\-string\<App\\Models\\Master\\AdminMst\> of overridden property Illuminate\\Database\\Eloquent\\Factories\\Factory\<App\\Models\\Master\\AdminMst\>\:\:\$model\.$#'
