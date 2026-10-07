@@ -1,5 +1,7 @@
 # Refactor progress log
 
+> **FROZEN 2026-10-07.** The refactor is closed; work continues in the Engineering Lab roadmap. Current handoff: [.claude/lab/PROGRESS.md](../lab/PROGRESS.md).
+
 > Handoff file. Updated after every step so any new Claude Code conversation can resume.
 > To resume: read this file top to bottom, then `.claude/refactor/PLAN.md`, then continue at **Next step**.
 

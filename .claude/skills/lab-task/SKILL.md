@@ -1,16 +1,17 @@
 ---
-name: refactor-item
-description: Execute one approved item (or group) from .claude/refactor/PLAN.md end to end — branch, implement behavior-preserving changes, verify, update the plan status. Use when the user says "làm mục X", "do item A1", "start phase P0", or similar.
+name: lab-task
+description: Execute one task (or a whole phase) from the Engineering Lab backlog docs/plan/03-backlog.md end to end — branch, implement, verify, document, update backlog status and the handoff log. Use when the user says "làm task P2-03", "do P1", "start phase P2", "tiếp tục", or similar.
 ---
 
-# Refactor item workflow
+# Engineering Lab task workflow
 
-Arguments: item IDs or a phase, e.g. `A1 A4` or `P0`.
+Arguments: task IDs or a phase, e.g. `P2-03 P2-04` or `P2`.
 
-1. **Load context.** Read `.claude/refactor/PLAN.md`. Confirm each requested item has status `approved` (or the user approved it in this conversation). If an item is `proposed`, ask before starting. Check `depends_on` items are `done`.
-2. **Branch.** From an up-to-date `developer`: `refactor/<id>-<short-slug>` (one branch per item, or per phase if the user asked for a phase). Never work on `main`.
-3. **Baseline.** Run `/verify` for the affected area *before* changing anything so pre-existing failures are known.
-4. **Implement.** Follow the item's "Done when" criteria and `.claude/rules/*`. Behavior-preserving unless the item says otherwise. Keep the HTTP contract unless the item changes it — then update both FEs in the same branch. Bugs found along the way → separate commit, mentioned in the summary.
-5. **Verify.** Run `/verify` again. Add/adjust tests that prove the item's goal.
-6. **Update plan.** Set the item's status to `done` (or `blocked: <reason>`), add the branch name and a one-line note.
-7. **Summarize** for the user: what changed, verification results, follow-ups, anything they must do by hand (rotate secrets, update GitHub settings, etc.). Commit only if the user asked; use Conventional Commits.
+1. **Load context.** Read `.claude/lab/PROGRESS.md` (handoff), then `docs/plan/03-backlog.md` and the phase section in `docs/plan/02-roadmap.md`. Check that earlier tasks the requested one depends on are `done`. A phase whose tasks are still coarse starts with its `Px-00` refinement task.
+2. **Branch.** From `developer` (or the current phase branch if it is not merged yet): one branch per phase, named `<type>/<phase>-<slug>` with type `feature`, `refactor`, `chore`, `docs` or `fix` (e.g. `refactor/p2-slim-down`). Never work on `main`.
+3. **Baseline.** For code tasks run `/verify` for the affected area first so pre-existing failures are known.
+4. **Implement.** Follow `.claude/rules/*` and the handbook (`docs/handbook/`). Removal and feature work are allowed when the task says so (this is not a behavior-preserving refactor), but keep each commit to one purpose. Bugs found along the way → separate `fix` commit.
+5. **Document.** Write the records the task names (REQ, RFC, ADR, PRB, INC, runbook) from `docs/templates/`, bilingual per `docs/README.md` (English, then `> 🇻🇳` Vietnamese lines). IDs are permanent.
+6. **Verify.** Run `/verify` again and report real results.
+7. **Update.** Set the task status in `docs/plan/03-backlog.md` (`done` / `cut: <reason>`), append to the log and "Next step" in `.claude/lab/PROGRESS.md`.
+8. **Commit** locally with Conventional Commits (no AI trailer). Never push; list what the owner must do by hand (push, PRs, GitHub settings, secrets).
