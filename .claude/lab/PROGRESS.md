@@ -86,6 +86,7 @@
 
 - 2026-10-07 — P2-08 (slice 9) started. Baseline = the green `make verify` at `d977e93` (nothing changed since). Finding: the FE `HistoryViewer` is not mounted on any page. Step 1/6 done: ADR-0006 (one `audit_log`, events incl. login, expand/contract plan with a temporary `legacy_hist_id`).
 - Step 2/6 done: expand + dual-write. Migration `..._100007` creates `audit_log` (down/up checked on `testing`; ran forward on dev). `AuditEvent` enum, `AuditLog` model, `AuditLogRepository`, `AuditLogger` (drops `id`/`password`/`remember_token`/`updated_at`; `updated` keeps only changed fields). `AuditedCrudService` takes a before-snapshot on update/delete and writes both `admin_mst_hist` and `audit_log` (linked by `legacy_hist_id`). New `AuditLogWriteTest` (2). Backend 75 passed, Larastan ✓.
+- Step 3/6 done: backfill as an idempotent data migration `..._100008` (copies `admin_mst_hist` rows without a linked `audit_log.legacy_hist_id`; create → `new_values`, update → `new_values` only (old values were never stored), delete → `old_values`; no password). One `migrate` in the v2.0.0 deploy therefore runs expand → backfill → contract in order. `down()` is intentionally empty (rolling back `..._100007` drops the table). `AuditLogBackfillTest` (runs it twice). Ran on `testing` and dev.
 
 ## Next step
 
