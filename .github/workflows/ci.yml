@@ -63,7 +63,10 @@ jobs:
         # nextjs-fe enforces coverage thresholds on src/shared (vitest.config.ts)
         run: pnpm test --coverage
 
-      - name: Audit dependencies
+      - name: Audit production dependencies
+        run: pnpm audit --prod --audit-level=high
+
+      - name: Audit all dependencies (informational)
         run: pnpm audit --audit-level=high
         continue-on-error: true
 
