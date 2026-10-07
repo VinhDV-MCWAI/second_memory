@@ -55,7 +55,8 @@ jobs:
         run: pnpm typecheck
 
       - name: Test
-        run: pnpm test
+        # nextjs-fe enforces coverage thresholds on src/shared (vitest.config.ts)
+        run: pnpm test --coverage
 
       - name: Audit dependencies
         run: pnpm audit --audit-level=high

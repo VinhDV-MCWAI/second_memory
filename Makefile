@@ -91,7 +91,7 @@ fe-typecheck: ## Type-check both Next.js apps
 
 .PHONY: fe-test
 fe-test: ## Run admin FE unit tests
-	$(FE) pnpm test --run
+	$(FE) pnpm test --run --coverage
 
 .PHONY: fe-format
 fe-format: ## Format both Next.js apps (Prettier)
