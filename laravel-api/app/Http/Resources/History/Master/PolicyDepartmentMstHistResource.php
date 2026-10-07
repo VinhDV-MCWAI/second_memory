@@ -28,7 +28,7 @@ class PolicyDepartmentMstHistResource extends JsonResource
             'policy_department_mst_id' => (int) $this->policy_department_mst_id,
             'table_name' => (int) $this->table_name,
             'row_id' => (int) $this->row_id,
-            'action' => (string) $this->action,
+            'action' => (int) $this->action,
             'author_id' => (int) $this->author_id,
             'created_at' => $this->formatDate($this->created_at),
         ];

@@ -30,8 +30,8 @@ class SliderMgmtHistResource extends JsonResource
             'slug' => (string) $this->slug,
             'link' => (string) $this->link,
             'image' => (string) $this->image,
-            'status' => (string) $this->status,
-            'action' => (string) $this->action,
+            'status' => (int) $this->status,
+            'action' => (int) $this->action,
             'author_id' => (int) $this->author_id,
             'created_at' => $this->formatDate($this->created_at),
         ];

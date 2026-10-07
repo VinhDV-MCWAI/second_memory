@@ -32,8 +32,8 @@ class BannerMgmtHistResource extends JsonResource
             'link' => (string) $this->link,
             'image' => (string) $this->image,
             'position' => (string) $this->position,
-            'status' => (string) $this->status,
-            'action' => (string) $this->action,
+            'status' => (int) $this->status,
+            'action' => (int) $this->action,
             'author_id' => (int) $this->author_id,
             'created_at' => $this->formatDate($this->created_at),
         ];

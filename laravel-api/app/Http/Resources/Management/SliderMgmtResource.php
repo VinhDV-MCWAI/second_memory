@@ -29,7 +29,7 @@ class SliderMgmtResource extends JsonResource
             'slug' => (string) $this->slug,
             'link' => (string) $this->link,
             'image' => (string) $this->image,
-            'status' => (string) $this->status?->value,
+            'status' => (int) $this->status?->value,
             'is_delete' => (bool) $this->is_delete,
             'updated_at' => $this->formatDate($this->updated_at),
         ];

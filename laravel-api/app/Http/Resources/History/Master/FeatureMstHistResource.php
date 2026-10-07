@@ -29,8 +29,8 @@ class FeatureMstHistResource extends JsonResource
             'name' => (string) $this->name,
             'group_name' => (string) $this->group_name,
             'description' => (string) $this->description,
-            'status' => (string) $this->status,
-            'action' => (string) $this->action,
+            'status' => (int) $this->status,
+            'action' => (int) $this->action,
             'author_id' => (int) $this->author_id,
             'created_at' => $this->formatDate($this->created_at),
         ];

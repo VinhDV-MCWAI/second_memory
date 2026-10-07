@@ -24,7 +24,7 @@ class SocialMgmtResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'id' => (string) $this->id,
+            'id' => (int) $this->id,
             'name' => (string) $this->name,
             'slug' => (string) $this->slug,
             'link' => (string) $this->link,

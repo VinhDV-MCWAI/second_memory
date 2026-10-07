@@ -33,11 +33,11 @@ class UserMgmtHistResource extends JsonResource
             'address' => (string) $this->address,
             'phone_number' => (string) $this->phone_number,
             'birth' => (string) $this->birth,
-            'gender' => (string) $this->gender,
+            'gender' => (int) $this->gender,
             'status' => (int) $this->status,
             'is_active' => (bool) $this->is_active,
             'avatar' => (string) $this->avatar,
-            'action' => (string) $this->action,
+            'action' => (int) $this->action,
             'author_id' => (int) $this->author_id,
             'created_at' => $this->formatDate($this->created_at),
         ];

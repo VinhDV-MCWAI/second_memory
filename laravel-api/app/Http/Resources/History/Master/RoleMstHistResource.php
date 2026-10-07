@@ -29,7 +29,7 @@ class RoleMstHistResource extends JsonResource
             'name' => (string) $this->name,
             'permission' => (string) $this->permission,
             'is_active' => (bool) $this->is_active,
-            'action' => (string) $this->action,
+            'action' => (int) $this->action,
             'author_id' => (int) $this->author_id,
             'created_at' => $this->formatDate($this->created_at),
         ];

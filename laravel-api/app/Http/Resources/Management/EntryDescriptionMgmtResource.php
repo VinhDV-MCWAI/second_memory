@@ -27,10 +27,11 @@ class EntryDescriptionMgmtResource extends JsonResource
             'id' => (int) $this->id,
             'title' => (string) $this->title,
             'summary' => (string) $this->summary,
-            'article' => json_encode($this->article, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES), // Convert array to JSON string for frontend
-            'status' => (string) $this->status?->value,
+            /** @var string The Tiptap document, JSON-encoded for the editor */
+            'article' => json_encode($this->article, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES),
+            'status' => (int) $this->status?->value,
             'is_display' => (bool) $this->is_display,
-            'rank_order' => (string) $this->rank_order,
+            'rank_order' => (int) $this->rank_order,
             'is_delete' => (bool) $this->is_delete,
             'updated_at' => $this->formatDate($this->updated_at),
         ];

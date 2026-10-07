@@ -28,7 +28,7 @@ class FeatureMstResource extends JsonResource
             'name' => (string) $this->name,
             'group_name' => (string) $this->group_name,
             'description' => (string) $this->description,
-            'status' => (string) $this->status?->value,
+            'status' => (int) $this->status?->value,
             'is_delete' => (bool) $this->is_delete,
             'updated_at' => $this->formatDate($this->updated_at),
         ];

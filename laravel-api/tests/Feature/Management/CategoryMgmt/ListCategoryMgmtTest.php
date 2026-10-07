@@ -176,4 +176,18 @@ class ListCategoryMgmtTest extends TestCase
         $response->assertStatus(200);
         $this->assertCount(3, $response->json('data.data'));
     }
+
+    public function test_list_returns_numeric_fields_as_integers()
+    {
+        $admin = AdminMst::factory()->create();
+        $cookies = $this->getAuthCookies($admin);
+        CategoryMgmt::factory()->create(['status' => StatusEnum::PUBLISHED, 'rank_order' => 3]);
+
+        $response = $this->call('GET', $this->baseUrl, [], $cookies);
+
+        $response->assertStatus(CommonVal::HTTP_OK);
+        $row = $response->json('data.data.0');
+        $this->assertSame(StatusEnum::PUBLISHED->value, $row['status']);
+        $this->assertSame(3, $row['rank_order']);
+    }
 }

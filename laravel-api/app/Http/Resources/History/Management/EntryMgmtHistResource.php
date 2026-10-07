@@ -28,10 +28,10 @@ class EntryMgmtHistResource extends JsonResource
             'entry_mgmt_id' => (int) $this->entry_mgmt_id,
             'name' => (string) $this->name,
             'slug' => (string) $this->slug,
-            'status' => (string) $this->status,
+            'status' => (int) $this->status,
             'is_display' => (bool) $this->is_display,
-            'rank_order' => (string) $this->rank_order,
-            'action' => (string) $this->action,
+            'rank_order' => (int) $this->rank_order,
+            'action' => (int) $this->action,
             'author_id' => (int) $this->author_id,
             'created_at' => $this->formatDate($this->created_at),
         ];

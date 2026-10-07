@@ -11043,10 +11043,10 @@
                         "type": "string"
                     },
                     "gender": {
-                        "type": "string"
+                        "type": "integer"
                     },
                     "status": {
-                        "type": "string"
+                        "type": "integer"
                     },
                     "is_active": {
                         "type": "boolean"
@@ -11055,7 +11055,7 @@
                         "type": "string"
                     },
                     "action": {
-                        "type": "string"
+                        "type": "integer"
                     },
                     "author_id": {
                         "type": "integer"
@@ -11191,7 +11191,7 @@
                         "type": "integer"
                     },
                     "type": {
-                        "type": "string"
+                        "type": "integer"
                     },
                     "name": {
                         "type": "string"
@@ -11206,7 +11206,7 @@
                         "type": "integer"
                     },
                     "action": {
-                        "type": "string"
+                        "type": "integer"
                     },
                     "author_id": {
                         "type": "integer"
@@ -11317,10 +11317,10 @@
                         "type": "string"
                     },
                     "status": {
-                        "type": "string"
+                        "type": "integer"
                     },
                     "action": {
-                        "type": "string"
+                        "type": "integer"
                     },
                     "author_id": {
                         "type": "integer"
@@ -11374,7 +11374,7 @@
                         "type": "string"
                     },
                     "status": {
-                        "type": "string"
+                        "type": "integer"
                     },
                     "is_delete": {
                         "type": "boolean"
@@ -11417,16 +11417,16 @@
                         "type": "string"
                     },
                     "status": {
-                        "type": "string"
+                        "type": "integer"
                     },
                     "is_display": {
                         "type": "boolean"
                     },
                     "rank_order": {
-                        "type": "string"
+                        "type": "integer"
                     },
                     "action": {
-                        "type": "string"
+                        "type": "integer"
                     },
                     "author_id": {
                         "type": "integer"
@@ -11466,13 +11466,13 @@
                         "type": "string"
                     },
                     "status": {
-                        "type": "string"
+                        "type": "integer"
                     },
                     "is_display": {
                         "type": "boolean"
                     },
                     "rank_order": {
-                        "type": "string"
+                        "type": "integer"
                     },
                     "layout_structure": {
                         "type": [
@@ -12173,10 +12173,10 @@
                         "type": "string"
                     },
                     "status": {
-                        "type": "string"
+                        "type": "integer"
                     },
                     "action": {
-                        "type": "string"
+                        "type": "integer"
                     },
                     "author_id": {
                         "type": "integer"
@@ -12210,7 +12210,7 @@
                         "type": "string"
                     },
                     "status": {
-                        "type": "string"
+                        "type": "integer"
                     },
                     "is_delete": {
                         "type": "boolean"
@@ -12290,19 +12290,19 @@
                         "type": "string"
                     },
                     "status": {
-                        "type": "string"
+                        "type": "integer"
                     },
                     "is_display": {
                         "type": "boolean"
                     },
                     "rank_order": {
-                        "type": "string"
+                        "type": "integer"
                     },
                     "entry_id": {
                         "type": "integer"
                     },
                     "action": {
-                        "type": "string"
+                        "type": "integer"
                     },
                     "author_id": {
                         "type": "integer"
@@ -12340,20 +12340,17 @@
                         "type": "string"
                     },
                     "article": {
-                        "type": [
-                            "string",
-                            "object"
-                        ]
+                        "type": "string",
+                        "description": "The Tiptap document, JSON-encoded for the editor"
                     },
                     "status": {
-                        "type": "string",
-                        "description": "Convert array to JSON string for frontend"
+                        "type": "integer"
                     },
                     "is_display": {
                         "type": "boolean"
                     },
                     "rank_order": {
-                        "type": "string"
+                        "type": "integer"
                     },
                     "is_delete": {
                         "type": "boolean"
@@ -12431,16 +12428,16 @@
                         "type": "string"
                     },
                     "status": {
-                        "type": "string"
+                        "type": "integer"
                     },
                     "is_display": {
                         "type": "boolean"
                     },
                     "rank_order": {
-                        "type": "string"
+                        "type": "integer"
                     },
                     "action": {
-                        "type": "string"
+                        "type": "integer"
                     },
                     "author_id": {
                         "type": "integer"
@@ -12476,13 +12473,13 @@
                         "type": "string"
                     },
                     "status": {
-                        "type": "string"
+                        "type": "integer"
                     },
                     "is_display": {
                         "type": "boolean"
                     },
                     "rank_order": {
-                        "type": "string"
+                        "type": "integer"
                     },
                     "layout_structure": {
                         "type": [
@@ -12562,10 +12559,10 @@
                         "type": "string"
                     },
                     "status": {
-                        "type": "string"
+                        "type": "integer"
                     },
                     "action": {
-                        "type": "string"
+                        "type": "integer"
                     },
                     "author_id": {
                         "type": "integer"
@@ -12603,7 +12600,7 @@
                         "type": "string"
                     },
                     "status": {
-                        "type": "string"
+                        "type": "integer"
                     },
                     "is_delete": {
                         "type": "boolean"
@@ -12747,7 +12744,7 @@
                         "type": "integer"
                     },
                     "action": {
-                        "type": "string"
+                        "type": "integer"
                     },
                     "author_id": {
                         "type": "integer"
@@ -12846,7 +12843,7 @@
                         "type": "boolean"
                     },
                     "action": {
-                        "type": "string"
+                        "type": "integer"
                     },
                     "author_id": {
                         "type": "integer"
@@ -13052,10 +13049,10 @@
                         "type": "string"
                     },
                     "status": {
-                        "type": "string"
+                        "type": "integer"
                     },
                     "action": {
-                        "type": "string"
+                        "type": "integer"
                     },
                     "author_id": {
                         "type": "integer"
@@ -13097,7 +13094,7 @@
                         "type": "string"
                     },
                     "status": {
-                        "type": "string"
+                        "type": "integer"
                     },
                     "is_delete": {
                         "type": "boolean"
@@ -13178,7 +13175,7 @@
                 "type": "object",
                 "properties": {
                     "id": {
-                        "type": "string"
+                        "type": "integer"
                     },
                     "name": {
                         "type": "string"
@@ -16491,7 +16488,7 @@
                         "type": "string"
                     },
                     "gender": {
-                        "type": "string"
+                        "type": "integer"
                     },
                     "status": {
                         "type": "integer"
@@ -16503,7 +16500,7 @@
                         "type": "string"
                     },
                     "action": {
-                        "type": "string"
+                        "type": "integer"
                     },
                     "author_id": {
                         "type": "integer"

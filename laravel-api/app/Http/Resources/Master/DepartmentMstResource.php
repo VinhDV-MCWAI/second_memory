@@ -27,7 +27,7 @@ class DepartmentMstResource extends JsonResource
             'id' => (int) $this->id,
             'code' => (string) $this->code,
             'name' => (string) $this->name,
-            'status' => (string) $this->status?->value,
+            'status' => (int) $this->status?->value,
             'is_delete' => (bool) $this->is_delete,
             'updated_at' => $this->formatDate($this->updated_at),
         ];
