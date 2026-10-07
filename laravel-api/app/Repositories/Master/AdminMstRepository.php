@@ -40,7 +40,7 @@ class AdminMstRepository extends SoftDeleteCrudRepository
                 'avatar',
                 'updated_at',
             ])
-            ->with(['roles:id,name,permission', 'departments:id,code,name']) // Eager load relationships
+            ->with(['roles:id,name,permission']) // Eager load relationships
             ->notDeleted(); // Use scope from HasSoftDelete trait
 
         // Apply exact match filters

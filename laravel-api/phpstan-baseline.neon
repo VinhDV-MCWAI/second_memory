@@ -253,22 +253,10 @@ parameters:
 			path: app/Models/History/Master/ApiMstHist.php
 
 		-
-			message: '#^PHPDoc type array\<string\> of property App\\Models\\History\\Master\\DepartmentMstHist\:\:\$fillable is not covariant with PHPDoc type list\<string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$fillable\.$#'
-			identifier: property.phpDocType
-			count: 1
-			path: app/Models/History/Master/DepartmentMstHist.php
-
-		-
 			message: '#^PHPDoc type array\<string\> of property App\\Models\\History\\Master\\FeatureMstHist\:\:\$fillable is not covariant with PHPDoc type list\<string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$fillable\.$#'
 			identifier: property.phpDocType
 			count: 1
 			path: app/Models/History/Master/FeatureMstHist.php
-
-		-
-			message: '#^PHPDoc type array\<string\> of property App\\Models\\History\\Master\\PolicyDepartmentMstHist\:\:\$fillable is not covariant with PHPDoc type list\<string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$fillable\.$#'
-			identifier: property.phpDocType
-			count: 1
-			path: app/Models/History/Master/PolicyDepartmentMstHist.php
 
 		-
 			message: '#^PHPDoc type array\<string\> of property App\\Models\\History\\Master\\RoleMstHist\:\:\$fillable is not covariant with PHPDoc type list\<string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$fillable\.$#'
@@ -343,12 +331,6 @@ parameters:
 			path: app/Models/Management/MediaMgmt.php
 
 		-
-			message: '#^PHPDoc type array\<string\> of property App\\Models\\Master\\AdminDepartmentMst\:\:\$fillable is not covariant with PHPDoc type list\<string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$fillable\.$#'
-			identifier: property.phpDocType
-			count: 1
-			path: app/Models/Master/AdminDepartmentMst.php
-
-		-
 			message: '#^PHPDoc type array\<string\> of property App\\Models\\Master\\AdminMst\:\:\$fillable is not covariant with PHPDoc type list\<string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$fillable\.$#'
 			identifier: property.phpDocType
 			count: 1
@@ -385,30 +367,6 @@ parameters:
 			path: app/Models/Master/ApiRoleMst.php
 
 		-
-			message: '#^PHPDoc type array\<string\> of property App\\Models\\Master\\DepartmentManagementMst\:\:\$fillable is not covariant with PHPDoc type list\<string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$fillable\.$#'
-			identifier: property.phpDocType
-			count: 1
-			path: app/Models/Master/DepartmentManagementMst.php
-
-		-
-			message: '#^Access to an undefined property App\\Models\\Master\\DepartmentMst\:\:\$is_active\.$#'
-			identifier: property.notFound
-			count: 3
-			path: app/Models/Master/DepartmentMst.php
-
-		-
-			message: '#^PHPDoc type array\<string\> of property App\\Models\\Master\\DepartmentMst\:\:\$fillable is not covariant with PHPDoc type list\<string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$fillable\.$#'
-			identifier: property.phpDocType
-			count: 1
-			path: app/Models/Master/DepartmentMst.php
-
-		-
-			message: '#^Property App\\Models\\Master\\DepartmentMst\:\:\$is_delete \(bool\) does not accept int\.$#'
-			identifier: assign.propertyType
-			count: 2
-			path: app/Models/Master/DepartmentMst.php
-
-		-
 			message: '#^Access to an undefined property App\\Models\\Master\\FeatureMst\:\:\$is_active\.$#'
 			identifier: property.notFound
 			count: 3
@@ -425,18 +383,6 @@ parameters:
 			identifier: assign.propertyType
 			count: 2
 			path: app/Models/Master/FeatureMst.php
-
-		-
-			message: '#^PHPDoc type array\<string\> of property App\\Models\\Master\\PolicyDepartmentMst\:\:\$fillable is not covariant with PHPDoc type list\<string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$fillable\.$#'
-			identifier: property.phpDocType
-			count: 1
-			path: app/Models/Master/PolicyDepartmentMst.php
-
-		-
-			message: '#^Property App\\Models\\Master\\PolicyDepartmentMst\:\:\$is_delete \(bool\) does not accept int\.$#'
-			identifier: assign.propertyType
-			count: 2
-			path: app/Models/Master/PolicyDepartmentMst.php
 
 		-
 			message: '#^PHPDoc type array\<string\> of property App\\Models\\Master\\RoleMst\:\:\$fillable is not covariant with PHPDoc type list\<string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$fillable\.$#'
@@ -643,46 +589,10 @@ parameters:
 			path: app/Repositories/Master/ApiRoleMstRepository.php
 
 		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$department_mst_id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Repositories/Master/DepartmentManagementMstRepository.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$policy_department_mst_id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Repositories/Master/DepartmentManagementMstRepository.php
-
-		-
-			message: '#^Parameter \#1 \$callback of method Illuminate\\Database\\Eloquent\\Collection\<int,Illuminate\\Database\\Eloquent\\Model\>\:\:map\(\) contains unresolvable type\.$#'
-			identifier: argument.unresolvableType
-			count: 1
-			path: app/Repositories/Master/DepartmentManagementMstRepository.php
-
-		-
-			message: '#^Return type of call to method Illuminate\\Database\\Eloquent\\Collection\<int,Illuminate\\Database\\Eloquent\\Model\>\:\:map\(\) contains unresolvable type\.$#'
-			identifier: method.unresolvableReturnType
-			count: 1
-			path: app/Repositories/Master/DepartmentManagementMstRepository.php
-
-		-
-			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Builder\<Illuminate\\Database\\Eloquent\\Model\>\:\:notDeleted\(\)\.$#'
-			identifier: method.notFound
-			count: 1
-			path: app/Repositories/Master/DepartmentMstRepository.php
-
-		-
 			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Builder\<Illuminate\\Database\\Eloquent\\Model\>\:\:notDeleted\(\)\.$#'
 			identifier: method.notFound
 			count: 1
 			path: app/Repositories/Master/FeatureMstRepository.php
-
-		-
-			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Builder\<Illuminate\\Database\\Eloquent\\Model\>\:\:notDeleted\(\)\.$#'
-			identifier: method.notFound
-			count: 1
-			path: app/Repositories/Master/PolicyDepartmentMstRepository.php
 
 		-
 			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Builder\<Illuminate\\Database\\Eloquent\\Model\>\:\:notDeleted\(\)\.$#'

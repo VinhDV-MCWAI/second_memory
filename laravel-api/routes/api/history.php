@@ -7,9 +7,7 @@ use App\Http\Controllers\History\Management\EntryDescriptionMgmtHistController;
 use App\Http\Controllers\History\Management\EntryMgmtHistController;
 use App\Http\Controllers\History\Master\AdminMstHistController;
 use App\Http\Controllers\History\Master\ApiMstHistController;
-use App\Http\Controllers\History\Master\DepartmentMstHistController;
 use App\Http\Controllers\History\Master\FeatureMstHistController;
-use App\Http\Controllers\History\Master\PolicyDepartmentMstHistController;
 use App\Http\Controllers\History\Master\RoleMstHistController;
 use Illuminate\Support\Facades\Route;
 
@@ -17,9 +15,7 @@ use Illuminate\Support\Facades\Route;
 foreach ([
     'admin-mst-hist' => AdminMstHistController::class,
     'api-mst-hist' => ApiMstHistController::class,
-    'department-mst-hist' => DepartmentMstHistController::class,
     'feature-mst-hist' => FeatureMstHistController::class,
-    'policy-department-mst-hist' => PolicyDepartmentMstHistController::class,
     'role-mst-hist' => RoleMstHistController::class,
     'category-mgmt-hist' => CategoryMgmtHistController::class,
     'entry-description-mgmt-hist' => EntryDescriptionMgmtHistController::class,

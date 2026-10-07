@@ -56,19 +56,6 @@ class AdminMst extends Model
     }
 
     /**
-     * Get the departments associated with the admin.
-     */
-    public function departments(): BelongsToMany
-    {
-        return $this->belongsToMany(
-            DepartmentMst::class,
-            'admin_department_mst',
-            'admin_mst_id',
-            'department_mst_id'
-        )->withTimestamps();
-    }
-
-    /**
      * Get the history records for the admin.
      */
     public function history(): HasMany

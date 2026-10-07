@@ -5,12 +5,10 @@ declare(strict_types=1);
 namespace Database\Seeders;
 
 use App\Enums\TypeOfMethod;
-use App\Models\Master\AdminDepartmentMst;
 use App\Models\Master\AdminMst;
 use App\Models\Master\AdminRoleMst;
 use App\Models\Master\ApiMst;
 use App\Models\Master\ApiRoleMst;
-use App\Models\Master\DepartmentMst;
 use App\Models\Master\FeatureMst;
 use App\Models\Master\RoleMst;
 use Illuminate\Database\Seeder;
@@ -77,34 +75,7 @@ class RootAccountSeeder extends Seeder
 
             $this->command->info('✓ Role assigned to admin');
 
-            // Step 4: Create root department
-            $department = DepartmentMst::firstOrCreate(
-                ['name' => $this->root],
-                [
-                    'code' => '1',
-                    'status' => 1,
-                    'created_at' => now(),
-                    'updated_at' => now(),
-                ]
-            );
-
-            $this->command->info("✓ Root department created/found: {$department->name}");
-
-            // Step 5: Assign department to admin
-            AdminDepartmentMst::updateOrInsert(
-                [
-                    'admin_mst_id' => $adminAccount->id,
-                    'department_mst_id' => $department->id,
-                ],
-                [
-                    'created_at' => now(),
-                    'updated_at' => now(),
-                ]
-            );
-
-            $this->command->info('✓ Department assigned to admin');
-
-            // Step 6: Sync all current routes
+            // Step 4: Sync all current routes
             $this->command->info("\n--- Syncing all routes ---");
             $routeCount = 0;
 
@@ -161,7 +132,6 @@ class RootAccountSeeder extends Seeder
             $this->command->info("\n✅ Root account seeder completed successfully!");
             $this->command->info("   - Admin: {$adminAccount->email}");
             $this->command->info("   - Role: {$rootRole->name}");
-            $this->command->info("   - Department: {$department->name}");
             $this->command->info("   - Routes synced: {$routeCount}");
         });
     }
