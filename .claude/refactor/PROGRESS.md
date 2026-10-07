@@ -5,6 +5,15 @@
 
 ## Handoff summary (read first) — updated 2026-10-07
 
+### Security alerts (2026-10-07) — branch `fix/security-deps` (from `developer` after PR #9/#10)
+
+PR #9 (`refactor/p4-frontend`) and PR #10 (`developer` → `main`) are merged. GitHub Dependabot alerts were triaged with `pnpm audit` (same GitHub advisory DB; `gh` is not installed on the host):
+- **Next.js alerts** (Windows RCE, AVIF image-optimizer RCE, WebSocket SSRF, Server Actions DoS, React flight RCE) and **Vitest UI** alerts: raised against next 16.0.1 / vitest 1.x and the deleted `nextjs-fe/pnpm-lock.yaml`. Current next 16.3.8 / vitest 4.1.11 are not affected → Dependabot closes them on its next scan of `main`. If one stays open, check its "patched version" against the lockfile.
+- **Fixed** (`8bfacf5`): 140 advisories (1 critical, 52 high) → **1** (`braces` ≤ 3.0.3, ESLint glob only, no patched release). **Production deps: 0.** Dropped the unused `shadcn` CLI devDependency (source of the critical `proxy-addr` + express/hono/MCP SDK tree; use `pnpm dlx shadcn@latest add`), axios 1.20, next-intl 4.14, uuid 13.0.2, laravel-echo 2.5, Tiptap 3.31.4, all transitive deps refreshed within semver, `seroval` override. Lint tools held (prettier 3.8.1 exact, eslint-plugin-react-hooks 7.0.1 override: 7.1 adds React Compiler errors, mostly in the auth provider).
+- CI (`993fdfd`): `pnpm audit --prod --audit-level=high` is now **blocking**; full audit stays informational. `.github/dependabot.yml`: grouped weekly npm + composer PRs, monthly actions, into `developer`.
+- Backend: `composer audit` = only `firebase/php-jwt` < 7 (low) → part of the manual auth rework.
+- Verified: `make verify` exit 0 (backend 598 tests, Pint, Larastan, FE lint 0 errors, tsc, Prettier, Vitest 90), `next build` OK for both apps (needs `NODE_ENV=production`; inside the dev containers `NODE_ENV=development` makes `/_global-error` prerender fail — not a real error).
+
 ### Status: paused by the user (2026-10-07) in the middle of FE6
 
 **Main working branch: `refactor/p4-frontend`**. It contains **everything**: P0, P1, P2, P3 and P4 so far (stacked p0-p1 → p2 → p3 → p4) **plus merges of `origin/developer` and `origin/main`** — ready to push (see Branches). Nothing pushed by Claude.
@@ -202,8 +211,11 @@ User delegated all P2+ items on 2026-10-06 ("toàn quyền thực hiện, không
 - 2026-10-07 — FE5 done (+ bulk status buttons removed, default sorts fixed).
 - 2026-10-07 — Local junk branches deleted; `cleanup-branch.yml` added (auto-delete merged work branches); remote cleanup commands + GitHub settings documented.
 - 2026-10-07 — Merged `origin/developer` (`-s ours`, old-message copies) and `origin/main` (`.gitignore` resolved) into `refactor/p4-frontend`; `make verify` green. Waiting for the user to push/PR.
+- 2026-10-07 — PR #9/#10 merged by the user. Security alerts triaged and fixed (`fix/security-deps`).
 - 2026-10-07 — Import/export fake toolbar removed, lint warnings cleared (25 → 1). FE6 started: feature folders (`8021a54`). Paused by the user; branch analysis written into the handoff summary.
 
 ## Next step
+
+2026-10-07: security fix done on `fix/security-deps`; refactor continues stacked on it (FE6 → D1 → P5).
 
 Paused by the user on 2026-10-07; branch merged with developer/main and ready for the user to push + PR. When resuming (after the PRs are merged, on a new branch from `developer`): finish FE6 (see "Remaining" in the handoff summary): form props → `ResourceFormProps<T>`, then split the files > 300 lines one per commit, verify (`make verify`), then D1, then P5. Before that, the user may push/merge per "Branches".
