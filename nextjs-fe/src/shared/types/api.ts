@@ -183,20 +183,6 @@ export interface AuthUser {
 }
 
 /**
- * API Endpoint Paths Constants
- */
-export const API_PATHS = {
-  LIST: '/list',
-  STORE: '/store',
-  UPDATE: '/update',
-  DELETE: '/delete',
-  PREPARE_UPLOAD: '/prepare-upload',
-  INIT_MULTIPART_UPLOAD: '/init-multipart-upload',
-  GET_MULTIPART_URL: '/get-multipart-url',
-  COMPLETE_MULTIPART_UPLOAD: '/complete-multipart-upload',
-} as const;
-
-/**
  * User Type
  */
 export interface User {

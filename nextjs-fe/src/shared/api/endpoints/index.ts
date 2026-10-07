@@ -18,10 +18,6 @@ export const API_ENDPOINTS = {
     ADMIN_ROLE: '/admin/admin-role-mst',
     API_ROLE: '/admin/api-role-mst',
   },
-  MEDIA: {
-    FILES: '/admin/media-mgmt',
-    UPLOAD: '/admin/media-mgmt/store',
-  },
 } as const;
 
 export const ENDPOINTS = API_ENDPOINTS;

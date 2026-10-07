@@ -1,13 +1,4 @@
-import {
-  LayoutDashboard,
-  FolderOpen,
-  Database,
-  Shield,
-  Code,
-  Sparkles,
-  Key,
-  UserCog,
-} from 'lucide-react';
+import { LayoutDashboard, Database, Shield, Code, Sparkles, Key, UserCog } from 'lucide-react';
 import { MenuItem } from '@/shared/types';
 import { ADMIN_ROUTES } from '@/shared/config';
 
@@ -16,11 +7,6 @@ export const NAVIGATION_MENU: MenuItem[] = [
     label: 'navigation.dashboard',
     icon: LayoutDashboard,
     href: ADMIN_ROUTES.DASHBOARD,
-  },
-  {
-    label: 'navigation.fileManager',
-    icon: FolderOpen,
-    href: ADMIN_ROUTES.FILE_MANAGER,
   },
   {
     label: 'navigation.masterData',

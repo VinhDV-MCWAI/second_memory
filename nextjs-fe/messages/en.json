@@ -30,10 +30,6 @@
     "inactive": "Inactive",
     "unknown": "Unknown",
     "noImage": "No image",
-    "noImageSelected": "No image selected",
-    "clickToSelectImage": "Click to select an image from library",
-    "selectImage": "Select Image",
-    "changeImage": "Change Image",
     "noLink": "No link",
     "name": "Name",
     "description": "Description",
@@ -42,7 +38,6 @@
     "email": "Email",
     "password": "Password",
     "enterPassword": "Enter password",
-    "url": "URL",
     "link": "Link",
     "linkUrl": "Link URL",
     "title": "Title",
@@ -116,7 +111,6 @@
     "E0504": "Gateway Timeout",
     "E1000": "Cannot connect to server. Please check your network connection.",
     "failedToGenerateUploadUrl": "Failed to generate upload URL",
-    "storageUploadFailed": "Storage upload failed with status: {status}",
     "uploadToMinioFailed": "Upload to MinIO failed:",
     "support": "Support"
   },
@@ -131,7 +125,6 @@
     "navigateTo": "Navigate to...",
     "adminDashboard": "Admin Dashboard",
     "dashboard": "Dashboard",
-    "fileManager": "File Manager",
     "masterData": "Master Data"
   },
   "search": {
@@ -212,9 +205,7 @@
     "tokens": "Tokens",
     "api": "API",
     "apis": "APIs",
-    "file": "File",
-    "files": "Files",
-    "fileManager": "File Manager"
+    "file": "File"
   },
   "fields": {
     "id": "ID",
@@ -229,10 +220,8 @@
     "updatedAt": "Updated",
     "description": "Description",
     "title": "Title",
-    "url": "URL",
     "icon": "Icon",
     "type": "Type",
-    "key": "Key",
     "value": "Value",
     "path": "Path",
     "method": "Method",
@@ -255,7 +244,6 @@
     "uploadFile": "Upload File",
     "hideUpload": "Hide Upload",
     "searchFiles": "Search files...",
-    "deleteFile": "Delete file",
     "deleteFiles": "Delete files",
     "deleteFileConfirm": "Are you sure you want to delete this file?",
     "deleteFilesConfirm": "Delete {count} file(s)?",
@@ -266,39 +254,23 @@
     "failedToUploadFile": "Failed to upload file",
     "fileUploadedSuccessfully": "File uploaded successfully",
     "all": "All",
-    "images": "Images",
-    "videos": "Videos",
-    "documents": "Documents",
     "clickToUpload": "Click to upload",
     "orDragAndDrop": "or drag and drop",
-    "uploading": "Uploading...",
     "preview": "Preview",
     "avatarPreview": "Avatar preview",
     "invalidFileType": "Invalid file type. Accepted: {accept}",
     "selectImageFile": "Please select an image file",
     "fileSizeExceeded": "File size must be less than {maxSize}MB",
     "fileSizeExceeds": "File size exceeds {maxSize}",
-    "uploadFailed": "Upload failed",
     "dragDropHere": "Drag and drop your file here, or click to browse",
     "maxSize": "Max size",
     "cancel": "Cancel",
     "upload": "Upload",
     "view": "View",
-    "download": "Download",
     "delete": "Delete",
     "previous": "Previous",
     "next": "Next",
-    "pageOf": "Page {page} of {totalPages}",
-    "changeImage": "Change Image",
-    "multipart": {
-      "noEtag": "No ETag in response",
-      "uploadFailedStatus": "Upload failed with status {status}",
-      "networkError": "Network error",
-      "timeout": "Request timeout - the server took too long to respond",
-      "partFailedMaxRetries": "Upload failed: Part {partNumber} failed after {maxRetries} attempts. Please check your connection and try again.",
-      "partFailedRetry": "Part {partNumber} failed, retrying in {delay}ms",
-      "uploadFailedAfterRetries": "Upload failed after multiple retry attempts. Please check your network connection and try again."
-    }
+    "pageOf": "Page {page} of {totalPages}"
   },
   "savedFilters": {
     "filterName": "Filter name",
@@ -314,150 +286,10 @@
     "saveFilterTitle": "Save Filter Title",
     "saveFilterDescription": "Save Filter Description"
   },
-  "fileManager": {
-    "noFiles": "No files found",
-    "featureUnavailable": "Feature unavailable",
-    "name": "Name",
-    "size": "Size",
-    "openMenu": "Open Menu",
-    "type": "Type",
-    "created": "Created",
-    "folder": "Folder",
-    "copyLink": "Copy Link",
-    "deleteFile": "Delete File",
-    "previewNotAvailable": "Preview not available",
-    "linkCopied": "Link copied to clipboard",
-    "confirmDelete": "Are you sure you want to delete this file?",
-    "home": "Home",
-    "preview": "Preview",
-    "download": "Download",
-    "rename": "Rename",
-    "upload": "Upload",
-    "newFolder": "New Folder",
-    "move": "Move",
-    "copy": "Copy",
-    "delete": "Delete",
-    "filter": "Filter",
-    "selectedCount": "{count} selected",
-    "searchPlaceholder": "Search files...",
-    "filterType": {
-      "all": "All",
-      "images": "Images",
-      "videos": "Videos",
-      "documents": "Documents",
-      "folders": "Folders"
-    },
-    "sort": "Sort",
-    "sortField": {
-      "name": "Name",
-      "date": "Date",
-      "size": "Size",
-      "type": "Type"
-    },
-    "listError": "Failed to load file list",
-    "createFolderSuccess": "Folder created successfully",
-    "createFolderError": "Failed to create folder",
-    "createFolderFailed": "Failed to create folder",
-    "uploadSuccess": "Uploaded",
-    "uploadError": "Failed to upload file",
-    "uploadFailed": "Failed to upload file",
-    "deleteSuccess": "File deleted",
-    "deleteError": "Failed to delete file",
-    "deleteFailed": "Failed to delete file",
-    "renameSuccess": "File renamed",
-    "renameError": "Failed to rename file",
-    "renameFailed": "Failed to rename file",
-    "moveSuccess": "File moved",
-    "moveError": "Failed to move file",
-    "moveFailed": "Failed to move file",
-    "copySuccess": "File copied",
-    "copyError": "Failed to copy file",
-    "copyFailed": "Failed to copy file",
-    "dialogs": {
-      "moveCopy": {
-        "moveTitle": "Move",
-        "copyTitle": "Copy",
-        "items": "items",
-        "description": "Are you sure you want to {action} these items?",
-        "move": "Move",
-        "copy": "Copy",
-        "targetFolder": "Target Folder",
-        "selectFolder": "Select folder",
-        "root": "Root"
-      },
-      "cancel": "Cancel",
-      "processing": "Processing...",
-      "rename": {
-        "title": "Rename Item",
-        "description": "Rename item",
-        "newNameLabel": "New Name",
-        "saveButton": "Rename",
-        "emptyNameError": "Name cannot be empty",
-        "invalidNameError": "Invalid file name",
-        "renameError": "Failed to rename item"
-      },
-      "deleteConfirm": {
-        "title": "Delete Item(s)",
-        "singleMessage": "Are you sure you want to delete \"{name}\"?",
-        "multipleMessage": "Are you sure you want to delete {count} items?",
-        "description": "This action cannot be undone.",
-        "delete": "Delete"
-      },
-      "delete": "Delete",
-      "creating": "Creating...",
-      "upload": {
-        "uploadFiles": "Upload Files",
-        "uploadTo": "Upload file to folder: {path}",
-        "clickToSelect": "Click to select",
-        "orDragDrop": "or drag and drop",
-        "supportedFiles": "Supported files: Images, Videos, Documents",
-        "uploadButton": "Upload",
-        "uploading": "Uploading...",
-        "uploadFailed": "Upload failed",
-        "uploadError": "An error occurred while uploading",
-        "uploadingToTemp": "Uploading to temporary storage...",
-        "finalizing": "Finalizing upload...",
-        "failedToUploadToTemp": "Failed to upload file to temporary storage",
-        "autoUploadError": "Auto-upload error",
-        "commitError": "Commit error",
-        "filesWithErrors": "Some files failed to upload",
-        "removeFailedFiles": "Please remove failed files before uploading. You can retry by removing them and adding them again."
-      },
-      "newFolder": {
-        "title": "New Folder",
-        "description": "Create a new folder to organize your files.",
-        "nameLabel": "Folder Name",
-        "placeholder": "Enter folder name",
-        "createButton": "Create",
-        "emptyNameError": "Folder name cannot be empty",
-        "invalidNameError": "Invalid folder name",
-        "createError": "Failed to create folder"
-      }
-    },
-    "loading": "Loading",
-    "sidebar": {
-      "title": "Title",
-      "foldersList": "Folders List",
-      "images": "Images",
-      "videos": "Videos",
-      "documents": "Documents",
-      "recent": "Recent",
-      "shared": "Shared"
-    }
-  },
   "upload": {
-    "uploadFiles": "Upload Files",
-    "uploadTo": "Upload file to folder: {path}",
     "avatar": "Avatar",
     "image": "Image",
-    "imageFormats": "PNG, JPG, GIF up to {maxSize}MB",
-    "uploadError": "Upload error occurred",
-    "clickToSelect": "Click to select",
-    "orDragDrop": "or drag and drop",
-    "supportedFiles": "Supported files: Images, Videos, Documents",
-    "uploadButton": "Upload",
-    "uploadFailed": "Upload Failed",
-    "uploading": "Uploading..."
+    "imageFormats": "PNG, JPG, GIF up to {maxSize}MB"
   },
   "forms": {
     "labels": {
@@ -577,10 +409,6 @@
     "position": {
       "required": "Position is required"
     },
-    "url": {
-      "required": "URL is required",
-      "invalid": "Must be a valid URL"
-    },
     "permission": {
       "required": "Permission is required",
       "maxLength": "Permission cannot exceed {max} characters"
@@ -606,10 +434,6 @@
     },
     "invalidEmail": "Invalid Email",
     "saving": "Saving",
-    "key": {
-      "required": "Key is required",
-      "maxLength": "Key cannot exceed {max} characters"
-    },
     "value": {
       "required": "Value is required",
       "maxLength": "Value cannot exceed {max} characters"

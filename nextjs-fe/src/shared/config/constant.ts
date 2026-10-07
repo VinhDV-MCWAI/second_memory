@@ -119,8 +119,6 @@ export const SORT_FIELDS = {
   STATUS: 'status',
 } as const;
 
-export type SortField = (typeof SORT_FIELDS)[keyof typeof SORT_FIELDS];
-
 // ============================================================================
 // PAGINATION
 // ============================================================================
@@ -166,13 +164,6 @@ export const KEYBOARD_KEYS = {
   ARROW_RIGHT: 'ArrowRight',
 } as const;
 
-// Keyboard events
-export const KEYBOARD_EVENT = {
-  KEYDOWN: 'keydown',
-  KEYUP: 'keyup',
-  KEYPRESS: 'keypress',
-} as const;
-
 // ============================================================================
 // THEME
 // ============================================================================
@@ -190,7 +181,6 @@ export const ADMIN_ROUTES = {
   APIS: '/admin/apis',
   FEATURES: '/admin/features',
   TOKENS: '/admin/tokens',
-  FILE_MANAGER: '/admin/file-manager',
   ADMINS: '/admin/admins',
   ROLES: '/admin/roles',
   LOGIN: '/login',

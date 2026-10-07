@@ -156,14 +156,3 @@ export interface LazyImageProps extends React.ImgHTMLAttributes<HTMLImageElement
   alt: string;
   className?: string;
 }
-
-/**
- * Image Picker Props
- */
-export interface ImagePickerProps {
-  value?: string | null;
-  onChange: (url: string, id?: number) => void;
-  error?: string;
-  label?: string;
-  required?: boolean;
-}
