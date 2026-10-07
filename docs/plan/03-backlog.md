@@ -48,15 +48,15 @@ Status: `todo` → `doing` → `done` | `cut` (with reason). When GitHub Project
 | ID | Task | Output | Status |
 |---|---|---|---|
 | P2-01 | `REQ-001` from simulated PO: "the CMS is replaced by Obsidian; remove what is no longer needed" + clarification log | [REQ-001](../requirements/REQ-001-slim-down.md) | done (in P1-14 dry run) |
-| P2-02 | Impact analysis: per module → tables, routes, FE pages, jobs, tests, data to keep | Impact doc | todo |
-| P2-03 | ERD as-is / to-be (generated from the schema, then edited) | Diagrams | todo |
-| P2-04 | Design doc + ADR-0003 (what is removed, order, rollback plan) | RFC + ADR | todo |
-| P2-05 | Before-metrics snapshot (LOC, tables, endpoints, tests, test time, image size, startup time) | Metrics table | todo |
-| P2-05b | Artisan command exporting categories/entries/descriptions to Markdown (frontmatter, idempotent), tested with factories; run on deployed data before the drop (REQ-001 US-2) | Command + test | todo |
-| P2-06 | Remove FE: sliders, banners, setting links, socials, users, departments, content CMS, file-manager tree | PRs | todo |
-| P2-07 | Remove API + tests for the same modules | PRs | todo |
+| P2-02 | Impact analysis: per module → tables, routes, FE pages, jobs, tests, data to keep | Impact doc | done (RFC-001) |
+| P2-03 | ERD as-is / to-be (generated from the schema, then edited) | Diagrams | done (RFC-001) |
+| P2-04 | Design doc + ADR-0003 (what is removed, order, rollback plan) | RFC + ADR | done (RFC-001) |
+| P2-05 | Before-metrics snapshot (LOC, tables, endpoints, tests, test time, image size, startup time) | Metrics table | done (RFC-001) |
+| P2-05b | Artisan command exporting categories/entries/descriptions to Markdown (frontmatter, idempotent), tested with factories; run on deployed data before the drop (REQ-001 US-2) | Command + test | done (RFC-001) |
+| P2-06 | Remove FE: sliders, banners, setting links, socials, users, departments, content CMS, file-manager tree | PRs | doing (slice 2) |
+| P2-07 | Remove API + tests for the same modules | PRs | doing (slice 2) |
 | P2-08 | Expand/contract: create `audit_log`, dual-write, backfill, switch reads, drop `*_hist` tables | Migrations + PRB | todo |
-| P2-09 | Drop removed tables, triggers and views (after backup; down-migration tested) | Migrations | todo |
+| P2-09 | Drop removed tables, triggers and views (after backup; down-migration tested) | Migrations | doing (slice 2) |
 | P2-10 | PRB-001 + ADR-0004: replace custom JWT with Sanctum SPA cookies; archive AUTH-GUIDE as learning record | Docs | todo |
 | P2-11 | Implement Sanctum, migrate FE auth provider, delete custom auth code; unblock old FE3 (route guard) | PRs | todo |
 | P2-12 | RBAC → Gates/Policies with `owner` / `viewer` | PR | todo |
