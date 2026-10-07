@@ -47,6 +47,10 @@
 
 > 🇻🇳 Thay đổi mang tính phá huỷ đi theo expand/contract qua nhiều release: thêm mới và ghi song song → backfill → chuyển sang đọc cấu trúc mới → release sau mới xoá cấu trúc cũ (có backup).
 
+- Exception (single instance, no rolling deploy, as long as there is one server): all four steps may ship in **one** release if each step is its own migration and commit, the contract migration checks its precondition and refuses to run otherwise (e.g. "every old row is copied"), and the release notes require a backup first. Used for `audit_log` in `v2.0.0` ([ADR-0006](../adr/0006-audit-log.md), retro P2). With more than one app instance the multi-release rule applies again.
+
+> 🇻🇳 Ngoại lệ (một instance, không rolling deploy): cả bốn bước được phép nằm trong **một** release nếu mỗi bước là một migration và commit riêng, migration contract tự kiểm tra điều kiện và từ chối chạy nếu chưa đạt, và release notes bắt buộc backup trước. Khi có nhiều instance thì quay lại quy tắc nhiều release.
+
 ## Rollback
 
 > 🇻🇳 Quay lui.

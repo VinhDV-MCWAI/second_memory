@@ -23,6 +23,10 @@ The pyramid: many unit and feature tests, few E2E tests, performance and securit
 
 > 🇻🇳 Kim tự tháp: nhiều unit/feature test, ít E2E, test hiệu năng và bảo mật ở các mốc release.
 
+**Tests never touch dev data.** Feature tests use their own database (`testing`) and their own Redis DBs (14/15), forced in `phpunit.xml` with `<server force="true">` because container environment variables win over `<env>`. `TestEnvironmentTest` fails the suite if this ever breaks. Any new store (queue, search index, bucket) gets the same isolation and a guard test before the first test writes to it ([PRB-002](../problems/PRB-002-tests-used-dev-database.md), retro P2).
+
+> 🇻🇳 **Test không bao giờ chạm dữ liệu dev.** Test dùng DB `testing` và Redis DB 14/15 riêng, ép bằng `<server force="true">` trong `phpunit.xml`; `TestEnvironmentTest` làm suite fail nếu cô lập bị hỏng. Kho lưu trữ mới nào (queue, search index, bucket) cũng phải được cô lập và có test canh gác trước khi test đầu tiên ghi vào.
+
 ## Definition of Done (DoD)
 
 > 🇻🇳 Định nghĩa "Hoàn thành". Chưa đạt hết thì chưa phải xong.

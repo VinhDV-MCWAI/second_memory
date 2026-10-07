@@ -60,9 +60,9 @@ Refs: REQ-002, #123
 
 Scopes: `api`, `fe`, `docs-site`, `docker`, `ci`, `infra`, `tools`. Breaking change: `feat(api)!: …` plus a `BREAKING CHANGE:` line in the body.
 
-Rules: one purpose per commit; the build passes on every commit; no AI attribution trailers; never commit secrets, dumps or `.env` files. Stage files by explicit path (`git add path/to/file`), not whole folders, and read `git status` before committing (retro P0–P1).
+Rules: one purpose per commit; the build passes on every commit; no AI attribution trailers; never commit secrets, dumps or `.env` files. Stage files by explicit path (`git add path/to/file`), not whole folders, and read `git status` before committing (retro P0–P1). Read `git diff --cached --stat` right before `git commit`: files staged earlier for another commit ride along otherwise (retro P2).
 
-> 🇻🇳 Mỗi commit một mục đích; commit nào cũng build được; không có trailer AI; không commit secret, dump, `.env`. Add file theo đường dẫn cụ thể, không add cả thư mục, và đọc `git status` trước khi commit.
+> 🇻🇳 Mỗi commit một mục đích; commit nào cũng build được; không có trailer AI; không commit secret, dump, `.env`. Add file theo đường dẫn cụ thể, không add cả thư mục, và đọc `git status` trước khi commit; ngay trước `git commit` xem `git diff --cached --stat` để không kéo theo file đã stage cho commit khác.
 
 ## Daily git routine
 

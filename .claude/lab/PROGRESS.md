@@ -9,7 +9,7 @@
 |---|---|---|---|
 | P0 Baseline | P0-01…P0-09 | done locally; P0-02 push/PRs, P0-06 GitHub board, P0-09 remote cleanup wait for the owner | `v1.0.0` (local tag) |
 | P1 Handbook | P1-01…P1-14 | done | `v1.1.0` (local tag) |
-| P2 Slim down | P2-01…P2-12 done (RFC-001 slices 1–9) | **P2-13 todo** (slice 10: metrics, regression, `v2.0.0`, retro) | `v2.0.0` pending |
+| P2 Slim down | P2-01…P2-12 done (RFC-001 slices 1–9) | **P2-13 doing** (metrics, regression, notes, retro done; final `make verify` + tag left) | `v2.0.0` pending |
 | P3 Skill Ledger | P3-00…P3-08 | todo (starts with P3-00 refinement) | `v2.1.0` |
 | P4–P11 | coarse | not started | – |
 
@@ -31,7 +31,7 @@ Records written in P2: REQ-001, RFC-001, ADR-0003…0006, PRB-001 (solved), PRB-
 3. GitHub board and labels (P0-06): see `docs/plan/github-setup.md`.
 4. Remote branch cleanup (P0-09), approved by the owner on 2026-10-07 but no GitHub credentials in Claude's environment: `git push origin --delete staging feature/Refactor-readme feature/laravel-api/create-migration feature/temp-test feature/nuxtjs-fe/demo feature/temp-test2`. The first four are merged into `main`; the last two hold an abandoned 2023 Nuxt FE and a `demo2` test commit, kept locally as tags `archive/nuxtjs-fe-demo`, `archive/temp-test2`. Delete `refactor/fe6-features` on origin only after `refactor/p2-slim-down` is pushed (its commits are not on origin otherwise).
 5. Still open from the refactor: rotate secrets on any real deployment; browser check while logged in.
-7. Before upgrading any deployed environment to v2.0.0: deploy `v1.2.0` and run `docs/runbooks/content-export.md` (the export command is gone after slice 5). `v1.2.0` has a tag but no release notes file yet (`docs/releases/v1.2.0.md`).
+7. Before upgrading any deployed environment to v2.0.0: follow the upgrade order in `docs/releases/v2.0.0.md` (deploy `v1.2.0` → content export runbook → backup → deploy `v2.0.0`). GitHub releases from `docs/releases/v1.2.0.md` and `v2.0.0.md` after pushing the tags.
 8. Open decision (does not block P2): remove the media API, or keep it for Skill Ledger evidence files — see RFC-001 §3 correction.
 9. Dev DB is empty (PRB-002: test runs wiped it). To use the admin UI: `docker exec ml-php php artisan db:seed --class=RootAccountSeeder` (creates owner `root` / `12345678`, idempotent), then log in. Slice 8 migrations already ran on the dev DB (forward only).
 10. To store sessions in Redis as ADR-0004 says: `make setup` (regenerates `laravel-api/.env` from `.env.example`, `SESSION_DRIVER=redis`) and `make restart`. Until then sessions use the `database` driver, which also works. Old `LARAVEL_*_TOKEN_SECRET` lines in `docker/.env` can be deleted by hand.
@@ -104,11 +104,13 @@ Records written in P2: REQ-001, RFC-001, ADR-0003…0006, PRB-001 (solved), PRB-
 - Step 6/6 done: `3e90988` login audit (`login_failed` with user name only, `logged_in`/`logged_out` with the admin as actor; `AuditLogger::record(..., actorId:)` because the credential routes have no auth middleware; credential routes moved out of `db.transaction` so the failed-login row survives the 401). Mistake on the way: a stray `cat >> /dev/null` in a shell command blocked on stdin for 400 s; stopped, only the test edit was missing, redone.
 - P2-08 done. `make verify` exit 0: Pint ✓, Larastan ✓, backend 79 passed, ESLint 0 problems, tsc ✓, Vitest 53 (15 files), coverage 89.35%. Commits: `f2f4099` ADR, `d05ab51` expand + dual-write, `0c62a82` backfill, `ec0290e` + `0a8726a` switch reads, `b1b5c87` contract, `3e90988` login events. Dev DB migrated through `..._100009`.
 
+- 2026-10-07 — P2-13 (slice 10) mostly done, **paused at the owner's request** (commit + handoff). After-metrics with `scripts/metrics.sh --tests --images` on `ce20094`: app/ 20.6k → 4.9k lines, FE 30.2k → 9.7k, routes 143 → 20, tables 43 → 12, views/triggers 2 → 0, backend tests 598/82 s → 79/12 s, Vitest 106 → 53, images 1802 → 1799 MB / 309 → 304 MB (image size is base-image bound → P4). Regression: `migrate:fresh` on `testing` runs all 61 migrations → 12/0/0; `migrate:rollback --step=9` → exactly 43 tables / 2 views / 2 triggers, `migrate` again → 12/0/0; curl flow through nginx all as expected (owner login/me, create + edit viewer, audit shows `created` + `updated` with changed field only and no password, viewer read 200 / write 403, logout → me 401, `logged_in` rows recorded, `/admin` 307, `/docs` + `/docs/a/b` 200, `/api/docs/category` 404); temporary admins `lab_owner` / `lab_viewer` deleted (their audit rows stay in dev). My mistake on the way: the temp owner was first created with a plaintext password via the factory → login 500 (`Hash::check` on a non-bcrypt value); app writes always hash, so not a product bug. Docs: `docs/releases/v1.2.0.md`, `docs/releases/v2.0.0.md` (breaking changes, upgrade order, before/after, verification, known issues), RFC-001 → Implemented + §10 metrics after, retro `docs/reports/retro/P2.md` with 3 handbook changes (06 test isolation guard, 04 `git diff --cached --stat`, 07 single-release expand/contract exception). `make verify` **not** run after these docs-only changes (last green run: `3e90988`).
+
 ## Next step
 
-RFC-001 slice 10 = backlog **P2-13**: close Phase 2.
+Finish **P2-13**, then P3-00.
 
-1. After-metrics: `scripts/metrics.sh --tests --images` on the current commit; compare with RFC-001 §9 (before: 43 tables, 2 views, 2 triggers, 143 routes, 598 tests, 1802 MB API image…). Put the table in RFC-001 §9 and the release notes.
-2. Regression: `make verify`, a fresh-DB check (`migrate:fresh` on `testing` must run every migration incl. the guard in `..._100009`), the manual curl/browser flow (login, admin CRUD as owner, viewer 403, audit trail in the edit dialog, logout).
-3. `docs/releases/v2.0.0.md` (breaking changes: removed endpoints, auth, roles, history → audit log; upgrade order: backup → `v1.2.0` content export runbook → deploy → `migrate`), also the missing `docs/releases/v1.2.0.md` (owner item 7). Local tag `v2.0.0`.
-4. Retro `docs/reports/retro/P2.md` (incl. PRB-002 lesson), RFC-001 status → Implemented, roadmap P2 done criteria checked, backlog P2 → done; then P3-00 (refine Skill Ledger).
+1. `make verify` on the current commit (code unchanged since the last green run at `3e90988`, so it should pass; report the real result). If green, update the "Verification" line in `docs/releases/v2.0.0.md` with the counts.
+2. Local tag: `git tag -a v2.0.0 -m "v2.0.0 — slim down"`; backlog P2-13 → done, RFC-001 slice 10 → done, roadmap P2 done criteria checked (§4 list executed; exceptions: media API kept — RFC-001 §3 correction, open owner decision; startup time not measured — retro P2), plan-status table here → P2 done.
+3. Optional: weekly report entry for P2 (handbook 07 step 7 "announce").
+4. Then **P3-00**: refine the Skill Ledger tasks (`docs/plan/03-backlog.md` P3) before any code.

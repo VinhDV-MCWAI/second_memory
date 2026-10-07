@@ -4,7 +4,7 @@
 
 | | |
 |---|---|
-| Status | Approved (TL, 2026-10-07) |
+| Status | Implemented (`v2.0.0`, 2026-10-07) |
 | Author | TL / Dev |
 | Reviewers | PO (scope), QA (test plan), Ops (rollout) |
 | Related | [REQ-001](../requirements/REQ-001-slim-down.md), [ADR-0003](../adr/0003-remove-cms-modules.md), [PRB-001](../problems/PRB-001-custom-jwt-auth.md) / [ADR-0004](../adr/0004-sanctum-spa-cookie-auth.md) (auth), [ADR-0005](../adr/0005-owner-viewer-roles.md) (roles), [ADR-0006](../adr/0006-audit-log.md) (audit log) |
@@ -121,7 +121,7 @@ Plus framework tables (`cache`, `jobs`, sessions in Redis). 43 tables / 2 views 
 | 7 | Replace custom JWT with Sanctum SPA cookie auth | P2-10/11 | Largest risk; done when fewer modules depend on auth | done |
 | 8 | Roles → `owner` / `viewer` with Gates/Policies; drop RBAC tables, view, trigger, tokens | P2-12 | Needs slice 7 (login no longer reads `admin_permission_view`) | done |
 | 9 | `audit_log` replaces remaining `*_hist` (expand → backfill → switch → contract) | P2-08 | Only `admin_mst` history is left by then; small, clean exercise | done |
-| 10 | Regression, metrics after, release notes, `v2.0.0` | P2-13 | – | todo |
+| 10 | Regression, metrics after, release notes, `v2.0.0` | P2-13 | – | doing (metrics, regression, notes done; final `make verify` + tag left) |
 
 **Removal pattern per module:** (a) FE pages, navigation, types, tests; (b) routes, controllers, requests, resources, services, repositories, models, enums, tests; (c) a new migration that drops the tables, with a `down()` that recreates them empty (data comes back only from backup); (d) `make openapi`, `make verify`.
 
@@ -185,3 +185,31 @@ Measured on commit `4cc87ac` with `scripts/metrics.sh --tests --images`; the sam
 The API production image (1.8 GB) is far larger than the code justifies — noted for P4 (Docker hardening).
 
 > 🇻🇳 Image production của API 1,8 GB là quá lớn so với lượng code — ghi lại để xử lý ở P4.
+
+## 10. Metrics after (P2-13)
+
+Same command on commit `ce20094` (all slices done).
+
+> 🇻🇳 Số liệu sau khi hoàn thành, cùng lệnh đo.
+
+| Metric | Before (v1.0.0) | After (v2.0.0) |
+|---|---|---|
+| Commit | 4cc87ac | ce20094 |
+| Backend app/ lines (PHP) | 20630 | 4851 |
+| Backend tests lines (PHP) | 21106 | 1805 |
+| Migrations | 52 | 61 (+9 forward-only drop/expand/contract) |
+| Admin FE src/ lines (TS/TSX) | 30165 | 9706 |
+| Docs site src/ lines (TS/TSX) | 1965 | 70 |
+| Admin FE pages (page.tsx) | 21 | 6 |
+| API routes | 143 | 20 |
+| DB tables | 43 | 12 |
+| DB views | 2 | 0 |
+| DB triggers | 2 | 0 |
+| Backend tests | 598 passed, 82s | 79 passed, 12s |
+| Admin FE tests | 106 passed, 17s | 53 passed, 13s |
+| API production image | 1802 MB | 1799 MB |
+| Admin FE production image | 309 MB | 304 MB |
+
+Image sizes barely moved: they are dominated by the base images and build tooling, not by our code — that is P4 (Docker hardening). Startup time was not measured before, so it is not compared.
+
+> 🇻🇳 Kích thước image gần như không đổi vì phụ thuộc vào base image và công cụ build, không phải code — để P4 xử lý. Thời gian khởi động chưa đo trước nên không so sánh.
