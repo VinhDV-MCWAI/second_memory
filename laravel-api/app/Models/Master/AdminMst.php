@@ -5,22 +5,19 @@ declare(strict_types=1);
 namespace App\Models\Master;
 
 use App\Enums\AdminRole;
-use App\Models\History\Master\AdminMstHist;
-use App\Traits\HasHistory;
 use App\Traits\HasSoftDelete;
 use App\Traits\HasStatus;
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
  * @property AdminRole $role
  */
 class AdminMst extends Model implements AuthenticatableContract
 {
-    use Authenticatable, HasFactory, HasHistory, HasSoftDelete, HasStatus;
+    use Authenticatable, HasFactory, HasSoftDelete, HasStatus;
 
     protected $table = 'admin_mst';
 
@@ -47,14 +44,6 @@ class AdminMst extends Model implements AuthenticatableContract
         'is_delete',
         'remember_token',
     ];
-
-    /**
-     * Get the history records for the admin.
-     */
-    public function history(): HasMany
-    {
-        return $this->hasMany(AdminMstHist::class, 'admin_mst_id');
-    }
 
     /**
      * The attributes that should be cast.

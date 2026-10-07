@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Feature\Master\AdminMst;
 
-use App\Enums\ActionType;
+use App\Enums\AuditEvent;
 use App\Models\Master\AdminMst;
 use Tests\Concerns\AuthenticatesAdmins;
 use Tests\TestCase;
@@ -15,7 +15,7 @@ final class BulkDeleteHistoryTest extends TestCase
 
     private const string URL = 'api/admin/admin-mst/delete';
 
-    public function test_bulk_delete_records_one_history_row_per_item(): void
+    public function test_bulk_delete_records_one_audit_row_per_item(): void
     {
         $admin = AdminMst::factory()->create();
         $cookies = $this->loginAsOwner($admin);
@@ -24,9 +24,10 @@ final class BulkDeleteHistoryTest extends TestCase
         $this->call('POST', self::URL, ['ids' => $others->pluck('id')->all()], $cookies)->assertStatus(200);
 
         foreach ($others as $other) {
-            $this->assertDatabaseHas('admin_mst_hist', [
-                'admin_mst_id' => $other->id,
-                'action' => ActionType::DELETE->value,
+            $this->assertDatabaseHas('audit_log', [
+                'auditable_type' => 'admin',
+                'auditable_id' => $other->id,
+                'event' => AuditEvent::DELETED->value,
             ]);
         }
     }

@@ -12,7 +12,7 @@ use Tests\Concerns\AuthenticatesAdmins;
 use Tests\TestCase;
 
 /**
- * ADR-0006: admin changes are written to audit_log (and, until the contract step, to admin_mst_hist).
+ * ADR-0006: admin changes are written to audit_log.
  */
 final class AuditLogWriteTest extends TestCase
 {
@@ -51,9 +51,6 @@ final class AuditLogWriteTest extends TestCase
         $this->assertSame(['first_name' => 'After'], $log->new_values);
         $this->assertSame($this->owner->id, $log->admin_mst_id);
         $this->assertNotNull($log->ip_address);
-
-        // Dual-write: linked to the legacy history row
-        $this->assertDatabaseHas('admin_mst_hist', ['id' => $log->legacy_hist_id, 'admin_mst_id' => $target->id]);
     }
 
     public function test_create_and_delete_log_the_full_row_without_secrets(): void

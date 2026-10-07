@@ -71,73 +71,6 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
-  '/admin/admin-mst-hist/list': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get: operations['adminMstHist.list'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/admin/admin-mst-hist/store': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    /** Store admin mst hist */
-    post: operations['adminMstHist.store'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/admin/admin-mst-hist/update/{id}': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    /** Update admin mst hist */
-    put: operations['adminMstHist.update'];
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/admin/admin-mst-hist/delete': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    /** Delete admin mst hist */
-    post: operations['adminMstHist.delete'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
   '/admin/audit-log/list': {
     parameters: {
       query?: never;
@@ -363,25 +296,6 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
   schemas: {
-    /** AdminMstHistResource */
-    AdminMstHistResource: {
-      id: number;
-      admin_mst_id: number;
-      email: string;
-      user_name: string;
-      first_name: string;
-      last_name: string;
-      address: string;
-      phone_number: string;
-      birth: string;
-      gender: number;
-      status: number;
-      is_active: boolean;
-      avatar: string;
-      action: number;
-      author_id: number;
-      created_at: string;
-    };
     /** AdminMstResource */
     AdminMstResource: {
       id: number;
@@ -450,10 +364,6 @@ export interface components {
       workspace_id?: number | null;
       mime_type?: string | null;
     };
-    /** DeleteAdminMstHistRequest */
-    DeleteAdminMstHistRequest: {
-      ids: number[];
-    };
     /** DeleteAdminMstRequest */
     DeleteAdminMstRequest: {
       ids: number[];
@@ -504,25 +414,6 @@ export interface components {
      * @enum {integer}
      */
     StatusEnum: 0 | 1 | 2;
-    /** StoreAdminMstHistRequest */
-    StoreAdminMstHistRequest: {
-      admin_mst_id: number;
-      /** Format: email */
-      email?: string;
-      user_name?: string;
-      password?: string;
-      first_name?: string;
-      last_name?: string;
-      address?: string;
-      phone_number?: string;
-      birth?: string;
-      gender?: components['schemas']['Gender'];
-      status?: components['schemas']['StatusEnum'];
-      is_active?: components['schemas']['IsActive'];
-      avatar?: string;
-      action: string;
-      author_id: number;
-    };
     /** StoreAdminMstRequest */
     StoreAdminMstRequest: {
       /** Format: email */
@@ -564,26 +455,6 @@ export interface components {
       parent_path?: string | null;
       workspace_id?: number | null;
       is_delete?: components['schemas']['IsDelete'] | null;
-    };
-    /** UpdateAdminMstHistRequest */
-    UpdateAdminMstHistRequest: {
-      id: number;
-      admin_mst_id: number;
-      /** Format: email */
-      email?: string;
-      user_name?: string;
-      password?: string;
-      first_name?: string;
-      last_name?: string;
-      address?: string;
-      phone_number?: string;
-      birth?: string;
-      gender?: components['schemas']['Gender'];
-      status?: components['schemas']['StatusEnum'];
-      is_active?: components['schemas']['IsActive'];
-      avatar?: string;
-      action: string;
-      author_id: number;
     };
     /** UpdateAdminMstRequest */
     UpdateAdminMstRequest: {
@@ -754,129 +625,6 @@ export interface operations {
     requestBody: {
       content: {
         'application/json': components['schemas']['DeleteAdminMstRequest'];
-      };
-    };
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': Record<string, never>;
-        };
-      };
-      401: components['responses']['AuthenticationException'];
-      422: components['responses']['ValidationException'];
-    };
-  };
-  'adminMstHist.list': {
-    parameters: {
-      query?: {
-        id?: number | null;
-        page?: number | null;
-        per_page?: number | null;
-        sort_by?: string | null;
-        sort_order?: string | null;
-        email?: string | null;
-        admin_mst_id?: number | null;
-        user_name?: string | null;
-        first_name?: string | null;
-        last_name?: string | null;
-        address?: string | null;
-        phone_number?: string | null;
-        birth?: string | null;
-        gender?: components['schemas']['Gender'] | null;
-        status?: components['schemas']['StatusEnum'] | null;
-        is_active?: components['schemas']['IsActive'] | null;
-        avatar?: string | null;
-        action?: string | null;
-        author_id?: number | null;
-        from_date?: string | null;
-        to_date?: string | null;
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Array of `AdminMstHistResource` */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': {
-            data: components['schemas']['AdminMstHistResource'][];
-          };
-        };
-      };
-      401: components['responses']['AuthenticationException'];
-      422: components['responses']['ValidationException'];
-    };
-  };
-  'adminMstHist.store': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['StoreAdminMstHistRequest'];
-      };
-    };
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': number;
-        };
-      };
-      401: components['responses']['AuthenticationException'];
-      422: components['responses']['ValidationException'];
-    };
-  };
-  'adminMstHist.update': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        id: string;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['UpdateAdminMstHistRequest'];
-      };
-    };
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': number;
-        };
-      };
-      401: components['responses']['AuthenticationException'];
-      422: components['responses']['ValidationException'];
-    };
-  };
-  'adminMstHist.delete': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['DeleteAdminMstHistRequest'];
       };
     };
     responses: {

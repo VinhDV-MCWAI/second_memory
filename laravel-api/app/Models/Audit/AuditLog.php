@@ -29,7 +29,6 @@ class AuditLog extends Model
         'new_values',
         'admin_mst_id',
         'ip_address',
-        'legacy_hist_id',
         'created_at',
     ];
 
@@ -47,7 +46,6 @@ class AuditLog extends Model
             'old_values' => 'array',
             'new_values' => 'array',
             'admin_mst_id' => 'integer',
-            'legacy_hist_id' => 'integer',
             'created_at' => 'datetime',
         ];
     }

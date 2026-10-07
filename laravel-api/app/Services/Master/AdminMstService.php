@@ -8,7 +8,6 @@ use App\Constants\Messages;
 use App\Enums\AdminRole;
 use App\Enums\IsActive;
 use App\Http\Resources\Master\AdminMstResource;
-use App\Repositories\History\Master\AdminMstHistRepository;
 use App\Repositories\Master\AdminMstRepository;
 use App\Services\AuditedCrudService;
 use App\Services\AuditLogger;
@@ -18,16 +17,13 @@ class AdminMstService extends AuditedCrudService
 {
     protected string $resource = AdminMstResource::class;
 
-    protected string $historyForeignKey = 'admin_mst_id';
-
     protected string $auditableType = 'admin';
 
     public function __construct(
         private readonly AdminMstRepository $adminMst,
-        AdminMstHistRepository $adminMstHist,
         AuditLogger $auditLogger,
     ) {
-        parent::__construct($adminMst, $adminMstHist, $auditLogger);
+        parent::__construct($adminMst, $auditLogger);
     }
 
     /**

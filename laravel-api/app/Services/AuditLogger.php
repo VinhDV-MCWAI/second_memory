@@ -30,7 +30,6 @@ final class AuditLogger
         AuditEvent $event,
         ?array $old = null,
         ?array $new = null,
-        ?int $legacyHistId = null,
     ): void {
         $old = $old === null ? null : Arr::except($old, self::EXCLUDED_KEYS);
         $new = $new === null ? null : Arr::except($new, self::EXCLUDED_KEYS);
@@ -47,7 +46,6 @@ final class AuditLogger
             'new_values' => $new,
             'admin_mst_id' => Auth::id(),
             'ip_address' => Request::ip(),
-            'legacy_hist_id' => $legacyHistId,
         ]);
     }
 

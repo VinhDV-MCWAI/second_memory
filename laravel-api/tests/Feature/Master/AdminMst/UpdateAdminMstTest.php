@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Tests\Feature\Master\AdminMst;
 
 use App\Constants\CommonVal;
-use App\Enums\ActionType;
 use App\Enums\AdminRole;
+use App\Enums\AuditEvent;
 use App\Models\Master\AdminMst;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Facades\Hash;
@@ -153,10 +153,11 @@ class UpdateAdminMstTest extends TestCase
             'first_name' => 'Updated',
         ]);
 
-        $this->assertDatabaseHas('admin_mst_hist', [
-            'admin_mst_id' => $admin->id,
-            'action' => ActionType::UPDATE->value,
-            'first_name' => 'Updated',
+        $this->assertDatabaseHas('audit_log', [
+            'auditable_type' => 'admin',
+            'auditable_id' => $admin->id,
+            'event' => AuditEvent::UPDATED->value,
+            'new_values->first_name' => 'Updated',
         ]);
     }
 
@@ -184,7 +185,7 @@ class UpdateAdminMstTest extends TestCase
         $this->call('PUT', $this->getUpdateUrl($viewer->id), $promote, $cookies)->assertStatus(CommonVal::HTTP_OK);
 
         $this->assertSame(AdminRole::OWNER, $viewer->fresh()->role);
-        $this->assertDatabaseHas('admin_mst_hist', ['admin_mst_id' => $viewer->id, 'role' => AdminRole::OWNER->value]);
+        $this->assertDatabaseHas('audit_log', ['auditable_id' => $viewer->id, 'new_values->role' => AdminRole::OWNER->value]);
     }
 
     private function getValidPayload($admin): array

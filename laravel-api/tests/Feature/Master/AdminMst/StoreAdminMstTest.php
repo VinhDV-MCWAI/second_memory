@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Tests\Feature\Master\AdminMst;
 
 use App\Constants\CommonVal;
-use App\Enums\ActionType;
+use App\Enums\AuditEvent;
 use App\Enums\Gender;
 use App\Enums\IsActive;
 use App\Enums\IsDelete;
@@ -361,10 +361,11 @@ class StoreAdminMstTest extends TestCase
         ]);
 
         // History verification
-        $this->assertDatabaseHas('admin_mst_hist', [
-            'admin_mst_id' => $newId,
-            'action' => ActionType::CREATE->value,
-            'user_name' => $payload['user_name'],
+        $this->assertDatabaseHas('audit_log', [
+            'auditable_type' => 'admin',
+            'auditable_id' => $newId,
+            'event' => AuditEvent::CREATED->value,
+            'new_values->user_name' => $payload['user_name'],
         ]);
     }
 
@@ -441,9 +442,9 @@ class StoreAdminMstTest extends TestCase
         ]);
 
         // History verification
-        $this->assertDatabaseHas('admin_mst_hist', [
-            'admin_mst_id' => $newId,
-            'birth' => null, // Should be null in History DB
+        $this->assertDatabaseHas('audit_log', [
+            'auditable_id' => $newId,
+            'new_values->birth' => null, // Should be null in the audit log
         ]);
     }
 }

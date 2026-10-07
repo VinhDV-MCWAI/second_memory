@@ -26,7 +26,6 @@ Route::prefix('admin')
                     ->group(function () {
                         Route::group([], base_path('routes/api/master.php'));
                         Route::group([], base_path('routes/api/management.php'));
-                        Route::group([], base_path('routes/api/history.php'));
                         Route::get('audit-log/list', [AuditLogController::class, 'list']);
                     });
             });
