@@ -312,22 +312,11 @@ export interface SavedFiltersProps {
 /**
  * History Components Types
  */
-export interface DiffViewerProps {
-  diffs: import('./models').HistoryDiff[];
-  className?: string;
-}
-
-export interface TimelineProps {
-  history: import('./models').BaseHistory[];
-  className?: string;
-}
-
 export interface HistoryViewerProps {
-  entityType?: string;
-  entityId?: number;
-  endpoint?: string;
-  baseUrl?: string;
-  recordId?: number;
-  onRestore?: (historyId: number) => void;
+  /** The `*-hist` resource endpoint, e.g. `/admin/entry-mgmt-hist`. */
+  endpoint: string;
+  /** History column that references the audited row, e.g. `entry_mgmt_id`. */
+  foreignKey: string;
+  recordId: number;
   className?: string;
 }

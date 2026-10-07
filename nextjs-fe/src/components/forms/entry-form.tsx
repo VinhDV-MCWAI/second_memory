@@ -270,9 +270,9 @@ export function EntryForm({
           <div className="h-[400px] overflow-y-auto pr-2">
             {initialData && (
               <HistoryViewer
-                entityType="entry"
-                entityId={initialData.id}
                 endpoint={`${ENDPOINTS.MANAGEMENT.ENTRY}-hist`}
+                foreignKey="entry_mgmt_id"
+                recordId={initialData.id}
               />
             )}
           </div>

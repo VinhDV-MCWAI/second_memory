@@ -117,10 +117,9 @@ export function RoleWizardDialog({
             }));
           } catch (err) {
             console.error('Failed to fetch assigned APIs', err);
-            // Fallback to initialData if fetch fails, though likely empty
-            const fallbackIds = initialData.apis?.map((api) => api.id) || [];
-            setInitialAssignedIds(fallbackIds);
-            setWizardState((prev) => ({ ...prev, selectedApiIds: fallbackIds }));
+            // The role list does not include its APIs, so start from an empty selection
+            setInitialAssignedIds([]);
+            setWizardState((prev) => ({ ...prev, selectedApiIds: [] }));
           }
         })();
       }

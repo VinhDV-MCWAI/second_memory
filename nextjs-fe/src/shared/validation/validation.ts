@@ -280,15 +280,17 @@ export const getTokenSchema = (t: Translator) =>
 
 export type TokenFormData = z.infer<ReturnType<typeof getTokenSchema>>;
 
-// Setting Link schema
+// Setting Link schema matching StoreSettingLinkMgmtRequest
 export const getSettingLinkSchema = (t: Translator) =>
   z.object({
-    name: z.string().min(1, t('name.required')),
-    url: z.string().url(t('url.invalid')),
-    description: z.string().optional(),
-    rank_order: z.coerce.number().min(0, t('order.min', { min: 0 })),
-    status: statusValidation,
-    is_active: z.boolean(),
+    key: z
+      .string()
+      .min(1, t('key.required'))
+      .max(30, t('key.maxLength', { max: 30 })),
+    value: z
+      .string()
+      .min(1, t('value.required'))
+      .max(100, t('value.maxLength', { max: 100 })),
   });
 
 export type SettingLinkFormData = z.infer<ReturnType<typeof getSettingLinkSchema>>;

@@ -51,6 +51,11 @@ jobs:
       - name: Format check
         run: pnpm format:check
 
+      - name: API types are up to date
+        run: |
+          pnpm --filter nextjs-fe gen:api
+          git diff --exit-code nextjs-fe/src/shared/types/openapi.d.ts || { echo "::error::openapi.d.ts is stale, run 'make openapi' and commit it"; exit 1; }
+
       - name: Typecheck
         run: pnpm typecheck
 

@@ -23,6 +23,7 @@
     "test:ui": "vitest --ui",
     "test:coverage": "vitest --coverage",
     "typecheck": "tsc --noEmit",
+    "gen:api": "openapi-typescript ../laravel-api/openapi.json -o src/shared/types/openapi.d.ts && prettier --write src/shared/types/openapi.d.ts",
     "format": "prettier --write .",
     "format:check": "prettier --check ."
   },
@@ -75,7 +76,6 @@
     "zod": "^4.1.12"
   },
   "devDependencies": {
-    "babel-plugin-react-compiler": "^1.0.0",
     "@tailwindcss/postcss": "^4",
     "@testing-library/react": "^16.3.0",
     "@types/node": "^24",
@@ -87,11 +87,13 @@
     "@vitejs/plugin-react": "^5.0.0",
     "@vitest/coverage-v8": "^4.0.0",
     "@vitest/ui": "^4.0.0",
+    "babel-plugin-react-compiler": "^1.0.0",
     "eslint": "^9",
     "eslint-config-next": "16.3.8",
     "eslint-config-prettier": "^10.1.8",
     "jsdom": "^23.0.1",
     "msw": "^2.0.11",
+    "openapi-typescript": "^7.13.0",
     "prettier": "^3.6.2",
     "prettier-plugin-tailwindcss": "^0.7.1",
     "shadcn": "^3.5.0",

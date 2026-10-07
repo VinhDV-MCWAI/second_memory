@@ -106,7 +106,7 @@ describe('content schemas', () => {
     ).toEqual(['title.required', 'order.min:{"min":0}']);
   });
 
-  it('validate URLs and coerce rank orders from inputs', () => {
+  it('validate social links', () => {
     const social = getSocialSchema(t).safeParse({
       name: 'GitHub',
       link: 'not a url',
@@ -114,15 +114,15 @@ describe('content schemas', () => {
       status: 1,
     });
     expect(messagesOf(social)).toEqual(['url.invalid']);
+  });
 
-    const link = getSettingLinkSchema(t).parse({
-      name: 'Home',
-      url: 'https://example.com',
-      rank_order: '2',
-      status: StatusEnum.PUBLISHED,
-      is_active: true,
-    });
-    expect(link.rank_order).toBe(2);
+  it('validate setting link keys and values against the backend limits', () => {
+    expect(getSettingLinkSchema(t).safeParse({ key: 'privacy', value: '/privacy' }).success).toBe(
+      true,
+    );
+    expect(
+      messagesOf(getSettingLinkSchema(t).safeParse({ key: 'k'.repeat(31), value: '' })),
+    ).toEqual(['key.maxLength:{"max":30}', 'value.required']);
   });
 });
 

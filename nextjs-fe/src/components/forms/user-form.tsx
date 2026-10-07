@@ -342,9 +342,9 @@ export function UserForm({ initialData, onSuccess, onCancel }: UserFormProps) {
         <div className="h-[400px] overflow-y-auto pr-2">
           {initialData && (
             <HistoryViewer
-              entityType="user"
-              entityId={initialData.id}
               endpoint={`${ENDPOINTS.MANAGEMENT.USER}-hist`}
+              foreignKey="user_mgmt_id"
+              recordId={initialData.id}
             />
           )}
         </div>

@@ -202,9 +202,9 @@ export function DepartmentForm({ initialData, onSuccess, onCancel }: DepartmentF
         <div className="h-[400px] overflow-y-auto pr-2">
           {initialData && (
             <HistoryViewer
-              entityType="department"
-              entityId={initialData.id}
               endpoint={`${ENDPOINTS.MASTER.DEPARTMENT}-hist`}
+              foreignKey="department_mst_id"
+              recordId={initialData.id}
             />
           )}
         </div>

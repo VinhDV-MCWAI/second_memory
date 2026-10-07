@@ -10,7 +10,6 @@ import { Pagination } from '@/components/common/data-table/pagination';
 import { FilterPanel, type FilterField } from '@/components/common/data-table/filter-panel';
 import { ConfirmDialog } from '@/components/ui/confirm-dialog';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
 import type { SettingLinkMgmt } from '@/shared/types/api';
 import { API_ENDPOINTS } from '@/shared/api';
 import {
@@ -42,7 +41,7 @@ export default function SettingLinkListPage() {
   const [page, setPage] = useState<number>(PAGINATION.DEFAULT_PAGE);
   const [perPage, setPerPage] = useState<number>(PAGINATION.DEFAULT_PER_PAGE);
   const [filters, setFilters] = useState({});
-  const [sortBy, setSortBy] = useState<string>(SORT_FIELDS.ORDER);
+  const [sortBy, setSortBy] = useState<string>(SORT_FIELDS.ID);
   const [sortOrder, setSortOrder] = useState<SortOrder>(SORT_ORDER.ASC);
   const [selectedIds, setSelectedIds] = useState<number[]>([]);
 
@@ -113,32 +112,18 @@ export default function SettingLinkListPage() {
 
   const columns: Column<SettingLinkMgmt>[] = [
     { key: 'id', label: tFields('id'), sortable: true },
-    { key: 'rank_order', label: tFields('order'), sortable: true },
-    { key: 'name', label: tFields('name'), sortable: true },
-    { key: 'url', label: tFields('url') },
-    { key: 'description', label: tFields('description') },
-    {
-      key: 'status',
-      label: tFields('status'),
-      sortable: true,
-      render: (item) => (
-        <Badge variant={item.is_active ? 'default' : 'secondary'}>
-          {item.is_active ? tCommon('active') : tCommon('inactive')}
-        </Badge>
-      ),
-    },
+    { key: 'key', label: tFields('key'), sortable: true },
+    { key: 'value', label: tFields('value'), sortable: true },
     { key: 'updated_at', label: tFields('updatedAt'), sortable: true },
   ];
 
   const filterFields: FilterField[] = [
-    { key: 'name', label: tFields('name'), type: 'text', placeholder: tCommon('search') },
-    { key: 'is_active', label: tFields('status'), type: 'boolean' },
+    { key: 'key', label: tFields('key'), type: 'text', placeholder: tCommon('search') },
+    { key: 'value', label: tFields('value'), type: 'text', placeholder: tCommon('search') },
   ];
   const searchFields: SearchField[] = [
-    { key: 'name', label: tFields('name'), type: 'text' },
-    { key: 'url', label: tFields('url'), type: 'text' },
-    { key: 'description', label: tFields('description'), type: 'text' },
-    { key: 'created_at', label: tFields('createdAt'), type: 'date' },
+    { key: 'key', label: tFields('key'), type: 'text' },
+    { key: 'value', label: tFields('value'), type: 'text' },
   ];
   const bulkActions: BulkAction[] = [
     {

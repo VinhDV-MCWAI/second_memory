@@ -183,9 +183,9 @@ export function FeatureForm({ initialData, onSuccess, onCancel }: FeatureFormPro
         <div className="h-[400px] overflow-y-auto pr-2">
           {initialData && (
             <HistoryViewer
-              entityType="feature"
-              entityId={initialData.id}
               endpoint={`${ENDPOINTS.MASTER.FEATURE}-hist`}
+              foreignKey="feature_mst_id"
+              recordId={initialData.id}
             />
           )}
         </div>

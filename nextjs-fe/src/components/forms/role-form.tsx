@@ -2,8 +2,6 @@
 
 import { useState, useEffect } from 'react';
 import { useTranslations } from 'next-intl';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { HistoryViewer } from '@/components/features/history/history-viewer';
 import type { RoleMst } from '@/shared/types/api';
 import { ENDPOINTS } from '@/shared/api';
 import { RoleWizardDialog } from './role-wizard-dialog';

@@ -61,8 +61,12 @@ analyse: ## Static analysis (Larastan)
 	$(PHP) composer analyse
 
 .PHONY: openapi
-openapi: ## Regenerate laravel-api/openapi.json (commit it; CI checks it is current)
+openapi: ## Regenerate laravel-api/openapi.json and the admin FE types (commit both; CI checks them)
 	$(PHP) php artisan scramble:export
+	@# The FE container only mounts nextjs-fe; copy the spec to where `gen:api` looks for it
+	$(FE) mkdir -p /repo/laravel-api
+	docker cp laravel-api/openapi.json ml-nextjs:/repo/laravel-api/openapi.json
+	$(FE) sh -c 'pnpm gen:api && chown $(shell id -u):$(shell id -g) src/shared/types/openapi.d.ts'
 
 .PHONY: rector
 rector: ## Preview automated refactors (dry run)
