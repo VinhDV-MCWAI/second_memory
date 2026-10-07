@@ -192,4 +192,18 @@ class ListAdminMstTest extends TestCase
         $response->assertStatus(CommonVal::HTTP_OK);
         $response->assertJsonStructure(['data']);
     }
+
+    public function test_list_never_exposes_password_hashes()
+    {
+        $admin = AdminMst::factory()->create(['password' => Hash::make('password')]);
+        $cookies = $this->getAuthCookies($admin);
+
+        $response = $this->call('GET', $this->listUrl, [], $cookies);
+
+        $response->assertStatus(CommonVal::HTTP_OK);
+        $this->assertNotEmpty($response->json('data.data'));
+        foreach ($response->json('data.data') as $row) {
+            $this->assertArrayNotHasKey('password', $row);
+        }
+    }
 }

@@ -27,7 +27,6 @@ class AdminMstResource extends JsonResource
             'id' => (int) $this->id,
             'email' => (string) $this->email,
             'user_name' => (string) $this->user_name,
-            'password' => (string) $this->password,
             'first_name' => (string) $this->first_name,
             'last_name' => (string) $this->last_name,
             'address' => (string) $this->address,

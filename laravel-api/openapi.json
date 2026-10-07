@@ -11027,9 +11027,6 @@
                     "user_name": {
                         "type": "string"
                     },
-                    "password": {
-                        "type": "string"
-                    },
                     "first_name": {
                         "type": "string"
                     },
@@ -11072,7 +11069,6 @@
                     "admin_mst_id",
                     "email",
                     "user_name",
-                    "password",
                     "first_name",
                     "last_name",
                     "address",
@@ -11098,9 +11094,6 @@
                         "type": "string"
                     },
                     "user_name": {
-                        "type": "string"
-                    },
-                    "password": {
                         "type": "string"
                     },
                     "first_name": {
@@ -11144,7 +11137,6 @@
                     "id",
                     "email",
                     "user_name",
-                    "password",
                     "first_name",
                     "last_name",
                     "address",
@@ -16483,9 +16475,6 @@
                     "user_name": {
                         "type": "string"
                     },
-                    "password": {
-                        "type": "string"
-                    },
                     "first_name": {
                         "type": "string"
                     },
@@ -16528,7 +16517,6 @@
                     "user_mgmt_id",
                     "email",
                     "user_name",
-                    "password",
                     "first_name",
                     "last_name",
                     "address",
@@ -16554,9 +16542,6 @@
                         "type": "string"
                     },
                     "user_name": {
-                        "type": "string"
-                    },
-                    "password": {
                         "type": "string"
                     },
                     "first_name": {
@@ -16600,7 +16585,6 @@
                     "id",
                     "email",
                     "user_name",
-                    "password",
                     "first_name",
                     "last_name",
                     "address",

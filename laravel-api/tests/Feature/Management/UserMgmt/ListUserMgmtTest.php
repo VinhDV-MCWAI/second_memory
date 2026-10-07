@@ -124,4 +124,18 @@ class ListUserMgmtTest extends TestCase
         $this->assertCount(1, $data);
         $this->assertEquals('user1', $data[0]['user_name']);
     }
+
+    public function test_list_never_exposes_password_hashes()
+    {
+        $admin = AdminMst::factory()->create();
+        $cookies = $this->getAuthCookies($admin);
+
+        $response = $this->call('GET', $this->baseUrl, [], $cookies);
+
+        $response->assertStatus(200);
+        $this->assertNotEmpty($response->json('data.data'));
+        foreach ($response->json('data.data') as $row) {
+            $this->assertArrayNotHasKey('password', $row);
+        }
+    }
 }
