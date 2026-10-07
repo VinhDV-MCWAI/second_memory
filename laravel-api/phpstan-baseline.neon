@@ -43,24 +43,6 @@ parameters:
 			path: app/Http/Resources/History/Management/EntryDescriptionMgmtHistResource.php
 
 		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\Management\\BannerMgmtResource\:\:\$image\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/Management/BannerMgmtResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\Management\\BannerMgmtResource\:\:\$link\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/Management/BannerMgmtResource.php
-
-		-
-			message: '#^Using nullsafe property access "\?\-\>url" on left side of \?\? is unnecessary\. Use \-\> instead\.$#'
-			identifier: nullsafe.neverNull
-			count: 1
-			path: app/Http/Resources/Management/BannerMgmtResource.php
-
-		-
 			message: '#^Call to an undefined method App\\Http\\Resources\\Management\\MediaFileCollection\:\:currentPage\(\)\.$#'
 			identifier: method.notFound
 			count: 1
@@ -241,12 +223,6 @@ parameters:
 			path: app/Jobs/Media/ProcessLargeFile.php
 
 		-
-			message: '#^PHPDoc type array\<string\> of property App\\Models\\History\\Management\\BannerMgmtHist\:\:\$fillable is not covariant with PHPDoc type list\<string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$fillable\.$#'
-			identifier: property.phpDocType
-			count: 1
-			path: app/Models/History/Management/BannerMgmtHist.php
-
-		-
 			message: '#^PHPDoc type array\<string\> of property App\\Models\\History\\Management\\CategoryMgmtHist\:\:\$fillable is not covariant with PHPDoc type list\<string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$fillable\.$#'
 			identifier: property.phpDocType
 			count: 1
@@ -263,24 +239,6 @@ parameters:
 			identifier: property.phpDocType
 			count: 1
 			path: app/Models/History/Management/EntryMgmtHist.php
-
-		-
-			message: '#^PHPDoc type array\<string\> of property App\\Models\\History\\Management\\SettingLinkMgmtHist\:\:\$fillable is not covariant with PHPDoc type list\<string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$fillable\.$#'
-			identifier: property.phpDocType
-			count: 1
-			path: app/Models/History/Management/SettingLinkMgmtHist.php
-
-		-
-			message: '#^PHPDoc type array\<string\> of property App\\Models\\History\\Management\\SliderMgmtHist\:\:\$fillable is not covariant with PHPDoc type list\<string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$fillable\.$#'
-			identifier: property.phpDocType
-			count: 1
-			path: app/Models/History/Management/SliderMgmtHist.php
-
-		-
-			message: '#^PHPDoc type array\<string\> of property App\\Models\\History\\Management\\SocialMgmtHist\:\:\$fillable is not covariant with PHPDoc type list\<string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$fillable\.$#'
-			identifier: property.phpDocType
-			count: 1
-			path: app/Models/History/Management/SocialMgmtHist.php
 
 		-
 			message: '#^PHPDoc type array\<string\> of property App\\Models\\History\\Management\\UserMgmtHist\:\:\$fillable is not covariant with PHPDoc type list\<string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$fillable\.$#'
@@ -323,24 +281,6 @@ parameters:
 			identifier: property.phpDocType
 			count: 1
 			path: app/Models/History/Master/RoleMstHist.php
-
-		-
-			message: '#^Access to an undefined property App\\Models\\Management\\BannerMgmt\:\:\$is_active\.$#'
-			identifier: property.notFound
-			count: 3
-			path: app/Models/Management/BannerMgmt.php
-
-		-
-			message: '#^PHPDoc type array\<string\> of property App\\Models\\Management\\BannerMgmt\:\:\$fillable is not covariant with PHPDoc type list\<string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$fillable\.$#'
-			identifier: property.phpDocType
-			count: 1
-			path: app/Models/Management/BannerMgmt.php
-
-		-
-			message: '#^Property App\\Models\\Management\\BannerMgmt\:\:\$is_delete \(bool\) does not accept int\.$#'
-			identifier: assign.propertyType
-			count: 2
-			path: app/Models/Management/BannerMgmt.php
 
 		-
 			message: '#^Access to an undefined property App\\Models\\Management\\CategoryMgmt\:\:\$is_active\.$#'
@@ -407,54 +347,6 @@ parameters:
 			identifier: assign.propertyType
 			count: 2
 			path: app/Models/Management/MediaMgmt.php
-
-		-
-			message: '#^PHPDoc type array\<string\> of property App\\Models\\Management\\SettingLinkMgmt\:\:\$fillable is not covariant with PHPDoc type list\<string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$fillable\.$#'
-			identifier: property.phpDocType
-			count: 1
-			path: app/Models/Management/SettingLinkMgmt.php
-
-		-
-			message: '#^Property App\\Models\\Management\\SettingLinkMgmt\:\:\$is_delete \(bool\) does not accept int\.$#'
-			identifier: assign.propertyType
-			count: 2
-			path: app/Models/Management/SettingLinkMgmt.php
-
-		-
-			message: '#^Access to an undefined property App\\Models\\Management\\SliderMgmt\:\:\$is_active\.$#'
-			identifier: property.notFound
-			count: 3
-			path: app/Models/Management/SliderMgmt.php
-
-		-
-			message: '#^PHPDoc type array\<string\> of property App\\Models\\Management\\SliderMgmt\:\:\$fillable is not covariant with PHPDoc type list\<string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$fillable\.$#'
-			identifier: property.phpDocType
-			count: 1
-			path: app/Models/Management/SliderMgmt.php
-
-		-
-			message: '#^Property App\\Models\\Management\\SliderMgmt\:\:\$is_delete \(bool\) does not accept int\.$#'
-			identifier: assign.propertyType
-			count: 2
-			path: app/Models/Management/SliderMgmt.php
-
-		-
-			message: '#^Access to an undefined property App\\Models\\Management\\SocialMgmt\:\:\$is_active\.$#'
-			identifier: property.notFound
-			count: 3
-			path: app/Models/Management/SocialMgmt.php
-
-		-
-			message: '#^PHPDoc type array\<string\> of property App\\Models\\Management\\SocialMgmt\:\:\$fillable is not covariant with PHPDoc type list\<string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$fillable\.$#'
-			identifier: property.phpDocType
-			count: 1
-			path: app/Models/Management/SocialMgmt.php
-
-		-
-			message: '#^Property App\\Models\\Management\\SocialMgmt\:\:\$is_delete \(bool\) does not accept int\.$#'
-			identifier: assign.propertyType
-			count: 2
-			path: app/Models/Management/SocialMgmt.php
 
 		-
 			message: '#^PHPDoc type array\<string\> of property App\\Models\\Management\\UserMgmt\:\:\$fillable is not covariant with PHPDoc type list\<string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$fillable\.$#'
@@ -659,24 +551,6 @@ parameters:
 			identifier: method.notFound
 			count: 1
 			path: app/Repositories/Management/MediaMgmtRepository.php
-
-		-
-			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Builder\<Illuminate\\Database\\Eloquent\\Model\>\:\:notDeleted\(\)\.$#'
-			identifier: method.notFound
-			count: 1
-			path: app/Repositories/Management/SettingLinkMgmtRepository.php
-
-		-
-			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Builder\<Illuminate\\Database\\Eloquent\\Model\>\:\:notDeleted\(\)\.$#'
-			identifier: method.notFound
-			count: 1
-			path: app/Repositories/Management/SliderMgmtRepository.php
-
-		-
-			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Builder\<Illuminate\\Database\\Eloquent\\Model\>\:\:notDeleted\(\)\.$#'
-			identifier: method.notFound
-			count: 1
-			path: app/Repositories/Management/SocialMgmtRepository.php
 
 		-
 			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Collection\<int, Illuminate\\Database\\Eloquent\\Model\>\|Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
@@ -899,12 +773,6 @@ parameters:
 			identifier: identical.alwaysFalse
 			count: 1
 			path: app/Utilities/JsonWebToken.php
-
-		-
-			message: '#^PHPDoc type string of property Database\\Factories\\Management\\BannerMgmtFactory\:\:\$model is not covariant with PHPDoc type class\-string\<App\\Models\\Management\\BannerMgmt\> of overridden property Illuminate\\Database\\Eloquent\\Factories\\Factory\<App\\Models\\Management\\BannerMgmt\>\:\:\$model\.$#'
-			identifier: property.phpDocType
-			count: 1
-			path: database/factories/Management/BannerMgmtFactory.php
 
 		-
 			message: '#^PHPDoc type string of property Database\\Factories\\Management\\CategoryMgmtFactory\:\:\$model is not covariant with PHPDoc type class\-string\<App\\Models\\Management\\CategoryMgmt\> of overridden property Illuminate\\Database\\Eloquent\\Factories\\Factory\<App\\Models\\Management\\CategoryMgmt\>\:\:\$model\.$#'
