@@ -24,7 +24,7 @@
 ## Environment gotchas (read before running anything)
 
 - **Containers exit 127** after a Docker Desktop / WSL restart (stale bind mounts, e.g. `pg_hba.conf`): just `make up` to recreate them.
-- **`make up` fails with "ml-redis is unhealthy"**: Redis is still replaying a large AOF (`LOADING` on ping). Wait until `redis-cli ping` answers `PONG`, run `BGREWRITEAOF` to compact it, then `make up` again. Root cause is the test Redis bug in Next step 1.
+- **`make up` fails with "ml-redis is unhealthy"**: Redis is still replaying a large AOF (`LOADING` on ping). Wait until `redis-cli ping` answers `PONG`, run `BGREWRITEAOF` to compact it, then `make up` again. Root cause (tests flushing dev Redis) fixed in `0b1a294`; tests now use Redis DBs 14/15.
 - **`make openapi` exit 137** right after start-up: transient, rerun it.
 - **Dev DB is off-limits for rollbacks** (owner's rule). Test migrations on the `testing` DB: `docker exec -e DB_DATABASE=testing ml-php php artisan migrate|migrate:rollback --step=1 --force` (no config cache, so the override works; confirm with `tinker --execute 'echo DB::connection()->getDatabaseName();'`).
 - After removing a module: drop its stale entries from `laravel-api/phpstan-baseline.neon` (don't regenerate the whole baseline) and grep FE tests for fixtures that used the removed names.
@@ -49,8 +49,9 @@
 
 - Found, not fixed yet (pre-existing bug, needs its own `fix` commit): backend tests call `Redis::flushdb()` / `flushall()` (`tests/TestCase.php`, auth + integration tests) on the **dev** Redis — `phpunit.xml` does not point Redis at a separate DB. Every test run wipes dev Redis and bloats its AOF.
 
+- 2026-10-07 — Test Redis isolated (`0b1a294` fix(api)): `phpunit.xml` forces `REDIS_DB=14`, `REDIS_CACHE_DB=15` (dev uses 0/1); 24 `Redis::flushall()` → `flushdb()`. Checked: a probe key in dev DB 0 survives a full `make test`. `make verify` exit 0 (backend 377 passed, Vitest 104). Seen once, not reproduced in 4 later runs: `DeleteUserMgmtTest::delete single success` failed with a `QueryException` in the full suite (passes alone) — flaky; slice 3 deletes that module anyway, so not chased.
+
 ## Next step
 
-1. `fix(api)`: isolate test Redis (e.g. `REDIS_DB` / `REDIS_CACHE_DB` overrides in `phpunit.xml`; check `config/database.php` for the key names) so tests never flush the dev Redis; prefer `flushdb` over `flushall` in tests.
-2. RFC-001 slice 3: remove end-user management with the removal pattern in RFC-001 §5 (FE → API → tests → drop migration whose `down()` uses `ReplaysMigrations` → `make openapi` → `make verify` → test `down()` on the `testing` DB via `docker exec -e DB_DATABASE=testing ml-php php artisan ...`).
-3. Then slices 4–6 (departments/policies, content CMS + docs "moved" page, file-manager UI).
+1. RFC-001 slice 3: remove end-user management with the removal pattern in RFC-001 §5 (FE → API → tests → drop migration whose `down()` uses `ReplaysMigrations` → `make openapi` → `make verify` → test `down()` on the `testing` DB via `docker exec -e DB_DATABASE=testing ml-php php artisan ...`).
+2. Then slices 4–6 (departments/policies, content CMS + docs "moved" page, file-manager UI).
