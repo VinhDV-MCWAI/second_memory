@@ -191,10 +191,6 @@ class MediaFileService {
     return response.data;
   }
 
-
-
-
-
   /**
    * Rename file or folder
    */
@@ -225,8 +221,6 @@ class MediaFileService {
       data: { ids: params.ids },
     });
   }
-
-
 
   /**
    * Format file size to human readable format

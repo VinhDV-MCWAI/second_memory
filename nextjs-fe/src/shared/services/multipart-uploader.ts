@@ -1,6 +1,6 @@
 import { mediaFileService } from './modules/media-file.service';
 import { MultipartPart, Part, UploadProgress, HeavyUploadResult } from '../types/media-file.types';
-import { MULTIPART_UPLOAD_CONFIG, PART_SIZE_CONFIG } from '../config/constant';
+import { MULTIPART_UPLOAD_CONFIG } from '../config/constant';
 import en from '../../../messages/en.json';
 
 export class MultipartUploader {
@@ -235,33 +235,6 @@ export class MultipartUploader {
       total,
       percentage: Math.round((loaded / total) * 100),
     });
-  }
-
-  /**
-   * Calculate optimal part size based on file size
-   */
-  private calculatePartSize(fileSize: number): number {
-    if (fileSize < PART_SIZE_CONFIG.MEDIUM_FILE_THRESHOLD) {
-      return Math.max(
-        PART_SIZE_CONFIG.MIN_PART_SIZE_16MB,
-        Math.ceil(fileSize / PART_SIZE_CONFIG.MAX_PARTS),
-      );
-    } else if (fileSize < PART_SIZE_CONFIG.LARGE_FILE_THRESHOLD) {
-      return Math.max(
-        PART_SIZE_CONFIG.MIN_PART_SIZE_32MB,
-        Math.ceil(fileSize / PART_SIZE_CONFIG.MAX_PARTS),
-      );
-    } else if (fileSize < PART_SIZE_CONFIG.HUGE_FILE_THRESHOLD) {
-      return Math.max(
-        PART_SIZE_CONFIG.MIN_PART_SIZE_64MB,
-        Math.ceil(fileSize / PART_SIZE_CONFIG.MAX_PARTS),
-      );
-    } else {
-      return Math.max(
-        PART_SIZE_CONFIG.MIN_PART_SIZE_128MB,
-        Math.ceil(fileSize / PART_SIZE_CONFIG.MAX_PARTS),
-      );
-    }
   }
 
   /**

@@ -193,21 +193,6 @@ export const MULTIPART_UPLOAD_CONFIG = {
   } as const,
 } as const;
 
-// Part size configuration for dynamic calculation
-export const PART_SIZE_CONFIG = {
-  SMALL_FILE_THRESHOLD: 100 * 1024 * 1024, // 100MB
-  MEDIUM_FILE_THRESHOLD: 500 * 1024 * 1024, // 500MB
-  LARGE_FILE_THRESHOLD: 10 * 1024 * 1024 * 1024, // 10GB
-  HUGE_FILE_THRESHOLD: 100 * 1024 * 1024 * 1024, // 100GB
-
-  MIN_PART_SIZE_16MB: 16 * 1024 * 1024,
-  MIN_PART_SIZE_32MB: 32 * 1024 * 1024,
-  MIN_PART_SIZE_64MB: 64 * 1024 * 1024,
-  MIN_PART_SIZE_128MB: 128 * 1024 * 1024,
-
-  MAX_PARTS: 10000,
-} as const;
-
 // Media file categories & extensions
 export const MEDIA = {
   TYPE_FILE: true,
