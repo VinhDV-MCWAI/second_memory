@@ -79,13 +79,9 @@ REDIS_PASSWORD=ml_redis_password
 # REDIS_PASSWORD=ml_redis_password
 ```
 
-### 4. Cấu hình JWT Authentication
+### 4. Xác thực
 
-```bash
-# Tạo khóa JWT
-php -r 'echo base64_encode(random_bytes(32));' # Copy kết quả vào ACCESS_TOKEN_SECRET
-php -r 'echo base64_encode(random_bytes(32));' # Copy kết quả vào REFRESH_TOKEN_SECRET
-```
+Admin SPA dùng Laravel Sanctum (session cookie + CSRF), không cần tạo khóa riêng; xem `docs/adr/0004-sanctum-spa-cookie-auth.md`.
 
 ### 5. Chạy Migrations
 

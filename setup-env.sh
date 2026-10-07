@@ -13,7 +13,7 @@ else
     echo ">> [1/4] Master docker/.env already exists. Ensuring variables are present..."
     # Ensure LARAVEL lines exist in the current .env if it was created from old example
     if ! grep -q "LARAVEL_APP_KEY" "$DOCKER_ENV"; then
-        echo -e "\nLARAVEL_APP_KEY=\nLARAVEL_ACCESS_TOKEN_SECRET=\nLARAVEL_REFRESH_TOKEN_SECRET=" >> "$DOCKER_ENV"
+        echo -e "\nLARAVEL_APP_KEY=" >> "$DOCKER_ENV"
     fi
 fi
 
@@ -44,8 +44,6 @@ generate_and_inject MINIO_IAM_PASSWORD hex
 generate_and_inject REVERB_APP_KEY hex
 generate_and_inject REVERB_APP_SECRET hex
 generate_and_inject LARAVEL_APP_KEY base64
-generate_and_inject LARAVEL_ACCESS_TOKEN_SECRET base64
-generate_and_inject LARAVEL_REFRESH_TOKEN_SECRET base64
 
 # Now source the variables so we can inject them into sub-projects
 set -a
@@ -75,8 +73,6 @@ if [ -f "$LARAVEL_ENV_EXAMPLE" ]; then
     
     # Inject Laravel security variables
     sed -i "s|^APP_KEY=.*|APP_KEY=${LARAVEL_APP_KEY}|" "$LARAVEL_ENV"
-    sed -i "s|^ACCESS_TOKEN_SECRET=.*|ACCESS_TOKEN_SECRET=${LARAVEL_ACCESS_TOKEN_SECRET}|" "$LARAVEL_ENV"
-    sed -i "s|^REFRESH_TOKEN_SECRET=.*|REFRESH_TOKEN_SECRET=${LARAVEL_REFRESH_TOKEN_SECRET}|" "$LARAVEL_ENV"
     
     echo "   - laravel-api/.env updated from master configuration."
 fi
