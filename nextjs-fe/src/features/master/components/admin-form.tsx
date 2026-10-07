@@ -19,7 +19,14 @@ import { enumOptions } from '@/shared/utils/enum-options';
 import { AvatarUpload } from '@/components/common/avatar-upload';
 import type { AdminMst } from '@/shared/types/api';
 import { ENDPOINTS } from '@/shared/api';
-import { AdminStatus, Gender, GenderLabels, AdminStatusLabels } from '@/shared/enums';
+import {
+  AdminRole,
+  AdminRoleLabels,
+  AdminStatus,
+  Gender,
+  GenderLabels,
+  AdminStatusLabels,
+} from '@/shared/enums';
 import { UPLOAD_CONFIG } from '@/shared/config';
 import { getAdminSchema, type AdminFormData } from '@/shared/validation/validation';
 import type { ResourceFormProps } from '@/components/common/resource-list-page';
@@ -55,6 +62,7 @@ export function AdminForm({ initialData, onSuccess, onCancel }: ResourceFormProp
     defaultValues: {
       gender: Gender.MALE,
       status: AdminStatus.ACTIVE,
+      role: AdminRole.VIEWER,
       is_active: true,
     },
   });
@@ -71,6 +79,7 @@ export function AdminForm({ initialData, onSuccess, onCancel }: ResourceFormProp
         birth: formatDateForInput(initialData.birth),
         gender: initialData.gender ? Number(initialData.gender) : Gender.MALE,
         status: initialData.status !== undefined ? Number(initialData.status) : AdminStatus.ACTIVE,
+        role: initialData.role as AdminRole,
         is_active: initialData.is_active,
         avatar: initialData.avatar,
       });
@@ -86,6 +95,7 @@ export function AdminForm({ initialData, onSuccess, onCancel }: ResourceFormProp
         birth: '',
         gender: Gender.MALE,
         status: AdminStatus.ACTIVE,
+        role: AdminRole.VIEWER,
         is_active: true,
         avatar: '',
       });
@@ -137,6 +147,7 @@ export function AdminForm({ initialData, onSuccess, onCancel }: ResourceFormProp
   // Use useWatch hook instead of watch() to avoid React Compiler issues
   const genderValue = useWatch({ control, name: 'gender' });
   const statusValue = useWatch({ control, name: 'status' });
+  const roleValue = useWatch({ control, name: 'role' });
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
@@ -263,6 +274,14 @@ export function AdminForm({ initialData, onSuccess, onCancel }: ResourceFormProp
           />
         </FormField>
       </div>
+
+      <FormField id="role" label={tLabels('role')} required error={errors.role?.message}>
+        <OptionSelect
+          value={roleValue}
+          onChange={(value) => setValue('role', value as AdminRole)}
+          options={enumOptions(AdminRoleLabels)}
+        />
+      </FormField>
 
       <div className="mt-4 flex items-center gap-2">
         <input type="checkbox" id="is_active" {...register('is_active')} className="rounded" />

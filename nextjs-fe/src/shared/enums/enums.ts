@@ -38,6 +38,20 @@ export const AdminStatusLabels: Record<AdminStatus, string> = {
 };
 
 // ==========================================
+// AdminRole (app/Enums/AdminRole.php, ADR-0005)
+// An owner may change data, a viewer may only read it
+// ==========================================
+export enum AdminRole {
+  OWNER = 'owner',
+  VIEWER = 'viewer',
+}
+
+export const AdminRoleLabels: Record<AdminRole, string> = {
+  [AdminRole.OWNER]: 'Owner',
+  [AdminRole.VIEWER]: 'Viewer',
+};
+
+// ==========================================
 // Gender (app/Enums/Gender.php)
 // ==========================================
 export enum Gender {
