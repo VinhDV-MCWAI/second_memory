@@ -51,7 +51,10 @@
 
 - 2026-10-07 — Test Redis isolated (`0b1a294` fix(api)): `phpunit.xml` forces `REDIS_DB=14`, `REDIS_CACHE_DB=15` (dev uses 0/1); 24 `Redis::flushall()` → `flushdb()`. Checked: a probe key in dev DB 0 survives a full `make test`. `make verify` exit 0 (backend 377 passed, Vitest 104). Seen once, not reproduced in 4 later runs: `DeleteUserMgmtTest::delete single success` failed with a `QueryException` in the full suite (passes alone) — flaky; slice 3 deletes that module anyway, so not chased.
 
+- 2026-10-07 — RFC-001 slice 3 (end-user management) done: `c99ce64` refactor(api)! (module, `UserStatus` enum, factory, tests incl. `UserLifecycleIntegrationTest` and `FullSystemFlowTest` scenario 1, 10 stale baseline entries, migration `2026_10_07_100002_drop_user_mgmt_tables.php`, OpenAPI: exactly 8 paths + 9 schemas removed), `175e1e1` refactor(fe) (page, form, nav, route, endpoint, enum, schema, `entities.user(s)` messages). Dev `user_mgmt` was empty before the drop. Drop migration up → down → up tested on `testing` (both tables back, `address` 100). `make verify` exit 0: backend 358 passed, Vitest 104, lint 0 errors (old `auth-provider.tsx` warning).
+- Noticed: the admin dashboard (`nextjs-fe/src/app/admin/page.tsx`) shows hard-coded fake stats (`totalUsers: '1,234'`); left for later (dashboard is not in RFC-001's scope).
+
 ## Next step
 
-1. RFC-001 slice 3: remove end-user management with the removal pattern in RFC-001 §5 (FE → API → tests → drop migration whose `down()` uses `ReplaysMigrations` → `make openapi` → `make verify` → test `down()` on the `testing` DB via `docker exec -e DB_DATABASE=testing ml-php php artisan ...`).
-2. Then slices 4–6 (departments/policies, content CMS + docs "moved" page, file-manager UI).
+1. RFC-001 slice 4: remove departments and policies (+ unused view `admin_policy_view`, trigger `after_policy_department_insert`, department part of `RootAccountSeeder`, admin-form department field) with the removal pattern in RFC-001 §5 (FE → API → tests → drop migration whose `down()` uses `ReplaysMigrations` → `make openapi` → `make verify` → test `down()` on the `testing` DB via `docker exec -e DB_DATABASE=testing ml-php php artisan ...`). Views/triggers are created in migrations `..._000046`–`..._000049`; `down()` must recreate them too.
+2. Then slices 5–6 (content CMS + docs "moved" page, file-manager UI).
