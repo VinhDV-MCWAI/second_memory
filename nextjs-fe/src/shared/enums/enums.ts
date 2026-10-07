@@ -100,13 +100,16 @@ export enum UploadStatus {
 }
 
 // ==========================================
-// ActionType (app/Enums/ActionType.php)
-// History/Audit action types
+// AuditEvent (app/Enums/AuditEvent.php, ADR-0006)
+// What an audit_log row records
 // ==========================================
-export enum ActionType {
-  CREATE = 1,
-  UPDATE = 2,
-  DELETE = 3,
+export enum AuditEvent {
+  CREATED = 'created',
+  UPDATED = 'updated',
+  DELETED = 'deleted',
+  LOGGED_IN = 'logged_in',
+  LOGGED_OUT = 'logged_out',
+  LOGIN_FAILED = 'login_failed',
 }
 
 // ==========================================

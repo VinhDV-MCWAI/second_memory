@@ -30,6 +30,10 @@ import {
 import { UPLOAD_CONFIG } from '@/shared/config';
 import { getAdminSchema, type AdminFormData } from '@/shared/validation/validation';
 import type { ResourceFormProps } from '@/components/common/resource-list-page';
+import { HistoryViewer } from '@/features/history/components/history-viewer';
+
+/** audit_log.auditable_type of admins (AdminMstService::$auditableType). */
+const AUDITABLE_TYPE = 'admin';
 
 const STATUS_OPTIONS = [
   AdminStatus.ACTIVE,
@@ -150,163 +154,168 @@ export function AdminForm({ initialData, onSuccess, onCancel }: ResourceFormProp
   const roleValue = useWatch({ control, name: 'role' });
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-      <div className="mb-4 flex justify-center">
-        <AvatarUpload
-          value={avatarPreview ?? undefined}
-          onChange={(_file, preview) => setAvatarPreview(preview)}
-          maxSize={UPLOAD_CONFIG.DEFAULT_AVATAR_MAX_SIZE_MB}
-        />
-      </div>
+    <>
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+        <div className="mb-4 flex justify-center">
+          <AvatarUpload
+            value={avatarPreview ?? undefined}
+            onChange={(_file, preview) => setAvatarPreview(preview)}
+            maxSize={UPLOAD_CONFIG.DEFAULT_AVATAR_MAX_SIZE_MB}
+          />
+        </div>
 
-      <div className="grid grid-cols-2 gap-4">
-        <FormField
-          id="first_name"
-          label={tLabels('firstName')}
-          required
-          error={errors.first_name?.message}
-        >
-          <Input
+        <div className="grid grid-cols-2 gap-4">
+          <FormField
             id="first_name"
-            {...register('first_name')}
-            className={errors.first_name ? 'border-red-500' : ''}
-          />
-        </FormField>
-        <FormField
-          id="last_name"
-          label={tLabels('lastName')}
-          required
-          error={errors.last_name?.message}
-        >
-          <Input
+            label={tLabels('firstName')}
+            required
+            error={errors.first_name?.message}
+          >
+            <Input
+              id="first_name"
+              {...register('first_name')}
+              className={errors.first_name ? 'border-red-500' : ''}
+            />
+          </FormField>
+          <FormField
             id="last_name"
-            {...register('last_name')}
-            className={errors.last_name ? 'border-red-500' : ''}
-          />
-        </FormField>
-      </div>
+            label={tLabels('lastName')}
+            required
+            error={errors.last_name?.message}
+          >
+            <Input
+              id="last_name"
+              {...register('last_name')}
+              className={errors.last_name ? 'border-red-500' : ''}
+            />
+          </FormField>
+        </div>
 
-      <div className="grid grid-cols-2 gap-4">
-        <FormField id="email" label={tLabels('email')} required error={errors.email?.message}>
-          <Input
-            id="email"
-            type="email"
-            {...register('email')}
-            className={errors.email ? 'border-red-500' : ''}
-          />
-        </FormField>
-        <FormField
-          id="user_name"
-          label={tLabels('username')}
-          required
-          error={errors.user_name?.message}
-        >
-          <Input
+        <div className="grid grid-cols-2 gap-4">
+          <FormField id="email" label={tLabels('email')} required error={errors.email?.message}>
+            <Input
+              id="email"
+              type="email"
+              {...register('email')}
+              className={errors.email ? 'border-red-500' : ''}
+            />
+          </FormField>
+          <FormField
             id="user_name"
-            {...register('user_name')}
-            className={errors.user_name ? 'border-red-500' : ''}
-          />
-        </FormField>
-      </div>
+            label={tLabels('username')}
+            required
+            error={errors.user_name?.message}
+          >
+            <Input
+              id="user_name"
+              {...register('user_name')}
+              className={errors.user_name ? 'border-red-500' : ''}
+            />
+          </FormField>
+        </div>
 
-      <div className="space-y-2">
-        <Label htmlFor="password">
-          {tLabels('password')}{' '}
-          {isEdit ? (
-            `(${tForms('leaveBlankToKeepCurrent')})`
-          ) : (
-            <span className="text-red-500">*</span>
-          )}
-        </Label>
-        <Input
-          id="password"
-          type="password"
-          {...register('password')}
-          className={errors.password ? 'border-red-500' : ''}
-          placeholder={isEdit ? tForms('passwordHidden') : tCommon('enterPassword')}
-        />
-        {errors.password && <p className="text-sm text-red-500">{errors.password.message}</p>}
-      </div>
-
-      <div className="grid grid-cols-2 gap-4">
-        <FormField
-          id="phone_number"
-          label={tLabels('phoneNumber')}
-          error={errors.phone_number?.message}
-        >
+        <div className="space-y-2">
+          <Label htmlFor="password">
+            {tLabels('password')}{' '}
+            {isEdit ? (
+              `(${tForms('leaveBlankToKeepCurrent')})`
+            ) : (
+              <span className="text-red-500">*</span>
+            )}
+          </Label>
           <Input
+            id="password"
+            type="password"
+            {...register('password')}
+            className={errors.password ? 'border-red-500' : ''}
+            placeholder={isEdit ? tForms('passwordHidden') : tCommon('enterPassword')}
+          />
+          {errors.password && <p className="text-sm text-red-500">{errors.password.message}</p>}
+        </div>
+
+        <div className="grid grid-cols-2 gap-4">
+          <FormField
             id="phone_number"
-            {...register('phone_number')}
-            className={errors.phone_number ? 'border-red-500' : ''}
-          />
-        </FormField>
-        <FormField id="birth" label={tLabels('birthDate')} error={errors.birth?.message}>
+            label={tLabels('phoneNumber')}
+            error={errors.phone_number?.message}
+          >
+            <Input
+              id="phone_number"
+              {...register('phone_number')}
+              className={errors.phone_number ? 'border-red-500' : ''}
+            />
+          </FormField>
+          <FormField id="birth" label={tLabels('birthDate')} error={errors.birth?.message}>
+            <Input
+              id="birth"
+              type="date"
+              {...register('birth')}
+              className={errors.birth ? 'border-red-500' : ''}
+            />
+          </FormField>
+        </div>
+
+        <FormField id="address" label={tLabels('address')} error={errors.address?.message}>
           <Input
-            id="birth"
-            type="date"
-            {...register('birth')}
-            className={errors.birth ? 'border-red-500' : ''}
+            id="address"
+            {...register('address')}
+            className={errors.address ? 'border-red-500' : ''}
           />
         </FormField>
-      </div>
 
-      <FormField id="address" label={tLabels('address')} error={errors.address?.message}>
-        <Input
-          id="address"
-          {...register('address')}
-          className={errors.address ? 'border-red-500' : ''}
-        />
-      </FormField>
+        <div className="grid grid-cols-2 gap-4">
+          <FormField id="gender" label={tLabels('gender')} required error={errors.gender?.message}>
+            <OptionSelect
+              value={genderValue}
+              onChange={(value) => setValue('gender', Number(value) as Gender)}
+              options={enumOptions(GenderLabels)}
+            />
+          </FormField>
+          <FormField id="status" label={tLabels('status')} required error={errors.status?.message}>
+            <OptionSelect
+              value={statusValue}
+              onChange={(value) => setValue('status', Number(value) as AdminStatus)}
+              options={STATUS_OPTIONS}
+            />
+          </FormField>
+        </div>
 
-      <div className="grid grid-cols-2 gap-4">
-        <FormField id="gender" label={tLabels('gender')} required error={errors.gender?.message}>
+        <FormField id="role" label={tLabels('role')} required error={errors.role?.message}>
           <OptionSelect
-            value={genderValue}
-            onChange={(value) => setValue('gender', Number(value) as Gender)}
-            options={enumOptions(GenderLabels)}
+            value={roleValue}
+            onChange={(value) => setValue('role', value as AdminRole)}
+            options={enumOptions(AdminRoleLabels)}
           />
         </FormField>
-        <FormField id="status" label={tLabels('status')} required error={errors.status?.message}>
-          <OptionSelect
-            value={statusValue}
-            onChange={(value) => setValue('status', Number(value) as AdminStatus)}
-            options={STATUS_OPTIONS}
-          />
-        </FormField>
-      </div>
 
-      <FormField id="role" label={tLabels('role')} required error={errors.role?.message}>
-        <OptionSelect
-          value={roleValue}
-          onChange={(value) => setValue('role', value as AdminRole)}
-          options={enumOptions(AdminRoleLabels)}
-        />
-      </FormField>
+        <div className="mt-4 flex items-center gap-2">
+          <input type="checkbox" id="is_active" {...register('is_active')} className="rounded" />
+          <Label htmlFor="is_active">{tLabels('isActive')}</Label>
+        </div>
 
-      <div className="mt-4 flex items-center gap-2">
-        <input type="checkbox" id="is_active" {...register('is_active')} className="rounded" />
-        <Label htmlFor="is_active">{tLabels('isActive')}</Label>
-      </div>
-
-      <div className="flex justify-end gap-2 pt-4">
-        <Button
-          type="button"
-          variant="outline"
-          onClick={onCancel}
-          disabled={loading || isActionProcessing}
-        >
-          {tCommon('cancel')}
-        </Button>
-        <Button type="submit" disabled={loading || isActionProcessing}>
-          {loading || isActionProcessing
-            ? isEdit
-              ? tCommon('updating')
-              : tCommon('creating')
-            : isEdit
-              ? tCommon('update')
-              : tCommon('create')}
-        </Button>
-      </div>
-    </form>
+        <div className="flex justify-end gap-2 pt-4">
+          <Button
+            type="button"
+            variant="outline"
+            onClick={onCancel}
+            disabled={loading || isActionProcessing}
+          >
+            {tCommon('cancel')}
+          </Button>
+          <Button type="submit" disabled={loading || isActionProcessing}>
+            {loading || isActionProcessing
+              ? isEdit
+                ? tCommon('updating')
+                : tCommon('creating')
+              : isEdit
+                ? tCommon('update')
+                : tCommon('create')}
+          </Button>
+        </div>
+      </form>
+      {isEdit && initialData && (
+        <HistoryViewer auditableType={AUDITABLE_TYPE} recordId={initialData.id} className="mt-6" />
+      )}
+    </>
   );
 }

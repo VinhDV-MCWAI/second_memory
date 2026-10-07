@@ -10,6 +10,9 @@ export const API_ENDPOINTS = {
   MASTER: {
     ADMIN: '/admin/admin-mst',
   },
+  AUDIT: {
+    LOG: '/admin/audit-log',
+  },
 } as const;
 
 export const ENDPOINTS = API_ENDPOINTS;

@@ -229,10 +229,8 @@ export interface SavedFiltersProps {
  * History Components Types
  */
 export interface HistoryViewerProps {
-  /** The `*-hist` resource endpoint, e.g. `/admin/admin-mst-hist`. */
-  endpoint: string;
-  /** History column that references the audited row, e.g. `admin_mst_id`. */
-  foreignKey: string;
+  /** audit_log.auditable_type of the record, e.g. `admin`. */
+  auditableType: string;
   recordId: number;
   className?: string;
 }

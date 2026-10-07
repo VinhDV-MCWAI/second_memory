@@ -326,15 +326,18 @@
     }
   },
   "history": {
-    "loading": "Loading",
-    "noHistory": "No History",
-    "title": "Title",
-    "description": "Description",
-    "user": "User: {id}",
-    "actions": {
-      "create": "Created",
-      "update": "Updated",
-      "delete": "Deleted"
+    "loading": "Loading history",
+    "noHistory": "No changes recorded yet",
+    "title": "History",
+    "description": "Changes to this record, newest first",
+    "by": "by {name}",
+    "events": {
+      "created": "Created",
+      "updated": "Updated",
+      "deleted": "Deleted",
+      "logged_in": "Logged in",
+      "logged_out": "Logged out",
+      "login_failed": "Login failed"
     }
   },
   "validation": {
