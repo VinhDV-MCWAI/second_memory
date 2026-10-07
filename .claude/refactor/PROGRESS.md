@@ -7,7 +7,7 @@
 
 ### Status: paused by the user (2026-10-07) in the middle of FE6
 
-**Main working branch: `refactor/p4-frontend`** (tip `8021a54` + this doc commit). It contains **everything**: P0, P1, P2, P3 and P4 so far (the branches were stacked: p0-p1 → p2 → p3 → p4). Nothing has been pushed. Working tree clean.
+**Main working branch: `refactor/p4-frontend`**. It contains **everything**: P0, P1, P2, P3 and P4 so far (stacked p0-p1 → p2 → p3 → p4) **plus merges of `origin/developer` and `origin/main`** — ready to push (see Branches). Nothing pushed by Claude.
 
 Last verification (2026-10-07, on `refactor/p4-frontend`): backend **597 tests pass** (4 auth `RefreshTokenApiTest` cases excluded, see AUTH-GUIDE A13), Pint ✓, Larastan level 6 ✓, `openapi.json` current; FE tsc ✓ (both apps), ESLint 0 errors (1 warning, in the auth provider, deliberately not touched), Prettier ✓, **Vitest 90 tests, coverage 90% statements** (gate: 80/80/75/65).
 
@@ -50,27 +50,22 @@ Last verification (2026-10-07, on `refactor/p4-frontend`): backend **597 tests p
 4. **Browser check while logged in** (no credentials available to Claude): list pages, create/edit/delete dialogs, history tab, setting links, role wizard, file manager upload, error toasts.
 5. Decide: `media-official` bucket is public although documented as private (finding 12); history restore feature (no backend endpoint); whether bulk status / import-export features are actually wanted (they were fake, now removed).
 
-### Branches — what to keep, delete, push, merge
+### Branches — merged locally, ready for the user to push (2026-10-07)
 
-| Branch | What it is | Recommendation |
-|---|---|---|
-| `refactor/p4-frontend` | **The main branch of this refactor.** Contains all work P0→P4 (277 commits, 101 ahead of `origin/developer`) | **Keep and push.** This is the only branch to PR |
-| `refactor/p0-p1-foundation`, `refactor/p2-upgrades`, `refactor/p3-backend` | Older stages, fully contained in `refactor/p4-frontend` | **Delete locally** (`git branch -d …`); do not push |
-| `backup/pre-msg-rewrite` | Backup made before commit messages were rewritten (to drop the AI co-author trailer). Same content as the rewritten commits | **Delete** after the push succeeds |
-| `origin/developer` | Contains 38 commits that are the **old-message copies** (with the trailer) of commits already in `refactor/p4-frontend`; nothing else (verified with `git cherry`) | Update from `refactor/p4-frontend` (see options) |
-| `origin/main` | 4 merge commits + 1 own commit `1e59182 add .gitignore` → will conflict on `.gitignore` | Receives `developer` via PR; resolve `.gitignore` by keeping the refactor version and re-adding any lines from `1e59182` still needed |
-| `origin/feature/*`, `origin/staging` | Old remote branches, not touched by the refactor | User decides; likely stale |
+`refactor/p4-frontend` now contains `origin/developer` and `origin/main` (merge commits `bd3a495`, `7719341`), so **both PRs are fast-forwards with no conflicts**. `make verify` on the merged tip: exit 0 (backend 598 tests, Pint ✓, Larastan ✓, FE lint 0 errors, tsc ✓, Prettier ✓, Vitest coverage 90% stmts).
 
-**Recommended merge path (Git flow from CLAUDE.md: refactor → PR to `developer` → PR to `main`):**
+How the conflicts were resolved:
+- `origin/developer`: its 38 commits since `da659ed` are the **old-message copies** (with the AI trailer) of commits already on this branch (`git cherry`: all equivalent, none unique) → merged with `-s ours`, tree unchanged. Side effect: those 38 old commits stay in history (no force push needed).
+- `origin/main`: only real change was `1e59182 add .gitignore` → kept the refactor `.gitignore` (root `pnpm-lock.yaml` must stay tracked; `**/` rules already cover main's Nuxt/build/log entries) and added `laravel-api/storage/*.key` from main.
 
-1. `git push -u origin refactor/p4-frontend` and let CI run on a PR → `developer`.
-2. Because `developer` holds the old-message copies, choose one:
-   - **Option A (clean history, matches the "no AI trailer" decision — recommended if nobody else works on `developer`):** after CI is green, `git push --force-with-lease origin refactor/p4-frontend:developer`, then close the PR.
-   - **Option B (no force push):** `git merge origin/developer` into `refactor/p4-frontend` (trees are identical, so it merges cleanly, but the 38 old commits with the trailer stay in history), push, merge the PR normally.
-3. PR `developer` → `main`; resolve the `.gitignore` conflict from `1e59182`.
-4. Delete the stage branches and the backup branch.
+**User steps (manual):**
+1. `git push -u origin refactor/p4-frontend`
+2. PR `refactor/p4-frontend` → `developer`; wait for CI (frontend, backend, docker build — first real run on GitHub; the docker job was never built locally). Merge it.
+3. PR `developer` → `main`; merge it.
+4. Clean up locally once merged: `git branch -d refactor/p0-p1-foundation refactor/p2-upgrades refactor/p3-backend` and `git branch -D backup/pre-msg-rewrite` (all fully contained in `refactor/p4-frontend`). Old remote branches `feature/*`, `staging`: user's call.
+5. Continue the refactor on a new branch from the updated `developer` (e.g. `refactor/fe6-features`), per the Git flow in CLAUDE.md.
 
-Claude does not push or force-push without the user's explicit go-ahead.
+If CI fails on GitHub: check first whether it is environment-only (secrets, runner, docker cache) — everything passes locally with `make verify`.
 
 ## Findings discovered during work (not in original plan)
 
@@ -192,8 +187,9 @@ User delegated all P2+ items on 2026-10-06 ("toàn quyền thực hiện, không
 - 2026-10-07 — Stack restart needed (`make up`; Redis was slow to become healthy on first try, retry worked). FE1 done.
 - 2026-10-07 — Password hash leak fixed. FE4 done (+ integer Resource fields, history viewer, setting links).
 - 2026-10-07 — FE5 done (+ bulk status buttons removed, default sorts fixed).
+- 2026-10-07 — Merged `origin/developer` (`-s ours`, old-message copies) and `origin/main` (`.gitignore` resolved) into `refactor/p4-frontend`; `make verify` green. Waiting for the user to push/PR.
 - 2026-10-07 — Import/export fake toolbar removed, lint warnings cleared (25 → 1). FE6 started: feature folders (`8021a54`). Paused by the user; branch analysis written into the handoff summary.
 
 ## Next step
 
-Paused by the user on 2026-10-07. When resuming: finish FE6 (see "Remaining" in the handoff summary): form props → `ResourceFormProps<T>`, then split the files > 300 lines one per commit, verify (`make verify`), then D1, then P5. Before that, the user may push/merge per "Branches".
+Paused by the user on 2026-10-07; branch merged with developer/main and ready for the user to push + PR. When resuming (after the PRs are merged, on a new branch from `developer`): finish FE6 (see "Remaining" in the handoff summary): form props → `ResourceFormProps<T>`, then split the files > 300 lines one per commit, verify (`make verify`), then D1, then P5. Before that, the user may push/merge per "Branches".
