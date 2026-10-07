@@ -7,6 +7,7 @@ import type { Column } from '@/components/common/data-table/data-table';
 import type { FilterField } from '@/components/common/data-table/filter-panel';
 import { EntryForm } from '@/components/forms/entry-form';
 import { API_ENDPOINTS } from '@/shared/api';
+import { SORT_FIELDS } from '@/shared/config';
 import { IsDisplay, IsDisplayLabels } from '@/shared/enums/enums';
 import type { EntryMgmt } from '@/shared/types/api';
 import type { SearchField } from '@/shared/types/data-table.types';
@@ -50,7 +51,7 @@ export default function EntryListPage() {
       columns={columns}
       filterFields={filterFields}
       searchFields={searchFields}
-      defaultSortBy="order"
+      defaultSortBy={SORT_FIELDS.RANK_ORDER}
       filtersKey="entry-filters"
       form={EntryForm}
       dialogClassName="max-w-2xl"

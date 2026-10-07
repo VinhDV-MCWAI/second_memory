@@ -8,7 +8,7 @@ import type { FilterField } from '@/components/common/data-table/filter-panel';
 import { BannerForm } from '@/components/forms/banner-form';
 import { API_ENDPOINTS } from '@/shared/api';
 import { enumOptions } from '@/shared/utils/enum-options';
-import { TIME_CONSTANTS } from '@/shared/config';
+import { TIME_CONSTANTS, SORT_FIELDS } from '@/shared/config';
 import { IsActive, IsActiveLabels } from '@/shared/enums/enums';
 import type { BannerMgmt } from '@/shared/types/api';
 import type { SearchField } from '@/shared/types/data-table.types';
@@ -25,7 +25,6 @@ export default function BannerListPage() {
       render: (banner) => <ImageCell src={banner.image} alt={banner.title} />,
     },
     { key: 'title', label: tFields('title'), sortable: true },
-    { key: 'rank_order', label: tFields('order'), sortable: true },
     {
       key: 'status',
       label: tFields('status'),
@@ -67,7 +66,7 @@ export default function BannerListPage() {
       columns={columns}
       filterFields={filterFields}
       searchFields={searchFields}
-      defaultSortBy="rank_order"
+      defaultSortBy={SORT_FIELDS.ID}
       filtersKey="banner-filters"
       form={BannerForm}
       dialogClassName="max-w-4xl"

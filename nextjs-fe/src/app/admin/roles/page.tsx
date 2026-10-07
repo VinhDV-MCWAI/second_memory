@@ -7,6 +7,7 @@ import type { Column } from '@/components/common/data-table/data-table';
 import type { FilterField } from '@/components/common/data-table/filter-panel';
 import { RoleWizardDialog } from '@/components/forms/role-wizard-dialog';
 import { API_ENDPOINTS } from '@/shared/api';
+import { SORT_FIELDS } from '@/shared/config';
 import type { RoleMst } from '@/shared/types/api';
 import type { SearchField } from '@/shared/types/data-table.types';
 
@@ -49,7 +50,7 @@ export default function RoleListPage() {
       columns={columns}
       filterFields={filterFields}
       searchFields={searchFields}
-      defaultSortBy="created_at"
+      defaultSortBy={SORT_FIELDS.CREATED_AT}
       filtersKey="role-filters"
       editor={RoleWizardDialog}
     />

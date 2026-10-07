@@ -6,6 +6,7 @@ import type { Column } from '@/components/common/data-table/data-table';
 import type { FilterField } from '@/components/common/data-table/filter-panel';
 import { SettingLinkForm } from '@/components/forms/setting-link-form';
 import { API_ENDPOINTS } from '@/shared/api';
+import { SORT_FIELDS } from '@/shared/config';
 import type { SettingLinkMgmt } from '@/shared/types/api';
 import type { SearchField } from '@/shared/types/data-table.types';
 
@@ -36,7 +37,7 @@ export default function SettingLinkListPage() {
       columns={columns}
       filterFields={filterFields}
       searchFields={searchFields}
-      defaultSortBy="id"
+      defaultSortBy={SORT_FIELDS.ID}
       filtersKey="setting-link-filters"
       form={SettingLinkForm}
       dialogClassName="max-w-xl"

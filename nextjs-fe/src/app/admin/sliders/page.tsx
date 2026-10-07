@@ -7,6 +7,7 @@ import type { Column } from '@/components/common/data-table/data-table';
 import type { FilterField } from '@/components/common/data-table/filter-panel';
 import { SliderForm } from '@/components/forms/slider-form';
 import { API_ENDPOINTS } from '@/shared/api';
+import { SORT_FIELDS } from '@/shared/config';
 import { enumOptions } from '@/shared/utils/enum-options';
 import { IsActive, IsActiveLabels } from '@/shared/enums/enums';
 import type { SliderMgmt } from '@/shared/types/api';
@@ -41,7 +42,6 @@ export default function SliderListPage() {
           <span className="text-gray-400">-</span>
         ),
     },
-    { key: 'rank_order', label: tFields('order'), sortable: true },
     {
       key: 'status',
       label: tFields('status'),
@@ -88,7 +88,7 @@ export default function SliderListPage() {
       columns={columns}
       filterFields={filterFields}
       searchFields={searchFields}
-      defaultSortBy="order"
+      defaultSortBy={SORT_FIELDS.ID}
       filtersKey="slider-filters"
       form={SliderForm}
       dialogClassName="max-w-4xl"

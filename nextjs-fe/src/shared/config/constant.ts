@@ -120,7 +120,7 @@ export const SORT_FIELDS = {
   NAME: 'name',
   CREATED_AT: 'created_at',
   UPDATED_AT: 'updated_at',
-  ORDER: 'order',
+  RANK_ORDER: 'rank_order',
   STATUS: 'status',
 } as const;
 

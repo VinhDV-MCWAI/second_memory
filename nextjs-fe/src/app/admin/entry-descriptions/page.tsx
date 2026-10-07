@@ -6,6 +6,7 @@ import type { Column } from '@/components/common/data-table/data-table';
 import type { FilterField } from '@/components/common/data-table/filter-panel';
 import { EntryDescriptionForm } from '@/components/forms/entry-description-form';
 import { API_ENDPOINTS } from '@/shared/api';
+import { SORT_FIELDS } from '@/shared/config';
 import { StatusEnum, StatusEnumLabels } from '@/shared/enums';
 import type { EntryDescriptionMgmt } from '@/shared/types/api';
 import type { SearchField } from '@/shared/types/data-table.types';
@@ -74,7 +75,7 @@ export default function EntryDescriptionListPage() {
       columns={columns}
       filterFields={filterFields}
       searchFields={searchFields}
-      defaultSortBy="order"
+      defaultSortBy={SORT_FIELDS.RANK_ORDER}
       filtersKey="entry-description-filters"
       form={EntryDescriptionForm}
       dialogClassName="max-w-4xl"

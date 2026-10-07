@@ -7,6 +7,7 @@ import type { Column } from '@/components/common/data-table/data-table';
 import type { FilterField } from '@/components/common/data-table/filter-panel';
 import { FeatureForm } from '@/components/forms/feature-form';
 import { API_ENDPOINTS } from '@/shared/api';
+import { SORT_FIELDS } from '@/shared/config';
 import { enumOptions } from '@/shared/utils/enum-options';
 import { FeatureStatus, FeatureStatusLabels } from '@/shared/enums/enums';
 import type { FeatureMst } from '@/shared/types/api';
@@ -60,7 +61,7 @@ export default function FeatureListPage() {
       columns={columns}
       filterFields={filterFields}
       searchFields={searchFields}
-      defaultSortBy="created_at"
+      defaultSortBy={SORT_FIELDS.CREATED_AT}
       filtersKey="feature-filters"
       form={FeatureForm}
       dialogClassName="max-w-2xl"

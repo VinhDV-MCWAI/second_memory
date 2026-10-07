@@ -7,6 +7,7 @@ import type { Column } from '@/components/common/data-table/data-table';
 import type { FilterField } from '@/components/common/data-table/filter-panel';
 import { CategoryForm } from '@/components/forms/category-form';
 import { API_ENDPOINTS } from '@/shared/api';
+import { SORT_FIELDS } from '@/shared/config';
 import { enumOptions } from '@/shared/utils/enum-options';
 import { IsActive, IsActiveLabels } from '@/shared/enums/enums';
 import type { CategoryMgmt } from '@/shared/types/api';
@@ -64,7 +65,7 @@ export default function CategoryListPage() {
       columns={columns}
       filterFields={filterFields}
       searchFields={searchFields}
-      defaultSortBy="rank_order"
+      defaultSortBy={SORT_FIELDS.RANK_ORDER}
       filtersKey="category-filters"
       form={CategoryForm}
       dialogClassName="max-w-4xl"

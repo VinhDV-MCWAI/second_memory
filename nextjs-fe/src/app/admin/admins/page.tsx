@@ -65,7 +65,7 @@ export default function AdminListPage() {
       columns={columns}
       filterFields={filterFields}
       searchFields={searchFields}
-      defaultSortBy="created_at"
+      defaultSortBy={SORT_FIELDS.CREATED_AT}
       filtersKey="admin-filters"
       form={AdminForm}
       dialogClassName="max-w-2xl"

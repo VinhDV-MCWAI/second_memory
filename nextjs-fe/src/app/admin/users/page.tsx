@@ -7,6 +7,7 @@ import type { Column } from '@/components/common/data-table/data-table';
 import type { FilterField } from '@/components/common/data-table/filter-panel';
 import { UserForm } from '@/components/forms/user-form';
 import { API_ENDPOINTS } from '@/shared/api';
+import { SORT_FIELDS } from '@/shared/config';
 import { enumOptions } from '@/shared/utils/enum-options';
 import { Gender, GenderLabels, UserStatus, UserStatusLabels } from '@/shared/enums/enums';
 import type { UserMgmt } from '@/shared/types/api';
@@ -82,7 +83,7 @@ export default function UsersPage() {
       columns={columns}
       filterFields={filterFields}
       searchFields={searchFields}
-      defaultSortBy="created_at"
+      defaultSortBy={SORT_FIELDS.CREATED_AT}
       filtersKey="user-filters"
       form={UserForm}
       dialogClassName="max-w-4xl"

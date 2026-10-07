@@ -65,7 +65,7 @@ export default function ApiListPage() {
       columns={columns}
       filterFields={filterFields}
       searchFields={searchFields}
-      defaultSortBy="created_at"
+      defaultSortBy={SORT_FIELDS.CREATED_AT}
       filtersKey="api-filters"
       form={ApiForm}
       dialogClassName="max-w-xl"

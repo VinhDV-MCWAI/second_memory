@@ -6,6 +6,7 @@ import type { Column } from '@/components/common/data-table/data-table';
 import type { FilterField } from '@/components/common/data-table/filter-panel';
 import { TokenForm } from '@/components/forms/token-form';
 import { API_ENDPOINTS } from '@/shared/api';
+import { SORT_FIELDS } from '@/shared/config';
 import type { TokenMst } from '@/shared/types/api';
 import type { SearchField } from '@/shared/types/data-table.types';
 
@@ -45,7 +46,7 @@ export default function TokenListPage() {
       columns={columns}
       filterFields={filterFields}
       searchFields={searchFields}
-      defaultSortBy="created_at"
+      defaultSortBy={SORT_FIELDS.CREATED_AT}
       filtersKey="token-filters"
       form={TokenForm}
       dialogClassName="max-w-xl"

@@ -6,6 +6,7 @@ import type { Column } from '@/components/common/data-table/data-table';
 import type { FilterField } from '@/components/common/data-table/filter-panel';
 import { SocialForm } from '@/components/forms/social-form';
 import { API_ENDPOINTS } from '@/shared/api';
+import { SORT_FIELDS } from '@/shared/config';
 import type { SocialMgmt } from '@/shared/types/api';
 import type { SearchField } from '@/shared/types/data-table.types';
 
@@ -40,7 +41,7 @@ export default function SocialListPage() {
       columns={columns}
       filterFields={filterFields}
       searchFields={searchFields}
-      defaultSortBy="order"
+      defaultSortBy={SORT_FIELDS.RANK_ORDER}
       filtersKey="social-filters"
       form={SocialForm}
       dialogClassName="max-w-xl"
