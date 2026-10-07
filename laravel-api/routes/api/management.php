@@ -2,25 +2,10 @@
 
 declare(strict_types=1);
 
-use App\Http\Controllers\Management\CategoryMgmtController;
-use App\Http\Controllers\Management\EntryDescriptionMgmtController;
-use App\Http\Controllers\Management\EntryMgmtController;
 use App\Http\Controllers\Management\MediaMgmtController;
 use Illuminate\Support\Facades\Route;
 
-// Management data: list / store / update / delete per resource. Loaded inside the authenticated admin group.
-foreach ([
-    'category-mgmt' => CategoryMgmtController::class,
-    'entry-mgmt' => EntryMgmtController::class,
-    'entry-description-mgmt' => EntryDescriptionMgmtController::class,
-] as $resource => $controller) {
-    Route::get("{$resource}/list", [$controller, 'list']);
-    Route::post("{$resource}/store", [$controller, 'store']);
-    Route::put("{$resource}/update/{id}", [$controller, 'update']);
-    Route::post("{$resource}/delete", [$controller, 'delete']);
-}
-
-// Media Management (MinIO-based File Manager)
+// Media management (MinIO). Loaded inside the authenticated admin group.
 Route::get('media-mgmt/list', [MediaMgmtController::class, 'list']);
 Route::post('media-mgmt/prepare-upload', [MediaMgmtController::class, 'prepareUpload']);
 

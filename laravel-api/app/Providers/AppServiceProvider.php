@@ -4,10 +4,6 @@ declare(strict_types=1);
 
 namespace App\Providers;
 
-use App\Models\Management\EntryDescriptionMgmt;
-use App\Models\Management\EntryMgmt;
-use App\Observers\EntryDescriptionMgmtObserver;
-use App\Observers\EntryMgmtObserver;
 use Dedoc\Scramble\Scramble;
 use Dedoc\Scramble\Support\Generator\OpenApi;
 use Dedoc\Scramble\Support\Generator\SecurityScheme;
@@ -36,15 +32,11 @@ class AppServiceProvider extends ServiceProvider
         Model::preventLazyLoading(! $this->app->isProduction());
         Model::preventSilentlyDiscardingAttributes(! $this->app->isProduction());
 
-        // Under /api so nginx routes it to Laravel (/docs belongs to the docs site, /api/docs to the public docs API)
+        // Under /api so nginx routes it to Laravel (/docs belongs to the docs site)
         Scramble::configure()
             ->expose(ui: 'api/openapi', document: 'api/openapi.json')
             ->withDocumentTransformers(function (OpenApi $openApi): void {
                 $openApi->secure(SecurityScheme::apiKey('cookie', 'access_token'));
             });
-
-        // Register observers to clean up parent layout_structure when children are deleted
-        EntryMgmt::observe(EntryMgmtObserver::class);
-        EntryDescriptionMgmt::observe(EntryDescriptionMgmtObserver::class);
     }
 }

@@ -37,12 +37,6 @@ parameters:
 			path: app/Http/Middleware/BroadcastingAuthMiddleware.php
 
 		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\History\\Management\\EntryDescriptionMgmtHistResource\:\:\$entry_id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/History/Management/EntryDescriptionMgmtHistResource.php
-
-		-
 			message: '#^Call to an undefined method App\\Http\\Resources\\Management\\MediaFileCollection\:\:currentPage\(\)\.$#'
 			identifier: method.notFound
 			count: 1
@@ -223,24 +217,6 @@ parameters:
 			path: app/Jobs/Media/ProcessLargeFile.php
 
 		-
-			message: '#^PHPDoc type array\<string\> of property App\\Models\\History\\Management\\CategoryMgmtHist\:\:\$fillable is not covariant with PHPDoc type list\<string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$fillable\.$#'
-			identifier: property.phpDocType
-			count: 1
-			path: app/Models/History/Management/CategoryMgmtHist.php
-
-		-
-			message: '#^PHPDoc type array\<string\> of property App\\Models\\History\\Management\\EntryDescriptionMgmtHist\:\:\$fillable is not covariant with PHPDoc type list\<string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$fillable\.$#'
-			identifier: property.phpDocType
-			count: 1
-			path: app/Models/History/Management/EntryDescriptionMgmtHist.php
-
-		-
-			message: '#^PHPDoc type array\<string\> of property App\\Models\\History\\Management\\EntryMgmtHist\:\:\$fillable is not covariant with PHPDoc type list\<string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$fillable\.$#'
-			identifier: property.phpDocType
-			count: 1
-			path: app/Models/History/Management/EntryMgmtHist.php
-
-		-
 			message: '#^PHPDoc type array\<string\> of property App\\Models\\History\\Master\\AdminMstHist\:\:\$fillable is not covariant with PHPDoc type list\<string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$fillable\.$#'
 			identifier: property.phpDocType
 			count: 1
@@ -263,60 +239,6 @@ parameters:
 			identifier: property.phpDocType
 			count: 1
 			path: app/Models/History/Master/RoleMstHist.php
-
-		-
-			message: '#^Access to an undefined property App\\Models\\Management\\CategoryMgmt\:\:\$is_active\.$#'
-			identifier: property.notFound
-			count: 3
-			path: app/Models/Management/CategoryMgmt.php
-
-		-
-			message: '#^PHPDoc type array\<string\> of property App\\Models\\Management\\CategoryMgmt\:\:\$fillable is not covariant with PHPDoc type list\<string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$fillable\.$#'
-			identifier: property.phpDocType
-			count: 1
-			path: app/Models/Management/CategoryMgmt.php
-
-		-
-			message: '#^Property App\\Models\\Management\\CategoryMgmt\:\:\$is_delete \(bool\) does not accept int\.$#'
-			identifier: assign.propertyType
-			count: 2
-			path: app/Models/Management/CategoryMgmt.php
-
-		-
-			message: '#^Access to an undefined property App\\Models\\Management\\EntryDescriptionMgmt\:\:\$is_active\.$#'
-			identifier: property.notFound
-			count: 3
-			path: app/Models/Management/EntryDescriptionMgmt.php
-
-		-
-			message: '#^PHPDoc type array\<string\> of property App\\Models\\Management\\EntryDescriptionMgmt\:\:\$fillable is not covariant with PHPDoc type list\<string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$fillable\.$#'
-			identifier: property.phpDocType
-			count: 1
-			path: app/Models/Management/EntryDescriptionMgmt.php
-
-		-
-			message: '#^Property App\\Models\\Management\\EntryDescriptionMgmt\:\:\$is_delete \(bool\) does not accept int\.$#'
-			identifier: assign.propertyType
-			count: 2
-			path: app/Models/Management/EntryDescriptionMgmt.php
-
-		-
-			message: '#^Access to an undefined property App\\Models\\Management\\EntryMgmt\:\:\$is_active\.$#'
-			identifier: property.notFound
-			count: 3
-			path: app/Models/Management/EntryMgmt.php
-
-		-
-			message: '#^PHPDoc type array\<string\> of property App\\Models\\Management\\EntryMgmt\:\:\$fillable is not covariant with PHPDoc type list\<string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$fillable\.$#'
-			identifier: property.phpDocType
-			count: 1
-			path: app/Models/Management/EntryMgmt.php
-
-		-
-			message: '#^Property App\\Models\\Management\\EntryMgmt\:\:\$is_delete \(bool\) does not accept int\.$#'
-			identifier: assign.propertyType
-			count: 2
-			path: app/Models/Management/EntryMgmt.php
 
 		-
 			message: '#^Method App\\Models\\Management\\MediaMgmt\:\:children\(\) has no return type specified\.$#'
@@ -413,66 +335,6 @@ parameters:
 			identifier: property.phpDocType
 			count: 1
 			path: app/Models/User.php
-
-		-
-			message: '#^Call to function is_array\(\) with string\|null will always evaluate to false\.$#'
-			identifier: function.impossibleType
-			count: 1
-			path: app/Observers/EntryDescriptionMgmtObserver.php
-
-		-
-			message: '#^Property App\\Models\\Management\\EntryMgmt\:\:\$layout_structure \(string\|null\) does not accept array\.$#'
-			identifier: assign.propertyType
-			count: 1
-			path: app/Observers/EntryDescriptionMgmtObserver.php
-
-		-
-			message: '#^Variable \$layoutStructure in empty\(\) is never defined\.$#'
-			identifier: empty.variable
-			count: 1
-			path: app/Observers/EntryDescriptionMgmtObserver.php
-
-		-
-			message: '#^Call to function is_array\(\) with string\|null will always evaluate to false\.$#'
-			identifier: function.impossibleType
-			count: 1
-			path: app/Observers/EntryMgmtObserver.php
-
-		-
-			message: '#^Property App\\Models\\Management\\CategoryMgmt\:\:\$layout_structure \(string\|null\) does not accept array\.$#'
-			identifier: assign.propertyType
-			count: 1
-			path: app/Observers/EntryMgmtObserver.php
-
-		-
-			message: '#^Variable \$layoutStructure in empty\(\) is never defined\.$#'
-			identifier: empty.variable
-			count: 1
-			path: app/Observers/EntryMgmtObserver.php
-
-		-
-			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Builder\<Illuminate\\Database\\Eloquent\\Model\>\:\:notDeleted\(\)\.$#'
-			identifier: method.notFound
-			count: 3
-			path: app/Repositories/Management/CategoryMgmtRepository.php
-
-		-
-			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Builder\<Illuminate\\Database\\Eloquent\\Model\>\:\:notDeleted\(\)\.$#'
-			identifier: method.notFound
-			count: 2
-			path: app/Repositories/Management/EntryDescriptionMgmtRepository.php
-
-		-
-			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Builder\<Illuminate\\Database\\Eloquent\\Model\>\:\:notDeleted\(\)\.$#'
-			identifier: method.notFound
-			count: 3
-			path: app/Repositories/Management/EntryMgmtRepository.php
-
-		-
-			message: '#^Parameter \#1 \$layoutStructure of method App\\Repositories\\Management\\EntryMgmtRepository\:\:extractEntryIdsFromLayoutStructure\(\) expects array, string given\.$#'
-			identifier: argument.type
-			count: 1
-			path: app/Repositories/Management/EntryMgmtRepository.php
 
 		-
 			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Builder\<Illuminate\\Database\\Eloquent\\Model\>\:\:notDeleted\(\)\.$#'
@@ -631,12 +493,6 @@ parameters:
 			path: app/Utilities/JsonWebToken.php
 
 		-
-			message: '#^PHPDoc type string of property Database\\Factories\\Management\\CategoryMgmtFactory\:\:\$model is not covariant with PHPDoc type class\-string\<App\\Models\\Management\\CategoryMgmt\> of overridden property Illuminate\\Database\\Eloquent\\Factories\\Factory\<App\\Models\\Management\\CategoryMgmt\>\:\:\$model\.$#'
-			identifier: property.phpDocType
-			count: 1
-			path: database/factories/Management/CategoryMgmtFactory.php
-
-		-
 			message: '#^PHPDoc type string of property Database\\Factories\\Master\\AdminMstFactory\:\:\$model is not covariant with PHPDoc type class\-string\<App\\Models\\Master\\AdminMst\> of overridden property Illuminate\\Database\\Eloquent\\Factories\\Factory\<App\\Models\\Master\\AdminMst\>\:\:\$model\.$#'
 			identifier: property.phpDocType
 			count: 1
@@ -659,30 +515,6 @@ parameters:
 			identifier: property.phpDocType
 			count: 1
 			path: database/factories/Master/TokenMstFactory.php
-
-		-
-			message: '#^Empty array passed to foreach\.$#'
-			identifier: foreach.emptyArray
-			count: 1
-			path: database/seeders/EntryMgmtSeeder.php
-
-		-
-			message: '#^Negated boolean expression is always true\.$#'
-			identifier: booleanNot.alwaysTrue
-			count: 1
-			path: database/seeders/EntryMgmtSeeder.php
-
-		-
-			message: '#^Offset ''rank_order'' on array\{name\: ''API Resources'', slug\: ''api\-resources'', rank_order\: 4\}\|array\{name\: ''Authentication'', slug\: ''authentication'', rank_order\: 1\}\|array\{name\: ''Authorization'', slug\: ''authorization'', rank_order\: 2\}\|array\{name\: ''Categories API'', slug\: ''categories\-api'', rank_order\: 2\}\|array\{name\: ''Coding Conventions'', slug\: ''coding\-conventions'', rank_order\: 1\}\|array\{name\: ''Configuration'', slug\: ''configuration'', rank_order\: 3\}\|array\{name\: ''Controllers &…'', slug\: ''controllers\-services'', rank_order\: 2\}\|array\{name\: ''Design Patterns'', slug\: ''design\-patterns'', rank_order\: 3\}\|array\{name\: ''Docker Configuration'', slug\: ''docker\-configuration'', rank_order\: 1\}\|array\{name\: ''E2E Testing'', slug\: ''e2e\-testing'', rank_order\: 3\}\|array\{name\: ''Entries API'', slug\: ''entries\-api'', rank_order\: 3\}\|array\{name\: ''Environment…'', slug\: ''environment…'', rank_order\: 2\}\|array\{name\: ''Error Handling'', slug\: ''error\-handling'', rank_order\: 2\}\|array\{name\: ''Installation'', slug\: ''installation'', rank_order\: 1\}\|array\{name\: ''Integration Testing'', slug\: ''integration\-testing'', rank_order\: 2\}\|array\{name\: ''JWT Authentication'', slug\: ''jwt\-authentication'', rank_order\: 1\}\|array\{name\: ''Laravel Setup'', slug\: ''laravel\-setup'', rank_order\: 1\}\|array\{name\: ''Layered Architecture'', slug\: ''layered\-architecture'', rank_order\: 2\}\|array\{name\: ''Migrations'', slug\: ''migrations'', rank_order\: 1\}\|array\{name\: ''Models & Relations'', slug\: ''models\-relations'', rank_order\: 2\}\|array\{name\: ''Next\.js Setup'', slug\: ''nextjs\-setup'', rank_order\: 1\}\|array\{name\: ''Overview'', slug\: ''overview'', rank_order\: 1\}\|array\{name\: ''Performance…'', slug\: ''performance…'', rank_order\: 3\}\|array\{name\: ''Production Setup'', slug\: ''production\-setup'', rank_order\: 3\}\|array\{name\: ''Project Structure'', slug\: ''project\-structure'', rank_order\: 2\}\|array\{name\: ''Repository Pattern'', slug\: ''repository\-pattern'', rank_order\: 3\}\|array\{name\: ''Routing'', slug\: ''routing'', rank_order\: 2\}\|array\{name\: ''Search API'', slug\: ''search\-api'', rank_order\: 4\}\|array\{name\: ''Security Best…'', slug\: ''security\-best…'', rank_order\: 3\}\|array\{name\: ''Seeders'', slug\: ''seeders'', rank_order\: 3\}\|array\{name\: ''State Management'', slug\: ''state\-management'', rank_order\: 3\}\|array\{name\: ''Styling with…'', slug\: ''styling\-tailwind'', rank_order\: 4\}\|array\{name\: ''Unit Testing'', slug\: ''unit\-testing'', rank_order\: 1\} on left side of \?\? always exists and is not nullable\.$#'
-			identifier: nullCoalesce.offset
-			count: 1
-			path: database/seeders/EntryMgmtSeeder.php
-
-		-
-			message: '#^Property App\\Models\\Management\\CategoryMgmt\:\:\$layout_structure \(string\|null\) does not accept array\<int, array\<string, int\<0, max\>\>\>\.$#'
-			identifier: assign.propertyType
-			count: 1
-			path: database/seeders/EntryMgmtSeeder.php
 
 		-
 			message: '#^Argument of an invalid type Illuminate\\Routing\\RouteCollectionInterface supplied for foreach, only iterables are supported\.$#'

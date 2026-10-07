@@ -2,9 +2,6 @@
 
 declare(strict_types=1);
 
-use App\Http\Controllers\History\Management\CategoryMgmtHistController;
-use App\Http\Controllers\History\Management\EntryDescriptionMgmtHistController;
-use App\Http\Controllers\History\Management\EntryMgmtHistController;
 use App\Http\Controllers\History\Master\AdminMstHistController;
 use App\Http\Controllers\History\Master\ApiMstHistController;
 use App\Http\Controllers\History\Master\FeatureMstHistController;
@@ -17,9 +14,6 @@ foreach ([
     'api-mst-hist' => ApiMstHistController::class,
     'feature-mst-hist' => FeatureMstHistController::class,
     'role-mst-hist' => RoleMstHistController::class,
-    'category-mgmt-hist' => CategoryMgmtHistController::class,
-    'entry-description-mgmt-hist' => EntryDescriptionMgmtHistController::class,
-    'entry-mgmt-hist' => EntryMgmtHistController::class,
 ] as $resource => $controller) {
     Route::get("{$resource}/list", [$controller, 'list']);
     Route::post("{$resource}/store", [$controller, 'store']);

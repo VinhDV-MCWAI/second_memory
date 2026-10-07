@@ -9,10 +9,6 @@ use Illuminate\Support\Facades\Route;
 // Middleware aliases are registered in bootstrap/app.php.
 Broadcast::routes(['middleware' => ['api', 'auth.broadcasting'], 'prefix' => 'admin']);
 
-Route::prefix('docs')
-    ->middleware('api.response')
-    ->group(base_path('routes/api/docs.php'));
-
 Route::prefix('admin')
     ->middleware(['api.response', 'db.transaction'])
     ->group(function () {
