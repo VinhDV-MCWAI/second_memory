@@ -24,6 +24,7 @@
 # Laravel-specific
 # -------------------------------------------------------
 laravel-api/.env
+laravel-api/storage/*.key
 laravel-api/.phpunit.result.cache
 laravel-api/storage/framework/cache/data/*
 laravel-api/storage/framework/sessions/*
