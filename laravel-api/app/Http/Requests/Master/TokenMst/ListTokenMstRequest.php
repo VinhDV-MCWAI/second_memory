@@ -1,47 +1,38 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Requests\Master\TokenMst;
 
-use Illuminate\Foundation\Http\FormRequest;
 use App\Constants\CommonVal;
-use Illuminate\Validation\Rule;
-use Illuminate\Validation\Rules\Enum;
-use App\Models\Master\TokenMst;
+use App\Http\Requests\ListRequest;
+use Illuminate\Contracts\Validation\ValidationRule;
 
-class ListTokenMstRequest extends FormRequest
+class ListTokenMstRequest extends ListRequest
 {
     /**
-     * Determine if the user is authorized to make this request.
+     * @return array<string, ValidationRule|array<mixed>|string>
      */
-    public function authorize(): bool
-    {
-        return true;
-    }
-
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
-     */
-    public function rules(): array
+    protected function filters(): array
     {
         return [
-            'account_id' => ['nullable', 'integer', 'min:' . CommonVal::MIN_INTEGER, 'max:' . CommonVal::MAX_INTEGER,],
-            'device_name' => ['nullable', 'string', 'min:' . CommonVal::MIN_VARCHAR, 'max:255',],
-            'ip_address' => ['nullable', 'string', 'min:' . CommonVal::MIN_VARCHAR, 'max:255',],
-            'expired_at' => ['nullable', 'date_format:' . CommonVal::DATE_FORMAT, 'after_or_equal:' . CommonVal::MIN_DATE, 'before_or_equal:' . CommonVal::MAX_DATE,],
+            'token_hash' => ['nullable', 'string', 'max:'.CommonVal::MAX_VARCHAR],
+            'account_id' => ['nullable', 'integer', 'min:'.CommonVal::MIN_INTEGER, 'max:'.CommonVal::MAX_INTEGER],
+            'device_name' => ['nullable', 'string', 'min:'.CommonVal::MIN_VARCHAR, 'max:255'],
+            'ip_address' => ['nullable', 'string', 'min:'.CommonVal::MIN_VARCHAR, 'max:255'],
+            'expired_at' => ['nullable', 'date_format:'.CommonVal::DATE_FORMAT, 'after_or_equal:'.CommonVal::MIN_DATE, 'before_or_equal:'.CommonVal::MAX_DATE],
             'from_date' => [
                 'nullable',
-                'date_format:' . CommonVal::DATE_FORMAT,
-                'after_or_equal:' . CommonVal::MIN_DATE,
-                'before_or_equal:' . CommonVal::MAX_DATE,
+                'date_format:'.CommonVal::DATE_FORMAT,
+                'after_or_equal:'.CommonVal::MIN_DATE,
+                'before_or_equal:'.CommonVal::MAX_DATE,
             ],
             'to_date' => [
                 'nullable',
-                'date_format:' . CommonVal::DATE_FORMAT,
-                'after_or_equal:' . CommonVal::MIN_DATE,
-                'before_or_equal:' . CommonVal::MAX_DATE,
-                'after:from_date'
+                'date_format:'.CommonVal::DATE_FORMAT,
+                'after_or_equal:'.CommonVal::MIN_DATE,
+                'before_or_equal:'.CommonVal::MAX_DATE,
+                'after:from_date',
             ],
         ];
     }

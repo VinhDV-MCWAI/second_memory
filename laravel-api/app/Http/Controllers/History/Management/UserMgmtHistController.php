@@ -1,55 +1,50 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers\History\Management;
 
+use App\Http\Controllers\Controller;
+use App\Http\Requests\History\Management\UserMgmtHist\DeleteUserMgmtHistRequest;
 use App\Http\Requests\History\Management\UserMgmtHist\ListUserMgmtHistRequest;
 use App\Http\Requests\History\Management\UserMgmtHist\StoreUserMgmtHistRequest;
 use App\Http\Requests\History\Management\UserMgmtHist\UpdateUserMgmtHistRequest;
-use App\Http\Requests\History\Management\UserMgmtHist\DeleteUserMgmtHistRequest;
+use App\Http\Resources\History\Management\UserMgmtHistResource;
 use App\Services\History\Management\UserMgmtHistService;
-use App\Http\Controllers\Controller;
-use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class UserMgmtHistController extends Controller
 {
     public function __construct(
         protected UserMgmtHistService $userMgmtHist
-    )
-    {
-    }
-    
+    ) {}
+
     /**
      * UserMgmtHist list
-     *
-     * @param ListUserMgmtHistRequest $request
-     * @return JsonResource
      */
-    public function list(ListUserMgmtHistRequest $request): JsonResource
+    /**
+     * @return AnonymousResourceCollection<LengthAwarePaginator<int, UserMgmtHistResource>>
+     */
+    public function list(ListUserMgmtHistRequest $request): AnonymousResourceCollection
     {
-        return $this->userMgmtHist->list($request->all());
+        return $this->userMgmtHist->list($request->validated());
     }
 
     /**
      * Store user mgmt hist
-     *
-     * @param StoreUserMgmtHistRequest $request
-     * @return int
      */
     public function store(StoreUserMgmtHistRequest $request): int
     {
-        return $this->userMgmtHist->store($request->all());
+        return $this->userMgmtHist->store($request->validated());
     }
 
     /**
      * Update user mgmt hist
-     *
-     * @param UpdateUserMgmtHistRequest $request
-     * @param string $id
-     * @return int
      */
     public function update(UpdateUserMgmtHistRequest $request, string $id): int
     {
-        $payload = $request->all();
+        $payload = $request->validated();
         $payload['id'] = $id;
 
         return $this->userMgmtHist->update($payload);
@@ -57,12 +52,9 @@ class UserMgmtHistController extends Controller
 
     /**
      * Delete user mgmt hist
-     *
-     * @param DeleteUserMgmtHistRequest $request
-     * @return void
      */
     public function delete(DeleteUserMgmtHistRequest $request): void
     {
-        $this->userMgmtHist->delete($request->all());
+        $this->userMgmtHist->delete($request->validated());
     }
 }

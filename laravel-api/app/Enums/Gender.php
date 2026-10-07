@@ -6,48 +6,17 @@ namespace App\Enums;
 
 enum Gender: int
 {
-  /**
-   * male
-   *
-   * @var int
-   */
-    /**
-   * male
-   *
-   * @var int
-   */
-  case MALE = 1;
+    // male
+    case MALE = 1;
+    case FEMALE = 2;
+    case OTHER = 3;
 
-  /**
-   * female
-   *
-   * @var int
-   */
-  case FEMALE = 2;
-
-  /**
-   * other
-   *
-   * @var int
-   */
-  case OTHER = 3;
-
-  public static function getLabel(self|int $value): string
-  {
-    if (is_int($value)) {
-      $value = self::tryFrom($value);
+    public function label(): string
+    {
+        return match ($this) {
+            self::MALE => 'male',
+            self::FEMALE => 'female',
+            self::OTHER => 'other',
+        };
     }
-
-    return match ($value) {
-      self::MALE => 'male',
-      self::FEMALE => 'female',
-      self::OTHER => 'other',
-      default => '',
-    };
-  }
-
-  public function label(): string
-  {
-    return self::getLabel($this);
-  }
 }

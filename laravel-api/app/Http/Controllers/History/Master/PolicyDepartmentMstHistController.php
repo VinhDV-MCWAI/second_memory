@@ -1,55 +1,50 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers\History\Master;
 
+use App\Http\Controllers\Controller;
+use App\Http\Requests\History\Master\PolicyDepartmentMstHist\DeletePolicyDepartmentMstHistRequest;
 use App\Http\Requests\History\Master\PolicyDepartmentMstHist\ListPolicyDepartmentMstHistRequest;
 use App\Http\Requests\History\Master\PolicyDepartmentMstHist\StorePolicyDepartmentMstHistRequest;
 use App\Http\Requests\History\Master\PolicyDepartmentMstHist\UpdatePolicyDepartmentMstHistRequest;
-use App\Http\Requests\History\Master\PolicyDepartmentMstHist\DeletePolicyDepartmentMstHistRequest;
+use App\Http\Resources\History\Master\PolicyDepartmentMstHistResource;
 use App\Services\History\Master\PolicyDepartmentMstHistService;
-use App\Http\Controllers\Controller;
-use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class PolicyDepartmentMstHistController extends Controller
 {
     public function __construct(
         protected PolicyDepartmentMstHistService $policyDepartmentMstHist
-    )
-    {
-    }
-    
+    ) {}
+
     /**
      * PolicyDepartmentMstHist list
-     *
-     * @param ListPolicyDepartmentMstHistRequest $request
-     * @return JsonResource
      */
-    public function list(ListPolicyDepartmentMstHistRequest $request): JsonResource
+    /**
+     * @return AnonymousResourceCollection<LengthAwarePaginator<int, PolicyDepartmentMstHistResource>>
+     */
+    public function list(ListPolicyDepartmentMstHistRequest $request): AnonymousResourceCollection
     {
-        return $this->policyDepartmentMstHist->list($request->all());
+        return $this->policyDepartmentMstHist->list($request->validated());
     }
 
     /**
      * Store policy department mst hist
-     *
-     * @param StorePolicyDepartmentMstHistRequest $request
-     * @return int
      */
     public function store(StorePolicyDepartmentMstHistRequest $request): int
     {
-        return $this->policyDepartmentMstHist->store($request->all());
+        return $this->policyDepartmentMstHist->store($request->validated());
     }
 
     /**
      * Update policy department mst hist
-     *
-     * @param UpdatePolicyDepartmentMstHistRequest $request
-     * @param string $id
-     * @return int
      */
     public function update(UpdatePolicyDepartmentMstHistRequest $request, string $id): int
     {
-        $payload = $request->all();
+        $payload = $request->validated();
         $payload['id'] = $id;
 
         return $this->policyDepartmentMstHist->update($payload);
@@ -57,12 +52,9 @@ class PolicyDepartmentMstHistController extends Controller
 
     /**
      * Delete policy department mst hist
-     *
-     * @param DeletePolicyDepartmentMstHistRequest $request
-     * @return void
      */
     public function delete(DeletePolicyDepartmentMstHistRequest $request): void
     {
-        $this->policyDepartmentMstHist->delete($request->all());
+        $this->policyDepartmentMstHist->delete($request->validated());
     }
 }

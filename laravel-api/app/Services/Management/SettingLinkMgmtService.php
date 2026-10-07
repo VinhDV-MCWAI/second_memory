@@ -1,91 +1,22 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Services\Management;
 
-use App\Services\BaseService;
-use App\Interfaces\Management\SettingLinkMgmtInterface;
-use App\Interfaces\History\Management\SettingLinkMgmtHistInterface;
-use App\Enums\ActionType;
-use Illuminate\Http\Resources\Json\JsonResource;
 use App\Http\Resources\Management\SettingLinkMgmtResource;
+use App\Repositories\History\Management\SettingLinkMgmtHistRepository;
+use App\Repositories\Management\SettingLinkMgmtRepository;
+use App\Services\AuditedCrudService;
 
-class SettingLinkMgmtService extends BaseService
+class SettingLinkMgmtService extends AuditedCrudService
 {
-    public function __construct(
-        protected SettingLinkMgmtInterface $settingLinkMgmt,
-        protected SettingLinkMgmtHistInterface $settingLinkMgmtHist
-    ) {
-    }
+    protected string $resource = SettingLinkMgmtResource::class;
 
-    protected function getHistoryRepository()
+    protected string $historyForeignKey = 'setting_link_mgmt_id';
+
+    public function __construct(SettingLinkMgmtRepository $settingLinkMgmt, SettingLinkMgmtHistRepository $settingLinkMgmtHist)
     {
-        return $this->settingLinkMgmtHist;
-    }
-
-    protected function getHistoryForeignKey(): string
-    {
-        return 'setting_link_mgmt_id';
-    }
-
-    /**
-     * Get setting link mgmt list
-     *
-     * @param array $payload
-     * @return JsonResource
-     */
-    public function list(array $payload): JsonResource
-    {
-        $list = $this->settingLinkMgmt->list($payload);
-
-        return SettingLinkMgmtResource::collection($list);
-    }
-
-    /**
-     * Store setting link mgmt
-     *
-     * @param array $payload
-     * @return int
-     */
-    public function store(array $payload): int
-    {
-        $id = $this->settingLinkMgmt->executeStore($payload);
-        $this->recordHistory($id, ActionType::CREATE, $payload);
-
-        return $id;
-    }
-
-    /**
-     * Update setting link mgmt
-     *
-     * @param array $payload
-     * @return int
-     */
-    public function update(array $payload): int
-    {
-        $id = $payload['id'];
-        $affected = $this->settingLinkMgmt->executeUpdate($payload);
-        $this->recordHistory($id, ActionType::UPDATE, $payload);
-
-        return $affected;
-    }
-
-    /**
-     * Delete setting link mgmt
-     *
-     * @param array $payload
-     * @return void
-     */
-    public function delete(array $payload): void
-    {
-        if (!isset($payload['ids']) || !is_array($payload['ids'])) {
-            $this->settingLinkMgmt->executeDelete($payload['ids'] ?? []);
-            return;
-        }
-
-        foreach ($payload['ids'] as $id) {
-            $this->recordHistory($id, ActionType::DELETE, $payload);
-        }
-
-        $this->settingLinkMgmt->executeDelete($payload['ids']);
+        parent::__construct($settingLinkMgmt, $settingLinkMgmtHist);
     }
 }

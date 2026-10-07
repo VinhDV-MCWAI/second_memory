@@ -1,55 +1,50 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers\History\Management;
 
+use App\Http\Controllers\Controller;
+use App\Http\Requests\History\Management\BannerMgmtHist\DeleteBannerMgmtHistRequest;
 use App\Http\Requests\History\Management\BannerMgmtHist\ListBannerMgmtHistRequest;
 use App\Http\Requests\History\Management\BannerMgmtHist\StoreBannerMgmtHistRequest;
 use App\Http\Requests\History\Management\BannerMgmtHist\UpdateBannerMgmtHistRequest;
-use App\Http\Requests\History\Management\BannerMgmtHist\DeleteBannerMgmtHistRequest;
+use App\Http\Resources\History\Management\BannerMgmtHistResource;
 use App\Services\History\Management\BannerMgmtHistService;
-use App\Http\Controllers\Controller;
-use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class BannerMgmtHistController extends Controller
 {
     public function __construct(
         protected BannerMgmtHistService $bannerMgmtHist
-    )
-    {
-    }
-    
+    ) {}
+
     /**
      * BannerMgmtHist list
-     *
-     * @param ListBannerMgmtHistRequest $request
-     * @return JsonResource
      */
-    public function list(ListBannerMgmtHistRequest $request): JsonResource
+    /**
+     * @return AnonymousResourceCollection<LengthAwarePaginator<int, BannerMgmtHistResource>>
+     */
+    public function list(ListBannerMgmtHistRequest $request): AnonymousResourceCollection
     {
-        return $this->bannerMgmtHist->list($request->all());
+        return $this->bannerMgmtHist->list($request->validated());
     }
 
     /**
      * Store banner mgmt hist
-     *
-     * @param StoreBannerMgmtHistRequest $request
-     * @return int
      */
     public function store(StoreBannerMgmtHistRequest $request): int
     {
-        return $this->bannerMgmtHist->store($request->all());
+        return $this->bannerMgmtHist->store($request->validated());
     }
 
     /**
      * Update banner mgmt hist
-     *
-     * @param UpdateBannerMgmtHistRequest $request
-     * @param string $id
-     * @return int
      */
     public function update(UpdateBannerMgmtHistRequest $request, string $id): int
     {
-        $payload = $request->all();
+        $payload = $request->validated();
         $payload['id'] = $id;
 
         return $this->bannerMgmtHist->update($payload);
@@ -57,12 +52,9 @@ class BannerMgmtHistController extends Controller
 
     /**
      * Delete banner mgmt hist
-     *
-     * @param DeleteBannerMgmtHistRequest $request
-     * @return void
      */
     public function delete(DeleteBannerMgmtHistRequest $request): void
     {
-        $this->bannerMgmtHist->delete($request->all());
+        $this->bannerMgmtHist->delete($request->validated());
     }
 }

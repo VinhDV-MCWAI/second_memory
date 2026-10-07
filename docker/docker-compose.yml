@@ -39,14 +39,16 @@ services:
     container_name: ml-redis
     image: redis:7-alpine
     restart: unless-stopped
+    environment:
+      REDIS_PASSWORD: ${REDIS_PASSWORD}
     volumes:
       - redis_data:/data
       - ./redis/redis.conf:/usr/local/etc/redis/redis.conf:ro
     ports:
       - "${REDIS_PORT_OUTSIDE_ENV}:${REDIS_PORT_INSIDE_ENV}"
-    command: ["redis-server", "/usr/local/etc/redis/redis.conf"]
+    command: ["sh", "-c", "exec redis-server /usr/local/etc/redis/redis.conf --requirepass \"$$REDIS_PASSWORD\""]
     healthcheck:
-      test: ["CMD", "redis-cli", "--raw", "incr", "ping"]
+      test: ["CMD-SHELL", "redis-cli --no-auth-warning -a \"$$REDIS_PASSWORD\" ping | grep -q PONG"]
       interval: 10s
       timeout: 3s
       retries: 5
@@ -68,7 +70,7 @@ services:
       dockerfile: ../docker/laravel/Dockerfile
       target: development
       args:
-        PHP_VERSION: "8.3"
+        PHP_VERSION: "8.5"
     restart: unless-stopped
     working_dir: /var/www/laravel-api
     volumes:
@@ -127,7 +129,7 @@ services:
       dockerfile: ../docker/laravel/Dockerfile
       target: development
       args:
-        PHP_VERSION: "8.3"
+        PHP_VERSION: "8.5"
     restart: unless-stopped
     working_dir: /var/www/laravel-api
     command: php artisan reverb:start --debug
@@ -177,7 +179,7 @@ services:
       dockerfile: ../docker/laravel/Dockerfile
       target: development
       args:
-        PHP_VERSION: "8.3"
+        PHP_VERSION: "8.5"
     restart: unless-stopped
     working_dir: /var/www/laravel-api
     command: php artisan queue:work --verbose --tries=3 --timeout=900
@@ -228,20 +230,21 @@ services:
   ml-nextjs:
     container_name: ml-nextjs
     build:
-      context: ../nextjs-fe
-      dockerfile: ../docker/nextjs/Dockerfile
+      # Repo root context: installs from the workspace root pnpm-lock.yaml
+      context: ..
+      dockerfile: docker/nextjs/Dockerfile
       target: development
+      args:
+        APP: nextjs-fe
     restart: unless-stopped
     volumes:
-      - ../nextjs-fe:/app
-      - /app/.next
-      - /app/node_modules
+      - ../nextjs-fe:/repo/nextjs-fe
+      - /repo/nextjs-fe/.next
+      - /repo/nextjs-fe/node_modules
     environment:
       NODE_ENV: development
       PORT: ${NEXTJS_PORT_INSIDE_ENV}
       HOSTNAME: 0.0.0.0
-      WATCHPACK_POLLING: true
-      CHOKIDAR_USEPOLLING: true
       # Memory optimization for dev mode
       NODE_OPTIONS: "--max-old-space-size=1536"
     ports:
@@ -273,20 +276,21 @@ services:
   ml-nextjs-docs:
     container_name: ml-nextjs-docs
     build:
-      context: ../nextjs-docs
-      dockerfile: ../docker/nextjs/Dockerfile
+      # Repo root context: installs from the workspace root pnpm-lock.yaml
+      context: ..
+      dockerfile: docker/nextjs/Dockerfile
       target: development
+      args:
+        APP: nextjs-docs
     restart: unless-stopped
     volumes:
-      - ../nextjs-docs:/app
-      - /app/.next
-      - docs_node_modules:/app/node_modules
+      - ../nextjs-docs:/repo/nextjs-docs
+      - /repo/nextjs-docs/.next
+      - /repo/nextjs-docs/node_modules
     environment:
       NODE_ENV: development
       PORT: ${NEXTJS_DOCS_PORT_INSIDE_ENV}
       HOSTNAME: 0.0.0.0
-      WATCHPACK_POLLING: true
-      CHOKIDAR_USEPOLLING: true
       NEXT_PUBLIC_API_URL: http://localhost:81/api
     ports:
       - "${NEXTJS_DOCS_PORT_OUTSIDE_ENV}:${NEXTJS_DOCS_PORT_INSIDE_ENV}"
@@ -356,7 +360,7 @@ services:
   # MinIO Object Storage (S3-compatible)
   ml-minio:
     container_name: ml-minio
-    image: minio/minio:latest
+    image: ${MINIO_IMAGE:-pgsty/minio:RELEASE.2026-08-04T00-00-00Z}
     restart: unless-stopped
     ports:
       - "${MINIO_PORT_OUTSIDE_ENV}:${MINIO_PORT_INSIDE_ENV}"
@@ -393,7 +397,7 @@ services:
   # MinIO client - auto init buckets
   ml-minio-init:
     container_name: ml-minio-init
-    image: alpine:latest
+    image: ${MINIO_IMAGE:-pgsty/minio:RELEASE.2026-08-04T00-00-00Z}
     depends_on:
       ml-minio:
         condition: service_healthy
@@ -405,9 +409,8 @@ services:
       MINIO_IAM_USER: ${MINIO_IAM_USER}
       MINIO_IAM_PASSWORD: ${MINIO_IAM_PASSWORD}
     volumes:
-      - ./minio:/minio
-      - ../laravel-api:/laravel-api
-    entrypoint: /bin/sh /minio/create-buckets.sh
+      - ./minio:/minio:ro
+    entrypoint: ["/bin/sh", "/minio/create-buckets.sh"]
     networks:
       - app-network
 
@@ -422,9 +425,6 @@ volumes:
   minio_data:
     driver: local
     name: ml_minio_data
-  docs_node_modules:
-    driver: local
-    name: ml_docs_node_modules
 
 # Network configuration
 networks:

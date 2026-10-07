@@ -1,63 +1,19 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Services\History\Management;
 
-use App\Interfaces\History\Management\SocialMgmtHistInterface;
-
-use Illuminate\Http\Resources\Json\JsonResource;
 use App\Http\Resources\History\Management\SocialMgmtHistResource;
+use App\Repositories\History\Management\SocialMgmtHistRepository;
+use App\Services\CrudService;
 
-class SocialMgmtHistService
+class SocialMgmtHistService extends CrudService
 {
-    public function __construct(
-        protected SocialMgmtHistInterface $socialMgmtHist
-    )
-    {
-    }
+    protected string $resource = SocialMgmtHistResource::class;
 
-    /**
-     * Get social mgmt hist list
-     *
-     * @param array $payload
-     * @return JsonResource
-     */
-    public function list(array $payload): JsonResource
+    public function __construct(SocialMgmtHistRepository $socialMgmtHist)
     {
-        $list = $this->socialMgmtHist->list($payload);
-
-        return SocialMgmtHistResource::collection($list);
-    }
-
-    /**
-     * Store social mgmt hist
-     *
-     * @param array $payload
-     * @return int
-     */
-    public function store(array $payload): int
-    {
-        return $this->socialMgmtHist->executeStore($payload);
-    }
-
-    /**
-     * Update social mgmt hist
-     *
-     * @param array $payload
-     * @return int
-     */
-    public function update(array $payload): int
-    {
-        return $this->socialMgmtHist->executeUpdate($payload);
-    }
-
-    /**
-     * Delete social mgmt hist
-     *
-     * @param array $payload
-     * @return void
-     */
-    public function delete(array $payload): void
-    {
-        $this->socialMgmtHist->executeDelete($payload['ids']);
+        parent::__construct($socialMgmtHist);
     }
 }

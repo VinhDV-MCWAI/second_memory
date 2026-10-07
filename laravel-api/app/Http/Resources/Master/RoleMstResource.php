@@ -1,13 +1,21 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Resources\Master;
 
-use App\Constants\CommonVal;
+use App\Http\Resources\Concerns\FormatsDates;
+use App\Models\Master\RoleMst;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
+/**
+ * @mixin RoleMst
+ */
 class RoleMstResource extends JsonResource
 {
+    use FormatsDates;
+
     /**
      * Transform the resource into an array.
      *
@@ -16,12 +24,12 @@ class RoleMstResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'id' => (int)$this->id,
-            'name' => (string)$this->name,
-            'permission' => (string)$this->permission,
-            'is_active' => (bool)$this->is_active,
-            'is_delete' => (bool)$this->is_delete,
-            'updated_at' => (string)date(CommonVal::DATE_FORMAT, strtotime($this->updated_at)),
+            'id' => (int) $this->id,
+            'name' => (string) $this->name,
+            'permission' => (string) $this->permission,
+            'is_active' => (bool) $this->is_active,
+            'is_delete' => (bool) $this->is_delete,
+            'updated_at' => $this->formatDate($this->updated_at),
         ];
     }
 }

@@ -1,55 +1,50 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers\History\Management;
 
+use App\Http\Controllers\Controller;
+use App\Http\Requests\History\Management\SocialMgmtHist\DeleteSocialMgmtHistRequest;
 use App\Http\Requests\History\Management\SocialMgmtHist\ListSocialMgmtHistRequest;
 use App\Http\Requests\History\Management\SocialMgmtHist\StoreSocialMgmtHistRequest;
 use App\Http\Requests\History\Management\SocialMgmtHist\UpdateSocialMgmtHistRequest;
-use App\Http\Requests\History\Management\SocialMgmtHist\DeleteSocialMgmtHistRequest;
+use App\Http\Resources\History\Management\SocialMgmtHistResource;
 use App\Services\History\Management\SocialMgmtHistService;
-use App\Http\Controllers\Controller;
-use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class SocialMgmtHistController extends Controller
 {
     public function __construct(
         protected SocialMgmtHistService $socialMgmtHist
-    )
-    {
-    }
-    
+    ) {}
+
     /**
      * SocialMgmtHist list
-     *
-     * @param ListSocialMgmtHistRequest $request
-     * @return JsonResource
      */
-    public function list(ListSocialMgmtHistRequest $request): JsonResource
+    /**
+     * @return AnonymousResourceCollection<LengthAwarePaginator<int, SocialMgmtHistResource>>
+     */
+    public function list(ListSocialMgmtHistRequest $request): AnonymousResourceCollection
     {
-        return $this->socialMgmtHist->list($request->all());
+        return $this->socialMgmtHist->list($request->validated());
     }
 
     /**
      * Store social mgmt hist
-     *
-     * @param StoreSocialMgmtHistRequest $request
-     * @return int
      */
     public function store(StoreSocialMgmtHistRequest $request): int
     {
-        return $this->socialMgmtHist->store($request->all());
+        return $this->socialMgmtHist->store($request->validated());
     }
 
     /**
      * Update social mgmt hist
-     *
-     * @param UpdateSocialMgmtHistRequest $request
-     * @param string $id
-     * @return int
      */
     public function update(UpdateSocialMgmtHistRequest $request, string $id): int
     {
-        $payload = $request->all();
+        $payload = $request->validated();
         $payload['id'] = $id;
 
         return $this->socialMgmtHist->update($payload);
@@ -57,12 +52,9 @@ class SocialMgmtHistController extends Controller
 
     /**
      * Delete social mgmt hist
-     *
-     * @param DeleteSocialMgmtHistRequest $request
-     * @return void
      */
     public function delete(DeleteSocialMgmtHistRequest $request): void
     {
-        $this->socialMgmtHist->delete($request->all());
+        $this->socialMgmtHist->delete($request->validated());
     }
 }

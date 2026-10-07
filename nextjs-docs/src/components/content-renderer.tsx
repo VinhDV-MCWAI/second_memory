@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { EditorContent, useEditor, type JSONContent } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import Image from '@tiptap/extension-image';
@@ -10,6 +10,7 @@ import { Color } from '@tiptap/extension-color';
 import Highlight from '@tiptap/extension-highlight';
 import { Video } from './extensions/video';
 import { cn } from '@/lib/utils';
+import { useIsClient } from '@/hooks/use-is-client';
 
 interface ContentRendererProps {
   content: string | JSONContent | null;
@@ -17,12 +18,11 @@ interface ContentRendererProps {
 }
 
 export function ContentRenderer({ content, className }: ContentRendererProps) {
-  const [hydrated, setHydrated] = useState(false);
+  const hydrated = useIsClient();
 
   const editor = useEditor({
     immediatelyRender: false,
     extensions: [
-      // @ts-expect-error - Mismatched extension type from monorepo tiptap versions
       StarterKit.configure({
         heading: {
           levels: [1, 2, 3, 4, 5, 6],
@@ -54,22 +54,21 @@ export function ContentRenderer({ content, className }: ContentRendererProps) {
           'prose prose-sm sm:prose-base lg:prose-lg xl:prose-xl',
           'max-w-none',
           'focus:outline-none',
-          className
+          className,
         ),
       },
     },
   });
 
   useEffect(() => {
-    setHydrated(true);
-  }, []);
-
-  useEffect(() => {
     if (editor && content !== undefined) {
-      const newContent = typeof content === 'string' ? 
-        (content ? JSON.parse(content) : { type: 'doc', content: [] }) : 
-        content;
-      
+      const newContent =
+        typeof content === 'string'
+          ? content
+            ? JSON.parse(content)
+            : { type: 'doc', content: [] }
+          : content;
+
       editor.commands.setContent(newContent || { type: 'doc', content: [] });
     }
   }, [content, editor]);
@@ -77,9 +76,9 @@ export function ContentRenderer({ content, className }: ContentRendererProps) {
   if (!hydrated) {
     return (
       <div className={cn('animate-pulse space-y-3', className)}>
-        <div className="h-4 bg-gray-200 rounded w-3/4"></div>
-        <div className="h-4 bg-gray-200 rounded w-full"></div>
-        <div className="h-4 bg-gray-200 rounded w-5/6"></div>
+        <div className="h-4 w-3/4 rounded bg-gray-200"></div>
+        <div className="h-4 w-full rounded bg-gray-200"></div>
+        <div className="h-4 w-5/6 rounded bg-gray-200"></div>
       </div>
     );
   }

@@ -1,71 +1,62 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Requests\Management\SocialMgmt;
 
-use Illuminate\Foundation\Http\FormRequest;
 use App\Constants\CommonVal;
-use Illuminate\Validation\Rule;
-use Illuminate\Validation\Rules\Enum;
-use App\Models\Management\SocialMgmt;
 use App\Enums\IsActive;
 use App\Enums\IsDelete;
 use App\Enums\StatusEnum;
+use App\Http\Requests\ListRequest;
+use Illuminate\Contracts\Validation\ValidationRule;
+use Illuminate\Validation\Rule;
 
-class ListSocialMgmtRequest extends FormRequest
+class ListSocialMgmtRequest extends ListRequest
 {
-  /**
-   * Determine if the user is authorized to make this request.
-   */
-  public function authorize(): bool
-  {
-    return true;
-  }
+    /**
+     * @return array<string, ValidationRule|array<mixed>|string>
+     */
+    protected function filters(): array
+    {
+        return [
+            'name' => ['nullable', 'string', 'min:'.CommonVal::MIN_VARCHAR, 'max:50'],
+            'slug' => ['nullable', 'string', 'min:'.CommonVal::MIN_VARCHAR, 'max:50'],
+            'link' => ['nullable', 'string', 'min:'.CommonVal::MIN_VARCHAR, 'max:255'],
+            'image' => ['nullable', 'string', 'min:'.CommonVal::MIN_VARCHAR, 'max:100'],
+            'status' => ['nullable', Rule::enum(StatusEnum::class)],
+            'is_display' => ['nullable', Rule::enum(IsActive::class)],
+            'rank_order' => ['nullable', 'integer', 'min:'.CommonVal::MIN_INTEGER, 'max:'.CommonVal::MAX_INTEGER],
+            'is_delete' => ['nullable', Rule::enum(IsDelete::class)],
+            'from_date' => [
+                'nullable',
+                'date_format:'.CommonVal::DATE_FORMAT,
+                'after_or_equal:'.CommonVal::MIN_DATE,
+                'before_or_equal:'.CommonVal::MAX_DATE,
+            ],
+            'to_date' => [
+                'nullable',
+                'date_format:'.CommonVal::DATE_FORMAT,
+                'after_or_equal:'.CommonVal::MIN_DATE,
+                'before_or_equal:'.CommonVal::MAX_DATE,
+                'after:from_date',
+            ],
+        ];
+    }
 
-  /**
-   * Get the validation rules that apply to the request.
-   *
-   * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
-   */
-  public function rules(): array
-  {
-    return [
-      'name' => ['nullable', 'string', 'min:' . CommonVal::MIN_VARCHAR, 'max:50',],
-      'slug' => ['nullable', 'string', 'min:' . CommonVal::MIN_VARCHAR, 'max:50',],
-      'link' => ['nullable', 'string', 'min:' . CommonVal::MIN_VARCHAR, 'max:255',],
-      'image' => ['nullable', 'string', 'min:' . CommonVal::MIN_VARCHAR, 'max:100',],
-      'status' => ['nullable', new Enum(StatusEnum::class),],
-      'is_display' => ['nullable', new Enum(IsActive::class),],
-      'rank_order' => ['nullable', 'integer', 'min:' . CommonVal::MIN_INTEGER, 'max:' . CommonVal::MAX_INTEGER,],
-      'is_delete' => ['nullable', new Enum(IsDelete::class),],
-      'from_date' => [
-        'nullable',
-        'date_format:' . CommonVal::DATE_FORMAT,
-        'after_or_equal:' . CommonVal::MIN_DATE,
-        'before_or_equal:' . CommonVal::MAX_DATE,
-      ],
-      'to_date' => [
-        'nullable',
-        'date_format:' . CommonVal::DATE_FORMAT,
-        'after_or_equal:' . CommonVal::MIN_DATE,
-        'before_or_equal:' . CommonVal::MAX_DATE,
-        'after:from_date'
-      ],
-    ];
-  }
-
-  public function attributes(): array
-  {
-    return [
-      'name' => __('messages.name'),
-      'slug' => __('messages.slug'),
-      'link' => __('messages.link'),
-      'image' => __('messages.image'),
-      'status' => __('messages.status'),
-      'is_display' => __('messages.is_display'),
-      'rank_order' => __('messages.rank_order'),
-      'is_delete' => __('messages.is_delete'),
-      'from_date' => __('messages.from_date'),
-      'to_date' => __('messages.to_date'),
-    ];
-  }
+    public function attributes(): array
+    {
+        return [
+            'name' => __('messages.name'),
+            'slug' => __('messages.slug'),
+            'link' => __('messages.link'),
+            'image' => __('messages.image'),
+            'status' => __('messages.status'),
+            'is_display' => __('messages.is_display'),
+            'rank_order' => __('messages.rank_order'),
+            'is_delete' => __('messages.is_delete'),
+            'from_date' => __('messages.from_date'),
+            'to_date' => __('messages.to_date'),
+        ];
+    }
 }

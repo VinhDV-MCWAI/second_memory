@@ -6,39 +6,10 @@ namespace App\Enums;
 
 enum TypeOfMethod: int
 {
-    /**
-     * GET
-     *
-     * @var int
-     */
     case GET = 0;
-
-    /**
-     * POST
-     *
-     * @var int
-     */
     case POST = 1;
-
-    /**
-     * PUT
-     *
-     * @var int
-     */
     case PUT = 2;
-
-    /**
-     * PATCH
-     *
-     * @var int
-     */
     case PATCH = 3;
-
-    /**
-     * DELETE
-     *
-     * @var int
-     */
     case DELETE = 4;
 
     public static function fromName(string $method): ?self
@@ -53,24 +24,14 @@ enum TypeOfMethod: int
         };
     }
 
-    public static function getLabel(self|int $value): string
+    public function label(): string
     {
-        if (is_int($value)) {
-            $value = self::tryFrom($value);
-        }
-
-        return match ($value) {
+        return match ($this) {
             self::GET => 'GET',
             self::POST => 'POST',
             self::PUT => 'PUT',
             self::PATCH => 'PATCH',
             self::DELETE => 'DELETE',
-            default => '',
         };
-    }
-
-    public function label(): string
-    {
-        return self::getLabel($this);
     }
 }

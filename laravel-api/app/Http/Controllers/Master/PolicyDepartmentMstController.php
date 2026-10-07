@@ -1,55 +1,50 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers\Master;
 
+use App\Http\Controllers\Controller;
+use App\Http\Requests\Master\PolicyDepartmentMst\DeletePolicyDepartmentMstRequest;
 use App\Http\Requests\Master\PolicyDepartmentMst\ListPolicyDepartmentMstRequest;
 use App\Http\Requests\Master\PolicyDepartmentMst\StorePolicyDepartmentMstRequest;
 use App\Http\Requests\Master\PolicyDepartmentMst\UpdatePolicyDepartmentMstRequest;
-use App\Http\Requests\Master\PolicyDepartmentMst\DeletePolicyDepartmentMstRequest;
+use App\Http\Resources\Master\PolicyDepartmentMstResource;
 use App\Services\Master\PolicyDepartmentMstService;
-use App\Http\Controllers\Controller;
-use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class PolicyDepartmentMstController extends Controller
 {
     public function __construct(
         protected PolicyDepartmentMstService $policyDepartmentMst
-    )
-    {
-    }
-    
+    ) {}
+
     /**
      * PolicyDepartmentMst list
-     *
-     * @param ListPolicyDepartmentMstRequest $request
-     * @return JsonResource
      */
-    public function list(ListPolicyDepartmentMstRequest $request): JsonResource
+    /**
+     * @return AnonymousResourceCollection<LengthAwarePaginator<int, PolicyDepartmentMstResource>>
+     */
+    public function list(ListPolicyDepartmentMstRequest $request): AnonymousResourceCollection
     {
-        return $this->policyDepartmentMst->list($request->all());
+        return $this->policyDepartmentMst->list($request->validated());
     }
 
     /**
      * Store policy department mst
-     *
-     * @param StorePolicyDepartmentMstRequest $request
-     * @return int
      */
     public function store(StorePolicyDepartmentMstRequest $request): int
     {
-        return $this->policyDepartmentMst->store($request->all());
+        return $this->policyDepartmentMst->store($request->validated());
     }
 
     /**
      * Update policy department mst
-     *
-     * @param UpdatePolicyDepartmentMstRequest $request
-     * @param string $id
-     * @return int
      */
     public function update(UpdatePolicyDepartmentMstRequest $request, string $id): int
     {
-        $payload = $request->all();
+        $payload = $request->validated();
         $payload['id'] = $id;
 
         return $this->policyDepartmentMst->update($payload);
@@ -57,12 +52,9 @@ class PolicyDepartmentMstController extends Controller
 
     /**
      * Delete policy department mst
-     *
-     * @param DeletePolicyDepartmentMstRequest $request
-     * @return void
      */
     public function delete(DeletePolicyDepartmentMstRequest $request): void
     {
-        $this->policyDepartmentMst->delete($request->all());
+        $this->policyDepartmentMst->delete($request->validated());
     }
 }

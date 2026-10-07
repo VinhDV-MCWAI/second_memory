@@ -65,8 +65,6 @@
     "failedToCreate": "Failed to create",
     "failedToUpdate": "Failed to update",
     "failedToDelete": "Failed to delete",
-    "failedToFetchHistory": "Failed to fetch history",
-    "failedToRestoreVersion": "Failed to restore version",
     "failedToLoadData": "Failed to load data",
     "noChangesToSave": "No changes to save",
     "relationshipsUpdatedSuccessfully": "Relationships updated successfully",
@@ -199,15 +197,9 @@
   "bulkActions": {
     "itemsSelected": "{count} item(s) selected",
     "deleteSelected": "Delete Selected",
-    "archiveSelected": "Archive Selected",
-    "activateSelected": "Activate Selected",
-    "deactivateSelected": "Deactivate Selected",
     "clear": "Clear",
     "confirmAction": "Confirm Action",
-    "deleteItems": "Delete Items",
     "deleteConfirm": "Are you sure you want to delete {count} item(s)? This action cannot be undone.",
-    "activateConfirm": "Are you sure you want to activate {count} item(s)?",
-    "deactivateConfirm": "Are you sure you want to deactivate {count} item(s)?",
     "processing": "Processing...",
     "continue": "Continue"
   },
@@ -278,6 +270,7 @@
     "icon": "Icon",
     "order": "Order",
     "type": "Type",
+    "key": "Key",
     "value": "Value",
     "path": "Path",
     "method": "Method",
@@ -555,8 +548,6 @@
       "urlExample": "https://example.com",
       "iconExample": "e.g., 📱 or fa-mobile",
       "termsOfService": "e.g. Terms of Service",
-      "privacyPolicy": "e.g. Privacy Policy",
-      "privacyUrl": "https://example.com/privacy",
       "slugExample": "e.g. javascript",
       "socialName": "e.g. Facebook, Twitter",
       "socialIcon": "e.g. fa-brands fa-facebook",
@@ -569,47 +560,22 @@
       "selectAccount": "Select Account",
       "deviceName": "Device Name",
       "ipAddress": "IP Address",
-      "selectRoles": "Select roles"
+      "selectRoles": "Select roles",
+      "settingKey": "e.g. privacy_policy",
+      "settingValue": "https://example.com/privacy"
     }
   },
   "history": {
-    "restoreConfirm": "Are you sure you want to restore this version?",
-    "nullValue": "Null Value",
-    "noChanges": "No Changes",
-    "changes": "Changes",
-    "oldValue": "Old Value",
-    "newValue": "New Value",
     "loading": "Loading",
     "noHistory": "No History",
     "title": "Title",
     "description": "Description",
-    "unknownTime": "Unknown Time",
-    "invalidDate": "Invalid Date",
-    "unknownDate": "Unknown Date",
-    "ip": "IP",
-    "noTimeline": "No Timeline",
-    "timeline": "Timeline",
-    "timelineDescription": "Timeline Description",
-    "user": "User: {id}"
-  },
-  "importExport": {
-    "exportFailed": "Export failed",
-    "importFailed": "Import failed",
-    "selectFile": "Please select a file",
-    "exported": "Exported {moduleName} as {format}",
-    "imported": "Imported {moduleName} successfully",
-    "templateDownloaded": "Downloaded {format} template",
-    "templateDownloadFailed": "Template download failed",
-    "title": "Title",
-    "description": "Description",
-    "export": "Export",
-    "import": "Import",
-    "selectFormat": "Select Format",
-    "exportDescription": "Export Description",
-    "selected": "Selected",
-    "importAs": "Import As",
-    "or": "Or",
-    "downloadTemplate": "Download Template"
+    "user": "User: {id}",
+    "actions": {
+      "create": "Created",
+      "update": "Updated",
+      "delete": "Deleted"
+    }
   },
   "validation": {
     "required": "{field} is required",
@@ -716,7 +682,15 @@
       "required": "Row ID is required"
     },
     "invalidEmail": "Invalid Email",
-    "saving": "Saving"
+    "saving": "Saving",
+    "key": {
+      "required": "Key is required",
+      "maxLength": "Key cannot exceed {max} characters"
+    },
+    "value": {
+      "required": "Value is required",
+      "maxLength": "Value cannot exceed {max} characters"
+    }
   },
   "advancedSearch": {
     "contains": "Contains",

@@ -3,47 +3,125 @@ name: CD Pipeline
 on:
   push:
     branches:
-      - dev
+      - developer
+
+concurrency:
+  group: cd-${{ github.ref }}
+  cancel-in-progress: false
+
+env:
+  REGISTRY: ghcr.io
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
 jobs:
-  build:
+  # ============================================================
+  # Job 1: Build & Push Docker images (runs on GitHub hosted runner)
+  # ============================================================
+  build-and-push:
+    name: "Build & Push Docker Images"
     runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      packages: write
+
+    outputs:
+      repo_lower: ${{ steps.repo_lower.outputs.repo_lower }}
+      image_tag: ${{ steps.meta.outputs.version }}
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Compute lowercase repo name
+        id: repo_lower
+        run: echo "repo_lower=${GITHUB_REPOSITORY,,}" >> "$GITHUB_OUTPUT"
+
+      - name: Set image tag (short SHA)
+        id: meta
+        run: echo "version=${GITHUB_SHA::8}" >> "$GITHUB_OUTPUT"
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
+        with:
+          driver-opts: image=moby/buildkit:master
 
-      - name: Login to Container Registry
+      - name: Login to GHCR
         uses: docker/login-action@v3
         with:
-          registry: ghcr.io
+          registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      # ---- Build API (Laravel PHP-FPM) ----
       - name: Build and push API image
         uses: docker/build-push-action@v5
         with:
           context: ./laravel-api
+          file: ./docker/laravel/Dockerfile
+          target: production
           push: true
-          tags: ghcr.io/${{ github.repository }}/api:latest
+          cache-from: type=gha,scope=api
+          cache-to: type=gha,mode=max,scope=api
+          tags: |
+            ${{ env.REGISTRY }}/${{ steps.repo_lower.outputs.repo_lower }}/api:latest
+            ${{ env.REGISTRY }}/${{ steps.repo_lower.outputs.repo_lower }}/api:${{ steps.meta.outputs.version }}
 
+      # ---- Build Frontend (Next.js) ----
       - name: Build and push FE image
         uses: docker/build-push-action@v5
         with:
-          context: ./nextjs-fe
+          # Repo root context: installs from the workspace root pnpm-lock.yaml
+          context: .
+          file: ./docker/nextjs/Dockerfile
+          target: production
+          build-args: |
+            APP=nextjs-fe
           push: true
-          tags: ghcr.io/${{ github.repository }}/fe:latest
+          cache-from: type=gha,scope=fe
+          cache-to: type=gha,mode=max,scope=fe
+          tags: |
+            ${{ env.REGISTRY }}/${{ steps.repo_lower.outputs.repo_lower }}/fe:latest
+            ${{ env.REGISTRY }}/${{ steps.repo_lower.outputs.repo_lower }}/fe:${{ steps.meta.outputs.version }}
 
+  # ============================================================
+  # Job 2: Deploy via Blue-Green (runs on self-hosted VM runner)
+  # ============================================================
   deploy:
-    needs: build
+    name: "Deploy (Blue-Green)"
+    needs: build-and-push
     runs-on: self-hosted
+
+    environment:
+      name: production
+      url: http://172.17.0.124
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Deploy to Production
+      - name: Login to GHCR (on VM)
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ${{ env.REGISTRY }} -u ${{ github.actor }} --password-stdin
+
+      - name: Pull latest images
+        env:
+          REPO_LOWER: ${{ needs.build-and-push.outputs.repo_lower }}
+        run: |
+          for i in {1..10}; do
+            docker pull ${{ env.REGISTRY }}/$REPO_LOWER/api:latest && break || (echo "Retry API pull $i/10..." && sleep 20)
+          done
+          for i in {1..10}; do
+            docker pull ${{ env.REGISTRY }}/$REPO_LOWER/fe:latest && break || (echo "Retry FE pull $i/10..." && sleep 20)
+          done
+
+      - name: Run Blue-Green deploy
+        env:
+          REPO_LOWER: ${{ needs.build-and-push.outputs.repo_lower }}
+          IMAGE_TAG: ${{ needs.build-and-push.outputs.image_tag }}
+          REGISTRY: ${{ env.REGISTRY }}
         run: |
           chmod +x ci-cd/deploy.sh
           ./ci-cd/deploy.sh

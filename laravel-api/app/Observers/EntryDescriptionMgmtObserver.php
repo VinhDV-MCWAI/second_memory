@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Observers;
 
 use App\Models\Management\EntryDescriptionMgmt;
@@ -11,9 +13,6 @@ class EntryDescriptionMgmtObserver
     /**
      * Handle the EntryDescriptionMgmt "deleted" event.
      * Clean up all parent entries' layout_structure when a description is deleted.
-     *
-     * @param EntryDescriptionMgmt $entryDescriptionMgmt
-     * @return void
      */
     public function deleted(EntryDescriptionMgmt $entryDescriptionMgmt): void
     {
@@ -25,29 +24,26 @@ class EntryDescriptionMgmtObserver
 
             foreach ($entries as $entry) {
                 $layoutStructure = $entry->layout_structure;
-                
-                if (is_array($layoutStructure) && !empty($layoutStructure)) {
+
+                if (is_array($layoutStructure) && ! empty($layoutStructure)) {
                     $updated = $this->removeDescriptionFromStructure($layoutStructure, $entryDescriptionMgmt->id);
-                    
+
                     if ($updated) {
                         $entry->layout_structure = $layoutStructure;
                         $entry->save();
-                        
+
                         Log::info("Cleaned entry_desc_id {$entryDescriptionMgmt->id} from entry {$entry->id} layout_structure");
                     }
                 }
             }
         } catch (\Exception $e) {
-            Log::error("Failed to clean layout_structure after description deletion: " . $e->getMessage());
+            Log::error('Failed to clean layout_structure after description deletion: '.$e->getMessage());
         }
     }
 
     /**
      * Handle the EntryDescriptionMgmt "updated" event.
      * Soft delete handling - when is_delete is set to true.
-     *
-     * @param EntryDescriptionMgmt $entryDescriptionMgmt
-     * @return void
      */
     public function updated(EntryDescriptionMgmt $entryDescriptionMgmt): void
     {
@@ -60,8 +56,6 @@ class EntryDescriptionMgmtObserver
     /**
      * Recursively remove description from layout structure
      *
-     * @param array &$structure
-     * @param int $descriptionId
      * @return bool True if structure was modified
      */
     private function removeDescriptionFromStructure(array &$structure, int $descriptionId): bool
@@ -73,6 +67,7 @@ class EntryDescriptionMgmtObserver
             if (isset($item['entry_desc_id']) && $item['entry_desc_id'] === $descriptionId) {
                 unset($structure[$key]);
                 $modified = true;
+
                 continue;
             }
 

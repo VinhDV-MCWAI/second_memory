@@ -1,16 +1,17 @@
 'use client';
 
-import "./globals.css";
+import './globals.css';
 import { Providers } from './providers';
 import { MetadataManager } from '@/components/common/metadata-manager';
 import { useEffect, useState } from 'react';
+import type { AbstractIntlMessages } from 'next-intl';
 
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const [messages, setMessages] = useState<any>({});
+  const [messages, setMessages] = useState<AbstractIntlMessages>({});
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -20,7 +21,7 @@ export default function RootLayout({
         const locale = localStorage.getItem('locale') || 'en';
         const msgs = await import(`@/../messages/${locale}.json`);
         setMessages(msgs.default);
-      } catch (error) {
+      } catch {
         // Fallback to English
         const msgs = await import(`@/../messages/en.json`);
         setMessages(msgs.default);

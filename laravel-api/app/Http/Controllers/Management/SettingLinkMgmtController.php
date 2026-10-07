@@ -1,55 +1,50 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers\Management;
 
+use App\Http\Controllers\Controller;
+use App\Http\Requests\Management\SettingLinkMgmt\DeleteSettingLinkMgmtRequest;
 use App\Http\Requests\Management\SettingLinkMgmt\ListSettingLinkMgmtRequest;
 use App\Http\Requests\Management\SettingLinkMgmt\StoreSettingLinkMgmtRequest;
 use App\Http\Requests\Management\SettingLinkMgmt\UpdateSettingLinkMgmtRequest;
-use App\Http\Requests\Management\SettingLinkMgmt\DeleteSettingLinkMgmtRequest;
+use App\Http\Resources\Management\SettingLinkMgmtResource;
 use App\Services\Management\SettingLinkMgmtService;
-use App\Http\Controllers\Controller;
-use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class SettingLinkMgmtController extends Controller
 {
     public function __construct(
         protected SettingLinkMgmtService $settingLinkMgmt
-    )
-    {
-    }
-    
+    ) {}
+
     /**
      * SettingLinkMgmt list
-     *
-     * @param ListSettingLinkMgmtRequest $request
-     * @return JsonResource
      */
-    public function list(ListSettingLinkMgmtRequest $request): JsonResource
+    /**
+     * @return AnonymousResourceCollection<LengthAwarePaginator<int, SettingLinkMgmtResource>>
+     */
+    public function list(ListSettingLinkMgmtRequest $request): AnonymousResourceCollection
     {
-        return $this->settingLinkMgmt->list($request->all());
+        return $this->settingLinkMgmt->list($request->validated());
     }
 
     /**
      * Store setting link mgmt
-     *
-     * @param StoreSettingLinkMgmtRequest $request
-     * @return int
      */
     public function store(StoreSettingLinkMgmtRequest $request): int
     {
-        return $this->settingLinkMgmt->store($request->all());
+        return $this->settingLinkMgmt->store($request->validated());
     }
 
     /**
      * Update setting link mgmt
-     *
-     * @param UpdateSettingLinkMgmtRequest $request
-     * @param string $id
-     * @return int
      */
     public function update(UpdateSettingLinkMgmtRequest $request, string $id): int
     {
-        $payload = $request->all();
+        $payload = $request->validated();
         $payload['id'] = $id;
 
         return $this->settingLinkMgmt->update($payload);
@@ -57,12 +52,9 @@ class SettingLinkMgmtController extends Controller
 
     /**
      * Delete setting link mgmt
-     *
-     * @param DeleteSettingLinkMgmtRequest $request
-     * @return void
      */
     public function delete(DeleteSettingLinkMgmtRequest $request): void
     {
-        $this->settingLinkMgmt->delete($request->all());
+        $this->settingLinkMgmt->delete($request->validated());
     }
 }

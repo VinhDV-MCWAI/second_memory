@@ -1,55 +1,50 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers\Management;
 
+use App\Http\Controllers\Controller;
+use App\Http\Requests\Management\EntryDescriptionMgmt\DeleteEntryDescriptionMgmtRequest;
 use App\Http\Requests\Management\EntryDescriptionMgmt\ListEntryDescriptionMgmtRequest;
 use App\Http\Requests\Management\EntryDescriptionMgmt\StoreEntryDescriptionMgmtRequest;
 use App\Http\Requests\Management\EntryDescriptionMgmt\UpdateEntryDescriptionMgmtRequest;
-use App\Http\Requests\Management\EntryDescriptionMgmt\DeleteEntryDescriptionMgmtRequest;
+use App\Http\Resources\Management\EntryDescriptionMgmtResource;
 use App\Services\Management\EntryDescriptionMgmtService;
-use App\Http\Controllers\Controller;
-use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class EntryDescriptionMgmtController extends Controller
 {
     public function __construct(
         protected EntryDescriptionMgmtService $entryDescriptionMgmt
-    )
-    {
-    }
-    
+    ) {}
+
     /**
      * EntryDescriptionMgmt list
-     *
-     * @param ListEntryDescriptionMgmtRequest $request
-     * @return JsonResource
      */
-    public function list(ListEntryDescriptionMgmtRequest $request): JsonResource
+    /**
+     * @return AnonymousResourceCollection<LengthAwarePaginator<int, EntryDescriptionMgmtResource>>
+     */
+    public function list(ListEntryDescriptionMgmtRequest $request): AnonymousResourceCollection
     {
-        return $this->entryDescriptionMgmt->list($request->all());
+        return $this->entryDescriptionMgmt->list($request->validated());
     }
 
     /**
      * Store entry description mgmt
-     *
-     * @param StoreEntryDescriptionMgmtRequest $request
-     * @return int
      */
     public function store(StoreEntryDescriptionMgmtRequest $request): int
     {
-        return $this->entryDescriptionMgmt->store($request->all());
+        return $this->entryDescriptionMgmt->store($request->validated());
     }
 
     /**
      * Update entry description mgmt
-     *
-     * @param UpdateEntryDescriptionMgmtRequest $request
-     * @param string $id
-     * @return int
      */
     public function update(UpdateEntryDescriptionMgmtRequest $request, string $id): int
     {
-        $payload = $request->all();
+        $payload = $request->validated();
         $payload['id'] = $id;
 
         return $this->entryDescriptionMgmt->update($payload);
@@ -57,12 +52,9 @@ class EntryDescriptionMgmtController extends Controller
 
     /**
      * Delete entry description mgmt
-     *
-     * @param DeleteEntryDescriptionMgmtRequest $request
-     * @return void
      */
     public function delete(DeleteEntryDescriptionMgmtRequest $request): void
     {
-        $this->entryDescriptionMgmt->delete($request->all());
+        $this->entryDescriptionMgmt->delete($request->validated());
     }
 }

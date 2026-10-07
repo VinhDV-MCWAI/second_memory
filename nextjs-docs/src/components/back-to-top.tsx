@@ -1,42 +1,42 @@
-"use client"
+'use client';
 
-import * as React from "react"
-import { ChevronUp } from "lucide-react"
-import { cn } from "@/lib/utils"
+import * as React from 'react';
+import { ChevronUp } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 export default function BackToTop() {
-  const [isVisible, setIsVisible] = React.useState(false)
+  const [isVisible, setIsVisible] = React.useState(false);
 
   React.useEffect(() => {
     const toggleVisibility = () => {
       if (window.scrollY > 300) {
-        setIsVisible(true)
+        setIsVisible(true);
       } else {
-        setIsVisible(false)
+        setIsVisible(false);
       }
-    }
+    };
 
-    window.addEventListener("scroll", toggleVisibility)
-    return () => window.removeEventListener("scroll", toggleVisibility)
-  }, [])
+    window.addEventListener('scroll', toggleVisibility);
+    return () => window.removeEventListener('scroll', toggleVisibility);
+  }, []);
 
   const scrollToTop = () => {
     window.scrollTo({
       top: 0,
-      behavior: "smooth",
-    })
-  }
+      behavior: 'smooth',
+    });
+  };
 
   return (
     <button
       onClick={scrollToTop}
       className={cn(
-        "fixed bottom-8 right-8 z-50 p-3 rounded-full bg-blue-600/90 text-white shadow-lg transition-all duration-300 hover:bg-blue-600 hover:scale-110 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2",
-        isVisible ? "translate-y-0 opacity-100" : "translate-y-16 opacity-0 pointer-events-none"
+        'fixed right-8 bottom-8 z-50 rounded-full bg-blue-600/90 p-3 text-white shadow-lg transition-all duration-300 hover:scale-110 hover:bg-blue-600 focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 focus:outline-none',
+        isVisible ? 'translate-y-0 opacity-100' : 'pointer-events-none translate-y-16 opacity-0',
       )}
       aria-label="Back to top"
     >
       <ChevronUp className="h-6 w-6" />
     </button>
-  )
+  );
 }

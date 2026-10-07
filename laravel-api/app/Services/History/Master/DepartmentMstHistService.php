@@ -1,63 +1,19 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Services\History\Master;
 
-use App\Interfaces\History\Master\DepartmentMstHistInterface;
-
-use Illuminate\Http\Resources\Json\JsonResource;
 use App\Http\Resources\History\Master\DepartmentMstHistResource;
+use App\Repositories\History\Master\DepartmentMstHistRepository;
+use App\Services\CrudService;
 
-class DepartmentMstHistService
+class DepartmentMstHistService extends CrudService
 {
-    public function __construct(
-        protected DepartmentMstHistInterface $departmentMstHist
-    )
-    {
-    }
+    protected string $resource = DepartmentMstHistResource::class;
 
-    /**
-     * Get department mst hist list
-     *
-     * @param array $payload
-     * @return JsonResource
-     */
-    public function list(array $payload): JsonResource
+    public function __construct(DepartmentMstHistRepository $departmentMstHist)
     {
-        $list = $this->departmentMstHist->list($payload);
-
-        return DepartmentMstHistResource::collection($list);
-    }
-
-    /**
-     * Store department mst hist
-     *
-     * @param array $payload
-     * @return int
-     */
-    public function store(array $payload): int
-    {
-        return $this->departmentMstHist->executeStore($payload);
-    }
-
-    /**
-     * Update department mst hist
-     *
-     * @param array $payload
-     * @return int
-     */
-    public function update(array $payload): int
-    {
-        return $this->departmentMstHist->executeUpdate($payload);
-    }
-
-    /**
-     * Delete department mst hist
-     *
-     * @param array $payload
-     * @return void
-     */
-    public function delete(array $payload): void
-    {
-        $this->departmentMstHist->executeDelete($payload['ids']);
+        parent::__construct($departmentMstHist);
     }
 }

@@ -1,25 +1,49 @@
+# Nginx Blue-Green Upstream Proxy Template
+# The placeholder 'backend_ENV_TARGET' is replaced at deploy time
+# by deploy.sh with either 'backend_blue' or 'backend_green'.
+
 upstream backend_blue {
-    server localhost:8080;
+    server 127.0.0.1:8080;
+    keepalive 16;
 }
 
 upstream backend_green {
-    server localhost:8081;
+    server 127.0.0.1:8081;
+    keepalive 16;
 }
 
 server {
     listen 80;
     server_name _;
 
-    location / {
-        proxy_pass http://backend_ENV_TARGET;
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto $scheme;
+    # Increase timeouts for large SSR responses
+    proxy_connect_timeout     60s;
+    proxy_send_timeout        90s;
+    proxy_read_timeout        90s;
+
+    # WebSocket support
+    proxy_http_version 1.1;
+    proxy_set_header Upgrade    $http_upgrade;
+    proxy_set_header Connection "upgrade";
+
+    # Forward real client headers
+    proxy_set_header Host              $host;
+    proxy_set_header X-Real-IP         $remote_addr;
+    proxy_set_header X-Forwarded-For   $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto $scheme;
+
+    # Health check endpoint for the proxy itself (used by deploy.sh)
+    location = /health {
+        access_log off;
+        return 200 "proxy-ok\n";
+        add_header Content-Type text/plain;
     }
 
-    location /health {
-        access_log off;
-        return 200 'proxy-is-up';
+    # Route all traffic to the active upstream
+    location / {
+        proxy_pass http://backend_ENV_TARGET;
+        proxy_buffering          off;
+        proxy_request_buffering  off;
+        proxy_cache_bypass       $http_upgrade;
     }
 }

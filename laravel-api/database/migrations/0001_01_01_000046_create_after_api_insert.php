@@ -1,9 +1,12 @@
 <?php
 
-use Illuminate\Support\Facades\DB;
-use Illuminate\Database\Migrations\Migration;
+declare(strict_types=1);
 
-return new class extends Migration {
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Support\Facades\DB;
+
+return new class extends Migration
+{
     /**
      * Run the migrations.
      */
@@ -22,11 +25,11 @@ return new class extends Migration {
         ");
 
         // Create the trigger
-        DB::unprepared("
+        DB::unprepared('
           CREATE TRIGGER after_api_insert AFTER INSERT ON api_mst
           FOR EACH ROW
           EXECUTE FUNCTION insert_into_api_role_from_api();
-        ");
+        ');
     }
 
     /**

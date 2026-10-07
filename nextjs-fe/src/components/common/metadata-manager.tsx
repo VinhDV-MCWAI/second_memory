@@ -8,7 +8,7 @@ export function MetadataManager() {
 
   useEffect(() => {
     document.title = t('title');
-    
+
     // Add or update meta description
     let metaDescription = document.querySelector('meta[name="description"]');
     if (!metaDescription) {

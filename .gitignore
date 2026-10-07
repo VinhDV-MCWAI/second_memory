@@ -1,65 +1,113 @@
-# Dependencies
-node_modules/
-vendor/
-laravel-api/vendor/
-nextjs-fe/node_modules/
-nextjs-docs/node_modules/
-nuxtjs-FE/node_modules/
-pnpm-lock.yaml
-package-lock.json
-yarn.lock
+# =======================================================
+# Root monorepo .gitignore
+# Covers: Laravel (PHP), Next.js (Node/pnpm), Docker, CI/CD
+# =======================================================
 
-# Laravel specific
+# -------------------------------------------------------
+# Node / pnpm
+# -------------------------------------------------------
+**/node_modules/
+# One lockfile for the whole pnpm workspace (root). No per-package lockfiles.
+**/pnpm-lock.yaml
+!/pnpm-lock.yaml
+**/package-lock.json
+**/yarn.lock
+**/.pnpm-store/
+*.pnpm-debug.log
+
+# -------------------------------------------------------
+# PHP / Composer
+# -------------------------------------------------------
+**/vendor/
+
+# -------------------------------------------------------
+# Laravel-specific
+# -------------------------------------------------------
 laravel-api/.env
 laravel-api/storage/*.key
+laravel-api/.phpunit.result.cache
 laravel-api/storage/framework/cache/data/*
 laravel-api/storage/framework/sessions/*
 laravel-api/storage/framework/testing/*
 laravel-api/storage/framework/views/*
-laravel-api/storage/logs/*
-laravel-api/bootstrap/cache/*
+laravel-api/storage/logs/*.log
+laravel-api/bootstrap/cache/*.php
 laravel-api/public/storage
 laravel-api/public/hot
 laravel-api/public/build
-laravel-api/.phpunit.result.cache
 
-# Next.js specific
-nextjs-fe/.next/
-nextjs-fe/out/
-nextjs-fe/.env*.local
+# -------------------------------------------------------
+# Next.js / Nuxt.js
+# -------------------------------------------------------
+**/.next/
+**/out/
+**/.nuxt/
+**/.output/
+nextjs-fe/.env
+nextjs-fe/.env.local
+nextjs-fe/.env.*.local
 nextjs-fe/next-env.d.ts
+nextjs-docs/.env
+nextjs-docs/next-env.d.ts
 
-# Documentation / Docs
-nextjs-docs/.next/
-nextjs-docs/out/
+# -------------------------------------------------------
+# Build / Cache outputs
+# -------------------------------------------------------
+dist/
+build/
+.cache/
+.parcel-cache/
+coverage/
+.nyc_output/
+*.tsbuildinfo
 
-# NuxtJS FE (if used)
-nuxtjs-FE/.nuxt/
-nuxtjs-FE/dist/
-nuxtjs-FE/.output/
+# -------------------------------------------------------
+# Test artifacts
+# -------------------------------------------------------
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+/playwright/.auth/
 
-# IDEs / Editors
-.idea/
-.vscode/
-*.swp
-*.swo
-.DS_Store
-Thumbs.db
-
-# Docker / Deployment
+# -------------------------------------------------------
+# Docker
+# -------------------------------------------------------
 docker/.env
+
+# -------------------------------------------------------
+# CI/CD logs
+# -------------------------------------------------------
 ci-cd/*.log
 
+# -------------------------------------------------------
+# Environment files (never commit secrets)
+# -------------------------------------------------------
+.env
+.env.local
+.env.*.local
+
+# -------------------------------------------------------
+# IDE / Editor
+# -------------------------------------------------------
+.vscode/
+.idea/
+*.swp
+*.swo
+*.iml
+
+# -------------------------------------------------------
+# OS artifacts
+# -------------------------------------------------------
+.DS_Store
+Thumbs.db
+[Dd]esktop.ini
+
+# -------------------------------------------------------
 # Logs
+# -------------------------------------------------------
 *.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
-
-# Misc
-.cache/
-dist/
-build/
-coverage/
-.nyc_output/

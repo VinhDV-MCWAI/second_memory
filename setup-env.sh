@@ -52,7 +52,7 @@ set -a
 source "$DOCKER_ENV"
 set +a
 
-echo ">> [3/5] Synchronizing configuration to Laravel API..."
+echo ">> [3/4] Synchronizing configuration to Laravel API..."
 LARAVEL_ENV_EXAMPLE="$ROOT_DIR/laravel-api/.env.example"
 LARAVEL_ENV="$ROOT_DIR/laravel-api/.env"
 
@@ -81,14 +81,7 @@ if [ -f "$LARAVEL_ENV_EXAMPLE" ]; then
     echo "   - laravel-api/.env updated from master configuration."
 fi
 
-echo ">> [4/5] Synchronizing configuration to Redis..."
-REDIS_CONF="$ROOT_DIR/docker/redis/redis.conf"
-if [ -f "$REDIS_CONF" ]; then
-    sed -i "s|^requirepass .*|requirepass ${REDIS_PASSWORD}|" "$REDIS_CONF"
-    echo "   - docker/redis/redis.conf updated with REDIS_PASSWORD."
-fi
-
-echo ">> [5/5] Synchronizing configuration to Frontend..."
+echo ">> [4/4] Synchronizing configuration to Frontend..."
 NEXTJS_FE_ENV="$ROOT_DIR/nextjs-fe/.env"
 
 # For nextjs-fe

@@ -6,7 +6,6 @@ import type {
   DepartmentMst,
   FeatureMst,
   PolicyDepartmentMst,
-  RoleMst,
   SettingLinkMgmt,
   EntryDescriptionMgmt,
   EntryMgmt,
@@ -38,9 +37,9 @@ export interface CategoryFormProps {
   initialData?: CategoryMgmt | null;
   onSuccess: () => void;
   onCancel: () => void;
-  renderActions?: boolean;  // Whether to render action buttons inside form (default: true)
-  submitTriggerRef?: React.Ref<(() => void) | null>;  // Ref to expose submit function
-  hideActions?: boolean;  // Whether to hide action buttons (for dialog mode)
+  renderActions?: boolean; // Whether to render action buttons inside form (default: true)
+  submitTriggerRef?: React.Ref<(() => void) | null>; // Ref to expose submit function
+  hideActions?: boolean; // Whether to hide action buttons (for dialog mode)
 }
 
 export interface DepartmentFormProps {
@@ -61,12 +60,6 @@ export interface PolicyDepartmentFormProps {
   onCancel: () => void;
 }
 
-export interface RoleFormProps {
-  initialData?: RoleMst | null;
-  onSuccess: () => void;
-  onCancel: () => void;
-}
-
 export interface SettingLinkFormProps {
   initialData?: SettingLinkMgmt | null;
   onSuccess: () => void;
@@ -77,14 +70,14 @@ export interface EntryDescriptionFormProps {
   initialData?: EntryDescriptionMgmt | null;
   onSuccess: () => void;
   onCancel: () => void;
-  hideActions?: boolean;  // Whether to hide action buttons (for dialog mode)
+  hideActions?: boolean; // Whether to hide action buttons (for dialog mode)
 }
 
 export interface EntryFormProps {
   initialData?: EntryMgmt | null;
   onSuccess: () => void;
   onCancel: () => void;
-  hideActions?: boolean;  // Whether to hide action buttons (for dialog mode)
+  hideActions?: boolean; // Whether to hide action buttons (for dialog mode)
 }
 
 export interface SliderFormProps {

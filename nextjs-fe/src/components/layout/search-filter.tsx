@@ -4,7 +4,7 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { useState, useCallback, useRef, useEffect } from 'react';
 import { Search, X, Filter } from 'lucide-react';
-import { cn } from "@/shared/utils";
+import { cn } from '@/shared/utils';
 import { UI_CONSTANTS, KEYBOARD_KEYS } from '@/shared/config';
 import type { SearchFilterProps } from '@/shared/types/ui.types';
 import { useTranslations } from 'next-intl';
@@ -45,7 +45,7 @@ export function SearchFilter({
         setIsSearching(false);
       }, debounceMs);
     },
-    [onSearch, debounceMs]
+    [onSearch, debounceMs],
   );
 
   const handleClear = useCallback(() => {
@@ -68,10 +68,8 @@ export function SearchFilter({
       <div className="relative max-w-sm flex-1">
         <Search
           className={cn(
-            'absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 transition-colors',
-            isSearching
-              ? 'text-blue-500 dark:text-blue-400'
-              : 'text-slate-400'
+            'absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 transition-colors',
+            isSearching ? 'text-blue-500 dark:text-blue-400' : 'text-slate-400',
           )}
         />
         <Input
@@ -80,13 +78,13 @@ export function SearchFilter({
           value={searchValue}
           onChange={(e) => handleSearch(e.target.value)}
           onKeyDown={handleKeyDown}
-          className="pl-10 pr-10"
+          className="pr-10 pl-10"
           aria-label="Search input"
         />
         {searchValue && (
           <button
             onClick={handleClear}
-            className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 transition-colors hover:text-slate-600 dark:hover:text-slate-300"
+            className="absolute top-1/2 right-3 -translate-y-1/2 text-slate-400 transition-colors hover:text-slate-600 dark:hover:text-slate-300"
             aria-label="Clear search"
             type="button"
           >
@@ -94,7 +92,7 @@ export function SearchFilter({
           </button>
         )}
         {isSearching && !searchValue && (
-          <div className="absolute right-3 top-1/2 -translate-y-1/2">
+          <div className="absolute top-1/2 right-3 -translate-y-1/2">
             <div className="h-4 w-4 animate-spin rounded-full border-2 border-slate-300 border-t-blue-500" />
           </div>
         )}

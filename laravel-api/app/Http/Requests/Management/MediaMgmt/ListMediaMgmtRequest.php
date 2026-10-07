@@ -1,27 +1,22 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Requests\Management\MediaMgmt;
 
-use Illuminate\Foundation\Http\FormRequest;
+use App\Http\Requests\ListRequest;
+use Illuminate\Contracts\Validation\ValidationRule;
 
-class ListMediaMgmtRequest extends FormRequest
+class ListMediaMgmtRequest extends ListRequest
 {
     /**
-     * Determine if the user is authorized to make this request.
+     * @return array<string, ValidationRule|array<mixed>|string>
      */
-    public function authorize(): bool
-    {
-        return true;
-    }
-
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
-     */
-    public function rules(): array
+    protected function filters(): array
     {
         return [
+            // A single status or a list of statuses
+            'upload_status' => ['nullable'],
             'parent_path' => ['nullable', 'string', 'max:1000'],
             'folder_path' => ['nullable', 'string', 'max:1000'],
             'is_file' => ['nullable', 'boolean'],

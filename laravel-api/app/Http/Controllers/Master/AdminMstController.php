@@ -1,55 +1,50 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers\Master;
 
+use App\Http\Controllers\Controller;
+use App\Http\Requests\Master\AdminMst\DeleteAdminMstRequest;
 use App\Http\Requests\Master\AdminMst\ListAdminMstRequest;
 use App\Http\Requests\Master\AdminMst\StoreAdminMstRequest;
 use App\Http\Requests\Master\AdminMst\UpdateAdminMstRequest;
-use App\Http\Requests\Master\AdminMst\DeleteAdminMstRequest;
+use App\Http\Resources\Master\AdminMstResource;
 use App\Services\Master\AdminMstService;
-use App\Http\Controllers\Controller;
-use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class AdminMstController extends Controller
 {
     public function __construct(
         protected AdminMstService $adminMst
-    )
-    {
-    }
-    
+    ) {}
+
     /**
      * AdminMst list
-     *
-     * @param ListAdminMstRequest $request
-     * @return JsonResource
      */
-    public function list(ListAdminMstRequest $request): JsonResource
+    /**
+     * @return AnonymousResourceCollection<LengthAwarePaginator<int, AdminMstResource>>
+     */
+    public function list(ListAdminMstRequest $request): AnonymousResourceCollection
     {
-        return $this->adminMst->list($request->all());
+        return $this->adminMst->list($request->validated());
     }
 
     /**
      * Store admin mst
-     *
-     * @param StoreAdminMstRequest $request
-     * @return int
      */
     public function store(StoreAdminMstRequest $request): int
     {
-        return $this->adminMst->store($request->all());
+        return $this->adminMst->store($request->validated());
     }
 
     /**
      * Update admin mst
-     *
-     * @param UpdateAdminMstRequest $request
-     * @param string $id
-     * @return int
      */
     public function update(UpdateAdminMstRequest $request, string $id): int
     {
-        $payload = $request->all();
+        $payload = $request->validated();
         $payload['id'] = $id;
 
         return $this->adminMst->update($payload);
@@ -57,12 +52,9 @@ class AdminMstController extends Controller
 
     /**
      * Delete admin mst
-     *
-     * @param DeleteAdminMstRequest $request
-     * @return void
      */
     public function delete(DeleteAdminMstRequest $request): void
     {
-        $this->adminMst->delete($request->all());
+        $this->adminMst->delete($request->validated());
     }
 }

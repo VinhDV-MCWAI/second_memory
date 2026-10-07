@@ -1,13 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Requests\Management\SettingLinkMgmt;
 
-use Illuminate\Foundation\Http\FormRequest;
 use App\Constants\CommonVal;
-use Illuminate\Validation\Rule;
-use Illuminate\Validation\Rules\Enum;
-use App\Models\Management\SettingLinkMgmt;
 use App\Enums\IsDelete;
+use App\Models\Management\SettingLinkMgmt;
+use Illuminate\Contracts\Validation\ValidationRule;
+use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class UpdateSettingLinkMgmtRequest extends FormRequest
 {
@@ -22,15 +24,15 @@ class UpdateSettingLinkMgmtRequest extends FormRequest
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
+     * @return array<string, ValidationRule|array<mixed>|string>
      */
     public function rules(): array
     {
         return [
             'id' => ['required', 'integer', 'min:1', Rule::exists(SettingLinkMgmt::class, 'id')],
-            'key' => ['required', 'string', 'min:' . CommonVal::MIN_VARCHAR, 'max:30',],
-            'value' => ['required', 'string', 'min:' . CommonVal::MIN_VARCHAR, 'max:100',],
-            'is_delete' => ['required', new Enum(IsDelete::class),],
+            'key' => ['required', 'string', 'min:'.CommonVal::MIN_VARCHAR, 'max:30'],
+            'value' => ['required', 'string', 'min:'.CommonVal::MIN_VARCHAR, 'max:100'],
+            'is_delete' => ['required', Rule::enum(IsDelete::class)],
         ];
     }
 

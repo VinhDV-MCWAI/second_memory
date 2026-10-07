@@ -98,7 +98,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         }
       }
     },
-    [handleLogoutSync]
+    [handleLogoutSync],
   );
 
   const clearTimer = useCallback(() => {
@@ -119,7 +119,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         const data = await authService.refreshToken();
         retryCountRef.current = 0;
         dispatch({ type: 'SET_EXPIRES_AT', payload: data.expires_at });
-        broadcast({ type: BROADCAST_EVENTS.REFRESH_SUCCESS, payload: { expiresAt: data.expires_at } });
+        broadcast({
+          type: BROADCAST_EVENTS.REFRESH_SUCCESS,
+          payload: { expiresAt: data.expires_at },
+        });
       } catch {
         if (!isRetry && retryCountRef.current < DEFAULT_REFRESH_CONFIG.maxRetries!) {
           retryCountRef.current++;
@@ -136,7 +139,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         authService.releaseRefreshLock();
       }
     },
-    [broadcast, performLogout]
+    [broadcast, performLogout],
   );
 
   const scheduleRefresh = useCallback(() => {
@@ -203,8 +206,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
       try {
         const data = await authService.login(credentials);
-        dispatch({ type: 'SET_AUTHENTICATED', payload: { user: data.user, expiresAt: data.expires_at } });
-        broadcast({ type: BROADCAST_EVENTS.LOGIN_SUCCESS, payload: { user: data.user, expiresAt: data.expires_at } });
+        dispatch({
+          type: 'SET_AUTHENTICATED',
+          payload: { user: data.user, expiresAt: data.expires_at },
+        });
+        broadcast({
+          type: BROADCAST_EVENTS.LOGIN_SUCCESS,
+          payload: { user: data.user, expiresAt: data.expires_at },
+        });
       } catch (error: unknown) {
         const authError: AuthError = {
           message: (error as Error).message || 'auth.invalidCredentials',
@@ -215,14 +224,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         throw error;
       }
     },
-    [broadcast]
+    [broadcast],
   );
 
   const logout = useCallback(
     async (reason: LogoutReason = 'manual') => {
       await performLogout(reason);
     },
-    [performLogout]
+    [performLogout],
   );
 
   const refreshToken = useCallback(async () => {
@@ -238,7 +247,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       if (!state.user || !state.isAuthenticated) return false;
       return state.user.permissions?.includes(permission) ?? false;
     },
-    [state.user, state.isAuthenticated]
+    [state.user, state.isAuthenticated],
   );
 
   const hasRole = useCallback(
@@ -246,7 +255,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       if (!state.user || !state.isAuthenticated) return false;
       return state.user.role === role;
     },
-    [state.user, state.isAuthenticated]
+    [state.user, state.isAuthenticated],
   );
 
   useEffect(() => {
@@ -292,7 +301,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       hasPermission,
       hasRole,
     }),
-    [state.user, state.isAuthenticated, state.isLoading, state.error, login, logout, refreshToken, clearError, hasPermission, hasRole]
+    [
+      state.user,
+      state.isAuthenticated,
+      state.isLoading,
+      state.error,
+      login,
+      logout,
+      refreshToken,
+      clearError,
+      hasPermission,
+      hasRole,
+    ],
   );
 
   return <AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>;

@@ -51,7 +51,7 @@ export const Video = Node.create<VideoOptions>({
     ];
   },
 
-  renderHTML({ HTMLAttributes }: { HTMLAttributes: Record<string, any> }) {
+  renderHTML({ HTMLAttributes }) {
     return ['video', mergeAttributes(this.options.HTMLAttributes, HTMLAttributes)];
   },
 
@@ -59,7 +59,7 @@ export const Video = Node.create<VideoOptions>({
     return {
       setVideo:
         (options: { src: string }) =>
-        ({ commands }: any) => {
+        ({ commands }) => {
           return commands.insertContent({
             type: this.name,
             attrs: options,

@@ -1,63 +1,19 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Services\History\Master;
 
-use App\Interfaces\History\Master\PolicyDepartmentMstHistInterface;
-
-use Illuminate\Http\Resources\Json\JsonResource;
 use App\Http\Resources\History\Master\PolicyDepartmentMstHistResource;
+use App\Repositories\History\Master\PolicyDepartmentMstHistRepository;
+use App\Services\CrudService;
 
-class PolicyDepartmentMstHistService
+class PolicyDepartmentMstHistService extends CrudService
 {
-    public function __construct(
-        protected PolicyDepartmentMstHistInterface $policyDepartmentMstHist
-    )
-    {
-    }
+    protected string $resource = PolicyDepartmentMstHistResource::class;
 
-    /**
-     * Get policy department mst hist list
-     *
-     * @param array $payload
-     * @return JsonResource
-     */
-    public function list(array $payload): JsonResource
+    public function __construct(PolicyDepartmentMstHistRepository $policyDepartmentMstHist)
     {
-        $list = $this->policyDepartmentMstHist->list($payload);
-
-        return PolicyDepartmentMstHistResource::collection($list);
-    }
-
-    /**
-     * Store policy department mst hist
-     *
-     * @param array $payload
-     * @return int
-     */
-    public function store(array $payload): int
-    {
-        return $this->policyDepartmentMstHist->executeStore($payload);
-    }
-
-    /**
-     * Update policy department mst hist
-     *
-     * @param array $payload
-     * @return int
-     */
-    public function update(array $payload): int
-    {
-        return $this->policyDepartmentMstHist->executeUpdate($payload);
-    }
-
-    /**
-     * Delete policy department mst hist
-     *
-     * @param array $payload
-     * @return void
-     */
-    public function delete(array $payload): void
-    {
-        $this->policyDepartmentMstHist->executeDelete($payload['ids']);
+        parent::__construct($policyDepartmentMstHist);
     }
 }

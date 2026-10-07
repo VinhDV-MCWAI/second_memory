@@ -1,28 +1,18 @@
-"use client";
+'use client';
 
-import { Description, EntryDetail } from "@/types/docs";
-import { slugify, cn } from "@/lib/utils";
-import { useEffect, useState, useMemo } from "react";
-import { useScrollSpy } from "@/hooks/use-scroll-spy";
+import { Description } from '@/types/docs';
+import { slugify, cn } from '@/lib/utils';
+import { useMemo } from 'react';
+import { useScrollSpy } from '@/hooks/use-scroll-spy';
+import {
+  parseLayoutStructure,
+  type LayoutNode,
+  type RawLayoutStructure,
+} from '@/lib/layout-structure';
 
 interface RightTocProps {
   descriptions: Description[];
-  layoutStructure?: any;
-}
-
-type LayoutNode = { ui_id?: string; entry_desc_id?: number | string; children?: LayoutNode[] };
-
-function parseLayoutStructure(raw: any): LayoutNode[] | null {
-  if (!raw) return null;
-  if (Array.isArray(raw)) return raw;
-  if (typeof raw === 'string') {
-    try {
-      return JSON.parse(raw);
-    } catch {
-      return null;
-    }
-  }
-  return null;
+  layoutStructure?: RawLayoutStructure;
 }
 
 export default function RightToc({ descriptions, layoutStructure }: RightTocProps) {
@@ -32,24 +22,21 @@ export default function RightToc({ descriptions, layoutStructure }: RightTocProp
         id: slugify(desc.title),
         title: desc.title,
       })),
-    [descriptions]
+    [descriptions],
   );
 
-  const ids = useMemo<string[]>(
-    () => tocItems.map((item: { id: string }) => item.id),
-    [tocItems]
-  );
+  const ids = useMemo<string[]>(() => tocItems.map((item: { id: string }) => item.id), [tocItems]);
 
   const activeId = useScrollSpy(ids, {
-    rootMargin: "-20px 0px -80% 0px", // Trigger when top of section is near the top
+    rootMargin: '-20px 0px -80% 0px', // Trigger when top of section is near the top
   });
 
   const handleClick = (e: React.MouseEvent<HTMLAnchorElement>, id: string) => {
     e.preventDefault();
     const element = document.getElementById(id);
     if (element) {
-      element.scrollIntoView({ behavior: "smooth", block: "start" });
-      window.history.pushState(null, "", `#${id}`);
+      element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      window.history.pushState(null, '', `#${id}`);
     }
   };
 
@@ -57,14 +44,16 @@ export default function RightToc({ descriptions, layoutStructure }: RightTocProp
 
   const renderTree = (nodes: LayoutNode[], depth = 0) => {
     return (
-      <div className={cn("flex flex-col gap-2", depth > 0 && "pl-3 mt-2 border-l border-border/50")}>
+      <div
+        className={cn('flex flex-col gap-2', depth > 0 && 'mt-2 border-l border-border/50 pl-3')}
+      >
         {nodes.map((node, index) => {
           const descId = node.entry_desc_id;
           if (!descId) return null;
 
-          const itemDesc = descriptions.find(d => d.id === Number(descId));
+          const itemDesc = descriptions.find((d) => d.id === Number(descId));
           if (!itemDesc) return null;
-          
+
           const itemId = slugify(itemDesc.title);
           const isActive = activeId === itemId;
 
@@ -74,10 +63,10 @@ export default function RightToc({ descriptions, layoutStructure }: RightTocProp
                 href={`#${itemId}`}
                 onClick={(e) => handleClick(e, itemId)}
                 className={cn(
-                  "group text-[13px] leading-relaxed transition-colors py-1 break-words whitespace-normal block",
+                  'group block py-1 text-[13px] leading-relaxed break-words whitespace-normal transition-colors',
                   isActive
-                    ? "font-medium text-blue-600 dark:text-blue-400"
-                    : "text-muted-foreground hover:text-foreground"
+                    ? 'font-medium text-blue-600 dark:text-blue-400'
+                    : 'text-muted-foreground hover:text-foreground',
                 )}
               >
                 {itemDesc.title}
@@ -91,10 +80,8 @@ export default function RightToc({ descriptions, layoutStructure }: RightTocProp
   };
 
   return (
-    <div className="py-2 pl-4 pr-6">
-      <h4 className="text-sm font-semibold text-foreground mb-4">
-        On This Page
-      </h4>
+    <div className="py-2 pr-6 pl-4">
+      <h4 className="mb-4 text-sm font-semibold text-foreground">On This Page</h4>
       <nav className="flex flex-col gap-3">
         {layoutTree && layoutTree.length > 0 ? (
           renderTree(layoutTree)
@@ -109,10 +96,10 @@ export default function RightToc({ descriptions, layoutStructure }: RightTocProp
                   href={`#${itemId}`}
                   onClick={(e) => handleClick(e, itemId)}
                   className={cn(
-                    "group text-[13px] leading-relaxed transition-colors py-1 break-words whitespace-normal block",
+                    'group block py-1 text-[13px] leading-relaxed break-words whitespace-normal transition-colors',
                     isActive
-                      ? "font-medium text-blue-600 dark:text-blue-400"
-                      : "text-muted-foreground hover:text-foreground"
+                      ? 'font-medium text-blue-600 dark:text-blue-400'
+                      : 'text-muted-foreground hover:text-foreground',
                   )}
                 >
                   {itemDesc.title}

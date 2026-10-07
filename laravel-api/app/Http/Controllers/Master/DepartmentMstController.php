@@ -1,55 +1,50 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers\Master;
 
+use App\Http\Controllers\Controller;
+use App\Http\Requests\Master\DepartmentMst\DeleteDepartmentMstRequest;
 use App\Http\Requests\Master\DepartmentMst\ListDepartmentMstRequest;
 use App\Http\Requests\Master\DepartmentMst\StoreDepartmentMstRequest;
 use App\Http\Requests\Master\DepartmentMst\UpdateDepartmentMstRequest;
-use App\Http\Requests\Master\DepartmentMst\DeleteDepartmentMstRequest;
+use App\Http\Resources\Master\DepartmentMstResource;
 use App\Services\Master\DepartmentMstService;
-use App\Http\Controllers\Controller;
-use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class DepartmentMstController extends Controller
 {
     public function __construct(
         protected DepartmentMstService $departmentMst
-    )
-    {
-    }
-    
+    ) {}
+
     /**
      * DepartmentMst list
-     *
-     * @param ListDepartmentMstRequest $request
-     * @return JsonResource
      */
-    public function list(ListDepartmentMstRequest $request): JsonResource
+    /**
+     * @return AnonymousResourceCollection<LengthAwarePaginator<int, DepartmentMstResource>>
+     */
+    public function list(ListDepartmentMstRequest $request): AnonymousResourceCollection
     {
-        return $this->departmentMst->list($request->all());
+        return $this->departmentMst->list($request->validated());
     }
 
     /**
      * Store department mst
-     *
-     * @param StoreDepartmentMstRequest $request
-     * @return int
      */
     public function store(StoreDepartmentMstRequest $request): int
     {
-        return $this->departmentMst->store($request->all());
+        return $this->departmentMst->store($request->validated());
     }
 
     /**
      * Update department mst
-     *
-     * @param UpdateDepartmentMstRequest $request
-     * @param string $id
-     * @return int
      */
     public function update(UpdateDepartmentMstRequest $request, string $id): int
     {
-        $payload = $request->all();
+        $payload = $request->validated();
         $payload['id'] = $id;
 
         return $this->departmentMst->update($payload);
@@ -57,12 +52,9 @@ class DepartmentMstController extends Controller
 
     /**
      * Delete department mst
-     *
-     * @param DeleteDepartmentMstRequest $request
-     * @return void
      */
     public function delete(DeleteDepartmentMstRequest $request): void
     {
-        $this->departmentMst->delete($request->all());
+        $this->departmentMst->delete($request->validated());
     }
 }

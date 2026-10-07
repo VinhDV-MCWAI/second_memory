@@ -1,13 +1,21 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Resources\History\Master;
 
-use App\Constants\CommonVal;
+use App\Http\Resources\Concerns\FormatsDates;
+use App\Models\History\Master\DepartmentMstHist;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
+/**
+ * @mixin DepartmentMstHist
+ */
 class DepartmentMstHistResource extends JsonResource
 {
+    use FormatsDates;
+
     /**
      * Transform the resource into an array.
      *
@@ -16,14 +24,14 @@ class DepartmentMstHistResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'id' => (int)$this->id,
-            'department_mst_id' => (int)$this->department_mst_id,
-            'code' => (string)$this->code,
-            'name' => (string)$this->name,
-            'status' => (string)$this->status,
-            'action' => (string)$this->action,
-            'author_id' => (int)$this->author_id,
-            'created_at' => (string)date(CommonVal::DATE_FORMAT, strtotime($this->created_at)),
+            'id' => (int) $this->id,
+            'department_mst_id' => (int) $this->department_mst_id,
+            'code' => (string) $this->code,
+            'name' => (string) $this->name,
+            'status' => (int) $this->status,
+            'action' => (int) $this->action,
+            'author_id' => (int) $this->author_id,
+            'created_at' => $this->formatDate($this->created_at),
         ];
     }
 }

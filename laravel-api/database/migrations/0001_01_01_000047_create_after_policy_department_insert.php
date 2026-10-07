@@ -1,9 +1,12 @@
 <?php
 
-use Illuminate\Support\Facades\DB;
-use Illuminate\Database\Migrations\Migration;
+declare(strict_types=1);
 
-return new class extends Migration {
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Support\Facades\DB;
+
+return new class extends Migration
+{
     /**
      * Run the migrations.
      */
@@ -22,12 +25,12 @@ return new class extends Migration {
         ");
 
         // Create the trigger
-        DB::unprepared("
+        DB::unprepared('
           CREATE TRIGGER after_policy_department_insert
           AFTER INSERT ON policy_department_mst
           FOR EACH ROW
           EXECUTE FUNCTION insert_into_department_management();
-        ");
+        ');
     }
 
     /**

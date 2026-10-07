@@ -1,43 +1,43 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Requests\Master\FeatureMst;
 
-use Illuminate\Foundation\Http\FormRequest;
 use App\Constants\CommonVal;
-use Illuminate\Validation\Rule;
-use Illuminate\Validation\Rules\Enum;
 use App\Models\Master\FeatureMst;
-use App\Enums\IsDelete;
-use App\Enums\StatusEnum;
+use Illuminate\Contracts\Validation\ValidationRule;
+use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class DeleteFeatureMstRequest extends FormRequest
 {
-  /**
-   * Determine if the user is authorized to make this request.
-   */
-  public function authorize(): bool
-  {
-    return true;
-  }
+    /**
+     * Determine if the user is authorized to make this request.
+     */
+    public function authorize(): bool
+    {
+        return true;
+    }
 
-  /**
-   * Get the validation rules that apply to the request.
-   *
-   * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
-   */
-  public function rules(): array
-  {
-    return [
-      'ids' => ['required', 'array'],
-      'ids.*' => ['required', 'integer', 'min:' . CommonVal::MIN_INTEGER, 'max:' . CommonVal::MAX_BIG_INTEGER, Rule::exists(FeatureMst::class, 'id')],
-    ];
-  }
+    /**
+     * Get the validation rules that apply to the request.
+     *
+     * @return array<string, ValidationRule|array<mixed>|string>
+     */
+    public function rules(): array
+    {
+        return [
+            'ids' => ['required', 'array'],
+            'ids.*' => ['required', 'integer', 'min:'.CommonVal::MIN_INTEGER, 'max:'.CommonVal::MAX_BIG_INTEGER, Rule::exists(FeatureMst::class, 'id')],
+        ];
+    }
 
-  public function attributes(): array
-  {
-    return [
-      'ids' => __('messages.ids'),
-      'ids.*' => __('messages.ids'),
-    ];
-  }
+    public function attributes(): array
+    {
+        return [
+            'ids' => __('messages.ids'),
+            'ids.*' => __('messages.ids'),
+        ];
+    }
 }

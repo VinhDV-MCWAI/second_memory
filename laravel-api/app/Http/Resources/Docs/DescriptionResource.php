@@ -1,10 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Resources\Docs;
 
+use App\Models\Management\EntryDescriptionMgmt;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
+/**
+ * @mixin EntryDescriptionMgmt
+ */
 class DescriptionResource extends JsonResource
 {
     /**

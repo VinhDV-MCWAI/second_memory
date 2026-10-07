@@ -27,9 +27,7 @@ export default function NotFound() {
         </div>
 
         {/* Error Code */}
-        <h1 className="mb-4 text-8xl font-bold text-slate-900 dark:text-white">
-          404
-        </h1>
+        <h1 className="mb-4 text-8xl font-bold text-slate-900 dark:text-white">404</h1>
 
         {/* Title */}
         <h2 className="mb-3 text-2xl font-semibold text-slate-900 dark:text-slate-100">
@@ -37,9 +35,7 @@ export default function NotFound() {
         </h2>
 
         {/* Description */}
-        <p className="mb-8 text-slate-600 dark:text-slate-400">
-          {t('pageNotFoundDescription')}
-        </p>
+        <p className="mb-8 text-slate-600 dark:text-slate-400">{t('pageNotFoundDescription')}</p>
 
         {/* Actions */}
         <div className="flex flex-col gap-3 sm:flex-row sm:justify-center">
@@ -49,12 +45,7 @@ export default function NotFound() {
               {tCommon('backToDashboard')}
             </Link>
           </Button>
-          <Button 
-            variant="outline" 
-            size="lg" 
-            onClick={handleGoBack}
-            className="gap-2"
-          >
+          <Button variant="outline" size="lg" onClick={handleGoBack} className="gap-2">
             <ArrowLeft className="h-4 w-4" />
             {tCommon('goBack')}
           </Button>

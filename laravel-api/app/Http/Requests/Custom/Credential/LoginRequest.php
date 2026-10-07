@@ -1,10 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Requests\Custom\Credential;
 
+use App\Constants\CommonVal;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
-use App\Constants\CommonVal;
 
 class LoginRequest extends FormRequest
 {
@@ -24,8 +26,8 @@ class LoginRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'user_name' => ['required', 'string', 'min:' . CommonVal::MIN_VARCHAR, 'max:50',],
-            'password' => ['required', 'string', 'min:' . CommonVal::MIN_VARCHAR, 'max:100',],
+            'user_name' => ['required', 'string', 'min:'.CommonVal::MIN_VARCHAR, 'max:50'],
+            'password' => ['required', 'string', 'min:'.CommonVal::MIN_VARCHAR, 'max:100'],
         ];
     }
 

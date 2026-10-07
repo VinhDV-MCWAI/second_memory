@@ -3,11 +3,10 @@ import axios, {
   AxiosError,
   InternalAxiosRequestConfig,
   AxiosRequestConfig,
-} from "axios";
-import { handleCommonError } from "./error-handler";
-import { ApiResponse } from "@/shared/types/api";
-import { authLock } from "@/shared/utils/auth-lock";
-import { API_ENDPOINTS, API_BASE_URL } from "@/shared/api/endpoints";
+} from 'axios';
+import { ApiResponse } from '@/shared/types/api';
+import { authLock } from '@/shared/utils/auth-lock';
+import { API_ENDPOINTS, API_BASE_URL } from '@/shared/api/endpoints';
 
 class ApiClient {
   private client: AxiosInstance;
@@ -17,8 +16,8 @@ class ApiClient {
       baseURL: API_BASE_URL,
       timeout: 30000, // 30 seconds
       headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
       },
       withCredentials: true, // Always send cookies
     });
@@ -29,14 +28,14 @@ class ApiClient {
   private setupInterceptors() {
     this.client.interceptors.request.use(
       (config: InternalAxiosRequestConfig) => {
-        config.headers["Cache-Control"] = "no-cache";
-        config.headers["Pragma"] = "no-cache";
+        config.headers['Cache-Control'] = 'no-cache';
+        config.headers['Pragma'] = 'no-cache';
 
         return config;
       },
       (error: AxiosError) => {
         return Promise.reject(error);
-      }
+      },
     );
 
     this.client.interceptors.response.use(
@@ -47,8 +46,8 @@ class ApiClient {
           const errorInfo = data.error as { status: boolean; messages?: string | string[] | null };
           if (errorInfo.status === true && errorInfo.messages) {
             // Business logic error - show error message
-            const errorMsg = Array.isArray(errorInfo.messages) 
-              ? errorInfo.messages.join(', ') 
+            const errorMsg = Array.isArray(errorInfo.messages)
+              ? errorInfo.messages.join(', ')
               : errorInfo.messages;
             console.error('[API Error]', errorMsg);
             // Don't reject, let the caller handle it
@@ -62,11 +61,7 @@ class ApiClient {
           _retry?: boolean;
         };
 
-        if (
-          error.response?.status === 401 &&
-          originalRequest &&
-          !originalRequest._retry
-        ) {
+        if (error.response?.status === 401 && originalRequest && !originalRequest._retry) {
           if (
             originalRequest.url?.includes(API_ENDPOINTS.AUTH.REFRESH) ||
             originalRequest.url?.includes(API_ENDPOINTS.AUTH.LOGIN)
@@ -87,7 +82,7 @@ class ApiClient {
                 await axios.post(
                   `${this.client.defaults.baseURL}${API_ENDPOINTS.AUTH.REFRESH}`,
                   {},
-                  { withCredentials: true }
+                  { withCredentials: true },
                 );
 
                 return this.client(originalRequest);
@@ -105,8 +100,9 @@ class ApiClient {
           }
         }
 
-        return handleCommonError(error as AxiosError<ApiResponse<unknown> | { message?: string }>);
-      }
+        // Error toasts are shown by the caller (see getApiErrorMessage), which knows the context.
+        return Promise.reject(error);
+      },
     );
   }
 
@@ -121,36 +117,22 @@ class ApiClient {
     }
   }
 
-  async get<T>(
-    url: string,
-    config?: AxiosRequestConfig
-  ): Promise<ApiResponse<T>> {
+  async get<T>(url: string, config?: AxiosRequestConfig): Promise<ApiResponse<T>> {
     const response = await this.client.get<ApiResponse<T>>(url, config);
     return response.data;
   }
 
-  async post<T>(
-    url: string,
-    data?: unknown,
-    config?: AxiosRequestConfig
-  ): Promise<ApiResponse<T>> {
+  async post<T>(url: string, data?: unknown, config?: AxiosRequestConfig): Promise<ApiResponse<T>> {
     const response = await this.client.post<ApiResponse<T>>(url, data, config);
     return response.data;
   }
 
-  async put<T>(
-    url: string,
-    data?: unknown,
-    config?: AxiosRequestConfig
-  ): Promise<ApiResponse<T>> {
+  async put<T>(url: string, data?: unknown, config?: AxiosRequestConfig): Promise<ApiResponse<T>> {
     const response = await this.client.put<ApiResponse<T>>(url, data, config);
     return response.data;
   }
 
-  async delete<T>(
-    url: string,
-    config?: AxiosRequestConfig
-  ): Promise<ApiResponse<T>> {
+  async delete<T>(url: string, config?: AxiosRequestConfig): Promise<ApiResponse<T>> {
     const response = await this.client.delete<ApiResponse<T>>(url, config);
     return response.data;
   }

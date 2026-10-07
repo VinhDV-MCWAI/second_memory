@@ -1,129 +1,77 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tests\Feature\History\Management\SliderMgmtHist;
 
-use App\Models\Master\AdminMst;
-use App\Models\Master\ApiMst;
-use App\Models\Master\FeatureMst;
-use App\Models\Master\RoleMst;
+use App\Enums\ActionType;
+use App\Models\History\Management\SliderMgmtHist;
 use App\Models\Management\SliderMgmt;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Redis;
+use App\Models\Master\AdminMst;
+use Tests\Concerns\GrantsApiAccess;
 use Tests\TestCase;
 
-class StoreSliderMgmtHistTest extends TestCase
+final class StoreSliderMgmtHistTest extends TestCase
 {
-  use RefreshDatabase;
+    use GrantsApiAccess;
 
-  private string $baseUrl = 'api/admin/slider-mgmt-hist/store';
+    private const string URL = 'api/admin/slider-mgmt-hist/store';
 
-  protected function setUp(): void
-  {
-    parent::setUp();
-    Redis::flushdb();
-  }
-
-  private function getAuthCookies(AdminMst $admin): array
-  {
-    $rootRole = RoleMst::where('name', 'root')->first();
-    if (!$rootRole) {
-      $rootRole = RoleMst::create(['name' => 'root', 'permission' => '{}', 'is_active' => 1, 'is_delete' => 0]);
+    private function createHistory(SliderMgmt $parent, AdminMst $admin, array $overrides = []): SliderMgmtHist
+    {
+        return SliderMgmtHist::create(array_merge([
+            'slider_mgmt_id' => $parent->id,
+            'title' => 'Slider history',
+            'slug' => 'slider-history',
+            'link' => 'https://example.com',
+            'image' => 'slider.jpg',
+            'status' => 1,
+            'action' => ActionType::CREATE->value,
+            'author_id' => $admin->id,
+            'created_at' => now(),
+        ], $overrides));
     }
 
-    $this->grantAccessTo($rootRole, 'POST', $this->baseUrl);
-
-    if (!DB::table('admin_role_mst')
-      ->where('admin_mst_id', $admin->id)
-      ->where('role_mst_id', $rootRole->id)
-      ->exists()) {
-      DB::table('admin_role_mst')->insert([
-        'admin_mst_id' => $admin->id,
-        'role_mst_id' => $rootRole->id,
-        'created_at' => now(),
-        'updated_at' => now(),
-      ]);
+    public function test_unauthenticated(): void
+    {
+        $this->postJson(self::URL, [])->assertStatus(401);
     }
 
-    $response = $this->postJson('/api/admin/credential/login', [
-      'user_name' => $admin->user_name,
-      'password' => 'password',
-    ]);
+    public function test_requires_parent_action_and_author(): void
+    {
+        $admin = AdminMst::factory()->create();
+        $cookies = $this->loginWithAccess($admin, [['POST', self::URL]]);
 
-    $cookies = [];
-    foreach ($response->headers->getCookies() as $cookie) {
-      $cookies[$cookie->getName()] = $cookie->getValue();
+        $response = $this->call('POST', self::URL, [], $cookies);
+
+        $response->assertStatus(422);
+        foreach (['slider_mgmt_id', 'action', 'author_id'] as $field) {
+            $this->assertArrayHasKey($field, $response->json('error.messages'));
+        }
     }
-    return $cookies;
-  }
 
-  private function grantAccessTo(RoleMst $role, string $method, string $path)
-  {
-    $typeMap = ['GET' => 0, 'POST' => 1, 'PUT' => 2, 'PATCH' => 3, 'DELETE' => 4];
-    $type = $typeMap[strtoupper($method)] ?? 0;
+    public function test_stores_history_row(): void
+    {
+        $admin = AdminMst::factory()->create();
+        $cookies = $this->loginWithAccess($admin, [['POST', self::URL]]);
+        $parent = SliderMgmt::factory()->create();
 
-    $feature = FeatureMst::firstOrCreate([
-      'name' => 'System Features',
-      'group_name' => 'System',
-      'description' => 'Auto generated',
-      'status' => 1,
-      'is_delete' => 0
-    ]);
+        $response = $this->call('POST', self::URL, [
+            'slider_mgmt_id' => $parent->id,
+            'title' => 'Slider history',
+            'slug' => 'slider-history',
+            'link' => 'https://example.com',
+            'image' => 'slider.jpg',
+            'status' => 1,
+            'action' => ActionType::CREATE->value,
+            'author_id' => $admin->id,
+        ], $cookies);
 
-    $api = ApiMst::firstOrCreate(
-      ['path' => $path, 'type' => $type],
-      [
-        'name' => substr("Endp $method $path", 0, 50),
-        'is_active' => 1,
-        'feature_mst_id' => $feature->id,
-        'is_delete' => 0
-      ]
-    );
-
-    DB::table('api_role_mst')->insertOrIgnore([
-      'api_mst_id' => $api->id,
-      'role_mst_id' => $role->id,
-      'created_at' => now(),
-      'updated_at' => now(),
-    ]);
-  }
-
-  public function test_SLD_HST_STO_001_unauthenticated()
-  {
-    $response = $this->postJson($this->baseUrl, []);
-    $response->assertStatus(401);
-  }
-
-  public function test_SLD_HST_STO_002_validation_errors()
-  {
-    $admin = AdminMst::factory()->create();
-    $cookies = $this->getAuthCookies($admin);
-
-    $response = $this->call('POST', $this->baseUrl, [], $cookies);
-    $response->assertStatus(422);
-  }
-
-  public function test_SLD_HST_STO_003_success()
-  {
-    $admin = AdminMst::factory()->create();
-    $cookies = $this->getAuthCookies($admin);
-    $setting = SliderMgmt::factory()->create();
-
-    $payload = [
-      'setting_link_mgmt_id' => $setting->id,
-      'key' => $setting->key,
-      'value' => $setting->value,
-      'action' => 1,
-      'author_id' => $admin->id,
-      'created_at' => now()->format('Y-m-d H:i:s'),
-    ];
-
-    $response = $this->call('POST', $this->baseUrl, $payload, $cookies);
-    $response->assertStatus(200);
-
-    $this->assertDatabaseHas('setting_link_mgmt_hist', [
-      'setting_link_mgmt_id' => $setting->id,
-      'action' => 1,
-    ]);
-  }
+        $response->assertStatus(200);
+        $this->assertDatabaseHas('slider_mgmt_hist', [
+            'slider_mgmt_id' => $parent->id,
+            'title' => 'Slider history',
+            'author_id' => $admin->id,
+        ]);
+    }
 }

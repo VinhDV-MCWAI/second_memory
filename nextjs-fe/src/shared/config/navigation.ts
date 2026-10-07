@@ -153,10 +153,7 @@ export function isRouteActive(currentPath: string, targetPath?: string): boolean
 }
 
 // Helper function to find active menu item
-export function findActiveMenuItem(
-  menuItems: MenuItem[],
-  currentPath: string
-): MenuItem | null {
+export function findActiveMenuItem(menuItems: MenuItem[], currentPath: string): MenuItem | null {
   for (const item of menuItems) {
     if (item.href && isRouteActive(currentPath, item.href)) {
       return item;

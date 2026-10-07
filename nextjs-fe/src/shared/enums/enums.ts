@@ -93,11 +93,6 @@ export enum IsDelete {
   TRUE = 1,
 }
 
-export const IsDeleteLabels: Record<IsDelete, string> = {
-  [IsDelete.FALSE]: 'Not Deleted',
-  [IsDelete.TRUE]: 'Deleted',
-};
-
 // ==========================================
 // UploadStatus (app/Enums/UploadStatus.php)
 // File upload processing status
@@ -107,12 +102,6 @@ export enum UploadStatus {
   COMPLETED = 2,
   FAILED = 3,
 }
-
-export const UploadStatusLabels: Record<UploadStatus, string> = {
-  [UploadStatus.PROCESSING]: 'Processing',
-  [UploadStatus.COMPLETED]: 'Completed',
-  [UploadStatus.FAILED]: 'Failed',
-};
 
 // ==========================================
 // CategoryStatus (app/Enums/CategoryStatus.php)
@@ -204,12 +193,6 @@ export enum ActionType {
   UPDATE = 2,
   DELETE = 3,
 }
-
-export const ActionTypeLabels: Record<ActionType, string> = {
-  [ActionType.CREATE]: 'Create',
-  [ActionType.UPDATE]: 'Update',
-  [ActionType.DELETE]: 'Delete',
-};
 
 // ==========================================
 // TypeOfMethod (app/Enums/TypeOfMethod.php)

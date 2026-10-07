@@ -1,4 +1,5 @@
-FROM php:8.3-fpm-alpine AS base
+ARG PHP_VERSION=8.5
+FROM php:${PHP_VERSION}-fpm-alpine AS base
 
 # Install system dependencies and PHP extensions
 RUN apk add --no-cache \
@@ -18,8 +19,8 @@ RUN apk add --no-cache \
   exif \
   pcntl \
   bcmath \
-  gd \
-  opcache
+  gd
+# OPcache is built into PHP 8.5, no extension install needed
 
 # Install Redis extension
 RUN apk add --no-cache --virtual .build-deps \
@@ -27,12 +28,12 @@ RUN apk add --no-cache --virtual .build-deps \
   gcc \
   g++ \
   make \
-  && pecl install redis-6.0.2 \
+  && pecl install redis-6.3.0 \
   && docker-php-ext-enable redis \
   && apk del .build-deps
 
 # Install Composer
-COPY --from=composer:2.7 /usr/bin/composer /usr/bin/composer
+COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
 # Set working directory
 WORKDIR /var/www/laravel-api
@@ -80,8 +81,6 @@ FROM base AS development
 RUN apk add --no-cache \
   git \
   vim \
-  nodejs \
-  npm \
   postgresql-client
 
 # Install Xdebug for development  
@@ -91,7 +90,7 @@ RUN apk add --no-cache --virtual .build-deps \
   g++ \
   make \
   linux-headers \
-  && pecl install xdebug \
+  && pecl install xdebug-3.5.0 \
   && docker-php-ext-enable xdebug \
   && apk del .build-deps
 

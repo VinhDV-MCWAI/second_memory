@@ -16,14 +16,14 @@ export function ScreenBlocker({ isVisible, message }: ScreenBlockerProps) {
   if (!mounted || !isVisible) return null;
 
   return createPortal(
-    <div className="fixed inset-0 z-[9999] bg-black/50 backdrop-blur-sm flex items-center justify-center pointer-events-auto cursor-not-allowed">
-      <div className="bg-white dark:bg-slate-900 rounded-lg p-6 shadow-xl flex flex-col items-center gap-4 min-w-[200px]">
+    <div className="pointer-events-auto fixed inset-0 z-[9999] flex cursor-not-allowed items-center justify-center bg-black/50 backdrop-blur-sm">
+      <div className="flex min-w-[200px] flex-col items-center gap-4 rounded-lg bg-white p-6 shadow-xl dark:bg-slate-900">
         <LoadingSpinner size="lg" />
-        <p className="text-slate-900 dark:text-white font-medium text-lg">
+        <p className="text-lg font-medium text-slate-900 dark:text-white">
           {message || t('processing')}
         </p>
       </div>
     </div>,
-    document.body
+    document.body,
   );
 }

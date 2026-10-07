@@ -13,7 +13,10 @@
 
 ## 📖 Giới thiệu
 
-**Second Memory** là một hệ thống quản lý tri thức cá nhân (PKMS) tự lưu trữ (self-hosted), được thiết kế để số hóa, tổ chức và khai thác toàn bộ kiến thức, kinh nghiệm, sở thích và suy nghĩ cá nhân một cách có hệ thống.
+**Second Memory** là một hệ thống quản lý tri thức cá nhân (PKMS - Personal Knowledge Management System) được xây dựng nhằm mục đích lưu trữ, tổ chức và khai thác toàn bộ kiến thức, kinh nghiệm, sở thích và suy nghĩ cá nhân một cách có hệ thống.
+
+> [!NOTE]
+> Test update to verify GitHub Actions Runner functionality.
 
 ### 🎯 Tầm nhìn
 
@@ -46,7 +49,7 @@ Tạo ra một "Di sản số cá nhân" - một nền tảng hợp nhất để
                               │
                     ┌─────────▼─────────┐
                     │   Laravel API     │
-                    │   PHP 8.3 + FPM   │
+                    │   PHP 8.5 + FPM   │
                     │   (Business Logic)│
                     └─────────┬─────────┘
                               │
@@ -64,7 +67,7 @@ Tạo ra một "Di sản số cá nhân" - một nền tảng hợp nhất để
 |:-----------|:----------|:-----|:------|
 | **Dashboard** | Next.js 16 + React 19 | 3000 | Giao diện quản trị (Admin Panel) |
 | **Documentation** | Next.js 16 + React 19 | 3457 | Giao diện hiển thị tài liệu công khai |
-| **API Backend** | Laravel 11 (PHP 8.3) | 9000 | RESTful API, Business Logic |
+| **API Backend** | Laravel 13 (PHP 8.5) | 9000 | RESTful API, Business Logic |
 | **Database** | PostgreSQL 16 Alpine | 5555 | Lưu trữ dữ liệu có cấu trúc |
 | **Cache** | Redis 7 Alpine | 6379 | Cache và Session Management |
 | **Object Storage** | MinIO | 9001 | S3-compatible File/Media Storage |
@@ -89,8 +92,8 @@ Tạo ra một "Di sản số cá nhân" - một nền tảng hợp nhất để
 
 ### Backend
 
-- **Framework**: Laravel 11.34
-- **Language**: PHP 8.3 (JIT enabled)
+- **Framework**: Laravel 13
+- **Language**: PHP 8.5
 - **Database ORM**: Eloquent
 - **Authentication**: JWT (Firebase JWT 6.10)
 - **Queue**: Laravel Queue (Redis driver)
@@ -158,7 +161,7 @@ second-memory/
 │   ├── redis/                 # Redis configuration
 │   └── minio/                 # MinIO configuration & scripts
 │
-├── laravel-api/               # Backend API (Laravel 11)
+├── laravel-api/               # Backend API (Laravel 13)
 │   ├── app/                   # Application code
 │   │   ├── Http/Controllers   # API Controllers
 │   │   ├── Models/            # Eloquent Models
@@ -256,28 +259,23 @@ cp .env.example .env.local
 # Quay về root directory
 cd ..
 
-# Build và start tất cả services
-cd docker
-docker-compose up -d --build
+# Tạo env (lần đầu), build và start tất cả services
+make up
 ```
 
-Hoặc sử dụng quick start script:
-
-```bash
-bash start.sh
-```
+`bash start.sh` vẫn dùng được (gọi `make up`). Xem toàn bộ lệnh bằng `make help`.
 
 ### 4. Initialize Database
 
 ```bash
 # Chạy migrations
-docker exec -it laravel-api php artisan migrate
+make migrate
 
 # (Optional) Seed dữ liệu mẫu
-docker exec -it laravel-api php artisan db:seed
+docker exec ml-php php artisan db:seed
 
-# Generate JWT secret
-docker exec -it laravel-api php artisan jwt:secret
+# Hoặc xóa toàn bộ dev DB, migrate lại và seed (hỏi xác nhận trước)
+make fresh
 ```
 
 ### 5. Access Applications
@@ -315,8 +313,16 @@ php artisan serve
 # Watch queue jobs
 php artisan queue:work
 
-# Run tests
-php artisan test
+# Run tests (trong Docker)
+make test
+```
+
+### Quality checks
+
+```bash
+make lint      # Pint + ESLint + Prettier
+make analyse   # Larastan
+make verify    # toàn bộ những gì CI chạy
 ```
 
 ### Database Migrations
