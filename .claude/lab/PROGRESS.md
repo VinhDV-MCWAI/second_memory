@@ -19,6 +19,15 @@
 3. GitHub board and labels (P0-06): see `docs/plan/github-setup.md`.
 4. Remote branch cleanup (P0-09): commands in `.claude/refactor/PROGRESS.md` → "Branches".
 5. Still open from the refactor: rotate secrets on any real deployment; browser check while logged in.
+6. When ready: push `refactor/p2-slim-down` (stacked on `docs/p1-handbook`); PRs only after the branches below it are merged.
+
+## Environment gotchas (read before running anything)
+
+- **Containers exit 127** after a Docker Desktop / WSL restart (stale bind mounts, e.g. `pg_hba.conf`): just `make up` to recreate them.
+- **`make up` fails with "ml-redis is unhealthy"**: Redis is still replaying a large AOF (`LOADING` on ping). Wait until `redis-cli ping` answers `PONG`, run `BGREWRITEAOF` to compact it, then `make up` again. Root cause is the test Redis bug in Next step 1.
+- **`make openapi` exit 137** right after start-up: transient, rerun it.
+- **Dev DB is off-limits for rollbacks** (owner's rule). Test migrations on the `testing` DB: `docker exec -e DB_DATABASE=testing ml-php php artisan migrate|migrate:rollback --step=1 --force` (no config cache, so the override works; confirm with `tinker --execute 'echo DB::connection()->getDatabaseName();'`).
+- After removing a module: drop its stale entries from `laravel-api/phpstan-baseline.neon` (don't regenerate the whole baseline) and grep FE tests for fixtures that used the removed names.
 
 ## Log
 
