@@ -63,6 +63,10 @@ Scenario: what stays still works
   Then  it works as in v1.0.0 and all automated checks pass
 ```
 
+Note (2026-10-07, ADR-0005): "manage roles" now means setting each admin's role (`owner` or `viewer`) on the admin form; the role, feature and API pages are gone by design.
+
+> 🇻🇳 Ghi chú (ADR-0005): "quản lý vai trò" giờ là chọn vai trò `owner` hoặc `viewer` cho từng admin trên form admin; các trang role / feature / API đã được bỏ có chủ đích.
+
 **US-2** As the PO, I want existing content exported to Markdown, so that nothing written before is lost.
 
 ```text

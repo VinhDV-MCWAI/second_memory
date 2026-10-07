@@ -7,7 +7,7 @@
 | Status | Approved (TL, 2026-10-07) |
 | Author | TL / Dev |
 | Reviewers | PO (scope), QA (test plan), Ops (rollout) |
-| Related | [REQ-001](../requirements/REQ-001-slim-down.md), [ADR-0003](../adr/0003-remove-cms-modules.md), PRB-001 / ADR-0004 (auth), ADR-0005 (roles), ADR-0006 (audit log) |
+| Related | [REQ-001](../requirements/REQ-001-slim-down.md), [ADR-0003](../adr/0003-remove-cms-modules.md), [PRB-001](../problems/PRB-001-custom-jwt-auth.md) / [ADR-0004](../adr/0004-sanctum-spa-cookie-auth.md) (auth), [ADR-0005](../adr/0005-owner-viewer-roles.md) (roles), ADR-0006 (audit log) |
 
 ## 1. Summary
 

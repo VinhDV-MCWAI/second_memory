@@ -7,22 +7,21 @@
 
 | | |
 |---|---|
-| Active phase | P2 Slim down (P0, P1 done locally). P2-01…P2-07, P2-09…P2-11 done (RFC-001 slices 1–7). Left: P2-12 roles (slice 8), P2-08 audit log (slice 9), P2-13 release (slice 10) |
-| Working branch | `refactor/p2-slim-down` (from `docs/p1-handbook`); `docs/p1-handbook` (stacked on `chore/p0-baseline`, tag `v1.0.0`); `chore/p0-baseline` (from `refactor/fe6-features` ← `fix/security-deps` ← `developer`); local only, nothing pushed |
+| Active phase | P2 Slim down (P0, P1 done locally). P2-01…P2-07, P2-09…P2-12 done (RFC-001 slices 1–8). Left: P2-08 audit log (slice 9), P2-13 release (slice 10) |
+| Working branch | `refactor/p2-slim-down` = the whole local stack (P0 + P1 + P2) on top of `developer`; local only, nothing pushed. Phase boundaries are tags: `v1.0.0` (P0), `v1.1.0` (P1), `v1.2.0`. The stacked branches `chore/p0-baseline`, `docs/p1-handbook`, `fix/security-deps`, `refactor/fe6-features`, `refactor/p4-frontend` were deleted locally on 2026-10-07 (no unique commits); recreate one from its tag if a separate PR is wanted (`git branch chore/p0-baseline v1.0.0`). Local branches left: `developer`, `main` (fast-forwarded to `origin/main`), `refactor/p2-slim-down` |
 | Old refactor | Frozen (`.claude/refactor/PLAN.md`, `PROGRESS.md`) |
 | Owner defaults | 8–10 h/week, backend role, §4 remove list accepted, Obsidian vault private (see analysis §9) |
 
 ## Needs the owner (Claude cannot do these)
 
-1. Push `chore/p0-baseline`, open PR → `developer`, then `developer` → `main` (merging into `developer` deploys via `cd.yml`).
-2. Push tag `v1.0.0` after the merge (`git push origin v1.0.0`) and create the GitHub release from `docs/releases/v1.0.0.md`.
+1. Push `refactor/p2-slim-down`, open PR → `developer`, then `developer` → `main` (merging into `developer` deploys via `cd.yml`). One big PR, or recreate `chore/p0-baseline` (`v1.0.0`) and `docs/p1-handbook` (`v1.1.0`) from the tags for smaller stacked PRs.
+2. Push tags `v1.0.0`, `v1.1.0`, `v1.2.0` after the merge (`git push origin v1.0.0 v1.1.0 v1.2.0`; the local `archive/*` tags need not be pushed) and create the GitHub release from `docs/releases/v1.0.0.md`.
 3. GitHub board and labels (P0-06): see `docs/plan/github-setup.md`.
-4. Remote branch cleanup (P0-09): commands in `.claude/refactor/PROGRESS.md` → "Branches".
+4. Remote branch cleanup (P0-09), approved by the owner on 2026-10-07 but no GitHub credentials in Claude's environment: `git push origin --delete staging feature/Refactor-readme feature/laravel-api/create-migration feature/temp-test feature/nuxtjs-fe/demo feature/temp-test2`. The first four are merged into `main`; the last two hold an abandoned 2023 Nuxt FE and a `demo2` test commit, kept locally as tags `archive/nuxtjs-fe-demo`, `archive/temp-test2`. Delete `refactor/fe6-features` on origin only after `refactor/p2-slim-down` is pushed (its commits are not on origin otherwise).
 5. Still open from the refactor: rotate secrets on any real deployment; browser check while logged in.
-6. When ready: push `refactor/p2-slim-down` (stacked on `docs/p1-handbook`); PRs only after the branches below it are merged.
 7. Before upgrading any deployed environment to v2.0.0: deploy `v1.2.0` and run `docs/runbooks/content-export.md` (the export command is gone after slice 5). `v1.2.0` has a tag but no release notes file yet (`docs/releases/v1.2.0.md`).
 8. Open decision (does not block P2): remove the media API, or keep it for Skill Ledger evidence files — see RFC-001 §3 correction.
-9. Dev DB is empty (PRB-002: test runs wiped it). To use the admin UI: `docker exec ml-php php artisan db:seed --class=RootAccountSeeder` (check the seeder first), then log in.
+9. Dev DB is empty (PRB-002: test runs wiped it). To use the admin UI: `docker exec ml-php php artisan db:seed --class=RootAccountSeeder` (creates owner `root` / `12345678`, idempotent), then log in. Slice 8 migrations already ran on the dev DB (forward only).
 10. To store sessions in Redis as ADR-0004 says: `make setup` (regenerates `laravel-api/.env` from `.env.example`, `SESSION_DRIVER=redis`) and `make restart`. Until then sessions use the `database` driver, which also works. Old `LARAVEL_*_TOKEN_SECRET` lines in `docker/.env` can be deleted by hand.
 11. Browser check of the new login (log in, reload, log out in one tab → the other tab goes to login on its next request); only curl was used here.
 
@@ -80,11 +79,11 @@
 - `make verify` exit 0: Pint ✓, Larastan ✓ (4 stale baseline entries removed), backend 189 passed with no exclusion (+1 guard test after), ESLint 0 problems (the old `auth-provider.tsx` warning is gone), tsc ✓, Vitest 62 (17 files), coverage 83.19%.
 - Left for slice 8: `admin_mst.limit_access` unused; `token_mst` CRUD + FE tokens page; `admin_permission_view` read per request. Not done: browser check (owner, item 11).
 
+- 2026-10-07 — Branch review (owner asked): every local branch except `developer`, `main` and `refactor/p2-slim-down` had no commit outside `refactor/p2-slim-down` → deleted locally (`git branch -d`); local `main` fast-forwarded (was 158 behind). Remote: 4 branches merged into `main`, 2 with junk commits (archived as local tags). Remote deletion approved but failed (no credentials) → owner item 4.
+- 2026-10-07 — P2-12 done (RFC-001 slice 8). Baseline `make verify` exit 0 (190 / Vitest 62 / 83.19%). Commits: `7daca29` docs (ADR-0005), `664cd1f` refactor(fe) (roles/features/APIs/tokens pages, role wizard, forms, `MultiSelect`, `Permission*` types, `FeatureStatus`/`TypeOfMethod`, 4 zod schemas, 66 message keys — FE first, built against the old generated types), `14599b0` refactor(api)! (`AdminRole` enum + `role` column, Gate `write`, `AdminMiddleware` = reads free / writes need owner, last-owner rule (422), expand migration `..._100005` with backfill, contract migration `..._100006` dropping 9 tables + view + trigger + `limit_access`; 6 + 3 modules, `BaseJunctionService`, `TypeOfMethod` removed; `AuthenticatesAdmins` test trait; 31 stale baseline entries; OpenAPI 52 → 20 paths), `5c885ec` feat(fe) (role selector, role column + filter).
+- Checks: migrations up → down → up on `testing` (down restores all 9 tables, view, trigger, `limit_access`; second up identical schema); backfill checked on `testing` (root holder → owner, others viewer; no root holder → oldest active admin). Curl through nginx with a temporary owner (deleted after): viewer created with role 200, viewer GET 200 / POST 403, last owner deleting itself 422. A git slip on the way: the FE commit first picked up staged backend deletions — undone with `reset --soft` before anything else, committed again cleanly.
+- `make verify` exit 0: Pint ✓, Larastan ✓, backend 73 passed (was 190; the removed modules' tests), ESLint 0 problems, tsc ✓ both apps, Vitest 51 (14 files), FE coverage 89.25%.
+
 ## Next step
 
-RFC-001 slice 8 = backlog **P2-12**: RBAC → Gates/Policies with roles `owner` / `viewer`. Documents first (own commit): ADR-0005 (roles; RFC-001 lists it), from `docs/templates/adr.md`. Then code:
-
-1. A `role` column on `admin_mst` (enum `owner` | `viewer`, backfilled: admins holding the `root` role → `owner`, others → `viewer`), Gates/Policies: `viewer` = GET only, `owner` = everything; replace `AdminMiddleware` (route permission) with them; 403 stays 403.
-2. Drop (new migration, `down()` replays, test up → down → up on `testing`): `role_mst`, `admin_role_mst`, `feature_mst`, `api_mst`, `api_role_mst`, their `*_hist`, `token_mst` (+hist), view `admin_permission_view`, trigger `after_api_insert`; column `admin_mst.limit_access`.
-3. Remove the matching API modules + tests, FE pages (roles wizard, features, APIs, tokens), nav, endpoints, types, messages; rework test helpers (`GrantsApiAccess` → set `role`). `make openapi`, `make verify`, watch the FE coverage gate (80%).
-4. Then slice 9 (P2-08 audit log), slice 10 (P2-13 metrics + `v2.0.0`).
+RFC-001 slice 9 = backlog **P2-08**: `audit_log` replaces the last history table. Only `admin_mst_hist` is left (+ `AuditedCrudService`, `features/history` viewer, `/api/admin/admin-mst-hist/*`). Documents first: ADR-0006 (audit log design: `auditable_type`, `auditable_id`, `event`, `old_values`, `new_values`, `admin_mst_id`, `created_at` — see RFC-001 §4 to-be ERD; consider recording login success/failure as PRB-001 §9 asks). Then expand → dual-write → backfill from `admin_mst_hist` → switch reads (API + FE history viewer) → contract (drop `admin_mst_hist`), each step its own commit, migrations tested up → down → up on `testing`. Then slice 10 (P2-13: `scripts/metrics.sh` after-metrics, regression, `v2.0.0` notes, retro).

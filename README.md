@@ -344,7 +344,7 @@ php artisan migrate:fresh --seed
   
 - ✅ **Authentication & Authorization**
   - Session authentication (Laravel Sanctum SPA)
-  - Role-based access control (RBAC)
+  - Two roles: `owner` (read + write) and `viewer` (read-only), see ADR-0005
   - Admin, Editor, Viewer roles
   
 - ✅ **Media Management**
