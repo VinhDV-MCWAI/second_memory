@@ -17,14 +17,10 @@ export const API_ENDPOINTS = {
     POLICY_DEPARTMENT: '/admin/policy-department-mst',
   },
   MANAGEMENT: {
-    BANNER: '/admin/banner-mgmt',
     CATEGORY: '/admin/category-mgmt',
     ENTRY: '/admin/entry-mgmt',
     ENTRY_DESCRIPTION: '/admin/entry-description-mgmt',
-    SLIDER: '/admin/slider-mgmt',
-    SOCIAL: '/admin/social-mgmt',
     USER: '/admin/user-mgmt',
-    SETTING_LINK: '/admin/setting-link-mgmt',
   },
   JUNCTION: {
     ADMIN_ROLE: '/admin/admin-role-mst',

@@ -15,10 +15,6 @@ import {
   Grid3x3,
   Briefcase,
   Layers,
-  Image,
-  Sliders,
-  Share2,
-  Link,
 } from 'lucide-react';
 import { MenuItem } from '@/shared/types';
 import { ADMIN_ROUTES } from '@/shared/config';
@@ -98,26 +94,6 @@ export const NAVIGATION_MENU: MenuItem[] = [
         label: 'entities.entryDescriptions',
         icon: Layers,
         href: ADMIN_ROUTES.ENTRY_DESCRIPTIONS,
-      },
-      {
-        label: 'entities.banners',
-        icon: Image,
-        href: ADMIN_ROUTES.BANNERS,
-      },
-      {
-        label: 'entities.sliders',
-        icon: Sliders,
-        href: ADMIN_ROUTES.SLIDERS,
-      },
-      {
-        label: 'entities.socials',
-        icon: Share2,
-        href: ADMIN_ROUTES.SOCIALS,
-      },
-      {
-        label: 'entities.settingLinks',
-        icon: Link,
-        href: ADMIN_ROUTES.SETTING_LINKS,
       },
     ],
   },

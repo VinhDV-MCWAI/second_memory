@@ -170,21 +170,6 @@ export const EntryStatusLabels: Record<EntryStatus, string> = {
 };
 
 // ==========================================
-// SocialStatus (app/Enums/SocialStatus.php)
-// ==========================================
-export enum SocialStatus {
-  INACTIVE = 0,
-  ACTIVE = 1,
-  PENDING = 2,
-}
-
-export const SocialStatusLabels: Record<SocialStatus, string> = {
-  [SocialStatus.INACTIVE]: 'Inactive',
-  [SocialStatus.ACTIVE]: 'Active',
-  [SocialStatus.PENDING]: 'Pending',
-};
-
-// ==========================================
 // ActionType (app/Enums/ActionType.php)
 // History/Audit action types
 // ==========================================

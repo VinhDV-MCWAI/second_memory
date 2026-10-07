@@ -8,7 +8,6 @@ import {
   DepartmentStatus,
   FeatureStatus,
   EntryStatus,
-  SocialStatus,
 } from '@/shared/enums';
 import { ValidationRules } from './validation-rules';
 
@@ -91,7 +90,6 @@ export const entryStatusValidation = z.preprocess(
   (val) => (typeof val === 'string' ? Number(val) : val),
   z.nativeEnum(EntryStatus),
 );
-export const socialStatusValidation = z.nativeEnum(SocialStatus);
 
 // Admin schema matching StoreAdminMstRequest
 export const getAdminSchema = (t: Translator) =>
@@ -190,19 +188,6 @@ export const getDepartmentSchema = (t: Translator) =>
 
 export type DepartmentFormData = z.infer<ReturnType<typeof getDepartmentSchema>>;
 
-// Banner schema
-export const getBannerSchema = (t: Translator) =>
-  z.object({
-    title: z.string().min(1, t('title.required')),
-    slug: z.string().min(1, t('slug.required')),
-    description: z.string().min(1, t('description.required')),
-    image: z.string().min(1, t('image.required')),
-    position: z.string().min(1, t('position.required')),
-    status: statusValidation,
-  });
-
-export type BannerFormData = z.infer<ReturnType<typeof getBannerSchema>>;
-
 // Feature schema
 export const getFeatureSchema = (t: Translator) =>
   z.object({
@@ -215,32 +200,6 @@ export const getFeatureSchema = (t: Translator) =>
   });
 
 export type FeatureFormData = z.infer<ReturnType<typeof getFeatureSchema>>;
-
-// Slider schema
-export const getSliderSchema = (t: Translator) =>
-  z.object({
-    title: z.string().min(1, t('title.required')),
-    slug: z.string().optional(),
-    link: z.string().optional(),
-    image: z.string().optional(),
-    status: statusValidation,
-  });
-
-export type SliderFormData = z.infer<ReturnType<typeof getSliderSchema>>;
-
-// Social schema
-export const getSocialSchema = (t: Translator) =>
-  z.object({
-    name: z.string().min(1, t('name.required')),
-    slug: z.string().optional(),
-    link: z.string().url(t('url.invalid')),
-    image: z.string().optional(),
-    rank_order: z.coerce.number().min(0, t('order.min', { min: 0 })),
-    status: socialStatusValidation,
-    is_display: z.boolean().optional(),
-  });
-
-export type SocialFormData = z.infer<ReturnType<typeof getSocialSchema>>;
 
 // Entry Description schema
 export const getEntryDescriptionSchema = (t: Translator) =>
@@ -279,21 +238,6 @@ export const getTokenSchema = (t: Translator) =>
   });
 
 export type TokenFormData = z.infer<ReturnType<typeof getTokenSchema>>;
-
-// Setting Link schema matching StoreSettingLinkMgmtRequest
-export const getSettingLinkSchema = (t: Translator) =>
-  z.object({
-    key: z
-      .string()
-      .min(1, t('key.required'))
-      .max(30, t('key.maxLength', { max: 30 })),
-    value: z
-      .string()
-      .min(1, t('value.required'))
-      .max(100, t('value.maxLength', { max: 100 })),
-  });
-
-export type SettingLinkFormData = z.infer<ReturnType<typeof getSettingLinkSchema>>;
 
 // Policy Department schema
 export const getPolicyDepartmentSchema = (t: Translator) =>

@@ -6,11 +6,11 @@ const feature = (id: number, name: string) => ({ id, name }) as FeatureMst;
 const api = (id: number, feature_mst_id: number, name: string, path: string, type = 1) =>
   ({ id, feature_mst_id, name, path, type }) as ApiMst;
 
-const features = [feature(1, 'Users'), feature(2, 'Banners')];
+const features = [feature(1, 'Users'), feature(2, 'Media')];
 const apis = [
   api(10, 1, 'List users', '/users/list', 1),
   api(11, 1, 'Create user', '/users/store', 2),
-  api(20, 2, 'List banners', '/banners/list', 1),
+  api(20, 2, 'List media', '/media/list', 1),
   api(99, 3, 'Orphan', '/orphan', 1),
 ];
 const grouped = groupApisByFeature(features, apis);

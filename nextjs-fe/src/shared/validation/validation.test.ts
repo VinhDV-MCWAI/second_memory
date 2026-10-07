@@ -2,7 +2,6 @@ import { describe, expect, it } from 'vitest';
 import {
   getAdminSchema,
   getApiSchema,
-  getBannerSchema,
   getCategorySchema,
   getDepartmentSchema,
   getEntryDescriptionSchema,
@@ -10,14 +9,11 @@ import {
   getFeatureSchema,
   getPolicyDepartmentSchema,
   getRoleSchema,
-  getSettingLinkSchema,
-  getSliderSchema,
-  getSocialSchema,
   getTokenSchema,
   getUserSchema,
 } from './validation';
 import { ValidationRules } from './validation-rules';
-import { AdminStatus, Gender, StatusEnum, UserStatus } from '@/shared/enums';
+import { AdminStatus, Gender, UserStatus } from '@/shared/enums';
 
 // Echo the key and params so assertions can check which message was chosen.
 const t = (key: string, params?: Record<string, string | number>) =>
@@ -81,49 +77,10 @@ describe('content schemas', () => {
 
   it('require the visible fields', () => {
     expect(
-      messagesOf(
-        getBannerSchema(t).safeParse({
-          title: '',
-          slug: '',
-          description: '',
-          image: '',
-          position: '',
-          status: StatusEnum.DRAFT,
-        }),
-      ),
-    ).toEqual([
-      'title.required',
-      'slug.required',
-      'description.required',
-      'image.required',
-      'position.required',
-    ]);
-    expect(messagesOf(getSliderSchema(t).safeParse({ title: '', status: 0 }))).toEqual([
-      'title.required',
-    ]);
-    expect(
       messagesOf(getEntryDescriptionSchema(t).safeParse({ title: '', rank_order: -1, status: 0 })),
     ).toEqual(['title.required', 'order.min:{"min":0}']);
   });
 
-  it('validate social links', () => {
-    const social = getSocialSchema(t).safeParse({
-      name: 'GitHub',
-      link: 'not a url',
-      rank_order: '3',
-      status: 1,
-    });
-    expect(messagesOf(social)).toEqual(['url.invalid']);
-  });
-
-  it('validate setting link keys and values against the backend limits', () => {
-    expect(getSettingLinkSchema(t).safeParse({ key: 'privacy', value: '/privacy' }).success).toBe(
-      true,
-    );
-    expect(
-      messagesOf(getSettingLinkSchema(t).safeParse({ key: 'k'.repeat(31), value: '' })),
-    ).toEqual(['key.maxLength:{"max":30}', 'value.required']);
-  });
 });
 
 describe('master data schemas', () => {

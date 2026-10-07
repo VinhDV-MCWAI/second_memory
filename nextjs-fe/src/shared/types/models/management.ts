@@ -24,7 +24,3 @@ export type UserMgmt = Schemas['UserMgmtResource'];
 export type CategoryMgmt = WithLayout<Schemas['CategoryMgmtResource']>;
 export type EntryMgmt = WithLayout<Schemas['EntryMgmtResource']>;
 export type EntryDescriptionMgmt = Schemas['EntryDescriptionMgmtResource'];
-export type BannerMgmt = Schemas['BannerMgmtResource'];
-export type SliderMgmt = Schemas['SliderMgmtResource'];
-export type SocialMgmt = Schemas['SocialMgmtResource'];
-export type SettingLinkMgmt = Schemas['SettingLinkMgmtResource'];
