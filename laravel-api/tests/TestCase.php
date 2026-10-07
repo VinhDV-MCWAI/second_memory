@@ -1,25 +1,28 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tests;
 
-use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
+use Illuminate\Support\Facades\Redis;
 
 abstract class TestCase extends BaseTestCase
 {
-  use DatabaseTransactions;
+    use DatabaseTransactions;
 
-  protected function tearDown(): void
-  {
-    // Flush Redis data after each test
-    if (config('database.redis.client')) {
-      try {
-        \Illuminate\Support\Facades\Redis::flushdb();
-      } catch (\Exception $e) {
-        // Ignore redis errors if connection fails, but log if needed
-      }
+    protected function tearDown(): void
+    {
+        // Flush Redis data after each test
+        if (config('database.redis.client')) {
+            try {
+                Redis::flushdb();
+            } catch (\Exception) {
+                // Ignore redis errors if connection fails, but log if needed
+            }
+        }
+
+        parent::tearDown();
     }
-
-    parent::tearDown();
-  }
 }

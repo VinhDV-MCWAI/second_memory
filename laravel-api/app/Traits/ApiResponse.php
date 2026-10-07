@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Traits;
 
 use Illuminate\Http\JsonResponse;
@@ -8,31 +10,23 @@ trait ApiResponse
 {
     /**
      * Render response api
-     *
-     * @param mixed $data
-     * @param array $error
-     * @return JsonResponse
      */
     public static function renderResponse(mixed $data, array $error): JsonResponse
     {
-        list($status, $code, $messages) = $error;
+        [$status, $code, $messages] = $error;
 
         return response()->json([
             'data' => $data,
             'error' => [
                 'status' => $status,
                 'code' => $code,
-                'messages' => $messages
-            ]
+                'messages' => $messages,
+            ],
         ], $code);
     }
 
     /**
      * Success response
-     *
-     * @param mixed $data
-     * @param int $code
-     * @return JsonResponse
      */
     public static function successResponse(mixed $data, int $code = 200): JsonResponse
     {
@@ -41,10 +35,6 @@ trait ApiResponse
 
     /**
      * Error response
-     *
-     * @param mixed $message
-     * @param int $code
-     * @return JsonResponse
      */
     public static function errorResponse(mixed $message, int $code): JsonResponse
     {

@@ -1,56 +1,46 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Requests\History\Management\CategoryMgmtHist;
 
-use Illuminate\Foundation\Http\FormRequest;
 use App\Constants\CommonVal;
-use Illuminate\Validation\Rule;
-use Illuminate\Validation\Rules\Enum;
-use App\Models\History\Management\CategoryMgmtHist;
 use App\Enums\IsActive;
 use App\Enums\StatusEnum;
-use App\Models\Management\CategoryMgmt;
+use App\Http\Requests\ListRequest;
+use Illuminate\Contracts\Validation\ValidationRule;
+use Illuminate\Validation\Rule;
 
-class ListCategoryMgmtHistRequest extends FormRequest
+class ListCategoryMgmtHistRequest extends ListRequest
 {
     /**
-     * Determine if the user is authorized to make this request.
+     * @return array<string, ValidationRule|array<mixed>|string>
      */
-    public function authorize(): bool
-    {
-        return true;
-    }
-
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
-     */
-    public function rules(): array
+    protected function filters(): array
     {
         return [
-            'category_mgmt_id' => ['nullable', 'integer', 'min:' . CommonVal::MIN_INTEGER, 'max:' . CommonVal::MAX_INTEGER,],
-            'parent_id' => ['nullable', 'integer', 'min:' . CommonVal::MIN_INTEGER, 'max:' . CommonVal::MAX_INTEGER,],
-            'name' => ['nullable', 'string', 'min:' . CommonVal::MIN_VARCHAR, 'max:50',],
-            'slug' => ['nullable', 'string', 'min:' . CommonVal::MIN_VARCHAR, 'max:50',],
-            'description' => ['nullable', 'string', 'min:' . CommonVal::MIN_VARCHAR, 'max:150',],
-            'status' => ['nullable', new Enum(StatusEnum::class),],
-            'is_display' => ['nullable', new Enum(IsActive::class),],
-            'rank_order' => ['nullable',],
-            'action' => ['nullable',],
-            'author_id' => ['nullable', 'integer', 'min:' . CommonVal::MIN_INTEGER, 'max:' . CommonVal::MAX_INTEGER,],
+            'category_mgmt_id' => ['nullable', 'integer', 'min:'.CommonVal::MIN_INTEGER, 'max:'.CommonVal::MAX_INTEGER],
+            'parent_id' => ['nullable', 'integer', 'min:'.CommonVal::MIN_INTEGER, 'max:'.CommonVal::MAX_INTEGER],
+            'name' => ['nullable', 'string', 'min:'.CommonVal::MIN_VARCHAR, 'max:50'],
+            'slug' => ['nullable', 'string', 'min:'.CommonVal::MIN_VARCHAR, 'max:50'],
+            'description' => ['nullable', 'string', 'min:'.CommonVal::MIN_VARCHAR, 'max:150'],
+            'status' => ['nullable', Rule::enum(StatusEnum::class)],
+            'is_display' => ['nullable', Rule::enum(IsActive::class)],
+            'rank_order' => ['nullable'],
+            'action' => ['nullable'],
+            'author_id' => ['nullable', 'integer', 'min:'.CommonVal::MIN_INTEGER, 'max:'.CommonVal::MAX_INTEGER],
             'from_date' => [
                 'nullable',
-                'date_format:' . CommonVal::DATE_FORMAT,
-                'after_or_equal:' . CommonVal::MIN_DATE,
-                'before_or_equal:' . CommonVal::MAX_DATE,
+                'date_format:'.CommonVal::DATE_FORMAT,
+                'after_or_equal:'.CommonVal::MIN_DATE,
+                'before_or_equal:'.CommonVal::MAX_DATE,
             ],
             'to_date' => [
                 'nullable',
-                'date_format:' . CommonVal::DATE_FORMAT,
-                'after_or_equal:' . CommonVal::MIN_DATE,
-                'before_or_equal:' . CommonVal::MAX_DATE,
-                'after:from_date'
+                'date_format:'.CommonVal::DATE_FORMAT,
+                'after_or_equal:'.CommonVal::MIN_DATE,
+                'before_or_equal:'.CommonVal::MAX_DATE,
+                'after:from_date',
             ],
         ];
     }

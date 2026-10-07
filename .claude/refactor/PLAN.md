@@ -45,41 +45,41 @@ Workflow: `/refactor-item <ID…>`. Only `approved` items may be started.
 |---|---|---|---|---|
 | F1 | Monorepo hygiene: one root `pnpm-lock.yaml` (remove `nextjs-fe/pnpm-lock.yaml`, `laravel-api/package-lock.json`, fix `.gitignore`), `packageManager` + corepack, `engines.node >=24`, root scripts (`lint`, `typecheck`, `test`, `format`), root `.editorconfig`; drop `laravel-api` from pnpm workspace if its Vite assets are unused | `pnpm -r lint/typecheck/test` work from root | – | done (`refactor/p0-p1-foundation`; lint green after F3) |
 | F2 | Backend tooling: `pint.json` (PSR-12/laravel preset), Larastan 3 (start level 5 + baseline), Rector with rector-laravel, `composer` scripts `lint`, `analyse`, `test` | Commands run clean (with baseline) | – | done (`refactor/p0-p1-foundation`; Larastan 3.1 + 631-error baseline, Rector dry-run only, pint style debt → F6) |
-| F3 | FE tooling: shared ESLint flat config + Prettier for both apps, TS strict, Vitest 4 config; replace `next lint` in docs | Lint + tsc pass in both apps | F1 | approved |
-| F4 | Rewrite CI: jobs `frontend` (pnpm, Node 24) and `backend` (PHP 8.x + Postgres/Redis services: pint, larastan, tests), Docker build check; trigger on PR → `developer`/`main`; least-privilege permissions | CI green on a PR | F1–F3 | approved |
+| F3 | FE tooling: shared ESLint flat config + Prettier for both apps, TS strict, Vitest 4 config; replace `next lint` in docs | Lint + tsc pass in both apps | F1 | done (`refactor/p0-p1-foundation`: lint 0 errors, tsc ✓, Vitest 4) |
+| F4 | Rewrite CI: jobs `frontend` (pnpm, Node 24) and `backend` (PHP 8.x + Postgres/Redis services: pint, larastan, tests), Docker build check; trigger on PR → `developer`/`main`; least-privilege permissions | CI green on a PR | F1–F3 | done (validated locally; green-on-PR pending push) |
 | F5 | Remove dead code: `Http/Kernel.php`, `Utilities/Tmp.php`, `CommonService`, `SingletonService`, `CategoryMgmt::products()` (class doesn't exist), `.bak` files, `tsconfig.tsbuildinfo`; unused deps `@reduxjs/toolkit`, `react-redux`, `novel`, `@dnd-kit/*`, `react-masonry-css`, `shadcn-ui`, `@swc/helpers` | Build + tests green | – | done (`refactor/p0-p1-foundation`) |
-| F6 | One-time format pass (Pint + Prettier) in a dedicated commit; add its SHA to `.git-blame-ignore-revs` | No style diffs remain | F2, F3 | approved |
-| F7 | Task runner `Makefile` (`make up/down/test/lint/fresh/backup`) wrapping docker compose; `start.sh` delegates to it | README/CLAUDE.md commands use `make` | – | approved |
+| F6 | One-time format pass (Pint + Prettier) in a dedicated commit; add its SHA to `.git-blame-ignore-revs` | No style diffs remain | F2, F3 | done (`refactor/p0-p1-foundation`: `3669e72`, in `.git-blame-ignore-revs`) |
+| F7 | Task runner `Makefile` (`make up/down/test/lint/fresh/backup`) wrapping docker compose; `start.sh` delegates to it | README/CLAUDE.md commands use `make` | – | done |
 
 ## P2 — Framework upgrades
 
 | ID | Item | Done when | Depends | Status |
 |---|---|---|---|---|
-| U1 | PHP 8.5 image; Laravel 11 → 12 → 13 (Rector sets + upgrade guides), unpin exact versions to `^`, Reverb stable, Sanctum latest; PHPUnit 12 **or** convert to Pest 4 (option) | All tests green on 13 | F2, F4 | proposed |
-| U2 | Next 16.3 with Turbopack (drop `--webpack`; keep polling for Docker via env), enable React Compiler, Vitest 4, Node 24 images | Both apps build & run in Docker | S1, F3 | proposed |
+| U1 | PHP 8.5 image; Laravel 11 → 12 → 13 (Rector sets + upgrade guides), unpin exact versions to `^`, Reverb stable, Sanctum latest; PHPUnit 12 **or** convert to Pest 4 (option) | All tests green on 13 | F2, F4 | done (`refactor/p2-upgrades`: Laravel 13.35, PHP 8.5.11, PHPUnit 12.5, 593 pass) |
+| U2 | Next 16.3 with Turbopack (drop `--webpack`; keep polling for Docker via env), enable React Compiler, Vitest 4, Node 24 images | Both apps build & run in Docker | S1, F3 | done (`refactor/p2-upgrades`: Turbopack + React Compiler, Node 24) |
 
 ## P3 — Backend architecture
 
 | ID | Item | Done when | Depends | Status |
 |---|---|---|---|---|
-| B1 | **Generic CRUD core**: `BaseCrudController` / `BaseCrudService` / `BaseRepository` with list/store/update/delete; entities declare only model, resource, filters, rules. Consider `spatie/laravel-query-builder` for allow-listed filter/sort/include (replaces `applyFilters`/`applySorting`/`Schema::hasColumn`). Contract unchanged | ~60% fewer per-entity files; all feature tests green | U1 | proposed |
-| B2 | History via model trait/observer (`Auditable`) instead of manual `recordHistory()` in each service | History tests green; no `recordHistory` calls in services | B1 | proposed |
-| B3 | Enums: shared `HasLabel` trait, native enum casts on models, `Rule::enum` in requests | No duplicated `getLabel()` | U1 | proposed |
-| B4 | Routing: split `routes/api.php` into `routes/api/{master,management,history,docs}.php`, middleware aliases in `bootstrap/app.php` | `route:list` identical before/after (diff) | – | proposed |
-| B5 | `Model::shouldBeStrict()` in non-prod, `$request->validated()` everywhere, `declare(strict_types=1)` everywhere | Larastan level raised to 6+ | F2 | proposed |
-| B6 | OpenAPI via **Scramble** at `/docs/api` (admin-only), export spec in CI | Spec generated; consumed by FE4 | B1 | proposed |
-| B7 | *(optional, large)* Custom `is_delete` → Laravel `SoftDeletes` (`deleted_at`) with data migration | Migration reversible; tests green | B1 | proposed |
+| B1 | **Generic CRUD core**: `BaseCrudController` / `BaseCrudService` / `BaseRepository` with list/store/update/delete; entities declare only model, resource, filters, rules. Consider `spatie/laravel-query-builder` for allow-listed filter/sort/include (replaces `applyFilters`/`applySorting`/`Schema::hasColumn`). Contract unchanged | ~60% fewer per-entity files; all feature tests green | U1 | done (`refactor/p3-backend`) |
+| B2 | History via model trait/observer (`Auditable`) instead of manual `recordHistory()` in each service | History tests green; no `recordHistory` calls in services | B1 | done (covered by B1 `AuditedCrudService`) |
+| B3 | Enums: shared `HasLabel` trait, native enum casts on models, `Rule::enum` in requests | No duplicated `getLabel()` | U1 | done (`refactor/p3-backend`) |
+| B4 | Routing: split `routes/api.php` into `routes/api/{master,management,history,docs}.php`, middleware aliases in `bootstrap/app.php` | `route:list` identical before/after (diff) | – | done (`refactor/p3-backend`: route:list identical) |
+| B5 | `Model::shouldBeStrict()` in non-prod, `$request->validated()` everywhere, `declare(strict_types=1)` everywhere | Larastan level raised to 6+ | F2 | done (`refactor/p3-backend`: Larastan level 6) |
+| B6 | OpenAPI via **Scramble** at `/docs/api` (admin-only), export spec in CI | Spec generated; consumed by FE4 | B1 | done (`refactor/p3-backend`: `laravel-api/openapi.json`) |
+| B7 | *(optional, large)* Custom `is_delete` → Laravel `SoftDeletes` (`deleted_at`) with data migration | Migration reversible; tests green | B1 | skipped (decision 3: no real need; data migration risk) |
 
 ## P4 — Frontend architecture
 
 | ID | Item | Done when | Depends | Status |
 |---|---|---|---|---|
-| FE1 | Tests first: Vitest specs for api client, error-handler, `useApiData`, `useCrud` (MSW) | Coverage on `src/shared` ≥ 70% | F3 | proposed |
-| FE2 | `app/admin/layout.tsx` hosts `AdminLayout` (remove per-page wrapping in 48 places) | No page imports `AdminLayout` | – | proposed |
+| FE1 | Tests first: Vitest specs for api client, error-handler, `useApiData`, `useCrud` (MSW) | Coverage on `src/shared` ≥ 70% | F3 | done (`refactor/p4-frontend`: 88 tests, `src/shared` 88% stmts / 76% branches, thresholds enforced in CI) |
+| FE2 | `app/admin/layout.tsx` hosts `AdminLayout` (remove per-page wrapping in 48 places) | No page imports `AdminLayout` | – | done (`refactor/p4-frontend`) |
 | FE3 | Auth guard in `proxy.ts` (Next 16) for `/admin/*` | Unauthenticated → redirect without flash | S6 | proposed |
-| FE4 | Generated API types (openapi-typescript) replace hand-written `types/api.ts`; query-key factory; merge `useApiData`/`useCrud` into `useResource(resource)` | No hand-written API model types | B6, FE1 | proposed |
-| FE5 | Config-driven `<ResourceListPage>`: 17 near-identical 300+ line pages → column/filter/form config per entity | Each entity page < 80 lines; behavior same | FE1, FE2, FE4 | proposed |
-| FE6 | Feature-based folders: `src/features/<domain>/{api,components,schemas,hooks}`; split oversized files (`layout-structure-editor`, `constant.ts`, `types/api.ts`) | No file > 300 lines outside `ui/` | FE5 | proposed |
+| FE4 | Generated API types (openapi-typescript) replace hand-written `types/api.ts`; query-key factory; merge `useApiData`/`useCrud` into `useResource(resource)` | No hand-written API model types | B6, FE1 | done (`refactor/p4-frontend`: generated `openapi.d.ts`, `queryKeys`; `useApiData`/`useCrud` kept separate, see PROGRESS) |
+| FE5 | Config-driven `<ResourceListPage>`: 17 near-identical 300+ line pages → column/filter/form config per entity | Each entity page < 80 lines; behavior same | FE1, FE2, FE4 | done (`refactor/p4-frontend`: 12/15 pages < 80 lines, rest 85–97; 5139 → ~1060 lines) |
+| FE6 | Feature-based folders: `src/features/<domain>/{api,components,schemas,hooks}`; split oversized files (`layout-structure-editor`, `constant.ts`, `types/api.ts`) | No file > 300 lines outside `ui/` | FE5 | in-progress (`refactor/p4-frontend`: feature folders done; form props + file splits left) |
 | FE7 | *(optional)* Shared workspace package `packages/editor` (Tiptap extensions + schema) used by both admin editor and docs renderer | Single source of extensions | U2 | proposed |
 | D1 | Docs site: API base URL from env (no hard-coded `ml-nginx`), drop custom request dedup, use Next caching (`revalidate`/Cache Components + tag revalidation on publish), `generateMetadata`, sitemap | Pages cached; content updates visible after publish | U2 | proposed |
 
@@ -93,10 +93,12 @@ Workflow: `/refactor-item <ID…>`. Only `approved` items may be started.
 | I4 | Backup: `set -euo pipefail`, retention, scheduled run, automated restore test | Restore into scratch DB succeeds | – | proposed |
 | I5 | CD: images tagged by commit SHA (+ `latest` alias), docs image too, deploy health check + one-command rollback | Rollback tested once | F4 | proposed |
 
-## Open decisions (user)
+## Open decisions
 
-1. S6: firebase/php-jwt (a) or Sanctum SPA cookie auth (b)?
-2. U1: keep PHPUnit or migrate to Pest 4?
-3. B7, FE7, I2: do the optional large items?
-4. I3: keep MinIO (pinned) or migrate?
-5. S2: also purge secrets from git history (rewrites history, needs force-push)?
+User delegated P2+ on 2026-10-06 ("toàn quyền thực hiện"); Claude's defaults below can be overridden any time.
+
+1. S6: firebase/php-jwt (a) or Sanctum SPA cookie auth (b)? — **user** (manual auth work).
+2. U1: keep PHPUnit or migrate to Pest 4? — **decided: PHPUnit 12** (no rewrite of 593 tests for syntax only).
+3. B7, FE7, I2: do the optional large items? — **decided: skipped for now** (data migration / new package / DB major upgrade carry risk without a real need).
+4. I3: keep MinIO (pinned) or migrate? — **decided: keep S3 API, pinned `pgsty/minio` community build** (see I3).
+5. S2: also purge secrets from git history (rewrites history, needs force-push)? — **user**.

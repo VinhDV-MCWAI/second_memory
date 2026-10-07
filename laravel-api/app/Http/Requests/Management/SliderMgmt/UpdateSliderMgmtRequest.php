@@ -1,14 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Requests\Management\SliderMgmt;
 
-use Illuminate\Foundation\Http\FormRequest;
 use App\Constants\CommonVal;
-use Illuminate\Validation\Rule;
-use Illuminate\Validation\Rules\Enum;
-use App\Models\Management\SliderMgmt;
 use App\Enums\IsDelete;
 use App\Enums\StatusEnum;
+use App\Models\Management\SliderMgmt;
+use Illuminate\Contracts\Validation\ValidationRule;
+use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class UpdateSliderMgmtRequest extends FormRequest
 {
@@ -23,18 +25,18 @@ class UpdateSliderMgmtRequest extends FormRequest
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
+     * @return array<string, ValidationRule|array<mixed>|string>
      */
     public function rules(): array
     {
         return [
             'id' => ['required', 'integer', 'min:1', Rule::exists(SliderMgmt::class, 'id')],
-            'title' => ['required', 'string', 'min:' . CommonVal::MIN_VARCHAR, 'max:50',],
-            'slug' => ['required', 'string', 'min:' . CommonVal::MIN_VARCHAR, 'max:50',],
-            'link' => ['required', 'string', 'min:' . CommonVal::MIN_VARCHAR, 'max:100',],
-            'image' => ['required', 'string', 'min:' . CommonVal::MIN_VARCHAR, 'max:100',],
-            'status' => ['required', new Enum(StatusEnum::class),],
-            'is_delete' => ['required', new Enum(IsDelete::class),],
+            'title' => ['required', 'string', 'min:'.CommonVal::MIN_VARCHAR, 'max:50'],
+            'slug' => ['required', 'string', 'min:'.CommonVal::MIN_VARCHAR, 'max:50'],
+            'link' => ['required', 'string', 'min:'.CommonVal::MIN_VARCHAR, 'max:100'],
+            'image' => ['required', 'string', 'min:'.CommonVal::MIN_VARCHAR, 'max:100'],
+            'status' => ['required', Rule::enum(StatusEnum::class)],
+            'is_delete' => ['required', Rule::enum(IsDelete::class)],
         ];
     }
 

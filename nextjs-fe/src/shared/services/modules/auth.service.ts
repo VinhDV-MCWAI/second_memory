@@ -1,24 +1,17 @@
-import type { AxiosRequestConfig } from "axios";
-import { authLock } from "@/shared/utils/auth-lock";
-import { apiClient } from "@/shared/api/client";
-import { ENDPOINTS } from "@/shared/api";
+import type { AxiosRequestConfig } from 'axios';
+import { authLock } from '@/shared/utils/auth-lock';
+import { apiClient } from '@/shared/api/client';
+import { ENDPOINTS } from '@/shared/api';
 import type {
   LoginCredentials,
   AuthResponse,
   RefreshTokenResponse,
-} from "@/shared/types/auth.types";
-import type {
-  LoginApiResponse,
-  RefreshApiResponse,
-  MeApiResponse,
-} from "@/shared/types/api";
+} from '@/shared/types/auth.types';
+import type { LoginApiResponse, RefreshApiResponse, MeApiResponse } from '@/shared/types/api';
 
 export const authService = {
   async login(credentials: LoginCredentials): Promise<AuthResponse> {
-    const response = await apiClient.post<LoginApiResponse>(
-      ENDPOINTS.AUTH.LOGIN,
-      credentials
-    );
+    const response = await apiClient.post<LoginApiResponse>(ENDPOINTS.AUTH.LOGIN, credentials);
     return response.data;
   },
 
@@ -27,9 +20,7 @@ export const authService = {
   },
 
   async refreshToken(): Promise<RefreshTokenResponse> {
-    const response = await apiClient.post<RefreshApiResponse>(
-      ENDPOINTS.AUTH.REFRESH
-    );
+    const response = await apiClient.post<RefreshApiResponse>(ENDPOINTS.AUTH.REFRESH);
     return response.data;
   },
 

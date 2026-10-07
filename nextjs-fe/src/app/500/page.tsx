@@ -25,9 +25,7 @@ export default function ServerErrorPage() {
         </div>
 
         {/* Error Code */}
-        <h1 className="mb-4 text-8xl font-bold text-slate-900 dark:text-white">
-          500
-        </h1>
+        <h1 className="mb-4 text-8xl font-bold text-slate-900 dark:text-white">500</h1>
 
         {/* Title */}
         <h2 className="mb-3 text-2xl font-semibold text-slate-900 dark:text-slate-100">

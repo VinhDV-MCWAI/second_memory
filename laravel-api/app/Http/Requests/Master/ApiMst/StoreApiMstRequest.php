@@ -1,15 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Requests\Master\ApiMst;
 
-use Illuminate\Foundation\Http\FormRequest;
 use App\Constants\CommonVal;
-use Illuminate\Validation\Rule;
-use Illuminate\Validation\Rules\Enum;
-use App\Models\Master\ApiMst;
 use App\Enums\IsActive;
 use App\Enums\IsDelete;
 use App\Models\Master\FeatureMst;
+use Illuminate\Contracts\Validation\ValidationRule;
+use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class StoreApiMstRequest extends FormRequest
 {
@@ -24,17 +25,17 @@ class StoreApiMstRequest extends FormRequest
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
+     * @return array<string, ValidationRule|array<mixed>|string>
      */
     public function rules(): array
     {
         return [
-            'type' => ['required',],
-            'name' => ['required', 'string', 'min:' . CommonVal::MIN_VARCHAR, 'max:50',],
-            'path' => ['required', 'string', 'min:' . CommonVal::MIN_VARCHAR, 'max:100',],
-            'is_active' => ['required', new Enum(IsActive::class),],
-            'feature_mst_id' => ['required', 'integer', 'min:' . CommonVal::MIN_INTEGER, 'max:' . CommonVal::MAX_INTEGER, Rule::exists(FeatureMst::class, 'id'),],
-            'is_delete' => ['required', new Enum(IsDelete::class),],
+            'type' => ['required'],
+            'name' => ['required', 'string', 'min:'.CommonVal::MIN_VARCHAR, 'max:50'],
+            'path' => ['required', 'string', 'min:'.CommonVal::MIN_VARCHAR, 'max:100'],
+            'is_active' => ['required', Rule::enum(IsActive::class)],
+            'feature_mst_id' => ['required', 'integer', 'min:'.CommonVal::MIN_INTEGER, 'max:'.CommonVal::MAX_INTEGER, Rule::exists(FeatureMst::class, 'id')],
+            'is_delete' => ['required', Rule::enum(IsDelete::class)],
         ];
     }
 

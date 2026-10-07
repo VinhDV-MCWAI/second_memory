@@ -1,54 +1,58 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Models\Master;
 
+use App\Enums\StatusEnum;
 use App\Traits\HasSoftDelete;
 use App\Traits\HasStatus;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-
+/**
+ * @property StatusEnum|null $status
+ */
 class FeatureMst extends Model
 {
-  use HasSoftDelete, HasStatus, HasFactory;
+    use HasFactory, HasSoftDelete, HasStatus;
 
-  protected $table = 'feature_mst';
+    protected $table = 'feature_mst';
 
-  /**
-   * The attributes that are mass assignable.
-   *
-   * @var string[]
-   */
-  protected $fillable = [
-    'name',
-    'group_name',
-    'status',
-    'is_delete',
-  ];
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var string[]
+     */
+    protected $fillable = [
+        'name',
+        'group_name',
+        'status',
+        'is_delete',
+    ];
 
-  /**
-   * The attributes that should be cast.
-   *
-   * @var array
-   */
-  protected $casts = [
-    'id' => 'integer',
-    'name' => 'string',
-    'group_name' => 'string',
-    'status' => 'integer',
-    'is_delete' => 'boolean',
-    'created_at' => 'datetime',
-    'updated_at' => 'datetime',
-  ];
+    /**
+     * Get the APIs for the feature.
+     */
+    public function apis(): HasMany
+    {
+        return $this->hasMany(ApiMst::class, 'feature_mst_id');
+    }
 
-  /**
-   * Get the APIs for the feature.
-   *
-   * @return HasMany
-   */
-  public function apis(): HasMany
-  {
-    return $this->hasMany(ApiMst::class, 'feature_mst_id');
-  }
+    /**
+     * The attributes that should be cast.
+     */
+    protected function casts(): array
+    {
+        return [
+            'id' => 'integer',
+            'name' => 'string',
+            'group_name' => 'string',
+            'status' => StatusEnum::class,
+            'is_delete' => 'boolean',
+            'created_at' => 'datetime',
+            'updated_at' => 'datetime',
+        ];
+    }
 }

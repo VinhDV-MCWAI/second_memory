@@ -70,7 +70,7 @@ services:
       dockerfile: ../docker/laravel/Dockerfile
       target: development
       args:
-        PHP_VERSION: "8.3"
+        PHP_VERSION: "8.5"
     restart: unless-stopped
     working_dir: /var/www/laravel-api
     volumes:
@@ -129,7 +129,7 @@ services:
       dockerfile: ../docker/laravel/Dockerfile
       target: development
       args:
-        PHP_VERSION: "8.3"
+        PHP_VERSION: "8.5"
     restart: unless-stopped
     working_dir: /var/www/laravel-api
     command: php artisan reverb:start --debug
@@ -179,7 +179,7 @@ services:
       dockerfile: ../docker/laravel/Dockerfile
       target: development
       args:
-        PHP_VERSION: "8.3"
+        PHP_VERSION: "8.5"
     restart: unless-stopped
     working_dir: /var/www/laravel-api
     command: php artisan queue:work --verbose --tries=3 --timeout=900
@@ -245,8 +245,6 @@ services:
       NODE_ENV: development
       PORT: ${NEXTJS_PORT_INSIDE_ENV}
       HOSTNAME: 0.0.0.0
-      WATCHPACK_POLLING: true
-      CHOKIDAR_USEPOLLING: true
       # Memory optimization for dev mode
       NODE_OPTIONS: "--max-old-space-size=1536"
     ports:
@@ -293,8 +291,6 @@ services:
       NODE_ENV: development
       PORT: ${NEXTJS_DOCS_PORT_INSIDE_ENV}
       HOSTNAME: 0.0.0.0
-      WATCHPACK_POLLING: true
-      CHOKIDAR_USEPOLLING: true
       NEXT_PUBLIC_API_URL: http://localhost:81/api
     ports:
       - "${NEXTJS_DOCS_PORT_OUTSIDE_ENV}:${NEXTJS_DOCS_PORT_INSIDE_ENV}"

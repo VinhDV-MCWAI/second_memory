@@ -13,15 +13,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { useState, useCallback, useEffect } from 'react';
-import { 
-  Search, 
-  Bell, 
-  Sun, 
-  Moon, 
-  User,
-  Settings,
-  LogOut
-} from 'lucide-react';
+import { Search, Bell, Sun, Moon, User, Settings, LogOut } from 'lucide-react';
 import { useTheme } from 'next-themes';
 import { useTranslations } from 'next-intl';
 import { THEME } from '@/shared/config';
@@ -33,7 +25,7 @@ export function Header() {
   const [mounted, setMounted] = useState(false);
   const t = useTranslations('header');
   const tCommon = useTranslations('common');
-  
+
   const [notifications, setNotifications] = useState<Notification[]>([]);
 
   // Prevent hydration mismatch for theme
@@ -47,9 +39,7 @@ export function Header() {
   const unreadCount = notifications.filter((n) => !n.read).length;
 
   const handleMarkAsRead = useCallback((id: string) => {
-    setNotifications((prev) =>
-      prev.map((n) => (n.id === id ? { ...n, read: true } : n))
-    );
+    setNotifications((prev) => prev.map((n) => (n.id === id ? { ...n, read: true } : n)));
   }, []);
 
   const handleMarkAllAsRead = useCallback(() => {
@@ -67,12 +57,8 @@ export function Header() {
         <div className="flex flex-1 items-center gap-4">
           <div className="hidden flex-1 md:flex">
             <div className="relative w-full max-w-md">
-              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
-              <Input
-                placeholder={t('searchPlaceholder')}
-                className="pl-10"
-                type="search"
-              />
+              <Search className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-slate-400" />
+              <Input placeholder={t('searchPlaceholder')} className="pl-10" type="search" />
             </div>
           </div>
         </div>
@@ -80,12 +66,7 @@ export function Header() {
         {/* Right Section - Actions */}
         <div className="flex items-center gap-2">
           {/* Search Button (Mobile) */}
-          <Button
-            variant="ghost"
-            size="icon"
-            className="md:hidden"
-            aria-label="Search"
-          >
+          <Button variant="ghost" size="icon" className="md:hidden" aria-label="Search">
             <Search className="h-5 w-5" />
           </Button>
 
@@ -119,7 +100,7 @@ export function Header() {
                 {unreadCount > 0 && (
                   <Badge
                     variant="default"
-                    className="absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 p-0 text-xs text-white"
+                    className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 p-0 text-xs text-white"
                   >
                     {unreadCount}
                   </Badge>
@@ -148,15 +129,13 @@ export function Header() {
                       key={notification.id}
                       className={cn(
                         'cursor-pointer p-3 transition-colors',
-                        !notification.read && 'bg-blue-50 dark:bg-blue-950/20'
+                        !notification.read && 'bg-blue-50 dark:bg-blue-950/20',
                       )}
                       onClick={() => handleMarkAsRead(notification.id)}
                     >
                       <div className="flex flex-1 gap-3">
                         <div className="flex-1">
-                          <p className="text-sm font-medium">
-                            {notification.title}
-                          </p>
+                          <p className="text-sm font-medium">{notification.title}</p>
                           <p className="text-sm text-slate-600 dark:text-slate-400">
                             {notification.message}
                           </p>
@@ -187,18 +166,12 @@ export function Header() {
           {/* User Menu */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button 
-                variant="ghost" 
-                className="gap-2 rounded-full"
-                aria-label="User menu"
-              >
+              <Button variant="ghost" className="gap-2 rounded-full" aria-label="User menu">
                 <Avatar className="h-8 w-8">
                   <AvatarImage src="https://github.com/shadcn.png" alt="User avatar" />
                   <AvatarFallback>VD</AvatarFallback>
                 </Avatar>
-                <span className="hidden text-sm font-medium sm:inline">
-                  Vinh Dv
-                </span>
+                <span className="hidden text-sm font-medium sm:inline">Vinh Dv</span>
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-56">

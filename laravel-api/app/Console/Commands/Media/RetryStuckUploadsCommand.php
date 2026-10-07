@@ -1,12 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Console\Commands\Media;
 
-use App\Models\Management\MediaMgmt;
 use App\Enums\UploadStatus;
 use App\Jobs\Media\ProcessLargeFile;
+use App\Models\Management\MediaMgmt;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 
 /**
  * Retry stuck uploads that are in PROCESSING state
@@ -31,7 +34,7 @@ class RetryStuckUploadsCommand extends Command
     /**
      * Execute the console command.
      */
-    public function handle()
+    public function handle(): int
     {
         $hours = (int) $this->option('hours');
         $this->info("Finding uploads stuck in PROCESSING for more than {$hours} hour(s)...");
@@ -42,11 +45,12 @@ class RetryStuckUploadsCommand extends Command
 
         if ($stuckUploads->isEmpty()) {
             $this->info('No stuck uploads found.');
+
             return 0;
         }
 
         $this->info("Found {$stuckUploads->count()} stuck upload(s). Retrying...");
-        
+
         $successCount = 0;
         $failedCount = 0;
 
@@ -58,7 +62,7 @@ class RetryStuckUploadsCommand extends Command
                 $tempKey = end($pathParts);
 
                 // Generate new room ID
-                $uuid = \Illuminate\Support\Str::uuid()->toString();
+                $uuid = Str::uuid()->toString();
                 $userId = $media->created_by;
                 $roomId = "{$uuid}_{$userId}_upload_file";
 
@@ -68,7 +72,7 @@ class RetryStuckUploadsCommand extends Command
                 $this->line("✓ Retrying upload for: {$media->original_name} (ID: {$media->id})");
                 $successCount++;
 
-                Log::info("Retrying stuck upload", [
+                Log::info('Retrying stuck upload', [
                     'media_id' => $media->id,
                     'file' => $media->original_name,
                     'room_id' => $roomId,
@@ -78,7 +82,7 @@ class RetryStuckUploadsCommand extends Command
                 $this->error("✗ Failed to retry: {$media->original_name} - {$e->getMessage()}");
                 $failedCount++;
 
-                Log::error("Failed to retry stuck upload", [
+                Log::error('Failed to retry stuck upload', [
                     'media_id' => $media->id,
                     'error' => $e->getMessage(),
                 ]);
@@ -86,7 +90,7 @@ class RetryStuckUploadsCommand extends Command
         }
 
         $this->newLine();
-        $this->info("Retry completed:");
+        $this->info('Retry completed:');
         $this->info("- Success: {$successCount}");
         if ($failedCount > 0) {
             $this->error("- Failed: {$failedCount}");

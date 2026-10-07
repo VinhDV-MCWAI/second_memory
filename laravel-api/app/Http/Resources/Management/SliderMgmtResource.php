@@ -1,13 +1,21 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Resources\Management;
 
-use App\Constants\CommonVal;
+use App\Http\Resources\Concerns\FormatsDates;
+use App\Models\Management\SliderMgmt;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
+/**
+ * @mixin SliderMgmt
+ */
 class SliderMgmtResource extends JsonResource
 {
+    use FormatsDates;
+
     /**
      * Transform the resource into an array.
      *
@@ -16,14 +24,14 @@ class SliderMgmtResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'id' => (int)$this->id,
-            'title' => (string)$this->title,
-            'slug' => (string)$this->slug,
-            'link' => (string)$this->link,
-            'image' => (string)$this->image,
-            'status' => (string)$this->status,
-            'is_delete' => (bool)$this->is_delete,
-            'updated_at' => (string)date(CommonVal::DATE_FORMAT, strtotime($this->updated_at)),
+            'id' => (int) $this->id,
+            'title' => (string) $this->title,
+            'slug' => (string) $this->slug,
+            'link' => (string) $this->link,
+            'image' => (string) $this->image,
+            'status' => (int) $this->status?->value,
+            'is_delete' => (bool) $this->is_delete,
+            'updated_at' => $this->formatDate($this->updated_at),
         ];
     }
 }

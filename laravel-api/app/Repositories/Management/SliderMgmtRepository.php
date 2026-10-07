@@ -4,15 +4,11 @@ declare(strict_types=1);
 
 namespace App\Repositories\Management;
 
-use App\Enums\IsDelete;
-use App\Interfaces\Management\SliderMgmtInterface;
 use App\Models\Management\SliderMgmt;
-use App\Repositories\BaseRepository;
+use App\Repositories\SoftDeleteCrudRepository;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
-use Illuminate\Support\Arr;
 
-
-class SliderMgmtRepository extends BaseRepository implements SliderMgmtInterface
+class SliderMgmtRepository extends SoftDeleteCrudRepository
 {
     public function __construct(SliderMgmt $model)
     {
@@ -21,9 +17,6 @@ class SliderMgmtRepository extends BaseRepository implements SliderMgmtInterface
 
     /**
      * Get list with pagination
-     *
-     * @param array $payload
-     * @return LengthAwarePaginator
      */
     public function list(array $payload): LengthAwarePaginator
     {
@@ -62,57 +55,4 @@ class SliderMgmtRepository extends BaseRepository implements SliderMgmtInterface
 
         return $query->paginate($perPage, ['*'], 'page', $page);
     }
-
-    /**
-     * Create new record
-     *
-     * @param array $payload
-     * @return int
-     */
-    public function executeStore(array $payload): int
-    {
-        $model = $this->model->newInstance()->fill(
-            Arr::only($payload, $this->model->getFillable())
-        );
-
-        $model->save();
-
-        return $model->id;
-    }
-
-
-    /**
-     * Update record
-     *
-     * @param array $payload
-     * @return int
-     */
-    public function executeUpdate(array $payload): int
-    {
-        $model = $this->model->findOrFail($payload['id']);
-
-        if ($model->isDeleted()) {
-            throw new \LogicException('Cannot update deleted record');
-        }
-
-        $model->fill(Arr::only($payload, $this->model->getFillable()));
-        $model->save();
-
-        return $model->id;
-    }
-
-    /**
-     * Delete record (soft delete)
-     *
-     * @param array $ids
-     * @return void
-     */
-    public function executeDelete(array $ids): void
-    {
-        // Soft delete
-        $this->model->whereIn('id', $ids)
-            ->notDeleted()
-            ->update(['is_delete' => IsDelete::TRUE->value]);
-    }
-
 }

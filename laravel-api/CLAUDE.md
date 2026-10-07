@@ -8,25 +8,29 @@ REST API for Second Memory. Conventions: `.claude/rules/backend-laravel.md` (aut
 docker exec ml-php composer check                        # lint + analyse + test
 docker exec ml-php composer test -- --filter=CategoryMgmt
 docker exec ml-php composer lint                         # pint --test (format: composer format)
-docker exec ml-php composer analyse                      # Larastan level 5 + phpstan-baseline.neon
-docker exec ml-php composer rector                       # Rector dry run (rules applied in PLAN U1)
+docker exec ml-php composer analyse                      # Larastan level 6 + phpstan-baseline.neon
+docker exec ml-php composer rector                       # Rector dry run (auth files are skipped)
 docker exec ml-php php artisan route:list --path=api/admin
 docker exec ml-php php artisan migrate:fresh --seed      # DEV ONLY, destroys data
 ```
 
 ## Architecture
 
-`Route → Middleware → Controller → FormRequest → Service → Repository (Interface) → Model`
+`Route → Middleware → Controller → FormRequest → Service → Repository → Model`
 
 - **Module scopes:** `Master` (`*Mst` — admins, roles, departments, features, APIs, tokens: RBAC), `Management` (`*Mgmt` — categories, entries, banners, sliders, media, …: content), `History` (`*Hist` — audit rows per entity).
-- Each entity has: Controller, `List/Store/Update/Delete` FormRequests, Interface + Repository (bound in `Providers/RepositoryServiceProvider.php`), Service, Resource, Model, Factory, Feature tests under `tests/Feature/{Master,Management,History}`.
-- `BaseService::recordHistory()` writes a `*_hist` row after each create/update/delete.
-- `BaseRepository` has `applyFilters`, `applyDateRange`, `applySorting`, `validateForeignKeys`, `checkCanDelete`.
+- Each entity has: Controller, `List/Store/Update/Delete` FormRequests, Repository, Service, Resource, Model, Factory, Feature tests under `tests/Feature/{Master,Management,History}`. Services type-hint the concrete repository (no interfaces).
+- **Controllers** stay explicit (typed FormRequests, `$request->validated()` only). **List requests** extend `Http/Requests/ListRequest` (shared `id`/`page`/`per_page`/`sort_by`/`sort_order` rules) and declare `filters()`. A field without a rule never reaches the service.
+- **Services:** `CrudService` (list/store/update/delete via `$resource`) or `AuditedCrudService` (also writes a `*_hist` row per create/update/delete; set `$historyForeignKey`). Entity services usually only declare those properties and a constructor. Junction services (`Admin*Mst`, `ApiRoleMst`, `DepartmentManagementMst`) extend `BaseJunctionService`.
+- **Repositories:** `CrudRepository` (hard delete; history tables, `TokenMst`) or `SoftDeleteCrudRepository` (`is_delete` flag, refuses updates of deleted rows, `$deleteBlockedBy` relations). Entities implement `list()` and override `fillable()` to normalize payloads (password hashing, date formats). `BaseRepository` has `applyFilters`, `applyDateRange`, `applySorting`, `validateForeignKeys`, `checkCanDelete`.
 - Soft delete = `is_delete` column + `Traits/HasSoftDelete` (`notDeleted()` scope).
+- Enums: one `label()` per enum; `status`/`gender` are cast to enums on management/master models (not `AdminMst`), Resources emit `->value`.
+- Outside production Eloquent throws on lazy loading and on non-fillable mass assignment (`AppServiceProvider`): eager-load what Resources read.
 
 ## HTTP contract (FE depends on it — do not break)
 
-- Routes: `GET {resource}/list`, `POST {resource}/store`, `PUT {resource}/update/{id}`, `POST {resource}/delete` (body `{ ids: [] }`). Admin routes under `/api/admin`, public under `/api/docs`.
+- Routes live in `routes/api.php` (docs + credential + admin group) which loads `routes/api/{docs,master,management,history}.php`; standard resources are declared in a `$resource => Controller` list. Middleware aliases (`api.response`, `db.transaction`, `auth.admin`, `auth.broadcasting`) are in `bootstrap/app.php`.
+- Route shape: `GET {resource}/list`, `POST {resource}/store`, `PUT {resource}/update/{id}`, `POST {resource}/delete` (body `{ ids: [] }`). Admin routes under `/api/admin`, public under `/api/docs`.
 - Envelope (`GenerateResponseMiddleware` + `bootstrap/app.php`): `{ "data": ..., "error": { "status": bool, "code": int, "messages": string|object|null } }`. Validation errors → 422 with field map in `error.messages`.
 - Auth: `access_token` httpOnly cookie (JWT) → `AdminMiddleware` checks Redis key `admin:{id}:{token}` and the per-admin permission hash `admin:{id}:<ADMIN_PERMISSION_TABLE>` (method → allowed route URIs).
 - Writes run inside `TransactionMiddleware`; `LoginFailedException` commits instead of rolling back.

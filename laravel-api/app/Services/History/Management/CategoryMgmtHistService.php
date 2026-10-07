@@ -1,63 +1,19 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Services\History\Management;
 
-use App\Interfaces\History\Management\CategoryMgmtHistInterface;
-
-use Illuminate\Http\Resources\Json\JsonResource;
 use App\Http\Resources\History\Management\CategoryMgmtHistResource;
+use App\Repositories\History\Management\CategoryMgmtHistRepository;
+use App\Services\CrudService;
 
-class CategoryMgmtHistService
+class CategoryMgmtHistService extends CrudService
 {
-    public function __construct(
-        protected CategoryMgmtHistInterface $categoryMgmtHist
-    )
-    {
-    }
+    protected string $resource = CategoryMgmtHistResource::class;
 
-    /**
-     * Get category mgmt hist list
-     *
-     * @param array $payload
-     * @return JsonResource
-     */
-    public function list(array $payload): JsonResource
+    public function __construct(CategoryMgmtHistRepository $categoryMgmtHist)
     {
-        $list = $this->categoryMgmtHist->list($payload);
-
-        return CategoryMgmtHistResource::collection($list);
-    }
-
-    /**
-     * Store category mgmt hist
-     *
-     * @param array $payload
-     * @return int
-     */
-    public function store(array $payload): int
-    {
-        return $this->categoryMgmtHist->executeStore($payload);
-    }
-
-    /**
-     * Update category mgmt hist
-     *
-     * @param array $payload
-     * @return int
-     */
-    public function update(array $payload): int
-    {
-        return $this->categoryMgmtHist->executeUpdate($payload);
-    }
-
-    /**
-     * Delete category mgmt hist
-     *
-     * @param array $payload
-     * @return void
-     */
-    public function delete(array $payload): void
-    {
-        $this->categoryMgmtHist->executeDelete($payload['ids']);
+        parent::__construct($categoryMgmtHist);
     }
 }

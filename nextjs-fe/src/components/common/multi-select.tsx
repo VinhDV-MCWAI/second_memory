@@ -12,11 +12,7 @@ import {
   CommandItem,
   CommandList,
 } from '@/components/ui/command';
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '@/components/ui/popover';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Badge } from '@/components/ui/badge';
 import { Label } from '@/components/ui/label';
 import { useTranslations } from 'next-intl';
@@ -44,7 +40,7 @@ export function MultiSelect({
     const newValues = selectedValues.includes(optionValue)
       ? selectedValues.filter((v) => v !== optionValue)
       : [...selectedValues, optionValue];
-    
+
     setSelectedValues(newValues);
     onChange(newValues);
   };
@@ -55,16 +51,14 @@ export function MultiSelect({
     onChange(newValues);
   };
 
-  const selectedOptions = options.filter((opt) =>
-    selectedValues.includes(opt.value)
-  );
+  const selectedOptions = options.filter((opt) => selectedValues.includes(opt.value));
 
   return (
     <div className={cn('space-y-2', className)}>
       {label && (
         <Label>
           {label}
-          {required && <span className="text-red-500 ml-1">*</span>}
+          {required && <span className="ml-1 text-red-500">*</span>}
         </Label>
       )}
 
@@ -75,24 +69,20 @@ export function MultiSelect({
             role="combobox"
             aria-expanded={open}
             className={cn(
-              "w-full justify-between h-auto min-h-10 px-3 py-2 hover:bg-background",
-              selectedValues.length > 0 ? "h-auto" : "h-10"
+              'h-auto min-h-10 w-full justify-between px-3 py-2 hover:bg-background',
+              selectedValues.length > 0 ? 'h-auto' : 'h-10',
             )}
             disabled={disabled}
           >
-            <div className="flex flex-wrap gap-1 items-center w-full">
+            <div className="flex w-full flex-wrap items-center gap-1">
               {selectedOptions.length > 0 ? (
                 selectedOptions.map((option) => (
-                  <Badge
-                    key={option.value}
-                    variant="secondary"
-                    className="mr-1 mb-1"
-                  >
+                  <Badge key={option.value} variant="secondary" className="mr-1 mb-1">
                     {option.label}
                     <div
-                      className="ml-1 ring-offset-background rounded-full outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 cursor-pointer"
+                      className="ml-1 cursor-pointer rounded-full ring-offset-background outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
                       onKeyDown={(e) => {
-                        if (e.key === "Enter") {
+                        if (e.key === 'Enter') {
                           e.stopPropagation();
                           handleRemove(option.value);
                         }
@@ -112,7 +102,7 @@ export function MultiSelect({
                   </Badge>
                 ))
               ) : (
-                <span className="text-muted-foreground font-normal">
+                <span className="font-normal text-muted-foreground">
                   {placeholder || t('placeholder')}
                 </span>
               )}
@@ -131,14 +121,12 @@ export function MultiSelect({
                     key={option.value}
                     value={option.label}
                     onSelect={() => handleSelect(option.value)}
-                    className="cursor-pointer !pointer-events-auto !opacity-100"
+                    className="!pointer-events-auto cursor-pointer !opacity-100"
                   >
                     <Check
                       className={cn(
                         'mr-2 h-4 w-4',
-                        selectedValues.includes(option.value)
-                          ? 'opacity-100'
-                          : 'opacity-0'
+                        selectedValues.includes(option.value) ? 'opacity-100' : 'opacity-0',
                       )}
                     />
                     {option.label}

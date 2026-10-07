@@ -1,40 +1,39 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers\Master;
 
+use App\Http\Controllers\Controller;
 use App\Http\Requests\Master\AdminRoleMst\ListAdminRoleMstRequest;
 use App\Http\Requests\Master\AdminRoleMst\UpdateAdminRoleMstRequest;
+use App\Http\Resources\Master\AdminRoleMstResource;
 use App\Services\Master\AdminRoleMstService;
-use App\Http\Controllers\Controller;
-use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class AdminRoleMstController extends Controller
 {
     public function __construct(
         protected AdminRoleMstService $adminRoleMst
-    )
-    {
-    }
-    
+    ) {}
+
     /**
      * AdminRoleMst list
-     *
-     * @param ListAdminRoleMstRequest $request
-     * @return JsonResource
      */
-    public function list(ListAdminRoleMstRequest $request): JsonResource
+    /**
+     * @return AnonymousResourceCollection<LengthAwarePaginator<int, AdminRoleMstResource>>
+     */
+    public function list(ListAdminRoleMstRequest $request): AnonymousResourceCollection
     {
-        return $this->adminRoleMst->list($request->all());
+        return $this->adminRoleMst->list($request->validated());
     }
 
     /**
      * Update admin role mst
-     *
-     * @param UpdateAdminRoleMstRequest $request
-     * @return bool
      */
     public function update(UpdateAdminRoleMstRequest $request): bool
     {
-        return $this->adminRoleMst->update($request->all());
+        return $this->adminRoleMst->update($request->validated());
     }
 }

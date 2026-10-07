@@ -1,55 +1,50 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers\Management;
 
+use App\Http\Controllers\Controller;
+use App\Http\Requests\Management\SliderMgmt\DeleteSliderMgmtRequest;
 use App\Http\Requests\Management\SliderMgmt\ListSliderMgmtRequest;
 use App\Http\Requests\Management\SliderMgmt\StoreSliderMgmtRequest;
 use App\Http\Requests\Management\SliderMgmt\UpdateSliderMgmtRequest;
-use App\Http\Requests\Management\SliderMgmt\DeleteSliderMgmtRequest;
+use App\Http\Resources\Management\SliderMgmtResource;
 use App\Services\Management\SliderMgmtService;
-use App\Http\Controllers\Controller;
-use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class SliderMgmtController extends Controller
 {
     public function __construct(
         protected SliderMgmtService $sliderMgmt
-    )
-    {
-    }
-    
+    ) {}
+
     /**
      * SliderMgmt list
-     *
-     * @param ListSliderMgmtRequest $request
-     * @return JsonResource
      */
-    public function list(ListSliderMgmtRequest $request): JsonResource
+    /**
+     * @return AnonymousResourceCollection<LengthAwarePaginator<int, SliderMgmtResource>>
+     */
+    public function list(ListSliderMgmtRequest $request): AnonymousResourceCollection
     {
-        return $this->sliderMgmt->list($request->all());
+        return $this->sliderMgmt->list($request->validated());
     }
 
     /**
      * Store slider mgmt
-     *
-     * @param StoreSliderMgmtRequest $request
-     * @return int
      */
     public function store(StoreSliderMgmtRequest $request): int
     {
-        return $this->sliderMgmt->store($request->all());
+        return $this->sliderMgmt->store($request->validated());
     }
 
     /**
      * Update slider mgmt
-     *
-     * @param UpdateSliderMgmtRequest $request
-     * @param string $id
-     * @return int
      */
     public function update(UpdateSliderMgmtRequest $request, string $id): int
     {
-        $payload = $request->all();
+        $payload = $request->validated();
         $payload['id'] = $id;
 
         return $this->sliderMgmt->update($payload);
@@ -57,12 +52,9 @@ class SliderMgmtController extends Controller
 
     /**
      * Delete slider mgmt
-     *
-     * @param DeleteSliderMgmtRequest $request
-     * @return void
      */
     public function delete(DeleteSliderMgmtRequest $request): void
     {
-        $this->sliderMgmt->delete($request->all());
+        $this->sliderMgmt->delete($request->validated());
     }
 }

@@ -1,7 +1,7 @@
 'use client';
 
-import "./globals.css";
-import { ThemeProvider } from "@/components/theme-provider";
+import './globals.css';
+import { ThemeProvider } from '@/components/theme-provider';
 
 export default function RootLayout({
   children,

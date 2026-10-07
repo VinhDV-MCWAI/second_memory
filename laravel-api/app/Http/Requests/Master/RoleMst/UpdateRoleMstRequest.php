@@ -1,14 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Requests\Master\RoleMst;
 
-use Illuminate\Foundation\Http\FormRequest;
 use App\Constants\CommonVal;
-use Illuminate\Validation\Rule;
-use Illuminate\Validation\Rules\Enum;
-use App\Models\Master\RoleMst;
 use App\Enums\IsActive;
 use App\Enums\IsDelete;
+use App\Models\Master\RoleMst;
+use Illuminate\Contracts\Validation\ValidationRule;
+use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class UpdateRoleMstRequest extends FormRequest
 {
@@ -23,16 +25,16 @@ class UpdateRoleMstRequest extends FormRequest
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
+     * @return array<string, ValidationRule|array<mixed>|string>
      */
     public function rules(): array
     {
         return [
             'id' => ['required', 'integer', 'min:1', Rule::exists(RoleMst::class, 'id')],
-            'name' => ['required', 'string', 'min:' . CommonVal::MIN_VARCHAR, 'max:30',],
-            'permission' => ['required', 'string', 'min:' . CommonVal::MIN_VARCHAR, 'max:50',],
-            'is_active' => ['required', new Enum(IsActive::class),],
-            'is_delete' => ['required', new Enum(IsDelete::class),],
+            'name' => ['required', 'string', 'min:'.CommonVal::MIN_VARCHAR, 'max:30'],
+            'permission' => ['required', 'string', 'min:'.CommonVal::MIN_VARCHAR, 'max:50'],
+            'is_active' => ['required', Rule::enum(IsActive::class)],
+            'is_delete' => ['required', Rule::enum(IsDelete::class)],
         ];
     }
 

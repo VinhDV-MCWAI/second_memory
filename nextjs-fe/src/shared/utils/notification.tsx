@@ -8,7 +8,7 @@ export interface ToastOptions {
 const renderDismissibleContent = (message: string, t: Toast) => (
   <div
     onClick={() => toast.dismiss(t.id)}
-    className="w-full h-full cursor-pointer flex items-center"
+    className="flex h-full w-full cursor-pointer items-center"
     role="button"
     tabIndex={0}
   >
@@ -45,7 +45,7 @@ export const notification = {
       success: string;
       error: string;
     },
-    options?: ToastOptions
+    options?: ToastOptions,
   ) => {
     return toast.promise(promise, messages, {
       duration: options?.duration || 4000,

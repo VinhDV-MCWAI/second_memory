@@ -57,10 +57,7 @@ export function AdvancedSearch({ fields, onSearch, className }: AdvancedSearchPr
   };
 
   const addCriteria = () => {
-    setCriteria([
-      ...criteria,
-      { field: fields[0]?.key || '', operator: 'contains', value: '' },
-    ]);
+    setCriteria([...criteria, { field: fields[0]?.key || '', operator: 'contains', value: '' }]);
   };
 
   const removeCriteria = (index: number) => {
@@ -104,9 +101,7 @@ export function AdvancedSearch({ fields, onSearch, className }: AdvancedSearchPr
       <DialogContent className="max-w-2xl">
         <DialogHeader>
           <DialogTitle>{t('title')}</DialogTitle>
-          <DialogDescription>
-            {t('description')}
-          </DialogDescription>
+          <DialogDescription>{t('description')}</DialogDescription>
         </DialogHeader>
 
         <div className="space-y-4">
@@ -118,9 +113,7 @@ export function AdvancedSearch({ fields, onSearch, className }: AdvancedSearchPr
                   <Label>{t('field')}</Label>
                   <Select
                     value={criterion.field}
-                    onValueChange={(value) =>
-                      updateCriteria(index, { field: value })
-                    }
+                    onValueChange={(value) => updateCriteria(index, { field: value })}
                   >
                     <SelectTrigger>
                       <SelectValue />
@@ -139,9 +132,7 @@ export function AdvancedSearch({ fields, onSearch, className }: AdvancedSearchPr
                   <Label>{t('operator')}</Label>
                   <Select
                     value={criterion.operator}
-                    onValueChange={(value) =>
-                      updateCriteria(index, { operator: value })
-                    }
+                    onValueChange={(value) => updateCriteria(index, { operator: value })}
                   >
                     <SelectTrigger>
                       <SelectValue />
@@ -161,9 +152,7 @@ export function AdvancedSearch({ fields, onSearch, className }: AdvancedSearchPr
                   {field?.type === 'select' ? (
                     <Select
                       value={criterion.value}
-                      onValueChange={(value) =>
-                        updateCriteria(index, { value })
-                      }
+                      onValueChange={(value) => updateCriteria(index, { value })}
                     >
                       <SelectTrigger>
                         <SelectValue />
@@ -180,9 +169,7 @@ export function AdvancedSearch({ fields, onSearch, className }: AdvancedSearchPr
                     <Input
                       type={field?.type || 'text'}
                       value={criterion.value}
-                      onChange={(e) =>
-                        updateCriteria(index, { value: e.target.value })
-                      }
+                      onChange={(e) => updateCriteria(index, { value: e.target.value })}
                     />
                   )}
                 </div>
@@ -199,11 +186,7 @@ export function AdvancedSearch({ fields, onSearch, className }: AdvancedSearchPr
             );
           })}
 
-          <Button
-            variant="outline"
-            onClick={addCriteria}
-            className="w-full"
-          >
+          <Button variant="outline" onClick={addCriteria} className="w-full">
             <Plus className="mr-2 h-4 w-4" />
             {t('addCriteria')}
           </Button>

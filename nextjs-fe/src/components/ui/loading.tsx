@@ -1,6 +1,10 @@
 'use client';
 
-import type { LoadingSpinnerProps, LoadingOverlayProps, LoadingSkeletonProps } from '@/shared/types';
+import type {
+  LoadingSpinnerProps,
+  LoadingOverlayProps,
+  LoadingSkeletonProps,
+} from '@/shared/types';
 import { useTranslations } from 'next-intl';
 import { UI_CONSTANTS } from '@/shared/config';
 
@@ -18,17 +22,23 @@ export function LoadingSpinner({ size = 'md' }: LoadingSpinnerProps) {
   );
 }
 
-export function LoadingOverlay({ message, variant = 'fixed' }: LoadingOverlayProps & { variant?: 'fixed' | 'absolute' }) {
+export function LoadingOverlay({
+  message,
+  variant = 'fixed',
+}: LoadingOverlayProps & { variant?: 'fixed' | 'absolute' }) {
   const t = useTranslations('common');
-  
-  const positionClass = variant === 'fixed' ? 'fixed inset-0 z-50' : 'absolute inset-0 z-10 rounded-[inherit]';
+
+  const positionClass =
+    variant === 'fixed' ? 'fixed inset-0 z-50' : 'absolute inset-0 z-10 rounded-[inherit]';
 
   return (
-    <div className={`${positionClass} bg-black/50 flex items-center justify-center backdrop-blur-[1px]`}>
-      <div className="bg-white dark:bg-slate-900 rounded-lg p-6 shadow-xl">
+    <div
+      className={`${positionClass} flex items-center justify-center bg-black/50 backdrop-blur-[1px]`}
+    >
+      <div className="rounded-lg bg-white p-6 shadow-xl dark:bg-slate-900">
         <div className="flex flex-col items-center gap-4">
           <LoadingSpinner size="lg" />
-          <p className="text-slate-900 dark:text-white font-medium">{message || t('loading')}</p>
+          <p className="font-medium text-slate-900 dark:text-white">{message || t('loading')}</p>
         </div>
       </div>
     </div>
@@ -38,7 +48,7 @@ export function LoadingOverlay({ message, variant = 'fixed' }: LoadingOverlayPro
 export function LoadingPage() {
   const t = useTranslations('common');
   return (
-    <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-950">
+    <div className="flex min-h-screen items-center justify-center bg-slate-50 dark:bg-slate-950">
       <div className="text-center">
         <LoadingSpinner size="lg" />
         <p className="mt-4 text-slate-600 dark:text-slate-400">{t('loading')}</p>
@@ -47,14 +57,13 @@ export function LoadingPage() {
   );
 }
 
-export function LoadingSkeleton({ rows = UI_CONSTANTS.DEFAULT_SKELETON_ROWS }: LoadingSkeletonProps) {
+export function LoadingSkeleton({
+  rows = UI_CONSTANTS.DEFAULT_SKELETON_ROWS,
+}: LoadingSkeletonProps) {
   return (
     <div className="space-y-3">
       {Array.from({ length: rows }).map((_, i) => (
-        <div
-          key={i}
-          className="h-12 bg-slate-200 dark:bg-slate-800 rounded animate-pulse"
-        />
+        <div key={i} className="h-12 animate-pulse rounded bg-slate-200 dark:bg-slate-800" />
       ))}
     </div>
   );

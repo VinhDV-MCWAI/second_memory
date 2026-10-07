@@ -1,6 +1,6 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
-import { useActionLock } from '@/shared/hooks/useActionLock';
+import { useActionLock } from '@/shared/hooks/use-action-lock';
 import { LoadingSpinner } from '@/components/ui/loading';
 import type { SafeButtonProps } from '@/shared/types';
 
@@ -18,17 +18,12 @@ export const SafeButton = React.forwardRef<HTMLButtonElement, SafeButtonProps>(
     };
 
     return (
-      <Button
-        ref={ref}
-        disabled={disabled || isLoading}
-        onClick={handleClick}
-        {...props}
-      >
+      <Button ref={ref} disabled={disabled || isLoading} onClick={handleClick} {...props}>
         {isLoading && showLoading && <LoadingSpinner size="sm" />}
         {children}
       </Button>
     );
-  }
+  },
 );
 
 SafeButton.displayName = 'SafeButton';

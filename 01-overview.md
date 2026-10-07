@@ -64,7 +64,7 @@ Hệ thống được thiết kế theo mô hình 3 tầng (3-tier architecture)
                               │
                     ┌─────────▼─────────┐
                     │   Laravel API     │
-                    │   PHP 8.3 + FPM   │
+                    │   PHP 8.5 + FPM   │
                     │   (Business Logic)│
                     └─────────┬─────────┘
                               │
@@ -82,7 +82,7 @@ Hệ thống được thiết kế theo mô hình 3 tầng (3-tier architecture)
 |:-----------|:----------|:-----|:------|
 | **Dashboard** | Next.js 16 | 3000 | Giao diện quản trị cho Admin quản lý nội dung |
 | **Documentation** | Next.js 16 | 3457 | Giao diện hiển thị tài liệu cho người dùng cuối |
-| **API Backend** | Laravel 11 (PHP 8.3) | 9000 (FPM) | Xử lý logic nghiệp vụ, API endpoints |
+| **API Backend** | Laravel 13 (PHP 8.5) | 9000 (FPM) | Xử lý logic nghiệp vụ, API endpoints |
 | **Database** | PostgreSQL 16 | 5555 | Lưu trữ dữ liệu có cấu trúc |
 | **Cache** | Redis 7 | 6379 | Cache và session management |
 | **Object Storage** | MinIO | 9001 | Lưu trữ file, media (tương thích S3) |
@@ -187,7 +187,7 @@ Category (Danh mục)
 | Layer | Technologies |
 |:------|:-------------|
 | **Frontend** | Next.js 16, React 19, TypeScript, TailwindCSS, Tiptap, Radix UI |
-| **Backend** | Laravel 11, PHP 8.3, Composer |
+| **Backend** | Laravel 13, PHP 8.5, Composer |
 | **Database** | PostgreSQL 16 |
 | **Cache** | Redis 7 |
 | **Storage** | MinIO (S3-compatible) |

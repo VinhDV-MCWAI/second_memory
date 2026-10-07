@@ -35,9 +35,7 @@ export function Pagination({
 
         {/* Per Page Selector */}
         <div className="flex items-center gap-2">
-          <span className="text-sm text-slate-600 dark:text-slate-400">
-            {t('rowsPerPage')}
-          </span>
+          <span className="text-sm text-slate-600 dark:text-slate-400">{t('rowsPerPage')}</span>
           <Select
             value={perPage.toString()}
             onValueChange={(value) => onPerPageChange(Number(value))}
@@ -77,14 +75,8 @@ export function Pagination({
 
         <div className="flex items-center gap-1 px-2">
           <span className="text-sm text-slate-600 dark:text-slate-400">
-            {t('page')}{' '}
-            <span className="font-medium">
-              {currentPage}
-            </span>{' '}
-            {t('of')}{' '}
-            <span className="font-medium">
-              {lastPage}
-            </span>
+            {t('page')} <span className="font-medium">{currentPage}</span> {t('of')}{' '}
+            <span className="font-medium">{lastPage}</span>
           </span>
         </div>
 

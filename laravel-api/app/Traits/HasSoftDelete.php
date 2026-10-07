@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Traits;
 
 use App\Enums\IsDelete;
@@ -7,57 +9,47 @@ use Illuminate\Database\Eloquent\Builder;
 
 trait HasSoftDelete
 {
-  /**
-   * Scope a query to only include non-deleted records.
-   *
-   * @param Builder $query
-   * @return Builder
-   */
-  public function scopeNotDeleted(Builder $query): Builder
-  {
-    return $query->where($query->getModel()->getTable() . '.is_delete', IsDelete::FALSE->value);
-  }
+    /**
+     * Scope a query to only include non-deleted records.
+     */
+    public function scopeNotDeleted(Builder $query): Builder
+    {
+        return $query->where($query->getModel()->getTable().'.is_delete', IsDelete::FALSE->value);
+    }
 
-  /**
-   * Scope a query to only include deleted records.
-   *
-   * @param Builder $query
-   * @return Builder
-   */
-  public function scopeOnlyDeleted(Builder $query): Builder
-  {
-    return $query->where($query->getModel()->getTable() . '.is_delete', IsDelete::TRUE->value);
-  }
+    /**
+     * Scope a query to only include deleted records.
+     */
+    public function scopeOnlyDeleted(Builder $query): Builder
+    {
+        return $query->where($query->getModel()->getTable().'.is_delete', IsDelete::TRUE->value);
+    }
 
-  /**
-   * Check if the model is soft deleted.
-   *
-   * @return bool
-   */
-  public function isDeleted(): bool
-  {
-    return $this->is_delete == IsDelete::TRUE->value;
-  }
+    /**
+     * Check if the model is soft deleted.
+     */
+    public function isDeleted(): bool
+    {
+        return $this->is_delete == IsDelete::TRUE->value;
+    }
 
-  /**
-   * Soft delete the model.
-   *
-   * @return bool
-   */
-  public function softDelete(): bool
-  {
-    $this->is_delete = IsDelete::TRUE->value;
-    return $this->save();
-  }
+    /**
+     * Soft delete the model.
+     */
+    public function softDelete(): bool
+    {
+        $this->is_delete = IsDelete::TRUE->value;
 
-  /**
-   * Restore a soft deleted model.
-   *
-   * @return bool
-   */
-  public function restore(): bool
-  {
-    $this->is_delete = IsDelete::FALSE->value;
-    return $this->save();
-  }
+        return $this->save();
+    }
+
+    /**
+     * Restore a soft deleted model.
+     */
+    public function restore(): bool
+    {
+        $this->is_delete = IsDelete::FALSE->value;
+
+        return $this->save();
+    }
 }

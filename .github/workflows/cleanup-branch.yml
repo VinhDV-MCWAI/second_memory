@@ -1,0 +1,42 @@
+name: Delete merged branch
+
+# Deletes the head branch of a merged PR so short-lived branches don't pile up.
+# Only work branches (prefixes below) are deleted; developer, main and staging never match.
+# Used instead of the "Automatically delete head branches" repo setting, which would
+# also delete `developer` when the developer -> main PR is merged.
+
+on:
+  pull_request:
+    types: [closed]
+
+permissions:
+  contents: write
+
+jobs:
+  delete-branch:
+    name: Delete ${{ github.event.pull_request.head.ref }}
+    if: >-
+      github.event.pull_request.merged == true &&
+      github.event.pull_request.head.repo.full_name == github.repository && (
+        startsWith(github.event.pull_request.head.ref, 'refactor/') ||
+        startsWith(github.event.pull_request.head.ref, 'feature/') ||
+        startsWith(github.event.pull_request.head.ref, 'fix/') ||
+        startsWith(github.event.pull_request.head.ref, 'hotfix/') ||
+        startsWith(github.event.pull_request.head.ref, 'chore/') ||
+        startsWith(github.event.pull_request.head.ref, 'docs/') ||
+        startsWith(github.event.pull_request.head.ref, 'test/')
+      )
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Delete the head branch
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          BRANCH: ${{ github.event.pull_request.head.ref }}
+        run: |
+          if gh api -X DELETE "repos/${REPO}/git/refs/heads/${BRANCH}"; then
+            echo "Deleted ${BRANCH}"
+          else
+            echo "${BRANCH} was already deleted"
+          fi

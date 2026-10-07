@@ -1,63 +1,19 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Services\History\Master;
 
-use App\Interfaces\History\Master\ApiMstHistInterface;
-
-use Illuminate\Http\Resources\Json\JsonResource;
 use App\Http\Resources\History\Master\ApiMstHistResource;
+use App\Repositories\History\Master\ApiMstHistRepository;
+use App\Services\CrudService;
 
-class ApiMstHistService
+class ApiMstHistService extends CrudService
 {
-    public function __construct(
-        protected ApiMstHistInterface $apiMstHist
-    )
-    {
-    }
+    protected string $resource = ApiMstHistResource::class;
 
-    /**
-     * Get api mst hist list
-     *
-     * @param array $payload
-     * @return JsonResource
-     */
-    public function list(array $payload): JsonResource
+    public function __construct(ApiMstHistRepository $apiMstHist)
     {
-        $list = $this->apiMstHist->list($payload);
-
-        return ApiMstHistResource::collection($list);
-    }
-
-    /**
-     * Store api mst hist
-     *
-     * @param array $payload
-     * @return int
-     */
-    public function store(array $payload): int
-    {
-        return $this->apiMstHist->executeStore($payload);
-    }
-
-    /**
-     * Update api mst hist
-     *
-     * @param array $payload
-     * @return int
-     */
-    public function update(array $payload): int
-    {
-        return $this->apiMstHist->executeUpdate($payload);
-    }
-
-    /**
-     * Delete api mst hist
-     *
-     * @param array $payload
-     * @return void
-     */
-    public function delete(array $payload): void
-    {
-        $this->apiMstHist->executeDelete($payload['ids']);
+        parent::__construct($apiMstHist);
     }
 }

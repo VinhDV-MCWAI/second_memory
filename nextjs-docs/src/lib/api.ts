@@ -1,9 +1,9 @@
-// For client-side (browser): use NEXT_PUBLIC_API_URL or localhost  
+// For client-side (browser): use NEXT_PUBLIC_API_URL or localhost
 // For server-side (container): use internal nginx
 const isServer = typeof window === 'undefined';
-const API_BASE_URL = isServer 
+const API_BASE_URL = isServer
   ? 'http://ml-nginx/api'
-  : (process.env.NEXT_PUBLIC_API_URL || 'http://localhost/api');
+  : process.env.NEXT_PUBLIC_API_URL || 'http://localhost/api';
 
 // Request deduplicator cache
 const requestCache = new Map<string, Promise<unknown>>();

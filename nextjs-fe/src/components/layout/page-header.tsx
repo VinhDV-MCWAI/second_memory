@@ -11,7 +11,7 @@ import {
   BreadcrumbSeparator,
 } from '@/components/ui/breadcrumb';
 import { Button } from '@/components/ui/button';
-import { cn } from "@/shared/utils";
+import { cn } from '@/shared/utils';
 import { ADMIN_ROUTES } from '@/shared/config';
 import type { PageHeaderProps } from '@/shared/types/ui.types';
 
@@ -27,8 +27,8 @@ export function PageHeader({
   return (
     <div
       className={cn(
-        'border-b border-slate-200 bg-white px-4 py-4 dark:border-slate-800 dark:bg-slate-950 lg:px-6',
-        className
+        'border-b border-slate-200 bg-white px-4 py-4 lg:px-6 dark:border-slate-800 dark:bg-slate-950',
+        className,
       )}
     >
       {/* Breadcrumb */}
@@ -50,13 +50,9 @@ export function PageHeader({
                 <React.Fragment key={`${item.label}-${index}`}>
                   <BreadcrumbItem>
                     {item.href && !item.isActive ? (
-                      <BreadcrumbLink href={item.href}>
-                        {item.label}
-                      </BreadcrumbLink>
+                      <BreadcrumbLink href={item.href}>{item.label}</BreadcrumbLink>
                     ) : (
-                      <BreadcrumbPage className="font-medium">
-                        {item.label}
-                      </BreadcrumbPage>
+                      <BreadcrumbPage className="font-medium">{item.label}</BreadcrumbPage>
                     )}
                   </BreadcrumbItem>
                   {index < breadcrumbs.length - 1 && (
@@ -88,24 +84,16 @@ export function PageHeader({
           )}
 
           {/* Title & Description */}
-          <div className="flex-1 min-w-0">
-            <h1 className="text-3xl font-bold text-slate-900 dark:text-white truncate">
-              {title}
-            </h1>
+          <div className="min-w-0 flex-1">
+            <h1 className="truncate text-3xl font-bold text-slate-900 dark:text-white">{title}</h1>
             {description && (
-              <p className="mt-1 text-slate-600 dark:text-slate-400 line-clamp-2">
-                {description}
-              </p>
+              <p className="mt-1 line-clamp-2 text-slate-600 dark:text-slate-400">{description}</p>
             )}
           </div>
         </div>
 
         {/* Action Buttons */}
-        {action && (
-          <div className="flex shrink-0 items-center gap-2 sm:ml-4">
-            {action}
-          </div>
-        )}
+        {action && <div className="flex shrink-0 items-center gap-2 sm:ml-4">{action}</div>}
       </div>
     </div>
   );
@@ -114,7 +102,7 @@ export function PageHeader({
 // Skeleton loading state component
 export function PageHeaderSkeleton() {
   return (
-    <div className="border-b border-slate-200 bg-white px-4 py-4 dark:border-slate-800 dark:bg-slate-950 lg:px-6">
+    <div className="border-b border-slate-200 bg-white px-4 py-4 lg:px-6 dark:border-slate-800 dark:bg-slate-950">
       <div className="mb-4 h-4 w-48 animate-pulse rounded bg-slate-200 dark:bg-slate-800" />
       <div className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
         <div className="flex-1 space-y-2">

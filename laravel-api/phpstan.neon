@@ -3,7 +3,7 @@ includes:
     - phpstan-baseline.neon
 
 parameters:
-    level: 5
+    level: 6
     paths:
         - app
         - bootstrap/app.php
@@ -11,3 +11,8 @@ parameters:
         - database
         - routes
     tmpDir: storage/framework/cache/phpstan
+    ignoreErrors:
+        # Level 6 extras we don't adopt yet: array shapes and Eloquent generics in docblocks.
+        # Payloads are validated arrays from FormRequests; revisit once API types are generated (B6).
+        - identifier: missingType.iterableValue
+        - identifier: missingType.generics

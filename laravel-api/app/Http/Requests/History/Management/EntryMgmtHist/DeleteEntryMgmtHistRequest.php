@@ -1,14 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Requests\History\Management\EntryMgmtHist;
 
-use Illuminate\Foundation\Http\FormRequest;
 use App\Constants\CommonVal;
-use Illuminate\Validation\Rule;
-use Illuminate\Validation\Rules\Enum;
 use App\Models\History\Management\EntryMgmtHist;
-use App\Enums\StatusEnum;
-use App\Models\Management\EntryMgmt;
+use Illuminate\Contracts\Validation\ValidationRule;
+use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class DeleteEntryMgmtHistRequest extends FormRequest
 {
@@ -23,13 +23,13 @@ class DeleteEntryMgmtHistRequest extends FormRequest
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
+     * @return array<string, ValidationRule|array<mixed>|string>
      */
     public function rules(): array
     {
         return [
             'ids' => ['required', 'array'],
-            'ids.*' => ['required', 'integer', 'min:' . CommonVal::MIN_INTEGER, 'max:' . CommonVal::MAX_BIG_INTEGER, Rule::exists(EntryMgmtHist::class, 'id')],
+            'ids.*' => ['required', 'integer', 'min:'.CommonVal::MIN_INTEGER, 'max:'.CommonVal::MAX_BIG_INTEGER, Rule::exists(EntryMgmtHist::class, 'id')],
         ];
     }
 

@@ -1,5 +1,5 @@
 import { ReactNode } from 'react';
-import type { SortOrder, ExportFormat, ImportFormat, ImageShape } from '../config/constant';
+import type { SortOrder, ImageShape } from '../config/constant';
 
 /**
  * Data Table Column Definition
@@ -113,7 +113,7 @@ export interface AdvancedSearchProps {
 /**
  * Import/Export Types (re-exported from constants for backward compatibility)
  */
-export type { ExportFormat, ImportFormat, ImageShape };
+export type { ImageShape };
 
 /**
  * Avatar Upload Component Props
@@ -178,13 +178,13 @@ export interface TreeNodeProps {
 /**
  * Field Renderer Types
  */
-export type FieldType = 
-  | 'text' 
-  | 'email' 
-  | 'password' 
+export type FieldType =
+  | 'text'
+  | 'email'
+  | 'password'
   | 'number'
-  | 'textarea' 
-  | 'select' 
+  | 'textarea'
+  | 'select'
   | 'checkbox'
   | 'date'
   | 'datetime'
@@ -245,18 +245,6 @@ export interface FormBuilderProps {
 }
 
 /**
- * Import/Export Component Props
- */
-export interface ImportExportProps {
-  onExport?: (format: ExportFormat) => Promise<void> | void;
-  onImport?: (file: File, format: ImportFormat) => Promise<void> | void;
-  onDownloadTemplate?: (format: ImportFormat) => Promise<void> | void;
-  exportFormats?: ExportFormat[];
-  importFormats?: ImportFormat[];
-  moduleName?: string;
-}
-
-/**
  * Multi Select Component Props
  */
 export interface MultiSelectProps {
@@ -312,22 +300,11 @@ export interface SavedFiltersProps {
 /**
  * History Components Types
  */
-export interface DiffViewerProps {
-  diffs: import('./models').HistoryDiff[];
-  className?: string;
-}
-
-export interface TimelineProps {
-  history: import('./models').BaseHistory[];
-  className?: string;
-}
-
 export interface HistoryViewerProps {
-  entityType?: string;
-  entityId?: number;
-  endpoint?: string;
-  baseUrl?: string;
-  recordId?: number;
-  onRestore?: (historyId: number) => void;
+  /** The `*-hist` resource endpoint, e.g. `/admin/entry-mgmt-hist`. */
+  endpoint: string;
+  /** History column that references the audited row, e.g. `entry_mgmt_id`. */
+  foreignKey: string;
+  recordId: number;
   className?: string;
 }

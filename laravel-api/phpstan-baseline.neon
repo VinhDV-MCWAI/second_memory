@@ -1,106 +1,28 @@
 parameters:
 	ignoreErrors:
 		-
-			message: '#^PHPDoc tag @var does not specify variable name\.$#'
-			identifier: varTag.noVariable
-			count: 3
-			path: app/Enums/ActionType.php
-
-		-
-			message: '#^PHPDoc tag @var does not specify variable name\.$#'
-			identifier: varTag.noVariable
-			count: 4
-			path: app/Enums/AdminStatus.php
-
-		-
-			message: '#^PHPDoc tag @var does not specify variable name\.$#'
-			identifier: varTag.noVariable
-			count: 3
-			path: app/Enums/CategoryStatus.php
-
-		-
-			message: '#^PHPDoc tag @var does not specify variable name\.$#'
-			identifier: varTag.noVariable
-			count: 4
-			path: app/Enums/DepartmentStatus.php
-
-		-
-			message: '#^PHPDoc tag @var does not specify variable name\.$#'
-			identifier: varTag.noVariable
-			count: 4
-			path: app/Enums/EntryStatus.php
-
-		-
-			message: '#^Invalid array key type App\\Enums\\FeatureStatus\:\:ACTIVE\.$#'
-			identifier: array.invalidKey
+			message: '#^Property App\\Exceptions\\GoogleDriveAuthException\:\:\$code has no type specified\.$#'
+			identifier: missingType.property
 			count: 1
-			path: app/Enums/FeatureStatus.php
+			path: app/Exceptions/GoogleDriveAuthException.php
 
 		-
-			message: '#^Invalid array key type App\\Enums\\FeatureStatus\:\:ARCHIVED\.$#'
-			identifier: array.invalidKey
+			message: '#^Property App\\Exceptions\\GoogleDriveFileNotFoundException\:\:\$code has no type specified\.$#'
+			identifier: missingType.property
 			count: 1
-			path: app/Enums/FeatureStatus.php
+			path: app/Exceptions/GoogleDriveFileNotFoundException.php
 
 		-
-			message: '#^Invalid array key type App\\Enums\\FeatureStatus\:\:DRAFT\.$#'
-			identifier: array.invalidKey
+			message: '#^Property App\\Exceptions\\GoogleDrivePermissionException\:\:\$code has no type specified\.$#'
+			identifier: missingType.property
 			count: 1
-			path: app/Enums/FeatureStatus.php
+			path: app/Exceptions/GoogleDrivePermissionException.php
 
 		-
-			message: '#^Invalid array key type App\\Enums\\FeatureStatus\:\:INACTIVE\.$#'
-			identifier: array.invalidKey
+			message: '#^Property App\\Exceptions\\GoogleDriveQuotaExceededException\:\:\$code has no type specified\.$#'
+			identifier: missingType.property
 			count: 1
-			path: app/Enums/FeatureStatus.php
-
-		-
-			message: '#^PHPDoc tag @var does not specify variable name\.$#'
-			identifier: varTag.noVariable
-			count: 4
-			path: app/Enums/FeatureStatus.php
-
-		-
-			message: '#^PHPDoc tag @var does not specify variable name\.$#'
-			identifier: varTag.noVariable
-			count: 3
-			path: app/Enums/Gender.php
-
-		-
-			message: '#^PHPDoc tag @var does not specify variable name\.$#'
-			identifier: varTag.noVariable
-			count: 2
-			path: app/Enums/IsActive.php
-
-		-
-			message: '#^PHPDoc tag @var does not specify variable name\.$#'
-			identifier: varTag.noVariable
-			count: 2
-			path: app/Enums/IsDelete.php
-
-		-
-			message: '#^PHPDoc tag @var does not specify variable name\.$#'
-			identifier: varTag.noVariable
-			count: 2
-			path: app/Enums/IsDisplay.php
-
-		-
-			message: '#^PHPDoc tag @var does not specify variable name\.$#'
-			identifier: varTag.noVariable
-			count: 3
-			path: app/Enums/StatusEnum.php
-
-		-
-			message: '#^PHPDoc tag @var does not specify variable name\.$#'
-			identifier: varTag.noVariable
-			count: 5
-			path: app/Enums/TypeOfMethod.php
-
-		-
-			message: '#^PHPDoc tag @var does not specify variable name\.$#'
-			identifier: varTag.noVariable
-			count: 4
-			path: app/Enums/UserStatus.php
+			path: app/Exceptions/GoogleDriveQuotaExceededException.php
 
 		-
 			message: '#^Called ''env'' outside of the config directory which returns null when the config is cached, use ''config''\.$#'
@@ -115,1069 +37,13 @@ parameters:
 			path: app/Http/Middleware/BroadcastingAuthMiddleware.php
 
 		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\Docs\\CategoryResource\:\:\$description\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/Docs/CategoryResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\Docs\\CategoryResource\:\:\$id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/Docs/CategoryResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\Docs\\CategoryResource\:\:\$layout_structure\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/Docs/CategoryResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\Docs\\CategoryResource\:\:\$name\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/Docs/CategoryResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\Docs\\CategoryResource\:\:\$rank_order\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/Docs/CategoryResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\Docs\\CategoryResource\:\:\$slug\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/Docs/CategoryResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\Docs\\DescriptionResource\:\:\$article\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/Docs/DescriptionResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\Docs\\DescriptionResource\:\:\$id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/Docs/DescriptionResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\Docs\\DescriptionResource\:\:\$rank_order\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/Docs/DescriptionResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\Docs\\DescriptionResource\:\:\$summary\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/Docs/DescriptionResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\Docs\\DescriptionResource\:\:\$title\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/Docs/DescriptionResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\Docs\\EntryDetailResource\:\:\$id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/Docs/EntryDetailResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\Docs\\EntryDetailResource\:\:\$layout_structure\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/Docs/EntryDetailResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\Docs\\EntryDetailResource\:\:\$name\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/Docs/EntryDetailResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\Docs\\EntryDetailResource\:\:\$slug\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/Docs/EntryDetailResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\Docs\\EntryResource\:\:\$id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/Docs/EntryResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\Docs\\EntryResource\:\:\$layout_structure\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/Docs/EntryResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\Docs\\EntryResource\:\:\$name\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/Docs/EntryResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\Docs\\EntryResource\:\:\$rank_order\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/Docs/EntryResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\Docs\\EntryResource\:\:\$slug\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/Docs/EntryResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\Docs\\SearchDescriptionResource\:\:\$article\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/Docs/SearchDescriptionResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\Docs\\SearchDescriptionResource\:\:\$id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/Docs/SearchDescriptionResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\Docs\\SearchDescriptionResource\:\:\$summary\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/Docs/SearchDescriptionResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\Docs\\SearchDescriptionResource\:\:\$title\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/Docs/SearchDescriptionResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\History\\Management\\BannerMgmtHistResource\:\:\$action\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/History/Management/BannerMgmtHistResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\History\\Management\\BannerMgmtHistResource\:\:\$author_id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/History/Management/BannerMgmtHistResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\History\\Management\\BannerMgmtHistResource\:\:\$banner_mgmt_id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/History/Management/BannerMgmtHistResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\History\\Management\\BannerMgmtHistResource\:\:\$created_at\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/History/Management/BannerMgmtHistResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\History\\Management\\BannerMgmtHistResource\:\:\$description\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/History/Management/BannerMgmtHistResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\History\\Management\\BannerMgmtHistResource\:\:\$id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/History/Management/BannerMgmtHistResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\History\\Management\\BannerMgmtHistResource\:\:\$image\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/History/Management/BannerMgmtHistResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\History\\Management\\BannerMgmtHistResource\:\:\$link\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/History/Management/BannerMgmtHistResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\History\\Management\\BannerMgmtHistResource\:\:\$position\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/History/Management/BannerMgmtHistResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\History\\Management\\BannerMgmtHistResource\:\:\$slug\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/History/Management/BannerMgmtHistResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\History\\Management\\BannerMgmtHistResource\:\:\$status\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/History/Management/BannerMgmtHistResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\History\\Management\\BannerMgmtHistResource\:\:\$title\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/History/Management/BannerMgmtHistResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\History\\Management\\CategoryMgmtHistResource\:\:\$action\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/History/Management/CategoryMgmtHistResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\History\\Management\\CategoryMgmtHistResource\:\:\$author_id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/History/Management/CategoryMgmtHistResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\History\\Management\\CategoryMgmtHistResource\:\:\$category_mgmt_id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/History/Management/CategoryMgmtHistResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\History\\Management\\CategoryMgmtHistResource\:\:\$created_at\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/History/Management/CategoryMgmtHistResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\History\\Management\\CategoryMgmtHistResource\:\:\$description\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/History/Management/CategoryMgmtHistResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\History\\Management\\CategoryMgmtHistResource\:\:\$id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/History/Management/CategoryMgmtHistResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\History\\Management\\CategoryMgmtHistResource\:\:\$is_display\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/History/Management/CategoryMgmtHistResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\History\\Management\\CategoryMgmtHistResource\:\:\$name\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/History/Management/CategoryMgmtHistResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\History\\Management\\CategoryMgmtHistResource\:\:\$rank_order\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/History/Management/CategoryMgmtHistResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\History\\Management\\CategoryMgmtHistResource\:\:\$slug\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/History/Management/CategoryMgmtHistResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\History\\Management\\CategoryMgmtHistResource\:\:\$status\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/History/Management/CategoryMgmtHistResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\History\\Management\\EntryDescriptionMgmtHistResource\:\:\$action\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/History/Management/EntryDescriptionMgmtHistResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\History\\Management\\EntryDescriptionMgmtHistResource\:\:\$article\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/History/Management/EntryDescriptionMgmtHistResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\History\\Management\\EntryDescriptionMgmtHistResource\:\:\$author_id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/History/Management/EntryDescriptionMgmtHistResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\History\\Management\\EntryDescriptionMgmtHistResource\:\:\$created_at\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/History/Management/EntryDescriptionMgmtHistResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\History\\Management\\EntryDescriptionMgmtHistResource\:\:\$entry_description_mgmt_id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/History/Management/EntryDescriptionMgmtHistResource.php
-
-		-
 			message: '#^Access to an undefined property App\\Http\\Resources\\History\\Management\\EntryDescriptionMgmtHistResource\:\:\$entry_id\.$#'
 			identifier: property.notFound
 			count: 1
 			path: app/Http/Resources/History/Management/EntryDescriptionMgmtHistResource.php
 
 		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\History\\Management\\EntryDescriptionMgmtHistResource\:\:\$id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/History/Management/EntryDescriptionMgmtHistResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\History\\Management\\EntryDescriptionMgmtHistResource\:\:\$is_display\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/History/Management/EntryDescriptionMgmtHistResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\History\\Management\\EntryDescriptionMgmtHistResource\:\:\$rank_order\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/History/Management/EntryDescriptionMgmtHistResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\History\\Management\\EntryDescriptionMgmtHistResource\:\:\$status\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/History/Management/EntryDescriptionMgmtHistResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\History\\Management\\EntryDescriptionMgmtHistResource\:\:\$summary\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/History/Management/EntryDescriptionMgmtHistResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\History\\Management\\EntryDescriptionMgmtHistResource\:\:\$title\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/History/Management/EntryDescriptionMgmtHistResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\History\\Management\\EntryMgmtHistResource\:\:\$action\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/History/Management/EntryMgmtHistResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\History\\Management\\EntryMgmtHistResource\:\:\$author_id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/History/Management/EntryMgmtHistResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\History\\Management\\EntryMgmtHistResource\:\:\$created_at\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/History/Management/EntryMgmtHistResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\History\\Management\\EntryMgmtHistResource\:\:\$entry_mgmt_id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/History/Management/EntryMgmtHistResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\History\\Management\\EntryMgmtHistResource\:\:\$id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/History/Management/EntryMgmtHistResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\History\\Management\\EntryMgmtHistResource\:\:\$is_display\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/History/Management/EntryMgmtHistResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\History\\Management\\EntryMgmtHistResource\:\:\$name\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/History/Management/EntryMgmtHistResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\History\\Management\\EntryMgmtHistResource\:\:\$rank_order\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/History/Management/EntryMgmtHistResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\History\\Management\\EntryMgmtHistResource\:\:\$slug\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/History/Management/EntryMgmtHistResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\History\\Management\\EntryMgmtHistResource\:\:\$status\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/History/Management/EntryMgmtHistResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\History\\Management\\SettingLinkMgmtHistResource\:\:\$action\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/History/Management/SettingLinkMgmtHistResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\History\\Management\\SettingLinkMgmtHistResource\:\:\$author_id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/History/Management/SettingLinkMgmtHistResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\History\\Management\\SettingLinkMgmtHistResource\:\:\$created_at\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/History/Management/SettingLinkMgmtHistResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\History\\Management\\SettingLinkMgmtHistResource\:\:\$id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/History/Management/SettingLinkMgmtHistResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\History\\Management\\SettingLinkMgmtHistResource\:\:\$key\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/History/Management/SettingLinkMgmtHistResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\History\\Management\\SettingLinkMgmtHistResource\:\:\$setting_link_mgmt_id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/History/Management/SettingLinkMgmtHistResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\History\\Management\\SettingLinkMgmtHistResource\:\:\$value\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/History/Management/SettingLinkMgmtHistResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\History\\Management\\SliderMgmtHistResource\:\:\$action\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/History/Management/SliderMgmtHistResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\History\\Management\\SliderMgmtHistResource\:\:\$author_id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/History/Management/SliderMgmtHistResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\History\\Management\\SliderMgmtHistResource\:\:\$created_at\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/History/Management/SliderMgmtHistResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\History\\Management\\SliderMgmtHistResource\:\:\$id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/History/Management/SliderMgmtHistResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\History\\Management\\SliderMgmtHistResource\:\:\$image\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/History/Management/SliderMgmtHistResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\History\\Management\\SliderMgmtHistResource\:\:\$link\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/History/Management/SliderMgmtHistResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\History\\Management\\SliderMgmtHistResource\:\:\$slider_mgmt_id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/History/Management/SliderMgmtHistResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\History\\Management\\SliderMgmtHistResource\:\:\$slug\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/History/Management/SliderMgmtHistResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\History\\Management\\SliderMgmtHistResource\:\:\$status\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/History/Management/SliderMgmtHistResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\History\\Management\\SliderMgmtHistResource\:\:\$title\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/History/Management/SliderMgmtHistResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\History\\Management\\SocialMgmtHistResource\:\:\$action\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/History/Management/SocialMgmtHistResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\History\\Management\\SocialMgmtHistResource\:\:\$author_id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/History/Management/SocialMgmtHistResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\History\\Management\\SocialMgmtHistResource\:\:\$created_at\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/History/Management/SocialMgmtHistResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\History\\Management\\SocialMgmtHistResource\:\:\$id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/History/Management/SocialMgmtHistResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\History\\Management\\SocialMgmtHistResource\:\:\$image\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/History/Management/SocialMgmtHistResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\History\\Management\\SocialMgmtHistResource\:\:\$is_display\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/History/Management/SocialMgmtHistResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\History\\Management\\SocialMgmtHistResource\:\:\$link\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/History/Management/SocialMgmtHistResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\History\\Management\\SocialMgmtHistResource\:\:\$name\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/History/Management/SocialMgmtHistResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\History\\Management\\SocialMgmtHistResource\:\:\$rank_order\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/History/Management/SocialMgmtHistResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\History\\Management\\SocialMgmtHistResource\:\:\$slug\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/History/Management/SocialMgmtHistResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\History\\Management\\SocialMgmtHistResource\:\:\$social_mgmt_id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/History/Management/SocialMgmtHistResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\History\\Management\\SocialMgmtHistResource\:\:\$status\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/History/Management/SocialMgmtHistResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\History\\Management\\UserMgmtHistResource\:\:\$action\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/History/Management/UserMgmtHistResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\History\\Management\\UserMgmtHistResource\:\:\$address\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/History/Management/UserMgmtHistResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\History\\Management\\UserMgmtHistResource\:\:\$author_id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/History/Management/UserMgmtHistResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\History\\Management\\UserMgmtHistResource\:\:\$avatar\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/History/Management/UserMgmtHistResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\History\\Management\\UserMgmtHistResource\:\:\$birth\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/History/Management/UserMgmtHistResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\History\\Management\\UserMgmtHistResource\:\:\$created_at\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/History/Management/UserMgmtHistResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\History\\Management\\UserMgmtHistResource\:\:\$email\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/History/Management/UserMgmtHistResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\History\\Management\\UserMgmtHistResource\:\:\$first_name\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/History/Management/UserMgmtHistResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\History\\Management\\UserMgmtHistResource\:\:\$gender\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/History/Management/UserMgmtHistResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\History\\Management\\UserMgmtHistResource\:\:\$id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/History/Management/UserMgmtHistResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\History\\Management\\UserMgmtHistResource\:\:\$is_active\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/History/Management/UserMgmtHistResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\History\\Management\\UserMgmtHistResource\:\:\$last_name\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/History/Management/UserMgmtHistResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\History\\Management\\UserMgmtHistResource\:\:\$password\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/History/Management/UserMgmtHistResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\History\\Management\\UserMgmtHistResource\:\:\$phone_number\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/History/Management/UserMgmtHistResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\History\\Management\\UserMgmtHistResource\:\:\$status\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/History/Management/UserMgmtHistResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\History\\Management\\UserMgmtHistResource\:\:\$user_mgmt_id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/History/Management/UserMgmtHistResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\History\\Management\\UserMgmtHistResource\:\:\$user_name\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/History/Management/UserMgmtHistResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\History\\Master\\AdminMstHistResource\:\:\$action\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/History/Master/AdminMstHistResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\History\\Master\\AdminMstHistResource\:\:\$address\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/History/Master/AdminMstHistResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\History\\Master\\AdminMstHistResource\:\:\$admin_mst_id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/History/Master/AdminMstHistResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\History\\Master\\AdminMstHistResource\:\:\$author_id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/History/Master/AdminMstHistResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\History\\Master\\AdminMstHistResource\:\:\$avatar\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/History/Master/AdminMstHistResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\History\\Master\\AdminMstHistResource\:\:\$birth\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/History/Master/AdminMstHistResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\History\\Master\\AdminMstHistResource\:\:\$created_at\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/History/Master/AdminMstHistResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\History\\Master\\AdminMstHistResource\:\:\$email\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/History/Master/AdminMstHistResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\History\\Master\\AdminMstHistResource\:\:\$first_name\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/History/Master/AdminMstHistResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\History\\Master\\AdminMstHistResource\:\:\$gender\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/History/Master/AdminMstHistResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\History\\Master\\AdminMstHistResource\:\:\$id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/History/Master/AdminMstHistResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\History\\Master\\AdminMstHistResource\:\:\$is_active\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/History/Master/AdminMstHistResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\History\\Master\\AdminMstHistResource\:\:\$last_name\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/History/Master/AdminMstHistResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\History\\Master\\AdminMstHistResource\:\:\$password\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/History/Master/AdminMstHistResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\History\\Master\\AdminMstHistResource\:\:\$phone_number\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/History/Master/AdminMstHistResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\History\\Master\\AdminMstHistResource\:\:\$status\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/History/Master/AdminMstHistResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\History\\Master\\AdminMstHistResource\:\:\$user_name\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/History/Master/AdminMstHistResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\History\\Master\\ApiMstHistResource\:\:\$action\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/History/Master/ApiMstHistResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\History\\Master\\ApiMstHistResource\:\:\$api_mst_id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/History/Master/ApiMstHistResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\History\\Master\\ApiMstHistResource\:\:\$author_id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/History/Master/ApiMstHistResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\History\\Master\\ApiMstHistResource\:\:\$created_at\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/History/Master/ApiMstHistResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\History\\Master\\ApiMstHistResource\:\:\$feature_mst_id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/History/Master/ApiMstHistResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\History\\Master\\ApiMstHistResource\:\:\$id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/History/Master/ApiMstHistResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\History\\Master\\ApiMstHistResource\:\:\$is_active\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/History/Master/ApiMstHistResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\History\\Master\\ApiMstHistResource\:\:\$name\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/History/Master/ApiMstHistResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\History\\Master\\ApiMstHistResource\:\:\$path\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/History/Master/ApiMstHistResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\History\\Master\\ApiMstHistResource\:\:\$type\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/History/Master/ApiMstHistResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\History\\Master\\DepartmentMstHistResource\:\:\$action\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/History/Master/DepartmentMstHistResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\History\\Master\\DepartmentMstHistResource\:\:\$author_id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/History/Master/DepartmentMstHistResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\History\\Master\\DepartmentMstHistResource\:\:\$code\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/History/Master/DepartmentMstHistResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\History\\Master\\DepartmentMstHistResource\:\:\$created_at\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/History/Master/DepartmentMstHistResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\History\\Master\\DepartmentMstHistResource\:\:\$department_mst_id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/History/Master/DepartmentMstHistResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\History\\Master\\DepartmentMstHistResource\:\:\$id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/History/Master/DepartmentMstHistResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\History\\Master\\DepartmentMstHistResource\:\:\$name\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/History/Master/DepartmentMstHistResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\History\\Master\\DepartmentMstHistResource\:\:\$status\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/History/Master/DepartmentMstHistResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\History\\Master\\FeatureMstHistResource\:\:\$action\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/History/Master/FeatureMstHistResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\History\\Master\\FeatureMstHistResource\:\:\$author_id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/History/Master/FeatureMstHistResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\History\\Master\\FeatureMstHistResource\:\:\$created_at\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/History/Master/FeatureMstHistResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\History\\Master\\FeatureMstHistResource\:\:\$description\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/History/Master/FeatureMstHistResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\History\\Master\\FeatureMstHistResource\:\:\$feature_mst_id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/History/Master/FeatureMstHistResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\History\\Master\\FeatureMstHistResource\:\:\$group_name\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/History/Master/FeatureMstHistResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\History\\Master\\FeatureMstHistResource\:\:\$id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/History/Master/FeatureMstHistResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\History\\Master\\FeatureMstHistResource\:\:\$name\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/History/Master/FeatureMstHistResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\History\\Master\\FeatureMstHistResource\:\:\$status\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/History/Master/FeatureMstHistResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\History\\Master\\PolicyDepartmentMstHistResource\:\:\$action\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/History/Master/PolicyDepartmentMstHistResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\History\\Master\\PolicyDepartmentMstHistResource\:\:\$author_id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/History/Master/PolicyDepartmentMstHistResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\History\\Master\\PolicyDepartmentMstHistResource\:\:\$created_at\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/History/Master/PolicyDepartmentMstHistResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\History\\Master\\PolicyDepartmentMstHistResource\:\:\$id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/History/Master/PolicyDepartmentMstHistResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\History\\Master\\PolicyDepartmentMstHistResource\:\:\$policy_department_mst_id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/History/Master/PolicyDepartmentMstHistResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\History\\Master\\PolicyDepartmentMstHistResource\:\:\$row_id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/History/Master/PolicyDepartmentMstHistResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\History\\Master\\PolicyDepartmentMstHistResource\:\:\$table_name\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/History/Master/PolicyDepartmentMstHistResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\History\\Master\\RoleMstHistResource\:\:\$action\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/History/Master/RoleMstHistResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\History\\Master\\RoleMstHistResource\:\:\$author_id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/History/Master/RoleMstHistResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\History\\Master\\RoleMstHistResource\:\:\$created_at\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/History/Master/RoleMstHistResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\History\\Master\\RoleMstHistResource\:\:\$id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/History/Master/RoleMstHistResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\History\\Master\\RoleMstHistResource\:\:\$is_active\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/History/Master/RoleMstHistResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\History\\Master\\RoleMstHistResource\:\:\$name\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/History/Master/RoleMstHistResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\History\\Master\\RoleMstHistResource\:\:\$permission\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/History/Master/RoleMstHistResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\History\\Master\\RoleMstHistResource\:\:\$role_mst_id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/History/Master/RoleMstHistResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\Management\\BannerMgmtResource\:\:\$description\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/Management/BannerMgmtResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\Management\\BannerMgmtResource\:\:\$id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/Management/BannerMgmtResource.php
-
-		-
 			message: '#^Access to an undefined property App\\Http\\Resources\\Management\\BannerMgmtResource\:\:\$image\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/Management/BannerMgmtResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\Management\\BannerMgmtResource\:\:\$is_delete\.$#'
 			identifier: property.notFound
 			count: 1
 			path: app/Http/Resources/Management/BannerMgmtResource.php
@@ -1189,214 +55,10 @@ parameters:
 			path: app/Http/Resources/Management/BannerMgmtResource.php
 
 		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\Management\\BannerMgmtResource\:\:\$media_id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/Management/BannerMgmtResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\Management\\BannerMgmtResource\:\:\$position\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/Management/BannerMgmtResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\Management\\BannerMgmtResource\:\:\$slug\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/Management/BannerMgmtResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\Management\\BannerMgmtResource\:\:\$status\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/Management/BannerMgmtResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\Management\\BannerMgmtResource\:\:\$title\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/Management/BannerMgmtResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\Management\\BannerMgmtResource\:\:\$updated_at\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/Management/BannerMgmtResource.php
-
-		-
 			message: '#^Using nullsafe property access "\?\-\>url" on left side of \?\? is unnecessary\. Use \-\> instead\.$#'
 			identifier: nullsafe.neverNull
 			count: 1
 			path: app/Http/Resources/Management/BannerMgmtResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\Management\\CategoryMgmtResource\:\:\$description\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/Management/CategoryMgmtResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\Management\\CategoryMgmtResource\:\:\$id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/Management/CategoryMgmtResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\Management\\CategoryMgmtResource\:\:\$is_delete\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/Management/CategoryMgmtResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\Management\\CategoryMgmtResource\:\:\$is_display\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/Management/CategoryMgmtResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\Management\\CategoryMgmtResource\:\:\$layout_structure\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/Management/CategoryMgmtResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\Management\\CategoryMgmtResource\:\:\$name\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/Management/CategoryMgmtResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\Management\\CategoryMgmtResource\:\:\$rank_order\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/Management/CategoryMgmtResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\Management\\CategoryMgmtResource\:\:\$slug\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/Management/CategoryMgmtResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\Management\\CategoryMgmtResource\:\:\$status\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/Management/CategoryMgmtResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\Management\\CategoryMgmtResource\:\:\$updated_at\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/Management/CategoryMgmtResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\Management\\EntryDescriptionMgmtResource\:\:\$article\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/Management/EntryDescriptionMgmtResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\Management\\EntryDescriptionMgmtResource\:\:\$id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/Management/EntryDescriptionMgmtResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\Management\\EntryDescriptionMgmtResource\:\:\$is_delete\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/Management/EntryDescriptionMgmtResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\Management\\EntryDescriptionMgmtResource\:\:\$is_display\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/Management/EntryDescriptionMgmtResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\Management\\EntryDescriptionMgmtResource\:\:\$rank_order\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/Management/EntryDescriptionMgmtResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\Management\\EntryDescriptionMgmtResource\:\:\$status\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/Management/EntryDescriptionMgmtResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\Management\\EntryDescriptionMgmtResource\:\:\$summary\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/Management/EntryDescriptionMgmtResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\Management\\EntryDescriptionMgmtResource\:\:\$title\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/Management/EntryDescriptionMgmtResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\Management\\EntryDescriptionMgmtResource\:\:\$updated_at\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/Management/EntryDescriptionMgmtResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\Management\\EntryMgmtResource\:\:\$id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/Management/EntryMgmtResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\Management\\EntryMgmtResource\:\:\$is_delete\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/Management/EntryMgmtResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\Management\\EntryMgmtResource\:\:\$is_display\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/Management/EntryMgmtResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\Management\\EntryMgmtResource\:\:\$layout_structure\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/Management/EntryMgmtResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\Management\\EntryMgmtResource\:\:\$name\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/Management/EntryMgmtResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\Management\\EntryMgmtResource\:\:\$rank_order\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/Management/EntryMgmtResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\Management\\EntryMgmtResource\:\:\$slug\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/Management/EntryMgmtResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\Management\\EntryMgmtResource\:\:\$status\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/Management/EntryMgmtResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\Management\\EntryMgmtResource\:\:\$updated_at\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/Management/EntryMgmtResource.php
 
 		-
 			message: '#^Call to an undefined method App\\Http\\Resources\\Management\\MediaFileCollection\:\:currentPage\(\)\.$#'
@@ -1561,628 +223,22 @@ parameters:
 			path: app/Http/Resources/Management/MediaFileResource.php
 
 		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\Management\\SettingLinkMgmtResource\:\:\$id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/Management/SettingLinkMgmtResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\Management\\SettingLinkMgmtResource\:\:\$is_delete\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/Management/SettingLinkMgmtResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\Management\\SettingLinkMgmtResource\:\:\$key\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/Management/SettingLinkMgmtResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\Management\\SettingLinkMgmtResource\:\:\$updated_at\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/Management/SettingLinkMgmtResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\Management\\SettingLinkMgmtResource\:\:\$value\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/Management/SettingLinkMgmtResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\Management\\SliderMgmtResource\:\:\$id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/Management/SliderMgmtResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\Management\\SliderMgmtResource\:\:\$image\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/Management/SliderMgmtResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\Management\\SliderMgmtResource\:\:\$is_delete\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/Management/SliderMgmtResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\Management\\SliderMgmtResource\:\:\$link\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/Management/SliderMgmtResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\Management\\SliderMgmtResource\:\:\$slug\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/Management/SliderMgmtResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\Management\\SliderMgmtResource\:\:\$status\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/Management/SliderMgmtResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\Management\\SliderMgmtResource\:\:\$title\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/Management/SliderMgmtResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\Management\\SliderMgmtResource\:\:\$updated_at\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/Management/SliderMgmtResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\Management\\SocialMgmtResource\:\:\$id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/Management/SocialMgmtResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\Management\\SocialMgmtResource\:\:\$image\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/Management/SocialMgmtResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\Management\\SocialMgmtResource\:\:\$is_delete\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/Management/SocialMgmtResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\Management\\SocialMgmtResource\:\:\$is_display\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/Management/SocialMgmtResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\Management\\SocialMgmtResource\:\:\$link\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/Management/SocialMgmtResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\Management\\SocialMgmtResource\:\:\$name\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/Management/SocialMgmtResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\Management\\SocialMgmtResource\:\:\$rank_order\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/Management/SocialMgmtResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\Management\\SocialMgmtResource\:\:\$slug\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/Management/SocialMgmtResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\Management\\SocialMgmtResource\:\:\$status\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/Management/SocialMgmtResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\Management\\SocialMgmtResource\:\:\$updated_at\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/Management/SocialMgmtResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\Management\\UserMgmtResource\:\:\$address\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/Management/UserMgmtResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\Management\\UserMgmtResource\:\:\$avatar\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/Management/UserMgmtResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\Management\\UserMgmtResource\:\:\$birth\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/Management/UserMgmtResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\Management\\UserMgmtResource\:\:\$email\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/Management/UserMgmtResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\Management\\UserMgmtResource\:\:\$first_name\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/Management/UserMgmtResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\Management\\UserMgmtResource\:\:\$gender\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/Management/UserMgmtResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\Management\\UserMgmtResource\:\:\$id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/Management/UserMgmtResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\Management\\UserMgmtResource\:\:\$is_active\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/Management/UserMgmtResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\Management\\UserMgmtResource\:\:\$is_delete\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/Management/UserMgmtResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\Management\\UserMgmtResource\:\:\$last_name\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/Management/UserMgmtResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\Management\\UserMgmtResource\:\:\$password\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/Management/UserMgmtResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\Management\\UserMgmtResource\:\:\$phone_number\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/Management/UserMgmtResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\Management\\UserMgmtResource\:\:\$status\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/Management/UserMgmtResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\Management\\UserMgmtResource\:\:\$updated_at\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/Management/UserMgmtResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\Management\\UserMgmtResource\:\:\$user_name\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/Management/UserMgmtResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\Master\\AdminDepartmentMstResource\:\:\$admin_mst_id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/Master/AdminDepartmentMstResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\Master\\AdminDepartmentMstResource\:\:\$department_mst_id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/Master/AdminDepartmentMstResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\Master\\AdminDepartmentMstResource\:\:\$updated_at\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/Master/AdminDepartmentMstResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\Master\\AdminMstResource\:\:\$address\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/Master/AdminMstResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\Master\\AdminMstResource\:\:\$avatar\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/Master/AdminMstResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\Master\\AdminMstResource\:\:\$birth\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/Master/AdminMstResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\Master\\AdminMstResource\:\:\$email\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/Master/AdminMstResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\Master\\AdminMstResource\:\:\$first_name\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/Master/AdminMstResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\Master\\AdminMstResource\:\:\$gender\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/Master/AdminMstResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\Master\\AdminMstResource\:\:\$id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/Master/AdminMstResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\Master\\AdminMstResource\:\:\$is_active\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/Master/AdminMstResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\Master\\AdminMstResource\:\:\$is_delete\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/Master/AdminMstResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\Master\\AdminMstResource\:\:\$last_name\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/Master/AdminMstResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\Master\\AdminMstResource\:\:\$password\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/Master/AdminMstResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\Master\\AdminMstResource\:\:\$phone_number\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/Master/AdminMstResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\Master\\AdminMstResource\:\:\$status\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/Master/AdminMstResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\Master\\AdminMstResource\:\:\$updated_at\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/Master/AdminMstResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\Master\\AdminMstResource\:\:\$user_name\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/Master/AdminMstResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\Master\\AdminRoleMstResource\:\:\$admin_mst_id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/Master/AdminRoleMstResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\Master\\AdminRoleMstResource\:\:\$role_mst_id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/Master/AdminRoleMstResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\Master\\AdminRoleMstResource\:\:\$updated_at\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/Master/AdminRoleMstResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\Master\\ApiMstResource\:\:\$feature_mst_id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/Master/ApiMstResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\Master\\ApiMstResource\:\:\$id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/Master/ApiMstResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\Master\\ApiMstResource\:\:\$is_active\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/Master/ApiMstResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\Master\\ApiMstResource\:\:\$is_delete\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/Master/ApiMstResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\Master\\ApiMstResource\:\:\$name\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/Master/ApiMstResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\Master\\ApiMstResource\:\:\$path\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/Master/ApiMstResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\Master\\ApiMstResource\:\:\$type\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/Master/ApiMstResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\Master\\ApiMstResource\:\:\$updated_at\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/Master/ApiMstResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\Master\\ApiRoleMstResource\:\:\$api_mst_id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/Master/ApiRoleMstResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\Master\\ApiRoleMstResource\:\:\$role_mst_id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/Master/ApiRoleMstResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\Master\\ApiRoleMstResource\:\:\$updated_at\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/Master/ApiRoleMstResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\Master\\DepartmentManagementMstResource\:\:\$department_mst_id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/Master/DepartmentManagementMstResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\Master\\DepartmentManagementMstResource\:\:\$policy_department_mst_id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/Master/DepartmentManagementMstResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\Master\\DepartmentManagementMstResource\:\:\$updated_at\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/Master/DepartmentManagementMstResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\Master\\DepartmentMstResource\:\:\$code\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/Master/DepartmentMstResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\Master\\DepartmentMstResource\:\:\$id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/Master/DepartmentMstResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\Master\\DepartmentMstResource\:\:\$is_delete\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/Master/DepartmentMstResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\Master\\DepartmentMstResource\:\:\$name\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/Master/DepartmentMstResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\Master\\DepartmentMstResource\:\:\$status\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/Master/DepartmentMstResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\Master\\DepartmentMstResource\:\:\$updated_at\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/Master/DepartmentMstResource.php
-
-		-
 			message: '#^Access to an undefined property App\\Http\\Resources\\Master\\FeatureMstResource\:\:\$description\.$#'
 			identifier: property.notFound
 			count: 1
 			path: app/Http/Resources/Master/FeatureMstResource.php
 
 		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\Master\\FeatureMstResource\:\:\$group_name\.$#'
-			identifier: property.notFound
+			message: '#^Property App\\Models\\Management\\MediaMgmt\:\:\$upload_status \(int\) does not accept App\\Enums\\UploadStatus\:\:COMPLETED\.$#'
+			identifier: assign.propertyType
 			count: 1
-			path: app/Http/Resources/Master/FeatureMstResource.php
+			path: app/Jobs/Media/ProcessLargeFile.php
 
 		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\Master\\FeatureMstResource\:\:\$id\.$#'
-			identifier: property.notFound
+			message: '#^Property App\\Models\\Management\\MediaMgmt\:\:\$upload_status \(int\) does not accept App\\Enums\\UploadStatus\:\:FAILED\.$#'
+			identifier: assign.propertyType
 			count: 1
-			path: app/Http/Resources/Master/FeatureMstResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\Master\\FeatureMstResource\:\:\$is_delete\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/Master/FeatureMstResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\Master\\FeatureMstResource\:\:\$name\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/Master/FeatureMstResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\Master\\FeatureMstResource\:\:\$status\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/Master/FeatureMstResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\Master\\FeatureMstResource\:\:\$updated_at\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/Master/FeatureMstResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\Master\\PolicyDepartmentMstResource\:\:\$id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/Master/PolicyDepartmentMstResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\Master\\PolicyDepartmentMstResource\:\:\$is_delete\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/Master/PolicyDepartmentMstResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\Master\\PolicyDepartmentMstResource\:\:\$row_id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/Master/PolicyDepartmentMstResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\Master\\PolicyDepartmentMstResource\:\:\$table_name\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/Master/PolicyDepartmentMstResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\Master\\PolicyDepartmentMstResource\:\:\$updated_at\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/Master/PolicyDepartmentMstResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\Master\\RoleMstResource\:\:\$id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/Master/RoleMstResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\Master\\RoleMstResource\:\:\$is_active\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/Master/RoleMstResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\Master\\RoleMstResource\:\:\$is_delete\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/Master/RoleMstResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\Master\\RoleMstResource\:\:\$name\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/Master/RoleMstResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\Master\\RoleMstResource\:\:\$permission\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/Master/RoleMstResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\Master\\RoleMstResource\:\:\$updated_at\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/Master/RoleMstResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\Master\\TokenMstResource\:\:\$account_id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/Master/TokenMstResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\Master\\TokenMstResource\:\:\$device_name\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/Master/TokenMstResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\Master\\TokenMstResource\:\:\$expired_at\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/Master/TokenMstResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\Master\\TokenMstResource\:\:\$id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/Master/TokenMstResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\Master\\TokenMstResource\:\:\$ip_address\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/Master/TokenMstResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\Master\\TokenMstResource\:\:\$updated_at\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/Master/TokenMstResource.php
-
-		-
-			message: '#^PHPDoc type array of property App\\Models\\History\\Management\\BannerMgmtHist\:\:\$casts is not covariant with PHPDoc type array\<string, string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$casts\.$#'
-			identifier: property.phpDocType
-			count: 1
-			path: app/Models/History/Management/BannerMgmtHist.php
+			path: app/Jobs/Media/ProcessLargeFile.php
 
 		-
 			message: '#^PHPDoc type array\<string\> of property App\\Models\\History\\Management\\BannerMgmtHist\:\:\$fillable is not covariant with PHPDoc type list\<string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$fillable\.$#'
@@ -2191,22 +247,10 @@ parameters:
 			path: app/Models/History/Management/BannerMgmtHist.php
 
 		-
-			message: '#^PHPDoc type array of property App\\Models\\History\\Management\\CategoryMgmtHist\:\:\$casts is not covariant with PHPDoc type array\<string, string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$casts\.$#'
-			identifier: property.phpDocType
-			count: 1
-			path: app/Models/History/Management/CategoryMgmtHist.php
-
-		-
 			message: '#^PHPDoc type array\<string\> of property App\\Models\\History\\Management\\CategoryMgmtHist\:\:\$fillable is not covariant with PHPDoc type list\<string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$fillable\.$#'
 			identifier: property.phpDocType
 			count: 1
 			path: app/Models/History/Management/CategoryMgmtHist.php
-
-		-
-			message: '#^PHPDoc type array of property App\\Models\\History\\Management\\EntryDescriptionMgmtHist\:\:\$casts is not covariant with PHPDoc type array\<string, string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$casts\.$#'
-			identifier: property.phpDocType
-			count: 1
-			path: app/Models/History/Management/EntryDescriptionMgmtHist.php
 
 		-
 			message: '#^PHPDoc type array\<string\> of property App\\Models\\History\\Management\\EntryDescriptionMgmtHist\:\:\$fillable is not covariant with PHPDoc type list\<string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$fillable\.$#'
@@ -2215,22 +259,10 @@ parameters:
 			path: app/Models/History/Management/EntryDescriptionMgmtHist.php
 
 		-
-			message: '#^PHPDoc type array of property App\\Models\\History\\Management\\EntryMgmtHist\:\:\$casts is not covariant with PHPDoc type array\<string, string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$casts\.$#'
-			identifier: property.phpDocType
-			count: 1
-			path: app/Models/History/Management/EntryMgmtHist.php
-
-		-
 			message: '#^PHPDoc type array\<string\> of property App\\Models\\History\\Management\\EntryMgmtHist\:\:\$fillable is not covariant with PHPDoc type list\<string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$fillable\.$#'
 			identifier: property.phpDocType
 			count: 1
 			path: app/Models/History/Management/EntryMgmtHist.php
-
-		-
-			message: '#^PHPDoc type array of property App\\Models\\History\\Management\\SettingLinkMgmtHist\:\:\$casts is not covariant with PHPDoc type array\<string, string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$casts\.$#'
-			identifier: property.phpDocType
-			count: 1
-			path: app/Models/History/Management/SettingLinkMgmtHist.php
 
 		-
 			message: '#^PHPDoc type array\<string\> of property App\\Models\\History\\Management\\SettingLinkMgmtHist\:\:\$fillable is not covariant with PHPDoc type list\<string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$fillable\.$#'
@@ -2239,22 +271,10 @@ parameters:
 			path: app/Models/History/Management/SettingLinkMgmtHist.php
 
 		-
-			message: '#^PHPDoc type array of property App\\Models\\History\\Management\\SliderMgmtHist\:\:\$casts is not covariant with PHPDoc type array\<string, string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$casts\.$#'
-			identifier: property.phpDocType
-			count: 1
-			path: app/Models/History/Management/SliderMgmtHist.php
-
-		-
 			message: '#^PHPDoc type array\<string\> of property App\\Models\\History\\Management\\SliderMgmtHist\:\:\$fillable is not covariant with PHPDoc type list\<string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$fillable\.$#'
 			identifier: property.phpDocType
 			count: 1
 			path: app/Models/History/Management/SliderMgmtHist.php
-
-		-
-			message: '#^PHPDoc type array of property App\\Models\\History\\Management\\SocialMgmtHist\:\:\$casts is not covariant with PHPDoc type array\<string, string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$casts\.$#'
-			identifier: property.phpDocType
-			count: 1
-			path: app/Models/History/Management/SocialMgmtHist.php
 
 		-
 			message: '#^PHPDoc type array\<string\> of property App\\Models\\History\\Management\\SocialMgmtHist\:\:\$fillable is not covariant with PHPDoc type list\<string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$fillable\.$#'
@@ -2263,22 +283,10 @@ parameters:
 			path: app/Models/History/Management/SocialMgmtHist.php
 
 		-
-			message: '#^PHPDoc type array of property App\\Models\\History\\Management\\UserMgmtHist\:\:\$casts is not covariant with PHPDoc type array\<string, string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$casts\.$#'
-			identifier: property.phpDocType
-			count: 1
-			path: app/Models/History/Management/UserMgmtHist.php
-
-		-
 			message: '#^PHPDoc type array\<string\> of property App\\Models\\History\\Management\\UserMgmtHist\:\:\$fillable is not covariant with PHPDoc type list\<string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$fillable\.$#'
 			identifier: property.phpDocType
 			count: 1
 			path: app/Models/History/Management/UserMgmtHist.php
-
-		-
-			message: '#^PHPDoc type array of property App\\Models\\History\\Master\\AdminMstHist\:\:\$casts is not covariant with PHPDoc type array\<string, string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$casts\.$#'
-			identifier: property.phpDocType
-			count: 1
-			path: app/Models/History/Master/AdminMstHist.php
 
 		-
 			message: '#^PHPDoc type array\<string\> of property App\\Models\\History\\Master\\AdminMstHist\:\:\$fillable is not covariant with PHPDoc type list\<string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$fillable\.$#'
@@ -2287,22 +295,10 @@ parameters:
 			path: app/Models/History/Master/AdminMstHist.php
 
 		-
-			message: '#^PHPDoc type array of property App\\Models\\History\\Master\\ApiMstHist\:\:\$casts is not covariant with PHPDoc type array\<string, string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$casts\.$#'
-			identifier: property.phpDocType
-			count: 1
-			path: app/Models/History/Master/ApiMstHist.php
-
-		-
 			message: '#^PHPDoc type array\<string\> of property App\\Models\\History\\Master\\ApiMstHist\:\:\$fillable is not covariant with PHPDoc type list\<string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$fillable\.$#'
 			identifier: property.phpDocType
 			count: 1
 			path: app/Models/History/Master/ApiMstHist.php
-
-		-
-			message: '#^PHPDoc type array of property App\\Models\\History\\Master\\DepartmentMstHist\:\:\$casts is not covariant with PHPDoc type array\<string, string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$casts\.$#'
-			identifier: property.phpDocType
-			count: 1
-			path: app/Models/History/Master/DepartmentMstHist.php
 
 		-
 			message: '#^PHPDoc type array\<string\> of property App\\Models\\History\\Master\\DepartmentMstHist\:\:\$fillable is not covariant with PHPDoc type list\<string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$fillable\.$#'
@@ -2311,34 +307,16 @@ parameters:
 			path: app/Models/History/Master/DepartmentMstHist.php
 
 		-
-			message: '#^PHPDoc type array of property App\\Models\\History\\Master\\FeatureMstHist\:\:\$casts is not covariant with PHPDoc type array\<string, string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$casts\.$#'
-			identifier: property.phpDocType
-			count: 1
-			path: app/Models/History/Master/FeatureMstHist.php
-
-		-
 			message: '#^PHPDoc type array\<string\> of property App\\Models\\History\\Master\\FeatureMstHist\:\:\$fillable is not covariant with PHPDoc type list\<string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$fillable\.$#'
 			identifier: property.phpDocType
 			count: 1
 			path: app/Models/History/Master/FeatureMstHist.php
 
 		-
-			message: '#^PHPDoc type array of property App\\Models\\History\\Master\\PolicyDepartmentMstHist\:\:\$casts is not covariant with PHPDoc type array\<string, string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$casts\.$#'
-			identifier: property.phpDocType
-			count: 1
-			path: app/Models/History/Master/PolicyDepartmentMstHist.php
-
-		-
 			message: '#^PHPDoc type array\<string\> of property App\\Models\\History\\Master\\PolicyDepartmentMstHist\:\:\$fillable is not covariant with PHPDoc type list\<string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$fillable\.$#'
 			identifier: property.phpDocType
 			count: 1
 			path: app/Models/History/Master/PolicyDepartmentMstHist.php
-
-		-
-			message: '#^PHPDoc type array of property App\\Models\\History\\Master\\RoleMstHist\:\:\$casts is not covariant with PHPDoc type array\<string, string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$casts\.$#'
-			identifier: property.phpDocType
-			count: 1
-			path: app/Models/History/Master/RoleMstHist.php
 
 		-
 			message: '#^PHPDoc type array\<string\> of property App\\Models\\History\\Master\\RoleMstHist\:\:\$fillable is not covariant with PHPDoc type list\<string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$fillable\.$#'
@@ -2353,21 +331,15 @@ parameters:
 			path: app/Models/Management/BannerMgmt.php
 
 		-
-			message: '#^Array has 2 duplicate keys with value ''position'' \(''position'', ''position''\)\.$#'
-			identifier: array.duplicateKey
-			count: 1
-			path: app/Models/Management/BannerMgmt.php
-
-		-
-			message: '#^PHPDoc type array of property App\\Models\\Management\\BannerMgmt\:\:\$casts is not covariant with PHPDoc type array\<string, string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$casts\.$#'
-			identifier: property.phpDocType
-			count: 1
-			path: app/Models/Management/BannerMgmt.php
-
-		-
 			message: '#^PHPDoc type array\<string\> of property App\\Models\\Management\\BannerMgmt\:\:\$fillable is not covariant with PHPDoc type list\<string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$fillable\.$#'
 			identifier: property.phpDocType
 			count: 1
+			path: app/Models/Management/BannerMgmt.php
+
+		-
+			message: '#^Property App\\Models\\Management\\BannerMgmt\:\:\$is_delete \(bool\) does not accept int\.$#'
+			identifier: assign.propertyType
+			count: 2
 			path: app/Models/Management/BannerMgmt.php
 
 		-
@@ -2377,15 +349,15 @@ parameters:
 			path: app/Models/Management/CategoryMgmt.php
 
 		-
-			message: '#^PHPDoc type array of property App\\Models\\Management\\CategoryMgmt\:\:\$casts is not covariant with PHPDoc type array\<string, string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$casts\.$#'
+			message: '#^PHPDoc type array\<string\> of property App\\Models\\Management\\CategoryMgmt\:\:\$fillable is not covariant with PHPDoc type list\<string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$fillable\.$#'
 			identifier: property.phpDocType
 			count: 1
 			path: app/Models/Management/CategoryMgmt.php
 
 		-
-			message: '#^PHPDoc type array\<string\> of property App\\Models\\Management\\CategoryMgmt\:\:\$fillable is not covariant with PHPDoc type list\<string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$fillable\.$#'
-			identifier: property.phpDocType
-			count: 1
+			message: '#^Property App\\Models\\Management\\CategoryMgmt\:\:\$is_delete \(bool\) does not accept int\.$#'
+			identifier: assign.propertyType
+			count: 2
 			path: app/Models/Management/CategoryMgmt.php
 
 		-
@@ -2395,15 +367,15 @@ parameters:
 			path: app/Models/Management/EntryDescriptionMgmt.php
 
 		-
-			message: '#^PHPDoc type array of property App\\Models\\Management\\EntryDescriptionMgmt\:\:\$casts is not covariant with PHPDoc type array\<string, string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$casts\.$#'
+			message: '#^PHPDoc type array\<string\> of property App\\Models\\Management\\EntryDescriptionMgmt\:\:\$fillable is not covariant with PHPDoc type list\<string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$fillable\.$#'
 			identifier: property.phpDocType
 			count: 1
 			path: app/Models/Management/EntryDescriptionMgmt.php
 
 		-
-			message: '#^PHPDoc type array\<string\> of property App\\Models\\Management\\EntryDescriptionMgmt\:\:\$fillable is not covariant with PHPDoc type list\<string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$fillable\.$#'
-			identifier: property.phpDocType
-			count: 1
+			message: '#^Property App\\Models\\Management\\EntryDescriptionMgmt\:\:\$is_delete \(bool\) does not accept int\.$#'
+			identifier: assign.propertyType
+			count: 2
 			path: app/Models/Management/EntryDescriptionMgmt.php
 
 		-
@@ -2413,27 +385,39 @@ parameters:
 			path: app/Models/Management/EntryMgmt.php
 
 		-
-			message: '#^PHPDoc type array of property App\\Models\\Management\\EntryMgmt\:\:\$casts is not covariant with PHPDoc type array\<string, string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$casts\.$#'
-			identifier: property.phpDocType
-			count: 1
-			path: app/Models/Management/EntryMgmt.php
-
-		-
 			message: '#^PHPDoc type array\<string\> of property App\\Models\\Management\\EntryMgmt\:\:\$fillable is not covariant with PHPDoc type list\<string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$fillable\.$#'
 			identifier: property.phpDocType
 			count: 1
 			path: app/Models/Management/EntryMgmt.php
 
 		-
-			message: '#^PHPDoc type array of property App\\Models\\Management\\SettingLinkMgmt\:\:\$casts is not covariant with PHPDoc type array\<string, string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$casts\.$#'
-			identifier: property.phpDocType
+			message: '#^Property App\\Models\\Management\\EntryMgmt\:\:\$is_delete \(bool\) does not accept int\.$#'
+			identifier: assign.propertyType
+			count: 2
+			path: app/Models/Management/EntryMgmt.php
+
+		-
+			message: '#^Method App\\Models\\Management\\MediaMgmt\:\:children\(\) has no return type specified\.$#'
+			identifier: missingType.return
 			count: 1
-			path: app/Models/Management/SettingLinkMgmt.php
+			path: app/Models/Management/MediaMgmt.php
+
+		-
+			message: '#^Property App\\Models\\Management\\MediaMgmt\:\:\$is_delete \(bool\) does not accept int\.$#'
+			identifier: assign.propertyType
+			count: 2
+			path: app/Models/Management/MediaMgmt.php
 
 		-
 			message: '#^PHPDoc type array\<string\> of property App\\Models\\Management\\SettingLinkMgmt\:\:\$fillable is not covariant with PHPDoc type list\<string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$fillable\.$#'
 			identifier: property.phpDocType
 			count: 1
+			path: app/Models/Management/SettingLinkMgmt.php
+
+		-
+			message: '#^Property App\\Models\\Management\\SettingLinkMgmt\:\:\$is_delete \(bool\) does not accept int\.$#'
+			identifier: assign.propertyType
+			count: 2
 			path: app/Models/Management/SettingLinkMgmt.php
 
 		-
@@ -2443,15 +427,15 @@ parameters:
 			path: app/Models/Management/SliderMgmt.php
 
 		-
-			message: '#^PHPDoc type array of property App\\Models\\Management\\SliderMgmt\:\:\$casts is not covariant with PHPDoc type array\<string, string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$casts\.$#'
+			message: '#^PHPDoc type array\<string\> of property App\\Models\\Management\\SliderMgmt\:\:\$fillable is not covariant with PHPDoc type list\<string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$fillable\.$#'
 			identifier: property.phpDocType
 			count: 1
 			path: app/Models/Management/SliderMgmt.php
 
 		-
-			message: '#^PHPDoc type array\<string\> of property App\\Models\\Management\\SliderMgmt\:\:\$fillable is not covariant with PHPDoc type list\<string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$fillable\.$#'
-			identifier: property.phpDocType
-			count: 1
+			message: '#^Property App\\Models\\Management\\SliderMgmt\:\:\$is_delete \(bool\) does not accept int\.$#'
+			identifier: assign.propertyType
+			count: 2
 			path: app/Models/Management/SliderMgmt.php
 
 		-
@@ -2461,22 +445,16 @@ parameters:
 			path: app/Models/Management/SocialMgmt.php
 
 		-
-			message: '#^PHPDoc type array of property App\\Models\\Management\\SocialMgmt\:\:\$casts is not covariant with PHPDoc type array\<string, string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$casts\.$#'
-			identifier: property.phpDocType
-			count: 1
-			path: app/Models/Management/SocialMgmt.php
-
-		-
 			message: '#^PHPDoc type array\<string\> of property App\\Models\\Management\\SocialMgmt\:\:\$fillable is not covariant with PHPDoc type list\<string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$fillable\.$#'
 			identifier: property.phpDocType
 			count: 1
 			path: app/Models/Management/SocialMgmt.php
 
 		-
-			message: '#^PHPDoc type array of property App\\Models\\Management\\UserMgmt\:\:\$casts is not covariant with PHPDoc type array\<string, string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$casts\.$#'
-			identifier: property.phpDocType
-			count: 1
-			path: app/Models/Management/UserMgmt.php
+			message: '#^Property App\\Models\\Management\\SocialMgmt\:\:\$is_delete \(bool\) does not accept int\.$#'
+			identifier: assign.propertyType
+			count: 2
+			path: app/Models/Management/SocialMgmt.php
 
 		-
 			message: '#^PHPDoc type array\<string\> of property App\\Models\\Management\\UserMgmt\:\:\$fillable is not covariant with PHPDoc type list\<string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$fillable\.$#'
@@ -2485,10 +463,10 @@ parameters:
 			path: app/Models/Management/UserMgmt.php
 
 		-
-			message: '#^PHPDoc type array of property App\\Models\\Master\\AdminDepartmentMst\:\:\$casts is not covariant with PHPDoc type array\<string, string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$casts\.$#'
-			identifier: property.phpDocType
-			count: 1
-			path: app/Models/Master/AdminDepartmentMst.php
+			message: '#^Property App\\Models\\Management\\UserMgmt\:\:\$is_delete \(bool\) does not accept int\.$#'
+			identifier: assign.propertyType
+			count: 2
+			path: app/Models/Management/UserMgmt.php
 
 		-
 			message: '#^PHPDoc type array\<string\> of property App\\Models\\Master\\AdminDepartmentMst\:\:\$fillable is not covariant with PHPDoc type list\<string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$fillable\.$#'
@@ -2497,22 +475,16 @@ parameters:
 			path: app/Models/Master/AdminDepartmentMst.php
 
 		-
-			message: '#^PHPDoc type array of property App\\Models\\Master\\AdminMst\:\:\$casts is not covariant with PHPDoc type array\<string, string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$casts\.$#'
-			identifier: property.phpDocType
-			count: 1
-			path: app/Models/Master/AdminMst.php
-
-		-
 			message: '#^PHPDoc type array\<string\> of property App\\Models\\Master\\AdminMst\:\:\$fillable is not covariant with PHPDoc type list\<string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$fillable\.$#'
 			identifier: property.phpDocType
 			count: 1
 			path: app/Models/Master/AdminMst.php
 
 		-
-			message: '#^PHPDoc type array of property App\\Models\\Master\\AdminRoleMst\:\:\$casts is not covariant with PHPDoc type array\<string, string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$casts\.$#'
-			identifier: property.phpDocType
-			count: 1
-			path: app/Models/Master/AdminRoleMst.php
+			message: '#^Property App\\Models\\Master\\AdminMst\:\:\$is_delete \(bool\) does not accept int\.$#'
+			identifier: assign.propertyType
+			count: 2
+			path: app/Models/Master/AdminMst.php
 
 		-
 			message: '#^PHPDoc type array\<string\> of property App\\Models\\Master\\AdminRoleMst\:\:\$fillable is not covariant with PHPDoc type list\<string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$fillable\.$#'
@@ -2521,34 +493,22 @@ parameters:
 			path: app/Models/Master/AdminRoleMst.php
 
 		-
-			message: '#^PHPDoc type array of property App\\Models\\Master\\ApiMst\:\:\$casts is not covariant with PHPDoc type array\<string, string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$casts\.$#'
-			identifier: property.phpDocType
-			count: 1
-			path: app/Models/Master/ApiMst.php
-
-		-
 			message: '#^PHPDoc type array\<string\> of property App\\Models\\Master\\ApiMst\:\:\$fillable is not covariant with PHPDoc type list\<string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$fillable\.$#'
 			identifier: property.phpDocType
 			count: 1
 			path: app/Models/Master/ApiMst.php
 
 		-
-			message: '#^PHPDoc type array of property App\\Models\\Master\\ApiRoleMst\:\:\$casts is not covariant with PHPDoc type array\<string, string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$casts\.$#'
-			identifier: property.phpDocType
-			count: 1
-			path: app/Models/Master/ApiRoleMst.php
+			message: '#^Property App\\Models\\Master\\ApiMst\:\:\$is_delete \(bool\) does not accept int\.$#'
+			identifier: assign.propertyType
+			count: 2
+			path: app/Models/Master/ApiMst.php
 
 		-
 			message: '#^PHPDoc type array\<string\> of property App\\Models\\Master\\ApiRoleMst\:\:\$fillable is not covariant with PHPDoc type list\<string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$fillable\.$#'
 			identifier: property.phpDocType
 			count: 1
 			path: app/Models/Master/ApiRoleMst.php
-
-		-
-			message: '#^PHPDoc type array of property App\\Models\\Master\\DepartmentManagementMst\:\:\$casts is not covariant with PHPDoc type array\<string, string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$casts\.$#'
-			identifier: property.phpDocType
-			count: 1
-			path: app/Models/Master/DepartmentManagementMst.php
 
 		-
 			message: '#^PHPDoc type array\<string\> of property App\\Models\\Master\\DepartmentManagementMst\:\:\$fillable is not covariant with PHPDoc type list\<string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$fillable\.$#'
@@ -2563,15 +523,15 @@ parameters:
 			path: app/Models/Master/DepartmentMst.php
 
 		-
-			message: '#^PHPDoc type array of property App\\Models\\Master\\DepartmentMst\:\:\$casts is not covariant with PHPDoc type array\<string, string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$casts\.$#'
+			message: '#^PHPDoc type array\<string\> of property App\\Models\\Master\\DepartmentMst\:\:\$fillable is not covariant with PHPDoc type list\<string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$fillable\.$#'
 			identifier: property.phpDocType
 			count: 1
 			path: app/Models/Master/DepartmentMst.php
 
 		-
-			message: '#^PHPDoc type array\<string\> of property App\\Models\\Master\\DepartmentMst\:\:\$fillable is not covariant with PHPDoc type list\<string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$fillable\.$#'
-			identifier: property.phpDocType
-			count: 1
+			message: '#^Property App\\Models\\Master\\DepartmentMst\:\:\$is_delete \(bool\) does not accept int\.$#'
+			identifier: assign.propertyType
+			count: 2
 			path: app/Models/Master/DepartmentMst.php
 
 		-
@@ -2581,22 +541,16 @@ parameters:
 			path: app/Models/Master/FeatureMst.php
 
 		-
-			message: '#^PHPDoc type array of property App\\Models\\Master\\FeatureMst\:\:\$casts is not covariant with PHPDoc type array\<string, string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$casts\.$#'
-			identifier: property.phpDocType
-			count: 1
-			path: app/Models/Master/FeatureMst.php
-
-		-
 			message: '#^PHPDoc type array\<string\> of property App\\Models\\Master\\FeatureMst\:\:\$fillable is not covariant with PHPDoc type list\<string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$fillable\.$#'
 			identifier: property.phpDocType
 			count: 1
 			path: app/Models/Master/FeatureMst.php
 
 		-
-			message: '#^PHPDoc type array of property App\\Models\\Master\\PolicyDepartmentMst\:\:\$casts is not covariant with PHPDoc type array\<string, string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$casts\.$#'
-			identifier: property.phpDocType
-			count: 1
-			path: app/Models/Master/PolicyDepartmentMst.php
+			message: '#^Property App\\Models\\Master\\FeatureMst\:\:\$is_delete \(bool\) does not accept int\.$#'
+			identifier: assign.propertyType
+			count: 2
+			path: app/Models/Master/FeatureMst.php
 
 		-
 			message: '#^PHPDoc type array\<string\> of property App\\Models\\Master\\PolicyDepartmentMst\:\:\$fillable is not covariant with PHPDoc type list\<string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$fillable\.$#'
@@ -2605,10 +559,10 @@ parameters:
 			path: app/Models/Master/PolicyDepartmentMst.php
 
 		-
-			message: '#^PHPDoc type array of property App\\Models\\Master\\RoleMst\:\:\$casts is not covariant with PHPDoc type array\<string, string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$casts\.$#'
-			identifier: property.phpDocType
-			count: 1
-			path: app/Models/Master/RoleMst.php
+			message: '#^Property App\\Models\\Master\\PolicyDepartmentMst\:\:\$is_delete \(bool\) does not accept int\.$#'
+			identifier: assign.propertyType
+			count: 2
+			path: app/Models/Master/PolicyDepartmentMst.php
 
 		-
 			message: '#^PHPDoc type array\<string\> of property App\\Models\\Master\\RoleMst\:\:\$fillable is not covariant with PHPDoc type list\<string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$fillable\.$#'
@@ -2617,10 +571,10 @@ parameters:
 			path: app/Models/Master/RoleMst.php
 
 		-
-			message: '#^PHPDoc type array of property App\\Models\\Master\\TokenMst\:\:\$casts is not covariant with PHPDoc type array\<string, string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$casts\.$#'
-			identifier: property.phpDocType
-			count: 1
-			path: app/Models/Master/TokenMst.php
+			message: '#^Property App\\Models\\Master\\RoleMst\:\:\$is_delete \(bool\) does not accept int\.$#'
+			identifier: assign.propertyType
+			count: 2
+			path: app/Models/Master/RoleMst.php
 
 		-
 			message: '#^PHPDoc type array\<string\> of property App\\Models\\Master\\TokenMst\:\:\$fillable is not covariant with PHPDoc type list\<string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$fillable\.$#'
@@ -2641,367 +595,85 @@ parameters:
 			path: app/Models/User.php
 
 		-
-			message: '#^Method App\\Repositories\\BaseRepository\:\:delete\(\) should return bool but returns int\.$#'
-			identifier: return.type
+			message: '#^Call to function is_array\(\) with string\|null will always evaluate to false\.$#'
+			identifier: function.impossibleType
 			count: 1
-			path: app/Repositories/BaseRepository.php
+			path: app/Observers/EntryDescriptionMgmtObserver.php
 
 		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Collection\<int, Illuminate\\Database\\Eloquent\\Model\>\|Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
-			identifier: property.notFound
+			message: '#^Property App\\Models\\Management\\EntryMgmt\:\:\$layout_structure \(string\|null\) does not accept array\.$#'
+			identifier: assign.propertyType
 			count: 1
-			path: app/Repositories/History/Management/BannerMgmtHistRepository.php
+			path: app/Observers/EntryDescriptionMgmtObserver.php
 
 		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
-			identifier: property.notFound
+			message: '#^Variable \$layoutStructure in empty\(\) is never defined\.$#'
+			identifier: empty.variable
 			count: 1
-			path: app/Repositories/History/Management/BannerMgmtHistRepository.php
+			path: app/Observers/EntryDescriptionMgmtObserver.php
 
 		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Collection\<int, Illuminate\\Database\\Eloquent\\Model\>\|Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
-			identifier: property.notFound
+			message: '#^Call to function is_array\(\) with string\|null will always evaluate to false\.$#'
+			identifier: function.impossibleType
 			count: 1
-			path: app/Repositories/History/Management/CategoryMgmtHistRepository.php
+			path: app/Observers/EntryMgmtObserver.php
 
 		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
-			identifier: property.notFound
+			message: '#^Property App\\Models\\Management\\CategoryMgmt\:\:\$layout_structure \(string\|null\) does not accept array\.$#'
+			identifier: assign.propertyType
 			count: 1
-			path: app/Repositories/History/Management/CategoryMgmtHistRepository.php
+			path: app/Observers/EntryMgmtObserver.php
 
 		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Collection\<int, Illuminate\\Database\\Eloquent\\Model\>\|Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
-			identifier: property.notFound
+			message: '#^Variable \$layoutStructure in empty\(\) is never defined\.$#'
+			identifier: empty.variable
 			count: 1
-			path: app/Repositories/History/Management/EntryDescriptionMgmtHistRepository.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Repositories/History/Management/EntryDescriptionMgmtHistRepository.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Collection\<int, Illuminate\\Database\\Eloquent\\Model\>\|Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Repositories/History/Management/EntryMgmtHistRepository.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Repositories/History/Management/EntryMgmtHistRepository.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Collection\<int, Illuminate\\Database\\Eloquent\\Model\>\|Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Repositories/History/Management/SettingLinkMgmtHistRepository.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Repositories/History/Management/SettingLinkMgmtHistRepository.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Collection\<int, Illuminate\\Database\\Eloquent\\Model\>\|Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Repositories/History/Management/SliderMgmtHistRepository.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Repositories/History/Management/SliderMgmtHistRepository.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Collection\<int, Illuminate\\Database\\Eloquent\\Model\>\|Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Repositories/History/Management/SocialMgmtHistRepository.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Repositories/History/Management/SocialMgmtHistRepository.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Collection\<int, Illuminate\\Database\\Eloquent\\Model\>\|Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Repositories/History/Management/UserMgmtHistRepository.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Repositories/History/Management/UserMgmtHistRepository.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Collection\<int, Illuminate\\Database\\Eloquent\\Model\>\|Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Repositories/History/Master/AdminMstHistRepository.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Repositories/History/Master/AdminMstHistRepository.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Collection\<int, Illuminate\\Database\\Eloquent\\Model\>\|Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Repositories/History/Master/ApiMstHistRepository.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Repositories/History/Master/ApiMstHistRepository.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Collection\<int, Illuminate\\Database\\Eloquent\\Model\>\|Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Repositories/History/Master/DepartmentMstHistRepository.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Repositories/History/Master/DepartmentMstHistRepository.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Collection\<int, Illuminate\\Database\\Eloquent\\Model\>\|Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Repositories/History/Master/FeatureMstHistRepository.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Repositories/History/Master/FeatureMstHistRepository.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Collection\<int, Illuminate\\Database\\Eloquent\\Model\>\|Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Repositories/History/Master/PolicyDepartmentMstHistRepository.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Repositories/History/Master/PolicyDepartmentMstHistRepository.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Collection\<int, Illuminate\\Database\\Eloquent\\Model\>\|Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Repositories/History/Master/RoleMstHistRepository.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Repositories/History/Master/RoleMstHistRepository.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Collection\<int, Illuminate\\Database\\Eloquent\\Model\>\|Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Repositories/Management/BannerMgmtRepository.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Repositories/Management/BannerMgmtRepository.php
+			path: app/Observers/EntryMgmtObserver.php
 
 		-
 			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Builder\<Illuminate\\Database\\Eloquent\\Model\>\:\:notDeleted\(\)\.$#'
 			identifier: method.notFound
-			count: 1
-			path: app/Repositories/Management/BannerMgmtRepository.php
-
-		-
-			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Collection\<int, Illuminate\\Database\\Eloquent\\Model\>\|Illuminate\\Database\\Eloquent\\Model\:\:isDeleted\(\)\.$#'
-			identifier: method.notFound
-			count: 1
-			path: app/Repositories/Management/BannerMgmtRepository.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Collection\<int, Illuminate\\Database\\Eloquent\\Model\>\|Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Repositories/Management/CategoryMgmtRepository.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
-			identifier: property.notFound
-			count: 1
+			count: 3
 			path: app/Repositories/Management/CategoryMgmtRepository.php
 
 		-
 			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Builder\<Illuminate\\Database\\Eloquent\\Model\>\:\:notDeleted\(\)\.$#'
 			identifier: method.notFound
-			count: 4
-			path: app/Repositories/Management/CategoryMgmtRepository.php
-
-		-
-			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Collection\<int, Illuminate\\Database\\Eloquent\\Model\>\|Illuminate\\Database\\Eloquent\\Model\:\:isDeleted\(\)\.$#'
-			identifier: method.notFound
-			count: 1
-			path: app/Repositories/Management/CategoryMgmtRepository.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Collection\<int, Illuminate\\Database\\Eloquent\\Model\>\|Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Repositories/Management/EntryDescriptionMgmtRepository.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
-			identifier: property.notFound
-			count: 1
+			count: 2
 			path: app/Repositories/Management/EntryDescriptionMgmtRepository.php
 
 		-
 			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Builder\<Illuminate\\Database\\Eloquent\\Model\>\:\:notDeleted\(\)\.$#'
 			identifier: method.notFound
 			count: 3
-			path: app/Repositories/Management/EntryDescriptionMgmtRepository.php
-
-		-
-			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Collection\<int, Illuminate\\Database\\Eloquent\\Model\>\|Illuminate\\Database\\Eloquent\\Model\:\:isDeleted\(\)\.$#'
-			identifier: method.notFound
-			count: 1
-			path: app/Repositories/Management/EntryDescriptionMgmtRepository.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Collection\<int, Illuminate\\Database\\Eloquent\\Model\>\|Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
-			identifier: property.notFound
-			count: 1
 			path: app/Repositories/Management/EntryMgmtRepository.php
 
 		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
-			identifier: property.notFound
+			message: '#^Parameter \#1 \$layoutStructure of method App\\Repositories\\Management\\EntryMgmtRepository\:\:extractEntryIdsFromLayoutStructure\(\) expects array, string given\.$#'
+			identifier: argument.type
 			count: 1
 			path: app/Repositories/Management/EntryMgmtRepository.php
 
 		-
 			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Builder\<Illuminate\\Database\\Eloquent\\Model\>\:\:notDeleted\(\)\.$#'
 			identifier: method.notFound
-			count: 4
-			path: app/Repositories/Management/EntryMgmtRepository.php
-
-		-
-			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Collection\<int, Illuminate\\Database\\Eloquent\\Model\>\|Illuminate\\Database\\Eloquent\\Model\:\:isDeleted\(\)\.$#'
-			identifier: method.notFound
-			count: 1
-			path: app/Repositories/Management/EntryMgmtRepository.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Collection\<int, Illuminate\\Database\\Eloquent\\Model\>\|Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Repositories/Management/MediaMgmtRepository.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
-			identifier: property.notFound
 			count: 1
 			path: app/Repositories/Management/MediaMgmtRepository.php
 
 		-
 			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Builder\<Illuminate\\Database\\Eloquent\\Model\>\:\:notDeleted\(\)\.$#'
 			identifier: method.notFound
-			count: 2
-			path: app/Repositories/Management/MediaMgmtRepository.php
-
-		-
-			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Collection\<int, Illuminate\\Database\\Eloquent\\Model\>\|Illuminate\\Database\\Eloquent\\Model\:\:isDeleted\(\)\.$#'
-			identifier: method.notFound
-			count: 1
-			path: app/Repositories/Management/MediaMgmtRepository.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Collection\<int, Illuminate\\Database\\Eloquent\\Model\>\|Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Repositories/Management/SettingLinkMgmtRepository.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
-			identifier: property.notFound
 			count: 1
 			path: app/Repositories/Management/SettingLinkMgmtRepository.php
 
 		-
 			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Builder\<Illuminate\\Database\\Eloquent\\Model\>\:\:notDeleted\(\)\.$#'
 			identifier: method.notFound
-			count: 2
-			path: app/Repositories/Management/SettingLinkMgmtRepository.php
-
-		-
-			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Collection\<int, Illuminate\\Database\\Eloquent\\Model\>\|Illuminate\\Database\\Eloquent\\Model\:\:isDeleted\(\)\.$#'
-			identifier: method.notFound
-			count: 1
-			path: app/Repositories/Management/SettingLinkMgmtRepository.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Collection\<int, Illuminate\\Database\\Eloquent\\Model\>\|Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Repositories/Management/SliderMgmtRepository.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
-			identifier: property.notFound
 			count: 1
 			path: app/Repositories/Management/SliderMgmtRepository.php
 
 		-
 			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Builder\<Illuminate\\Database\\Eloquent\\Model\>\:\:notDeleted\(\)\.$#'
-			identifier: method.notFound
-			count: 2
-			path: app/Repositories/Management/SliderMgmtRepository.php
-
-		-
-			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Collection\<int, Illuminate\\Database\\Eloquent\\Model\>\|Illuminate\\Database\\Eloquent\\Model\:\:isDeleted\(\)\.$#'
-			identifier: method.notFound
-			count: 1
-			path: app/Repositories/Management/SliderMgmtRepository.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Collection\<int, Illuminate\\Database\\Eloquent\\Model\>\|Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Repositories/Management/SocialMgmtRepository.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Repositories/Management/SocialMgmtRepository.php
-
-		-
-			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Builder\<Illuminate\\Database\\Eloquent\\Model\>\:\:notDeleted\(\)\.$#'
-			identifier: method.notFound
-			count: 2
-			path: app/Repositories/Management/SocialMgmtRepository.php
-
-		-
-			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Collection\<int, Illuminate\\Database\\Eloquent\\Model\>\|Illuminate\\Database\\Eloquent\\Model\:\:isDeleted\(\)\.$#'
 			identifier: method.notFound
 			count: 1
 			path: app/Repositories/Management/SocialMgmtRepository.php
@@ -3033,7 +705,7 @@ parameters:
 		-
 			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Builder\<Illuminate\\Database\\Eloquent\\Model\>\:\:notDeleted\(\)\.$#'
 			identifier: method.notFound
-			count: 2
+			count: 1
 			path: app/Repositories/Management/UserMgmtRepository.php
 
 		-
@@ -3069,7 +741,7 @@ parameters:
 		-
 			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Builder\<Illuminate\\Database\\Eloquent\\Model\>\:\:notDeleted\(\)\.$#'
 			identifier: method.notFound
-			count: 2
+			count: 1
 			path: app/Repositories/Master/AdminMstRepository.php
 
 		-
@@ -3097,6 +769,12 @@ parameters:
 			path: app/Repositories/Master/AdminRoleMstRepository.php
 
 		-
+			message: '#^Return type of call to method Illuminate\\Database\\Eloquent\\Collection\<int,Illuminate\\Database\\Eloquent\\Model\>\:\:map\(\) contains unresolvable type\.$#'
+			identifier: method.unresolvableReturnType
+			count: 1
+			path: app/Repositories/Master/AdminRoleMstRepository.php
+
+		-
 			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Collection\<int, Illuminate\\Database\\Eloquent\\Model\>\|Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
 			identifier: property.notFound
 			count: 1
@@ -3111,7 +789,7 @@ parameters:
 		-
 			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Builder\<Illuminate\\Database\\Eloquent\\Model\>\:\:notDeleted\(\)\.$#'
 			identifier: method.notFound
-			count: 2
+			count: 1
 			path: app/Repositories/Master/ApiMstRepository.php
 
 		-
@@ -3139,6 +817,12 @@ parameters:
 			path: app/Repositories/Master/ApiRoleMstRepository.php
 
 		-
+			message: '#^Return type of call to method Illuminate\\Database\\Eloquent\\Collection\<int,Illuminate\\Database\\Eloquent\\Model\>\:\:map\(\) contains unresolvable type\.$#'
+			identifier: method.unresolvableReturnType
+			count: 1
+			path: app/Repositories/Master/ApiRoleMstRepository.php
+
+		-
 			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$department_mst_id\.$#'
 			identifier: property.notFound
 			count: 1
@@ -3157,118 +841,46 @@ parameters:
 			path: app/Repositories/Master/DepartmentManagementMstRepository.php
 
 		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Collection\<int, Illuminate\\Database\\Eloquent\\Model\>\|Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
-			identifier: property.notFound
+			message: '#^Return type of call to method Illuminate\\Database\\Eloquent\\Collection\<int,Illuminate\\Database\\Eloquent\\Model\>\:\:map\(\) contains unresolvable type\.$#'
+			identifier: method.unresolvableReturnType
 			count: 1
-			path: app/Repositories/Master/DepartmentMstRepository.php
+			path: app/Repositories/Master/DepartmentManagementMstRepository.php
 
 		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
-			identifier: property.notFound
+			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Builder\<Illuminate\\Database\\Eloquent\\Model\>\:\:notDeleted\(\)\.$#'
+			identifier: method.notFound
 			count: 1
 			path: app/Repositories/Master/DepartmentMstRepository.php
 
 		-
 			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Builder\<Illuminate\\Database\\Eloquent\\Model\>\:\:notDeleted\(\)\.$#'
 			identifier: method.notFound
-			count: 2
-			path: app/Repositories/Master/DepartmentMstRepository.php
-
-		-
-			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Collection\<int, Illuminate\\Database\\Eloquent\\Model\>\|Illuminate\\Database\\Eloquent\\Model\:\:isDeleted\(\)\.$#'
-			identifier: method.notFound
-			count: 1
-			path: app/Repositories/Master/DepartmentMstRepository.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Collection\<int, Illuminate\\Database\\Eloquent\\Model\>\|Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Repositories/Master/FeatureMstRepository.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
-			identifier: property.notFound
 			count: 1
 			path: app/Repositories/Master/FeatureMstRepository.php
 
 		-
 			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Builder\<Illuminate\\Database\\Eloquent\\Model\>\:\:notDeleted\(\)\.$#'
 			identifier: method.notFound
-			count: 2
-			path: app/Repositories/Master/FeatureMstRepository.php
-
-		-
-			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Collection\<int, Illuminate\\Database\\Eloquent\\Model\>\|Illuminate\\Database\\Eloquent\\Model\:\:isDeleted\(\)\.$#'
-			identifier: method.notFound
-			count: 1
-			path: app/Repositories/Master/FeatureMstRepository.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Collection\<int, Illuminate\\Database\\Eloquent\\Model\>\|Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Repositories/Master/PolicyDepartmentMstRepository.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
-			identifier: property.notFound
 			count: 1
 			path: app/Repositories/Master/PolicyDepartmentMstRepository.php
 
 		-
 			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Builder\<Illuminate\\Database\\Eloquent\\Model\>\:\:notDeleted\(\)\.$#'
 			identifier: method.notFound
-			count: 2
-			path: app/Repositories/Master/PolicyDepartmentMstRepository.php
-
-		-
-			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Collection\<int, Illuminate\\Database\\Eloquent\\Model\>\|Illuminate\\Database\\Eloquent\\Model\:\:isDeleted\(\)\.$#'
-			identifier: method.notFound
-			count: 1
-			path: app/Repositories/Master/PolicyDepartmentMstRepository.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Collection\<int, Illuminate\\Database\\Eloquent\\Model\>\|Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Repositories/Master/RoleMstRepository.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
-			identifier: property.notFound
 			count: 1
 			path: app/Repositories/Master/RoleMstRepository.php
 
 		-
 			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Builder\<Illuminate\\Database\\Eloquent\\Model\>\:\:notDeleted\(\)\.$#'
 			identifier: method.notFound
-			count: 2
-			path: app/Repositories/Master/RoleMstRepository.php
+			count: 1
+			path: app/Repositories/SoftDeleteCrudRepository.php
 
 		-
-			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Collection\<int, Illuminate\\Database\\Eloquent\\Model\>\|Illuminate\\Database\\Eloquent\\Model\:\:isDeleted\(\)\.$#'
+			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Model\:\:isDeleted\(\)\.$#'
 			identifier: method.notFound
 			count: 1
-			path: app/Repositories/Master/RoleMstRepository.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Collection\<int, Illuminate\\Database\\Eloquent\\Model\>\|Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Repositories/Master/TokenMstRepository.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Repositories/Master/TokenMstRepository.php
-
-		-
-			message: '#^Cannot access property \$collection on array\|Illuminate\\Http\\Resources\\Json\\JsonResource\.$#'
-			identifier: property.nonObject
-			count: 1
-			path: app/Services/BaseService.php
+			path: app/Repositories/SoftDeleteCrudRepository.php
 
 		-
 			message: '#^Called ''env'' outside of the config directory which returns null when the config is cached, use ''config''\.$#'
@@ -3283,19 +895,19 @@ parameters:
 			path: app/Services/MinioService.php
 
 		-
-			message: '#^Strict comparison using \=\=\= between false and string will always evaluate to false\.$#'
+			message: '#^Strict comparison using \=\=\= between string and false will always evaluate to false\.$#'
 			identifier: identical.alwaysFalse
 			count: 1
 			path: app/Utilities/JsonWebToken.php
 
 		-
-			message: '#^PHPDoc type string of property Database\\Factories\\Management\\BannerMgmtFactory\:\:\$model is not covariant with PHPDoc type class\-string\<Illuminate\\Database\\Eloquent\\Model\> of overridden property Illuminate\\Database\\Eloquent\\Factories\\Factory\<Illuminate\\Database\\Eloquent\\Model\>\:\:\$model\.$#'
+			message: '#^PHPDoc type string of property Database\\Factories\\Management\\BannerMgmtFactory\:\:\$model is not covariant with PHPDoc type class\-string\<App\\Models\\Management\\BannerMgmt\> of overridden property Illuminate\\Database\\Eloquent\\Factories\\Factory\<App\\Models\\Management\\BannerMgmt\>\:\:\$model\.$#'
 			identifier: property.phpDocType
 			count: 1
 			path: database/factories/Management/BannerMgmtFactory.php
 
 		-
-			message: '#^PHPDoc type string of property Database\\Factories\\Management\\CategoryMgmtFactory\:\:\$model is not covariant with PHPDoc type class\-string\<Illuminate\\Database\\Eloquent\\Model\> of overridden property Illuminate\\Database\\Eloquent\\Factories\\Factory\<Illuminate\\Database\\Eloquent\\Model\>\:\:\$model\.$#'
+			message: '#^PHPDoc type string of property Database\\Factories\\Management\\CategoryMgmtFactory\:\:\$model is not covariant with PHPDoc type class\-string\<App\\Models\\Management\\CategoryMgmt\> of overridden property Illuminate\\Database\\Eloquent\\Factories\\Factory\<App\\Models\\Management\\CategoryMgmt\>\:\:\$model\.$#'
 			identifier: property.phpDocType
 			count: 1
 			path: database/factories/Management/CategoryMgmtFactory.php
@@ -3307,32 +919,50 @@ parameters:
 			path: database/factories/Management/UserMgmtFactory.php
 
 		-
-			message: '#^PHPDoc type string of property Database\\Factories\\Master\\AdminMstFactory\:\:\$model is not covariant with PHPDoc type class\-string\<Illuminate\\Database\\Eloquent\\Model\> of overridden property Illuminate\\Database\\Eloquent\\Factories\\Factory\<Illuminate\\Database\\Eloquent\\Model\>\:\:\$model\.$#'
+			message: '#^PHPDoc type string of property Database\\Factories\\Master\\AdminMstFactory\:\:\$model is not covariant with PHPDoc type class\-string\<App\\Models\\Master\\AdminMst\> of overridden property Illuminate\\Database\\Eloquent\\Factories\\Factory\<App\\Models\\Master\\AdminMst\>\:\:\$model\.$#'
 			identifier: property.phpDocType
 			count: 1
 			path: database/factories/Master/AdminMstFactory.php
 
 		-
-			message: '#^PHPDoc type string of property Database\\Factories\\Master\\ApiMstFactory\:\:\$model is not covariant with PHPDoc type class\-string\<Illuminate\\Database\\Eloquent\\Model\> of overridden property Illuminate\\Database\\Eloquent\\Factories\\Factory\<Illuminate\\Database\\Eloquent\\Model\>\:\:\$model\.$#'
+			message: '#^PHPDoc type string of property Database\\Factories\\Master\\ApiMstFactory\:\:\$model is not covariant with PHPDoc type class\-string\<App\\Models\\Master\\ApiMst\> of overridden property Illuminate\\Database\\Eloquent\\Factories\\Factory\<App\\Models\\Master\\ApiMst\>\:\:\$model\.$#'
 			identifier: property.phpDocType
 			count: 1
 			path: database/factories/Master/ApiMstFactory.php
 
 		-
-			message: '#^PHPDoc type string of property Database\\Factories\\Master\\FeatureMstFactory\:\:\$model is not covariant with PHPDoc type class\-string\<Illuminate\\Database\\Eloquent\\Model\> of overridden property Illuminate\\Database\\Eloquent\\Factories\\Factory\<Illuminate\\Database\\Eloquent\\Model\>\:\:\$model\.$#'
+			message: '#^PHPDoc type string of property Database\\Factories\\Master\\FeatureMstFactory\:\:\$model is not covariant with PHPDoc type class\-string\<App\\Models\\Master\\FeatureMst\> of overridden property Illuminate\\Database\\Eloquent\\Factories\\Factory\<App\\Models\\Master\\FeatureMst\>\:\:\$model\.$#'
 			identifier: property.phpDocType
 			count: 1
 			path: database/factories/Master/FeatureMstFactory.php
 
 		-
-			message: '#^PHPDoc type string of property Database\\Factories\\Master\\TokenMstFactory\:\:\$model is not covariant with PHPDoc type class\-string\<Illuminate\\Database\\Eloquent\\Model\> of overridden property Illuminate\\Database\\Eloquent\\Factories\\Factory\<Illuminate\\Database\\Eloquent\\Model\>\:\:\$model\.$#'
+			message: '#^PHPDoc type string of property Database\\Factories\\Master\\TokenMstFactory\:\:\$model is not covariant with PHPDoc type class\-string\<App\\Models\\Master\\TokenMst\> of overridden property Illuminate\\Database\\Eloquent\\Factories\\Factory\<App\\Models\\Master\\TokenMst\>\:\:\$model\.$#'
 			identifier: property.phpDocType
 			count: 1
 			path: database/factories/Master/TokenMstFactory.php
 
 		-
+			message: '#^Empty array passed to foreach\.$#'
+			identifier: foreach.emptyArray
+			count: 1
+			path: database/seeders/EntryMgmtSeeder.php
+
+		-
+			message: '#^Negated boolean expression is always true\.$#'
+			identifier: booleanNot.alwaysTrue
+			count: 1
+			path: database/seeders/EntryMgmtSeeder.php
+
+		-
 			message: '#^Offset ''rank_order'' on array\{name\: ''API Resources'', slug\: ''api\-resources'', rank_order\: 4\}\|array\{name\: ''Authentication'', slug\: ''authentication'', rank_order\: 1\}\|array\{name\: ''Authorization'', slug\: ''authorization'', rank_order\: 2\}\|array\{name\: ''Categories API'', slug\: ''categories\-api'', rank_order\: 2\}\|array\{name\: ''Coding Conventions'', slug\: ''coding\-conventions'', rank_order\: 1\}\|array\{name\: ''Configuration'', slug\: ''configuration'', rank_order\: 3\}\|array\{name\: ''Controllers &…'', slug\: ''controllers\-services'', rank_order\: 2\}\|array\{name\: ''Design Patterns'', slug\: ''design\-patterns'', rank_order\: 3\}\|array\{name\: ''Docker Configuration'', slug\: ''docker\-configuration'', rank_order\: 1\}\|array\{name\: ''E2E Testing'', slug\: ''e2e\-testing'', rank_order\: 3\}\|array\{name\: ''Entries API'', slug\: ''entries\-api'', rank_order\: 3\}\|array\{name\: ''Environment…'', slug\: ''environment…'', rank_order\: 2\}\|array\{name\: ''Error Handling'', slug\: ''error\-handling'', rank_order\: 2\}\|array\{name\: ''Installation'', slug\: ''installation'', rank_order\: 1\}\|array\{name\: ''Integration Testing'', slug\: ''integration\-testing'', rank_order\: 2\}\|array\{name\: ''JWT Authentication'', slug\: ''jwt\-authentication'', rank_order\: 1\}\|array\{name\: ''Laravel Setup'', slug\: ''laravel\-setup'', rank_order\: 1\}\|array\{name\: ''Layered Architecture'', slug\: ''layered\-architecture'', rank_order\: 2\}\|array\{name\: ''Migrations'', slug\: ''migrations'', rank_order\: 1\}\|array\{name\: ''Models & Relations'', slug\: ''models\-relations'', rank_order\: 2\}\|array\{name\: ''Next\.js Setup'', slug\: ''nextjs\-setup'', rank_order\: 1\}\|array\{name\: ''Overview'', slug\: ''overview'', rank_order\: 1\}\|array\{name\: ''Performance…'', slug\: ''performance…'', rank_order\: 3\}\|array\{name\: ''Production Setup'', slug\: ''production\-setup'', rank_order\: 3\}\|array\{name\: ''Project Structure'', slug\: ''project\-structure'', rank_order\: 2\}\|array\{name\: ''Repository Pattern'', slug\: ''repository\-pattern'', rank_order\: 3\}\|array\{name\: ''Routing'', slug\: ''routing'', rank_order\: 2\}\|array\{name\: ''Search API'', slug\: ''search\-api'', rank_order\: 4\}\|array\{name\: ''Security Best…'', slug\: ''security\-best…'', rank_order\: 3\}\|array\{name\: ''Seeders'', slug\: ''seeders'', rank_order\: 3\}\|array\{name\: ''State Management'', slug\: ''state\-management'', rank_order\: 3\}\|array\{name\: ''Styling with…'', slug\: ''styling\-tailwind'', rank_order\: 4\}\|array\{name\: ''Unit Testing'', slug\: ''unit\-testing'', rank_order\: 1\} on left side of \?\? always exists and is not nullable\.$#'
 			identifier: nullCoalesce.offset
+			count: 1
+			path: database/seeders/EntryMgmtSeeder.php
+
+		-
+			message: '#^Property App\\Models\\Management\\CategoryMgmt\:\:\$layout_structure \(string\|null\) does not accept array\<int, array\<string, int\<0, max\>\>\>\.$#'
+			identifier: assign.propertyType
 			count: 1
 			path: database/seeders/EntryMgmtSeeder.php
 

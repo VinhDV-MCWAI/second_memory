@@ -1,12 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Requests\Master\TokenMst;
 
-use Illuminate\Foundation\Http\FormRequest;
 use App\Constants\CommonVal;
-use Illuminate\Validation\Rule;
-use Illuminate\Validation\Rules\Enum;
-use App\Models\Master\TokenMst;
+use Illuminate\Contracts\Validation\ValidationRule;
+use Illuminate\Foundation\Http\FormRequest;
 
 class StoreTokenMstRequest extends FormRequest
 {
@@ -21,21 +21,23 @@ class StoreTokenMstRequest extends FormRequest
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
+     * @return array<string, ValidationRule|array<mixed>|string>
      */
     public function rules(): array
     {
         return [
-            'account_id' => ['required', 'integer', 'min:' . CommonVal::MIN_INTEGER, 'max:' . CommonVal::MAX_INTEGER,],
-            'device_name' => ['string', 'min:' . CommonVal::MIN_VARCHAR, 'max:255',],
-            'ip_address' => ['string', 'min:' . CommonVal::MIN_VARCHAR, 'max:255',],
-            'expired_at' => ['date_format:' . CommonVal::DATE_FORMAT, 'after_or_equal:' . CommonVal::MIN_DATE, 'before_or_equal:' . CommonVal::MAX_DATE,],
+            'token_hash' => ['required', 'string', 'max:'.CommonVal::MAX_VARCHAR],
+            'account_id' => ['required', 'integer', 'min:'.CommonVal::MIN_INTEGER, 'max:'.CommonVal::MAX_INTEGER],
+            'device_name' => ['string', 'min:'.CommonVal::MIN_VARCHAR, 'max:255'],
+            'ip_address' => ['string', 'min:'.CommonVal::MIN_VARCHAR, 'max:255'],
+            'expired_at' => ['date_format:'.CommonVal::DATE_FORMAT, 'after_or_equal:'.CommonVal::MIN_DATE, 'before_or_equal:'.CommonVal::MAX_DATE],
         ];
     }
 
     public function attributes(): array
     {
         return [
+            'token_hash' => __('messages.token_hash'),
             'account_id' => __('messages.account_id'),
             'device_name' => __('messages.device_name'),
             'ip_address' => __('messages.ip_address'),

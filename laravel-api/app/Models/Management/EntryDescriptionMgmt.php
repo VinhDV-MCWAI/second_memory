@@ -1,64 +1,66 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Models\Management;
 
+use App\Enums\StatusEnum;
 use App\Models\History\Management\EntryDescriptionMgmtHist;
+use App\Traits\HasHistory;
 use App\Traits\HasSoftDelete;
 use App\Traits\HasStatus;
-use App\Traits\HasHistory;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
+/**
+ * @property StatusEnum|null $status
+ */
 class EntryDescriptionMgmt extends Model
 {
-  use HasSoftDelete, HasStatus, HasHistory, HasFactory;
+    use HasFactory, HasHistory, HasSoftDelete, HasStatus;
 
-  protected $table = 'entry_description_mgmt';
+    protected $table = 'entry_description_mgmt';
 
-  /**
-   * The attributes that are mass assignable.
-   *
-   * @var string[]
-   */
-  protected $fillable = [
-    'title',
-    'summary',
-    'article',
-    'status',
-    'is_display',
-    'rank_order',
-    'is_delete',
-  ];
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var string[]
+     */
+    protected $fillable = [
+        'title',
+        'summary',
+        'article',
+        'status',
+        'is_display',
+        'rank_order',
+        'is_delete',
+    ];
 
-  /**
-   * The attributes that should be cast.
-   *
-   * @var array
-   */
-  protected $casts = [
-    'id' => 'integer',
-    'title' => 'string',
-    'summary' => 'string',
-    'article' => 'array',
-    'status' => 'integer',
-    'is_display' => 'boolean',
-    'rank_order' => 'integer',
-    'is_delete' => 'boolean',
-    'created_at' => 'datetime',
-    'updated_at' => 'datetime',
-  ];
+    /**
+     * Get the history records for the entry description.
+     */
+    public function history(): HasMany
+    {
+        return $this->hasMany(EntryDescriptionMgmtHist::class, 'entry_description_mgmt_id');
+    }
 
-
-
-  /**
-   * Get the history records for the entry description.
-   *
-   * @return HasMany
-   */
-  public function history(): HasMany
-  {
-    return $this->hasMany(EntryDescriptionMgmtHist::class, 'entry_description_mgmt_id');
-  }
+    /**
+     * The attributes that should be cast.
+     */
+    protected function casts(): array
+    {
+        return [
+            'id' => 'integer',
+            'title' => 'string',
+            'summary' => 'string',
+            'article' => 'array',
+            'status' => StatusEnum::class,
+            'is_display' => 'boolean',
+            'rank_order' => 'integer',
+            'is_delete' => 'boolean',
+            'created_at' => 'datetime',
+            'updated_at' => 'datetime',
+        ];
+    }
 }

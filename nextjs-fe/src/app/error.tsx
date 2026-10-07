@@ -29,9 +29,7 @@ export default function Error({ error, reset }: ErrorProps) {
         </div>
 
         {/* Error Code */}
-        <h1 className="mb-4 text-8xl font-bold text-slate-900 dark:text-white">
-          500
-        </h1>
+        <h1 className="mb-4 text-8xl font-bold text-slate-900 dark:text-white">500</h1>
 
         {/* Title */}
         <h2 className="mb-3 text-2xl font-semibold text-slate-900 dark:text-slate-100">
@@ -46,7 +44,9 @@ export default function Error({ error, reset }: ErrorProps) {
         {/* Error Message (Production) */}
         {error.message && !isDev && (
           <div className="mb-6 rounded-lg bg-red-50 p-4 text-sm text-red-700 dark:bg-red-900/20 dark:text-red-300">
-            <p className="font-medium">{t('error')}: {error.message}</p>
+            <p className="font-medium">
+              {t('error')}: {error.message}
+            </p>
           </div>
         )}
 

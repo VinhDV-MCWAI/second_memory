@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tests\Feature\History\Management\SocialMgmtHist;
 
 use App\Models\History\Management\SocialMgmtHist;
@@ -15,371 +17,372 @@ use Tests\TestCase;
 
 class UpdateSocialMgmtHistTest extends TestCase
 {
-  use RefreshDatabase;
+    use RefreshDatabase;
 
-  private string $baseUrl = 'api/admin/social-mgmt-hist/update';
+    private string $baseUrl = 'api/admin/social-mgmt-hist/update';
 
-  protected function setUp(): void
-  {
-    parent::setUp();
-    Redis::flushdb();
-  }
-
-  private function getAuthCookies(AdminMst $admin, string $method = 'PUT'): array
-  {
-    $rootRole = RoleMst::where('name', 'root')->first();
-    if (!$rootRole) {
-      $rootRole = RoleMst::create(['name' => 'root', 'permission' => '{}', 'is_active' => 1, 'is_delete' => 0]);
+    protected function setUp(): void
+    {
+        parent::setUp();
+        Redis::flushdb();
     }
 
-    $this->grantAccessTo($rootRole, $method, $this->baseUrl . '/{id}');
+    private function getAuthCookies(AdminMst $admin, string $method = 'PUT'): array
+    {
+        $rootRole = RoleMst::where('name', 'root')->first();
+        if (! $rootRole) {
+            $rootRole = RoleMst::create(['name' => 'root', 'permission' => '{}', 'is_active' => 1, 'is_delete' => 0]);
+        }
 
-    if (!DB::table('admin_role_mst')
-      ->where('admin_mst_id', $admin->id)
-      ->where('role_mst_id', $rootRole->id)
-      ->exists()) {
-      DB::table('admin_role_mst')->insert([
-        'admin_mst_id' => $admin->id,
-        'role_mst_id' => $rootRole->id,
-        'created_at' => now(),
-        'updated_at' => now(),
-      ]);
+        $this->grantAccessTo($rootRole, $method, $this->baseUrl.'/{id}');
+
+        if (! DB::table('admin_role_mst')
+            ->where('admin_mst_id', $admin->id)
+            ->where('role_mst_id', $rootRole->id)
+            ->exists()) {
+            DB::table('admin_role_mst')->insert([
+                'admin_mst_id' => $admin->id,
+                'role_mst_id' => $rootRole->id,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
+        }
+
+        $response = $this->postJson('/api/admin/credential/login', [
+            'user_name' => $admin->user_name,
+            'password' => 'password',
+        ]);
+
+        $cookies = [];
+        foreach ($response->headers->getCookies() as $cookie) {
+            $cookies[$cookie->getName()] = $cookie->getValue();
+        }
+
+        return $cookies;
     }
 
-    $response = $this->postJson('/api/admin/credential/login', [
-      'user_name' => $admin->user_name,
-      'password' => 'password',
-    ]);
+    private function grantAccessTo(RoleMst $role, string $method, string $path)
+    {
+        $typeMap = ['GET' => 0, 'POST' => 1, 'PUT' => 2, 'PATCH' => 3, 'DELETE' => 4];
+        $type = $typeMap[strtoupper($method)] ?? 0;
 
-    $cookies = [];
-    foreach ($response->headers->getCookies() as $cookie) {
-      $cookies[$cookie->getName()] = $cookie->getValue();
+        $feature = FeatureMst::firstOrCreate([
+            'name' => 'System Features',
+            'group_name' => 'System',
+            'status' => 1,
+            'is_delete' => 0,
+        ]);
+
+        $api = ApiMst::firstOrCreate(
+            ['path' => $path, 'type' => $type],
+            [
+                'name' => substr("Endp $method $path", 0, 50),
+                'is_active' => 1,
+                'feature_mst_id' => $feature->id,
+                'is_delete' => 0,
+            ]
+        );
+
+        DB::table('api_role_mst')->insertOrIgnore([
+            'api_mst_id' => $api->id,
+            'role_mst_id' => $role->id,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
     }
-    return $cookies;
-  }
 
-  private function grantAccessTo(RoleMst $role, string $method, string $path)
-  {
-    $typeMap = ['GET' => 0, 'POST' => 1, 'PUT' => 2, 'PATCH' => 3, 'DELETE' => 4];
-    $type = $typeMap[strtoupper($method)] ?? 0;
+    private function createSocial(): SocialMgmt
+    {
+        return SocialMgmt::create([
+            'name' => 'Test Social',
+            'slug' => 'test-social-'.uniqid(),
+            'link' => 'https://example.com',
+            'image' => 'test.jpg',
+            'status' => 1,
+            'is_delete' => 0,
+            'is_display' => 1,
+            'rank_order' => 1,
+        ]);
+    }
 
-    $feature = FeatureMst::firstOrCreate([
-      'name' => 'System Features',
-      'group_name' => 'System',
-      'status' => 1,
-      'is_delete' => 0
-    ]);
+    private function createHistory(SocialMgmt $social): SocialMgmtHist
+    {
+        return SocialMgmtHist::create([
+            'social_mgmt_id' => $social->id,
+            'name' => 'Original History Title',
+            'slug' => 'original-history-slug',
+            'link' => 'https://original.com',
+            'image' => 'original.jpg',
+            'status' => 1,
+            'action' => 1,
+            'author_id' => 1,
+        ]);
+    }
 
-    $api = ApiMst::firstOrCreate(
-      ['path' => $path, 'type' => $type],
-      [
-        'name' => substr("Endp $method $path", 0, 50),
-        'is_active' => 1,
-        'feature_mst_id' => $feature->id,
-        'is_delete' => 0
-      ]
-    );
+    // ========== ROUTE LAYER TESTS ==========
 
-    DB::table('api_role_mst')->insertOrIgnore([
-      'api_mst_id' => $api->id,
-      'role_mst_id' => $role->id,
-      'created_at' => now(),
-      'updated_at' => now(),
-    ]);
-  }
+    public function test_so_c_his_t_up_d_r001_wrong_http_method()
+    {
+        $admin = AdminMst::factory()->create();
+        $social = $this->createSocial();
+        $history = $this->createHistory($social);
+        $cookies = $this->getAuthCookies($admin, 'POST');
 
-  private function createSocial(): SocialMgmt
-  {
-    return SocialMgmt::create([
-      'name' => 'Test Social',
-      'slug' => 'test-social-' . uniqid(),
-      'link' => 'https://example.com',
-      'image' => 'test.jpg',
-      'status' => 1,
-      'is_delete' => 0,
-      'is_display' => 1,
-      'rank_order' => 1,
-    ]);
-  }
+        $response = $this->call('POST', $this->baseUrl.'/'.$history->id, [], $cookies);
+        $response->assertStatus(405);
+    }
 
-  private function createHistory(SocialMgmt $social): SocialMgmtHist
-  {
-    return SocialMgmtHist::create([
-      'social_mgmt_id' => $social->id,
-      'name' => 'Original History Title',
-      'slug' => 'original-history-slug',
-      'link' => 'https://original.com',
-      'image' => 'original.jpg',
-      'status' => 1,
-      'action' => 1,
-      'author_id' => 1,
-    ]);
-  }
+    public function test_so_c_his_t_up_d_r002_missing_path_parameter()
+    {
+        $admin = AdminMst::factory()->create();
+        $cookies = $this->getAuthCookies($admin);
 
-  // ========== ROUTE LAYER TESTS ==========
+        $response = $this->call('PUT', $this->baseUrl, [], $cookies);
+        $response->assertStatus(404);
+    }
 
-  public function test_SOC_HIST_UPD_R001_wrong_http_method()
-  {
-    $admin = AdminMst::factory()->create();
-    $social = $this->createSocial();
-    $history = $this->createHistory($social);
-    $cookies = $this->getAuthCookies($admin, 'POST');
+    // ========== MIDDLEWARE LAYER TESTS ==========
 
-    $response = $this->call('POST', $this->baseUrl . '/' . $history->id, [], $cookies);
-    $response->assertStatus(405);
-  }
+    public function test_so_c_his_t_up_d_m001_unauthenticated()
+    {
+        $social = $this->createSocial();
+        $history = $this->createHistory($social);
+        $response = $this->putJson($this->baseUrl.'/'.$history->id, []);
+        $response->assertStatus(401);
+    }
 
-  public function test_SOC_HIST_UPD_R002_missing_path_parameter()
-  {
-    $admin = AdminMst::factory()->create();
-    $cookies = $this->getAuthCookies($admin);
+    // ========== VALIDATION LAYER TESTS - ID ==========
 
-    $response = $this->call('PUT', $this->baseUrl, [], $cookies);
-    $response->assertStatus(404);
-  }
+    public function test_so_c_his_t_up_d_v002_id_invalid_type()
+    {
+        $admin = AdminMst::factory()->create();
+        $social = $this->createSocial();
+        $cookies = $this->getAuthCookies($admin);
 
-  // ========== MIDDLEWARE LAYER TESTS ==========
+        $payload = [
+            'social_mgmt_id' => $social->id,
+            'action' => 2,
+            'author_id' => 1,
+        ];
 
-  public function test_SOC_HIST_UPD_M001_unauthenticated()
-  {
-    $social = $this->createSocial();
-    $history = $this->createHistory($social);
-    $response = $this->putJson($this->baseUrl . '/' . $history->id, []);
-    $response->assertStatus(401);
-  }
+        $response = $this->call('PUT', $this->baseUrl.'/abc', $payload, $cookies);
+        $response->assertStatus(422);
+    }
 
-  // ========== VALIDATION LAYER TESTS - ID ==========
+    public function test_so_c_his_t_up_d_v003_id_below_minimum()
+    {
+        $admin = AdminMst::factory()->create();
+        $social = $this->createSocial();
+        $cookies = $this->getAuthCookies($admin);
 
-  public function test_SOC_HIST_UPD_V002_id_invalid_type()
-  {
-    $admin = AdminMst::factory()->create();
-    $social = $this->createSocial();
-    $cookies = $this->getAuthCookies($admin);
+        $payload = [
+            'social_mgmt_id' => $social->id,
+            'action' => 2,
+            'author_id' => 1,
+        ];
 
-    $payload = [
-      'social_mgmt_id' => $social->id,
-      'action' => 2,
-      'author_id' => 1,
-    ];
+        $response = $this->call('PUT', $this->baseUrl.'/0', $payload, $cookies);
+        $response->assertStatus(422);
+        $response->assertJsonValidationErrors(['id'], 'error.messages');
+    }
 
-    $response = $this->call('PUT', $this->baseUrl . '/abc', $payload, $cookies);
-    $response->assertStatus(422);
-  }
+    public function test_so_c_his_t_up_d_v004_id_not_exists()
+    {
+        $admin = AdminMst::factory()->create();
+        $social = $this->createSocial();
+        $cookies = $this->getAuthCookies($admin);
 
-  public function test_SOC_HIST_UPD_V003_id_below_minimum()
-  {
-    $admin = AdminMst::factory()->create();
-    $social = $this->createSocial();
-    $cookies = $this->getAuthCookies($admin);
+        $payload = [
+            'social_mgmt_id' => $social->id,
+            'action' => 2,
+            'author_id' => 1,
+        ];
 
-    $payload = [
-      'social_mgmt_id' => $social->id,
-      'action' => 2,
-      'author_id' => 1,
-    ];
+        $response = $this->call('PUT', $this->baseUrl.'/999999', $payload, $cookies);
+        $response->assertStatus(422);
+        $response->assertJsonValidationErrors(['id'], 'error.messages');
+    }
 
-    $response = $this->call('PUT', $this->baseUrl . '/0', $payload, $cookies);
-    $response->assertStatus(422);
-    $response->assertJsonValidationErrors(['id'], 'error.messages');
-  }
+    public function test_so_c_his_t_up_d_v005_id_exists_valid()
+    {
+        $admin = AdminMst::factory()->create();
+        $social = $this->createSocial();
+        $history = $this->createHistory($social);
+        $cookies = $this->getAuthCookies($admin);
 
-  public function test_SOC_HIST_UPD_V004_id_not_exists()
-  {
-    $admin = AdminMst::factory()->create();
-    $social = $this->createSocial();
-    $cookies = $this->getAuthCookies($admin);
+        $payload = [
+            'id' => $history->id,
+            'social_mgmt_id' => $social->id,
+            'name' => 'Updated History Title',
+            'action' => 2,
+            'author_id' => 1,
+        ];
 
-    $payload = [
-      'social_mgmt_id' => $social->id,
-      'action' => 2,
-      'author_id' => 1,
-    ];
+        $response = $this->call('PUT', $this->baseUrl.'/'.$history->id, $payload, $cookies);
+        $response->assertStatus(200);
+    }
 
-    $response = $this->call('PUT', $this->baseUrl . '/999999', $payload, $cookies);
-    $response->assertStatus(422);
-    $response->assertJsonValidationErrors(['id'], 'error.messages');
-  }
+    // ========== VALIDATION LAYER TESTS - SLIDER_MGMT_ID ==========
 
-  public function test_SOC_HIST_UPD_V005_id_exists_valid()
-  {
-    $admin = AdminMst::factory()->create();
-    $social = $this->createSocial();
-    $history = $this->createHistory($social);
-    $cookies = $this->getAuthCookies($admin);
+    public function test_so_c_his_t_up_d_v006_social_mgmt_id_missing()
+    {
+        $admin = AdminMst::factory()->create();
+        $social = $this->createSocial();
+        $history = $this->createHistory($social);
+        $cookies = $this->getAuthCookies($admin);
 
-    $payload = [
-      'id' => $history->id,
-      'social_mgmt_id' => $social->id,
-      'name' => 'Updated History Title',
-      'action' => 2,
-      'author_id' => 1,
-    ];
+        $payload = [
+            'action' => 2,
+            'author_id' => 1,
+        ];
 
-    $response = $this->call('PUT', $this->baseUrl . '/' . $history->id, $payload, $cookies);
-    $response->assertStatus(200);
-  }
+        $response = $this->call('PUT', $this->baseUrl.'/'.$history->id, $payload, $cookies);
+        $response->assertStatus(422);
+        $response->assertJsonValidationErrors(['social_mgmt_id'], 'error.messages');
+    }
 
-  // ========== VALIDATION LAYER TESTS - SLIDER_MGMT_ID ==========
+    public function test_so_c_his_t_up_d_v007_social_mgmt_id_not_exists()
+    {
+        $admin = AdminMst::factory()->create();
+        $social = $this->createSocial();
+        $history = $this->createHistory($social);
+        $cookies = $this->getAuthCookies($admin);
 
-  public function test_SOC_HIST_UPD_V006_social_mgmt_id_missing()
-  {
-    $admin = AdminMst::factory()->create();
-    $social = $this->createSocial();
-    $history = $this->createHistory($social);
-    $cookies = $this->getAuthCookies($admin);
+        $payload = [
+            'social_mgmt_id' => 999999,
+            'action' => 2,
+            'author_id' => 1,
+        ];
 
-    $payload = [
-      'action' => 2,
-      'author_id' => 1,
-    ];
+        $response = $this->call('PUT', $this->baseUrl.'/'.$history->id, $payload, $cookies);
+        $response->assertStatus(422);
+        $response->assertJsonValidationErrors(['social_mgmt_id'], 'error.messages');
+    }
 
-    $response = $this->call('PUT', $this->baseUrl . '/' . $history->id, $payload, $cookies);
-    $response->assertStatus(422);
-    $response->assertJsonValidationErrors(['social_mgmt_id'], 'error.messages');
-  }
+    // ========== SERVICE LAYER TESTS ==========
 
-  public function test_SOC_HIST_UPD_V007_social_mgmt_id_not_exists()
-  {
-    $admin = AdminMst::factory()->create();
-    $social = $this->createSocial();
-    $history = $this->createHistory($social);
-    $cookies = $this->getAuthCookies($admin);
+    public function test_so_c_his_t_up_d_s001_success()
+    {
+        $admin = AdminMst::factory()->create();
+        $social = $this->createSocial();
+        $history = $this->createHistory($social);
+        $cookies = $this->getAuthCookies($admin);
 
-    $payload = [
-      'social_mgmt_id' => 999999,
-      'action' => 2,
-      'author_id' => 1,
-    ];
+        $payload = [
+            'id' => $history->id,
+            'social_mgmt_id' => $social->id,
+            'name' => 'Updated History Title',
+            'slug' => 'updated-history-slug',
+            'action' => 2,
+            'author_id' => 2,
+        ];
 
-    $response = $this->call('PUT', $this->baseUrl . '/' . $history->id, $payload, $cookies);
-    $response->assertStatus(422);
-    $response->assertJsonValidationErrors(['social_mgmt_id'], 'error.messages');
-  }
+        $response = $this->call('PUT', $this->baseUrl.'/'.$history->id, $payload, $cookies);
+        $response->assertStatus(200);
 
-  // ========== SERVICE LAYER TESTS ==========
+        $this->assertDatabaseHas('social_mgmt_hist', [
+            'id' => $history->id,
+            'name' => 'Updated History Title',
+            'slug' => 'updated-history-slug',
+            'author_id' => 2,
+        ]);
+    }
 
-  public function test_SOC_HIST_UPD_S001_success()
-  {
-    $admin = AdminMst::factory()->create();
-    $social = $this->createSocial();
-    $history = $this->createHistory($social);
-    $cookies = $this->getAuthCookies($admin);
+    public function test_so_c_his_t_up_d_s002_update_same_values()
+    {
+        $admin = AdminMst::factory()->create();
+        $social = $this->createSocial();
+        $history = $this->createHistory($social);
+        $cookies = $this->getAuthCookies($admin);
 
-    $payload = [
-      'id' => $history->id,
-      'social_mgmt_id' => $social->id,
-      'name' => 'Updated History Title',
-      'slug' => 'updated-history-slug',
-      'action' => 2,
-      'author_id' => 2,
-    ];
+        $payload = [
+            'id' => $history->id,
+            'social_mgmt_id' => $social->id,
+            'name' => 'Original History Title',
+            'slug' => 'original-history-slug',
+            'action' => 1,
+            'author_id' => 1,
+        ];
 
-    $response = $this->call('PUT', $this->baseUrl . '/' . $history->id, $payload, $cookies);
-    $response->assertStatus(200);
+        $response = $this->call('PUT', $this->baseUrl.'/'.$history->id, $payload, $cookies);
+        $response->assertStatus(200);
 
-    $this->assertDatabaseHas('social_mgmt_hist', [
-      'id' => $history->id,
-      'name' => 'Updated History Title',
-      'slug' => 'updated-history-slug',
-      'author_id' => 2,
-    ]);
-  }
+        $this->assertDatabaseHas('social_mgmt_hist', [
+            'id' => $history->id,
+            'name' => 'Original History Title',
+        ]);
+    }
 
-  public function test_SOC_HIST_UPD_S002_update_same_values()
-  {
-    $admin = AdminMst::factory()->create();
-    $social = $this->createSocial();
-    $history = $this->createHistory($social);
-    $cookies = $this->getAuthCookies($admin);
+    // ========== DATABASE LAYER TESTS ==========
 
-    $payload = [
-      'id' => $history->id,
-      'social_mgmt_id' => $social->id,
-      'name' => 'Original History Title',
-      'slug' => 'original-history-slug',
-      'action' => 1,
-      'author_id' => 1,
-    ];
+    public function test_so_c_his_t_up_d_d_b001_transaction_commit()
+    {
+        $admin = AdminMst::factory()->create();
+        $social = $this->createSocial();
+        $history = $this->createHistory($social);
+        $cookies = $this->getAuthCookies($admin);
 
-    $response = $this->call('PUT', $this->baseUrl . '/' . $history->id, $payload, $cookies);
-    $response->assertStatus(200);
+        $payload = [
+            'id' => $history->id,
+            'social_mgmt_id' => $social->id,
+            'name' => 'Updated Title',
+            'action' => 2,
+            'author_id' => 1,
+        ];
 
-    $this->assertDatabaseHas('social_mgmt_hist', [
-      'id' => $history->id,
-      'name' => 'Original History Title',
-    ]);
-  }
+        $response = $this->call('PUT', $this->baseUrl.'/'.$history->id, $payload, $cookies);
+        $response->assertStatus(200);
 
-  // ========== DATABASE LAYER TESTS ==========
+        $this->assertDatabaseHas('social_mgmt_hist', [
+            'id' => $history->id,
+            'name' => 'Updated Title',
+        ]);
+    }
 
-  public function test_SOC_HIST_UPD_DB001_transaction_commit()
-  {
-    $admin = AdminMst::factory()->create();
-    $social = $this->createSocial();
-    $history = $this->createHistory($social);
-    $cookies = $this->getAuthCookies($admin);
+    public function test_so_c_his_t_up_d_d_b002_transaction_rollback_on_validation_failure()
+    {
+        $admin = AdminMst::factory()->create();
+        $social = $this->createSocial();
+        $history = $this->createHistory($social);
+        $cookies = $this->getAuthCookies($admin);
 
-    $payload = [
-      'id' => $history->id,
-      'social_mgmt_id' => $social->id,
-      'name' => 'Updated Title',
-      'action' => 2,
-      'author_id' => 1,
-    ];
+        $payload = [
+            'action' => 2,
+            'author_id' => 1,
+        ];
 
-    $response = $this->call('PUT', $this->baseUrl . '/' . $history->id, $payload, $cookies);
-    $response->assertStatus(200);
+        $response = $this->call('PUT', $this->baseUrl.'/'.$history->id, $payload, $cookies);
+        $response->assertStatus(422);
 
-    $this->assertDatabaseHas('social_mgmt_hist', [
-      'id' => $history->id,
-      'name' => 'Updated Title',
-    ]);
-  }
+        // Original record should remain unchanged
+        $this->assertDatabaseHas('social_mgmt_hist', [
+            'id' => $history->id,
+            'name' => 'Original History Title',
+        ]);
+    }
 
-  public function test_SOC_HIST_UPD_DB002_transaction_rollback_on_validation_failure()
-  {
-    $admin = AdminMst::factory()->create();
-    $social = $this->createSocial();
-    $history = $this->createHistory($social);
-    $cookies = $this->getAuthCookies($admin);
+    // ========== RESPONSE CONTRACT TESTS ==========
 
-    $payload = [
-      'action' => 2,
-      'author_id' => 1,
-    ];
+    public function test_so_c_his_t_up_d_r_c001_success_response_structure()
+    {
+        $admin = AdminMst::factory()->create();
+        $social = $this->createSocial();
+        $history = $this->createHistory($social);
+        $cookies = $this->getAuthCookies($admin);
 
-    $response = $this->call('PUT', $this->baseUrl . '/' . $history->id, $payload, $cookies);
-    $response->assertStatus(422);
+        $payload = [
+            'id' => $history->id,
+            'social_mgmt_id' => $social->id,
+            'name' => 'Updated Title',
+            'action' => 2,
+            'author_id' => 1,
+        ];
 
-    // Original record should remain unchanged
-    $this->assertDatabaseHas('social_mgmt_hist', [
-      'id' => $history->id,
-      'name' => 'Original History Title',
-    ]);
-  }
+        $response = $this->call('PUT', $this->baseUrl.'/'.$history->id, $payload, $cookies);
+        $response->assertStatus(200);
+        $response->assertJsonStructure(['data']);
 
-  // ========== RESPONSE CONTRACT TESTS ==========
-
-  public function test_SOC_HIST_UPD_RC001_success_response_structure()
-  {
-    $admin = AdminMst::factory()->create();
-    $social = $this->createSocial();
-    $history = $this->createHistory($social);
-    $cookies = $this->getAuthCookies($admin);
-
-    $payload = [
-      'id' => $history->id,
-      'social_mgmt_id' => $social->id,
-      'name' => 'Updated Title',
-      'action' => 2,
-      'author_id' => 1,
-    ];
-
-    $response = $this->call('PUT', $this->baseUrl . '/' . $history->id, $payload, $cookies);
-    $response->assertStatus(200);
-    $response->assertJsonStructure(['data']);
-
-    $affectedRows = $response->json('data');
-    $this->assertIsInt($affectedRows);
-  }
+        $affectedRows = $response->json('data');
+        $this->assertIsInt($affectedRows);
+    }
 }

@@ -5,8 +5,7 @@ declare(strict_types=1);
 use Rector\Config\RectorConfig;
 use RectorLaravel\Set\LaravelLevelSetList;
 
-// Dry-run only for now (`composer rector`). Rules are applied deliberately,
-// one set at a time, in the Laravel upgrade item (PLAN U1).
+// Dry-run by default (`composer rector`); apply with `vendor/bin/rector process`.
 return RectorConfig::configure()
     ->withPaths([
         __DIR__.'/app',
@@ -16,6 +15,14 @@ return RectorConfig::configure()
         __DIR__.'/routes',
         __DIR__.'/tests',
     ])
+    // Auth code is reworked by hand (docs/auth/AUTH-GUIDE.md) — keep Rector out of it.
+    ->withSkip([
+        __DIR__.'/app/Utilities/JsonWebToken.php',
+        __DIR__.'/app/Services/Custom/CredentialService.php',
+        __DIR__.'/app/Http/Middleware/AdminMiddleware.php',
+        __DIR__.'/app/Http/Middleware/BroadcastingAuthMiddleware.php',
+        __DIR__.'/app/Http/Controllers/Custom/CredentialController.php',
+    ])
     ->withCache(__DIR__.'/storage/framework/cache/rector')
-    ->withPhpSets(php82: true)
-    ->withSets([LaravelLevelSetList::UP_TO_LARAVEL_110]);
+    ->withPhpSets(php83: true)
+    ->withSets([LaravelLevelSetList::UP_TO_LARAVEL_130_WITHOUT_ATTRIBUTES]);

@@ -1,28 +1,35 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Resources\Master;
 
-use App\Constants\CommonVal;
+use App\Http\Resources\Concerns\FormatsDates;
+use App\Models\Master\PolicyDepartmentMst;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
-use App\Http\Resources\Master\DepartmentMstResource;
 
+/**
+ * @mixin PolicyDepartmentMst
+ */
 class PolicyDepartmentMstResource extends JsonResource
 {
-  /**
-   * Transform the resource into an array.
-   *
-   * @return array<string, mixed>
-   */
-  public function toArray(Request $request): array
-  {
-    return [
-      'id' => (int)$this->id,
-      'table_name' => (string)$this->table_name,
-      'row_id' => (int)$this->row_id,
-      'is_delete' => (bool)$this->is_delete,
-      'departments' => DepartmentMstResource::collection($this->whenLoaded('departments')),
-      'updated_at' => (string)date(CommonVal::DATE_FORMAT, strtotime($this->updated_at)),
-    ];
-  }
+    use FormatsDates;
+
+    /**
+     * Transform the resource into an array.
+     *
+     * @return array<string, mixed>
+     */
+    public function toArray(Request $request): array
+    {
+        return [
+            'id' => (int) $this->id,
+            'table_name' => (string) $this->table_name,
+            'row_id' => (int) $this->row_id,
+            'is_delete' => (bool) $this->is_delete,
+            'departments' => DepartmentMstResource::collection($this->whenLoaded('departments')),
+            'updated_at' => $this->formatDate($this->updated_at),
+        ];
+    }
 }

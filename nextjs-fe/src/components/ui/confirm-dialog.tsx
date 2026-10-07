@@ -44,7 +44,11 @@ export function ConfirmDialog({
           <AlertDialogCancel disabled={isLoading}>{cancelText || t('cancel')}</AlertDialogCancel>
           <AlertDialogAction
             onClick={handleConfirm}
-            className={variant === 'destructive' ? 'bg-destructive text-destructive-foreground hover:bg-destructive/90' : ''}
+            className={
+              variant === 'destructive'
+                ? 'text-destructive-foreground bg-destructive hover:bg-destructive/90'
+                : ''
+            }
             disabled={isLoading}
           >
             {confirmText || t('confirm')}

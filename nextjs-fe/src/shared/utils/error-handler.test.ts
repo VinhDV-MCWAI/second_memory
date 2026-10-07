@@ -15,9 +15,9 @@ describe('getApiErrorMessage', () => {
   });
 
   it('returns the first message of a validation field map', () => {
-    expect(getApiErrorMessage(apiError(422, { name: ['Name is required'], code: ['Too long'] }))).toBe(
-      'Name is required'
-    );
+    expect(
+      getApiErrorMessage(apiError(422, { name: ['Name is required'], code: ['Too long'] })),
+    ).toBe('Name is required');
   });
 
   it.each([

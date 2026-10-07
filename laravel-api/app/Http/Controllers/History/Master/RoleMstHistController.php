@@ -1,55 +1,50 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers\History\Master;
 
+use App\Http\Controllers\Controller;
+use App\Http\Requests\History\Master\RoleMstHist\DeleteRoleMstHistRequest;
 use App\Http\Requests\History\Master\RoleMstHist\ListRoleMstHistRequest;
 use App\Http\Requests\History\Master\RoleMstHist\StoreRoleMstHistRequest;
 use App\Http\Requests\History\Master\RoleMstHist\UpdateRoleMstHistRequest;
-use App\Http\Requests\History\Master\RoleMstHist\DeleteRoleMstHistRequest;
+use App\Http\Resources\History\Master\RoleMstHistResource;
 use App\Services\History\Master\RoleMstHistService;
-use App\Http\Controllers\Controller;
-use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class RoleMstHistController extends Controller
 {
     public function __construct(
         protected RoleMstHistService $roleMstHist
-    )
-    {
-    }
-    
+    ) {}
+
     /**
      * RoleMstHist list
-     *
-     * @param ListRoleMstHistRequest $request
-     * @return JsonResource
      */
-    public function list(ListRoleMstHistRequest $request): JsonResource
+    /**
+     * @return AnonymousResourceCollection<LengthAwarePaginator<int, RoleMstHistResource>>
+     */
+    public function list(ListRoleMstHistRequest $request): AnonymousResourceCollection
     {
-        return $this->roleMstHist->list($request->all());
+        return $this->roleMstHist->list($request->validated());
     }
 
     /**
      * Store role mst hist
-     *
-     * @param StoreRoleMstHistRequest $request
-     * @return int
      */
     public function store(StoreRoleMstHistRequest $request): int
     {
-        return $this->roleMstHist->store($request->all());
+        return $this->roleMstHist->store($request->validated());
     }
 
     /**
      * Update role mst hist
-     *
-     * @param UpdateRoleMstHistRequest $request
-     * @param string $id
-     * @return int
      */
     public function update(UpdateRoleMstHistRequest $request, string $id): int
     {
-        $payload = $request->all();
+        $payload = $request->validated();
         $payload['id'] = $id;
 
         return $this->roleMstHist->update($payload);
@@ -57,12 +52,9 @@ class RoleMstHistController extends Controller
 
     /**
      * Delete role mst hist
-     *
-     * @param DeleteRoleMstHistRequest $request
-     * @return void
      */
     public function delete(DeleteRoleMstHistRequest $request): void
     {
-        $this->roleMstHist->delete($request->all());
+        $this->roleMstHist->delete($request->validated());
     }
 }

@@ -129,7 +129,7 @@ export type AuthAction =
 export type LoginPayload = {
   user_name: string;
   password: string;
-}
+};
 
 export type StoreAuthState = {
   accessToken: string | null;
@@ -139,10 +139,10 @@ export type StoreAuthState = {
   leaderId: string | null; // ID of leader tab managing refresh
   refreshAtTime: number | null; // Time when token should be refreshed (in ms)
   authInitialized: boolean; // Whether auth initialization has completed
-}
+};
 
 export type LoginResponseData = {
   auth_type: string;
   ttl: number;
   access_token: string;
-}
+};

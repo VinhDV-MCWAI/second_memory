@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Rules;
 
 use Closure;
@@ -7,20 +9,13 @@ use Illuminate\Contracts\Validation\ValidationRule;
 
 class LayoutStructureRule implements ValidationRule
 {
-    protected int $maxItems;
-    protected string $childIdField;
-
     /**
      * Create a new rule instance.
      *
-     * @param int $maxItems Maximum total items allowed (including nested)
-     * @param string $childIdField Field name for child ID (entry_mgmt_id or entry_desc_id)
+     * @param  int  $maxItems  Maximum total items allowed (including nested)
+     * @param  string  $childIdField  Field name for child ID (entry_mgmt_id or entry_desc_id)
      */
-    public function __construct(int $maxItems = 100, string $childIdField = 'entry_mgmt_id')
-    {
-        $this->maxItems = $maxItems;
-        $this->childIdField = $childIdField;
-    }
+    public function __construct(protected int $maxItems = 100, protected string $childIdField = 'entry_mgmt_id') {}
 
     /**
      * Run the validation rule.
@@ -37,11 +32,13 @@ class LayoutStructureRule implements ValidationRule
 
         if (json_last_error() !== JSON_ERROR_NONE) {
             $fail("The {$attribute} must be valid JSON.");
+
             return;
         }
 
-        if (!is_array($structure)) {
+        if (! is_array($structure)) {
             $fail("The {$attribute} must be an array.");
+
             return;
         }
 
@@ -50,6 +47,7 @@ class LayoutStructureRule implements ValidationRule
 
         if ($totalItems > $this->maxItems) {
             $fail("The {$attribute} cannot contain more than {$this->maxItems} items in total.");
+
             return;
         }
 
@@ -85,36 +83,36 @@ class LayoutStructureRule implements ValidationRule
     protected function validateStructure(array $structure, int $level = 0): ?string
     {
         foreach ($structure as $index => $item) {
-            if (!is_array($item)) {
+            if (! is_array($item)) {
                 return "Item at index {$index} must be an array.";
             }
 
             // Validate required field: ui_id
-            if (!isset($item['ui_id']) || !is_string($item['ui_id']) || empty($item['ui_id'])) {
+            if (! isset($item['ui_id']) || ! is_string($item['ui_id']) || empty($item['ui_id'])) {
                 return "Item at index {$index} must have a non-empty 'ui_id' field.";
             }
 
             // Validate child ID field (entry_mgmt_id or entry_desc_id)
-            if (!isset($item[$this->childIdField])) {
+            if (! isset($item[$this->childIdField])) {
                 return "Item at index {$index} must have a '{$this->childIdField}' field.";
             }
 
-            if (!is_int($item[$this->childIdField]) && !is_numeric($item[$this->childIdField])) {
+            if (! is_int($item[$this->childIdField]) && ! is_numeric($item[$this->childIdField])) {
                 return "Item at index {$index}: '{$this->childIdField}' must be a number.";
             }
 
             // Validate optional fields
-            if (isset($item['name']) && !is_string($item['name'])) {
+            if (isset($item['name']) && ! is_string($item['name'])) {
                 return "Item at index {$index}: 'name' must be a string.";
             }
 
-            if (isset($item['slug']) && !is_string($item['slug'])) {
+            if (isset($item['slug']) && ! is_string($item['slug'])) {
                 return "Item at index {$index}: 'slug' must be a string.";
             }
 
             // Validate children if exists
             if (isset($item['children'])) {
-                if (!is_array($item['children'])) {
+                if (! is_array($item['children'])) {
                     return "Item at index {$index}: 'children' must be an array.";
                 }
 

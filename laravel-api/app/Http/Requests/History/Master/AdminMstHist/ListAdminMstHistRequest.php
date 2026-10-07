@@ -1,60 +1,51 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Requests\History\Master\AdminMstHist;
 
-use Illuminate\Foundation\Http\FormRequest;
 use App\Constants\CommonVal;
-use Illuminate\Validation\Rule;
-use Illuminate\Validation\Rules\Enum;
-use App\Models\History\Master\AdminMstHist;
 use App\Enums\Gender;
 use App\Enums\IsActive;
 use App\Enums\StatusEnum;
-use App\Models\Master\AdminMst;
+use App\Http\Requests\ListRequest;
+use Illuminate\Contracts\Validation\ValidationRule;
+use Illuminate\Validation\Rule;
 
-class ListAdminMstHistRequest extends FormRequest
+class ListAdminMstHistRequest extends ListRequest
 {
     /**
-     * Determine if the user is authorized to make this request.
+     * @return array<string, ValidationRule|array<mixed>|string>
      */
-    public function authorize(): bool
-    {
-        return true;
-    }
-
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
-     */
-    public function rules(): array
+    protected function filters(): array
     {
         return [
-            'admin_mst_id' => ['nullable', 'integer', 'min:' . CommonVal::MIN_INTEGER, 'max:' . CommonVal::MAX_INTEGER,],
-            'user_name' => ['nullable', 'string', 'min:' . CommonVal::MIN_VARCHAR, 'max:50',],
-            'first_name' => ['nullable', 'string', 'min:' . CommonVal::MIN_VARCHAR, 'max:20',],
-            'last_name' => ['nullable', 'string', 'min:' . CommonVal::MIN_VARCHAR, 'max:20',],
-            'address' => ['nullable', 'string', 'min:' . CommonVal::MIN_VARCHAR, 'max:100',],
-            'phone_number' => ['nullable', 'string', 'min:' . CommonVal::MIN_VARCHAR, 'max:' . CommonVal::MAX_PHONE_NUMBER,],
-            'birth' => ['nullable', 'date_format:' . CommonVal::DATE_FORMAT, 'after_or_equal:' . CommonVal::MIN_DATE, 'before_or_equal:' . CommonVal::MAX_DATE,],
-            'gender' => ['nullable', new Enum(Gender::class),],
-            'status' => ['nullable', new Enum(StatusEnum::class),],
-            'is_active' => ['nullable', new Enum(IsActive::class),],
-            'avatar' => ['nullable', 'string', 'min:' . CommonVal::MIN_VARCHAR, 'max:30',],
-            'action' => ['nullable',],
-            'author_id' => ['nullable', 'integer', 'min:' . CommonVal::MIN_INTEGER, 'max:' . CommonVal::MAX_INTEGER,],
+            'email' => ['nullable', 'string', 'max:'.CommonVal::MAX_VARCHAR],
+            'admin_mst_id' => ['nullable', 'integer', 'min:'.CommonVal::MIN_INTEGER, 'max:'.CommonVal::MAX_INTEGER],
+            'user_name' => ['nullable', 'string', 'min:'.CommonVal::MIN_VARCHAR, 'max:50'],
+            'first_name' => ['nullable', 'string', 'min:'.CommonVal::MIN_VARCHAR, 'max:20'],
+            'last_name' => ['nullable', 'string', 'min:'.CommonVal::MIN_VARCHAR, 'max:20'],
+            'address' => ['nullable', 'string', 'min:'.CommonVal::MIN_VARCHAR, 'max:100'],
+            'phone_number' => ['nullable', 'string', 'min:'.CommonVal::MIN_VARCHAR, 'max:'.CommonVal::MAX_PHONE_NUMBER],
+            'birth' => ['nullable', 'date_format:'.CommonVal::DATE_FORMAT, 'after_or_equal:'.CommonVal::MIN_DATE, 'before_or_equal:'.CommonVal::MAX_DATE],
+            'gender' => ['nullable', Rule::enum(Gender::class)],
+            'status' => ['nullable', Rule::enum(StatusEnum::class)],
+            'is_active' => ['nullable', Rule::enum(IsActive::class)],
+            'avatar' => ['nullable', 'string', 'min:'.CommonVal::MIN_VARCHAR, 'max:30'],
+            'action' => ['nullable'],
+            'author_id' => ['nullable', 'integer', 'min:'.CommonVal::MIN_INTEGER, 'max:'.CommonVal::MAX_INTEGER],
             'from_date' => [
                 'nullable',
-                'date_format:' . CommonVal::DATE_FORMAT,
-                'after_or_equal:' . CommonVal::MIN_DATE,
-                'before_or_equal:' . CommonVal::MAX_DATE,
+                'date_format:'.CommonVal::DATE_FORMAT,
+                'after_or_equal:'.CommonVal::MIN_DATE,
+                'before_or_equal:'.CommonVal::MAX_DATE,
             ],
             'to_date' => [
                 'nullable',
-                'date_format:' . CommonVal::DATE_FORMAT,
-                'after_or_equal:' . CommonVal::MIN_DATE,
-                'before_or_equal:' . CommonVal::MAX_DATE,
-                'after:from_date'
+                'date_format:'.CommonVal::DATE_FORMAT,
+                'after_or_equal:'.CommonVal::MIN_DATE,
+                'before_or_equal:'.CommonVal::MAX_DATE,
+                'after:from_date',
             ],
         ];
     }

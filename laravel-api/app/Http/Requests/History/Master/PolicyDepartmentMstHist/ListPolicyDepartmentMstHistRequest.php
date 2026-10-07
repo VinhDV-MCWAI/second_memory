@@ -1,50 +1,38 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Requests\History\Master\PolicyDepartmentMstHist;
 
-use Illuminate\Foundation\Http\FormRequest;
 use App\Constants\CommonVal;
-use Illuminate\Validation\Rule;
-use Illuminate\Validation\Rules\Enum;
-use App\Models\History\Master\PolicyDepartmentMstHist;
+use App\Http\Requests\ListRequest;
+use Illuminate\Contracts\Validation\ValidationRule;
 
-use App\Models\Master\PolicyDepartmentMst;
-
-class ListPolicyDepartmentMstHistRequest extends FormRequest
+class ListPolicyDepartmentMstHistRequest extends ListRequest
 {
     /**
-     * Determine if the user is authorized to make this request.
+     * @return array<string, ValidationRule|array<mixed>|string>
      */
-    public function authorize(): bool
-    {
-        return true;
-    }
-
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
-     */
-    public function rules(): array
+    protected function filters(): array
     {
         return [
-            'policy_department_mst_id' => ['nullable', 'integer', 'min:' . CommonVal::MIN_INTEGER, 'max:' . CommonVal::MAX_INTEGER,],
-            'table_name' => ['nullable', 'integer', 'min:' . CommonVal::MIN_INTEGER, 'max:' . CommonVal::MAX_INTEGER,],
-            'row_id' => ['nullable', 'integer', 'min:' . CommonVal::MIN_INTEGER, 'max:' . CommonVal::MAX_INTEGER,],
-            'action' => ['nullable',],
-            'author_id' => ['nullable', 'integer', 'min:' . CommonVal::MIN_INTEGER, 'max:' . CommonVal::MAX_INTEGER,],
+            'policy_department_mst_id' => ['nullable', 'integer', 'min:'.CommonVal::MIN_INTEGER, 'max:'.CommonVal::MAX_INTEGER],
+            'table_name' => ['nullable', 'integer', 'min:'.CommonVal::MIN_INTEGER, 'max:'.CommonVal::MAX_INTEGER],
+            'row_id' => ['nullable', 'integer', 'min:'.CommonVal::MIN_INTEGER, 'max:'.CommonVal::MAX_INTEGER],
+            'action' => ['nullable'],
+            'author_id' => ['nullable', 'integer', 'min:'.CommonVal::MIN_INTEGER, 'max:'.CommonVal::MAX_INTEGER],
             'from_date' => [
                 'nullable',
-                'date_format:' . CommonVal::DATE_FORMAT,
-                'after_or_equal:' . CommonVal::MIN_DATE,
-                'before_or_equal:' . CommonVal::MAX_DATE,
+                'date_format:'.CommonVal::DATE_FORMAT,
+                'after_or_equal:'.CommonVal::MIN_DATE,
+                'before_or_equal:'.CommonVal::MAX_DATE,
             ],
             'to_date' => [
                 'nullable',
-                'date_format:' . CommonVal::DATE_FORMAT,
-                'after_or_equal:' . CommonVal::MIN_DATE,
-                'before_or_equal:' . CommonVal::MAX_DATE,
-                'after:from_date'
+                'date_format:'.CommonVal::DATE_FORMAT,
+                'after_or_equal:'.CommonVal::MIN_DATE,
+                'before_or_equal:'.CommonVal::MAX_DATE,
+                'after:from_date',
             ],
         ];
     }

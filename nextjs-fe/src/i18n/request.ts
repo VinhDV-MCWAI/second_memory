@@ -8,12 +8,12 @@ export default getRequestConfig(async () => {
   if (typeof window !== 'undefined') {
     locale = localStorage.getItem('locale') || 'en';
   }
-  
+
   const messagesPath = join(process.cwd(), 'messages', `${locale}.json`);
   const messages = JSON.parse(readFileSync(messagesPath, 'utf8'));
-  
+
   return {
     locale,
-    messages
+    messages,
   };
 });

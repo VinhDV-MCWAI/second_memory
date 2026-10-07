@@ -3,7 +3,7 @@
 #   docker build -f docker/nextjs/Dockerfile --build-arg APP=nextjs-fe --target production .
 # Context filtering: docker/nextjs/Dockerfile.dockerignore
 
-ARG NODE_IMAGE=node:22-alpine
+ARG NODE_IMAGE=node:24-alpine
 
 # ============ Base: pnpm pinned by the root package.json "packageManager" ============
 FROM ${NODE_IMAGE} AS base

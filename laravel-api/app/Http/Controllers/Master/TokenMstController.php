@@ -1,55 +1,50 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers\Master;
 
+use App\Http\Controllers\Controller;
+use App\Http\Requests\Master\TokenMst\DeleteTokenMstRequest;
 use App\Http\Requests\Master\TokenMst\ListTokenMstRequest;
 use App\Http\Requests\Master\TokenMst\StoreTokenMstRequest;
 use App\Http\Requests\Master\TokenMst\UpdateTokenMstRequest;
-use App\Http\Requests\Master\TokenMst\DeleteTokenMstRequest;
+use App\Http\Resources\Master\TokenMstResource;
 use App\Services\Master\TokenMstService;
-use App\Http\Controllers\Controller;
-use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class TokenMstController extends Controller
 {
     public function __construct(
         protected TokenMstService $tokenMst
-    )
-    {
-    }
-    
+    ) {}
+
     /**
      * TokenMst list
-     *
-     * @param ListTokenMstRequest $request
-     * @return JsonResource
      */
-    public function list(ListTokenMstRequest $request): JsonResource
+    /**
+     * @return AnonymousResourceCollection<LengthAwarePaginator<int, TokenMstResource>>
+     */
+    public function list(ListTokenMstRequest $request): AnonymousResourceCollection
     {
-        return $this->tokenMst->list($request->all());
+        return $this->tokenMst->list($request->validated());
     }
 
     /**
      * Store token mst
-     *
-     * @param StoreTokenMstRequest $request
-     * @return int
      */
     public function store(StoreTokenMstRequest $request): int
     {
-        return $this->tokenMst->store($request->all());
+        return $this->tokenMst->store($request->validated());
     }
 
     /**
      * Update token mst
-     *
-     * @param UpdateTokenMstRequest $request
-     * @param string $id
-     * @return int
      */
     public function update(UpdateTokenMstRequest $request, string $id): int
     {
-        $payload = $request->all();
+        $payload = $request->validated();
         $payload['id'] = $id;
 
         return $this->tokenMst->update($payload);
@@ -57,12 +52,9 @@ class TokenMstController extends Controller
 
     /**
      * Delete token mst
-     *
-     * @param DeleteTokenMstRequest $request
-     * @return void
      */
     public function delete(DeleteTokenMstRequest $request): void
     {
-        $this->tokenMst->delete($request->all());
+        $this->tokenMst->delete($request->validated());
     }
 }

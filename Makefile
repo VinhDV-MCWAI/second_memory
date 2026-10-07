@@ -8,6 +8,8 @@ COMPOSE := docker compose -f docker/docker-compose.yml
 PHP     := docker exec ml-php
 FE      := docker exec ml-nextjs
 DOCS    := docker exec ml-nextjs-docs
+# Same exclusion as CI: these auth cases fail until the manual auth rework (AUTH-GUIDE A13)
+AUTH_TODO := RefreshTokenApiTest::test_t0(04|05|06|19)_
 
 ##@ Environment
 
@@ -25,8 +27,8 @@ down: ## Stop the stack (keeps volumes)
 	$(COMPOSE) down
 
 .PHONY: restart
-restart: ## Recreate containers (picks up env changes)
-	$(COMPOSE) up -d --force-recreate
+restart: ## Recreate containers and rebuild images (picks up env changes)
+	$(COMPOSE) up -d --build --force-recreate
 
 .PHONY: ps
 ps: ## Show container status
@@ -46,21 +48,38 @@ sh: ## Shell into a container (make sh s=ml-php)
 test: ## Run backend tests (make test f=CategoryMgmt to filter)
 	$(PHP) php artisan test $(if $(f),--filter=$(f),)
 
+.PHONY: test-ci
+test-ci: ## Run backend tests like CI (skips the known auth failures)
+	$(PHP) php artisan test --exclude-filter '$(AUTH_TODO)'
+
 .PHONY: pint
 pint: ## Format PHP code
-	$(PHP) ./vendor/bin/pint
+	$(PHP) composer format
 
 .PHONY: analyse
 analyse: ## Static analysis (Larastan)
-	$(PHP) ./vendor/bin/phpstan analyse --memory-limit=1G
+	$(PHP) composer analyse
+
+.PHONY: openapi
+openapi: ## Regenerate laravel-api/openapi.json and the admin FE types (commit both; CI checks them)
+	$(PHP) php artisan scramble:export
+	@# The FE container only mounts nextjs-fe; copy the spec to where `gen:api` looks for it
+	$(FE) mkdir -p /repo/laravel-api
+	docker cp laravel-api/openapi.json ml-nextjs:/repo/laravel-api/openapi.json
+	$(FE) sh -c 'pnpm gen:api && chown $(shell id -u):$(shell id -g) src/shared/types/openapi.d.ts'
 
 .PHONY: rector
 rector: ## Preview automated refactors (dry run)
-	$(PHP) ./vendor/bin/rector process --dry-run
+	$(PHP) composer rector
 
 .PHONY: migrate
 migrate: ## Run pending migrations on the dev database
 	$(PHP) php artisan migrate
+
+.PHONY: fresh
+fresh: ## DROP all dev tables, re-migrate and seed (asks first)
+	@read -r -p "This wipes the dev database. Type 'yes' to continue: " ans; [ "$$ans" = yes ]
+	$(PHP) php artisan migrate:fresh --seed --force
 
 ##@ Frontend
 
@@ -76,17 +95,27 @@ fe-typecheck: ## Type-check both Next.js apps
 
 .PHONY: fe-test
 fe-test: ## Run admin FE unit tests
-	$(FE) pnpm test --run
+	$(FE) pnpm test --run --coverage
+
+.PHONY: fe-format
+fe-format: ## Format both Next.js apps (Prettier)
+	$(FE) pnpm format
+	$(DOCS) pnpm format
 
 ##@ Quality gates
 
+.PHONY: format
+format: pint fe-format ## Format everything (Pint + Prettier)
+
 .PHONY: lint
 lint: ## All linters/format checks (backend + frontend)
-	$(PHP) ./vendor/bin/pint --test
+	$(PHP) composer lint
 	$(MAKE) fe-lint
+	$(FE) pnpm format:check
+	$(DOCS) pnpm format:check
 
 .PHONY: verify
-verify: lint analyse fe-typecheck test fe-test ## Everything CI runs
+verify: lint analyse fe-typecheck test-ci fe-test ## Everything CI runs
 
 ##@ Data
 

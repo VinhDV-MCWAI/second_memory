@@ -4,8 +4,6 @@ import { QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { Toaster } from 'react-hot-toast';
 import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { setNavigateFunction, clearNavigateFunction } from '@/shared/utils/navigation';
 import { QueryClient } from '@tanstack/react-query';
 import { ThemeProvider } from 'next-themes';
 import { NextIntlClientProvider, AbstractIntlMessages } from 'next-intl';
@@ -24,39 +22,21 @@ const queryClient = new QueryClient({
   },
 });
 
-function NavigationProvider() {
-  const router = useRouter();
-
-  useEffect(() => {
-    // Set navigation function for use in sagas and interceptors
-    setNavigateFunction((path: string) => {
-      router.push(path);
-    });
-
-    return () => {
-      clearNavigateFunction();
-    };
-  }, [router]);
-
-  return null;
-}
-
 import { AuthProvider } from '@/providers/auth-provider';
 import { GlobalLoadingProvider } from '@/shared/providers/global-loading-provider';
 
 // WebSocketNotification removed - WebSocket connections are now handled
 // per upload session in HeavyUploadNotification component
 
-export function Providers({ 
+export function Providers({
   children,
   locale = 'en',
-  messages
-}: { 
+  messages,
+}: {
   children: React.ReactNode;
   locale?: string;
   messages: AbstractIntlMessages;
 }) {
-
   const [currentLocale, setCurrentLocale] = useState(locale);
   const [currentMessages, setCurrentMessages] = useState(messages);
   const [isLoaded, setIsLoaded] = useState(true); // Default to true since we have initial messages
@@ -71,11 +51,11 @@ export function Providers({
   useEffect(() => {
     // Check for saved locale in localStorage only on mount
     const savedLocale = localStorage.getItem('locale');
-    
+
     if (savedLocale && savedLocale !== locale) {
       setIsLoaded(false);
       setCurrentLocale(savedLocale);
-      
+
       import(`@/../messages/${savedLocale}.json`)
         .then((m) => {
           setCurrentMessages(m.default);
@@ -106,10 +86,7 @@ export function Providers({
             enableSystem
             disableTransitionOnChange={false}
           >
-            <GlobalLoadingProvider>
-              <NavigationProvider />
-              {children}
-            </GlobalLoadingProvider>
+            <GlobalLoadingProvider>{children}</GlobalLoadingProvider>
             <Toaster
               position="top-right"
               reverseOrder={false}
@@ -140,9 +117,7 @@ export function Providers({
         </NextIntlClientProvider>
       </AuthProvider>
       {/* React Query Devtools - only in development */}
-      {process.env.NODE_ENV === 'development' && (
-        <ReactQueryDevtools initialIsOpen={false} />
-      )}
+      {process.env.NODE_ENV === 'development' && <ReactQueryDevtools initialIsOpen={false} />}
     </QueryClientProvider>
   );
 }

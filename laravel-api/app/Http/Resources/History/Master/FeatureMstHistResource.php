@@ -1,13 +1,21 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Resources\History\Master;
 
-use App\Constants\CommonVal;
+use App\Http\Resources\Concerns\FormatsDates;
+use App\Models\History\Master\FeatureMstHist;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
+/**
+ * @mixin FeatureMstHist
+ */
 class FeatureMstHistResource extends JsonResource
 {
+    use FormatsDates;
+
     /**
      * Transform the resource into an array.
      *
@@ -16,15 +24,15 @@ class FeatureMstHistResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'id' => (int)$this->id,
-            'feature_mst_id' => (int)$this->feature_mst_id,
-            'name' => (string)$this->name,
-            'group_name' => (string)$this->group_name,
-            'description' => (string)$this->description,
-            'status' => (string)$this->status,
-            'action' => (string)$this->action,
-            'author_id' => (int)$this->author_id,
-            'created_at' => (string)date(CommonVal::DATE_FORMAT, strtotime($this->created_at)),
+            'id' => (int) $this->id,
+            'feature_mst_id' => (int) $this->feature_mst_id,
+            'name' => (string) $this->name,
+            'group_name' => (string) $this->group_name,
+            'description' => (string) $this->description,
+            'status' => (int) $this->status,
+            'action' => (int) $this->action,
+            'author_id' => (int) $this->author_id,
+            'created_at' => $this->formatDate($this->created_at),
         ];
     }
 }

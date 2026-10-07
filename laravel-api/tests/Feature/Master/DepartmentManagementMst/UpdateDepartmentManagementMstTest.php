@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tests\Feature\Master\DepartmentManagementMst;
 
 use App\Models\Master\AdminMst;
@@ -15,204 +17,205 @@ use Tests\TestCase;
 
 class UpdateDepartmentManagementMstTest extends TestCase
 {
-  use RefreshDatabase;
+    use RefreshDatabase;
 
-  private string $baseUrl = 'api/admin/department-management-mst/update';
+    private string $baseUrl = 'api/admin/department-management-mst/update';
 
-  private function getAuthCookies(AdminMst $admin): array
-  {
-    $rootRole = RoleMst::where('name', 'root')->first();
-    if (!$rootRole) {
-      $rootRole = RoleMst::create(['name' => 'root', 'permission' => '{}', 'is_active' => 1, 'is_delete' => 0]);
+    private function getAuthCookies(AdminMst $admin): array
+    {
+        $rootRole = RoleMst::where('name', 'root')->first();
+        if (! $rootRole) {
+            $rootRole = RoleMst::create(['name' => 'root', 'permission' => '{}', 'is_active' => 1, 'is_delete' => 0]);
+        }
+
+        $this->grantAccessTo($rootRole, 'PUT', $this->baseUrl);
+
+        if (! DB::table('admin_role_mst')
+            ->where('admin_mst_id', $admin->id)
+            ->where('role_mst_id', $rootRole->id)
+            ->exists()) {
+            DB::table('admin_role_mst')->insert([
+                'admin_mst_id' => $admin->id,
+                'role_mst_id' => $rootRole->id,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
+        }
+
+        $response = $this->postJson('/api/admin/credential/login', [
+            'user_name' => $admin->user_name,
+            'password' => 'password',
+        ]);
+
+        $cookies = [];
+        foreach ($response->headers->getCookies() as $cookie) {
+            $cookies[$cookie->getName()] = $cookie->getValue();
+        }
+
+        return $cookies;
     }
 
-    $this->grantAccessTo($rootRole, 'PUT', $this->baseUrl);
+    private function grantAccessTo(RoleMst $role, string $method, string $path)
+    {
+        $typeMap = ['GET' => 0, 'POST' => 1, 'PUT' => 2, 'PATCH' => 3, 'DELETE' => 4];
+        $type = $typeMap[strtoupper($method)] ?? 0;
 
-    if (!DB::table('admin_role_mst')
-      ->where('admin_mst_id', $admin->id)
-      ->where('role_mst_id', $rootRole->id)
-      ->exists()) {
-      DB::table('admin_role_mst')->insert([
-        'admin_mst_id' => $admin->id,
-        'role_mst_id' => $rootRole->id,
-        'created_at' => now(),
-        'updated_at' => now(),
-      ]);
+        $feature = FeatureMst::firstOrCreate([
+            'name' => 'System Features',
+            'group_name' => 'System',
+            'status' => 1,
+            'is_delete' => 0,
+        ]);
+
+        $api = ApiMst::firstOrCreate(
+            ['path' => $path, 'type' => $type],
+            [
+                'name' => substr("Endp $method $path", 0, 50),
+                'is_active' => 1,
+                'feature_mst_id' => $feature->id,
+                'is_delete' => 0,
+            ]
+        );
+
+        DB::table('api_role_mst')->insertOrIgnore([
+            'api_mst_id' => $api->id,
+            'role_mst_id' => $role->id,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
     }
 
-    $response = $this->postJson('/api/admin/credential/login', [
-      'user_name' => $admin->user_name,
-      'password' => 'password',
-    ]);
-
-    $cookies = [];
-    foreach ($response->headers->getCookies() as $cookie) {
-      $cookies[$cookie->getName()] = $cookie->getValue();
+    public function test_dp_t_mg_t_up_d_001_unauthenticated()
+    {
+        $response = $this->putJson($this->baseUrl, []);
+        $response->assertStatus(401);
     }
-    return $cookies;
-  }
 
-  private function grantAccessTo(RoleMst $role, string $method, string $path)
-  {
-    $typeMap = ['GET' => 0, 'POST' => 1, 'PUT' => 2, 'PATCH' => 3, 'DELETE' => 4];
-    $type = $typeMap[strtoupper($method)] ?? 0;
+    public function test_dp_t_mg_t_up_d_002_invalid_data()
+    {
+        $admin = AdminMst::factory()->create();
+        $cookies = $this->getAuthCookies($admin);
 
-    $feature = FeatureMst::firstOrCreate([
-      'name' => 'System Features',
-      'group_name' => 'System',
-      'status' => 1,
-      'is_delete' => 0
-    ]);
+        // Test with invalid types
+        $payload = [
+            'insert' => 'invalid',
+            'delete' => 'invalid',
+        ];
+        $response = $this->call('PUT', $this->baseUrl, $payload, $cookies);
+        $response->assertStatus(422);
 
-    $api = ApiMst::firstOrCreate(
-      ['path' => $path, 'type' => $type],
-      [
-        'name' => substr("Endp $method $path", 0, 50),
-        'is_active' => 1,
-        'feature_mst_id' => $feature->id,
-        'is_delete' => 0
-      ]
-    );
+        // Test with missing required fields in array
+        $payload = [
+            'insert' => [
+                ['department_mst_id' => 1], // missing policy_department_mst_id
+            ],
+        ];
+        $response = $this->call('PUT', $this->baseUrl, $payload, $cookies);
+        $response->assertStatus(422);
+    }
 
-    DB::table('api_role_mst')->insertOrIgnore([
-      'api_mst_id' => $api->id,
-      'role_mst_id' => $role->id,
-      'created_at' => now(),
-      'updated_at' => now(),
-    ]);
-  }
+    public function test_dp_t_mg_t_up_d_003_success_insert()
+    {
+        $admin = AdminMst::factory()->create();
+        $cookies = $this->getAuthCookies($admin);
 
-  public function test_DPT_MGT_UPD_001_unauthenticated()
-  {
-    $response = $this->putJson($this->baseUrl, []);
-    $response->assertStatus(401);
-  }
+        $dep = DepartmentMst::factory()->create();
+        $policy = PolicyDepartmentMst::factory()->create();
 
-  public function test_DPT_MGT_UPD_002_invalid_data()
-  {
-    $admin = AdminMst::factory()->create();
-    $cookies = $this->getAuthCookies($admin);
+        $payload = [
+            'insert' => [
+                [
+                    'department_mst_id' => $dep->id,
+                    'policy_department_mst_id' => $policy->id,
+                ],
+            ],
+            'delete' => [],
+        ];
 
-    // Test with invalid types
-    $payload = [
-      'insert' => 'invalid',
-      'delete' => 'invalid'
-    ];
-    $response = $this->call('PUT', $this->baseUrl, $payload, $cookies);
-    $response->assertStatus(422);
+        $response = $this->call('PUT', $this->baseUrl, $payload, $cookies);
+        $response->assertStatus(200);
 
-    // Test with missing required fields in array
-    $payload = [
-      'insert' => [
-        ['department_mst_id' => 1] // missing policy_department_mst_id
-      ]
-    ];
-    $response = $this->call('PUT', $this->baseUrl, $payload, $cookies);
-    $response->assertStatus(422);
-  }
+        $this->assertDatabaseHas('department_management_mst', [
+            'department_mst_id' => $dep->id,
+            'policy_department_mst_id' => $policy->id,
+        ]);
+    }
 
-  public function test_DPT_MGT_UPD_003_success_insert()
-  {
-    $admin = AdminMst::factory()->create();
-    $cookies = $this->getAuthCookies($admin);
+    public function test_dp_t_mg_t_up_d_004_success_delete()
+    {
+        $admin = AdminMst::factory()->create();
+        $cookies = $this->getAuthCookies($admin);
 
-    $dep = DepartmentMst::factory()->create();
-    $policy = PolicyDepartmentMst::factory()->create();
+        $dep = DepartmentMst::factory()->create();
+        $policy = PolicyDepartmentMst::factory()->create();
 
-    $payload = [
-      'insert' => [
-        [
-          'department_mst_id' => $dep->id,
-          'policy_department_mst_id' => $policy->id,
-        ]
-      ],
-      'delete' => []
-    ];
+        DepartmentManagementMst::create([
+            'department_mst_id' => $dep->id,
+            'policy_department_mst_id' => $policy->id,
+        ]);
 
-    $response = $this->call('PUT', $this->baseUrl, $payload, $cookies);
-    $response->assertStatus(200);
+        $payload = [
+            'insert' => [],
+            'delete' => [
+                [
+                    'department_mst_id' => $dep->id,
+                    'policy_department_mst_id' => $policy->id,
+                ],
+            ],
+        ];
 
-    $this->assertDatabaseHas('department_management_mst', [
-      'department_mst_id' => $dep->id,
-      'policy_department_mst_id' => $policy->id,
-    ]);
-  }
+        $response = $this->call('PUT', $this->baseUrl, $payload, $cookies);
+        $response->assertStatus(200);
 
-  public function test_DPT_MGT_UPD_004_success_delete()
-  {
-    $admin = AdminMst::factory()->create();
-    $cookies = $this->getAuthCookies($admin);
+        $this->assertDatabaseMissing('department_management_mst', [
+            'department_mst_id' => $dep->id,
+            'policy_department_mst_id' => $policy->id,
+        ]);
+    }
 
-    $dep = DepartmentMst::factory()->create();
-    $policy = PolicyDepartmentMst::factory()->create();
+    public function test_dp_t_mg_t_up_d_005_success_mixed()
+    {
+        $admin = AdminMst::factory()->create();
+        $cookies = $this->getAuthCookies($admin);
 
-    DepartmentManagementMst::create([
-      'department_mst_id' => $dep->id,
-      'policy_department_mst_id' => $policy->id,
-    ]);
+        // Pre-existing (to be deleted)
+        $depDel = DepartmentMst::factory()->create();
+        $policyDel = PolicyDepartmentMst::factory()->create();
+        DepartmentManagementMst::create([
+            'department_mst_id' => $depDel->id,
+            'policy_department_mst_id' => $policyDel->id,
+        ]);
 
-    $payload = [
-      'insert' => [],
-      'delete' => [
-        [
-          'department_mst_id' => $dep->id,
-          'policy_department_mst_id' => $policy->id,
-        ]
-      ]
-    ];
+        // New (to be inserted)
+        $depNew = DepartmentMst::factory()->create();
+        $policyNew = PolicyDepartmentMst::factory()->create();
 
-    $response = $this->call('PUT', $this->baseUrl, $payload, $cookies);
-    $response->assertStatus(200);
+        $payload = [
+            'insert' => [
+                [
+                    'department_mst_id' => $depNew->id,
+                    'policy_department_mst_id' => $policyNew->id,
+                ],
+            ],
+            'delete' => [
+                [
+                    'department_mst_id' => $depDel->id,
+                    'policy_department_mst_id' => $policyDel->id,
+                ],
+            ],
+        ];
 
-    $this->assertDatabaseMissing('department_management_mst', [
-      'department_mst_id' => $dep->id,
-      'policy_department_mst_id' => $policy->id,
-    ]);
-  }
+        $response = $this->call('PUT', $this->baseUrl, $payload, $cookies);
+        $response->assertStatus(200);
 
-  public function test_DPT_MGT_UPD_005_success_mixed()
-  {
-    $admin = AdminMst::factory()->create();
-    $cookies = $this->getAuthCookies($admin);
+        $this->assertDatabaseMissing('department_management_mst', [
+            'department_mst_id' => $depDel->id,
+            'policy_department_mst_id' => $policyDel->id,
+        ]);
 
-    // Pre-existing (to be deleted)
-    $depDel = DepartmentMst::factory()->create();
-    $policyDel = PolicyDepartmentMst::factory()->create();
-    DepartmentManagementMst::create([
-      'department_mst_id' => $depDel->id,
-      'policy_department_mst_id' => $policyDel->id,
-    ]);
-
-    // New (to be inserted)
-    $depNew = DepartmentMst::factory()->create();
-    $policyNew = PolicyDepartmentMst::factory()->create();
-
-    $payload = [
-      'insert' => [
-        [
-          'department_mst_id' => $depNew->id,
-          'policy_department_mst_id' => $policyNew->id,
-        ]
-      ],
-      'delete' => [
-        [
-          'department_mst_id' => $depDel->id,
-          'policy_department_mst_id' => $policyDel->id,
-        ]
-      ]
-    ];
-
-    $response = $this->call('PUT', $this->baseUrl, $payload, $cookies);
-    $response->assertStatus(200);
-
-    $this->assertDatabaseMissing('department_management_mst', [
-      'department_mst_id' => $depDel->id,
-      'policy_department_mst_id' => $policyDel->id,
-    ]);
-
-    $this->assertDatabaseHas('department_management_mst', [
-      'department_mst_id' => $depNew->id,
-      'policy_department_mst_id' => $policyNew->id,
-    ]);
-  }
+        $this->assertDatabaseHas('department_management_mst', [
+            'department_mst_id' => $depNew->id,
+            'policy_department_mst_id' => $policyNew->id,
+        ]);
+    }
 }

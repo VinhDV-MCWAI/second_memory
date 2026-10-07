@@ -21,9 +21,7 @@ export default function UnauthorizedPage() {
         </div>
 
         {/* Error Code */}
-        <h1 className="mb-4 text-8xl font-bold text-slate-900 dark:text-white">
-          401
-        </h1>
+        <h1 className="mb-4 text-8xl font-bold text-slate-900 dark:text-white">401</h1>
 
         {/* Title */}
         <h2 className="mb-3 text-2xl font-semibold text-slate-900 dark:text-slate-100">
@@ -31,27 +29,31 @@ export default function UnauthorizedPage() {
         </h2>
 
         {/* Description */}
-        <p className="mb-6 text-slate-600 dark:text-slate-400">
-          {t('unauthorizedDescription')}
-        </p>
+        <p className="mb-6 text-slate-600 dark:text-slate-400">{t('unauthorizedDescription')}</p>
 
         {/* Actions */}
         <div className="flex flex-col gap-3 sm:flex-row sm:justify-center">
-          <Button onClick={() => window.history.back()} variant="outline" size="lg" className="gap-2">
+          <Button
+            onClick={() => window.history.back()}
+            variant="outline"
+            size="lg"
+            className="gap-2"
+          >
             <ArrowLeft className="h-4 w-4" />
             {tCommon('goBack')}
           </Button>
           <Button asChild size="lg" className="gap-2">
-            <Link href="/login">
-              {tCommon('signIn')}
-            </Link>
+            <Link href="/login">{tCommon('signIn')}</Link>
           </Button>
         </div>
 
         {/* Support Link */}
         <p className="mt-8 text-sm text-slate-500 dark:text-slate-400">
           {t('needHelp')}{' '}
-          <a href={`mailto:${SUPPORT_EMAIL}`} className="text-blue-600 hover:underline dark:text-blue-400">
+          <a
+            href={`mailto:${SUPPORT_EMAIL}`}
+            className="text-blue-600 hover:underline dark:text-blue-400"
+          >
             {t('support')}
           </a>
         </p>

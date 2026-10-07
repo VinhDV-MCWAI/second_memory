@@ -3,6 +3,7 @@
  */
 
 import { SORT_ORDER } from '../config/constant';
+import type { DepartmentMst, RoleMst } from './models';
 
 export interface ApiResponse<T> {
   data: T;
@@ -72,7 +73,7 @@ export interface ListQueryParams {
   page?: number;
   per_page?: number;
   sort_by?: string;
-  sort_order?: typeof SORT_ORDER[keyof typeof SORT_ORDER];
+  sort_order?: (typeof SORT_ORDER)[keyof typeof SORT_ORDER];
   from_date?: string; // Format: d/m/Y
   to_date?: string; // Format: d/m/Y
   [key: string]: FilterValue;
@@ -86,7 +87,7 @@ export interface UseApiDataOptions {
   page?: number;
   per_page?: number;
   sort_by?: string;
-  sort_order?: typeof SORT_ORDER[keyof typeof SORT_ORDER];
+  sort_order?: (typeof SORT_ORDER)[keyof typeof SORT_ORDER];
   from_date?: string;
   to_date?: string;
   filters?: Record<string, FilterValue>;
@@ -115,7 +116,7 @@ export interface UseApiDataReturn<T> {
  * useCrud Hook Types
  */
 
-export interface UseCrudReturn<T> {
+export interface UseCrudReturn {
   create: (data: Record<string, unknown>) => Promise<number>;
   update: (id: number, data: Record<string, unknown>) => Promise<number>;
   remove: (ids: number[]) => Promise<void>;
@@ -129,7 +130,7 @@ export interface UseCrudOptions {
    * Example: ['users'] will invalidate all user-related queries
    */
   invalidateKeys?: string[];
-  
+
   /**
    * Custom success messages
    */
@@ -141,288 +142,10 @@ export interface UseCrudOptions {
 }
 
 /**
- * useHistory Hook Types
+ * API models (generated from the OpenAPI spec, see ./models)
  */
 
-import type { BaseHistory, HistoryDiff } from './models/history';
-
-export interface UseHistoryOptions {
-  baseUrl: string;
-  recordId: number;
-}
-
-export interface UseHistoryReturn<T extends BaseHistory> {
-  history: T[];
-  isLoading: boolean;
-  error: Error | null;
-  pagination: {
-    page: number;
-    perPage: number;
-    total: number;
-  };
-  fetchHistory: (filters?: Record<string, unknown>) => Promise<void>;
-  compareVersions: (oldVersion: T, newVersion: T) => HistoryDiff[];
-  restoreVersion: (historyId: number) => Promise<void>;
-}
-
-/**
- * useJunctionTable Hook Types
- */
-
-export interface UseJunctionTableReturn<T = Record<string, unknown>> {
-  allItems: T[];
-  assignedIds: number[];
-  selectedIds: number[];
-  loading: boolean;
-  saving: boolean;
-  setSelectedIds: (ids: number[]) => void;
-  toggleSelection: (id: number) => void;
-  save: () => Promise<void>;
-  refetch: () => Promise<void>;
-}
-
-/**
- * Master Data Models
- */
-
-export interface AdminMst {
-  id: number;
-  email: string;
-  user_name: string;
-  password?: string;
-  first_name: string;
-  last_name: string;
-  address?: string;
-  phone_number?: string;
-  birth?: string | null;
-  gender: number;
-  status: number;
-  is_active: boolean;
-  is_delete: boolean;
-  avatar?: string;
-  updated_at: string;
-  created_at?: string;
-  // Relationships (when included)
-  roles?: RoleMst[];
-  departments?: DepartmentMst[];
-}
-
-export interface RoleMst {
-  id: number;
-  name: string;
-  permission: string;
-  is_active: boolean;
-  is_delete: boolean;
-  updated_at: string;
-  // Relationships
-  apis?: ApiMst[];
-  features?: FeatureMst[];
-}
-
-export interface DepartmentMst {
-  id: number;
-  code: string;
-  name: string;
-  status: number;
-  is_delete: boolean;
-  updated_at: string;
-}
-
-export interface FeatureMst {
-  id: number;
-  name: string;
-  group_name?: string;
-  status: number;
-  is_delete: boolean;
-  updated_at: string;
-}
-
-export interface ApiMst {
-  id: number;
-  type: number;
-  name: string;
-  path: string;
-  is_active: boolean;
-  feature_mst_id: number;
-  is_delete: boolean;
-  updated_at: string;
-  // Relationships
-  feature?: FeatureMst;
-}
-
-export interface TokenMst {
-  id: number;
-  account_id: number;
-  device_name: string;
-  ip_address: string;
-  expired_at: string;
-  updated_at: string;
-}
-
-export interface PolicyDepartmentMst {
-  id: number;
-  table_name: string;
-  row_id: number;
-  is_delete: boolean;
-  updated_at: string;
-  // Relationships
-  departments?: DepartmentMst[];
-}
-
-
-
-/**
- * Management Data Models
- */
-
-export interface BannerMgmt {
-  id: number;
-  title: string;
-  slug?: string;
-  description?: string;
-  image?: string;
-  position?: string;
-  status: number;
-  is_delete: boolean;
-  updated_at: string;
-}
-
-export interface LayoutStructureItem {
-  ui_id: string;
-  entry_desc_id?: number;
-  entry_mgmt_id?: number;
-  name?: string;
-  slug?: string;
-  children?: LayoutStructureItem[];
-}
-
-export interface CategoryMgmt {
-  id: number;
-  name: string;
-  slug: string;
-  description?: string;
-  status: number;
-  is_display: boolean;
-  rank_order: number;
-  is_delete: boolean;
-  layout_structure?: LayoutStructureItem[];
-  updated_at: string;
-  // Relationships
-  entries?: EntryMgmt[];
-}
-
-export interface EntryMgmt {
-  id: number;
-  name: string;
-  slug?: string;
-  status: number;
-  is_display?: boolean;
-  rank_order: number;
-  is_delete: boolean;
-  layout_structure?: LayoutStructureItem[];
-  updated_at: string;
-  // Relationships
-  entry_descriptions?: EntryDescriptionMgmt[];
-  categories?: CategoryMgmt[];
-}
-
-export interface EntryDescriptionMgmt {
-  id: number;
-  title: string;
-  summary?: string;
-  article?: string;
-  status: number;
-  is_display: boolean;
-  rank_order: number;
-  entry_mgmt_id: number;
-  is_delete: boolean;
-  updated_at: string;
-}
-
-export interface SliderMgmt {
-  id: number;
-  title: string;
-  slug?: string;
-  link?: string;
-  image?: string;
-  status: number;
-  is_delete: boolean;
-  updated_at: string;
-}
-
-export interface SocialMgmt {
-  id: number;
-  name: string;
-  slug?: string;
-  link: string;
-  image?: string;
-  status: number;
-  is_display: boolean;
-  rank_order: number;
-  is_delete: boolean;
-  updated_at: string;
-}
-
-export interface UserMgmt {
-  id: number;
-  email: string;
-  user_name: string;
-  password?: string;
-  first_name: string;
-  last_name: string;
-  address?: string;
-  phone_number?: string;
-  birth?: string | null;
-  gender: number;
-  status: number;
-  is_active: boolean;
-  is_delete: boolean;
-  avatar?: string;
-  updated_at: string;
-}
-
-export interface SettingLinkMgmt {
-  id: number;
-  name: string;
-  url: string;
-  description?: string;
-  rank_order: number;
-  status: number;
-  is_active: boolean;
-  is_delete: boolean;
-  updated_at: string;
-}
-
-/**
- * Junction Table Models
- */
-
-export interface AdminRoleMst {
-  admin_mst_id: number;
-  role_mst_id: number;
-}
-
-export interface AdminDepartmentMst {
-  admin_mst_id: number;
-  department_mst_id: number;
-}
-
-export interface ApiRoleMst {
-  api_mst_id: number;
-  role_mst_id: number;
-}
-
-export interface DepartmentManagementMst {
-  department_mst_id: number;
-  policy_department_mst_id: number;
-}
-
-
-
-export interface CategoryEntryMgmt {
-  category_mgmt_id: number;
-  entry_mgmt_id: number;
-}
+export type * from './models';
 
 /**
  * Junction Table Update Requests
@@ -460,8 +183,6 @@ export interface AuthUser {
   departments?: DepartmentMst[];
 }
 
-
-
 /**
  * API Endpoint Paths Constants
  */
@@ -470,10 +191,6 @@ export const API_PATHS = {
   STORE: '/store',
   UPDATE: '/update',
   DELETE: '/delete',
-  VIEW: '/view',
-  DOWNLOAD: '/download',
-  EXPORT: '/export',
-  IMPORT: '/import',
   PREPARE_UPLOAD: '/prepare-upload',
   INIT_MULTIPART_UPLOAD: '/init-multipart-upload',
   GET_MULTIPART_URL: '/get-multipart-url',
