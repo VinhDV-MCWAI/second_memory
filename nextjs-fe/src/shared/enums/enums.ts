@@ -86,23 +86,6 @@ export enum UploadStatus {
 }
 
 // ==========================================
-// FeatureStatus (app/Enums/FeatureStatus.php)
-// ==========================================
-export enum FeatureStatus {
-  INACTIVE = 0,
-  ACTIVE = 1,
-  DRAFT = 2,
-  ARCHIVED = 3,
-}
-
-export const FeatureStatusLabels: Record<FeatureStatus, string> = {
-  [FeatureStatus.INACTIVE]: 'Inactive',
-  [FeatureStatus.ACTIVE]: 'Active',
-  [FeatureStatus.DRAFT]: 'Draft',
-  [FeatureStatus.ARCHIVED]: 'Archived',
-};
-
-// ==========================================
 // ActionType (app/Enums/ActionType.php)
 // History/Audit action types
 // ==========================================
@@ -113,30 +96,10 @@ export enum ActionType {
 }
 
 // ==========================================
-// TypeOfMethod (app/Enums/TypeOfMethod.php)
-// HTTP methods for API permissions
-// ==========================================
-export enum TypeOfMethod {
-  GET = 0,
-  POST = 1,
-  PUT = 2,
-  PATCH = 3,
-  DELETE = 4,
-}
-
-export const TypeOfMethodLabels: Record<TypeOfMethod, string> = {
-  [TypeOfMethod.GET]: 'GET',
-  [TypeOfMethod.POST]: 'POST',
-  [TypeOfMethod.PUT]: 'PUT',
-  [TypeOfMethod.PATCH]: 'PATCH',
-  [TypeOfMethod.DELETE]: 'DELETE',
-};
-
-// ==========================================
 // DEPRECATED - Remove after migration
 // Legacy Status enum (use IsActive or specific status enums instead)
 // ==========================================
-/** @deprecated Use IsActive or specific status enums like AdminStatus, FeatureStatus, etc. */
+/** @deprecated Use IsActive or specific status enums like AdminStatus. */
 export const Status = IsActive;
 /** @deprecated Use IsActiveLabels or specific status labels */
 export const StatusLabels = IsActiveLabels;

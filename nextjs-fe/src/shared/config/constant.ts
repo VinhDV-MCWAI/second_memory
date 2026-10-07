@@ -181,10 +181,6 @@ export const SESSION_COOKIE_NAME = 'laravel_session';
 // Admin Routes
 export const ADMIN_ROUTES = {
   DASHBOARD: '/admin',
-  APIS: '/admin/apis',
-  FEATURES: '/admin/features',
-  TOKENS: '/admin/tokens',
   ADMINS: '/admin/admins',
-  ROLES: '/admin/roles',
   LOGIN: '/login',
 } as const;

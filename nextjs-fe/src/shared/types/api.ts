@@ -3,7 +3,6 @@
  */
 
 import { SORT_ORDER } from '@/shared/config';
-import type { RoleMst } from './models';
 
 export interface ApiResponse<T> {
   data: T;
@@ -170,16 +169,6 @@ export interface LoginResponse {
   ttl: number;
   access_token: string;
   _cookie?: string;
-}
-
-export interface AuthUser {
-  id: number;
-  email: string;
-  user_name: string;
-  first_name: string;
-  last_name: string;
-  avatar?: string;
-  roles?: RoleMst[];
 }
 
 /**

@@ -193,18 +193,10 @@
   "entities": {
     "admin": "Admin",
     "admins": "Admins",
-    "role": "Role",
-    "roles": "Roles",
-    "feature": "Feature",
-    "features": "Features",
     "skill": "Skill",
     "skills": "Skills",
     "skillDescription": "Skill Description",
     "skillDescriptions": "Skill Descriptions",
-    "token": "Token",
-    "tokens": "Tokens",
-    "api": "API",
-    "apis": "APIs",
     "file": "File"
   },
   "fields": {
@@ -227,7 +219,6 @@
     "method": "Method",
     "platform": "Platform",
     "adminId": "Admin ID",
-    "token": "Token",
     "image": "Image",
     "link": "Link",
     "accountId": "Account ID",
@@ -291,7 +282,6 @@
   },
   "forms": {
     "labels": {
-      "roles": "Roles",
       "firstName": "First Name",
       "lastName": "Last Name",
       "username": "Username",
@@ -311,7 +301,6 @@
       "ipAddress": "IP Address",
       "expiredAt": "Expired At",
       "iconImageUrl": "Icon/Image URL",
-      "feature": "Feature",
       "name": "Name",
       "groupName": "Group Name",
       "path": "Path",
@@ -319,23 +308,17 @@
       "description": "Description",
       "title": "Title",
       "linkUrl": "Link URL",
-      "position": "Position",
-      "permission": "Permission"
+      "position": "Position"
     },
     "placeholders": {
-      "apiName": "API Name",
-      "apiPath": "/api/v1/...",
       "urlExample": "https://example.com",
       "iconExample": "e.g., 📱 or fa-mobile",
       "termsOfService": "e.g. Terms of Service",
-      "enterToken": "Enter token key",
       "passwordHidden": "••••••••",
       "leaveBlankToKeepCurrent": "Leave Blank To Keep Current",
-      "selectFeature": "Select Feature",
       "selectAccount": "Select Account",
       "deviceName": "Device Name",
       "ipAddress": "IP Address",
-      "selectRoles": "Select roles",
       "settingKey": "e.g. privacy_policy",
       "settingValue": "https://example.com/privacy"
     }
@@ -385,10 +368,6 @@
     "avatar": {
       "maxLength": "Avatar path cannot exceed {max} characters"
     },
-    "name": {
-      "required": "Name is required",
-      "maxLength": "Name cannot exceed {max} characters"
-    },
     "title": {
       "required": "Title is required"
     },
@@ -406,29 +385,6 @@
     },
     "position": {
       "required": "Position is required"
-    },
-    "permission": {
-      "required": "Permission is required",
-      "maxLength": "Permission cannot exceed {max} characters"
-    },
-    "feature": {
-      "required": "Feature is required"
-    },
-    "account": {
-      "required": "Account is required"
-    },
-    "groupName": {
-      "required": "Group Name is required",
-      "maxLength": "Group Name cannot exceed {max} characters"
-    },
-    "deviceName": {
-      "required": "Device name is required"
-    },
-    "type": {
-      "required": "Type is required"
-    },
-    "path": {
-      "required": "Path is required"
     },
     "invalidEmail": "Invalid Email",
     "saving": "Saving",
@@ -460,49 +416,5 @@
   "download": "Download",
   "delete": "Delete",
   "previous": "Previous",
-  "next": "Next",
-  "multiSelect": {
-    "placeholder": "Placeholder",
-    "search": "Search",
-    "noItems": "No Items"
-  },
-  "permissions": {
-    "title": "Title",
-    "description": "Description"
-  },
-  "roleWizard": {
-    "step": "Step",
-    "step1Description": "Enter the role name and set the permission level",
-    "step2Description": "Select APIs that will be available for this role",
-    "step3Description": "Review all changes before final confirmation",
-    "roleSetup": "Role Setup",
-    "permissionSetup": "Permission Setup",
-    "selectedApis": "Selected APIs",
-    "searchFeature": "Search feature...",
-    "searchApi": "Search API or path...",
-    "filterByMethod": "Filter by HTTP method",
-    "noApis": "No APIs found",
-    "apisInThisFeature": "APIs in this feature",
-    "enterRoleName": "Enter role name",
-    "enterPermission": "Enter permission",
-    "skip": "Skip",
-    "back": "Back",
-    "roleInformation": "Role Information",
-    "operationType": "Operation Type",
-    "confirmCancel": "Cancel Changes?",
-    "cancelConfirmMessage": "Are you sure you want to cancel? All unsaved changes will be lost.",
-    "confirmSubmit": "Confirm Changes?",
-    "submitConfirmMessage": "Review the information above and confirm to proceed with the changes.",
-    "noPermissionsSelected": "No APIs selected - this role will have no permissions.",
-    "confirmationInfo": "Please review all information carefully before confirming.",
-    "roleNameHelp": "Enter a unique name for this role",
-    "permissionHelp": "Enter the permission code for this role",
-    "statusHelp": "Set whether this role is active or inactive",
-    "step1Info": "Complete the basic role information in this step. You can manage permissions in the next step.",
-    "step2Info": "Select the APIs that this role should have access to. You can skip this step if you want to add permissions later.",
-    "all": "All",
-    "selected": "selected",
-    "review": "Review",
-    "confirm": "Confirm"
-  }
+  "next": "Next"
 }

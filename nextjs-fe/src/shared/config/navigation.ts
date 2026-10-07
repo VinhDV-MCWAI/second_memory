@@ -1,4 +1,4 @@
-import { LayoutDashboard, Database, Shield, Code, Sparkles, Key, UserCog } from 'lucide-react';
+import { LayoutDashboard, Database, UserCog } from 'lucide-react';
 import { MenuItem } from '@/shared/types';
 import { ADMIN_ROUTES } from '@/shared/config';
 
@@ -16,26 +16,6 @@ export const NAVIGATION_MENU: MenuItem[] = [
         label: 'entities.admins',
         icon: UserCog,
         href: ADMIN_ROUTES.ADMINS,
-      },
-      {
-        label: 'entities.roles',
-        icon: Shield,
-        href: ADMIN_ROUTES.ROLES,
-      },
-      {
-        label: 'entities.apis',
-        icon: Code,
-        href: ADMIN_ROUTES.APIS,
-      },
-      {
-        label: 'entities.features',
-        icon: Sparkles,
-        href: ADMIN_ROUTES.FEATURES,
-      },
-      {
-        label: 'entities.tokens',
-        icon: Key,
-        href: ADMIN_ROUTES.TOKENS,
       },
     ],
   },

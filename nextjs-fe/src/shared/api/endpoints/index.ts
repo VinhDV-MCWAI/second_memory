@@ -9,14 +9,6 @@ export const API_ENDPOINTS = {
   },
   MASTER: {
     ADMIN: '/admin/admin-mst',
-    ROLE: '/admin/role-mst',
-    FEATURE: '/admin/feature-mst',
-    API: '/admin/api-mst',
-    TOKEN: '/admin/token-mst',
-  },
-  JUNCTION: {
-    ADMIN_ROLE: '/admin/admin-role-mst',
-    API_ROLE: '/admin/api-role-mst',
   },
 } as const;
 

@@ -1,11 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import {
-  getAdminSchema,
-  getApiSchema,
-  getFeatureSchema,
-  getRoleSchema,
-  getTokenSchema,
-} from './validation';
+import { getAdminSchema } from './validation';
 import { ValidationRules } from './validation-rules';
 import { AdminStatus, Gender } from '@/shared/enums';
 
@@ -49,47 +43,5 @@ describe('admin schema', () => {
 
   it('reject an unknown status', () => {
     expect(getAdminSchema(t).safeParse({ ...person, status: 99 }).success).toBe(false);
-  });
-});
-
-describe('master data schemas', () => {
-  it('enforce role limits', () => {
-    expect(
-      messagesOf(
-        getRoleSchema(t).safeParse({ name: 'x'.repeat(31), permission: '', is_active: true }),
-      ),
-    ).toEqual(['name.maxLength:{"max":30}', 'permission.required']);
-  });
-
-  it('validate features, APIs and tokens', () => {
-    expect(
-      messagesOf(getFeatureSchema(t).safeParse({ name: 'Users', group_name: '', status: 1 })),
-    ).toEqual(['groupName.required']);
-    expect(
-      getApiSchema(t).safeParse({
-        name: 'List admins',
-        path: '/admin/admin-mst/list',
-        type: 1,
-        method: 'GET',
-        feature_mst_id: 1,
-        is_active: true,
-      }).success,
-    ).toBe(true);
-    expect(
-      messagesOf(
-        getApiSchema(t).safeParse({
-          name: 'x',
-          path: 'y',
-          type: 1,
-          method: 'TRACE',
-          feature_mst_id: 0,
-          is_active: true,
-        }),
-      ),
-    ).toHaveLength(2);
-    expect(messagesOf(getTokenSchema(t).safeParse({ account_id: 0, device_name: '' }))).toEqual([
-      'account.required',
-      'deviceName.required',
-    ]);
   });
 });

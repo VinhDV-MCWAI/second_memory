@@ -209,42 +209,6 @@ export interface FormBuilderProps {
 }
 
 /**
- * Multi Select Component Props
- */
-export interface MultiSelectProps {
-  label?: string;
-  placeholder?: string;
-  options: SelectOption[];
-  value: (string | number)[];
-  onChange: (value: (string | number)[]) => void;
-  required?: boolean;
-  disabled?: boolean;
-  className?: string;
-}
-
-/**
- * Permission Manager Types
- */
-export interface Permission {
-  id: number;
-  name: string;
-  description?: string;
-  category?: string;
-}
-
-export interface PermissionGroup {
-  name: string;
-  permissions: Permission[];
-}
-
-export interface PermissionManagerProps {
-  permissions: PermissionGroup[];
-  selectedPermissions: number[];
-  onChange: (selectedIds: number[]) => void;
-  disabled?: boolean;
-}
-
-/**
  * Saved Filters Types
  */
 export interface SavedFilter {

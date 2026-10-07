@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
-import { useQueryClient } from '@tanstack/react-query';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useTranslations } from 'next-intl';
 import { IsActive } from '@/shared/enums/enums';
@@ -17,15 +16,13 @@ import { Label } from '@/components/ui/label';
 import { FormField } from '@/components/common/form-field';
 import { OptionSelect } from '@/components/common/option-select';
 import { enumOptions } from '@/shared/utils/enum-options';
-import { MultiSelect } from '@/components/common/multi-select';
 import { AvatarUpload } from '@/components/common/avatar-upload';
 import type { AdminMst } from '@/shared/types/api';
-import { ENDPOINTS, queryKeys } from '@/shared/api';
+import { ENDPOINTS } from '@/shared/api';
 import { AdminStatus, Gender, GenderLabels, AdminStatusLabels } from '@/shared/enums';
 import { UPLOAD_CONFIG } from '@/shared/config';
 import { getAdminSchema, type AdminFormData } from '@/shared/validation/validation';
 import type { ResourceFormProps } from '@/components/common/resource-list-page';
-import { useAdminRoles } from '@/features/master/hooks/use-admin-roles';
 
 const STATUS_OPTIONS = [
   AdminStatus.ACTIVE,
@@ -40,16 +37,9 @@ export function AdminForm({ initialData, onSuccess, onCancel }: ResourceFormProp
   const tLabels = useTranslations('forms.labels');
   const tValidation = useTranslations('validation');
   const isEdit = !!initialData;
-  const queryClient = useQueryClient();
-  const { create, update, loading } = useCrud(ENDPOINTS.MASTER.ADMIN, {
-    invalidateKeys: [], // Disable auto-invalidation to ensure sequence: Create/Update -> Role Update -> List Refresh
-  });
+  const { create, update, loading } = useCrud(ENDPOINTS.MASTER.ADMIN);
   const [avatarPreview, setAvatarPreview] = useState<string | null>(
     () => initialData?.avatar ?? null,
-  );
-
-  const { roleOptions, selectedRoleIds, setSelectedRoleIds, resetRoles, saveRoles } = useAdminRoles(
-    initialData?.id,
   );
 
   const {
@@ -99,9 +89,8 @@ export function AdminForm({ initialData, onSuccess, onCancel }: ResourceFormProp
         is_active: true,
         avatar: '',
       });
-      resetRoles();
     }
-  }, [initialData, reset, resetRoles]);
+  }, [initialData, reset]);
 
   const { execute, isLoading: isActionProcessing } = useActionLock({
     delay: UI_CONSTANTS.ACTION_DELAY_MS,
@@ -125,37 +114,18 @@ export function AdminForm({ initialData, onSuccess, onCancel }: ResourceFormProp
           payload.birth = formatDateForBackend(data.birth);
         }
 
-        let adminId: number | undefined;
-
         if (isEdit && initialData) {
           if (!payload.password) {
             delete payload.password;
           }
           await update(initialData.id, payload);
-          adminId = initialData.id;
         } else {
-          adminId = await create({
+          await create({
             ...payload,
             is_delete: false,
           });
         }
 
-        // Role assignment failures do not block the save
-        if (adminId) {
-          try {
-            await saveRoles(adminId);
-          } catch (roleError) {
-            console.error('Failed to assign roles:', roleError);
-          }
-        }
-
-        // Manually invalidate list query after all operations (admin + roles) are complete
-        await Promise.all([
-          queryClient.invalidateQueries({ queryKey: queryKeys.resource(ENDPOINTS.MASTER.ADMIN) }),
-          queryClient.invalidateQueries({
-            queryKey: queryKeys.resource(ENDPOINTS.JUNCTION.ADMIN_ROLE),
-          }),
-        ]);
         onSuccess();
       } catch (error: unknown) {
         console.error(error);
@@ -292,16 +262,6 @@ export function AdminForm({ initialData, onSuccess, onCancel }: ResourceFormProp
             options={STATUS_OPTIONS}
           />
         </FormField>
-      </div>
-
-      <div className="space-y-2">
-        <MultiSelect
-          label={tLabels('roles')}
-          placeholder={tForms('selectRoles')}
-          options={roleOptions}
-          value={selectedRoleIds}
-          onChange={setSelectedRoleIds}
-        />
       </div>
 
       <div className="mt-4 flex items-center gap-2">
