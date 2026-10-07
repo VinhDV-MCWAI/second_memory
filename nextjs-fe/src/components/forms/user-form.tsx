@@ -5,7 +5,7 @@ import { useForm, useWatch } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useTranslations } from 'next-intl';
 import { IsActive } from '@/shared/enums/enums';
-import type { UserUpdatePayload, UserCreatePayload } from '@/shared/types/payloads';
+import type { components } from '@/shared/types/openapi';
 import { useCrud } from '@/shared/hooks/useCrud';
 import { useActionLock } from '@/shared/hooks/useActionLock';
 import { UI_CONSTANTS } from '@/shared/config';
@@ -102,7 +102,7 @@ export function UserForm({ initialData, onSuccess, onCancel }: UserFormProps) {
     await execute(async () => {
       try {
         const { password, ...otherData } = data;
-        const payload: UserUpdatePayload | UserCreatePayload = {
+        const payload: Omit<components['schemas']['UpdateUserMgmtRequest'], 'id'> = {
           ...otherData,
           is_active: otherData.is_active ? IsActive.TRUE : IsActive.FALSE,
         };
