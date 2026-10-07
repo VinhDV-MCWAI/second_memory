@@ -18,10 +18,10 @@ docker exec ml-php php artisan migrate:fresh --seed      # DEV ONLY, destroys da
 
 `Route → Middleware → Controller → FormRequest → Service → Repository → Model`
 
-- **Module scopes:** `Master` (`*Mst` — admins, roles, departments, features, APIs, tokens: RBAC), `Management` (`*Mgmt` — categories, entries, banners, sliders, media, …: content), `History` (`*Hist` — audit rows per entity).
+- **Module scopes:** `Master` (`*Mst` — admins, roles, features, APIs, tokens: RBAC), `Management` (`*Mgmt` — categories, entries, entry descriptions, media: content), `History` (`*Hist` — audit rows per entity).
 - Each entity has: Controller, `List/Store/Update/Delete` FormRequests, Repository, Service, Resource, Model, Factory, Feature tests under `tests/Feature/{Master,Management,History}`. Services type-hint the concrete repository (no interfaces).
 - **Controllers** stay explicit (typed FormRequests, `$request->validated()` only). **List requests** extend `Http/Requests/ListRequest` (shared `id`/`page`/`per_page`/`sort_by`/`sort_order` rules) and declare `filters()`. A field without a rule never reaches the service.
-- **Services:** `CrudService` (list/store/update/delete via `$resource`) or `AuditedCrudService` (also writes a `*_hist` row per create/update/delete; set `$historyForeignKey`). Entity services usually only declare those properties and a constructor. Junction services (`Admin*Mst`, `ApiRoleMst`, `DepartmentManagementMst`) extend `BaseJunctionService`.
+- **Services:** `CrudService` (list/store/update/delete via `$resource`) or `AuditedCrudService` (also writes a `*_hist` row per create/update/delete; set `$historyForeignKey`). Entity services usually only declare those properties and a constructor. Junction services (`AdminRoleMst`, `ApiRoleMst`) extend `BaseJunctionService`.
 - **Repositories:** `CrudRepository` (hard delete; history tables, `TokenMst`) or `SoftDeleteCrudRepository` (`is_delete` flag, refuses updates of deleted rows, `$deleteBlockedBy` relations). Entities implement `list()` and override `fillable()` to normalize payloads (password hashing, date formats). `BaseRepository` has `applyFilters`, `applyDateRange`, `applySorting`, `validateForeignKeys`, `checkCanDelete`.
 - Soft delete = `is_delete` column + `Traits/HasSoftDelete` (`notDeleted()` scope).
 - Enums: one `label()` per enum; `status`/`gender` are cast to enums on management/master models (not `AdminMst`), Resources emit `->value`.
@@ -39,5 +39,5 @@ docker exec ml-php php artisan migrate:fresh --seed      # DEV ONLY, destroys da
 
 - New Larastan errors must be fixed, not added to the baseline; regenerate it only when the baseline shrinks (`composer analyse -- --generate-baseline=phpstan-baseline.neon`).
 - Tests hit a real PostgreSQL `testing` DB (see `phpunit.xml`), run inside `ml-php`.
-- DB views/triggers are created in migrations `..._000046` – `..._000049`; changing RBAC tables means checking those too.
+- DB view `admin_permission_view` and trigger `after_api_insert` (migrations `..._000046`, `..._000048`) sit on the RBAC tables; changing those tables means checking them too. Removed modules are dropped by `2026_10_07_*_drop_*` migrations whose `down()` replays the original ones (`App\Support\Database\ReplaysMigrations`).
 - Media upload goes to MinIO via `Services/MinioService.php` with queued jobs in `Jobs/Media`; broadcast progress over Reverb.

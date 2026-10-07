@@ -17,7 +17,7 @@ docker exec ml-nextjs pnpm format:check    # Prettier (.prettierrc.json, same as
 - `src/shared/api` — axios client (`client/`, cookie auth, refresh-token interceptor) and `API_ENDPOINTS`. Error toasts are shown by callers via `getApiErrorMessage` (`src/shared/utils/error-handler.ts`).
 - `src/shared/hooks` — `useApiData` (list query), `useCrud` (mutations), `useFileManager`, `useActionLock`. Query keys come from `queryKeys` (`src/shared/api/query-keys.ts`).
 - `src/shared/services` — service classes per module + factories; `multipart-uploader.ts` for MinIO multipart upload.
-- `src/shared/types/openapi.d.ts` — **generated** from `laravel-api/openapi.json` (`make openapi` regenerates spec + types; CI fails when stale). Never edit it; `types/models/*` alias its Resource schemas (`AdminMst`, `BannerMgmt`, `HistoryRecord`, …).
+- `src/shared/types/openapi.d.ts` — **generated** from `laravel-api/openapi.json` (`make openapi` regenerates spec + types; CI fails when stale). Never edit it; `types/models/*` alias its Resource schemas (`AdminMst`, `CategoryMgmt`, `HistoryRecord`, …).
 - `src/shared/types`, `src/shared/enums`, `src/shared/config` — UI types, enums mirrored from the backend, constants.
 - `src/components/ui` — shadcn primitives (generated; edit sparingly). `common/` reusable widgets, `forms/` entity forms, `features/` editor/history/auth, `layout/`.
 - i18n: `messages/en.json` via next-intl; every user-facing string goes through `useTranslations`.
