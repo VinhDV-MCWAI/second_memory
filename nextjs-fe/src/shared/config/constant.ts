@@ -197,7 +197,6 @@ export const ADMIN_ROUTES = {
   ENTRY_DESCRIPTIONS: '/admin/entry-descriptions',
   FILE_MANAGER: '/admin/file-manager',
   ADMINS: '/admin/admins',
-  USERS: '/admin/users',
   ROLES: '/admin/roles',
   LOGIN: '/login',
   SETTINGS_GENERAL: '/admin/settings/general',

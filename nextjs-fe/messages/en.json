@@ -214,8 +214,6 @@
     "step3Description": "Review all changes before final confirmation"
   },
   "entities": {
-    "user": "User",
-    "users": "Users",
     "admin": "Admin",
     "admins": "Admins",
     "role": "Role",

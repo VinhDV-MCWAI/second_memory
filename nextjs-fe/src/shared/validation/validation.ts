@@ -3,7 +3,6 @@ import {
   Gender,
   StatusEnum,
   AdminStatus,
-  UserStatus,
   CategoryStatus,
   DepartmentStatus,
   FeatureStatus,
@@ -85,7 +84,6 @@ export const categoryStatusValidation = z.preprocess(
 );
 export const departmentStatusValidation = z.nativeEnum(DepartmentStatus);
 export const featureStatusValidation = z.nativeEnum(FeatureStatus);
-export const userStatusValidation = z.nativeEnum(UserStatus);
 export const entryStatusValidation = z.preprocess(
   (val) => (typeof val === 'string' ? Number(val) : val),
   z.nativeEnum(EntryStatus),
@@ -109,28 +107,6 @@ export const getAdminSchema = (t: Translator) =>
   });
 
 export type AdminFormData = z.infer<ReturnType<typeof getAdminSchema>>;
-
-// User schema
-export const getUserSchema = (t: Translator) =>
-  z.object({
-    email: getEmailValidation(t),
-    user_name: getUsernameValidation(t),
-    password: z
-      .union([getPasswordValidation(t), z.literal('')])
-      .optional()
-      .nullable(),
-    first_name: getFirstNameValidation(t),
-    last_name: getLastNameValidation(t),
-    address: getAddressValidation(t),
-    phone_number: getPhoneValidation(t),
-    birth: z.string().optional(),
-    gender: genderValidation,
-    status: userStatusValidation,
-    is_active: z.boolean(),
-    avatar: getAvatarValidation(t),
-  });
-
-export type UserFormData = z.infer<ReturnType<typeof getUserSchema>>;
 
 // Category schema
 export const getCategorySchema = (t: Translator) =>

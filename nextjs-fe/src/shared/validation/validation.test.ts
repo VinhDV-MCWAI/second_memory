@@ -10,10 +10,9 @@ import {
   getPolicyDepartmentSchema,
   getRoleSchema,
   getTokenSchema,
-  getUserSchema,
 } from './validation';
 import { ValidationRules } from './validation-rules';
-import { AdminStatus, Gender, UserStatus } from '@/shared/enums';
+import { AdminStatus, Gender } from '@/shared/enums';
 
 // Echo the key and params so assertions can check which message was chosen.
 const t = (key: string, params?: Record<string, string | number>) =>
@@ -31,13 +30,10 @@ const person = {
   is_active: true,
 };
 
-describe('admin and user schemas', () => {
+describe('admin schema', () => {
   it('accept a valid record and an empty password (keep current password)', () => {
     expect(
       getAdminSchema(t).safeParse({ ...person, status: AdminStatus.ACTIVE, password: '' }).success,
-    ).toBe(true);
-    expect(
-      getUserSchema(t).safeParse({ ...person, status: UserStatus.ACTIVE, password: null }).success,
     ).toBe(true);
   });
 
@@ -57,7 +53,7 @@ describe('admin and user schemas', () => {
   });
 
   it('reject an unknown status', () => {
-    expect(getUserSchema(t).safeParse({ ...person, status: 99 }).success).toBe(false);
+    expect(getAdminSchema(t).safeParse({ ...person, status: 99 }).success).toBe(false);
   });
 });
 

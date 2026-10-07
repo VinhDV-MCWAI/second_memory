@@ -20,24 +20,6 @@ export const StatusEnumLabels: Record<StatusEnum, string> = {
 };
 
 // ==========================================
-// UserStatus (app/Enums/UserStatus.php)
-// Status for User users
-// ==========================================
-export enum UserStatus {
-  INACTIVE = 0,
-  ACTIVE = 1,
-  WAITING = 2,
-  SUSPENDED = 3,
-}
-
-export const UserStatusLabels: Record<UserStatus, string> = {
-  [UserStatus.INACTIVE]: 'Inactive',
-  [UserStatus.ACTIVE]: 'Active',
-  [UserStatus.WAITING]: 'Waiting',
-  [UserStatus.SUSPENDED]: 'Suspended',
-};
-
-// ==========================================
 // AdminStatus (app/Enums/AdminStatus.php)
 // Status for Admin users
 // ==========================================

@@ -20,7 +20,6 @@ export const API_ENDPOINTS = {
     CATEGORY: '/admin/category-mgmt',
     ENTRY: '/admin/entry-mgmt',
     ENTRY_DESCRIPTION: '/admin/entry-description-mgmt',
-    USER: '/admin/user-mgmt',
   },
   JUNCTION: {
     ADMIN_ROLE: '/admin/admin-role-mst',

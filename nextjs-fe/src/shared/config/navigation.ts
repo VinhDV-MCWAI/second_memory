@@ -1,6 +1,5 @@
 import {
   LayoutDashboard,
-  Users,
   Settings,
   FolderOpen,
   Database,
@@ -75,11 +74,6 @@ export const NAVIGATION_MENU: MenuItem[] = [
     label: 'navigation.contentManagement',
     icon: Package,
     children: [
-      {
-        label: 'entities.users',
-        icon: Users,
-        href: ADMIN_ROUTES.USERS,
-      },
       {
         label: 'entities.categories',
         icon: Grid3x3,

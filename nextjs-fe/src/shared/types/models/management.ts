@@ -20,7 +20,6 @@ type WithLayout<T extends { layout_structure: unknown }> = Omit<T, 'layout_struc
   layout_structure: LayoutStructureItem[] | null;
 };
 
-export type UserMgmt = Schemas['UserMgmtResource'];
 export type CategoryMgmt = WithLayout<Schemas['CategoryMgmtResource']>;
 export type EntryMgmt = WithLayout<Schemas['EntryMgmtResource']>;
 export type EntryDescriptionMgmt = Schemas['EntryDescriptionMgmtResource'];
