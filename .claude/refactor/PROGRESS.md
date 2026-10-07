@@ -62,8 +62,21 @@ How the conflicts were resolved:
 1. `git push -u origin refactor/p4-frontend`
 2. PR `refactor/p4-frontend` → `developer`; wait for CI (frontend, backend, docker build — first real run on GitHub; the docker job was never built locally). Merge it.
 3. PR `developer` → `main`; merge it.
-4. Clean up locally once merged: `git branch -d refactor/p0-p1-foundation refactor/p2-upgrades refactor/p3-backend` and `git branch -D backup/pre-msg-rewrite` (all fully contained in `refactor/p4-frontend`). Old remote branches `feature/*`, `staging`: user's call.
+4. Local cleanup: **done 2026-10-07** — `refactor/p0-p1-foundation`, `refactor/p2-upgrades`, `refactor/p3-backend`, `backup/pre-msg-rewrite` deleted (all contained in `refactor/p4-frontend`). Local branches left: `main`, `refactor/p4-frontend`.
+   Remote junk branches (user deletes, needs push rights):
+   - fully merged into developer and main, safe: `git push origin --delete feature/Refactor-readme feature/laravel-api/create-migration feature/temp-test staging` (`staging` is not used by CI/CD; `cd.yml` deploys only on push to `developer`)
+   - **not merged**, throwaway experiments (2023 Nuxt theme demo, `demo2` test): `git push origin --delete feature/nuxtjs-fe/demo feature/temp-test2` — commits are lost after this, keep them only if still wanted
+   - after deleting: `git fetch --prune`
+   - `refactor/p4-frontend` itself is deleted automatically after its PR is merged (`cleanup-branch.yml`); then locally `git checkout developer && git pull && git branch -d refactor/p4-frontend`.
 5. Continue the refactor on a new branch from the updated `developer` (e.g. `refactor/fe6-features`), per the Git flow in CLAUDE.md.
+
+**Warning: merging into `developer` deploys.** `cd.yml` builds images and deploys to the self-hosted server on every push to `developer`. The first merge ships Laravel 13 / PHP 8.5 / Node 24 and new migrations; make sure the server `.env` has the variables `setup-env.sh` now generates and back up the DB first.
+
+**Branch auto-delete:** `.github/workflows/cleanup-branch.yml` deletes the head branch of a merged PR when it starts with `refactor/ feature/ fix/ hotfix/ chore/ docs/ test/` and comes from this repo. It never deletes `developer`/`main`/`staging`. Keep the repo setting "Automatically delete head branches" **off** (it would delete `developer` after the developer → main PR).
+
+**Recommended GitHub settings (manual, free on public repos):** Settings → Rules → Rulesets → New branch ruleset for `developer` and `main`: restrict deletions, block force pushes, require a pull request, require status checks `Frontend (lint, format, typecheck, test)` and `Backend (pint, larastan, tests)` (they appear after CI has run once). Settings → Actions → General → Workflow permissions can stay "Read" — workflows request what they need via `permissions:`.
+
+**Cost:** the repo is public → GitHub Actions minutes are free and unlimited on GitHub-hosted runners (CI, cleanup, CD image build), and the self-hosted deploy job is free too; the 2026 pricing changes only affect private repos. GHCR images of a public repo are free. If the repo is ever made private on the Free plan: 2,000 min/month and no branch rulesets.
 
 If CI fails on GitHub: check first whether it is environment-only (secrets, runner, docker cache) — everything passes locally with `make verify`.
 
@@ -187,6 +200,7 @@ User delegated all P2+ items on 2026-10-06 ("toàn quyền thực hiện, không
 - 2026-10-07 — Stack restart needed (`make up`; Redis was slow to become healthy on first try, retry worked). FE1 done.
 - 2026-10-07 — Password hash leak fixed. FE4 done (+ integer Resource fields, history viewer, setting links).
 - 2026-10-07 — FE5 done (+ bulk status buttons removed, default sorts fixed).
+- 2026-10-07 — Local junk branches deleted; `cleanup-branch.yml` added (auto-delete merged work branches); remote cleanup commands + GitHub settings documented.
 - 2026-10-07 — Merged `origin/developer` (`-s ours`, old-message copies) and `origin/main` (`.gitignore` resolved) into `refactor/p4-frontend`; `make verify` green. Waiting for the user to push/PR.
 - 2026-10-07 — Import/export fake toolbar removed, lint warnings cleared (25 → 1). FE6 started: feature folders (`8021a54`). Paused by the user; branch analysis written into the handoff summary.
 
