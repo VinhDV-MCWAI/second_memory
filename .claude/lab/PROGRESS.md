@@ -3,6 +3,18 @@
 > Handoff log. Updated after every task so a new conversation can resume.
 > To resume: read this file, then `docs/plan/03-backlog.md`, then continue at **Next step** with the `/lab-task` skill.
 
+## Plan status at a glance (2026-10-07)
+
+| Phase | Tasks | Status | Release |
+|---|---|---|---|
+| P0 Baseline | P0-01…P0-09 | done locally; P0-02 push/PRs, P0-06 GitHub board, P0-09 remote cleanup wait for the owner | `v1.0.0` (local tag) |
+| P1 Handbook | P1-01…P1-14 | done | `v1.1.0` (local tag) |
+| P2 Slim down | P2-01…P2-12 done (RFC-001 slices 1–9) | **P2-13 todo** (slice 10: metrics, regression, `v2.0.0`, retro) | `v2.0.0` pending |
+| P3 Skill Ledger | P3-00…P3-08 | todo (starts with P3-00 refinement) | `v2.1.0` |
+| P4–P11 | coarse | not started | – |
+
+Records written in P2: REQ-001, RFC-001, ADR-0003…0006, PRB-001 (solved), PRB-002 (solved), runbook `content-export.md`.
+
 ## State
 
 | | |

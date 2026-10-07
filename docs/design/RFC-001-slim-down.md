@@ -110,18 +110,18 @@ Plus framework tables (`cache`, `jobs`, sessions in Redis). 43 tables / 2 views 
 
 > 🇻🇳 Các lát cắt theo thứ tự triển khai. Mỗi lát là một hoặc vài commit, `make verify` xanh sau mỗi lát.
 
-| # | Slice | Backlog | Why this position |
-|---|---|---|---|
-| 1 | `content:export-markdown` command (idempotent, tested with factories) | P2-05b | Must exist before content tables are dropped (REQ-001 H1) |
-| 2 | Remove sliders, banners, setting links, socials (FE → API → tests → drop tables) | P2-06/07/09 | No dependencies, lowest risk: proves the removal pattern |
-| 3 | Remove end-user management | P2-06/07/09 | Independent |
-| 4 | Remove departments and policies (+ unused view, trigger, seeder part) | P2-06/07/09 | Independent of login (view unused) |
-| 5 | Remove the content CMS + public docs API; docs site shows "content moved" | P2-06/07/09 | After slice 1; changes the docs site contract (both apps in the same slice) |
-| 6 | Remove the file-manager explorer UI, keep media API | P2-06 | Avatar upload still needs the API |
-| 7 | Replace custom JWT with Sanctum SPA cookie auth | P2-10/11 | Largest risk; done when fewer modules depend on auth |
-| 8 | Roles → `owner` / `viewer` with Gates/Policies; drop RBAC tables, view, trigger, tokens | P2-12 | Needs slice 7 (login no longer reads `admin_permission_view`) |
-| 9 | `audit_log` replaces remaining `*_hist` (expand → backfill → switch → contract) | P2-08 | Only `admin_mst` history is left by then; small, clean exercise |
-| 10 | Regression, metrics after, release notes, `v2.0.0` | P2-13 | – |
+| # | Slice | Backlog | Why this position | Status (2026-10-07) |
+|---|---|---|---|---|
+| 1 | `content:export-markdown` command (idempotent, tested with factories) | P2-05b | Must exist before content tables are dropped (REQ-001 H1) | done |
+| 2 | Remove sliders, banners, setting links, socials (FE → API → tests → drop tables) | P2-06/07/09 | No dependencies, lowest risk: proves the removal pattern | done |
+| 3 | Remove end-user management | P2-06/07/09 | Independent | done |
+| 4 | Remove departments and policies (+ unused view, trigger, seeder part) | P2-06/07/09 | Independent of login (view unused) | done |
+| 5 | Remove the content CMS + public docs API; docs site shows "content moved" | P2-06/07/09 | After slice 1; changes the docs site contract (both apps in the same slice) | done |
+| 6 | Remove the file-manager explorer UI, keep media API | P2-06 | Avatar upload still needs the API | done |
+| 7 | Replace custom JWT with Sanctum SPA cookie auth | P2-10/11 | Largest risk; done when fewer modules depend on auth | done |
+| 8 | Roles → `owner` / `viewer` with Gates/Policies; drop RBAC tables, view, trigger, tokens | P2-12 | Needs slice 7 (login no longer reads `admin_permission_view`) | done |
+| 9 | `audit_log` replaces remaining `*_hist` (expand → backfill → switch → contract) | P2-08 | Only `admin_mst` history is left by then; small, clean exercise | done |
+| 10 | Regression, metrics after, release notes, `v2.0.0` | P2-13 | – | todo |
 
 **Removal pattern per module:** (a) FE pages, navigation, types, tests; (b) routes, controllers, requests, resources, services, repositories, models, enums, tests; (c) a new migration that drops the tables, with a `down()` that recreates them empty (data comes back only from backup); (d) `make openapi`, `make verify`.
 
