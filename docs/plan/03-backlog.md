@@ -15,14 +15,14 @@ Status: `todo` → `doing` → `done` | `cut` (with reason). When GitHub Project
 | ID | Task | Output | Status |
 |---|---|---|---|
 | P0-01 | Close the old refactor: gather `fix/security-deps` + `refactor/fe6-features` into `chore/p0-baseline`, check the FE6 WIP, split no more files of features listed for removal | Branch `chore/p0-baseline`; tsc ✓, lint 0 errors, Vitest 106 ✓ | done |
-| P0-02 | Verify (`make verify`), PR `chore/p0-baseline` → `developer` → `main` (owner pushes) | Merged PRs | todo |
-| P0-03 | Tag `v1.0.0` on `main` with release notes "legacy CMS baseline" | GitHub release | todo |
-| P0-04 | Write `docs/architecture/as-is.md`: containers, data model summary, request flow, auth flow (one diagram each) | As-is doc | todo |
-| P0-05 | Move root `01–10-*.md` to `docs/archive/legacy-architecture/`, add a note on top of each, fix links in CLAUDE.md files | Archive | todo |
-| P0-06 | GitHub Issues + Projects board (columns: Backlog, Ready, Doing, Review, Done), labels (`type:req/bug/task/spike/incident/docs`, `prio:p1–p4`, `phase:Px`) | Board | todo |
-| P0-07 | Mark `.claude/refactor/PLAN.md` frozen, map open items per [analysis §7](01-analysis.md#7-impact-on-the-running-refactor-clauderefactorplanmd) | Frozen plan | todo |
-| P0-08 | ADR-0002 documentation conventions (bilingual marker, IDs, folders) | ADR | todo |
-| P0-09 | Remote branch cleanup (old `feature/*`, `staging`) per PROGRESS.md | Clean remote | todo |
+| P0-02 | Verify (`make verify`), PR `chore/p0-baseline` → `developer` → `main` (owner pushes) | Merged PRs | doing: `make verify` ✓ (598 BE, 106 FE); push + PRs by owner |
+| P0-03 | Tag `v1.0.0` on `main` with release notes "legacy CMS baseline" | GitHub release | done locally (tag `v1.0.0`, notes in `docs/releases/v1.0.0.md`); owner pushes tag + creates release |
+| P0-04 | Write `docs/architecture/as-is.md`: containers, data model summary, request flow, auth flow (one diagram each) | As-is doc | done |
+| P0-05 | Move root `01–10-*.md` to `docs/archive/legacy-architecture/`, add a note on top of each, fix links in CLAUDE.md files | Archive | done |
+| P0-06 | GitHub Issues + Projects board (columns: Backlog, Ready, Doing, Review, Done), labels (`type:req/bug/task/spike/incident/docs`, `prio:p1–p4`, `phase:Px`) | Board | owner: steps in `docs/plan/github-setup.md` |
+| P0-07 | Mark `.claude/refactor/PLAN.md` frozen, map open items per [analysis §7](01-analysis.md#7-impact-on-the-running-refactor-clauderefactorplanmd) | Frozen plan | done |
+| P0-08 | ADR-0002 documentation conventions (bilingual marker, IDs, folders) | ADR | done |
+| P0-09 | Remote branch cleanup (old `feature/*`, `staging`) per PROGRESS.md | Clean remote | owner: commands in `.claude/refactor/PROGRESS.md` |
 
 ## P1 — Handbook
 
