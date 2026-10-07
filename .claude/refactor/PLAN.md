@@ -77,7 +77,7 @@ Workflow: `/refactor-item <ID…>`. Only `approved` items may be started.
 | FE1 | Tests first: Vitest specs for api client, error-handler, `useApiData`, `useCrud` (MSW) | Coverage on `src/shared` ≥ 70% | F3 | done (`refactor/p4-frontend`: 88 tests, `src/shared` 88% stmts / 76% branches, thresholds enforced in CI) |
 | FE2 | `app/admin/layout.tsx` hosts `AdminLayout` (remove per-page wrapping in 48 places) | No page imports `AdminLayout` | – | done (`refactor/p4-frontend`) |
 | FE3 | Auth guard in `proxy.ts` (Next 16) for `/admin/*` | Unauthenticated → redirect without flash | S6 | proposed |
-| FE4 | Generated API types (openapi-typescript) replace hand-written `types/api.ts`; query-key factory; merge `useApiData`/`useCrud` into `useResource(resource)` | No hand-written API model types | B6, FE1 | proposed |
+| FE4 | Generated API types (openapi-typescript) replace hand-written `types/api.ts`; query-key factory; merge `useApiData`/`useCrud` into `useResource(resource)` | No hand-written API model types | B6, FE1 | done (`refactor/p4-frontend`: generated `openapi.d.ts`, `queryKeys`; `useApiData`/`useCrud` kept separate, see PROGRESS) |
 | FE5 | Config-driven `<ResourceListPage>`: 17 near-identical 300+ line pages → column/filter/form config per entity | Each entity page < 80 lines; behavior same | FE1, FE2, FE4 | proposed |
 | FE6 | Feature-based folders: `src/features/<domain>/{api,components,schemas,hooks}`; split oversized files (`layout-structure-editor`, `constant.ts`, `types/api.ts`) | No file > 300 lines outside `ui/` | FE5 | proposed |
 | FE7 | *(optional)* Shared workspace package `packages/editor` (Tiptap extensions + schema) used by both admin editor and docs renderer | Single source of extensions | U2 | proposed |
