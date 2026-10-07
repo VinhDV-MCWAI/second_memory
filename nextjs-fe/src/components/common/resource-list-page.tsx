@@ -97,7 +97,7 @@ export function ResourceListPage<T extends { id: number }>({
   const one = tEntities(entity.one);
   const many = tEntities(entity.many);
 
-  const { data, loading, pagination, refetch } = useApiData<T>(endpoint, {
+  const { data, loading, pagination } = useApiData<T>(endpoint, {
     page,
     per_page: perPage,
     filters,

@@ -131,7 +131,7 @@ User delegated all P2+ items on 2026-10-06 ("toàn quyền thực hiện, không
 35. `ml-redis` came up `unhealthy` once after a Docker Desktop restart (AOF load); a second `docker compose up -d` worked.
 36. **Bulk activate/deactivate never worked**: 14 pages only refetched; admins sent `{id, is_active}` to the full update endpoint (always 422). Removed (`ebd4cd7`). If bulk status changes are wanted, they need a backend endpoint.
 37. **Default list sorts used nonexistent columns**: `SORT_FIELDS.ORDER = 'order'` (→ backend fell back to `id`); banners/sliders showed an Order column although their tables have no `rank_order`. Fixed `0412a1e`.
-38. Admin list pages still have an `ImportExport` toolbar widget whose import only refetches — check whether import/export is real before relying on it.
+38. **Import/export toolbar was fake** (export/template had no handler; import only refetched but toasted success; no API endpoints). Removed `b2638b8`.
 
 - 2026-10-06 — Rule: no `Co-Authored-By: Claude` trailer (settings `attribution.commit: ""`, CLAUDE.md, workflow rule, local `commit-msg` hook). All 46 earlier commits rewritten without it (tree identical; old tips kept in branch `backup/pre-msg-rewrite`). **38 of them are already on `origin/developer`** → the remote still has the old messages until someone force-pushes `developer` (user decision).
 - 2026-10-06 — U1 done (Laravel 13, PHP 8.5, PHPUnit 12).
