@@ -216,6 +216,7 @@ User delegated all P2+ items on 2026-10-06 ("toàn quyền thực hiện, không
 
 ## Next step
 
-2026-10-07: security fix done on `fix/security-deps`; refactor continues stacked on it (FE6 → D1 → P5).
+2026-10-07: security fix done on `fix/security-deps`; refactor continues on `refactor/fe6-features` (stacked on it): FE6 → D1 → P5.
+FE6 on `refactor/fe6-features`: ✓ `ResourceFormProps<T>` (`a7ce00e`), ✓ layout-structure-editor split + tree tests (`db485a5`), ✓ use-file-manager split / one upload path (`9e7af5d`). Next: upload-dialog, role-wizard-dialog, admin-form, ... (list in Remaining).
 
 Paused by the user on 2026-10-07; branch merged with developer/main and ready for the user to push + PR. When resuming (after the PRs are merged, on a new branch from `developer`): finish FE6 (see "Remaining" in the handoff summary): form props → `ResourceFormProps<T>`, then split the files > 300 lines one per commit, verify (`make verify`), then D1, then P5. Before that, the user may push/merge per "Branches".
