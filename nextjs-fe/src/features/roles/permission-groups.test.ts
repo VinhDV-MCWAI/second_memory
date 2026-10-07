@@ -27,7 +27,7 @@ describe('permission groups', () => {
   });
 
   it('filters by feature name and API name or path', () => {
-    expect(idsOf(filterGroupedApis(grouped, { ...noFilter, searchFeature: 'ban' }))).toEqual([
+    expect(idsOf(filterGroupedApis(grouped, { ...noFilter, searchFeature: 'med' }))).toEqual([
       [2, [20]],
     ]);
     expect(idsOf(filterGroupedApis(grouped, { ...noFilter, searchApi: 'STORE' }))).toEqual([
