@@ -9,7 +9,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { Trash2, Archive, CheckCircle, XCircle, MoreHorizontal } from 'lucide-react';
+import { MoreHorizontal } from 'lucide-react';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -70,46 +70,6 @@ export function BulkActions({
     return null;
   }
 
-  const defaultActions: BulkAction[] = [
-    {
-      label: t('deleteSelected'),
-      icon: <Trash2 className="h-4 w-4" />,
-      variant: 'destructive',
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      onClick: async (_ids) => {
-        // Placeholder action
-      },
-      confirmMessage: t('deleteConfirm', { count: selectedIds.length }),
-      confirmTitle: t('deleteItems'),
-    },
-    {
-      label: t('archiveSelected'),
-      icon: <Archive className="h-4 w-4" />,
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      onClick: async (_ids) => {
-        // Placeholder action
-      },
-    },
-    {
-      label: t('activateSelected'),
-      icon: <CheckCircle className="h-4 w-4" />,
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      onClick: async (_ids) => {
-        // Placeholder action
-      },
-    },
-    {
-      label: t('deactivateSelected'),
-      icon: <XCircle className="h-4 w-4" />,
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      onClick: async (_ids) => {
-        // Placeholder action
-      },
-    },
-  ];
-
-  const allActions = actions.length > 0 ? actions : defaultActions;
-
   return (
     <>
       <div className="flex items-center gap-2 rounded-lg border border-blue-200 bg-blue-50 p-3 dark:border-blue-800 dark:bg-blue-900/20">
@@ -118,7 +78,7 @@ export function BulkActions({
         </span>
 
         <div className="ml-auto flex items-center gap-2">
-          {allActions.slice(0, 2).map((action, index) => (
+          {actions.slice(0, 2).map((action, index) => (
             <Button
               key={index}
               size="sm"
@@ -132,7 +92,7 @@ export function BulkActions({
             </Button>
           ))}
 
-          {allActions.length > 2 && (
+          {actions.length > 2 && (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button size="sm" variant="outline" disabled={isLoading || isExecuting}>
@@ -140,7 +100,7 @@ export function BulkActions({
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
-                {allActions.slice(2).map((action, index) => (
+                {actions.slice(2).map((action, index) => (
                   <DropdownMenuItem
                     key={index}
                     onClick={() => handleActionClick(action)}

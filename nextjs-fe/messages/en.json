@@ -197,15 +197,9 @@
   "bulkActions": {
     "itemsSelected": "{count} item(s) selected",
     "deleteSelected": "Delete Selected",
-    "archiveSelected": "Archive Selected",
-    "activateSelected": "Activate Selected",
-    "deactivateSelected": "Deactivate Selected",
     "clear": "Clear",
     "confirmAction": "Confirm Action",
-    "deleteItems": "Delete Items",
     "deleteConfirm": "Are you sure you want to delete {count} item(s)? This action cannot be undone.",
-    "activateConfirm": "Are you sure you want to activate {count} item(s)?",
-    "deactivateConfirm": "Are you sure you want to deactivate {count} item(s)?",
     "processing": "Processing...",
     "continue": "Continue"
   },

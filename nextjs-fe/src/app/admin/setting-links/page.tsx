@@ -25,7 +25,7 @@ import type { SearchField, SearchCriteria } from '@/shared/types/data-table.type
 import { SavedFilters } from '@/components/common/saved-filters';
 import { BulkActions, type BulkAction } from '@/components/common/bulk-actions';
 import { ImportExport } from '@/components/common/import-export';
-import { Trash2, CheckCircle, XCircle, Plus } from 'lucide-react';
+import { Trash2, Plus } from 'lucide-react';
 import {
   Dialog,
   DialogContent,
@@ -138,20 +138,6 @@ export default function SettingLinkListPage() {
         entity: tEntities('settingLink').toLowerCase(),
       }),
       confirmTitle: tCrud('deleteEntity', { entity: tEntities('settingLinks') }),
-    },
-    {
-      label: tBulkActions('activateSelected'),
-      icon: <CheckCircle className="h-4 w-4" />,
-      onClick: async () => {
-        refetch();
-      },
-    },
-    {
-      label: tBulkActions('deactivateSelected'),
-      icon: <XCircle className="h-4 w-4" />,
-      onClick: async () => {
-        refetch();
-      },
     },
   ];
   const handleAdvancedSearch = (criteria: SearchCriteria[]) => {

@@ -4,8 +4,6 @@ import { useState } from 'react';
 import { useApiData } from '@/shared/hooks/useApiData';
 import { useCrud } from '@/shared/hooks/useCrud';
 import { useActionLock } from '@/shared/hooks/useActionLock';
-import { apiClient } from '@/shared/api/client';
-import { notification } from '@/shared/utils';
 import { PageHeader } from '@/components/layout/page-header';
 import { DataTable, type Column } from '@/components/common/data-table/data-table';
 import { Pagination } from '@/components/common/data-table/pagination';
@@ -29,7 +27,7 @@ import type { SearchField, SearchCriteria } from '@/shared/types/data-table.type
 import { SavedFilters } from '@/components/common/saved-filters';
 import { BulkActions, type BulkAction } from '@/components/common/bulk-actions';
 import { ImportExport } from '@/components/common/import-export';
-import { Trash2, CheckCircle, XCircle, Plus } from 'lucide-react';
+import { Trash2, Plus } from 'lucide-react';
 import {
   Dialog,
   DialogContent,
@@ -108,23 +106,6 @@ export default function AdminListPage() {
     }
   };
 
-  const handleBulkStatusChange = async (ids: number[], isActive: boolean) => {
-    try {
-      await Promise.all(
-        ids.map((id) =>
-          apiClient.put(`${API_ENDPOINTS.MASTER.ADMIN}/update/${id}`, {
-            id,
-            is_active: isActive,
-          }),
-        ),
-      );
-      notification.success(tCommon('updatedSuccessfully'));
-      refetch();
-    } catch {
-      notification.error(tCommon('somethingWentWrong'));
-    }
-  };
-
   const handleSort = (column: string) => {
     if (sortBy === column) {
       setSortOrder(sortOrder === SORT_ORDER.ASC ? SORT_ORDER.DESC : SORT_ORDER.ASC);
@@ -194,18 +175,6 @@ export default function AdminListPage() {
         entity: tEntities('admin').toLowerCase(),
       }),
       confirmTitle: tCrud('deleteEntity', { entity: tEntities('admins') }),
-    },
-    {
-      label: tBulkActions('activateSelected'),
-      icon: <CheckCircle className="h-4 w-4" />,
-      onClick: async (ids) => handleBulkStatusChange(ids, true),
-      confirmMessage: tBulkActions('activateConfirm', { count: selectedIds.length }),
-    },
-    {
-      label: tBulkActions('deactivateSelected'),
-      icon: <XCircle className="h-4 w-4" />,
-      onClick: async (ids) => handleBulkStatusChange(ids, false),
-      confirmMessage: tBulkActions('deactivateConfirm', { count: selectedIds.length }),
     },
   ];
 

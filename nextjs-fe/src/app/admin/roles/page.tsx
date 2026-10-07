@@ -16,7 +16,7 @@ import type { SearchField, SearchCriteria } from '@/shared/types/data-table.type
 import { SavedFilters } from '@/components/common/saved-filters';
 import { BulkActions, type BulkAction } from '@/components/common/bulk-actions';
 import { ImportExport } from '@/components/common/import-export';
-import { Trash2, CheckCircle, XCircle, Plus } from 'lucide-react';
+import { Trash2, Plus } from 'lucide-react';
 import type { RoleMst } from '@/shared/types/api';
 import { API_ENDPOINTS } from '@/shared/api';
 import {
@@ -149,20 +149,6 @@ export default function RoleListPage() {
         entity: tEntities('role').toLowerCase(),
       }),
       confirmTitle: tCrud('deleteEntity', { entity: tEntities('roles') }),
-    },
-    {
-      label: tBulkActions('activateSelected'),
-      icon: <CheckCircle className="h-4 w-4" />,
-      onClick: async () => {
-        refetch();
-      },
-    },
-    {
-      label: tBulkActions('deactivateSelected'),
-      icon: <XCircle className="h-4 w-4" />,
-      onClick: async () => {
-        refetch();
-      },
     },
   ];
 
