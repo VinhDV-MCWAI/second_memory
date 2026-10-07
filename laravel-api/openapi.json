@@ -268,6 +268,9 @@
                             }
                         }
                     },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
                     "422": {
                         "$ref": "#/components/responses/ValidationException"
                     }
@@ -301,6 +304,9 @@
                                 }
                             }
                         }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
                     },
                     "422": {
                         "$ref": "#/components/responses/ValidationException"
@@ -346,6 +352,9 @@
                             }
                         }
                     },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
                     "422": {
                         "$ref": "#/components/responses/ValidationException"
                     }
@@ -379,6 +388,9 @@
                                 }
                             }
                         }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
                     },
                     "422": {
                         "$ref": "#/components/responses/ValidationException"
@@ -657,6 +669,9 @@
                             }
                         }
                     },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
                     "422": {
                         "$ref": "#/components/responses/ValidationException"
                     }
@@ -690,6 +705,9 @@
                                 }
                             }
                         }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
                     },
                     "422": {
                         "$ref": "#/components/responses/ValidationException"
@@ -735,6 +753,9 @@
                             }
                         }
                     },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
                     "422": {
                         "$ref": "#/components/responses/ValidationException"
                     }
@@ -768,6 +789,9 @@
                                 }
                             }
                         }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
                     },
                     "422": {
                         "$ref": "#/components/responses/ValidationException"
@@ -901,6 +925,9 @@
                             }
                         }
                     },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
                     "422": {
                         "$ref": "#/components/responses/ValidationException"
                     }
@@ -933,6 +960,9 @@
                                 }
                             }
                         }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
                     },
                     "422": {
                         "$ref": "#/components/responses/ValidationException"
@@ -1116,6 +1146,9 @@
                             }
                         }
                     },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
                     "422": {
                         "$ref": "#/components/responses/ValidationException"
                     }
@@ -1149,6 +1182,9 @@
                                 }
                             }
                         }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
                     },
                     "422": {
                         "$ref": "#/components/responses/ValidationException"
@@ -1194,6 +1230,9 @@
                             }
                         }
                     },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
                     "422": {
                         "$ref": "#/components/responses/ValidationException"
                     }
@@ -1227,6 +1266,9 @@
                                 }
                             }
                         }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
                     },
                     "422": {
                         "$ref": "#/components/responses/ValidationException"
@@ -1430,6 +1472,9 @@
                             }
                         }
                     },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
                     "422": {
                         "$ref": "#/components/responses/ValidationException"
                     }
@@ -1463,6 +1508,9 @@
                                 }
                             }
                         }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
                     },
                     "422": {
                         "$ref": "#/components/responses/ValidationException"
@@ -1508,6 +1556,9 @@
                             }
                         }
                     },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
                     "422": {
                         "$ref": "#/components/responses/ValidationException"
                     }
@@ -1541,6 +1592,9 @@
                                 }
                             }
                         }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
                     },
                     "422": {
                         "$ref": "#/components/responses/ValidationException"
@@ -1674,6 +1728,9 @@
                             }
                         }
                     },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
                     "422": {
                         "$ref": "#/components/responses/ValidationException"
                     }
@@ -1707,6 +1764,9 @@
                             }
                         }
                     },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
                     "422": {
                         "$ref": "#/components/responses/ValidationException"
                     }
@@ -1716,7 +1776,7 @@
         "/admin/credential/login": {
             "post": {
                 "operationId": "credential.login",
-                "summary": "Login admin account",
+                "summary": "Log in: starts the session. Call `GET /api/sanctum/csrf-cookie` first",
                 "tags": [
                     "Credential"
                 ],
@@ -1736,126 +1796,33 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "type": "array",
+                                    "items": {}
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
                                     "type": "object",
                                     "properties": {
-                                        "expires_at": {
-                                            "type": "integer",
-                                            "description": "Time when JWT was issued."
-                                        },
-                                        "_cookies": {
-                                            "type": "array",
-                                            "description": "Also return the absolute expiration timestamp",
-                                            "prefixItems": [
-                                                {
-                                                    "type": "object",
-                                                    "properties": {
-                                                        "name": {
-                                                            "type": "string",
-                                                            "const": "access_token"
-                                                        },
-                                                        "value": {
-                                                            "type": "string",
-                                                            "description": "Absolute timestamp"
-                                                        },
-                                                        "minutes": {
-                                                            "anyOf": [
-                                                                {
-                                                                    "type": "string"
-                                                                },
-                                                                {
-                                                                    "type": "integer",
-                                                                    "enum": [
-                                                                        5
-                                                                    ]
-                                                                }
-                                                            ]
-                                                        },
-                                                        "path": {
-                                                            "type": "string",
-                                                            "const": "/api/admin"
-                                                        },
-                                                        "domain": {
-                                                            "type": "string"
-                                                        },
-                                                        "secure": {
-                                                            "type": "string"
-                                                        },
-                                                        "httpOnly": {
-                                                            "type": "boolean"
-                                                        }
-                                                    },
-                                                    "required": [
-                                                        "name",
-                                                        "value",
-                                                        "minutes",
-                                                        "path",
-                                                        "domain",
-                                                        "secure",
-                                                        "httpOnly"
-                                                    ]
-                                                },
-                                                {
-                                                    "type": "object",
-                                                    "properties": {
-                                                        "name": {
-                                                            "type": "string",
-                                                            "const": "refresh_token"
-                                                        },
-                                                        "value": {
-                                                            "type": "string"
-                                                        },
-                                                        "minutes": {
-                                                            "anyOf": [
-                                                                {
-                                                                    "type": "string"
-                                                                },
-                                                                {
-                                                                    "type": "integer",
-                                                                    "enum": [
-                                                                        4320
-                                                                    ]
-                                                                }
-                                                            ]
-                                                        },
-                                                        "path": {
-                                                            "type": "string",
-                                                            "const": "/api/admin/credential/trust"
-                                                        },
-                                                        "domain": {
-                                                            "type": "string"
-                                                        },
-                                                        "secure": {
-                                                            "type": "string"
-                                                        },
-                                                        "httpOnly": {
-                                                            "type": "boolean"
-                                                        }
-                                                    },
-                                                    "required": [
-                                                        "name",
-                                                        "value",
-                                                        "minutes",
-                                                        "path",
-                                                        "domain",
-                                                        "secure",
-                                                        "httpOnly"
-                                                    ]
-                                                }
-                                            ],
-                                            "minItems": 2,
-                                            "maxItems": 2
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
                                         }
                                     },
                                     "required": [
-                                        "expires_at",
-                                        "_cookies"
+                                        "message"
                                     ]
                                 }
                             }
                         }
                     },
-                    "403": {
-                        "$ref": "#/components/responses/AuthorizationException"
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
                     },
                     "422": {
                         "$ref": "#/components/responses/ValidationException"
@@ -1863,146 +1830,10 @@
                 }
             }
         },
-        "/admin/credential/trust/refresh-token": {
-            "post": {
-                "operationId": "credential.refreshToken",
-                "summary": "Refresh token admin account",
-                "tags": [
-                    "Credential"
-                ],
-                "responses": {
-                    "200": {
-                        "description": "",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "expires_at": {
-                                            "type": "integer",
-                                            "description": "Time when JWT was issued."
-                                        },
-                                        "_cookies": {
-                                            "type": "array",
-                                            "prefixItems": [
-                                                {
-                                                    "type": "object",
-                                                    "properties": {
-                                                        "name": {
-                                                            "type": "string",
-                                                            "const": "access_token"
-                                                        },
-                                                        "value": {
-                                                            "type": "string",
-                                                            "description": "Absolute timestamp"
-                                                        },
-                                                        "minutes": {
-                                                            "anyOf": [
-                                                                {
-                                                                    "type": "string"
-                                                                },
-                                                                {
-                                                                    "type": "integer",
-                                                                    "enum": [
-                                                                        5
-                                                                    ]
-                                                                }
-                                                            ]
-                                                        },
-                                                        "path": {
-                                                            "type": "string",
-                                                            "const": "/api/admin"
-                                                        },
-                                                        "domain": {
-                                                            "type": "string"
-                                                        },
-                                                        "secure": {
-                                                            "type": "string"
-                                                        },
-                                                        "httpOnly": {
-                                                            "type": "boolean"
-                                                        }
-                                                    },
-                                                    "required": [
-                                                        "name",
-                                                        "value",
-                                                        "minutes",
-                                                        "path",
-                                                        "domain",
-                                                        "secure",
-                                                        "httpOnly"
-                                                    ]
-                                                },
-                                                {
-                                                    "type": "object",
-                                                    "properties": {
-                                                        "name": {
-                                                            "type": "string",
-                                                            "const": "refresh_token"
-                                                        },
-                                                        "value": {
-                                                            "type": "string"
-                                                        },
-                                                        "minutes": {
-                                                            "anyOf": [
-                                                                {
-                                                                    "type": "string"
-                                                                },
-                                                                {
-                                                                    "type": "integer",
-                                                                    "enum": [
-                                                                        4320
-                                                                    ]
-                                                                }
-                                                            ]
-                                                        },
-                                                        "path": {
-                                                            "type": "string",
-                                                            "const": "/api/admin/credential/trust"
-                                                        },
-                                                        "domain": {
-                                                            "type": "string"
-                                                        },
-                                                        "secure": {
-                                                            "type": "string"
-                                                        },
-                                                        "httpOnly": {
-                                                            "type": "boolean"
-                                                        }
-                                                    },
-                                                    "required": [
-                                                        "name",
-                                                        "value",
-                                                        "minutes",
-                                                        "path",
-                                                        "domain",
-                                                        "secure",
-                                                        "httpOnly"
-                                                    ]
-                                                }
-                                            ],
-                                            "minItems": 2,
-                                            "maxItems": 2
-                                        }
-                                    },
-                                    "required": [
-                                        "expires_at",
-                                        "_cookies"
-                                    ]
-                                }
-                            }
-                        }
-                    },
-                    "403": {
-                        "$ref": "#/components/responses/AuthorizationException"
-                    }
-                }
-            }
-        },
-        "/admin/credential/trust/logout": {
+        "/admin/credential/logout": {
             "post": {
                 "operationId": "credential.logout",
-                "summary": "Logout admin account",
+                "summary": "Log out: ends the session (also succeeds without one)",
                 "tags": [
                     "Credential"
                 ],
@@ -2012,119 +1843,10 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "_cookies": {
-                                            "type": "array",
-                                            "prefixItems": [
-                                                {
-                                                    "type": "object",
-                                                    "properties": {
-                                                        "name": {
-                                                            "type": "string",
-                                                            "const": "access_token"
-                                                        },
-                                                        "value": {
-                                                            "type": "null"
-                                                        },
-                                                        "minutes": {
-                                                            "anyOf": [
-                                                                {
-                                                                    "type": "string"
-                                                                },
-                                                                {
-                                                                    "type": "integer",
-                                                                    "enum": [
-                                                                        5
-                                                                    ]
-                                                                }
-                                                            ]
-                                                        },
-                                                        "path": {
-                                                            "type": "string",
-                                                            "const": "/api/admin"
-                                                        },
-                                                        "domain": {
-                                                            "type": "string"
-                                                        },
-                                                        "secure": {
-                                                            "type": "string"
-                                                        },
-                                                        "httpOnly": {
-                                                            "type": "boolean"
-                                                        }
-                                                    },
-                                                    "required": [
-                                                        "name",
-                                                        "value",
-                                                        "minutes",
-                                                        "path",
-                                                        "domain",
-                                                        "secure",
-                                                        "httpOnly"
-                                                    ]
-                                                },
-                                                {
-                                                    "type": "object",
-                                                    "properties": {
-                                                        "name": {
-                                                            "type": "string",
-                                                            "const": "refresh_token"
-                                                        },
-                                                        "value": {
-                                                            "type": "null"
-                                                        },
-                                                        "minutes": {
-                                                            "anyOf": [
-                                                                {
-                                                                    "type": "string"
-                                                                },
-                                                                {
-                                                                    "type": "integer",
-                                                                    "enum": [
-                                                                        4320
-                                                                    ]
-                                                                }
-                                                            ]
-                                                        },
-                                                        "path": {
-                                                            "type": "string",
-                                                            "const": "/api/admin/credential/trust"
-                                                        },
-                                                        "domain": {
-                                                            "type": "string"
-                                                        },
-                                                        "secure": {
-                                                            "type": "string"
-                                                        },
-                                                        "httpOnly": {
-                                                            "type": "boolean"
-                                                        }
-                                                    },
-                                                    "required": [
-                                                        "name",
-                                                        "value",
-                                                        "minutes",
-                                                        "path",
-                                                        "domain",
-                                                        "secure",
-                                                        "httpOnly"
-                                                    ]
-                                                }
-                                            ],
-                                            "minItems": 2,
-                                            "maxItems": 2
-                                        }
-                                    },
-                                    "required": [
-                                        "_cookies"
-                                    ]
+                                    "type": "object"
                                 }
                             }
                         }
-                    },
-                    "403": {
-                        "$ref": "#/components/responses/AuthorizationException"
                     }
                 }
             }
@@ -2132,7 +1854,7 @@
         "/admin/credential/me": {
             "get": {
                 "operationId": "credential.me",
-                "summary": "Get current authenticated admin user",
+                "summary": "The signed-in admin",
                 "tags": [
                     "Credential"
                 ],
@@ -2142,37 +1864,36 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "expires_at": {
-                                            "type": "string"
-                                        },
-                                        "id": {
-                                            "type": "integer"
-                                        },
-                                        "email": {
-                                            "type": "string"
-                                        },
-                                        "status": {
-                                            "type": "integer"
-                                        },
-                                        "is_active": {
-                                            "type": "boolean"
-                                        }
-                                    },
-                                    "required": [
-                                        "expires_at",
-                                        "id",
-                                        "email",
-                                        "status",
-                                        "is_active"
-                                    ]
+                                    "type": "array",
+                                    "items": {}
                                 }
                             }
                         }
                     },
-                    "403": {
-                        "$ref": "#/components/responses/AuthorizationException"
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/sanctum/csrf-cookie": {
+            "get": {
+                "operationId": "sanctum.csrf-cookie",
+                "summary": "Return an empty response simply to trigger the storage of the CSRF cookie in the browser",
+                "tags": [
+                    "CsrfCookie"
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No content\n\nNo content",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {}
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -2343,6 +2064,9 @@
                             }
                         }
                     },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
                     "422": {
                         "$ref": "#/components/responses/ValidationException"
                     }
@@ -2376,6 +2100,9 @@
                                 }
                             }
                         }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
                     },
                     "422": {
                         "$ref": "#/components/responses/ValidationException"
@@ -2421,6 +2148,9 @@
                             }
                         }
                     },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
                     "422": {
                         "$ref": "#/components/responses/ValidationException"
                     }
@@ -2454,6 +2184,9 @@
                                 }
                             }
                         }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
                     },
                     "422": {
                         "$ref": "#/components/responses/ValidationException"
@@ -2647,6 +2380,9 @@
                             }
                         }
                     },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
                     "422": {
                         "$ref": "#/components/responses/ValidationException"
                     }
@@ -2680,6 +2416,9 @@
                                 }
                             }
                         }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
                     },
                     "422": {
                         "$ref": "#/components/responses/ValidationException"
@@ -2725,6 +2464,9 @@
                             }
                         }
                     },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
                     "422": {
                         "$ref": "#/components/responses/ValidationException"
                     }
@@ -2758,6 +2500,9 @@
                                 }
                             }
                         }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
                     },
                     "422": {
                         "$ref": "#/components/responses/ValidationException"
@@ -2937,6 +2682,9 @@
                             }
                         }
                     },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
                     "422": {
                         "$ref": "#/components/responses/ValidationException"
                     }
@@ -3011,6 +2759,9 @@
                             }
                         }
                     },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
                     "422": {
                         "$ref": "#/components/responses/ValidationException"
                     }
@@ -3063,6 +2814,9 @@
                             }
                         }
                     },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
                     "422": {
                         "$ref": "#/components/responses/ValidationException"
                     }
@@ -3113,6 +2867,9 @@
                                 }
                             }
                         }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
                     },
                     "422": {
                         "$ref": "#/components/responses/ValidationException"
@@ -3206,6 +2963,9 @@
                             }
                         }
                     },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
                     "422": {
                         "$ref": "#/components/responses/ValidationException"
                     }
@@ -3291,6 +3051,9 @@
                             }
                         }
                     },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
                     "422": {
                         "$ref": "#/components/responses/ValidationException"
                     }
@@ -3333,6 +3096,9 @@
                                 }
                             }
                         }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
                     },
                     "422": {
                         "$ref": "#/components/responses/ValidationException"
@@ -3379,6 +3145,9 @@
                                 }
                             }
                         }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
                     },
                     "422": {
                         "$ref": "#/components/responses/ValidationException"
@@ -3540,6 +3309,9 @@
                             }
                         }
                     },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
                     "422": {
                         "$ref": "#/components/responses/ValidationException"
                     }
@@ -3573,6 +3345,9 @@
                                 }
                             }
                         }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
                     },
                     "422": {
                         "$ref": "#/components/responses/ValidationException"
@@ -3618,6 +3393,9 @@
                             }
                         }
                     },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
                     "422": {
                         "$ref": "#/components/responses/ValidationException"
                     }
@@ -3651,6 +3429,9 @@
                                 }
                             }
                         }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
                     },
                     "422": {
                         "$ref": "#/components/responses/ValidationException"
@@ -3832,6 +3613,9 @@
                             }
                         }
                     },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
                     "422": {
                         "$ref": "#/components/responses/ValidationException"
                     }
@@ -3865,6 +3649,9 @@
                                 }
                             }
                         }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
                     },
                     "422": {
                         "$ref": "#/components/responses/ValidationException"
@@ -3910,6 +3697,9 @@
                             }
                         }
                     },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
                     "422": {
                         "$ref": "#/components/responses/ValidationException"
                     }
@@ -3943,6 +3733,9 @@
                                 }
                             }
                         }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
                     },
                     "422": {
                         "$ref": "#/components/responses/ValidationException"
@@ -4109,6 +3902,9 @@
                             }
                         }
                     },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
                     "422": {
                         "$ref": "#/components/responses/ValidationException"
                     }
@@ -4142,6 +3938,9 @@
                                 }
                             }
                         }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
                     },
                     "422": {
                         "$ref": "#/components/responses/ValidationException"
@@ -4187,6 +3986,9 @@
                             }
                         }
                     },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
                     "422": {
                         "$ref": "#/components/responses/ValidationException"
                     }
@@ -4221,6 +4023,9 @@
                             }
                         }
                     },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
                     "422": {
                         "$ref": "#/components/responses/ValidationException"
                     }
@@ -4233,7 +4038,7 @@
             "apiKey": {
                 "type": "apiKey",
                 "in": "cookie",
-                "name": "access_token"
+                "name": "laravel_session"
             }
         },
         "schemas": {
@@ -6146,8 +5951,8 @@
             }
         },
         "responses": {
-            "AuthorizationException": {
-                "description": "Authorization error",
+            "AuthenticationException": {
+                "description": "Unauthenticated",
                 "content": {
                     "application/json": {
                         "schema": {

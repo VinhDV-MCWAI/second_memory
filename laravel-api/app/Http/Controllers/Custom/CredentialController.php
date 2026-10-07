@@ -1,54 +1,54 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers\Custom;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Custom\Credential\LoginRequest;
+use App\Http\Resources\Master\AdminMstResource;
 use App\Services\Custom\CredentialService;
-use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Auth\AuthenticationException;
+use Illuminate\Http\Exceptions\ThrottleRequestsException;
 use Illuminate\Http\Request;
 
-class CredentialController extends Controller
+final class CredentialController extends Controller
 {
     public function __construct(
-        protected CredentialService $credentialService
+        private readonly CredentialService $credentialService
     ) {}
 
     /**
-     * Login admin account
+     * Log in: starts the session. Call `GET /api/sanctum/csrf-cookie` first.
      *
-     * @throws AuthorizationException
+     * @return array<string, mixed>
+     *
+     * @throws AuthenticationException
+     * @throws ThrottleRequestsException
      */
     public function login(LoginRequest $request): array
     {
-        return $this->credentialService->login($request);
+        /** @var array{user_name: string, password: string} $credentials */
+        $credentials = $request->validated();
+
+        return (new AdminMstResource($this->credentialService->login($credentials, $request)))->resolve($request);
     }
 
     /**
-     * Refresh token admin account
-     *
-     * @throws AuthorizationException
+     * Log out: ends the session (also succeeds without one).
      */
-    public function refreshToken(Request $request): array
+    public function logout(Request $request): void
     {
-        return $this->credentialService->refreshToken($request);
+        $this->credentialService->logout($request);
     }
 
     /**
-     * Logout admin account
+     * The signed-in admin.
      *
-     * @throws AuthorizationException
-     */
-    public function logout(Request $request): array
-    {
-        return $this->credentialService->logout($request);
-    }
-
-    /**
-     * Get current authenticated admin user
+     * @return array<string, mixed>
      */
     public function me(Request $request): array
     {
-        return $this->credentialService->me($request);
+        return (new AdminMstResource($request->user()))->resolve($request);
     }
 }

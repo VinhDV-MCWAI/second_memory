@@ -76,11 +76,10 @@ class AuthIntegrationTest extends TestCase
         $rootAdmin = AdminMst::factory()->create($rootParams);
 
         // Pre-grant ALL necessary permissions for Root Flow
-        $this->ensureRootAccess($rootAdmin, 'POST', $this->loginUrl);
         $this->ensureRootAccess($rootAdmin, 'POST', 'api/admin/role-mst/store');
         $this->ensureRootAccess($rootAdmin, 'POST', 'api/admin/admin-mst/store');
 
-        // NOW Login to populate Redis with ALL perms
+        // Login
         $response = $this->postJson($this->loginUrl, [
             'user_name' => $rootAdmin->user_name,
             'password' => 'password',
@@ -89,7 +88,7 @@ class AuthIntegrationTest extends TestCase
         foreach ($response->headers->getCookies() as $cookie) {
             $rootCookies[$cookie->getName()] = $cookie->getValue();
         }
-        $this->assertNotNull($rootCookies['access_token'] ?? null, 'Root login failed');
+        $this->assertNotNull($rootCookies[config('session.cookie')] ?? null, 'Root login failed');
 
         // 2. Define New Access (Role + API) for Sub Admin
         $targetUrl = 'api/admin/token-mst/list';
@@ -120,8 +119,6 @@ class AuthIntegrationTest extends TestCase
     public function test_access_denied_without_permission()
     {
         $admin = AdminMst::factory()->create();
-        // Ensure Login Access ONLY
-        $this->ensureRootAccess($admin, 'POST', $this->loginUrl);
 
         // Login
         $loginResp = $this->postJson($this->loginUrl, [
@@ -138,7 +135,7 @@ class AuthIntegrationTest extends TestCase
         // e.g. 'api/admin/admin-mst/list'
         $response = $this->call('GET', 'api/admin/admin-mst/list', [], $cookies);
 
-        // Expect 401 Unauthorized (Middleware configured to 401)
-        $response->assertStatus(401);
+        // Signed in but not allowed: 403
+        $response->assertStatus(403);
     }
 }

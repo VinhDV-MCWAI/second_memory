@@ -8,8 +8,6 @@ COMPOSE := docker compose -f docker/docker-compose.yml
 PHP     := docker exec ml-php
 FE      := docker exec ml-nextjs
 DOCS    := docker exec ml-nextjs-docs
-# Same exclusion as CI: these auth cases fail until Sanctum replaces the custom JWT (PRB-001, P2-11)
-AUTH_TODO := RefreshTokenApiTest::test_t0(04|05|06|19)_
 
 ##@ Environment
 
@@ -49,8 +47,8 @@ test: ## Run backend tests (make test f=AdminMst to filter)
 	$(PHP) php artisan test $(if $(f),--filter=$(f),)
 
 .PHONY: test-ci
-test-ci: ## Run backend tests like CI (skips the known auth failures)
-	$(PHP) php artisan test --exclude-filter '$(AUTH_TODO)'
+test-ci: ## Run backend tests like CI
+	$(PHP) php artisan test
 
 .PHONY: pint
 pint: ## Format PHP code

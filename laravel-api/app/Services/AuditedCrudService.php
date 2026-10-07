@@ -6,6 +6,7 @@ namespace App\Services;
 
 use App\Enums\ActionType;
 use App\Repositories\CrudRepository;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 
 /**
@@ -85,7 +86,7 @@ abstract class AuditedCrudService extends CrudService
 
             $historyPayload[$this->historyForeignKey] = $id;
             $historyPayload['action'] = $action;
-            $historyPayload['author_id'] = $payload['author_id'] ?? request()->attributes->get('current_admin_id') ?? request()->user()?->id;
+            $historyPayload['author_id'] = $payload['author_id'] ?? Auth::id();
 
             $this->historyRepository->executeStore($historyPayload);
         } catch (\Exception $e) {

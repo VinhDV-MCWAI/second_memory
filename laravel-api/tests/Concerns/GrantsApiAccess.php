@@ -10,10 +10,11 @@ use App\Models\Master\ApiMst;
 use App\Models\Master\FeatureMst;
 use App\Models\Master\RoleMst;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Testing\TestResponse;
 
 /**
  * Grants a role access to an API route through api_mst/api_role_mst, which
- * feed admin_permission_view (the source of the Redis permission cache).
+ * feed admin_permission_view (read by AdminMiddleware on every request).
  */
 trait GrantsApiAccess
 {
@@ -42,14 +43,32 @@ trait GrantsApiAccess
             'updated_at' => now(),
         ]);
 
+        return $this->loginAs($admin);
+    }
+
+    /**
+     * Log in through the API and return the response cookies (session + XSRF-TOKEN).
+     *
+     * @return array<string, string>
+     */
+    protected function loginAs(AdminMst $admin, string $password = 'password'): array
+    {
         $response = $this->postJson('/api/admin/credential/login', [
             'user_name' => $admin->user_name,
-            'password' => 'password',
+            'password' => $password,
         ]);
 
+        return $this->cookiesOf($response);
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    protected function cookiesOf(TestResponse $response): array
+    {
         $cookies = [];
         foreach ($response->headers->getCookies() as $cookie) {
-            $cookies[$cookie->getName()] = $cookie->getValue();
+            $cookies[$cookie->getName()] = (string) $cookie->getValue();
         }
 
         return $cookies;

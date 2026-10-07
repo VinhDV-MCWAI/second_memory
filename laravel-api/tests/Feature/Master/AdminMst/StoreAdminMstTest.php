@@ -131,7 +131,7 @@ class StoreAdminMstTest extends TestCase
         }
 
         $response = $this->call('POST', $this->storeUrl, [], $cookies);
-        $response->assertStatus(CommonVal::HTTP_UNAUTHORIZED);
+        $response->assertStatus(CommonVal::HTTP_FORBIDDEN);
     }
 
     // ======================================================================

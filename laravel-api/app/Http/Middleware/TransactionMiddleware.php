@@ -6,7 +6,6 @@ namespace App\Http\Middleware;
 
 use App\Constants\CommonVal;
 use App\Enums\TypeOfMethod;
-use App\Exceptions\Auth\LoginFailedException;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -14,13 +13,6 @@ use Throwable;
 
 class TransactionMiddleware
 {
-    /**
-     * List of exceptions that should trigger a COMMIT instead of ROLLBACK.
-     */
-    protected array $exceptionsShouldCommit = [
-        LoginFailedException::class,
-    ];
-
     /**
      * Handle an incoming request with database transaction.
      *
@@ -37,18 +29,11 @@ class TransactionMiddleware
         try {
             $response = $next($request);
 
-            if ($this->isErrorResponse($response)) {
-                $exception = $response->exception ?? null;
-                $this->finishTransaction($this->shouldCommit($exception));
-
-                return $response;
-            }
-
-            $this->finishTransaction(true);
+            $this->finishTransaction(! $this->isErrorResponse($response));
 
             return $response;
         } catch (Throwable $e) {
-            $this->finishTransaction($this->shouldCommit($e));
+            $this->finishTransaction(false);
             throw $e;
         }
     }
@@ -75,25 +60,6 @@ class TransactionMiddleware
     {
         return method_exists($response, 'getStatusCode')
           && $response->getStatusCode() >= CommonVal::HTTP_BAD_REQUEST;
-    }
-
-    /**
-     * Determine if we should commit the transaction based on the exception.
-     * Returns true if exception matches allowlist, or if no exception (success).
-     */
-    protected function shouldCommit(?Throwable $e): bool
-    {
-        if (! $e) {
-            return false; // Default rollback for error response without specific allowed exception
-        }
-
-        foreach ($this->exceptionsShouldCommit as $allowedClass) {
-            if ($e instanceof $allowedClass) {
-                return true;
-            }
-        }
-
-        return false;
     }
 
     /**

@@ -347,7 +347,7 @@ export interface paths {
     };
     get?: never;
     put?: never;
-    /** Login admin account */
+    /** Log in: starts the session. Call `GET /api/sanctum/csrf-cookie` first */
     post: operations['credential.login'];
     delete?: never;
     options?: never;
@@ -355,7 +355,7 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
-  '/admin/credential/trust/refresh-token': {
+  '/admin/credential/logout': {
     parameters: {
       query?: never;
       header?: never;
@@ -364,24 +364,7 @@ export interface paths {
     };
     get?: never;
     put?: never;
-    /** Refresh token admin account */
-    post: operations['credential.refreshToken'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/admin/credential/trust/logout': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    /** Logout admin account */
+    /** Log out: ends the session (also succeeds without one) */
     post: operations['credential.logout'];
     delete?: never;
     options?: never;
@@ -396,8 +379,25 @@ export interface paths {
       path?: never;
       cookie?: never;
     };
-    /** Get current authenticated admin user */
+    /** The signed-in admin */
     get: operations['credential.me'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/sanctum/csrf-cookie': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Return an empty response simply to trigger the storage of the CSRF cookie in the browser */
+    get: operations['sanctum.csrf-cookie'];
     put?: never;
     post?: never;
     delete?: never;
@@ -1369,8 +1369,8 @@ export interface components {
     };
   };
   responses: {
-    /** @description Authorization error */
-    AuthorizationException: {
+    /** @description Unauthenticated */
+    AuthenticationException: {
       headers: {
         [name: string]: unknown;
       };
@@ -1445,6 +1445,7 @@ export interface operations {
           };
         };
       };
+      401: components['responses']['AuthenticationException'];
       422: components['responses']['ValidationException'];
     };
   };
@@ -1469,6 +1470,7 @@ export interface operations {
           'application/json': number;
         };
       };
+      401: components['responses']['AuthenticationException'];
       422: components['responses']['ValidationException'];
     };
   };
@@ -1495,6 +1497,7 @@ export interface operations {
           'application/json': number;
         };
       };
+      401: components['responses']['AuthenticationException'];
       422: components['responses']['ValidationException'];
     };
   };
@@ -1519,6 +1522,7 @@ export interface operations {
           'application/json': Record<string, never>;
         };
       };
+      401: components['responses']['AuthenticationException'];
       422: components['responses']['ValidationException'];
     };
   };
@@ -1564,6 +1568,7 @@ export interface operations {
           };
         };
       };
+      401: components['responses']['AuthenticationException'];
       422: components['responses']['ValidationException'];
     };
   };
@@ -1588,6 +1593,7 @@ export interface operations {
           'application/json': number;
         };
       };
+      401: components['responses']['AuthenticationException'];
       422: components['responses']['ValidationException'];
     };
   };
@@ -1614,6 +1620,7 @@ export interface operations {
           'application/json': number;
         };
       };
+      401: components['responses']['AuthenticationException'];
       422: components['responses']['ValidationException'];
     };
   };
@@ -1638,6 +1645,7 @@ export interface operations {
           'application/json': Record<string, never>;
         };
       };
+      401: components['responses']['AuthenticationException'];
       422: components['responses']['ValidationException'];
     };
   };
@@ -1671,6 +1679,7 @@ export interface operations {
           };
         };
       };
+      401: components['responses']['AuthenticationException'];
       422: components['responses']['ValidationException'];
     };
   };
@@ -1695,6 +1704,7 @@ export interface operations {
           'application/json': boolean;
         };
       };
+      401: components['responses']['AuthenticationException'];
       422: components['responses']['ValidationException'];
     };
   };
@@ -1732,6 +1742,7 @@ export interface operations {
           };
         };
       };
+      401: components['responses']['AuthenticationException'];
       422: components['responses']['ValidationException'];
     };
   };
@@ -1756,6 +1767,7 @@ export interface operations {
           'application/json': number;
         };
       };
+      401: components['responses']['AuthenticationException'];
       422: components['responses']['ValidationException'];
     };
   };
@@ -1782,6 +1794,7 @@ export interface operations {
           'application/json': number;
         };
       };
+      401: components['responses']['AuthenticationException'];
       422: components['responses']['ValidationException'];
     };
   };
@@ -1806,6 +1819,7 @@ export interface operations {
           'application/json': Record<string, never>;
         };
       };
+      401: components['responses']['AuthenticationException'];
       422: components['responses']['ValidationException'];
     };
   };
@@ -1845,6 +1859,7 @@ export interface operations {
           };
         };
       };
+      401: components['responses']['AuthenticationException'];
       422: components['responses']['ValidationException'];
     };
   };
@@ -1869,6 +1884,7 @@ export interface operations {
           'application/json': number;
         };
       };
+      401: components['responses']['AuthenticationException'];
       422: components['responses']['ValidationException'];
     };
   };
@@ -1895,6 +1911,7 @@ export interface operations {
           'application/json': number;
         };
       };
+      401: components['responses']['AuthenticationException'];
       422: components['responses']['ValidationException'];
     };
   };
@@ -1919,6 +1936,7 @@ export interface operations {
           'application/json': Record<string, never>;
         };
       };
+      401: components['responses']['AuthenticationException'];
       422: components['responses']['ValidationException'];
     };
   };
@@ -1952,6 +1970,7 @@ export interface operations {
           };
         };
       };
+      401: components['responses']['AuthenticationException'];
       422: components['responses']['ValidationException'];
     };
   };
@@ -1976,6 +1995,7 @@ export interface operations {
           'application/json': boolean;
         };
       };
+      401: components['responses']['AuthenticationException'];
       422: components['responses']['ValidationException'];
     };
   };
@@ -1997,88 +2017,23 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          'application/json': {
-            /** @description Time when JWT was issued. */
-            expires_at: number;
-            /** @description Also return the absolute expiration timestamp */
-            _cookies: [
-              {
-                /** @constant */
-                name: 'access_token';
-                /** @description Absolute timestamp */
-                value: string;
-                minutes: string | 5;
-                /** @constant */
-                path: '/api/admin';
-                domain: string;
-                secure: string;
-                httpOnly: boolean;
-              },
-              {
-                /** @constant */
-                name: 'refresh_token';
-                value: string;
-                minutes: string | 4320;
-                /** @constant */
-                path: '/api/admin/credential/trust';
-                domain: string;
-                secure: string;
-                httpOnly: boolean;
-              },
-            ];
-          };
+          'application/json': unknown[];
         };
       };
-      403: components['responses']['AuthorizationException'];
+      401: components['responses']['AuthenticationException'];
       422: components['responses']['ValidationException'];
-    };
-  };
-  'credential.refreshToken': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
+      /** @description Too many requests */
+      429: {
         headers: {
           [name: string]: unknown;
         };
         content: {
           'application/json': {
-            /** @description Time when JWT was issued. */
-            expires_at: number;
-            _cookies: [
-              {
-                /** @constant */
-                name: 'access_token';
-                /** @description Absolute timestamp */
-                value: string;
-                minutes: string | 5;
-                /** @constant */
-                path: '/api/admin';
-                domain: string;
-                secure: string;
-                httpOnly: boolean;
-              },
-              {
-                /** @constant */
-                name: 'refresh_token';
-                value: string;
-                minutes: string | 4320;
-                /** @constant */
-                path: '/api/admin/credential/trust';
-                domain: string;
-                secure: string;
-                httpOnly: boolean;
-              },
-            ];
+            /** @description Error overview. */
+            message: string;
           };
         };
       };
-      403: components['responses']['AuthorizationException'];
     };
   };
   'credential.logout': {
@@ -2095,35 +2050,9 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          'application/json': {
-            _cookies: [
-              {
-                /** @constant */
-                name: 'access_token';
-                value: null;
-                minutes: string | 5;
-                /** @constant */
-                path: '/api/admin';
-                domain: string;
-                secure: string;
-                httpOnly: boolean;
-              },
-              {
-                /** @constant */
-                name: 'refresh_token';
-                value: null;
-                minutes: string | 4320;
-                /** @constant */
-                path: '/api/admin/credential/trust';
-                domain: string;
-                secure: string;
-                httpOnly: boolean;
-              },
-            ];
-          };
+          'application/json': Record<string, never>;
         };
       };
-      403: components['responses']['AuthorizationException'];
     };
   };
   'credential.me': {
@@ -2140,16 +2069,34 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          'application/json': {
-            expires_at: string;
-            id: number;
-            email: string;
-            status: number;
-            is_active: boolean;
-          };
+          'application/json': unknown[];
         };
       };
-      403: components['responses']['AuthorizationException'];
+      401: components['responses']['AuthenticationException'];
+    };
+  };
+  'sanctum.csrf-cookie': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /**
+       * @description No content
+       *
+       *     No content
+       */
+      204: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': unknown[];
+        };
+      };
     };
   };
   'featureMst.list': {
@@ -2185,6 +2132,7 @@ export interface operations {
           };
         };
       };
+      401: components['responses']['AuthenticationException'];
       422: components['responses']['ValidationException'];
     };
   };
@@ -2209,6 +2157,7 @@ export interface operations {
           'application/json': number;
         };
       };
+      401: components['responses']['AuthenticationException'];
       422: components['responses']['ValidationException'];
     };
   };
@@ -2235,6 +2184,7 @@ export interface operations {
           'application/json': number;
         };
       };
+      401: components['responses']['AuthenticationException'];
       422: components['responses']['ValidationException'];
     };
   };
@@ -2259,6 +2209,7 @@ export interface operations {
           'application/json': Record<string, never>;
         };
       };
+      401: components['responses']['AuthenticationException'];
       422: components['responses']['ValidationException'];
     };
   };
@@ -2297,6 +2248,7 @@ export interface operations {
           };
         };
       };
+      401: components['responses']['AuthenticationException'];
       422: components['responses']['ValidationException'];
     };
   };
@@ -2321,6 +2273,7 @@ export interface operations {
           'application/json': number;
         };
       };
+      401: components['responses']['AuthenticationException'];
       422: components['responses']['ValidationException'];
     };
   };
@@ -2347,6 +2300,7 @@ export interface operations {
           'application/json': number;
         };
       };
+      401: components['responses']['AuthenticationException'];
       422: components['responses']['ValidationException'];
     };
   };
@@ -2371,6 +2325,7 @@ export interface operations {
           'application/json': Record<string, never>;
         };
       };
+      401: components['responses']['AuthenticationException'];
       422: components['responses']['ValidationException'];
     };
   };
@@ -2406,6 +2361,7 @@ export interface operations {
           'application/json': unknown[][];
         };
       };
+      401: components['responses']['AuthenticationException'];
       422: components['responses']['ValidationException'];
     };
   };
@@ -2443,6 +2399,7 @@ export interface operations {
           };
         };
       };
+      401: components['responses']['AuthenticationException'];
       422: components['responses']['ValidationException'];
     };
   };
@@ -2472,6 +2429,7 @@ export interface operations {
           };
         };
       };
+      401: components['responses']['AuthenticationException'];
       422: components['responses']['ValidationException'];
     };
   };
@@ -2501,6 +2459,7 @@ export interface operations {
           };
         };
       };
+      401: components['responses']['AuthenticationException'];
       422: components['responses']['ValidationException'];
     };
   };
@@ -2533,6 +2492,7 @@ export interface operations {
           };
         };
       };
+      401: components['responses']['AuthenticationException'];
       422: components['responses']['ValidationException'];
     };
   };
@@ -2572,6 +2532,7 @@ export interface operations {
               };
         };
       };
+      401: components['responses']['AuthenticationException'];
       422: components['responses']['ValidationException'];
     };
   };
@@ -2598,6 +2559,7 @@ export interface operations {
           'application/json': number;
         };
       };
+      401: components['responses']['AuthenticationException'];
       422: components['responses']['ValidationException'];
     };
   };
@@ -2622,6 +2584,7 @@ export interface operations {
           'application/json': Record<string, never>;
         };
       };
+      401: components['responses']['AuthenticationException'];
       422: components['responses']['ValidationException'];
     };
   };
@@ -2657,6 +2620,7 @@ export interface operations {
           };
         };
       };
+      401: components['responses']['AuthenticationException'];
       422: components['responses']['ValidationException'];
     };
   };
@@ -2681,6 +2645,7 @@ export interface operations {
           'application/json': number;
         };
       };
+      401: components['responses']['AuthenticationException'];
       422: components['responses']['ValidationException'];
     };
   };
@@ -2707,6 +2672,7 @@ export interface operations {
           'application/json': number;
         };
       };
+      401: components['responses']['AuthenticationException'];
       422: components['responses']['ValidationException'];
     };
   };
@@ -2731,6 +2697,7 @@ export interface operations {
           'application/json': Record<string, never>;
         };
       };
+      401: components['responses']['AuthenticationException'];
       422: components['responses']['ValidationException'];
     };
   };
@@ -2768,6 +2735,7 @@ export interface operations {
           };
         };
       };
+      401: components['responses']['AuthenticationException'];
       422: components['responses']['ValidationException'];
     };
   };
@@ -2792,6 +2760,7 @@ export interface operations {
           'application/json': number;
         };
       };
+      401: components['responses']['AuthenticationException'];
       422: components['responses']['ValidationException'];
     };
   };
@@ -2818,6 +2787,7 @@ export interface operations {
           'application/json': number;
         };
       };
+      401: components['responses']['AuthenticationException'];
       422: components['responses']['ValidationException'];
     };
   };
@@ -2842,6 +2812,7 @@ export interface operations {
           'application/json': Record<string, never>;
         };
       };
+      401: components['responses']['AuthenticationException'];
       422: components['responses']['ValidationException'];
     };
   };
@@ -2878,6 +2849,7 @@ export interface operations {
           };
         };
       };
+      401: components['responses']['AuthenticationException'];
       422: components['responses']['ValidationException'];
     };
   };
@@ -2902,6 +2874,7 @@ export interface operations {
           'application/json': number;
         };
       };
+      401: components['responses']['AuthenticationException'];
       422: components['responses']['ValidationException'];
     };
   };
@@ -2928,6 +2901,7 @@ export interface operations {
           'application/json': number;
         };
       };
+      401: components['responses']['AuthenticationException'];
       422: components['responses']['ValidationException'];
     };
   };
@@ -2952,6 +2926,7 @@ export interface operations {
           'application/json': Record<string, never>;
         };
       };
+      401: components['responses']['AuthenticationException'];
       422: components['responses']['ValidationException'];
     };
   };

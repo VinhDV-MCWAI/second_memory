@@ -77,31 +77,6 @@ class Messages
 
     const E0500 = 'Internal server error';
 
-    /**
-     * Errors JWT messages
-     */
-    const E0600 = 'Wrong number of segments';
-
-    const E0601 = 'Invalid header encoding';
-
-    const E0602 = 'Invalid data header';
-
-    const E0603 = 'Invalid claims encoding';
-
-    const E0604 = 'Invalid data claims';
-
-    const E0605 = 'Invalid signature encoding';
-
-    const E0606 = 'Signature verification failed';
-
-    const E0607 = 'Invalid expiration time';
-
-    const E0608 = 'Invalid type member';
-
-    const E0609 = 'Token not exist';
-
-    const E0610 = 'Login wrong more than '.CommonVal::LIMIT_ACCESS_FAIL.' times allowed';
-
     const TEST = 'demo test message2';
 
     /**

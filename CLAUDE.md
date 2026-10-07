@@ -17,7 +17,7 @@ PHP, Composer, Node and pnpm are **not installed on the host**. Everything runs 
 
 ```bash
 make up          # generate env if missing, then build + start the stack (./start.sh does the same)
-make test        # backend tests (make test f=AdminMst); make test-ci skips the known auth failures
+make test        # backend tests (make test f=AdminMst); make test-ci runs them as CI does
 make lint        # Pint + ESLint + Prettier checks, backend and both FE apps
 make verify      # everything CI runs
 make fresh       # DEV ONLY: wipe, re-migrate and seed the dev DB (asks first)

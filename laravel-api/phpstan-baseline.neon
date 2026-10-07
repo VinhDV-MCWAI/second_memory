@@ -25,18 +25,6 @@ parameters:
 			path: app/Exceptions/GoogleDriveQuotaExceededException.php
 
 		-
-			message: '#^Called ''env'' outside of the config directory which returns null when the config is cached, use ''config''\.$#'
-			identifier: larastan.noEnvCallsOutsideOfConfig
-			count: 1
-			path: app/Http/Middleware/AdminMiddleware.php
-
-		-
-			message: '#^Called ''env'' outside of the config directory which returns null when the config is cached, use ''config''\.$#'
-			identifier: larastan.noEnvCallsOutsideOfConfig
-			count: 1
-			path: app/Http/Middleware/BroadcastingAuthMiddleware.php
-
-		-
 			message: '#^Call to an undefined method App\\Http\\Resources\\Management\\MediaFileCollection\:\:currentPage\(\)\.$#'
 			identifier: method.notFound
 			count: 1
@@ -475,22 +463,10 @@ parameters:
 			path: app/Repositories/SoftDeleteCrudRepository.php
 
 		-
-			message: '#^Called ''env'' outside of the config directory which returns null when the config is cached, use ''config''\.$#'
-			identifier: larastan.noEnvCallsOutsideOfConfig
-			count: 5
-			path: app/Services/Custom/CredentialService.php
-
-		-
 			message: '#^PHPDoc tag @param references unknown parameter\: \$prefix$#'
 			identifier: parameter.notFound
 			count: 1
 			path: app/Services/MinioService.php
-
-		-
-			message: '#^Strict comparison using \=\=\= between string and false will always evaluate to false\.$#'
-			identifier: identical.alwaysFalse
-			count: 1
-			path: app/Utilities/JsonWebToken.php
 
 		-
 			message: '#^PHPDoc type string of property Database\\Factories\\Master\\AdminMstFactory\:\:\$model is not covariant with PHPDoc type class\-string\<App\\Models\\Master\\AdminMst\> of overridden property Illuminate\\Database\\Eloquent\\Factories\\Factory\<App\\Models\\Master\\AdminMst\>\:\:\$model\.$#'

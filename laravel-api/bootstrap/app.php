@@ -5,7 +5,6 @@ declare(strict_types=1);
 use App\Constants\CommonVal;
 use App\Constants\Messages;
 use App\Http\Middleware\AdminMiddleware;
-use App\Http\Middleware\BroadcastingAuthMiddleware;
 use App\Http\Middleware\GenerateResponseMiddleware;
 use App\Http\Middleware\TransactionMiddleware;
 use App\Traits\ApiResponse;
@@ -33,17 +32,22 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
+        // Session + CSRF for requests from the admin SPA (Sanctum stateful domains)
+        $middleware->statefulApi();
+        // API only: guests get a JSON 401, never a redirect to a login page
+        $middleware->redirectGuestsTo(fn (): ?string => null);
         $middleware->alias([
             'api.response' => GenerateResponseMiddleware::class,
             'db.transaction' => TransactionMiddleware::class,
             'auth.admin' => AdminMiddleware::class,
-            'auth.broadcasting' => BroadcastingAuthMiddleware::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
+        $exceptions->shouldRenderJsonWhen(fn (Request $request): bool => $request->is('api/*') || $request->expectsJson());
+
         // Reporting (logging) is handled by Laravel's default reporter; this callback only renders.
         $exceptions->render(function (Throwable $e, Request $request): ?JsonResponse {
-            if (! $request->expectsJson()) {
+            if (! $request->is('api/*') && ! $request->expectsJson()) {
                 return null;
             }
 
@@ -86,7 +90,7 @@ return Application::configure(basePath: dirname(__DIR__))
                 $e instanceof ThrottleRequestsException => $respond(
                     $e->getMessage() ?: Messages::E0429,
                     CommonVal::HTTP_TOO_MANY_REQUESTS
-                ),
+                )->withHeaders($e->getHeaders()),
 
                 // findOrFail() messages expose model class names; keep only custom messages.
                 $e instanceof ModelNotFoundException => $respond(

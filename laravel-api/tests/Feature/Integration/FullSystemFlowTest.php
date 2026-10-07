@@ -87,31 +87,24 @@ class FullSystemFlowTest extends TestCase
         ]);
     }
 
-    public function test_scenario_3_token_security()
+    public function test_scenario_3_session_revoked_on_logout()
     {
         $admin = AdminMst::factory()->create();
 
         $checkUrl = 'api/admin/token-mst/list';
-        $this->grantAccessToAdmin($admin, 'POST', $this->loginUrl);
         $this->grantAccessToAdmin($admin, 'GET', $checkUrl);
 
-        // Login
+        // 1. Login
         $cookies = $this->getAuthCookies($admin);
-        $accessToken = $cookies['access_token'] ?? null;
-        $this->assertNotNull($accessToken);
+        $this->assertArrayHasKey(config('session.cookie'), $cookies);
 
         // 2. Verify Access
-        $response = $this->call('GET', $checkUrl, [], $cookies);
-        $response->assertStatus(200);
+        $this->call('GET', $checkUrl, [], $cookies)->assertStatus(CommonVal::HTTP_OK);
 
-        // 3. Manually Expire Token (Revoke from Redis)
-        $tokenKey = CommonVal::ADMIN_TYPE.":{$admin->id}:{$accessToken}";
-        $deleted = Redis::del($tokenKey);
+        // 3. Logout ends the server-side session
+        $this->call('POST', '/api/admin/credential/logout', [], $cookies)->assertStatus(CommonVal::HTTP_OK);
 
-        // 4. Access Retry (Should Fail)
-        $response = $this->call('GET', $checkUrl, [], $cookies);
-
-        // Assert failure (401 or 403)
-        $this->assertNotEquals(200, $response->status(), 'Token should be expired');
+        // 4. The old session cookie no longer works
+        $this->call('GET', $checkUrl, [], $cookies)->assertStatus(CommonVal::HTTP_UNAUTHORIZED);
     }
 }

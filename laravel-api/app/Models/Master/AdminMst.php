@@ -8,14 +8,16 @@ use App\Models\History\Master\AdminMstHist;
 use App\Traits\HasHistory;
 use App\Traits\HasSoftDelete;
 use App\Traits\HasStatus;
+use Illuminate\Auth\Authenticatable;
+use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class AdminMst extends Model
+class AdminMst extends Model implements AuthenticatableContract
 {
-    use HasFactory, HasHistory, HasSoftDelete, HasStatus;
+    use Authenticatable, HasFactory, HasHistory, HasSoftDelete, HasStatus;
 
     protected $table = 'admin_mst';
 

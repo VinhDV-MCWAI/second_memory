@@ -94,7 +94,7 @@ class AdminRoleMstRepository extends BaseRepository
      */
     public function isMyRole(array $payload): bool
     {
-        $currentAdminId = (int) (request()->attributes->get('current_admin_id') ?? Auth::id());
+        $currentAdminId = (int) Auth::id();
 
         if (! $currentAdminId) {
             return false;

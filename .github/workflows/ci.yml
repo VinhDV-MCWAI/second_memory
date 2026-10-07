@@ -154,9 +154,7 @@ jobs:
         run: composer analyse -- --no-progress --error-format=github
 
       - name: Tests
-        # The 4 RefreshTokenApiTest cases fail until Sanctum replaces the custom
-        # JWT (PRB-001, backlog P2-11). Remove the exclusion then.
-        run: php artisan test --exclude-filter 'RefreshTokenApiTest::test_t0(04|05|06|19)_'
+        run: php artisan test
 
       - name: OpenAPI spec is up to date
         # Runs after the tests so the testing DB has the schema Scramble inspects

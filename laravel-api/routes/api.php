@@ -6,30 +6,26 @@ use App\Http\Controllers\Custom\CredentialController;
 use Illuminate\Support\Facades\Broadcast;
 use Illuminate\Support\Facades\Route;
 
-// Middleware aliases are registered in bootstrap/app.php.
-Broadcast::routes(['middleware' => ['api', 'auth.broadcasting'], 'prefix' => 'admin']);
+// Middleware aliases are registered in bootstrap/app.php. Auth: Sanctum SPA session (ADR-0004).
+Broadcast::routes(['middleware' => ['api', 'auth:sanctum'], 'prefix' => 'admin']);
 
 Route::prefix('admin')
     ->middleware(['api.response', 'db.transaction'])
     ->group(function () {
         Route::prefix('credential')->group(function () {
             Route::post('login', [CredentialController::class, 'login']);
-            Route::prefix('trust')->group(function () {
-                Route::post('refresh-token', [CredentialController::class, 'refreshToken']);
-            });
+            Route::post('logout', [CredentialController::class, 'logout']);
         });
 
-        Route::middleware('auth.admin')
+        Route::middleware('auth:sanctum')
             ->group(function () {
-                Route::prefix('credential')->group(function () {
-                    Route::prefix('trust')->group(function () {
-                        Route::post('logout', [CredentialController::class, 'logout']);
-                    });
-                    Route::get('me', [CredentialController::class, 'me']);
-                });
+                Route::get('credential/me', [CredentialController::class, 'me']);
 
-                Route::group([], base_path('routes/api/master.php'));
-                Route::group([], base_path('routes/api/management.php'));
-                Route::group([], base_path('routes/api/history.php'));
+                Route::middleware('auth.admin')
+                    ->group(function () {
+                        Route::group([], base_path('routes/api/master.php'));
+                        Route::group([], base_path('routes/api/management.php'));
+                        Route::group([], base_path('routes/api/history.php'));
+                    });
             });
     });
