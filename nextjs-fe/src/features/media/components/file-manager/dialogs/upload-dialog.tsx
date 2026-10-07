@@ -10,27 +10,13 @@ import {
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
-import {
-  Upload,
-  X,
-  File,
-  AlertCircle,
-  Image as ImageIcon,
-  Loader2,
-  CheckCircle2,
-} from 'lucide-react';
-import Image from 'next/image';
+import { Upload, X, AlertCircle } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { UPLOAD_CONFIG } from '@/shared/config/constant';
 import { cn } from '@/shared/utils';
-import type {
-  UploadDialogProps,
-  ExtendedFile,
-  UploadedFileData,
-} from '@/features/media/types/file-manager.types';
-import { formatFileSize } from '@/features/media/components/file-manager/utils';
-import { mediaFileService } from '@/features/media/services/media-file.service';
-import { MultipartUploader } from '@/features/media/services/multipart-uploader';
+import type { UploadDialogProps, ExtendedFile } from '@/features/media/types/file-manager.types';
+import { useTempUpload } from '@/features/media/hooks/use-temp-upload';
+import { UploadFileRow } from './upload-file-row';
 
 export const UploadDialog = ({
   open,
@@ -41,7 +27,7 @@ export const UploadDialog = ({
 }: UploadDialogProps & { isLoading?: boolean }) => {
   const t = useTranslations('fileManager.dialogs');
   const [isDragging, setIsDragging] = useState(false);
-  const [uploadedFiles, setUploadedFiles] = useState<UploadedFileData[]>([]);
+  const { uploadedFiles, addFile, removeFile, reset } = useTempUpload(currentPath);
   const [committing, setCommitting] = useState(false);
   const [commitProgress, setCommitProgress] = useState(0);
   const [error, setError] = useState<string | null>(null);
@@ -53,15 +39,17 @@ export const UploadDialog = ({
   const hasValidFiles = uploadedFiles.some((f) => f.uploaded);
   const hasAnyErrors = uploadedFiles.some((f) => f.error);
 
-  // Reset state when dialog closes
+  // Reset state when dialog closes (also when the parent closes it)
+  /* eslint-disable react-hooks/set-state-in-effect */
   useEffect(() => {
     if (!open) {
-      setUploadedFiles([]);
+      reset();
       setError(null);
       setCommitProgress(0);
       setCommitting(false);
     }
-  }, [open]);
+  }, [open, reset]);
+  /* eslint-enable react-hooks/set-state-in-effect */
 
   const handleDragOver = useCallback((e: React.DragEvent) => {
     e.preventDefault();
@@ -73,244 +61,27 @@ export const UploadDialog = ({
     setIsDragging(false);
   }, []);
 
-  /* eslint-disable @typescript-eslint/no-unused-vars */
-  const validateFile = (_file: File): string | null => {
-    return null;
-  };
-
-  const generatePreview = async (file: File): Promise<string | undefined> => {
-    if (!file.type.startsWith('image/')) {
-      return undefined;
-    }
-
-    return new Promise((resolve) => {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        resolve(reader.result as string);
-      };
-      reader.onerror = () => {
-        resolve(undefined);
-      };
-      reader.readAsDataURL(file);
-    });
-  };
-
-  const autoUploadToTemp = useCallback(
-    async (file: File) => {
-      const fileId = `${file.name}-${file.size}-${file.lastModified}`;
-
-      // Check if already uploading or uploaded
-      if (
-        uploadedFiles.some(
-          (uf) => `${uf.file.name}-${uf.file.size}-${uf.file.lastModified}` === fileId,
-        )
-      ) {
-        return;
-      }
-
-      // Validate file
-      const validationError = validateFile(file);
-      if (validationError) {
-        setUploadedFiles((prev) => [
-          ...prev,
-          {
-            file,
-            key: '',
-            uploading: false,
-            uploaded: false,
-            error: validationError,
-            metadata: {
-              original_name: file.name,
-              extension: file.name.split('.').pop() || '',
-              mime_type: file.type,
-              size: file.size,
-            },
-          },
-        ]);
-        return;
-      }
-
-      // Add file to list with uploading state
-      setUploadedFiles((prev) => [
-        ...prev,
-        {
-          file,
-          key: '',
-          uploading: true,
-          uploaded: false,
-          metadata: {
-            original_name: file.name,
-            extension: file.name.split('.').pop() || '',
-            mime_type: file.type,
-            size: file.size,
-          },
-        },
-      ]);
-
-      try {
-        // Generate preview for images
-        const preview = await generatePreview(file);
-
-        if (file.size > UPLOAD_CONFIG.HEAVY_FILE_THRESHOLD_BYTES) {
-          // Heavy File Upload Flow
-          const uploader = new MultipartUploader(
-            file,
-            (progress) => {
-              // Update progress
-              setUploadedFiles((prev) =>
-                prev.map((uf) => {
-                  const id = `${uf.file.name}-${uf.file.size}-${uf.file.lastModified}`;
-                  if (id === fileId) {
-                    return { ...uf, progress: progress.percentage };
-                  }
-                  return uf;
-                }),
-              );
-            },
-            undefined,
-            currentPath,
-          );
-
-          const result = await uploader.start();
-
-          // Mark as uploaded and isHeavyUploaded
-          setUploadedFiles((prev) =>
-            prev.map((uf) => {
-              const id = `${uf.file.name}-${uf.file.size}-${uf.file.lastModified}`;
-              if (id === fileId) {
-                // Attach flags to file object for useFileManager
-                const extendedFile = uf.file as ExtendedFile;
-                extendedFile.isHeavyUploaded = true;
-                extendedFile.tempKey = result.key; // Use real key from backend
-                extendedFile.tempMetadata = {
-                  original_name: result.original_name,
-                  extension: result.extension,
-                  mime_type: result.mime_type,
-                  size: result.size,
-                };
-
-                return {
-                  ...uf,
-                  key: result.key, // Use real key from backend
-                  preview,
-                  uploading: false,
-                  uploaded: true,
-                  metadata: {
-                    original_name: result.original_name,
-                    extension: result.extension,
-                    mime_type: result.mime_type,
-                    size: result.size,
-                  },
-                };
-              }
-              return uf;
-            }),
-          );
-        } else {
-          // Normal Upload Flow
-          // Upload to temp bucket via presigned URL
-          const metadata = await mediaFileService.uploadToMinio({
-            file,
-            onProgress: (percentage) => {
-              // Update progress
-              setUploadedFiles((prev) =>
-                prev.map((uf) => {
-                  const id = `${uf.file.name}-${uf.file.size}-${uf.file.lastModified}`;
-                  if (id === fileId) {
-                    return { ...uf, progress: percentage };
-                  }
-                  return uf;
-                }),
-              );
-            },
-          });
-
-          if (!metadata) {
-            throw new Error(t('upload.failedToUploadToTemp'));
-          }
-
-          // Update file with success state
-          setUploadedFiles((prev) =>
-            prev.map((uf) => {
-              const id = `${uf.file.name}-${uf.file.size}-${uf.file.lastModified}`;
-              if (id === fileId) {
-                // Attach metadata to file object for useFileManager
-                const extendedFile = uf.file as ExtendedFile;
-                extendedFile.tempKey = metadata.key;
-                extendedFile.tempMetadata = {
-                  original_name: metadata.original_name,
-                  extension: metadata.extension,
-                  mime_type: metadata.mime_type,
-                  size: metadata.size,
-                };
-
-                return {
-                  ...uf,
-                  key: metadata.key,
-                  preview,
-                  uploading: false,
-                  uploaded: true,
-                  metadata: {
-                    original_name: metadata.original_name,
-                    extension: metadata.extension,
-                    mime_type: metadata.mime_type,
-                    size: metadata.size,
-                  },
-                };
-              }
-              return uf;
-            }),
-          );
-        }
-      } catch (err) {
-        console.error(t('upload.autoUploadError'), err);
-        const errorMessage = err instanceof Error ? err.message : t('upload.uploadFailed');
-
-        // Update file with error state
-        setUploadedFiles((prev) =>
-          prev.map((uf) => {
-            const id = `${uf.file.name}-${uf.file.size}-${uf.file.lastModified}`;
-            if (id === fileId) {
-              return {
-                ...uf,
-                uploading: false,
-                uploaded: false,
-                error: errorMessage,
-              };
-            }
-            return uf;
-          }),
-        );
-      }
-    },
-    [uploadedFiles, currentPath, t],
-  );
-
   const handleDrop = useCallback(
     (e: React.DragEvent) => {
       e.preventDefault();
       setIsDragging(false);
       if (e.dataTransfer.files?.length) {
         const newFiles = Array.from(e.dataTransfer.files);
-        newFiles.forEach((file) => autoUploadToTemp(file));
+        newFiles.forEach((file) => addFile(file));
       }
     },
-    [autoUploadToTemp],
+    [addFile],
   );
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files?.length) {
       const newFiles = Array.from(e.target.files);
-      newFiles.forEach((file) => autoUploadToTemp(file));
+      newFiles.forEach((file) => addFile(file));
     }
     // Reset input so same files can be selected again if needed
     if (fileInputRef.current) {
       fileInputRef.current.value = '';
     }
-  };
-
-  const removeFile = (index: number) => {
-    setUploadedFiles((prev) => prev.filter((_, i) => i !== index));
   };
 
   const handleCommit = async () => {
@@ -336,10 +107,7 @@ export const UploadDialog = ({
       // The hook's uploadFiles will call mediaFileService.upload with the temp keys
       const filesToCommit = validFiles.map((uf) => {
         // Attach metadata to the File object for the service to use
-        const fileWithMetadata = uf.file as File & {
-          tempKey?: string;
-          tempMetadata?: typeof uf.metadata;
-        };
+        const fileWithMetadata = uf.file as ExtendedFile;
         fileWithMetadata.tempKey = uf.key;
         fileWithMetadata.tempMetadata = uf.metadata;
         return fileWithMetadata;
@@ -352,7 +120,7 @@ export const UploadDialog = ({
 
       // Only close dialog if successful
       setTimeout(() => {
-        setUploadedFiles([]);
+        reset();
         setCommitting(false);
         setCommitProgress(0);
         onOpenChange(false);
@@ -424,99 +192,11 @@ export const UploadDialog = ({
           {uploadedFiles.length > 0 && (
             <div className="max-h-[300px] space-y-2 overflow-y-auto">
               {uploadedFiles.map((uploadedFile, index) => (
-                <div
+                <UploadFileRow
                   key={`${uploadedFile.file.name}-${index}`}
-                  className={cn(
-                    'flex items-start gap-3 rounded-md border p-3 text-sm',
-                    uploadedFile.error ? 'border-destructive bg-destructive/5' : 'border-border',
-                  )}
-                >
-                  {/* Preview or Icon */}
-                  <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center overflow-hidden rounded bg-muted">
-                    {uploadedFile.uploading ? (
-                      <Loader2 className="h-5 w-5 animate-spin text-primary" />
-                    ) : uploadedFile.preview ? (
-                      <div className="relative h-full w-full">
-                        <Image
-                          src={uploadedFile.preview}
-                          alt={uploadedFile.file.name}
-                          fill
-                          className="object-cover"
-                        />
-                      </div>
-                    ) : uploadedFile.uploaded ? (
-                      <ImageIcon className="h-5 w-5 text-muted-foreground" />
-                    ) : (
-                      <File className="h-5 w-5 text-muted-foreground" />
-                    )}
-                  </div>
-
-                  {/* File Info */}
-                  <div className="min-w-0 flex-1">
-                    <div className="flex items-start justify-between gap-2">
-                      <div className="min-w-0 flex-1">
-                        <p className="truncate font-medium">{uploadedFile.file.name}</p>
-                        <p className="text-xs text-muted-foreground">
-                          {formatFileSize(uploadedFile.file.size)}
-                        </p>
-                      </div>
-
-                      {/* Status Icon */}
-                      <div className="flex-shrink-0">
-                        {uploadedFile.uploading && (
-                          <Loader2 className="h-4 w-4 animate-spin text-primary" />
-                        )}
-                        {uploadedFile.uploaded && !uploadedFile.error && (
-                          <CheckCircle2 className="h-4 w-4 text-green-600" />
-                        )}
-                        {uploadedFile.error && <AlertCircle className="h-4 w-4 text-destructive" />}
-                        {!uploadedFile.uploading && !uploadedFile.uploaded && (
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            className="-mr-2 h-6 w-6"
-                            onClick={() => removeFile(index)}
-                          >
-                            <X className="h-4 w-4" />
-                          </Button>
-                        )}
-                        {!uploadedFile.uploading &&
-                          uploadedFile.uploaded &&
-                          !uploadedFile.error && (
-                            <Button
-                              variant="ghost"
-                              size="icon"
-                              className="-mr-2 h-6 w-6"
-                              onClick={() => removeFile(index)}
-                            >
-                              <X className="h-4 w-4" />
-                            </Button>
-                          )}
-                      </div>
-                    </div>
-
-                    {/* Error Message */}
-                    {uploadedFile.error && (
-                      <p className="mt-1 text-xs text-destructive">{uploadedFile.error}</p>
-                    )}
-
-                    {/* Progress Bar */}
-                    {uploadedFile.uploading && uploadedFile.progress !== undefined && (
-                      <div className="mt-2">
-                        <div className="mb-1 flex justify-between text-xs">
-                          <span className="text-primary">{t('upload.uploadingToTemp')}</span>
-                          <span className="font-medium text-primary">{uploadedFile.progress}%</span>
-                        </div>
-                        <Progress value={uploadedFile.progress} className="h-1.5" />
-                      </div>
-                    )}
-
-                    {/* Uploading Status without Progress */}
-                    {uploadedFile.uploading && uploadedFile.progress === undefined && (
-                      <p className="mt-1 text-xs text-primary">{t('upload.uploadingToTemp')}</p>
-                    )}
-                  </div>
-                </div>
+                  uploadedFile={uploadedFile}
+                  onRemove={() => removeFile(index)}
+                />
               ))}
             </div>
           )}

@@ -1,21 +1,10 @@
 import toast from 'react-hot-toast';
 import { mediaFileService } from '@/features/media/services/media-file.service';
 import { UploadDebugger } from '@/features/media/utils/upload-debug';
+import type { ExtendedFile } from '@/features/media/types/file-manager.types';
 import { extractMediaItem } from '@/features/media/utils/file-list';
 import { UploadStatus } from '@/shared/enums/enums';
 import { notification } from '@/shared/utils';
-
-/** A file that the upload dialog already put into temp storage. */
-type FileWithTempMeta = File & {
-  tempKey?: string;
-  isHeavyUploaded?: boolean;
-  tempMetadata?: {
-    original_name: string;
-    extension: string;
-    mime_type: string;
-    size: number;
-  };
-};
 
 export interface HeavyUpload {
   roomId: string;
@@ -41,7 +30,7 @@ export async function uploadMediaFile(
   t: (key: string) => string,
 ): Promise<UploadResult> {
   try {
-    const { tempKey, tempMetadata } = file as FileWithTempMeta;
+    const { tempKey, tempMetadata } = file as ExtendedFile;
     const metadata =
       tempKey && tempMetadata
         ? { key: tempKey, ...tempMetadata }
