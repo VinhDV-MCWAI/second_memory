@@ -138,6 +138,23 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/admin/audit-log/list': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Audit log, newest first by default (read-only, ADR-0006) */
+    get: operations['auditLog.list'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/admin/credential/login': {
     parameters: {
       query?: never;
@@ -394,6 +411,30 @@ export interface components {
      * @enum {integer}
      */
     AdminStatus: 0 | 1 | 2 | 3;
+    /**
+     * AuditEvent
+     * @description What an audit_log row records (ADR-0006).
+     * @enum {string}
+     */
+    AuditEvent: 'created' | 'updated' | 'deleted' | 'logged_in' | 'logged_out' | 'login_failed';
+    /** AuditLogResource */
+    AuditLogResource: {
+      id: number;
+      auditable_type: string;
+      auditable_id: number | null;
+      event: string;
+      old_values: {
+        [key: string]: unknown;
+      } | null;
+      new_values: {
+        [key: string]: unknown;
+      } | null;
+      admin_mst_id: number | null;
+      actor_user_name: string | null;
+      ip_address: string | null;
+      /** @description Full timestamp (ISO 8601): the time of day matters in an audit trail */
+      created_at: string;
+    };
     /** CompleteMultipartUploadRequest */
     CompleteMultipartUploadRequest: {
       key: string;
@@ -845,6 +886,42 @@ export interface operations {
         };
         content: {
           'application/json': Record<string, never>;
+        };
+      };
+      401: components['responses']['AuthenticationException'];
+      422: components['responses']['ValidationException'];
+    };
+  };
+  'auditLog.list': {
+    parameters: {
+      query?: {
+        id?: number | null;
+        page?: number | null;
+        per_page?: number | null;
+        sort_by?: string | null;
+        sort_order?: string | null;
+        auditable_type?: string | null;
+        auditable_id?: number | null;
+        event?: components['schemas']['AuditEvent'] | null;
+        admin_mst_id?: number | null;
+        from_date?: string | null;
+        to_date?: string | null;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Array of `AuditLogResource` */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            data: components['schemas']['AuditLogResource'][];
+          };
         };
       };
       401: components['responses']['AuthenticationException'];

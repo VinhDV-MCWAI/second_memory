@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Http\Controllers\Audit\AuditLogController;
 use App\Http\Controllers\Custom\CredentialController;
 use Illuminate\Support\Facades\Broadcast;
 use Illuminate\Support\Facades\Route;
@@ -26,6 +27,7 @@ Route::prefix('admin')
                         Route::group([], base_path('routes/api/master.php'));
                         Route::group([], base_path('routes/api/management.php'));
                         Route::group([], base_path('routes/api/history.php'));
+                        Route::get('audit-log/list', [AuditLogController::class, 'list']);
                     });
             });
     });

@@ -13,6 +13,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * Append-only audit trail (ADR-0006).
  *
  * @property AuditEvent $event
+ * @property-read AdminMst|null $actor
  */
 class AuditLog extends Model
 {
