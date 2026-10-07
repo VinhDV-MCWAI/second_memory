@@ -45,7 +45,7 @@ sh: ## Shell into a container (make sh s=ml-php)
 ##@ Backend (laravel-api)
 
 .PHONY: test
-test: ## Run backend tests (make test f=CategoryMgmt to filter)
+test: ## Run backend tests (make test f=AdminMst to filter)
 	$(PHP) php artisan test $(if $(f),--filter=$(f),)
 
 .PHONY: test-ci

@@ -5,8 +5,8 @@
 | Path | Stack | Role | Details |
 |---|---|---|---|
 | `laravel-api/` | PHP, Laravel, PostgreSQL, Redis, Reverb, MinIO (S3) | REST API | [laravel-api/CLAUDE.md](laravel-api/CLAUDE.md) |
-| `nextjs-fe/` | Next.js App Router, React, TanStack Query, RHF + zod, next-intl, shadcn/ui, Tailwind 4, Tiptap 3 | Admin dashboard (:3000) | [nextjs-fe/CLAUDE.md](nextjs-fe/CLAUDE.md) |
-| `nextjs-docs/` | Next.js App Router, Tiptap renderer | Public docs site (:3457) | [nextjs-docs/CLAUDE.md](nextjs-docs/CLAUDE.md) |
+| `nextjs-fe/` | Next.js App Router, React, TanStack Query, RHF + zod, next-intl, shadcn/ui, Tailwind 4 | Admin dashboard (:3000) | [nextjs-fe/CLAUDE.md](nextjs-fe/CLAUDE.md) |
+| `nextjs-docs/` | Next.js App Router | Public docs site, now a "content moved" page (:3457) | [nextjs-docs/CLAUDE.md](nextjs-docs/CLAUDE.md) |
 | `docker/`, `ci-cd/`, `.github/`, `backup/` | Docker Compose, GitHub Actions (self-hosted deploy), shell | Runtime & ops | [docker/CLAUDE.md](docker/CLAUDE.md) |
 
 All docs live in `docs/` (start at [docs/README.md](docs/README.md)). The old Vietnamese architecture docs are archived in `docs/archive/legacy-architecture/` (outdated — code wins).
@@ -17,7 +17,7 @@ PHP, Composer, Node and pnpm are **not installed on the host**. Everything runs 
 
 ```bash
 make up          # generate env if missing, then build + start the stack (./start.sh does the same)
-make test        # backend tests (make test f=CategoryMgmt); make test-ci skips the known auth failures
+make test        # backend tests (make test f=AdminMst); make test-ci skips the known auth failures
 make lint        # Pint + ESLint + Prettier checks, backend and both FE apps
 make verify      # everything CI runs
 make fresh       # DEV ONLY: wipe, re-migrate and seed the dev DB (asks first)
