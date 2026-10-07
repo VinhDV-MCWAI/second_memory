@@ -30,6 +30,7 @@ final class AuditLogger
         AuditEvent $event,
         ?array $old = null,
         ?array $new = null,
+        ?int $actorId = null,
     ): void {
         $old = $old === null ? null : Arr::except($old, self::EXCLUDED_KEYS);
         $new = $new === null ? null : Arr::except($new, self::EXCLUDED_KEYS);
@@ -44,7 +45,8 @@ final class AuditLogger
             'event' => $event,
             'old_values' => $old,
             'new_values' => $new,
-            'admin_mst_id' => Auth::id(),
+            // Explicit on the credential routes, where no auth middleware has picked the admin guard
+            'admin_mst_id' => $actorId ?? Auth::id(),
             'ip_address' => Request::ip(),
         ]);
     }

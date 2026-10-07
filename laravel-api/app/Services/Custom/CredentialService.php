@@ -6,7 +6,9 @@ namespace App\Services\Custom;
 
 use App\Constants\CommonVal;
 use App\Constants\Messages;
+use App\Enums\AuditEvent;
 use App\Models\Master\AdminMst;
+use App\Services\AuditLogger;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Contracts\Auth\StatefulGuard;
 use Illuminate\Http\Exceptions\ThrottleRequestsException;
@@ -20,6 +22,11 @@ use Illuminate\Support\Str;
  */
 final class CredentialService
 {
+    /** audit_log.auditable_type of admins (AdminMstService::$auditableType). */
+    private const AUDITABLE_TYPE = 'admin';
+
+    public function __construct(private readonly AuditLogger $auditLogger) {}
+
     /**
      * @param  array{user_name: string, password: string}  $credentials
      *
@@ -44,6 +51,8 @@ final class CredentialService
         // Same message for an unknown user, a wrong password and a disabled admin (no user enumeration)
         if (! $this->guard()->attempt($credentials)) {
             RateLimiter::hit($throttleKey, CommonVal::LOGIN_LOCK_SECONDS);
+            // No admin id: looking it up would make unknown and known user names distinguishable
+            $this->auditLogger->record(self::AUDITABLE_TYPE, null, AuditEvent::LOGIN_FAILED, null, ['user_name' => $credentials['user_name']]);
 
             throw new AuthenticationException(Messages::E0401);
         }
@@ -53,6 +62,7 @@ final class CredentialService
 
         /** @var AdminMst $admin */
         $admin = $this->guard()->user();
+        $this->auditLogger->record(self::AUDITABLE_TYPE, $admin->id, AuditEvent::LOGGED_IN, actorId: $admin->id);
 
         return $admin;
     }
@@ -63,6 +73,8 @@ final class CredentialService
     public function logout(Request $request): void
     {
         if ($this->guard()->check()) {
+            $adminId = (int) $this->guard()->id();
+            $this->auditLogger->record(self::AUDITABLE_TYPE, $adminId, AuditEvent::LOGGED_OUT, actorId: $adminId);
             $this->guard()->logout();
         }
 

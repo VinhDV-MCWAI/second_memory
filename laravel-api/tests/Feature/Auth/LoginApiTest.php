@@ -6,6 +6,8 @@ namespace Tests\Feature\Auth;
 
 use App\Constants\CommonVal;
 use App\Constants\Messages;
+use App\Enums\AuditEvent;
+use App\Models\Audit\AuditLog;
 use App\Models\Master\AdminMst;
 use Tests\Concerns\AuthenticatesAdmins;
 use Tests\TestCase;
@@ -133,5 +135,28 @@ final class LoginApiTest extends TestCase
 
         $this->postJson(self::LOGIN_URL, ['user_name' => $admin->user_name, 'password' => 'password'])
             ->assertStatus(CommonVal::HTTP_UNAUTHORIZED);
+    }
+
+    public function test_logins_and_logouts_are_audited(): void
+    {
+        $admin = AdminMst::factory()->create();
+
+        $this->postJson(self::LOGIN_URL, ['user_name' => $admin->user_name, 'password' => 'wrong-password'])->assertStatus(CommonVal::HTTP_UNAUTHORIZED);
+        $this->postJson(self::LOGIN_URL, ['user_name' => 'nobody-here', 'password' => 'password'])->assertStatus(CommonVal::HTTP_UNAUTHORIZED);
+        $cookies = $this->loginAs($admin);
+        $this->call('POST', '/api/admin/credential/logout', [], $cookies)->assertOk();
+
+        $logs = AuditLog::where('auditable_type', 'admin')->orderBy('id')->get();
+        $this->assertSame(
+            [AuditEvent::LOGIN_FAILED, AuditEvent::LOGIN_FAILED, AuditEvent::LOGGED_IN, AuditEvent::LOGGED_OUT],
+            $logs->pluck('event')->all()
+        );
+        // A failed login never names an admin id (no user enumeration through the log)
+        $this->assertNull($logs[0]->auditable_id);
+        $this->assertSame(['user_name' => 'nobody-here'], $logs[1]->new_values);
+        $this->assertSame($admin->id, $logs[2]->auditable_id);
+        $this->assertSame($admin->id, $logs[2]->admin_mst_id);
+        $this->assertSame($admin->id, $logs[3]->admin_mst_id);
+        $this->assertStringNotContainsString('password', (string) json_encode($logs->pluck('new_values')));
     }
 }

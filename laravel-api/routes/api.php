@@ -10,14 +10,17 @@ use Illuminate\Support\Facades\Route;
 // Middleware aliases are registered in bootstrap/app.php. Auth: Sanctum SPA session (ADR-0004).
 Broadcast::routes(['middleware' => ['api', 'auth:sanctum'], 'prefix' => 'admin']);
 
+// No db.transaction here: a failed login throws, and its audit_log row must not be rolled back
+Route::prefix('admin/credential')
+    ->middleware('api.response')
+    ->group(function () {
+        Route::post('login', [CredentialController::class, 'login']);
+        Route::post('logout', [CredentialController::class, 'logout']);
+    });
+
 Route::prefix('admin')
     ->middleware(['api.response', 'db.transaction'])
     ->group(function () {
-        Route::prefix('credential')->group(function () {
-            Route::post('login', [CredentialController::class, 'login']);
-            Route::post('logout', [CredentialController::class, 'logout']);
-        });
-
         Route::middleware('auth:sanctum')
             ->group(function () {
                 Route::get('credential/me', [CredentialController::class, 'me']);
