@@ -199,7 +199,4 @@ export const ADMIN_ROUTES = {
   ADMINS: '/admin/admins',
   ROLES: '/admin/roles',
   LOGIN: '/login',
-  SETTINGS_GENERAL: '/admin/settings/general',
-  SETTINGS_SECURITY: '/admin/settings/security',
-  SETTINGS_NOTIFICATIONS: '/admin/settings/notifications',
 } as const;

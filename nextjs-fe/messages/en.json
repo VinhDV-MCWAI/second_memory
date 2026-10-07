@@ -144,11 +144,7 @@
     "dashboard": "Dashboard",
     "fileManager": "File Manager",
     "masterData": "Master Data",
-    "contentManagement": "Content Management",
-    "settings": "Settings",
-    "general": "General",
-    "security": "Security",
-    "notifications": "Notifications"
+    "contentManagement": "Content Management"
   },
   "search": {
     "placeholder": "Search...",

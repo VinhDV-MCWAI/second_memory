@@ -1,6 +1,5 @@
 import {
   LayoutDashboard,
-  Settings,
   FolderOpen,
   Database,
   Package,
@@ -88,27 +87,6 @@ export const NAVIGATION_MENU: MenuItem[] = [
         label: 'entities.entryDescriptions',
         icon: Layers,
         href: ADMIN_ROUTES.ENTRY_DESCRIPTIONS,
-      },
-    ],
-  },
-  {
-    label: 'navigation.settings',
-    icon: Settings,
-    children: [
-      {
-        label: 'navigation.general',
-        icon: Settings,
-        href: ADMIN_ROUTES.SETTINGS_GENERAL,
-      },
-      {
-        label: 'navigation.security',
-        icon: Settings,
-        href: ADMIN_ROUTES.SETTINGS_SECURITY,
-      },
-      {
-        label: 'navigation.notifications',
-        icon: Settings,
-        href: ADMIN_ROUTES.SETTINGS_NOTIFICATIONS,
       },
     ],
   },
