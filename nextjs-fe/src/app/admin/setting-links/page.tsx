@@ -4,7 +4,7 @@ import { useTranslations } from 'next-intl';
 import { ResourceListPage } from '@/components/common/resource-list-page';
 import type { Column } from '@/components/common/data-table/data-table';
 import type { FilterField } from '@/components/common/data-table/filter-panel';
-import { SettingLinkForm } from '@/components/forms/setting-link-form';
+import { SettingLinkForm } from '@/features/management/components/setting-link-form';
 import { API_ENDPOINTS } from '@/shared/api';
 import { SORT_FIELDS } from '@/shared/config';
 import type { SettingLinkMgmt } from '@/shared/types/api';

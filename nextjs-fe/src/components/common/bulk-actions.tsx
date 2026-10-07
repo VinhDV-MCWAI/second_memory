@@ -23,7 +23,7 @@ import {
 import { useTranslations } from 'next-intl';
 import type { BulkAction, BulkActionsProps } from '@/shared/types/data-table.types';
 import { useGlobalLoading } from '@/shared/context/global-loading-context';
-import { useActionLock } from '@/shared/hooks/useActionLock';
+import { useActionLock } from '@/shared/hooks/use-action-lock';
 import { UI_CONSTANTS } from '@/shared/config';
 
 export type { BulkAction } from '@/shared/types/data-table.types';

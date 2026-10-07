@@ -5,7 +5,7 @@ import { ResourceListPage } from '@/components/common/resource-list-page';
 import { ImageCell, StatusBadge } from '@/components/common/data-table/cells';
 import type { Column } from '@/components/common/data-table/data-table';
 import type { FilterField } from '@/components/common/data-table/filter-panel';
-import { BannerForm } from '@/components/forms/banner-form';
+import { BannerForm } from '@/features/management/components/banner-form';
 import { API_ENDPOINTS } from '@/shared/api';
 import { enumOptions } from '@/shared/utils/enum-options';
 import { TIME_CONSTANTS, SORT_FIELDS } from '@/shared/config';

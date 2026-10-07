@@ -4,7 +4,7 @@ import { useTranslations } from 'next-intl';
 import { ResourceListPage } from '@/components/common/resource-list-page';
 import type { Column } from '@/components/common/data-table/data-table';
 import type { FilterField } from '@/components/common/data-table/filter-panel';
-import { PolicyDepartmentForm } from '@/components/forms/policy-department-form';
+import { PolicyDepartmentForm } from '@/features/master/components/policy-department-form';
 import { API_ENDPOINTS } from '@/shared/api';
 import { SORT_FIELDS } from '@/shared/config';
 import type { PolicyDepartmentMst } from '@/shared/types/api';

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
-import { useActionLock } from '@/shared/hooks/useActionLock';
+import { useActionLock } from '@/shared/hooks/use-action-lock';
 import { LoadingSpinner } from '@/components/ui/loading';
 import type { SafeButtonProps } from '@/shared/types';
 

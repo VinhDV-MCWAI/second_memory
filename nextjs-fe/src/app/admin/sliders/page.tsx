@@ -5,7 +5,7 @@ import { ResourceListPage } from '@/components/common/resource-list-page';
 import { ImageCell, StatusBadge } from '@/components/common/data-table/cells';
 import type { Column } from '@/components/common/data-table/data-table';
 import type { FilterField } from '@/components/common/data-table/filter-panel';
-import { SliderForm } from '@/components/forms/slider-form';
+import { SliderForm } from '@/features/management/components/slider-form';
 import { API_ENDPOINTS } from '@/shared/api';
 import { SORT_FIELDS } from '@/shared/config';
 import { enumOptions } from '@/shared/utils/enum-options';

@@ -5,7 +5,7 @@ import { ResourceListPage } from '@/components/common/resource-list-page';
 import { StatusBadge } from '@/components/common/data-table/cells';
 import type { Column } from '@/components/common/data-table/data-table';
 import type { FilterField } from '@/components/common/data-table/filter-panel';
-import { AdminForm } from '@/components/forms/admin-form';
+import { AdminForm } from '@/features/master/components/admin-form';
 import { API_ENDPOINTS } from '@/shared/api';
 import { enumOptions } from '@/shared/utils/enum-options';
 import { AdminStatusLabels } from '@/shared/enums';

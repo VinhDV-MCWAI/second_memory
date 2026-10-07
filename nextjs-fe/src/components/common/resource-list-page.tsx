@@ -20,9 +20,9 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import { useApiData } from '@/shared/hooks/useApiData';
-import { useCrud } from '@/shared/hooks/useCrud';
-import { useActionLock } from '@/shared/hooks/useActionLock';
+import { useApiData } from '@/shared/hooks/use-api-data';
+import { useCrud } from '@/shared/hooks/use-crud';
+import { useActionLock } from '@/shared/hooks/use-action-lock';
 import {
   ADMIN_ROUTES,
   PAGINATION,

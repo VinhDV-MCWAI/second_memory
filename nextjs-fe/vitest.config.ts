@@ -11,8 +11,8 @@ export default defineConfig({
     coverage: {
       provider: 'v8',
       reporter: ['text-summary', 'html'],
-      // Gate the shared layer (API client, hooks, services, utils); pages are covered later.
-      include: ['src/shared/**'],
+      // Gate the shared layer and feature hooks/services; components and pages are covered later.
+      include: ['src/shared/**', 'src/features/*/hooks/**', 'src/features/*/services/**'],
       exclude: ['**/*.test.*', '**/*.d.ts', 'src/shared/types/**'],
       thresholds: { statements: 80, lines: 80, functions: 75, branches: 65 },
     },

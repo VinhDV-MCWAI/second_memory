@@ -1,8 +1,8 @@
 'use client';
 
 import { PageHeader } from '@/components/layout/page-header';
-import { FileManagerContent } from '@/components/common/file-manager/file-manager-content';
-import { FileManagerProvider } from '@/components/common/file-manager/context';
+import { FileManagerContent } from '@/features/media/components/file-manager/file-manager-content';
+import { FileManagerProvider } from '@/features/media/components/file-manager/context';
 import { useTranslations } from 'next-intl';
 import { ADMIN_ROUTES } from '@/shared/config';
 
