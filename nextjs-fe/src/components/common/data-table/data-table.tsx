@@ -117,7 +117,12 @@ export function DataTable<T>({
                   {showActions && (
                     <TableCell className="space-x-2 text-right">
                       {onEdit && (
-                        <Button variant="ghost" size="sm" onClick={() => onEdit(id)}>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          aria-label={t('edit')}
+                          onClick={() => onEdit(id)}
+                        >
                           <Edit className="h-4 w-4" />
                         </Button>
                       )}
@@ -125,6 +130,7 @@ export function DataTable<T>({
                         <Button
                           variant="ghost"
                           size="sm"
+                          aria-label={t('delete')}
                           onClick={() => onDelete(id)}
                           className="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300"
                         >
