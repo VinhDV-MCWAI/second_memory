@@ -105,7 +105,7 @@ export function ResourceListPage<T extends { id: number }>({
     sort_order: sortOrder,
     staleTime,
   });
-  const { remove } = useCrud<T>(endpoint);
+  const { remove } = useCrud(endpoint);
   const { execute, isLoading: isDeleteProcessing } = useActionLock({
     delay: UI_CONSTANTS.ACTION_DELAY_MS,
   });

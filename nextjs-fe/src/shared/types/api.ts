@@ -116,7 +116,7 @@ export interface UseApiDataReturn<T> {
  * useCrud Hook Types
  */
 
-export interface UseCrudReturn<T> {
+export interface UseCrudReturn {
   create: (data: Record<string, unknown>) => Promise<number>;
   update: (id: number, data: Record<string, unknown>) => Promise<number>;
   remove: (ids: number[]) => Promise<void>;

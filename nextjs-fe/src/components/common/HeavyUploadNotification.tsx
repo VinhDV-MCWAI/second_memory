@@ -155,7 +155,7 @@ export function HeavyUploadNotification({
           // Continue waiting for WebSocket notification if check fails
         });
     });
-  }, [isConnected, mediaId]); // Remove handleComplete from dependencies
+  }, [isConnected, mediaId, handleComplete]); // hasCheckedStatus keeps this to one check
 
   return null; // This is a headless component
 }

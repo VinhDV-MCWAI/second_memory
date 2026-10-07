@@ -305,8 +305,6 @@ export function Step2PermissionSetup({
             ) : (
               Object.entries(filteredGroupedApis).map(([featureId, { feature, apis }]) => {
                 const allChecked = apis.every((api: ApiMst) => selectedApiIds.includes(api.id));
-                const someChecked =
-                  !allChecked && apis.some((api: ApiMst) => selectedApiIds.includes(api.id));
 
                 return (
                   <div

@@ -19,7 +19,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import type { TokenMst, AdminMst } from '@/shared/types/api';
+import type { AdminMst } from '@/shared/types/api';
 import { ENDPOINTS } from '@/shared/api';
 import { SORT_ORDER, PAGINATION } from '@/shared/config/constant';
 import { getTokenSchema, type TokenFormData } from '@/shared/validation/validation';
@@ -32,7 +32,7 @@ export function TokenForm({ initialData, onSuccess, onCancel }: TokenFormProps) 
   const tLabels = useTranslations('forms.labels');
   const tValidation = useTranslations('validation');
   const isEdit = !!initialData;
-  const { create, update, loading } = useCrud<TokenMst>(ENDPOINTS.MASTER.TOKEN);
+  const { create, update, loading } = useCrud(ENDPOINTS.MASTER.TOKEN);
 
   // Fetch admins for the dropdown
   const { data: admins, loading: adminsLoading } = useApiData<AdminMst>(ENDPOINTS.MASTER.ADMIN, {

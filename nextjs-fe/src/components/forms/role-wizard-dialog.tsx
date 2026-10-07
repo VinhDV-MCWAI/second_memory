@@ -33,7 +33,7 @@ export function RoleWizardDialog({
   const tWizard = useTranslations('roleWizard');
 
   const isEdit = !!initialData;
-  // const { create, update, loading } = useCrud<RoleMst>(ENDPOINTS.MASTER.ROLE); // Removed useCrud
+  // const { create, update, loading } = useCrud(ENDPOINTS.MASTER.ROLE); // Removed useCrud
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { execute, isLoading: isActionProcessing } = useActionLock({
     delay: UI_CONSTANTS.ACTION_DELAY_MS,

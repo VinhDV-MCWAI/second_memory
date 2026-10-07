@@ -25,7 +25,6 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { HistoryViewer } from '@/components/features/history/history-viewer';
 import { AvatarUpload } from '@/components/common/avatar-upload';
-import type { UserMgmt } from '@/shared/types/api';
 import { ENDPOINTS } from '@/shared/api';
 import { Gender, GenderLabels, UserStatus, UserStatusLabels } from '@/shared/enums/enums';
 import { FILE_UPLOAD } from '@/shared/config/constant';
@@ -37,7 +36,7 @@ export function UserForm({ initialData, onSuccess, onCancel }: UserFormProps) {
   const tLabels = useTranslations('forms.labels');
   const tValidation = useTranslations('validation');
   const isEdit = !!initialData;
-  const { create, update, loading } = useCrud<UserMgmt>(ENDPOINTS.MANAGEMENT.USER);
+  const { create, update, loading } = useCrud(ENDPOINTS.MANAGEMENT.USER);
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [avatarFile, setAvatarFile] = useState<File | null>(null);
   const [avatarPreview, setAvatarPreview] = useState<string | null>(

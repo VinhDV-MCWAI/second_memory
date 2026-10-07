@@ -20,7 +20,6 @@ import {
 import { SafeButton } from '@/components/common/safe-button';
 import { useActionLock } from '@/shared/hooks/useActionLock';
 import { ImagePicker } from '@/components/common/form/image-picker';
-import type { BannerMgmt } from '@/shared/types/api';
 import { ENDPOINTS } from '@/shared/api';
 import { StatusEnum, StatusEnumLabels } from '@/shared/enums';
 import { getBannerSchema, type BannerFormData } from '@/shared/validation/validation';
@@ -35,7 +34,7 @@ export function BannerForm({ initialData, onSuccess, onCancel }: BannerFormProps
   const tFields = useTranslations('fields');
   const tValidation = useTranslations('validation');
   const isEdit = !!initialData;
-  const { create, update, loading } = useCrud<BannerMgmt>(ENDPOINTS.MANAGEMENT.BANNER);
+  const { create, update, loading } = useCrud(ENDPOINTS.MANAGEMENT.BANNER);
 
   const [uploadedMediaId, setUploadedMediaId] = useState<number | null>(null);
 

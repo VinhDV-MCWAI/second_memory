@@ -25,7 +25,7 @@ import { MultiSelect } from '@/components/common/multi-select';
 import { AvatarUpload } from '@/components/common/avatar-upload';
 import { apiClient } from '@/shared/api/client';
 import { useApiData } from '@/shared/hooks/useApiData';
-import type { AdminMst, RoleMst } from '@/shared/types/api';
+import type { RoleMst } from '@/shared/types/api';
 import { ENDPOINTS, queryKeys } from '@/shared/api';
 import { AdminStatus, Gender, GenderLabels, AdminStatusLabels } from '@/shared/enums';
 import { UPLOAD_CONFIG } from '@/shared/config/constant';
@@ -39,7 +39,7 @@ export function AdminForm({ initialData, onSuccess, onCancel }: AdminFormProps) 
   const tValidation = useTranslations('validation');
   const isEdit = !!initialData;
   const queryClient = useQueryClient();
-  const { create, update, loading } = useCrud<AdminMst>(ENDPOINTS.MASTER.ADMIN, {
+  const { create, update, loading } = useCrud(ENDPOINTS.MASTER.ADMIN, {
     invalidateKeys: [], // Disable auto-invalidation to ensure sequence: Create/Update -> Role Update -> List Refresh
   });
   // eslint-disable-next-line @typescript-eslint/no-unused-vars

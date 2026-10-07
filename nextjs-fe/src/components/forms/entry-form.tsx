@@ -22,7 +22,7 @@ import {
 } from '@/components/ui/select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { HistoryViewer } from '@/components/features/history/history-viewer';
-import type { EntryMgmt, LayoutStructureItem, EntryDescriptionMgmt } from '@/shared/types/api';
+import type { LayoutStructureItem, EntryDescriptionMgmt } from '@/shared/types/api';
 import { ENDPOINTS } from '@/shared/api';
 import { FORM_DEFAULTS } from '@/shared/config/constant';
 import { EntryStatus, EntryStatusLabels } from '@/shared/enums';
@@ -45,7 +45,7 @@ export function EntryForm({
   const tForms = useTranslations('forms.placeholders');
   const tValidation = useTranslations('validation');
   const isEdit = !!initialData;
-  const { create, update, loading } = useCrud<EntryMgmt>(ENDPOINTS.MANAGEMENT.ENTRY);
+  const { create, update, loading } = useCrud(ENDPOINTS.MANAGEMENT.ENTRY);
   const [activeTab, setActiveTab] = useState('details');
   const [layoutStructure, setLayoutStructure] = useState<LayoutStructureItem[]>([]);
   const [descSearchQuery, setDescSearchQuery] = useState('');

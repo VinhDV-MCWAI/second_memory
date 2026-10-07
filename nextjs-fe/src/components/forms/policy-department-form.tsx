@@ -11,7 +11,6 @@ import { handleBindErrors } from '@/shared/utils/error-handler';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import type { PolicyDepartmentMst } from '@/shared/types/api';
 import { ENDPOINTS } from '@/shared/api';
 import {
   getPolicyDepartmentSchema,
@@ -29,9 +28,7 @@ export function PolicyDepartmentForm({
   const tLabels = useTranslations('forms.labels');
   const tValidation = useTranslations('validation');
   const isEdit = !!initialData;
-  const { create, update, loading } = useCrud<PolicyDepartmentMst>(
-    ENDPOINTS.MASTER.POLICY_DEPARTMENT,
-  );
+  const { create, update, loading } = useCrud(ENDPOINTS.MASTER.POLICY_DEPARTMENT);
 
   const {
     register,

@@ -20,7 +20,6 @@ import {
 } from '@/components/ui/select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { HistoryViewer } from '@/components/features/history/history-viewer';
-import type { DepartmentMst } from '@/shared/types/api';
 import { ENDPOINTS } from '@/shared/api';
 import { DepartmentStatus, DepartmentStatusLabels } from '@/shared/enums';
 import { getDepartmentSchema, type DepartmentFormData } from '@/shared/validation/validation';
@@ -31,7 +30,7 @@ export function DepartmentForm({ initialData, onSuccess, onCancel }: DepartmentF
   const tLabels = useTranslations('forms.labels');
   const tValidation = useTranslations('validation');
   const isEdit = !!initialData;
-  const { create, update, loading } = useCrud<DepartmentMst>(ENDPOINTS.MASTER.DEPARTMENT);
+  const { create, update, loading } = useCrud(ENDPOINTS.MASTER.DEPARTMENT);
 
   const {
     register,

@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
-import { useTranslations } from 'next-intl';
 import {
   Dialog,
   DialogContent,
@@ -11,15 +10,7 @@ import {
   DialogFooter,
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import {
-  Folder,
-  Image as ImageIcon,
-  File as FileIcon,
-  ChevronRight,
-  ArrowUp,
-  RefreshCw,
-  Loader2,
-} from 'lucide-react';
+import { Folder, File as FileIcon, ArrowUp, RefreshCw, Loader2 } from 'lucide-react';
 import { mediaFileService } from '@/shared/services/modules/media-file.service';
 import type { MediaFile } from '@/shared/types/media-file.types';
 import Image from 'next/image';
@@ -40,7 +31,6 @@ export function MediaSelectorModal({
   allowedMimeTypes = ['image/'],
   title,
 }: MediaSelectorModalProps) {
-  const t = useTranslations('common'); // fallback to common if specific not found
   const [currentPath, setCurrentPath] = useState<string>('/');
   const [files, setFiles] = useState<MediaFile[]>([]);
   const [loading, setLoading] = useState(false);

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useCallback } from 'react';
+import { useState, useMemo } from 'react';
 import { Search, X } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { debounce } from '@/lib/utils';
@@ -20,25 +20,27 @@ export default function SearchBar() {
     setShowResults(false);
   };
 
-  const performSearch = useCallback(
-    debounce(async (searchQuery: string) => {
-      if (searchQuery.trim().length < 2) {
-        setResults(null);
-        setShowResults(false);
-        return;
-      }
+  // One debounced function for the component's lifetime
+  const performSearch = useMemo(
+    () =>
+      debounce(async (searchQuery: string) => {
+        if (searchQuery.trim().length < 2) {
+          setResults(null);
+          setShowResults(false);
+          return;
+        }
 
-      setIsSearching(true);
-      try {
-        const data = await api.search(searchQuery);
-        setResults(data as SearchResult);
-        setShowResults(true);
-      } catch (error) {
-        console.error('Search failed:', error);
-      } finally {
-        setIsSearching(false);
-      }
-    }, 300),
+        setIsSearching(true);
+        try {
+          const data = await api.search(searchQuery);
+          setResults(data as SearchResult);
+          setShowResults(true);
+        } catch (error) {
+          console.error('Search failed:', error);
+        } finally {
+          setIsSearching(false);
+        }
+      }, 300),
     [],
   );
 

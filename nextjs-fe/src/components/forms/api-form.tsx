@@ -18,7 +18,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import type { ApiMst, FeatureMst } from '@/shared/types/api';
+import type { FeatureMst } from '@/shared/types/api';
 import { ENDPOINTS } from '@/shared/api';
 import { UI_CONSTANTS } from '@/shared/config';
 import { SORT_ORDER, SORT_FIELDS, HTTP_METHODS } from '@/shared/config/constant';
@@ -32,7 +32,7 @@ export function ApiForm({ initialData, onSuccess, onCancel }: ApiFormProps) {
   const tLabels = useTranslations('forms.labels');
   const tValidation = useTranslations('validation');
   const isEdit = !!initialData;
-  const { create, update, loading } = useCrud<ApiMst>(ENDPOINTS.MASTER.API);
+  const { create, update, loading } = useCrud(ENDPOINTS.MASTER.API);
 
   // Fetch features for dropdown
   const { data: features } = useApiData<FeatureMst>(ENDPOINTS.MASTER.FEATURE, {

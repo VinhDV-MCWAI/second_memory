@@ -22,7 +22,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import type { CategoryMgmt, LayoutStructureItem, EntryMgmt } from '@/shared/types/api';
+import type { LayoutStructureItem, EntryMgmt } from '@/shared/types/api';
 import { ENDPOINTS } from '@/shared/api';
 import { CategoryStatus, CategoryStatusLabels } from '@/shared/enums';
 import { getCategorySchema, type CategoryFormData } from '@/shared/validation/validation';
@@ -44,7 +44,7 @@ export function CategoryForm({
   const tLabels = useTranslations('forms.labels');
   const tValidation = useTranslations('validation');
   const isEdit = !!initialData;
-  const { create, update, loading } = useCrud<CategoryMgmt>(ENDPOINTS.MANAGEMENT.CATEGORY);
+  const { create, update, loading } = useCrud(ENDPOINTS.MANAGEMENT.CATEGORY);
   const [activeTab, setActiveTab] = useState('details');
   const [layoutStructure, setLayoutStructure] = useState<LayoutStructureItem[]>([]);
   const [entrySearchQuery, setEntrySearchQuery] = useState('');

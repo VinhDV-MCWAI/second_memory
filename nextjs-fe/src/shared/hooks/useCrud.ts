@@ -20,7 +20,7 @@ import type { UseCrudReturn, UseCrudOptions } from '@/shared/types/api';
  * - Mutation state tracking
  * - i18n support for messages
  */
-export function useCrud<T>(endpoint: string, options: UseCrudOptions = {}): UseCrudReturn<T> {
+export function useCrud(endpoint: string, options: UseCrudOptions = {}): UseCrudReturn {
   const queryClient = useQueryClient();
   const t = useTranslations('common');
   const { invalidateKeys = [endpoint], messages = {} } = options;

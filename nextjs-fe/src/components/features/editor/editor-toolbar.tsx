@@ -22,7 +22,6 @@ import {
   Link as LinkIcon,
   Image as ImageIcon,
   Highlighter,
-  Palette,
 } from 'lucide-react';
 import { cn } from '@/shared/utils/cn';
 

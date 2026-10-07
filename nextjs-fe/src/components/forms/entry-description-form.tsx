@@ -21,7 +21,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import type { EntryDescriptionMgmt } from '@/shared/types/api';
 import { ENDPOINTS } from '@/shared/api';
 import { FORM_DEFAULTS } from '@/shared/config/constant';
 import { StatusEnum, StatusEnumLabels, IsActive } from '@/shared/enums';
@@ -61,12 +60,9 @@ export function EntryDescriptionForm({
   hideActions = false,
 }: EntryDescriptionFormProps) {
   const tCommon = useTranslations('common');
-  const tForms = useTranslations('forms.placeholders');
   const tValidation = useTranslations('validation');
   const isEdit = !!initialData;
-  const { create, update, loading } = useCrud<EntryDescriptionMgmt>(
-    ENDPOINTS.MANAGEMENT.ENTRY_DESCRIPTION,
-  );
+  const { create, update, loading } = useCrud(ENDPOINTS.MANAGEMENT.ENTRY_DESCRIPTION);
 
   const [articleContent, setArticleContent] = useState<JSONContent | null>(null);
 

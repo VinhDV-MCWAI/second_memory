@@ -21,7 +21,7 @@ export default function RootLayout({
         const locale = localStorage.getItem('locale') || 'en';
         const msgs = await import(`@/../messages/${locale}.json`);
         setMessages(msgs.default);
-      } catch (error) {
+      } catch {
         // Fallback to English
         const msgs = await import(`@/../messages/en.json`);
         setMessages(msgs.default);

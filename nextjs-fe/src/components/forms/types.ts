@@ -6,7 +6,6 @@ import type {
   DepartmentMst,
   FeatureMst,
   PolicyDepartmentMst,
-  RoleMst,
   SettingLinkMgmt,
   EntryDescriptionMgmt,
   EntryMgmt,
@@ -57,12 +56,6 @@ export interface FeatureFormProps {
 
 export interface PolicyDepartmentFormProps {
   initialData?: PolicyDepartmentMst | null;
-  onSuccess: () => void;
-  onCancel: () => void;
-}
-
-export interface RoleFormProps {
-  initialData?: RoleMst | null;
   onSuccess: () => void;
   onCancel: () => void;
 }

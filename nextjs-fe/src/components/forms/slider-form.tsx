@@ -19,7 +19,6 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { ImageUpload } from '@/components/common/image-upload';
-import type { SliderMgmt } from '@/shared/types/api';
 import { ENDPOINTS } from '@/shared/api';
 import { StatusEnum, StatusEnumLabels } from '@/shared/enums';
 import { getSliderSchema, type SliderFormData } from '@/shared/validation/validation';
@@ -30,7 +29,7 @@ export function SliderForm({ initialData, onSuccess, onCancel }: SliderFormProps
   const tForms = useTranslations('forms.placeholders');
   const tValidation = useTranslations('validation');
   const isEdit = !!initialData;
-  const { create, update, loading } = useCrud<SliderMgmt>(ENDPOINTS.MANAGEMENT.SLIDER);
+  const { create, update, loading } = useCrud(ENDPOINTS.MANAGEMENT.SLIDER);
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(() => initialData?.image || null);

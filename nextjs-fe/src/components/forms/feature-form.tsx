@@ -20,7 +20,6 @@ import {
 } from '@/components/ui/select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { HistoryViewer } from '@/components/features/history/history-viewer';
-import type { FeatureMst } from '@/shared/types/api';
 import { ENDPOINTS } from '@/shared/api';
 import { FeatureStatus, FeatureStatusLabels } from '@/shared/enums';
 import { getFeatureSchema, type FeatureFormData } from '@/shared/validation/validation';
@@ -32,7 +31,7 @@ export function FeatureForm({ initialData, onSuccess, onCancel }: FeatureFormPro
   const tValidation = useTranslations('validation');
 
   const isEdit = !!initialData;
-  const { create, update, loading } = useCrud<FeatureMst>(ENDPOINTS.MASTER.FEATURE);
+  const { create, update, loading } = useCrud(ENDPOINTS.MASTER.FEATURE);
 
   const {
     register,

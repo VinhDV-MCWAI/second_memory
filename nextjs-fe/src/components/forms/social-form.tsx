@@ -19,7 +19,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import type { SocialMgmt } from '@/shared/types/api';
 import { ENDPOINTS } from '@/shared/api';
 import { SocialStatus, SocialStatusLabels } from '@/shared/enums';
 import { getSocialSchema, type SocialFormData } from '@/shared/validation/validation';
@@ -31,7 +30,7 @@ export function SocialForm({ initialData, onSuccess, onCancel }: SocialFormProps
   const tLabels = useTranslations('forms.labels');
   const tValidation = useTranslations('validation');
   const isEdit = !!initialData;
-  const { create, update, loading } = useCrud<SocialMgmt>(ENDPOINTS.MANAGEMENT.SOCIAL);
+  const { create, update, loading } = useCrud(ENDPOINTS.MANAGEMENT.SOCIAL);
 
   const {
     register,

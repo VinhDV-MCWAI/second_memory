@@ -1,8 +1,8 @@
 'use client';
 
-import { Description, EntryDetail } from '@/types/docs';
+import { Description } from '@/types/docs';
 import { slugify, cn } from '@/lib/utils';
-import { useEffect, useState, useMemo } from 'react';
+import { useMemo } from 'react';
 import { useScrollSpy } from '@/hooks/use-scroll-spy';
 import {
   parseLayoutStructure,

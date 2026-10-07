@@ -11,7 +11,6 @@ import { handleBindErrors } from '@/shared/utils/error-handler';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import type { SettingLinkMgmt } from '@/shared/types/api';
 import { ENDPOINTS } from '@/shared/api';
 import { IsDelete } from '@/shared/enums';
 import { getSettingLinkSchema, type SettingLinkFormData } from '@/shared/validation/validation';
@@ -23,7 +22,7 @@ export function SettingLinkForm({ initialData, onSuccess, onCancel }: SettingLin
   const tForms = useTranslations('forms.placeholders');
   const tValidation = useTranslations('validation');
   const isEdit = !!initialData;
-  const { create, update, loading } = useCrud<SettingLinkMgmt>(ENDPOINTS.MANAGEMENT.SETTING_LINK);
+  const { create, update, loading } = useCrud(ENDPOINTS.MANAGEMENT.SETTING_LINK);
 
   const {
     register,
