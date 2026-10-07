@@ -29,6 +29,7 @@ Workflow: `/refactor-item <ID…>`. Only `approved` items may be started.
 
 | ID | Item | Done when | Depends | Status |
 |---|---|---|---|---|
+| S9 | Dependabot alerts: patch vulnerable npm deps, blocking prod audit in CI, Dependabot config | `pnpm audit --prod` clean | – | done (`fix/security-deps`: 140 → 1 dev-only advisory, prod 0) |
 | S1 | Upgrade `next` → 16.3.x, `react`/`react-dom` → latest 19.2.x in both apps (CVE-2025-55182, critical RSC RCE) | Lockfile shows patched versions; both apps build | – | done (`refactor/p0-p1-foundation`: next 16.3.8, react 19.2.8) |
 | S2 | Remove tracked secrets (`docker/postgres/.env`, `laravel-api/.env.testing` if it holds secrets) → `.env.example`; **rotate DB password**. History purge with `git filter-repo` = separate decision | `git ls-files` shows no secret files; setup-env.sh generates them | – | done in code (`refactor/p0-p1-foundation`); manual: rotate secrets, history purge = open decision 5 |
 | S3 | Remove 30 MB `docker/minio/mc` binary; use `minio/mc` image in `ml-minio-init` | Binary gone; bucket init still works | – | done (`refactor/p0-p1-foundation`: mc from pinned `pgsty/minio` image) |
@@ -79,7 +80,7 @@ Workflow: `/refactor-item <ID…>`. Only `approved` items may be started.
 | FE3 | Auth guard in `proxy.ts` (Next 16) for `/admin/*` | Unauthenticated → redirect without flash | S6 | proposed |
 | FE4 | Generated API types (openapi-typescript) replace hand-written `types/api.ts`; query-key factory; merge `useApiData`/`useCrud` into `useResource(resource)` | No hand-written API model types | B6, FE1 | done (`refactor/p4-frontend`: generated `openapi.d.ts`, `queryKeys`; `useApiData`/`useCrud` kept separate, see PROGRESS) |
 | FE5 | Config-driven `<ResourceListPage>`: 17 near-identical 300+ line pages → column/filter/form config per entity | Each entity page < 80 lines; behavior same | FE1, FE2, FE4 | done (`refactor/p4-frontend`: 12/15 pages < 80 lines, rest 85–97; 5139 → ~1060 lines) |
-| FE6 | Feature-based folders: `src/features/<domain>/{api,components,schemas,hooks}`; split oversized files (`layout-structure-editor`, `constant.ts`, `types/api.ts`) | No file > 300 lines outside `ui/` | FE5 | in-progress (`refactor/p4-frontend`: feature folders done; form props + file splits left) |
+| FE6 | Feature-based folders: `src/features/<domain>/{api,components,schemas,hooks}`; split oversized files (`layout-structure-editor`, `constant.ts`, `types/api.ts`) | No file > 300 lines outside `ui/` | FE5 | in-progress (feature folders on `main`; `refactor/fe6-features`: form props + 6 big files split + `FormField`/`OptionSelect`, constants split WIP; 9 files 300–400 lines left, see PROGRESS) |
 | FE7 | *(optional)* Shared workspace package `packages/editor` (Tiptap extensions + schema) used by both admin editor and docs renderer | Single source of extensions | U2 | proposed |
 | D1 | Docs site: API base URL from env (no hard-coded `ml-nginx`), drop custom request dedup, use Next caching (`revalidate`/Cache Components + tag revalidation on publish), `generateMetadata`, sitemap | Pages cached; content updates visible after publish | U2 | proposed |
 

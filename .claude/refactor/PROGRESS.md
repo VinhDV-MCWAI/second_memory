@@ -14,11 +14,18 @@ PR #9 (`refactor/p4-frontend`) and PR #10 (`developer` → `main`) are merged. G
 - Backend: `composer audit` = only `firebase/php-jwt` < 7 (low) → part of the manual auth rework.
 - Verified: `make verify` exit 0 (backend 598 tests, Pint, Larastan, FE lint 0 errors, tsc, Prettier, Vitest 90), `next build` OK for both apps (needs `NODE_ENV=production`; inside the dev containers `NODE_ENV=development` makes `/_global-error` prerender fail — not a real error).
 
-### Status: paused by the user (2026-10-07) in the middle of FE6
+### Status: paused by the user (2026-10-07, 2nd time) in the middle of FE6
 
-**Main working branch: `refactor/p4-frontend`**. It contains **everything**: P0, P1, P2, P3 and P4 so far (stacked p0-p1 → p2 → p3 → p4) **plus merges of `origin/developer` and `origin/main`** — ready to push (see Branches). Nothing pushed by Claude.
+PR #9 (`refactor/p4-frontend` → `developer`) and PR #10 (`developer` → `main`) are **merged** (P0–P4 so far are on `main`). New work, local only, nothing pushed:
 
-Last verification (2026-10-07, on `refactor/p4-frontend`): backend **597 tests pass** (4 auth `RefreshTokenApiTest` cases excluded, see AUTH-GUIDE A13), Pint ✓, Larastan level 6 ✓, `openapi.json` current; FE tsc ✓ (both apps), ESLint 0 errors (1 warning, in the auth provider, deliberately not touched), Prettier ✓, **Vitest 90 tests, coverage 90% statements** (gate: 80/80/75/65).
+| Branch | Base | Contents |
+|---|---|---|
+| `fix/security-deps` | `developer` (`91e7e3b`) | security fix (`8bfacf5`), CI audit + Dependabot (`993fdfd`), handoff doc |
+| `refactor/fe6-features` | `fix/security-deps` (stacked) | FE6 commits `a7ce00e` … `17a6bce` (see Remaining) |
+
+**Tip of `refactor/fe6-features` (`17a6bce`) is WIP and does not typecheck** — fix first, see Next step.
+
+Last full verification: `make verify` exit 0 on `fix/security-deps` (backend 598 tests, Pint ✓, Larastan ✓, FE lint 0 errors, tsc ✓, Prettier ✓, Vitest 90). On `refactor/fe6-features` up to `cbdd47e`: tsc ✓, lint 0 errors, Vitest **106** tests ✓, `/admin/*` pages 200 in dev (not checked in a logged-in browser).
 
 ### Done
 
@@ -28,7 +35,7 @@ Last verification (2026-10-07, on `refactor/p4-frontend`): backend **597 tests p
 | P1 Tooling | F1 monorepo/lockfile/LF, F2 Pint/Larastan/Rector, F3 ESLint/Prettier/Vitest, F4 CI, F5 dead code, F6 format pass, F7 Makefile |
 | P2 Upgrades | U1 Laravel 13 + PHP 8.5 + PHPUnit 12, U2 Next 16.3 Turbopack + React Compiler + Node 24 |
 | P3 Backend | B1 generic CRUD core, B2 history in one place, B3 enums, B4 route split, B5 strictness (Larastan 6), B6 OpenAPI (Scramble). B7 skipped |
-| P4 Frontend | FE1 tests (90, coverage gate in CI), FE2 admin layout, FE4 generated API types + query keys, FE5 `ResourceListPage` (pages 5139 → ~1060 lines). FE6 **in progress** |
+| P4 Frontend | FE1 tests (90, coverage gate in CI), FE2 admin layout, FE4 generated API types + query keys, FE5 `ResourceListPage` (pages 5139 → ~1060 lines). FE6 **in progress** (6 big files split, shared `FormField`/`OptionSelect`) |
 | Lint | Both Next.js apps: 0 errors, warnings 25 → 1 |
 
 ### Real bugs found and fixed along the way (each in its own `fix` commit)
@@ -38,14 +45,27 @@ Last verification (2026-10-07, on `refactor/p4-frontend`): backend **597 tests p
 - History viewer showed every record's history and read fields the API does not send; setting-links page was built for another model (create/update always failed); role wizard fallback to a field that does not exist (all in FE4).
 - Fake buttons removed: bulk activate/deactivate (admin version always 422), import/export toolbar (`ebd4cd7`, `b2638b8`).
 - Default list sorts pointed at nonexistent columns (`0412a1e`).
+- Role wizard HTTP method filter compared `api.type` with `parseInt('GET')` = NaN → choosing any method emptied the list (`f0083b0`, regression test in `permission-groups.test.ts`).
+- Dependencies: 140 npm advisories → 1 dev-only (`8bfacf5`).
 - Earlier (P0–P3): 8 backend bugs from T1, IsActive import, token_hash validation, banner N+1, etc. (see Item status).
 
 ### Remaining (in order)
 
-1. **FE6 (in progress)** — done: 61 files moved into `src/features/{media,roles,content,history,master,management}` (commit `8021a54`), hooks renamed kebab-case. To do:
-   - replace `src/components/forms/types.ts` with `ResourceFormProps<T>` (from `resource-list-page.tsx`) and delete the props nobody passes (`hideActions`, `renderActions`, `submitTriggerRef` in category/entry/entry-description forms);
-   - split files > 300 lines (outside `ui/`): `layout-structure-editor` 660, `use-file-manager` 607 (two copy-pasted heavy-upload branches → one helper; tests exist), `upload-dialog` 592, `role-wizard-dialog` 520, `admin-form` 463, `file-manager-content` 394, `constant.ts` 390, `step2-permission-setup` 385, `category-form` 360, `user-form` 353, `media-file.service` 326, `api.ts` 314, `data-table.types` 310, `validation.ts` 305 (split per domain into `features/*/schemas.ts`), `file-manager.types` 303, `multipart-uploader` 302. `auth-provider` 319 = auth area, leave to the user.
-   - Move tool used for the moves: rewrites every import (alias, relative, `vi.mock`) — recreate from the FE6 commit if needed.
+1. **FE6 (in progress)** on `refactor/fe6-features`. Done:
+   - feature folders `src/features/*` (`8021a54`, on `main`);
+   - `ResourceFormProps<T>` replaces `components/forms/types.ts`, dead props `hideActions`/`renderActions`/`submitTriggerRef` gone (`a7ce00e`);
+   - `layout-structure-editor` 660 → 270 + `layout-structure-tree.ts` (pure tree ops, 6 tests) + `layout-structure-tree-item.tsx` (`db485a5`);
+   - `use-file-manager` 607 → 297: `utils/file-list.ts` (map/filter/sort) + `utils/upload-media-file.ts` (the two copy-pasted commit branches merged) (`9e7af5d`);
+   - `upload-dialog` 592 → 270: `hooks/use-temp-upload.ts` + `upload-file-row.tsx`, no-op `validateFile` removed (`2256acb`);
+   - `role-wizard-dialog` 520 → 297: `role-wizard.api.ts` (permission diff tested) + `wizard-step-indicator.tsx` + `wizard-footer.tsx` (`5f51092`);
+   - `step2-permission-setup` 385 → 247: `permission-groups.ts` (tested) + `feature-api-group.tsx` (`7042dab`), then bug fix `f0083b0`;
+   - `components/common/form-field.tsx` replaces 45 label/required/error blocks in 14 forms (`a182adb`);
+   - `admin-form` 463 → 333: `features/master/hooks/use-admin-roles.ts` (diff tested) + `components/common/option-select.tsx`, also used by `user-form` (`cbdd47e`);
+   - **WIP** `17a6bce`: `shared/config/constant.ts` 390 → 210 (dead `MEDIA`, `OPERATION_TYPE`, `HttpMethod`, unused keys removed; `AUTH` kept = auth area) + `config/upload.ts` + `config/file-manager.ts`; all imports now `@/shared/config` (incl. the `vi.mock` in `multipart-uploader.test.ts`).
+   To do:
+   - finish the WIP (Next step);
+   - still > 300 lines: `file-manager-content` 394, `media-file.service` 326, `category-form` 325, `user-form` 317, `api.ts` 314, `data-table.types` 310, `multipart-uploader` 307, `validation.ts` 305 (split per domain into `features/*/schemas.ts`), `file-manager.types` 303; `admin-form` 333 is now field markup only (its layout differs from `user-form`, so no shared component) — acceptable unless a natural split appears. `auth-provider` 319 = auth area, leave to the user.
+   - Lint notes: the React Compiler lint now reaches code it skipped before; two pre-existing "reset state in effect" patterns are marked with a scoped `eslint-disable react-hooks/set-state-in-effect` (layout editor, upload dialog) — rewriting them is a behavior change, keep separate.
 2. **FE7** (optional, shared Tiptap package) — decided skip for now.
 3. **D1** docs site: API base URL from env, Next caching + revalidate on publish, metadata, sitemap.
 4. **P5 infra**: I1 Docker (pin images, non-root, healthchecks, Redis 8; also fixes the docs container `unhealthy` port mismatch, finding 17), I3 MinIO decision (keep pinned `pgsty/minio`), I4 backup script + restore test, I5 CD with SHA tags + rollback. I2 (Postgres 18) optional/skipped.
@@ -59,25 +79,13 @@ Last verification (2026-10-07, on `refactor/p4-frontend`): backend **597 tests p
 4. **Browser check while logged in** (no credentials available to Claude): list pages, create/edit/delete dialogs, history tab, setting links, role wizard, file manager upload, error toasts.
 5. Decide: `media-official` bucket is public although documented as private (finding 12); history restore feature (no backend endpoint); whether bulk status / import-export features are actually wanted (they were fake, now removed).
 
-### Branches — merged locally, ready for the user to push (2026-10-07)
+### Branches — push steps for the user
 
-`refactor/p4-frontend` now contains `origin/developer` and `origin/main` (merge commits `bd3a495`, `7719341`), so **both PRs are fast-forwards with no conflicts**. `make verify` on the merged tip: exit 0 (backend 598 tests, Pint ✓, Larastan ✓, FE lint 0 errors, tsc ✓, Prettier ✓, Vitest coverage 90% stmts).
+P0–P4 (PR #9, #10) are merged; local junk branches were cleaned up earlier. Remote junk branches can still be deleted (needs push rights): `git push origin --delete feature/Refactor-readme feature/laravel-api/create-migration feature/temp-test staging` (merged), optionally `feature/nuxtjs-fe/demo feature/temp-test2` (not merged, throwaway), then `git fetch --prune`.
 
-How the conflicts were resolved:
-- `origin/developer`: its 38 commits since `da659ed` are the **old-message copies** (with the AI trailer) of commits already on this branch (`git cherry`: all equivalent, none unique) → merged with `-s ours`, tree unchanged. Side effect: those 38 old commits stay in history (no force push needed).
-- `origin/main`: only real change was `1e59182 add .gitignore` → kept the refactor `.gitignore` (root `pnpm-lock.yaml` must stay tracked; `**/` rules already cover main's Nuxt/build/log entries) and added `laravel-api/storage/*.key` from main.
-
-**User steps (manual):**
-1. `git push -u origin refactor/p4-frontend`
-2. PR `refactor/p4-frontend` → `developer`; wait for CI (frontend, backend, docker build — first real run on GitHub; the docker job was never built locally). Merge it.
-3. PR `developer` → `main`; merge it.
-4. Local cleanup: **done 2026-10-07** — `refactor/p0-p1-foundation`, `refactor/p2-upgrades`, `refactor/p3-backend`, `backup/pre-msg-rewrite` deleted (all contained in `refactor/p4-frontend`). Local branches left: `main`, `refactor/p4-frontend`.
-   Remote junk branches (user deletes, needs push rights):
-   - fully merged into developer and main, safe: `git push origin --delete feature/Refactor-readme feature/laravel-api/create-migration feature/temp-test staging` (`staging` is not used by CI/CD; `cd.yml` deploys only on push to `developer`)
-   - **not merged**, throwaway experiments (2023 Nuxt theme demo, `demo2` test): `git push origin --delete feature/nuxtjs-fe/demo feature/temp-test2` — commits are lost after this, keep them only if still wanted
-   - after deleting: `git fetch --prune`
-   - `refactor/p4-frontend` itself is deleted automatically after its PR is merged (`cleanup-branch.yml`); then locally `git checkout developer && git pull && git branch -d refactor/p4-frontend`.
-5. Continue the refactor on a new branch from the updated `developer` (e.g. `refactor/fe6-features`), per the Git flow in CLAUDE.md.
+New branches:
+1. `git push -u origin fix/security-deps` → PR into `developer` (CI now runs the blocking prod audit). Merge it.
+2. Push `refactor/fe6-features` only **after** the WIP tip is fixed and `make verify` is green; after (1) is merged, rebase it on `developer` (`git rebase --onto developer fix/security-deps refactor/fe6-features`) or merge as is (it contains (1)).
 
 **Warning: merging into `developer` deploys.** `cd.yml` builds images and deploys to the self-hosted server on every push to `developer`. The first merge ships Laravel 13 / PHP 8.5 / Node 24 and new migrations; make sure the server `.env` has the variables `setup-env.sh` now generates and back up the DB first.
 
@@ -212,9 +220,14 @@ User delegated all P2+ items on 2026-10-06 ("toàn quyền thực hiện, không
 - 2026-10-07 — Local junk branches deleted; `cleanup-branch.yml` added (auto-delete merged work branches); remote cleanup commands + GitHub settings documented.
 - 2026-10-07 — Merged `origin/developer` (`-s ours`, old-message copies) and `origin/main` (`.gitignore` resolved) into `refactor/p4-frontend`; `make verify` green. Waiting for the user to push/PR.
 - 2026-10-07 — PR #9/#10 merged by the user. Security alerts triaged and fixed (`fix/security-deps`).
+- 2026-10-07 — FE6 continued on `refactor/fe6-features`: form props, 6 file splits, `FormField`/`OptionSelect`, role wizard method filter bug fixed; Vitest 90 → 106. Paused by the user during the constants split (WIP commit `17a6bce`, typecheck pending).
 - 2026-10-07 — Import/export fake toolbar removed, lint warnings cleared (25 → 1). FE6 started: feature folders (`8021a54`). Paused by the user; branch analysis written into the handoff summary.
 
 ## Next step
+
+**Resume here (2026-10-07):** `git checkout refactor/fe6-features`, then in `nextjs-fe/src/shared/types/data-table.types.ts` and `nextjs-fe/src/shared/types/api.ts` change `from '../config/constant'` to `from '@/shared/config'`; run `docker exec ml-nextjs pnpm typecheck`, `pnpm lint`, `pnpm test --run --coverage`, `pnpm format:check` (or `make verify`); amend/commit as `fix` of the WIP; then continue the FE6 list in Remaining, then D1, then P5.
+
+Earlier notes:
 
 2026-10-07: security fix done on `fix/security-deps`; refactor continues on `refactor/fe6-features` (stacked on it): FE6 → D1 → P5.
 FE6 on `refactor/fe6-features`: ✓ `ResourceFormProps<T>` (`a7ce00e`), ✓ layout-structure-editor split + tree tests (`db485a5`), ✓ use-file-manager split / one upload path (`9e7af5d`), ✓ upload-dialog → `useTempUpload` + `UploadFileRow` (`2256acb`), ✓ role-wizard-dialog → `role-wizard.api.ts` + step indicator/footer (`5f51092`), ✓ step2 permission → `permission-groups.ts` (`7042dab`). **Bug fixed** `f0083b0`: role wizard method filter compared `api.type` with `parseInt('GET')` → every method filter showed no APIs. ✓ shared `FormField` (`a182adb`), ✓ admin-form → `useAdminRoles` + `OptionSelect` (`cbdd47e`). **WIP (paused by the user, committed as is):** `shared/config/constant.ts` pruned (dead `MEDIA`, `OPERATION_TYPE`, unused keys) and split into `config/upload.ts` + `config/file-manager.ts`, imports moved to the `@/shared/config` barrel — **typecheck still fails**: `src/shared/types/data-table.types.ts` and `src/shared/types/api.ts` import `'../config/constant'` → change to `'@/shared/config'`, then run `make verify`. After that: file-manager-content, user-form, category-form, media-file.service, api.ts, data-table.types, multipart-uploader, validation.ts, file-manager.types (all 300–400 lines). Was next before: file-manager-content, constant.ts, user-form, category-form, media-file.service, api.ts, data-table.types, multipart-uploader, validation.ts, file-manager.types.
