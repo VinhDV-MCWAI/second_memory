@@ -16,15 +16,15 @@ import {
 import { API_ENDPOINTS } from '@/shared/api';
 import type { ApiMst, FeatureMst } from '@/shared/types/api';
 import { Search } from 'lucide-react';
+import { HTTP_METHODS } from '@/features/roles/role-wizard.constant';
+import type { Step2PermissionSetupProps } from '@/features/roles/role-wizard.types';
 import {
-  HTTP_METHODS,
-  HTTP_METHOD_LABELS,
-  API_TYPE_TO_METHOD,
-} from '@/features/roles/role-wizard.constant';
-import type {
-  Step2PermissionSetupProps,
-  GroupedApisByFeature,
-} from '@/features/roles/role-wizard.types';
+  ALL_METHODS,
+  filterGroupedApis,
+  groupApisByFeature,
+  toggleIds,
+} from '@/features/roles/permission-groups';
+import { FeatureApiGroup } from './feature-api-group';
 
 export function Step2PermissionSetup({
   selectedApiIds,
@@ -35,7 +35,7 @@ export function Step2PermissionSetup({
 
   const [searchApi, setSearchApi] = useState('');
   const [searchFeature, setSearchFeature] = useState('');
-  const [methodFilter, setMethodFilter] = useState<string>('*');
+  const [methodFilter, setMethodFilter] = useState<string>(ALL_METHODS);
 
   // Fetch APIs
   const { data: allApis, loading: apisLoading } = useApiData<ApiMst>(API_ENDPOINTS.MASTER.API, {
@@ -48,66 +48,15 @@ export function Step2PermissionSetup({
     { per_page: 1000 },
   );
 
-  // Group APIs by Feature
-  const groupedApis = useMemo(() => {
-    const grouped: GroupedApisByFeature = {};
+  const groupedApis = useMemo(
+    () => groupApisByFeature(allFeatures, allApis),
+    [allApis, allFeatures],
+  );
 
-    allFeatures.forEach((feature) => {
-      grouped[feature.id] = {
-        feature,
-        apis: [],
-      };
-    });
-
-    allApis.forEach((api) => {
-      if (grouped[api.feature_mst_id]) {
-        grouped[api.feature_mst_id].apis.push(api);
-      }
-    });
-
-    return grouped;
-  }, [allApis, allFeatures]);
-
-  // Filter features and APIs
-  const filteredGroupedApis = useMemo(() => {
-    const result: GroupedApisByFeature = {};
-
-    Object.entries(groupedApis).forEach(([featureId, { feature, apis }]) => {
-      // Filter by feature name search
-      if (searchFeature && !feature.name.toLowerCase().includes(searchFeature.toLowerCase())) {
-        return;
-      }
-
-      // Filter APIs
-      const filteredApis = apis.filter((api: ApiMst) => {
-        // Filter by API search
-        if (
-          searchApi &&
-          !api.name.toLowerCase().includes(searchApi.toLowerCase()) &&
-          !api.path.toLowerCase().includes(searchApi.toLowerCase())
-        ) {
-          return false;
-        }
-
-        // Filter by method
-        if (methodFilter !== '*' && api.type !== parseInt(methodFilter)) {
-          return false;
-        }
-
-        return true;
-      });
-
-      // Only include feature if it has APIs or matches search
-      if (filteredApis.length > 0 || (!searchApi && methodFilter === '*')) {
-        result[parseInt(featureId)] = {
-          feature,
-          apis: filteredApis,
-        };
-      }
-    });
-
-    return result;
-  }, [groupedApis, searchApi, searchFeature, methodFilter]);
+  const filteredGroupedApis = useMemo(
+    () => filterGroupedApis(groupedApis, { searchApi, searchFeature, method: methodFilter }),
+    [groupedApis, searchApi, searchFeature, methodFilter],
+  );
 
   // Get highlighted features (those with checked APIs)
   const highlightedFeatures = useMemo(() => {
@@ -127,16 +76,7 @@ export function Step2PermissionSetup({
       const featureApis = groupedApis[featureId]?.apis || [];
       const featureApiIds = featureApis.map((api) => api.id);
       const allChecked = featureApiIds.every((id) => selectedApiIds.includes(id));
-
-      if (allChecked) {
-        // Uncheck all
-        const newSelected = selectedApiIds.filter((id) => !featureApiIds.includes(id));
-        onSelectedApisChange(newSelected);
-      } else {
-        // Check all
-        const newSelected = Array.from(new Set([...selectedApiIds, ...featureApiIds]));
-        onSelectedApisChange(newSelected);
-      }
+      onSelectedApisChange(toggleIds(selectedApiIds, featureApiIds, !allChecked));
     },
     [groupedApis, selectedApiIds, onSelectedApisChange],
   );
@@ -226,7 +166,6 @@ export function Step2PermissionSetup({
         {/* Right panel - APIs (70%) */}
         <div className="flex min-w-0 flex-1 flex-col overflow-hidden">
           {/* Search and Filters */}
-          {/* Search and Filters */}
           <div className="shrink-0 space-y-3 border-b p-3">
             <div className="flex gap-2">
               <div className="relative flex-1">
@@ -263,24 +202,10 @@ export function Step2PermissionSetup({
                     )
                   }
                   onCheckedChange={(checked) => {
-                    const allVisibleApis = Object.values(filteredGroupedApis).flatMap(
-                      (g) => g.apis,
+                    const allVisibleApiIds = Object.values(filteredGroupedApis).flatMap((g) =>
+                      g.apis.map((api: ApiMst) => api.id),
                     );
-                    const allVisibleApiIds = allVisibleApis.map((api) => api.id);
-
-                    if (checked) {
-                      // Select all visible
-                      const newSelected = Array.from(
-                        new Set([...selectedApiIds, ...allVisibleApiIds]),
-                      );
-                      onSelectedApisChange(newSelected);
-                    } else {
-                      // Deselect all visible
-                      const newSelected = selectedApiIds.filter(
-                        (id) => !allVisibleApiIds.includes(id),
-                      );
-                      onSelectedApisChange(newSelected);
-                    }
+                    onSelectedApisChange(toggleIds(selectedApiIds, allVisibleApiIds, !!checked));
                   }}
                 />
                 <label htmlFor="toggle-all-visible" className="cursor-pointer text-sm font-medium">
@@ -303,83 +228,20 @@ export function Step2PermissionSetup({
             ) : Object.keys(filteredGroupedApis).length === 0 ? (
               <div className="py-8 text-center text-sm text-gray-500">{tWizard('noApis')}</div>
             ) : (
-              Object.entries(filteredGroupedApis).map(([featureId, { feature, apis }]) => {
-                const allChecked = apis.every((api: ApiMst) => selectedApiIds.includes(api.id));
-
-                return (
-                  <div
-                    key={feature.id}
-                    id={`feature-${feature.id}`}
-                    className="space-y-2 border-b pb-4 last:border-b-0"
-                  >
-                    {/* Feature header with checkbox */}
-                    <div className="mb-3 flex items-center gap-2">
-                      <Checkbox
-                        id={`feature-${feature.id}`}
-                        checked={allChecked}
-                        onCheckedChange={() => handleToggleFeature(parseInt(featureId))}
-                      />
-                      <label
-                        htmlFor={`feature-${feature.id}`}
-                        className="cursor-pointer text-sm font-semibold text-gray-700"
-                      >
-                        {feature.name}
-                      </label>
-                      <Badge variant="secondary" className="text-xs">
-                        {apis.length}
-                      </Badge>
-                    </div>
-
-                    {/* APIs under this feature */}
-                    <div className="space-y-2 pl-6">
-                      {apis.map((api: ApiMst) => {
-                        const methodName = API_TYPE_TO_METHOD[api.type] || HTTP_METHODS.GET;
-                        const methodInfo = HTTP_METHOD_LABELS[methodName] || {
-                          label: 'UNKNOWN',
-                          color: 'bg-gray-100 text-gray-800',
-                        };
-                        const isChecked = selectedApiIds.includes(api.id);
-
-                        return (
-                          <div
-                            key={api.id}
-                            className="flex items-start gap-3 rounded-md p-2 transition-colors hover:bg-gray-50"
-                          >
-                            <Checkbox
-                              id={`api-${api.id}`}
-                              checked={isChecked}
-                              onCheckedChange={() => handleToggleApi(api.id)}
-                              className="mt-1"
-                            />
-                            <label
-                              htmlFor={`api-${api.id}`}
-                              className="flex flex-1 cursor-pointer items-start gap-2"
-                            >
-                              <div className="min-w-0 flex-1">
-                                <div className="mb-1 flex items-center gap-2">
-                                  <Badge className={`text-xs ${methodInfo.color}`}>
-                                    {methodInfo.label}
-                                  </Badge>
-                                  <span className="text-sm font-semibold text-gray-900">
-                                    {api.name}
-                                  </span>
-                                </div>
-                                <p className="text-xs break-words text-gray-500">{api.path}</p>
-                              </div>
-                            </label>
-                          </div>
-                        );
-                      })}
-                    </div>
-                  </div>
-                );
-              })
+              Object.entries(filteredGroupedApis).map(([featureId, { feature, apis }]) => (
+                <FeatureApiGroup
+                  key={feature.id}
+                  feature={feature}
+                  apis={apis}
+                  selectedApiIds={selectedApiIds}
+                  onToggleFeature={() => handleToggleFeature(parseInt(featureId))}
+                  onToggleApi={handleToggleApi}
+                />
+              ))
             )}
           </div>
         </div>
       </div>
-
-      {/* Info box */}
     </div>
   );
 }
