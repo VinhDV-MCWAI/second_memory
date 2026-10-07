@@ -11,6 +11,7 @@ use App\Http\Resources\Master\AdminMstResource;
 use App\Repositories\History\Master\AdminMstHistRepository;
 use App\Repositories\Master\AdminMstRepository;
 use App\Services\AuditedCrudService;
+use App\Services\AuditLogger;
 use Illuminate\Validation\ValidationException;
 
 class AdminMstService extends AuditedCrudService
@@ -19,9 +20,14 @@ class AdminMstService extends AuditedCrudService
 
     protected string $historyForeignKey = 'admin_mst_id';
 
-    public function __construct(private readonly AdminMstRepository $adminMst, AdminMstHistRepository $adminMstHist)
-    {
-        parent::__construct($adminMst, $adminMstHist);
+    protected string $auditableType = 'admin';
+
+    public function __construct(
+        private readonly AdminMstRepository $adminMst,
+        AdminMstHistRepository $adminMstHist,
+        AuditLogger $auditLogger,
+    ) {
+        parent::__construct($adminMst, $adminMstHist, $auditLogger);
     }
 
     /**

@@ -85,6 +85,7 @@
 - `make verify` exit 0: Pint ✓, Larastan ✓, backend 73 passed (was 190; the removed modules' tests), ESLint 0 problems, tsc ✓ both apps, Vitest 51 (14 files), FE coverage 89.25%.
 
 - 2026-10-07 — P2-08 (slice 9) started. Baseline = the green `make verify` at `d977e93` (nothing changed since). Finding: the FE `HistoryViewer` is not mounted on any page. Step 1/6 done: ADR-0006 (one `audit_log`, events incl. login, expand/contract plan with a temporary `legacy_hist_id`).
+- Step 2/6 done: expand + dual-write. Migration `..._100007` creates `audit_log` (down/up checked on `testing`; ran forward on dev). `AuditEvent` enum, `AuditLog` model, `AuditLogRepository`, `AuditLogger` (drops `id`/`password`/`remember_token`/`updated_at`; `updated` keeps only changed fields). `AuditedCrudService` takes a before-snapshot on update/delete and writes both `admin_mst_hist` and `audit_log` (linked by `legacy_hist_id`). New `AuditLogWriteTest` (2). Backend 75 passed, Larastan ✓.
 
 ## Next step
 
