@@ -46,4 +46,22 @@ final class LedgerConst
 
     /** Requests per minute and IP on /api/public (RFC-002 §4.3). */
     public const PUBLIC_RATE_PER_MINUTE = 60;
+
+    /** Sanctum ability of the importer's token and the token name (ADR-0010). */
+    public const IMPORT_ABILITY = 'evidence:import';
+
+    public const IMPORT_TOKEN_NAME = 'ledger-importer';
+
+    public const IMPORT_TOKEN_DAYS = 90;
+
+    /** Notes per import run (ADR-0008 contract row). */
+    public const IMPORT_NOTES_MAX = 2000;
+
+    public const IMPORT_EXTERNAL_KEY_MAX = 500;
+
+    /** Import runs per minute and admin: one per manual invocation is the expected rate. */
+    public const IMPORT_RATE_PER_MINUTE = 10;
+
+    /** Marks audit rows written by the importer: `new_values.via` (ADR-0010). */
+    public const IMPORT_AUDIT_VIA = 'importer';
 }

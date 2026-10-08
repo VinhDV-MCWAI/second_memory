@@ -23,6 +23,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\ServiceProvider;
+use Laravel\Sanctum\PersonalAccessToken;
+use Laravel\Sanctum\Sanctum;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -48,6 +50,9 @@ class AppServiceProvider extends ServiceProvider
         // A deleted or disabled admin cannot log in, and an existing session stops working on the next request
         Auth::provider('active-admins', fn (Application $app, array $config): EloquentUserProvider => (new EloquentUserProvider($app['hash'], $config['model']))
             ->withQuery(fn (Builder $query) => $query->where('is_delete', false)->where('is_active', true)));
+        // Same rule for API tokens: Sanctum loads the token's admin without the provider above
+        Sanctum::authenticateAccessTokensUsing(fn (PersonalAccessToken $token, bool $isValid): bool => $isValid
+            && $token->tokenable instanceof AdminMst && ! $token->tokenable->isDeleted() && $token->tokenable->isActive());
 
         // Roles (ADR-0005): only an owner may change data; checked by AdminMiddleware for non-read requests
         Gate::define(CommonVal::GATE_WRITE, fn (AdminMst $admin): bool => $admin->role === AdminRole::OWNER);

@@ -60,4 +60,7 @@ return [
     'target_date' => 'Target date',
     'note' => 'Note',
     'search_query' => 'Search text',
+    'notes' => 'Notes',
+    'external_key' => 'Vault path',
+    'dry_run' => 'Dry run',
 ];

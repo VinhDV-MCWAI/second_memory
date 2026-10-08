@@ -28,7 +28,7 @@ use Symfony\Component\HttpFoundation\Response as HttpResponse;
  * Scramble documents what a controller returns; the `api.response` middleware and the exception
  * handler then wrap it as `{ data, error: { status, code, messages } }`. This transformer makes
  * openapi.json describe the body clients really get (ADR-0008, P3-09) and adds the error codes
- * Scramble cannot see: 403 for writes (AdminMiddleware), 404 for `{param}` routes, 429 for throttled routes.
+ * Scramble cannot see: 403 on admin routes (AdminMiddleware), 404 for `{param}` routes, 429 for throttled routes.
  */
 final class ResponseEnvelope
 {
@@ -71,7 +71,8 @@ final class ResponseEnvelope
 
         $middleware = $route->gatherMiddleware();
         $missing = array_filter([
-            CommonVal::HTTP_FORBIDDEN => in_array('auth.admin', $middleware, true) && ! in_array('GET', $route->methods(), true),
+            // Writes need the owner role; any admin route also refuses an API token without the route's ability
+            CommonVal::HTTP_FORBIDDEN => array_filter($middleware, fn (string $name): bool => str_starts_with($name, 'auth.admin')) !== [],
             CommonVal::HTTP_NOT_FOUND => $route->parameterNames() !== [],
             CommonVal::HTTP_TOO_MANY_REQUESTS => array_filter($middleware, fn (string $name): bool => str_starts_with($name, 'throttle')) !== [],
         ]);

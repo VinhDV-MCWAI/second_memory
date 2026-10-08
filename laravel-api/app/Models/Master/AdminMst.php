@@ -11,6 +11,8 @@ use Illuminate\Auth\Authenticatable;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Laravel\Sanctum\Contracts\HasAbilities;
+use Laravel\Sanctum\HasApiTokens;
 
 /**
  * @property AdminRole $role
@@ -18,6 +20,13 @@ use Illuminate\Database\Eloquent\Model;
 class AdminMst extends Model implements AuthenticatableContract
 {
     use Authenticatable, HasFactory, HasSoftDelete, HasStatus;
+
+    /**
+     * API tokens only for the importer CLI (ADR-0010); a session login (ADR-0004) carries a TransientToken.
+     *
+     * @use HasApiTokens<HasAbilities>
+     */
+    use HasApiTokens;
 
     protected $table = 'admin_mst';
 

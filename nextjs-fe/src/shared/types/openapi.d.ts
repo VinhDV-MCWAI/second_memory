@@ -239,6 +239,26 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/admin/evidence/import': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /**
+     * Sync the complete list of published Obsidian notes (idempotent; `dry_run` only counts)
+     * @description Called by the importer CLI with an API token that has the `evidence:import` ability, or by the owner's session.
+     */
+    post: operations['evidenceImport.import'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/admin/learning-goal/list': {
     parameters: {
       query?: never;
@@ -652,6 +672,26 @@ export interface components {
      */
     GoalStatus: 'open' | 'achieved' | 'dropped';
     /**
+     * ImportEvidenceRequest
+     * @description The complete list of published Obsidian notes (RFC-002 §4.5, ADR-0010 importer contract).
+     *     Skills and tags are names, not ids: unknown skills are reported, missing tags are created.
+     */
+    ImportEvidenceRequest: {
+      /** @description An empty list is valid: the vault has no published note left, so every imported row is hidden */
+      notes: {
+        external_key: string;
+        title: string;
+        /** Format: uri */
+        url: string;
+        /** Format: date */
+        occurred_on: string;
+        summary?: string | null;
+        tags?: string[];
+        skills?: string[];
+      }[];
+      dry_run?: boolean;
+    };
+    /**
      * IsActive
      * @enum {integer}
      */
@@ -991,6 +1031,15 @@ export interface operations {
         };
       };
       401: components['responses']['AuthenticationException'];
+      /** @description Forbidden */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ApiError'];
+        };
+      };
       422: components['responses']['ValidationException'];
     };
   };
@@ -1168,6 +1217,15 @@ export interface operations {
         };
       };
       401: components['responses']['AuthenticationException'];
+      /** @description Forbidden */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ApiError'];
+        };
+      };
       422: components['responses']['ValidationException'];
     };
   };
@@ -1295,6 +1353,15 @@ export interface operations {
         };
       };
       401: components['responses']['AuthenticationException'];
+      /** @description Forbidden */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ApiError'];
+        };
+      };
     };
   };
   'sanctum.csrf-cookie': {
@@ -1357,6 +1424,15 @@ export interface operations {
         };
       };
       401: components['responses']['AuthenticationException'];
+      /** @description Forbidden */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ApiError'];
+        };
+      };
     };
   };
   'evidence.list': {
@@ -1399,6 +1475,15 @@ export interface operations {
         };
       };
       401: components['responses']['AuthenticationException'];
+      /** @description Forbidden */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ApiError'];
+        };
+      };
       422: components['responses']['ValidationException'];
     };
   };
@@ -1536,6 +1621,62 @@ export interface operations {
       422: components['responses']['ValidationException'];
     };
   };
+  'evidenceImport.import': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['ImportEvidenceRequest'];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            data: {
+              created: number;
+              updated: number;
+              unchanged: number;
+              hidden: number;
+              unknown_skills: string[];
+            };
+            error: {
+              status: boolean;
+              code: number;
+              messages: null;
+            };
+          };
+        };
+      };
+      401: components['responses']['AuthenticationException'];
+      /** @description Forbidden */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ApiError'];
+        };
+      };
+      422: components['responses']['ValidationException'];
+      /** @description Too Many Requests */
+      429: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ApiError'];
+        };
+      };
+    };
+  };
   'learningGoal.list': {
     parameters: {
       query?: {
@@ -1572,6 +1713,15 @@ export interface operations {
         };
       };
       401: components['responses']['AuthenticationException'];
+      /** @description Forbidden */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ApiError'];
+        };
+      };
       422: components['responses']['ValidationException'];
     };
   };
@@ -1840,6 +1990,15 @@ export interface operations {
         };
       };
       401: components['responses']['AuthenticationException'];
+      /** @description Forbidden */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ApiError'];
+        };
+      };
       422: components['responses']['ValidationException'];
     };
   };
@@ -1882,6 +2041,15 @@ export interface operations {
         };
       };
       401: components['responses']['AuthenticationException'];
+      /** @description Forbidden */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ApiError'];
+        };
+      };
       422: components['responses']['ValidationException'];
     };
   };
@@ -2054,6 +2222,15 @@ export interface operations {
         };
       };
       401: components['responses']['AuthenticationException'];
+      /** @description Forbidden */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ApiError'];
+        };
+      };
       422: components['responses']['ValidationException'];
     };
   };
@@ -2133,6 +2310,15 @@ export interface operations {
         };
       };
       401: components['responses']['AuthenticationException'];
+      /** @description Forbidden */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ApiError'];
+        };
+      };
       422: components['responses']['ValidationException'];
     };
   };
