@@ -1,0 +1,42 @@
+[project]
+name = "ledger-importer"
+version = "0.1.0"
+description = "Imports the Obsidian notes marked publish: true into the Skill Ledger as note evidence (ADR-0010)"
+readme = "README.md"
+requires-python = ">=3.14"
+dependencies = [
+    "httpx>=0.28,<1",
+    "PyYAML>=6.0,<7",
+]
+
+[project.scripts]
+ledger-import = "ledger_importer.cli:main"
+
+[dependency-groups]
+dev = [
+    "mypy>=1.18",
+    "pytest>=8.4",
+    "ruff>=0.14",
+    "types-PyYAML>=6.0",
+]
+
+[build-system]
+requires = ["hatchling>=1.27"]
+build-backend = "hatchling.build"
+
+[tool.ruff]
+line-length = 110
+target-version = "py314"
+
+[tool.ruff.lint]
+select = ["E", "W", "F", "I", "B", "UP", "SIM", "RUF", "N", "S", "PT", "RET", "PTH"]
+# assert is how pytest asserts
+per-file-ignores = { "tests/*" = ["S101"] }
+
+[tool.mypy]
+strict = true
+files = ["src", "tests"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
