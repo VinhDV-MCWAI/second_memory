@@ -95,7 +95,7 @@ Refined in P3-00 (2026-10-08). Same lifecycle as P2: requirement → design → 
 | ID | Phase | Key tasks |
 |---|---|---|
 | P4-xx | IaC | Terraform Docker/MinIO modules, 3 environments, local TLS, SOPS+age, Docker hardening, destroy/apply drill |
-| P5-xx | CI/CD | Rulesets, commitlint, release-please, SBOM/Trivy/gitleaks, SHA images, staged deploys, auto rollback, Pennant flags, DORA report |
+| P5-xx | CI/CD | Re-enable `ci.yml` (PR trigger) and `cd.yml` (push to `developer`), paused on 2026-10-08 — manual runs only until then; rulesets, commitlint, release-please, SBOM/Trivy/gitleaks, SHA images, staged deploys, auto rollback, Pennant flags, DORA report |
 | P6-xx | Observability | otel-lgtm, OTel instrumentation, JSON logs, RED/USE dashboards, SLOs, alerts, runbooks |
 | P7-xx | Reliability | `chaos-master` skill, Toxiproxy, 8+ incidents + postmortems, DR drill |
 | P8-xx | Perf & security | k6 suites, bottleneck fixes with numbers, STRIDE, ASVS L1, ZAP |
