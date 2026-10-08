@@ -187,6 +187,8 @@ Records written in P3 so far: REQ-002 (Ready), RFC-002 (Approved; slice status i
 
 - 2026-10-08 — [lane perf] PERF-04 done: 7c53442 — perf/sql/search-plans.sql (renamed from db-01-search-experiments.sql): plans of the current search statements, 0 errors on the API-03 schema; evidence full text 0.8–1.1 ms, typo search 1.0 ms (9 % term) / 14.4 ms (25 % term, GiST KNN), skill < 1 ms; index sizes 32–424 kB
 
+- 2026-10-08 — [lane fe] FE-01 done: 4a2aac1 — PaginatedResponse<T> = { data, links, meta } from generated PaginationLinks/PaginationMeta; getPaginationInfo reads meta only (flat/camelCase fallbacks and 2 hand-written types removed). make verify exit 0 (backend 162, Vitest 70, cov 90.16%)
+
 ## Next step
 
 Since 2026-10-08 work runs in **parallel lanes**: the live task list and who is on what is [BOARD.md](BOARD.md) (`scripts/lane.sh status`); start a conversation with `/lane`. When this file and the board disagree on status, the board wins. Lanes `public` (P3-12) and `perf` (P3-16) were already in progress when the board was created.
