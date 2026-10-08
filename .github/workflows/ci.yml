@@ -1,10 +1,11 @@
 name: CI
 
+# Paused (2026-10-08, owner's decision): manual runs only, to keep PRs fast while
+# the Skill Ledger is built. Run `make verify` locally before every PR instead.
+# Re-enable in P5 by restoring the trigger:
+#   pull_request:
+#     branches: [developer, main]
 on:
-  pull_request:
-    branches:
-      - developer
-      - main
   workflow_dispatch:
 
 concurrency:
