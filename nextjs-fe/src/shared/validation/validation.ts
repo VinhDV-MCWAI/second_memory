@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { Gender, AdminStatus, AdminRole } from '@/shared/enums';
+import { Gender, AdminStatus, AdminRole, SkillLevel } from '@/shared/enums';
 import { ValidationRules } from './validation-rules';
 
 type Translator = (key: string, params?: Record<string, string | number>) => string;
@@ -89,3 +89,72 @@ export const getAdminSchema = (t: Translator) =>
   });
 
 export type AdminFormData = z.infer<ReturnType<typeof getAdminSchema>>;
+
+/** Today as `YYYY-MM-DD` in the browser's time zone (level changes cannot be in the future). */
+const today = () => {
+  const now = new Date();
+  return new Date(now.getTime() - now.getTimezoneOffset() * 60_000).toISOString().slice(0, 10);
+};
+
+// Tag schema matching StoreTagRequest
+export const getTagSchema = (t: Translator) =>
+  z.object({
+    name: z
+      .string()
+      .trim()
+      .min(1, t('tagName.required'))
+      .max(
+        ValidationRules.TAG_NAME_MAX,
+        t('tagName.maxLength', { max: ValidationRules.TAG_NAME_MAX }),
+      ),
+  });
+
+export type TagFormData = z.infer<ReturnType<typeof getTagSchema>>;
+
+// Level entry matching StoreSkillLevelRequest (without skill_id)
+export const getSkillLevelSchema = (t: Translator) =>
+  z.object({
+    level: z.nativeEnum(SkillLevel, { message: t('level.required') }),
+    changed_on: z.string().refine((value) => value === '' || value <= today(), {
+      message: t('changedOn.future'),
+    }),
+    reason: z
+      .string()
+      .max(
+        ValidationRules.LEVEL_REASON_MAX,
+        t('reason.maxLength', { max: ValidationRules.LEVEL_REASON_MAX }),
+      ),
+  });
+
+export type SkillLevelFormData = z.infer<ReturnType<typeof getSkillLevelSchema>>;
+
+// Skill schema matching StoreSkillRequest; the level fields are sent on create only (UpdateSkillRequest has none)
+export const getSkillSchema = (t: Translator) =>
+  getSkillLevelSchema(t).extend({
+    name: z
+      .string()
+      .trim()
+      .min(1, t('skillName.required'))
+      .max(
+        ValidationRules.SKILL_NAME_MAX,
+        t('skillName.maxLength', { max: ValidationRules.SKILL_NAME_MAX }),
+      ),
+    category: z
+      .string()
+      .trim()
+      .min(1, t('category.required'))
+      .max(
+        ValidationRules.SKILL_CATEGORY_MAX,
+        t('category.maxLength', { max: ValidationRules.SKILL_CATEGORY_MAX }),
+      ),
+    description: z
+      .string()
+      .max(
+        ValidationRules.SKILL_DESCRIPTION_MAX,
+        t('description.maxLength', { max: ValidationRules.SKILL_DESCRIPTION_MAX }),
+      ),
+    is_public: z.boolean(),
+    tag_ids: z.array(z.number()),
+  });
+
+export type SkillFormData = z.infer<ReturnType<typeof getSkillSchema>>;

@@ -120,3 +120,20 @@ export enum AuditEvent {
 export const Status = IsActive;
 /** @deprecated Use IsActiveLabels or specific status labels */
 export const StatusLabels = IsActiveLabels;
+
+// ==========================================
+// SkillLevel (app/Enums/SkillLevel.php, REQ-002)
+// ==========================================
+export enum SkillLevel {
+  LEARNING = 1,
+  WITH_HELP = 2,
+  INDEPENDENT = 3,
+  CAN_TEACH = 4,
+}
+
+export const SkillLevelLabels: Record<SkillLevel, string> = {
+  [SkillLevel.LEARNING]: 'Learning',
+  [SkillLevel.WITH_HELP]: 'Can use with help',
+  [SkillLevel.INDEPENDENT]: 'Independent',
+  [SkillLevel.CAN_TEACH]: 'Can teach others',
+};

@@ -38,4 +38,11 @@ export const ValidationRules = {
   ROLE_PERMISSION_MAX: 50,
   CODE_MAX: 50,
   ICON_MAX: 50,
+
+  // Skill Ledger (laravel-api LedgerConst)
+  SKILL_NAME_MAX: 100,
+  SKILL_CATEGORY_MAX: 50,
+  SKILL_DESCRIPTION_MAX: 2000,
+  LEVEL_REASON_MAX: 500,
+  TAG_NAME_MAX: 50,
 } as const;

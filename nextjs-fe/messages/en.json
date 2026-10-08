@@ -125,7 +125,8 @@
     "navigateTo": "Navigate to...",
     "adminDashboard": "Admin Dashboard",
     "dashboard": "Dashboard",
-    "masterData": "Master Data"
+    "masterData": "Master Data",
+    "skillLedger": "Skill Ledger"
   },
   "search": {
     "placeholder": "Search...",
@@ -197,7 +198,9 @@
     "skills": "Skills",
     "skillDescription": "Skill Description",
     "skillDescriptions": "Skill Descriptions",
-    "file": "File"
+    "file": "File",
+    "tag": "Tag",
+    "tags": "Tags"
   },
   "fields": {
     "id": "ID",
@@ -225,7 +228,11 @@
     "accountId": "Account ID",
     "deviceName": "Device Name",
     "ipAddress": "IP Address",
-    "expiredAt": "Expired At"
+    "expiredAt": "Expired At",
+    "category": "Category",
+    "currentLevel": "Level",
+    "visibility": "Visibility",
+    "tags": "Tags"
   },
   "management": {
     "title": "{entity} Management",
@@ -310,7 +317,13 @@
       "description": "Description",
       "title": "Title",
       "linkUrl": "Link URL",
-      "position": "Position"
+      "position": "Position",
+      "category": "Category",
+      "level": "Level",
+      "changedOn": "Changed on",
+      "reason": "Reason",
+      "isPublic": "Show on the public page",
+      "tags": "Tags"
     },
     "placeholders": {
       "urlExample": "https://example.com",
@@ -380,7 +393,8 @@
       "required": "Content is required"
     },
     "description": {
-      "required": "Description is required"
+      "required": "Description is required",
+      "maxLength": "Description cannot exceed {max} characters"
     },
     "link": {
       "required": "Link is required"
@@ -396,6 +410,27 @@
     "value": {
       "required": "Value is required",
       "maxLength": "Value cannot exceed {max} characters"
+    },
+    "skillName": {
+      "required": "Name is required",
+      "maxLength": "Name cannot exceed {max} characters"
+    },
+    "category": {
+      "required": "Category is required",
+      "maxLength": "Category cannot exceed {max} characters"
+    },
+    "tagName": {
+      "required": "Name is required",
+      "maxLength": "Name cannot exceed {max} characters"
+    },
+    "level": {
+      "required": "Level is required"
+    },
+    "reason": {
+      "maxLength": "Reason cannot exceed {max} characters"
+    },
+    "changedOn": {
+      "future": "The date cannot be in the future"
     }
   },
   "advancedSearch": {
@@ -421,5 +456,19 @@
   "download": "Download",
   "delete": "Delete",
   "previous": "Previous",
-  "next": "Next"
+  "next": "Next",
+  "ledger": {
+    "public": "Public",
+    "private": "Private",
+    "noTags": "No tags yet",
+    "levels": {
+      "title": "Level history",
+      "description": "Every level change, newest first. Entries cannot be edited.",
+      "empty": "No level changes yet",
+      "record": "Record level change",
+      "recording": "Recording",
+      "recorded": "Level recorded",
+      "by": "by {name}"
+    }
+  }
 }

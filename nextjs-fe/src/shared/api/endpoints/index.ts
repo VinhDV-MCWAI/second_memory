@@ -13,6 +13,11 @@ export const API_ENDPOINTS = {
   AUDIT: {
     LOG: '/admin/audit-log',
   },
+  LEDGER: {
+    SKILL: '/admin/skill',
+    SKILL_LEVEL: '/admin/skill-level',
+    TAG: '/admin/tag',
+  },
 } as const;
 
 export const ENDPOINTS = API_ENDPOINTS;

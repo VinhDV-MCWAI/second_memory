@@ -1,4 +1,4 @@
-import { LayoutDashboard, Database, UserCog } from 'lucide-react';
+import { LayoutDashboard, Database, GraduationCap, Tags, UserCog } from 'lucide-react';
 import { MenuItem } from '@/shared/types';
 import { ADMIN_ROUTES } from '@/shared/config';
 
@@ -7,6 +7,22 @@ export const NAVIGATION_MENU: MenuItem[] = [
     label: 'navigation.dashboard',
     icon: LayoutDashboard,
     href: ADMIN_ROUTES.DASHBOARD,
+  },
+  {
+    label: 'navigation.skillLedger',
+    icon: GraduationCap,
+    children: [
+      {
+        label: 'entities.skills',
+        icon: GraduationCap,
+        href: ADMIN_ROUTES.SKILLS,
+      },
+      {
+        label: 'entities.tags',
+        icon: Tags,
+        href: ADMIN_ROUTES.TAGS,
+      },
+    ],
   },
   {
     label: 'navigation.masterData',
