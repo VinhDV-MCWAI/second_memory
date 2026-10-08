@@ -173,6 +173,8 @@ Records written in P3 so far: REQ-002 (Ready), RFC-002 (Approved; slice status i
 
 - 2026-10-08 — [lane importer] P3-14c done: 1ba8649, 7219d35 — make import vault=… [dry=1] (runtime image, vault read-only, ml_network), importer-lint in make lint, importer-test in make verify; runbook docs/runbooks/ledger-import.md; make import run twice against the real API on the perf DB: 2nd run unchanged 2 / 0 created-updated-hidden; make verify exit 0 (backend 160, FE 70, importer 63). Not run on the dev stack: dev DB has no owner account (runbook precondition, owner step)
 
+- 2026-10-08 — [lane api] API-04 done: fb004a1 — applySorting takes the sortable columns (all 6 lists), Schema::hasColumn and allowedSort removed: no pg_attribute query per list; admin/audit lists now allow-listed (password can no longer reach ORDER BY); test asserts no schema query. make verify exit 0 (backend 161, Vitest 70)
+
 ## Next step
 
 Since 2026-10-08 work runs in **parallel lanes**: the live task list and who is on what is [BOARD.md](BOARD.md) (`scripts/lane.sh status`); start a conversation with `/lane`. When this file and the board disagree on status, the board wins. Lanes `public` (P3-12) and `perf` (P3-16) were already in progress when the board was created.
