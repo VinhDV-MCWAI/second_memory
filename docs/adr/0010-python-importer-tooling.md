@@ -98,6 +98,16 @@ Decided with the code, within the decision above:
 
 > 🇻🇳 Ghi chú triển khai (P3-14a): (1) Kiểm tra ability nằm trong `AdminMiddleware` (`auth.admin:evidence:import`) thay vì middleware `abilities` của Sanctum, vì middleware đó chỉ chặn route nó được gắn, các route admin khác vẫn nhận token. Giờ token chỉ mở được route import, mọi route admin khác (kể cả đọc và `credential/me`) trả 403; session đăng nhập vẫn như cũ. (2) Token của admin bị xoá hoặc bị khoá trả 401. (3) Mọi dòng audit do import ghi có `new_values.via = "importer"`, người thực hiện là chủ token; tag do import tạo cũng được audit. (4) Dòng đã ẩn không bị đếm lại; note publish lại tính là `updated` và vẫn ở trạng thái riêng tư.
 
+### Implementation notes (P3-14b, 2026-10-08)
+
+- **YAML 1.2 booleans.** PyYAML follows YAML 1.1, where unquoted `yes` / `on` are booleans, which would publish `publish: yes` against the rule above. The CLI parses frontmatter with a `SafeLoader` whose only booleans are `true` / `false` (any case), as Obsidian writes them.
+- **Broken frontmatter is an invalid note.** A note whose `---` block does not close, is not YAML or is not a mapping cannot say whether it is published; skipping it could hide its row, so it stops the run like any invalid published note.
+- **`--dry-run` asks the API.** P3-14a gave the endpoint `dry_run: true` (count only, no write), so `--dry-run` validates locally and then sends the list with `dry_run: true`: the report shows the real `created` / `updated` / `unchanged` / `hidden` numbers. It needs the token like a real run.
+- **More than 2,000 published notes** exits `1` (nothing sent), like invalid notes: the vault content, not the configuration, is the problem.
+- **Checked against the real API** on the throwaway perf database (not dev): dry run → run → second run `unchanged` only → a removed note `hidden 1` → invalid note exit 1 → wrong token exit 3 (`401`). Make targets and the run against the dev stack are P3-14c.
+
+> 🇻🇳 Ghi chú triển khai (P3-14b): (1) PyYAML theo YAML 1.1 nên `yes`/`on` là boolean — CLI dùng loader chỉ coi `true`/`false` là boolean, để `publish: yes` không publish. (2) Frontmatter hỏng (không đóng, sai YAML, không phải mapping) bị coi là note lỗi và chặn cả lần chạy, vì không biết note có publish không. (3) `--dry-run` gửi `dry_run: true` lên API để có số liệu thật, nên vẫn cần token. (4) Hơn 2.000 note publish → mã thoát 1, không gửi gì. (5) Đã chạy thử với API thật trên DB perf tạm: chạy lần hai không đổi gì, xoá note thì ẩn 1, note lỗi thoát 1, sai token thoát 3. Target Make và chạy trên stack dev thuộc P3-14c.
+
 ## Consequences
 
 - **Easier:** no browser emulation or stored password; the audit shows who imported; a leaked token can only import evidence, expires and is revoked with one command; the importer is tested in isolation (pytest with `MockTransport`) while idempotency stays tested in PHP next to the data (RFC-002 §7).
