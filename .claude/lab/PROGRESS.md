@@ -160,6 +160,8 @@ Records written in P3 so far: REQ-002 (Ready), RFC-002 (Approved; slice status i
 
 - 2026-10-08 — [lane perf] DB-01 done: 661a1de, e7d660b — only evidence search is slow: trigram fallback 33–57 ms (seq scan, GIN trigram never chosen), full text 7–10 ms (ts_rank recomputes to_tsvector); stored tsvector < 1 ms, GiST trigram 0.5–1.3 ms (5 % term) / 11–17 ms (25 %); admin lists pay a needless Schema::hasColumn (~1.5 ms); public, dashboard, pagination < 0.5 ms. Follow-ups API-03, API-04, PERF-02. Report docs/reports/perf/2026-10-08-db-01-explain.md
 
+- 2026-10-08 — [lane perf] PERF-02 done: 30b2fba, 9afa0ad, 465a24e — seed v2: PostgreSQL kept in 25 % of evidence on purpose (HOT_TERM), the other 19 words ~9 % each (before: 4 words at 25 %, 16 never in titles); DB-01 re-checked on it, same conclusions (trigram 33–40 ms, FTS 2.8–6.2 ms, fixes < 1–12 ms). Perf scripts now refuse a taken port (another lane's php -S on 8099). Re-baseline moved to PERF-03 (after API-02/03)
+
 ## Next step
 
 Since 2026-10-08 work runs in **parallel lanes**: the live task list and who is on what is [BOARD.md](BOARD.md) (`scripts/lane.sh status`); start a conversation with `/lane`. When this file and the board disagree on status, the board wins. Lanes `public` (P3-12) and `perf` (P3-16) were already in progress when the board was created.
