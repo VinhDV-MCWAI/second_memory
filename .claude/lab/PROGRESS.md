@@ -10,7 +10,7 @@
 | P0 Baseline | P0-01…P0-09 | done locally; P0-02 push/PRs, P0-06 GitHub board, P0-09 remote cleanup wait for the owner | `v1.0.0` (local tag) |
 | P1 Handbook | P1-01…P1-14 | done | `v1.1.0` (local tag) |
 | P2 Slim down | P2-01…P2-13 | done | `v2.0.0` (local tag) |
-| P3 Skill Ledger | P3-00…P3-08 | **next: P3-00 refinement** | `v2.1.0` |
+| P3 Skill Ledger | P3-00…P3-18 (refined) | P3-00 done; **next: P3-01 REQ-002** | `v2.1.0` |
 | P4–P11 | coarse | not started | – |
 
 Records written in P2: REQ-001, RFC-001, ADR-0003…0006, PRB-001 (solved), PRB-002 (solved), runbook `content-export.md`.
@@ -19,7 +19,7 @@ Records written in P2: REQ-001, RFC-001, ADR-0003…0006, PRB-001 (solved), PRB-
 
 | | |
 |---|---|
-| Active phase | P3 Skill Ledger (P0, P1, P2 done locally; P2 = `v2.0.0`). Starts with P3-00 |
+| Active phase | P3 Skill Ledger (P0, P1, P2 done locally; P2 = `v2.0.0`). P3-00 done (19 tasks); next P3-01 |
 | Working branch | `refactor/p2-slim-down` = the whole local stack (P0 + P1 + P2) on top of `developer`; local only, nothing pushed. Phase boundaries are tags: `v1.0.0` (P0), `v1.1.0` (P1), `v1.2.0`, `v2.0.0` (P2). The stacked branches `chore/p0-baseline`, `docs/p1-handbook`, `fix/security-deps`, `refactor/fe6-features`, `refactor/p4-frontend` were deleted locally on 2026-10-07 (no unique commits); recreate one from its tag if a separate PR is wanted (`git branch chore/p0-baseline v1.0.0`). Local branches left: `developer`, `main` (fast-forwarded to `origin/main`), `refactor/p2-slim-down` |
 | Old refactor | Frozen (`.claude/refactor/PLAN.md`, `PROGRESS.md`) |
 | Owner defaults | 8–10 h/week, backend role, §4 remove list accepted, Obsidian vault private (see analysis §9) |
@@ -27,7 +27,7 @@ Records written in P2: REQ-001, RFC-001, ADR-0003…0006, PRB-001 (solved), PRB-
 ## Needs the owner (Claude cannot do these)
 
 1. Push `refactor/p2-slim-down`, open PR → `developer`, then `developer` → `main` (merging into `developer` deploys via `cd.yml`). One big PR, or recreate `chore/p0-baseline` (`v1.0.0`) and `docs/p1-handbook` (`v1.1.0`) from the tags for smaller stacked PRs.
-2. Push tags `v1.0.0`, `v1.1.0`, `v1.2.0` after the merge (`git push origin v1.0.0 v1.1.0 v1.2.0`; the local `archive/*` tags need not be pushed) and create the GitHub release from `docs/releases/v1.0.0.md`.
+2. Push tags `v1.0.0`, `v1.1.0`, `v1.2.0`, `v2.0.0` after the merge (`git push origin v1.0.0 v1.1.0 v1.2.0 v2.0.0`; the local `archive/*` tags need not be pushed) and create the GitHub release from `docs/releases/v1.0.0.md`.
 3. GitHub board and labels (P0-06): see `docs/plan/github-setup.md`.
 4. Remote branch cleanup (P0-09), approved by the owner on 2026-10-07 but no GitHub credentials in Claude's environment: `git push origin --delete staging feature/Refactor-readme feature/laravel-api/create-migration feature/temp-test feature/nuxtjs-fe/demo feature/temp-test2`. The first four are merged into `main`; the last two hold an abandoned 2023 Nuxt FE and a `demo2` test commit, kept locally as tags `archive/nuxtjs-fe-demo`, `archive/temp-test2`. Delete `refactor/fe6-features` on origin only after `refactor/p2-slim-down` is pushed (its commits are not on origin otherwise).
 5. Still open from the refactor: rotate secrets on any real deployment; browser check while logged in.
@@ -108,6 +108,8 @@ Records written in P2: REQ-001, RFC-001, ADR-0003…0006, PRB-001 (solved), PRB-
 
 - 2026-10-08 — P2-13 done, **P2 done**. Stack was partly down (only MinIO + both Next apps running) → `make up`. `make verify` exit 0 on `b97887f` (code unchanged since `3e90988`): Pint 188 files ✓, Larastan no errors, backend 79 passed (263 assertions), ESLint ✓, tsc ✓, Vitest 53 (15 files), coverage 89.35 %. Verification line in `docs/releases/v2.0.0.md` updated; backlog P2-13 and RFC-001 slice 10 → done; weekly report `2026-W41` got a P2 update. Local tag `v2.0.0`. Roadmap P2 "done when": §4 list executed with two exceptions recorded — media API kept (RFC-001 §3 correction, open owner decision, item 8) and startup time not measured before (retro P2); before/after table in `docs/releases/v2.0.0.md` and RFC-001 §10.
 
+- 2026-10-08 — P3-00 done (docs only, no `/verify`): P3 refined into P3-00…P3-18 in `docs/plan/03-backlog.md`, same lifecycle as P2 (REQ-002 → RFC-002 → ADRs for contract style, search, Python tooling → schema / API / UI / public slices → contract tests, E2E, k6 → QA + PO acceptance → `v2.1.0`). Carried in from P2: media API decision → P3-01 question + P3-02 decision; unused `users` / `password_reset_tokens` → P3-02/05; fake dashboard numbers → P3-11. Findings that shape tasks: OpenAPI is code-first today (`scramble:export`, CI checks drift only), so "OpenAPI-first" needs its own ADR (P3-03); the importer CLI cannot use the SPA session auth from ADR-0004 (P3-13). Phase branch for P3: `feature/p3-skill-ledger` from `refactor/p2-slim-down` (P2 is not merged into `developer` yet).
+
 ## Next step
 
-**P3-00**: refine the Skill Ledger phase (`docs/plan/03-backlog.md` P3, roadmap P3) into tasks of 1–3 sessions before any code. Inputs: roadmap P3 scope, `docs/search.md`, open owner decision on the media API (Evidence files may need it). Likely first real task: P3-01 `REQ-002` intake with `/simulate-po`.
+**P3-01**: `REQ-002` intake. Create branch `feature/p3-skill-ledger` from `refactor/p2-slim-down`, run `/simulate-po` for the Skill Ledger request, ask clarification questions (handbook 02 question bank; must cover evidence files / media API, what is public, importer overwrite rules), write `docs/requirements/REQ-002-skill-ledger.md` from `docs/templates/requirement.md` until it meets the Definition of Ready. Then P3-02 (RFC-002).
