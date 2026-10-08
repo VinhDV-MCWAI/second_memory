@@ -2,6 +2,8 @@
 
 declare(strict_types=1);
 
+use App\Http\Controllers\Ledger\EvidenceController;
+use App\Http\Controllers\Ledger\LearningGoalController;
 use App\Http\Controllers\Ledger\SkillController;
 use App\Http\Controllers\Ledger\SkillLevelController;
 use App\Http\Controllers\Ledger\TagController;
@@ -11,6 +13,8 @@ use Illuminate\Support\Facades\Route;
 foreach ([
     'skill' => SkillController::class,
     'tag' => TagController::class,
+    'evidence' => EvidenceController::class,
+    'learning-goal' => LearningGoalController::class,
 ] as $resource => $controller) {
     Route::get("{$resource}/list", [$controller, 'list']);
     Route::post("{$resource}/store", [$controller, 'store']);

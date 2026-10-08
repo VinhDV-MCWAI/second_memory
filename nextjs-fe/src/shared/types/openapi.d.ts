@@ -156,6 +156,138 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/admin/evidence/list': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations['evidence.list'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/admin/evidence/store': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** Create an evidence link for one or more skills */
+    post: operations['evidence.store'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/admin/evidence/update/{id}': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    /** Update an evidence link (imported rows: only type and is_public) */
+    put: operations['evidence.update'];
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/admin/evidence/delete': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations['evidence.delete'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/admin/learning-goal/list': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations['learningGoal.list'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/admin/learning-goal/store': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** Create an open goal; the target must be above the current level */
+    post: operations['learningGoal.store'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/admin/learning-goal/update/{id}': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    /** Update a goal (status open or dropped; achieved goals: date and note only) */
+    put: operations['learningGoal.update'];
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/admin/learning-goal/delete': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations['learningGoal.delete'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/admin/skill/list': {
     parameters: {
       query?: never;
@@ -380,6 +512,14 @@ export interface components {
     DeleteAdminMstRequest: {
       ids: number[];
     };
+    /** DeleteEvidenceRequest */
+    DeleteEvidenceRequest: {
+      ids: number[];
+    };
+    /** DeleteLearningGoalRequest */
+    DeleteLearningGoalRequest: {
+      ids: number[];
+    };
     /** DeleteSkillRequest */
     DeleteSkillRequest: {
       ids: number[];
@@ -388,11 +528,48 @@ export interface components {
     DeleteTagRequest: {
       ids: number[];
     };
+    /** EvidenceResource */
+    EvidenceResource: {
+      id: number;
+      type: components['schemas']['EvidenceType'];
+      title: string;
+      url: string;
+      occurred_on: string;
+      summary: string | null;
+      is_public: boolean;
+      source: components['schemas']['EvidenceSource'];
+      unpublished_at: string | null;
+      skills?: {
+        id: number;
+        name: string;
+      }[];
+      tags?: components['schemas']['TagResource'][];
+      created_at: string | null;
+      updated_at: string | null;
+    };
+    /**
+     * EvidenceSource
+     * @description Who owns an evidence row: typed in the admin, or synced from the Obsidian vault (RFC-002 §4.5).
+     * @enum {string}
+     */
+    EvidenceSource: 'manual' | 'obsidian';
+    /**
+     * EvidenceType
+     * @description What a piece of evidence links to (REQ-002 Q3).
+     * @enum {string}
+     */
+    EvidenceType: 'pr' | 'adr' | 'incident' | 'note' | 'other';
     /**
      * Gender
      * @enum {integer}
      */
     Gender: 1 | 2 | 3;
+    /**
+     * GoalStatus
+     * @description Learning goal lifecycle (REQ-002 Q2): open goals become achieved when the skill reaches the target level.
+     * @enum {string}
+     */
+    GoalStatus: 'open' | 'achieved' | 'dropped';
     /**
      * IsActive
      * @enum {integer}
@@ -403,6 +580,24 @@ export interface components {
      * @enum {integer}
      */
     IsDelete: 0 | 1;
+    /** LearningGoalResource */
+    LearningGoalResource: {
+      id: number;
+      skill: {
+        id: number;
+        name: string;
+        current_level: number;
+      };
+      target_level: components['schemas']['SkillLevel'];
+      /** @enum {string} */
+      target_level_label: 'Learning' | 'Can use with help' | 'Independent' | 'Can teach others';
+      target_date: string | null;
+      status: components['schemas']['GoalStatus'];
+      achieved_on: string | null;
+      note: string | null;
+      created_at: string | null;
+      updated_at: string | null;
+    };
     /** LoginRequest */
     LoginRequest: {
       user_name: string;
@@ -464,6 +659,37 @@ export interface components {
       avatar?: string | null;
       is_delete: components['schemas']['IsDelete'];
     };
+    /**
+     * StoreEvidenceRequest
+     * @description Evidence is a link only (ADR-0007). `source`, `external_key` and `unpublished_at` belong
+     *     to the importer (RFC-002 §4.5) and are not accepted here.
+     */
+    StoreEvidenceRequest: {
+      type: components['schemas']['EvidenceType'];
+      title: string;
+      /**
+       * Format: uri
+       * @description http(s) only: blocks javascript: and data: links on the public page (REQ-002 US-2)
+       */
+      url: string;
+      /** Format: date */
+      occurred_on: string;
+      summary?: string | null;
+      is_public?: boolean;
+      skill_ids: number[];
+      tag_ids?: number[];
+    };
+    /**
+     * StoreLearningGoalRequest
+     * @description A new goal is always open; the target must be above the skill's current level (LearningGoalService).
+     */
+    StoreLearningGoalRequest: {
+      skill_id: number;
+      target_level: components['schemas']['SkillLevel'];
+      /** Format: date */
+      target_date?: string | null;
+      note?: string | null;
+    };
     /** StoreSkillLevelRequest */
     StoreSkillLevelRequest: {
       skill_id: number;
@@ -514,6 +740,42 @@ export interface components {
       role?: components['schemas']['AdminRole'];
       avatar?: string | null;
       is_delete?: components['schemas']['IsDelete'] | null;
+    };
+    /**
+     * UpdateEvidenceRequest
+     * @description Same fields as store, each optional. Imported rows accept only `type` and `is_public`
+     *     (EvidenceService::update).
+     */
+    UpdateEvidenceRequest: {
+      type?: components['schemas']['EvidenceType'];
+      title?: string;
+      /**
+       * Format: uri
+       * @description http(s) only: blocks javascript: and data: links on the public page (REQ-002 US-2)
+       */
+      url?: string;
+      /** Format: date */
+      occurred_on?: string;
+      summary?: string | null;
+      is_public?: boolean;
+      skill_ids?: number[];
+      tag_ids?: number[];
+    };
+    /**
+     * UpdateLearningGoalRequest
+     * @description The skill of a goal is fixed. `achieved` is set only by a level change (REQ-002 US-6),
+     *     so the status can be switched between open and dropped only.
+     */
+    UpdateLearningGoalRequest: {
+      target_level?: components['schemas']['SkillLevel'];
+      /** Format: date */
+      target_date?: string | null;
+      /**
+       * @description Learning goal lifecycle (REQ-002 Q2): open goals become achieved when the skill reaches the target level.
+       * @enum {string}
+       */
+      status?: 'open' | 'dropped';
+      note?: string | null;
     };
     /**
      * UpdateSkillRequest
@@ -825,6 +1087,228 @@ export interface operations {
           'application/json': unknown[];
         };
       };
+    };
+  };
+  'evidence.list': {
+    parameters: {
+      query?: {
+        id?: number | null;
+        page?: number | null;
+        per_page?: number | null;
+        sort_by?: string | null;
+        sort_order?: string | null;
+        title?: string | null;
+        type?: components['schemas']['EvidenceType'] | null;
+        source?: components['schemas']['EvidenceSource'] | null;
+        is_public?: boolean | null;
+        skill_id?: number | null;
+        tag_id?: number | null;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Array of `EvidenceResource` */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            data: components['schemas']['EvidenceResource'][];
+          };
+        };
+      };
+      401: components['responses']['AuthenticationException'];
+      422: components['responses']['ValidationException'];
+    };
+  };
+  'evidence.store': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['StoreEvidenceRequest'];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': number;
+        };
+      };
+      401: components['responses']['AuthenticationException'];
+      422: components['responses']['ValidationException'];
+    };
+  };
+  'evidence.update': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: {
+      content: {
+        'application/json': components['schemas']['UpdateEvidenceRequest'];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': number;
+        };
+      };
+      401: components['responses']['AuthenticationException'];
+      422: components['responses']['ValidationException'];
+    };
+  };
+  'evidence.delete': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['DeleteEvidenceRequest'];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': Record<string, never>;
+        };
+      };
+      401: components['responses']['AuthenticationException'];
+      422: components['responses']['ValidationException'];
+    };
+  };
+  'learningGoal.list': {
+    parameters: {
+      query?: {
+        id?: number | null;
+        page?: number | null;
+        per_page?: number | null;
+        sort_by?: string | null;
+        sort_order?: string | null;
+        skill_id?: number | null;
+        status?: components['schemas']['GoalStatus'] | null;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Array of `LearningGoalResource` */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            data: components['schemas']['LearningGoalResource'][];
+          };
+        };
+      };
+      401: components['responses']['AuthenticationException'];
+      422: components['responses']['ValidationException'];
+    };
+  };
+  'learningGoal.store': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['StoreLearningGoalRequest'];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': number;
+        };
+      };
+      401: components['responses']['AuthenticationException'];
+      422: components['responses']['ValidationException'];
+    };
+  };
+  'learningGoal.update': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: {
+      content: {
+        'application/json': components['schemas']['UpdateLearningGoalRequest'];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': number;
+        };
+      };
+      401: components['responses']['AuthenticationException'];
+      422: components['responses']['ValidationException'];
+    };
+  };
+  'learningGoal.delete': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['DeleteLearningGoalRequest'];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': Record<string, never>;
+        };
+      };
+      401: components['responses']['AuthenticationException'];
+      422: components['responses']['ValidationException'];
     };
   };
   'skill.list': {

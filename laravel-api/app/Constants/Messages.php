@@ -62,6 +62,12 @@ class Messages
 
     const E0021 = 'At least one active owner must remain';
 
+    const E0022 = 'Target level must be above the skill\'s current level';
+
+    const E0023 = 'An achieved goal can only change its target date and note';
+
+    const E0024 = 'Imported evidence: change this field in the vault';
+
     /**
      * Errors http messages
      */

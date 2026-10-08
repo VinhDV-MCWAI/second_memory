@@ -50,4 +50,13 @@ return [
     'changed_on' => 'Changed on',
     'reason' => 'Reason',
     'skill_id' => 'Skill',
+    'skill_ids' => 'Skills',
+    'type' => 'Type',
+    'url' => 'URL',
+    'occurred_on' => 'Date',
+    'summary' => 'Summary',
+    'source' => 'Source',
+    'target_level' => 'Target level',
+    'target_date' => 'Target date',
+    'note' => 'Note',
 ];

@@ -51,6 +51,14 @@ class SkillRepository extends CrudRepository
         return $id;
     }
 
+    public function currentLevel(int $skillId): int
+    {
+        /** @var Skill $skill */
+        $skill = $this->model->newQuery()->findOrFail($skillId, ['id', 'current_level']);
+
+        return $skill->current_level->value;
+    }
+
     public function setCurrentLevel(int $skillId, int $level): void
     {
         $this->model->newQuery()->whereKey($skillId)->update(['current_level' => $level]);

@@ -697,6 +697,519 @@
                 }
             }
         },
+        "/admin/evidence/list": {
+            "get": {
+                "operationId": "evidence.list",
+                "tags": [
+                    "Evidence"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "query",
+                        "schema": {
+                            "type": [
+                                "integer",
+                                "null"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "schema": {
+                            "type": [
+                                "integer",
+                                "null"
+                            ],
+                            "minimum": 1
+                        }
+                    },
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "schema": {
+                            "type": [
+                                "integer",
+                                "null"
+                            ],
+                            "minimum": 1
+                        }
+                    },
+                    {
+                        "name": "sort_by",
+                        "in": "query",
+                        "schema": {
+                            "type": [
+                                "string",
+                                "null"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "sort_order",
+                        "in": "query",
+                        "schema": {
+                            "type": [
+                                "string",
+                                "null"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "title",
+                        "in": "query",
+                        "schema": {
+                            "type": [
+                                "string",
+                                "null"
+                            ],
+                            "maxLength": 200
+                        }
+                    },
+                    {
+                        "name": "type",
+                        "in": "query",
+                        "schema": {
+                            "anyOf": [
+                                {
+                                    "$ref": "#/components/schemas/EvidenceType"
+                                },
+                                {
+                                    "type": "null"
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "name": "source",
+                        "in": "query",
+                        "schema": {
+                            "anyOf": [
+                                {
+                                    "$ref": "#/components/schemas/EvidenceSource"
+                                },
+                                {
+                                    "type": "null"
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "name": "is_public",
+                        "in": "query",
+                        "schema": {
+                            "type": [
+                                "boolean",
+                                "null"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "skill_id",
+                        "in": "query",
+                        "schema": {
+                            "type": [
+                                "integer",
+                                "null"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "tag_id",
+                        "in": "query",
+                        "schema": {
+                            "type": [
+                                "integer",
+                                "null"
+                            ]
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Array of `EvidenceResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/EvidenceResource"
+                                            }
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    }
+                }
+            }
+        },
+        "/admin/evidence/store": {
+            "post": {
+                "operationId": "evidence.store",
+                "summary": "Create an evidence link for one or more skills",
+                "tags": [
+                    "Evidence"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/StoreEvidenceRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "integer"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    }
+                }
+            }
+        },
+        "/admin/evidence/update/{id}": {
+            "put": {
+                "operationId": "evidence.update",
+                "summary": "Update an evidence link (imported rows: only type and is_public)",
+                "tags": [
+                    "Evidence"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateEvidenceRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "integer"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/admin/evidence/delete": {
+            "post": {
+                "operationId": "evidence.delete",
+                "tags": [
+                    "Evidence"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/DeleteEvidenceRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    }
+                }
+            }
+        },
+        "/admin/learning-goal/list": {
+            "get": {
+                "operationId": "learningGoal.list",
+                "tags": [
+                    "LearningGoal"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "query",
+                        "schema": {
+                            "type": [
+                                "integer",
+                                "null"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "schema": {
+                            "type": [
+                                "integer",
+                                "null"
+                            ],
+                            "minimum": 1
+                        }
+                    },
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "schema": {
+                            "type": [
+                                "integer",
+                                "null"
+                            ],
+                            "minimum": 1
+                        }
+                    },
+                    {
+                        "name": "sort_by",
+                        "in": "query",
+                        "schema": {
+                            "type": [
+                                "string",
+                                "null"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "sort_order",
+                        "in": "query",
+                        "schema": {
+                            "type": [
+                                "string",
+                                "null"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "skill_id",
+                        "in": "query",
+                        "schema": {
+                            "type": [
+                                "integer",
+                                "null"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "status",
+                        "in": "query",
+                        "schema": {
+                            "anyOf": [
+                                {
+                                    "$ref": "#/components/schemas/GoalStatus"
+                                },
+                                {
+                                    "type": "null"
+                                }
+                            ]
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Array of `LearningGoalResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/LearningGoalResource"
+                                            }
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    }
+                }
+            }
+        },
+        "/admin/learning-goal/store": {
+            "post": {
+                "operationId": "learningGoal.store",
+                "summary": "Create an open goal; the target must be above the current level",
+                "tags": [
+                    "LearningGoal"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/StoreLearningGoalRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "integer"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/admin/learning-goal/update/{id}": {
+            "put": {
+                "operationId": "learningGoal.update",
+                "summary": "Update a goal (status open or dropped; achieved goals: date and note only)",
+                "tags": [
+                    "LearningGoal"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateLearningGoalRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "integer"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/admin/learning-goal/delete": {
+            "post": {
+                "operationId": "learningGoal.delete",
+                "tags": [
+                    "LearningGoal"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/DeleteLearningGoalRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    }
+                }
+            }
+        },
         "/admin/skill/list": {
             "get": {
                 "operationId": "skill.list",
@@ -1519,6 +2032,38 @@
                 ],
                 "title": "DeleteAdminMstRequest"
             },
+            "DeleteEvidenceRequest": {
+                "type": "object",
+                "properties": {
+                    "ids": {
+                        "type": "array",
+                        "items": {
+                            "type": "integer"
+                        },
+                        "minItems": 1
+                    }
+                },
+                "required": [
+                    "ids"
+                ],
+                "title": "DeleteEvidenceRequest"
+            },
+            "DeleteLearningGoalRequest": {
+                "type": "object",
+                "properties": {
+                    "ids": {
+                        "type": "array",
+                        "items": {
+                            "type": "integer"
+                        },
+                        "minItems": 1
+                    }
+                },
+                "required": [
+                    "ids"
+                ],
+                "title": "DeleteLearningGoalRequest"
+            },
             "DeleteSkillRequest": {
                 "type": "object",
                 "properties": {
@@ -1551,6 +2096,115 @@
                 ],
                 "title": "DeleteTagRequest"
             },
+            "EvidenceResource": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "type": {
+                        "$ref": "#/components/schemas/EvidenceType"
+                    },
+                    "title": {
+                        "type": "string"
+                    },
+                    "url": {
+                        "type": "string"
+                    },
+                    "occurred_on": {
+                        "type": "string"
+                    },
+                    "summary": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "is_public": {
+                        "type": "boolean"
+                    },
+                    "source": {
+                        "$ref": "#/components/schemas/EvidenceSource"
+                    },
+                    "unpublished_at": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "skills": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "id": {
+                                    "type": "integer"
+                                },
+                                "name": {
+                                    "type": "string"
+                                }
+                            },
+                            "required": [
+                                "id",
+                                "name"
+                            ]
+                        }
+                    },
+                    "tags": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/TagResource"
+                        }
+                    },
+                    "created_at": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "updated_at": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    }
+                },
+                "required": [
+                    "id",
+                    "type",
+                    "title",
+                    "url",
+                    "occurred_on",
+                    "summary",
+                    "is_public",
+                    "source",
+                    "unpublished_at",
+                    "created_at",
+                    "updated_at"
+                ],
+                "title": "EvidenceResource"
+            },
+            "EvidenceSource": {
+                "type": "string",
+                "description": "Who owns an evidence row: typed in the admin, or synced from the Obsidian vault (RFC-002 \u00a74.5).\n",
+                "enum": [
+                    "manual",
+                    "obsidian"
+                ],
+                "title": "EvidenceSource"
+            },
+            "EvidenceType": {
+                "type": "string",
+                "description": "What a piece of evidence links to (REQ-002 Q3).\n",
+                "enum": [
+                    "pr",
+                    "adr",
+                    "incident",
+                    "note",
+                    "other"
+                ],
+                "title": "EvidenceType"
+            },
             "Gender": {
                 "type": "integer",
                 "enum": [
@@ -1559,6 +2213,16 @@
                     3
                 ],
                 "title": "Gender"
+            },
+            "GoalStatus": {
+                "type": "string",
+                "description": "Learning goal lifecycle (REQ-002 Q2): open goals become achieved when the skill reaches the target level.\n",
+                "enum": [
+                    "open",
+                    "achieved",
+                    "dropped"
+                ],
+                "title": "GoalStatus"
             },
             "IsActive": {
                 "type": "integer",
@@ -1575,6 +2239,91 @@
                     1
                 ],
                 "title": "IsDelete"
+            },
+            "LearningGoalResource": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "skill": {
+                        "type": "object",
+                        "properties": {
+                            "id": {
+                                "type": "integer"
+                            },
+                            "name": {
+                                "type": "string"
+                            },
+                            "current_level": {
+                                "type": "integer"
+                            }
+                        },
+                        "required": [
+                            "id",
+                            "name",
+                            "current_level"
+                        ]
+                    },
+                    "target_level": {
+                        "$ref": "#/components/schemas/SkillLevel"
+                    },
+                    "target_level_label": {
+                        "type": "string",
+                        "enum": [
+                            "Learning",
+                            "Can use with help",
+                            "Independent",
+                            "Can teach others"
+                        ]
+                    },
+                    "target_date": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "status": {
+                        "$ref": "#/components/schemas/GoalStatus"
+                    },
+                    "achieved_on": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "note": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "created_at": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "updated_at": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    }
+                },
+                "required": [
+                    "id",
+                    "skill",
+                    "target_level",
+                    "target_level_label",
+                    "target_date",
+                    "status",
+                    "achieved_on",
+                    "note",
+                    "created_at",
+                    "updated_at"
+                ],
+                "title": "LearningGoalResource"
             },
             "LoginRequest": {
                 "type": "object",
@@ -1825,6 +2574,93 @@
                 ],
                 "title": "StoreAdminMstRequest"
             },
+            "StoreEvidenceRequest": {
+                "type": "object",
+                "description": "Evidence is a link only (ADR-0007). `source`, `external_key` and `unpublished_at` belong\nto the importer (RFC-002 \u00a74.5) and are not accepted here.",
+                "properties": {
+                    "type": {
+                        "$ref": "#/components/schemas/EvidenceType"
+                    },
+                    "title": {
+                        "type": "string",
+                        "maxLength": 200
+                    },
+                    "url": {
+                        "type": "string",
+                        "format": "uri",
+                        "description": "http(s) only: blocks javascript: and data: links on the public page (REQ-002 US-2)",
+                        "maxLength": 2048
+                    },
+                    "occurred_on": {
+                        "type": "string",
+                        "format": "date"
+                    },
+                    "summary": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "maxLength": 1000
+                    },
+                    "is_public": {
+                        "type": "boolean"
+                    },
+                    "skill_ids": {
+                        "type": "array",
+                        "items": {
+                            "type": "integer"
+                        },
+                        "minItems": 1,
+                        "uniqueItems": true
+                    },
+                    "tag_ids": {
+                        "type": "array",
+                        "items": {
+                            "type": "integer"
+                        },
+                        "uniqueItems": true
+                    }
+                },
+                "required": [
+                    "type",
+                    "title",
+                    "url",
+                    "occurred_on",
+                    "skill_ids"
+                ],
+                "title": "StoreEvidenceRequest"
+            },
+            "StoreLearningGoalRequest": {
+                "type": "object",
+                "description": "A new goal is always open; the target must be above the skill's current level (LearningGoalService).",
+                "properties": {
+                    "skill_id": {
+                        "type": "integer"
+                    },
+                    "target_level": {
+                        "$ref": "#/components/schemas/SkillLevel"
+                    },
+                    "target_date": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "format": "date"
+                    },
+                    "note": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "maxLength": 1000
+                    }
+                },
+                "required": [
+                    "skill_id",
+                    "target_level"
+                ],
+                "title": "StoreLearningGoalRequest"
+            },
             "StoreSkillLevelRequest": {
                 "type": "object",
                 "properties": {
@@ -2034,6 +2870,87 @@
                     "is_active"
                 ],
                 "title": "UpdateAdminMstRequest"
+            },
+            "UpdateEvidenceRequest": {
+                "type": "object",
+                "description": "Same fields as store, each optional. Imported rows accept only `type` and `is_public`\n(EvidenceService::update).",
+                "properties": {
+                    "type": {
+                        "$ref": "#/components/schemas/EvidenceType"
+                    },
+                    "title": {
+                        "type": "string",
+                        "maxLength": 200
+                    },
+                    "url": {
+                        "type": "string",
+                        "format": "uri",
+                        "description": "http(s) only: blocks javascript: and data: links on the public page (REQ-002 US-2)",
+                        "maxLength": 2048
+                    },
+                    "occurred_on": {
+                        "type": "string",
+                        "format": "date"
+                    },
+                    "summary": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "maxLength": 1000
+                    },
+                    "is_public": {
+                        "type": "boolean"
+                    },
+                    "skill_ids": {
+                        "type": "array",
+                        "items": {
+                            "type": "integer"
+                        },
+                        "minItems": 1,
+                        "uniqueItems": true
+                    },
+                    "tag_ids": {
+                        "type": "array",
+                        "items": {
+                            "type": "integer"
+                        },
+                        "uniqueItems": true
+                    }
+                },
+                "title": "UpdateEvidenceRequest"
+            },
+            "UpdateLearningGoalRequest": {
+                "type": "object",
+                "description": "The skill of a goal is fixed. `achieved` is set only by a level change (REQ-002 US-6),\nso the status can be switched between open and dropped only.",
+                "properties": {
+                    "target_level": {
+                        "$ref": "#/components/schemas/SkillLevel"
+                    },
+                    "target_date": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "format": "date"
+                    },
+                    "status": {
+                        "type": "string",
+                        "description": "Learning goal lifecycle (REQ-002 Q2): open goals become achieved when the skill reaches the target level.\n",
+                        "enum": [
+                            "open",
+                            "dropped"
+                        ]
+                    },
+                    "note": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "maxLength": 1000
+                    }
+                },
+                "title": "UpdateLearningGoalRequest"
             },
             "UpdateSkillRequest": {
                 "type": "object",

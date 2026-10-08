@@ -22,5 +22,13 @@ final class LedgerConst
 
     public const TAG_NAME_MAX = 50;
 
+    public const EVIDENCE_TITLE_MAX = 200;
+
+    public const EVIDENCE_URL_MAX = 2048;
+
+    public const EVIDENCE_SUMMARY_MAX = 1000;
+
+    public const GOAL_NOTE_MAX = 1000;
+
     public const PER_PAGE = 15;
 }

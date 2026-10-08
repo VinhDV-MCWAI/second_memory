@@ -9,13 +9,20 @@ use App\Enums\EvidenceType;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Support\Carbon;
 
 /**
  * A link that proves one or more skills (REQ-002 US-2).
  *
+ * @property int $id
  * @property EvidenceType $type
+ * @property string $title
+ * @property string $url
+ * @property Carbon $occurred_on
+ * @property string|null $summary
  * @property EvidenceSource $source
  * @property bool $is_public
+ * @property Carbon|null $unpublished_at
  */
 class Evidence extends Model
 {
