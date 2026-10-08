@@ -5,6 +5,8 @@ description: Execute one task (or a whole phase) from the Engineering Lab backlo
 
 # Engineering Lab task workflow
 
+> When several conversations run at once (lanes on `.claude/lab/BOARD.md`), use the `/lane` skill instead: it keeps steps 1 and 3–6 but replaces branching, status updates and commits.
+
 Arguments: task IDs or a phase, e.g. `P2-03 P2-04` or `P2`.
 
 1. **Load context.** Read `.claude/lab/PROGRESS.md` (handoff), then `docs/plan/03-backlog.md` and the phase section in `docs/plan/02-roadmap.md`. Check that earlier tasks the requested one depends on are `done`. A phase whose tasks are still coarse starts with its `Px-00` refinement task.

@@ -27,7 +27,7 @@ Use the `/verify` skill to run the full check suite before declaring work done.
 
 ## Engineering Lab roadmap
 
-The project is being repurposed into an Engineering Lab ([ADR-0001](docs/adr/0001-engineering-lab-direction.md)). The single plan is [docs/plan/](docs/plan/) (analysis, roadmap, backlog); the handoff log for resuming work is [.claude/lab/PROGRESS.md](.claude/lab/PROGRESS.md) — read it first and update it after every task. Work items with the `/lab-task` skill. Docs conventions (bilingual EN + `> 🇻🇳` VI lines, IDs, templates): [docs/README.md](docs/README.md).
+The project is being repurposed into an Engineering Lab ([ADR-0001](docs/adr/0001-engineering-lab-direction.md)). The single plan is [docs/plan/](docs/plan/) (analysis, roadmap, backlog); the handoff log for resuming work is [.claude/lab/PROGRESS.md](.claude/lab/PROGRESS.md) — read it first and update it after every task. Work items with the `/lab-task` skill. **Several conversations run in parallel** on one branch: tasks are split into lanes on [.claude/lab/BOARD.md](.claude/lab/BOARD.md), taken with the `/lane` skill under the rules in [.claude/rules/parallel-lanes.md](.claude/rules/parallel-lanes.md) (claim → work in your lane's paths → `scripts/lane.sh commit` your own paths → `scripts/lane.sh done`). Docs conventions (bilingual EN + `> 🇻🇳` VI lines, IDs, templates): [docs/README.md](docs/README.md).
 
 The 2026-10 refactor ([.claude/refactor/PLAN.md](.claude/refactor/PLAN.md)) is **frozen**; its open items moved into the roadmap.
 
