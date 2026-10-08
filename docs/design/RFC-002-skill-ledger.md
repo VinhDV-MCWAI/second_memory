@@ -30,7 +30,7 @@ Add the Skill Ledger domain to the existing Laravel API: skills with an append-o
 - Tables: `admin_mst`, `audit_log`, `media_mgmt`, framework tables (`users`, `password_reset_tokens`, `sessions`, `cache*`, `jobs*`, `failed_jobs`, `migrations`), 12 in total. No views, no triggers.
 - API: credential routes, `admin` CRUD, `audit-log/list`, the media API (26 files, ~2.2k lines incl. jobs, two console commands with a daily schedule and two Reverb events; no tests). No public API since RFC-001 slice 5.
 - No screen calls the media API (RFC-001 §3 correction). `users` and `password_reset_tokens` are never read or written (`admin_mst` is the only account table). `sessions` **is** used while `SESSION_DRIVER=database` (PROGRESS owner item 10) and stays.
-- OpenAPI is exported from code (`scramble:export`); the drift check runs in `make verify` (CI is paused since 2026-10-08).
+- OpenAPI is exported from code (`scramble:export`). The drift check was CI-only; since CI is paused (2026-10-08) `make verify` runs it (`make openapi-check`).
 
 > 🇻🇳 Hiện trạng: 12 bảng, không view/trigger; media API không còn màn hình nào gọi; `users` và `password_reset_tokens` không được dùng; `sessions` vẫn dùng (driver `database`) nên giữ lại.
 
@@ -139,7 +139,7 @@ Public routes under `/api/public`, no auth, `throttle` per IP (60 / min), GET on
 | `GET /api/public/skills` | Public skills: name, slug, category, current level, tags |
 | `GET /api/public/skills/{slug}` | One public skill + dates and levels of its history (no reasons) + its public, not unpublished evidence. Private or missing → 404 with the same body |
 
-Error envelope, 401/403/404/422 and the audit rules are unchanged. The exact schemas are written in the contract step (P3-03).
+Error envelope, 401/403/404/422 and the audit rules are unchanged. Field-level contract: [ADR-0008](../adr/0008-code-first-openapi-contract.md#contract-details-for-the-skill-ledger-complements-rfc-002-43).
 
 > 🇻🇳 API admin giữ đúng dạng route hiện có. API public nằm dưới `/api/public`, không cần đăng nhập, giới hạn 60 request/phút/IP, chỉ GET, dùng Resource riêng nên không thể lộ trường riêng tư; kỹ năng riêng tư và không tồn tại trả cùng một 404.
 
@@ -231,7 +231,7 @@ Upgrade from `v2.0.0`: one `migrate` (slice 1 drop + new tables). No data migrat
 
 | # | Question | Decided in |
 |---|---|---|
-| 1 | OpenAPI-first spec or keep code-first export + contract tests? | P3-03 ADR |
+| 1 | OpenAPI-first spec or keep code-first export + contract tests? | **Decided:** [ADR-0008](../adr/0008-code-first-openapi-contract.md) — reviewed contract table, code-first spec, response validation |
 | 2 | Postgres FTS with `unaccent` (needs an immutable wrapper function for an indexed column) vs `pg_trgm` vs both | P3-04 ADR |
 | 3 | How the CLI authenticates (Sanctum personal access token with an `import` ability vs a static token) | P3-13 ADR |
 | 4 | Fixed list of categories or free text? Proposal: free text (≤ 50 chars) with suggestions from existing values; change later if it gets messy | P3-05 (default: free text) |

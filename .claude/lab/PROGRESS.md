@@ -10,7 +10,7 @@
 | P0 Baseline | P0-01…P0-09 | done locally; P0-02 push/PRs, P0-06 GitHub board, P0-09 remote cleanup wait for the owner | `v1.0.0` (local tag) |
 | P1 Handbook | P1-01…P1-14 | done | `v1.1.0` (local tag) |
 | P2 Slim down | P2-01…P2-13 | done | `v2.0.0` (local tag) |
-| P3 Skill Ledger | P3-00…P3-18 + P3-05b | P3-00…P3-02 done; **next: P3-03 contract ADR** | `v2.1.0` |
+| P3 Skill Ledger | P3-00…P3-18 + P3-05b | P3-00…P3-03 done; **next: P3-04 search spike** | `v2.1.0` |
 | P4–P11 | coarse | not started | – |
 
 Records written in P2: REQ-001, RFC-001, ADR-0003…0006, PRB-001 (solved), PRB-002 (solved), runbook `content-export.md`.
@@ -19,7 +19,7 @@ Records written in P2: REQ-001, RFC-001, ADR-0003…0006, PRB-001 (solved), PRB-
 
 | | |
 |---|---|
-| Active phase | P3 Skill Ledger (P0–P2 merged into `developer` and `main` via PRs #12, #13). P3-00…P3-02 done; next P3-03 |
+| Active phase | P3 Skill Ledger (P0–P2 merged into `developer` and `main` via PRs #12, #13). P3-00…P3-03 done; next P3-04 |
 | Working branch | `feature/p3-skill-ledger` from `developer` at `90d48ee` (PR #12 merge). `refactor/p2-slim-down` merged and deleted (origin by `cleanup-branch.yml`, local by me). Local branches: `developer`, `main`, `feature/p3-skill-ledger`. Tags `v1.0.0` … `v2.0.0` exist locally only |
 | Old refactor | Frozen (`.claude/refactor/PLAN.md`, `PROGRESS.md`) |
 | Owner defaults | 8–10 h/week, backend role, §4 remove list accepted, Obsidian vault private (see analysis §9) |
@@ -117,6 +117,8 @@ Records written in P2: REQ-001, RFC-001, ADR-0003…0006, PRB-001 (solved), PRB-
 
 - 2026-10-08 — P3-02 done (docs only, no `/verify`): `docs/design/RFC-002-skill-ledger.md` (module `Ledger`, singular table names; ERD `skill`, `skill_level` append-only with stored `skill.current_level`, `evidence` many-to-many with skills, `tag` + 2 pivots, `learning_goal` auto-achieved on a level change; admin routes in the usual shape + `search`, `dashboard/summary`, `evidence/import`; public `/api/public/skills[/{slug}]` GET-only, throttled, private = 404; importer = CLI sends the full published set to one idempotent sync endpoint, missing notes hidden not deleted; 10 slices; testing plan per layer). `docs/adr/0007-remove-media-api.md`: remove media code (26 files, ~2.2k lines, no tests — my first estimate of 19 files / 1.3k was wrong, counted again), keep `media_mgmt` and MinIO objects; `ml-queue` / `ml-reverb` then idle → P4. New backlog task P3-05b (slice 1: media removal + drop `users` / `password_reset_tokens`; `sessions` stays because `SESSION_DRIVER=database` until owner item 10). RFC status "Approved (TL)" under the owner's delegation; open questions 1–3 go to the P3-03, P3-04, P3-13 ADRs.
 
+- 2026-10-08 — P3-03 done. `docs/adr/0008-code-first-openapi-contract.md`: "OpenAPI-first" = contract table reviewed in the RFC/ADR before code, spec still exported by Scramble, feature tests validate responses against `openapi.json` in P3-09 (proposed `osteel/openapi-httpfoundation-testing`, to confirm against Scramble's 3.1 output). Field-level Skill Ledger contract is in the ADR. Found on the way: (1) the OpenAPI drift check was CI-only, so with CI paused nothing checked it → `1567c02` build: `make openapi-check` (regenerate + `git diff --exit-code`) is now part of `make verify`; verify skill text updated (it still mentioned the long-gone `RefreshTokenApiTest` exclusions). (2) `5c9be6b` fix(api): Scramble description still told readers to use the removed `access_token` JWT cookie → now the Sanctum flow. `make openapi-check` exit 0 after both. No full `/verify` (no app code changed besides the config string).
+
 ## Next step
 
-**P3-03**: ADR-0008 contract style. Today OpenAPI is code-first (`scramble:export`, `make openapi`, drift check in `make verify`). Decide spec-first vs code-first + contract tests (consider: Scramble already infers schemas; a hand-written spec doubles work for one developer; contract tests in P3-09 can validate responses against the exported spec, e.g. `osteel/openapi-httpfoundation-testing`), then write the Skill Ledger endpoint contract per the decision (if code-first: the endpoint/field table in RFC-002 §4.3 is the reviewed contract). Then P3-04 (search spike), P3-05b, P3-05.
+**P3-04**: search spike + ADR-0009. On the `testing` DB (never the dev DB for experiments that drop things), seed REQ-002 volume (100 skills, 1,000 evidence, 500 notes; Vietnamese titles), compare: (a) `tsvector` with `unaccent` via an immutable wrapper function + GIN index (`simple` config, Vietnamese has no stemmer), (b) `pg_trgm` GIN on unaccented lower text (typos), (c) both. Measure p95 with `EXPLAIN ANALYZE` / a timing loop; check "ky nang" → "Kỹ năng" and one typo. Check that the extensions are available in the `ml-postgres` image. Write the spike note (`docs/reports/spikes/` or in the ADR) and the ADR; answer RFC-002 §9 Q2. Then P3-05b.
