@@ -20,7 +20,7 @@ docker exec ml-nextjs pnpm format:check    # Prettier (.prettierrc.json, same as
 - `src/proxy.ts` — route guard: `/admin/*` without the Laravel session cookie redirects to `/login?redirect=…` (presence check only; the API validates the session).
 - `src/shared/types/openapi.d.ts` — **generated** from `laravel-api/openapi.json` (`make openapi` regenerates spec + types; CI fails when stale). Never edit it; `types/models/*` alias its Resource schemas (`AdminMst`, `RoleMst`, `HistoryRecord`, …).
 - `src/shared/types`, `src/shared/enums`, `src/shared/config` — UI types, enums mirrored from the backend, constants.
-- `src/components/ui` — shadcn primitives (generated; edit sparingly). `src/components/common` reusable widgets, `src/components/layout`. Feature code lives in `src/features/{history,master}`.
+- `src/components/ui` — shadcn primitives (generated; edit sparingly). `src/components/common` reusable widgets, `src/components/layout`. Feature code lives in `src/features/{history,ledger,master}`.
 - i18n: `messages/en.json` via next-intl; every user-facing string goes through `useTranslations`.
 
 ## API contract
