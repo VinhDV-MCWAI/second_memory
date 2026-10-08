@@ -23,7 +23,7 @@ class LearningGoalRepository extends CrudRepository
         $query = $this->model->query()->with('skill:id,name,current_level');
 
         $this->applyFilters($query, $payload, ['id', 'skill_id', 'status']);
-        $this->applySorting($query, $this->allowedSort($payload, ['id', 'target_level', 'target_date', 'status', 'updated_at']), 'target_date');
+        $this->applySorting($query, $payload, ['id', 'target_level', 'target_date', 'status', 'updated_at'], 'target_date');
 
         return $query->paginate($payload['per_page'] ?? LedgerConst::PER_PAGE, ['*'], 'page', $payload['page'] ?? 1);
     }

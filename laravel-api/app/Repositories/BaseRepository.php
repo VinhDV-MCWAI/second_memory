@@ -62,41 +62,20 @@ abstract class BaseRepository
     }
 
     /**
-     * Apply sorting to query
+     * Order by `sort_by` when it is one of the sortable columns, otherwise by the default.
+     * The allow-list replaces a per-request Schema::hasColumn() query (API-04) and keeps
+     * unknown or hidden columns out of ORDER BY.
      *
      * @param  Builder  $query
-     * @param  string  $defaultSortBy  Default field to sort by
-     * @param  string  $defaultSortOrder  Default sort order (asc/desc)
+     * @param  list<string>  $sortable
      */
-    protected function applySorting($query, array $payload, string $defaultSortBy = 'id', string $defaultSortOrder = 'asc'): void
+    protected function applySorting($query, array $payload, array $sortable, string $defaultSortBy = 'id', string $defaultSortOrder = 'asc'): void
     {
-        $sortBy = $payload['sort_by'] ?? $defaultSortBy;
+        $sortBy = in_array($payload['sort_by'] ?? null, $sortable, true) ? $payload['sort_by'] : $defaultSortBy;
         $sortOrder = $payload['sort_order'] ?? $defaultSortOrder;
-
-        // Validate sort order
-        $sortOrder = in_array(strtolower($sortOrder), ['asc', 'desc']) ? $sortOrder : $defaultSortOrder;
-
-        // Validate sort column exists in table to prevent SQL injection
-        if (! \Schema::hasColumn($this->model->getTable(), $sortBy)) {
-            $sortBy = $defaultSortBy;
-        }
+        $sortOrder = in_array(strtolower((string) $sortOrder), ['asc', 'desc'], true) ? $sortOrder : $defaultSortOrder;
 
         $query->orderBy($sortBy, $sortOrder);
-    }
-
-    /**
-     * Payload with `sort_by` dropped unless it is one of the allowed columns
-     * (new modules use this instead of the Schema::hasColumn check in applySorting).
-     *
-     * @param  array<int, string>  $columns
-     */
-    protected function allowedSort(array $payload, array $columns): array
-    {
-        if (isset($payload['sort_by']) && ! in_array($payload['sort_by'], $columns, true)) {
-            unset($payload['sort_by']);
-        }
-
-        return $payload;
     }
 
     /**

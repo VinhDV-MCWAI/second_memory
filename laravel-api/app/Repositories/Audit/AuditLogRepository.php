@@ -33,7 +33,7 @@ final class AuditLogRepository extends BaseRepository
 
         $this->applyFilters($query, $payload, ['id', 'auditable_type', 'auditable_id', 'event', 'admin_mst_id']);
         $this->applyDateRange($query, $payload, 'created_at');
-        $this->applySorting($query, $payload, 'id', 'desc');
+        $this->applySorting($query, $payload, ['id', 'created_at'], 'id', 'desc');
 
         return $query->paginate($payload['per_page'] ?? 15, ['*'], 'page', $payload['page'] ?? 1);
     }

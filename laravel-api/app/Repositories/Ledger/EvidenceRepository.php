@@ -31,7 +31,7 @@ class EvidenceRepository extends CrudRepository
             $query->whereHas('tags', fn ($tags) => $tags->where('tag.id', $payload['tag_id']));
         }
 
-        $this->applySorting($query, $this->allowedSort($payload, ['id', 'title', 'type', 'occurred_on', 'updated_at']), 'occurred_on', 'desc');
+        $this->applySorting($query, $payload, ['id', 'title', 'type', 'occurred_on', 'updated_at'], 'occurred_on', 'desc');
 
         return $query->paginate($payload['per_page'] ?? LedgerConst::PER_PAGE, ['*'], 'page', $payload['page'] ?? 1);
     }

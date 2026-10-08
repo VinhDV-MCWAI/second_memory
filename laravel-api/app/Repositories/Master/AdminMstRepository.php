@@ -67,7 +67,7 @@ class AdminMstRepository extends SoftDeleteCrudRepository
         $this->applyDateRange($query, $payload);
 
         // Apply sorting
-        $this->applySorting($query, $payload);
+        $this->applySorting($query, $payload, ['id', 'user_name', 'first_name', 'last_name', 'email', 'role', 'status', 'is_active', 'created_at', 'updated_at']);
 
         // Pagination
         $perPage = $payload['per_page'] ?? 15;

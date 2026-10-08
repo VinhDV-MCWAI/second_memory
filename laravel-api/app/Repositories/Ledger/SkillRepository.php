@@ -31,7 +31,7 @@ class SkillRepository extends CrudRepository
             $query->whereHas('tags', fn ($tags) => $tags->where('tag.id', $payload['tag_id']));
         }
 
-        $this->applySorting($query, $this->allowedSort($payload, ['id', 'name', 'category', 'current_level', 'updated_at']), 'name');
+        $this->applySorting($query, $payload, ['id', 'name', 'category', 'current_level', 'updated_at'], 'name');
 
         return $query->paginate($payload['per_page'] ?? LedgerConst::PER_PAGE, ['*'], 'page', $payload['page'] ?? 1);
     }
