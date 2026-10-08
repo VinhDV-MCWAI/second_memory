@@ -2,6 +2,5 @@
 
 declare(strict_types=1);
 
-use Illuminate\Support\Facades\Broadcast;
-
-Broadcast::channel('App.Models.User.{id}', fn ($user, $id) => (int) $user->id === (int) $id);
+// No broadcast channels since ADR-0007 removed the upload progress events.
+// Reverb itself is removed in P4 (Docker hardening).
