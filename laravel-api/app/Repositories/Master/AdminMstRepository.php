@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Repositories\Master;
 
 use App\Constants\CommonVal;
+use App\Enums\AdminRole;
 use App\Models\Master\AdminMst;
 use App\Repositories\SoftDeleteCrudRepository;
 use Carbon\Carbon;
@@ -37,10 +38,10 @@ class AdminMstRepository extends SoftDeleteCrudRepository
                 'gender',
                 'status',
                 'is_active',
+                'role',
                 'avatar',
                 'updated_at',
             ])
-            ->with(['roles:id,name,permission', 'departments:id,code,name']) // Eager load relationships
             ->notDeleted(); // Use scope from HasSoftDelete trait
 
         // Apply exact match filters
@@ -52,6 +53,7 @@ class AdminMstRepository extends SoftDeleteCrudRepository
             'gender',
             'status',
             'is_active',
+            'role',
             'avatar',
         ], [
             // Apply LIKE filters
@@ -72,6 +74,21 @@ class AdminMstRepository extends SoftDeleteCrudRepository
         $page = $payload['page'] ?? 1;
 
         return $query->paginate($perPage, ['*'], 'page', $page);
+    }
+
+    /**
+     * Active, not deleted owners, leaving out the given admin IDs.
+     *
+     * @param  array<int, int|string>  $exceptIds
+     */
+    public function countActiveOwnersExcept(array $exceptIds): int
+    {
+        return $this->model->query()
+            ->where('is_delete', false)
+            ->where('is_active', true)
+            ->where('role', AdminRole::OWNER)
+            ->whereNotIn('id', $exceptIds)
+            ->count();
     }
 
     /**

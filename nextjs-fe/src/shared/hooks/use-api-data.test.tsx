@@ -5,7 +5,7 @@ import { useApiData } from './use-api-data';
 import { apiUrl, envelope, server } from '@/test/server';
 import { createQueryWrapper } from '@/test/query-wrapper';
 
-const ENDPOINT = '/admin/banner-mgmt';
+const ENDPOINT = '/admin/admin-mst';
 
 const listResponse = (ids: number[], page = 1) =>
   envelope({

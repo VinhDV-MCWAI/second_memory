@@ -5,24 +5,23 @@ declare(strict_types=1);
 namespace Tests\Feature\Master\AdminMst;
 
 use App\Constants\CommonVal;
-use App\Enums\ActionType;
+use App\Enums\AuditEvent;
 use App\Enums\Gender;
 use App\Enums\IsActive;
 use App\Enums\IsDelete;
 use App\Enums\StatusEnum;
 use App\Models\Master\AdminMst;
-use App\Models\Master\RoleMst;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Redis;
-use Tests\Concerns\GrantsApiAccess;
+use Tests\Concerns\AuthenticatesAdmins;
 use Tests\TestCase;
 
 class StoreAdminMstTest extends TestCase
 {
+    use AuthenticatesAdmins;
     use DatabaseTransactions;
-    use GrantsApiAccess;
 
     protected string $storeUrl = '/api/admin/admin-mst/store';
 
@@ -31,44 +30,12 @@ class StoreAdminMstTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        Redis::flushall();
+        Redis::flushdb();
     }
 
-    /**
-     * Helper to get authenticated cookies with 'root' role
-     */
     protected function getAuthCookies(AdminMst $admin): array
     {
-        // Assign 'root' role to ensuring permissions exist
-        $rootRole = RoleMst::where('name', 'root')->first();
-        if (! $rootRole) {
-            $rootRole = RoleMst::create(['name' => 'root', 'permission' => '{}', 'is_active' => 1, 'is_delete' => 0]);
-        }
-        $this->grantAccessTo($rootRole, 'POST', 'api/admin/admin-mst/store');
-
-        // Ensure the relationship doesn't already exist
-        if (! DB::table('admin_role_mst')->where('admin_mst_id', $admin->id)->where('role_mst_id', $rootRole->id)->exists()) {
-            DB::table('admin_role_mst')->insert([
-                'admin_mst_id' => $admin->id,
-                'role_mst_id' => $rootRole->id,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ]);
-        }
-
-        // Simulate login flow to get valid tokens and Redis state
-        // Use cookies strictly as requested
-        $response = $this->postJson($this->loginUrl, [
-            'user_name' => $admin->user_name,
-            'password' => 'password',
-        ]);
-
-        $cookies = [];
-        foreach ($response->headers->getCookies() as $cookie) {
-            $cookies[$cookie->getName()] = $cookie->getValue();
-        }
-
-        return $cookies;
+        return $this->loginAsOwner($admin);
     }
 
     /**
@@ -131,7 +98,7 @@ class StoreAdminMstTest extends TestCase
         }
 
         $response = $this->call('POST', $this->storeUrl, [], $cookies);
-        $response->assertStatus(CommonVal::HTTP_UNAUTHORIZED);
+        $response->assertStatus(CommonVal::HTTP_FORBIDDEN);
     }
 
     // ======================================================================
@@ -394,10 +361,11 @@ class StoreAdminMstTest extends TestCase
         ]);
 
         // History verification
-        $this->assertDatabaseHas('admin_mst_hist', [
-            'admin_mst_id' => $newId,
-            'action' => ActionType::CREATE->value,
-            'user_name' => $payload['user_name'],
+        $this->assertDatabaseHas('audit_log', [
+            'auditable_type' => 'admin',
+            'auditable_id' => $newId,
+            'event' => AuditEvent::CREATED->value,
+            'new_values->user_name' => $payload['user_name'],
         ]);
     }
 
@@ -474,9 +442,9 @@ class StoreAdminMstTest extends TestCase
         ]);
 
         // History verification
-        $this->assertDatabaseHas('admin_mst_hist', [
-            'admin_mst_id' => $newId,
-            'birth' => null, // Should be null in History DB
+        $this->assertDatabaseHas('audit_log', [
+            'auditable_id' => $newId,
+            'new_values->birth' => null, // Should be null in the audit log
         ]);
     }
 }

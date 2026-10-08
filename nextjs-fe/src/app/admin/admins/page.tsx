@@ -8,7 +8,7 @@ import type { FilterField } from '@/components/common/data-table/filter-panel';
 import { AdminForm } from '@/features/master/components/admin-form';
 import { API_ENDPOINTS } from '@/shared/api';
 import { enumOptions } from '@/shared/utils/enum-options';
-import { AdminStatusLabels } from '@/shared/enums';
+import { AdminRole, AdminRoleLabels, AdminStatusLabels } from '@/shared/enums';
 import { SORT_FIELDS } from '@/shared/config';
 import type { AdminMst } from '@/shared/types/api';
 import type { SearchField } from '@/shared/types/data-table.types';
@@ -22,6 +22,12 @@ export default function AdminListPage() {
     { key: 'first_name', label: tFields('firstName'), sortable: true },
     { key: 'last_name', label: tFields('lastName'), sortable: true },
     { key: 'email', label: tFields('email'), sortable: true },
+    {
+      key: 'role',
+      label: tFields('role'),
+      sortable: true,
+      render: (item) => AdminRoleLabels[item.role as AdminRole],
+    },
     {
       key: 'status',
       label: tFields('status'),
@@ -38,6 +44,7 @@ export default function AdminListPage() {
   const filterFields: FilterField[] = [
     { key: 'first_name', label: tFields('firstName'), type: 'text' },
     { key: 'email', label: tFields('email'), type: 'text' },
+    { key: 'role', label: tFields('role'), type: 'select', options: enumOptions(AdminRoleLabels) },
     {
       key: 'status',
       label: tFields('status'),

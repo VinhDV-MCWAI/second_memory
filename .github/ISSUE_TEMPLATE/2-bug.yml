@@ -1,0 +1,37 @@
+name: Bug
+description: Something does not work as specified
+title: "BUG: "
+labels: ["type:bug"]
+body:
+  - type: input
+    id: env
+    attributes:
+      label: Environment and version
+      placeholder: "dev / staging / prod-like, commit or tag"
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      value: "1.\n2.\n3."
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected vs actual
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Evidence
+      description: Screenshot, log line, request ID. No secrets or personal data.
+  - type: dropdown
+    id: severity
+    attributes:
+      label: Severity
+      options: [S1 Critical, S2 Major, S3 Minor, S4 Trivial]
+    validations:
+      required: true

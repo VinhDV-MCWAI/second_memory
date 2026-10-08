@@ -1,9 +1,11 @@
 name: CD Pipeline
 
+# Paused (2026-10-08, owner's decision): manual runs only, so merging into
+# `developer` no longer deploys. Re-enable in P5 by restoring the trigger:
+#   push:
+#     branches: [developer]
 on:
-  push:
-    branches:
-      - developer
+  workflow_dispatch:
 
 concurrency:
   group: cd-${{ github.ref }}

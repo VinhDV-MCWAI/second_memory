@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
-import { useQueryClient } from '@tanstack/react-query';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useTranslations } from 'next-intl';
 import { IsActive } from '@/shared/enums/enums';
@@ -14,85 +13,45 @@ import { formatDateForBackend, formatDateForInput } from '@/shared/utils/date-fo
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
-import { MultiSelect } from '@/components/common/multi-select';
+import { FormField } from '@/components/common/form-field';
+import { OptionSelect } from '@/components/common/option-select';
+import { enumOptions } from '@/shared/utils/enum-options';
 import { AvatarUpload } from '@/components/common/avatar-upload';
-import { apiClient } from '@/shared/api/client';
-import { useApiData } from '@/shared/hooks/use-api-data';
-import type { RoleMst } from '@/shared/types/api';
-import { ENDPOINTS, queryKeys } from '@/shared/api';
-import { AdminStatus, Gender, GenderLabels, AdminStatusLabels } from '@/shared/enums';
-import { UPLOAD_CONFIG } from '@/shared/config/constant';
+import type { AdminMst } from '@/shared/types/api';
+import { ENDPOINTS } from '@/shared/api';
+import {
+  AdminRole,
+  AdminRoleLabels,
+  AdminStatus,
+  Gender,
+  GenderLabels,
+  AdminStatusLabels,
+} from '@/shared/enums';
+import { UPLOAD_CONFIG } from '@/shared/config';
 import { getAdminSchema, type AdminFormData } from '@/shared/validation/validation';
-import type { AdminFormProps } from '@/components/forms/types';
+import type { ResourceFormProps } from '@/components/common/resource-list-page';
+import { HistoryViewer } from '@/features/history/components/history-viewer';
 
-export function AdminForm({ initialData, onSuccess, onCancel }: AdminFormProps) {
+/** audit_log.auditable_type of admins (AdminMstService::$auditableType). */
+const AUDITABLE_TYPE = 'admin';
+
+const STATUS_OPTIONS = [
+  AdminStatus.ACTIVE,
+  AdminStatus.INACTIVE,
+  AdminStatus.WAITING,
+  AdminStatus.SUSPENDED,
+].map((value) => ({ value, label: AdminStatusLabels[value] }));
+
+export function AdminForm({ initialData, onSuccess, onCancel }: ResourceFormProps<AdminMst>) {
   const tCommon = useTranslations('common');
   const tForms = useTranslations('forms.placeholders');
   const tLabels = useTranslations('forms.labels');
   const tValidation = useTranslations('validation');
   const isEdit = !!initialData;
-  const queryClient = useQueryClient();
-  const { create, update, loading } = useCrud(ENDPOINTS.MASTER.ADMIN, {
-    invalidateKeys: [], // Disable auto-invalidation to ensure sequence: Create/Update -> Role Update -> List Refresh
-  });
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [avatarFile, setAvatarFile] = useState<File | null>(null);
+  const { create, update, loading } = useCrud(ENDPOINTS.MASTER.ADMIN);
   const [avatarPreview, setAvatarPreview] = useState<string | null>(
     () => initialData?.avatar ?? null,
   );
-
-  // Role data
-  const { data: roles } = useApiData<RoleMst>(ENDPOINTS.MASTER.ROLE, {
-    page: 1,
-    per_page: 100,
-    sort_by: 'created_at',
-    sort_order: 'desc',
-    staleTime: 0,
-    refetchOnMount: 'always',
-  });
-
-  // Fetch assigned roles for Edit mode
-  const { data: assignedRoles } = useApiData<{ admin_mst_id: number; role_mst_id: number }>(
-    ENDPOINTS.JUNCTION.ADMIN_ROLE,
-    {
-      filters: {
-        admin_mst_id: initialData?.id,
-      },
-      enabled: isEdit && !!initialData?.id,
-      staleTime: 0,
-      refetchOnMount: 'always',
-    },
-  );
-
-  const [selectedRoleIds, setSelectedRoleIds] = useState<(string | number)[]>([]);
-  const [initialRoleIds, setInitialRoleIds] = useState<number[]>([]);
-
-  // Initialize selected roles when data is fetched
-  useEffect(() => {
-    if (assignedRoles && isEdit) {
-      const roleIds = assignedRoles.map((item) => item.role_mst_id);
-
-      // Use JSON.stringify for array comparison to prevent infinite loops
-      // caused by unstable object references from useApiData
-      if (JSON.stringify(roleIds) !== JSON.stringify(initialRoleIds)) {
-        setSelectedRoleIds(roleIds);
-        setInitialRoleIds(roleIds);
-      }
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [assignedRoles, isEdit]); // Exclude initialRoleIds to prevent potential cycles if calculations are slightly off, though check guards it.
-
-  const roleOptions = roles.map((role) => ({
-    value: role.id,
-    label: role.name,
-  }));
 
   const {
     register,
@@ -107,6 +66,7 @@ export function AdminForm({ initialData, onSuccess, onCancel }: AdminFormProps) 
     defaultValues: {
       gender: Gender.MALE,
       status: AdminStatus.ACTIVE,
+      role: AdminRole.VIEWER,
       is_active: true,
     },
   });
@@ -123,6 +83,7 @@ export function AdminForm({ initialData, onSuccess, onCancel }: AdminFormProps) 
         birth: formatDateForInput(initialData.birth),
         gender: initialData.gender ? Number(initialData.gender) : Gender.MALE,
         status: initialData.status !== undefined ? Number(initialData.status) : AdminStatus.ACTIVE,
+        role: initialData.role as AdminRole,
         is_active: initialData.is_active,
         avatar: initialData.avatar,
       });
@@ -138,11 +99,10 @@ export function AdminForm({ initialData, onSuccess, onCancel }: AdminFormProps) 
         birth: '',
         gender: Gender.MALE,
         status: AdminStatus.ACTIVE,
+        role: AdminRole.VIEWER,
         is_active: true,
         avatar: '',
       });
-      setSelectedRoleIds([]);
-      setInitialRoleIds([]);
     }
   }, [initialData, reset]);
 
@@ -158,13 +118,7 @@ export function AdminForm({ initialData, onSuccess, onCancel }: AdminFormProps) 
       }
 
       try {
-        // TODO: Handle avatar upload if avatarFile is present
-        // For now, we'll just pass the data. Real implementation would look like:
-        // if (avatarFile) {
-        //   const uploadData = await upload(avatarFile);
-        //   data.avatar = uploadData.url;
-        // }
-
+        // Avatar upload is not implemented: only the preview is shown
         const payload = {
           ...data,
           is_active: data.is_active ? IsActive.TRUE : IsActive.FALSE,
@@ -174,72 +128,18 @@ export function AdminForm({ initialData, onSuccess, onCancel }: AdminFormProps) 
           payload.birth = formatDateForBackend(data.birth);
         }
 
-        let adminId: number | undefined;
-
         if (isEdit && initialData) {
           if (!payload.password) {
             delete payload.password;
           }
           await update(initialData.id, payload);
-          adminId = initialData.id;
         } else {
-          adminId = await create({
+          await create({
             ...payload,
             is_delete: false,
           });
         }
 
-        // Handle role assignment
-        if (adminId) {
-          try {
-            const currentRoleIds = selectedRoleIds.map(Number);
-
-            if (isEdit) {
-              // Calculate diffs for Edit mode
-              const toInsert = currentRoleIds
-                .filter((id) => !initialRoleIds.includes(id))
-                .map((roleId) => ({
-                  admin_mst_id: adminId!,
-                  role_mst_id: roleId,
-                }));
-
-              const toDelete = initialRoleIds
-                .filter((id) => !currentRoleIds.includes(id))
-                .map((roleId) => ({
-                  admin_mst_id: adminId!,
-                  role_mst_id: roleId,
-                }));
-
-              if (toInsert.length > 0 || toDelete.length > 0) {
-                await apiClient.put(`${ENDPOINTS.JUNCTION.ADMIN_ROLE}/update`, {
-                  insert: toInsert.length > 0 ? toInsert : undefined,
-                  delete: toDelete.length > 0 ? toDelete : undefined,
-                });
-                // Update initial state after successful save
-                setInitialRoleIds(currentRoleIds);
-              }
-            } else if (selectedRoleIds.length > 0) {
-              // Create mode - only insert
-              await apiClient.put(`${ENDPOINTS.JUNCTION.ADMIN_ROLE}/update`, {
-                insert: selectedRoleIds.map((roleId) => ({
-                  admin_mst_id: adminId!,
-                  role_mst_id: Number(roleId),
-                })),
-              });
-            }
-          } catch (roleError) {
-            console.error('Failed to assign roles:', roleError);
-            // We don't block success if role assignment fails
-          }
-        }
-
-        // Manually invalidate list query after all operations (admin + roles) are complete
-        await Promise.all([
-          queryClient.invalidateQueries({ queryKey: queryKeys.resource(ENDPOINTS.MASTER.ADMIN) }),
-          queryClient.invalidateQueries({
-            queryKey: queryKeys.resource(ENDPOINTS.JUNCTION.ADMIN_ROLE),
-          }),
-        ]);
         onSuccess();
       } catch (error: unknown) {
         console.error(error);
@@ -251,213 +151,171 @@ export function AdminForm({ initialData, onSuccess, onCancel }: AdminFormProps) 
   // Use useWatch hook instead of watch() to avoid React Compiler issues
   const genderValue = useWatch({ control, name: 'gender' });
   const statusValue = useWatch({ control, name: 'status' });
+  const roleValue = useWatch({ control, name: 'role' });
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-      <div className="mb-4 flex justify-center">
-        <AvatarUpload
-          value={avatarPreview ?? undefined}
-          onChange={(file, preview) => {
-            setAvatarFile(file);
-            setAvatarPreview(preview);
-            // In a real scenario, we might upload immediately or wait for submit
-          }}
-          maxSize={UPLOAD_CONFIG.DEFAULT_AVATAR_MAX_SIZE_MB}
-        />
-      </div>
+    <>
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+        <div className="mb-4 flex justify-center">
+          <AvatarUpload
+            value={avatarPreview ?? undefined}
+            onChange={(_file, preview) => setAvatarPreview(preview)}
+            maxSize={UPLOAD_CONFIG.DEFAULT_AVATAR_MAX_SIZE_MB}
+          />
+        </div>
 
-      <div className="grid grid-cols-2 gap-4">
-        <div className="space-y-2">
-          <Label htmlFor="first_name">
-            {tLabels('firstName')} <span className="text-red-500">*</span>
-          </Label>
-          <Input
+        <div className="grid grid-cols-2 gap-4">
+          <FormField
             id="first_name"
-            {...register('first_name')}
-            className={errors.first_name ? 'border-red-500' : ''}
-          />
-          {errors.first_name && <p className="text-sm text-red-500">{errors.first_name.message}</p>}
-        </div>
-        <div className="space-y-2">
-          <Label htmlFor="last_name">
-            {tLabels('lastName')} <span className="text-red-500">*</span>
-          </Label>
-          <Input
+            label={tLabels('firstName')}
+            required
+            error={errors.first_name?.message}
+          >
+            <Input
+              id="first_name"
+              {...register('first_name')}
+              className={errors.first_name ? 'border-red-500' : ''}
+            />
+          </FormField>
+          <FormField
             id="last_name"
-            {...register('last_name')}
-            className={errors.last_name ? 'border-red-500' : ''}
-          />
-          {errors.last_name && <p className="text-sm text-red-500">{errors.last_name.message}</p>}
+            label={tLabels('lastName')}
+            required
+            error={errors.last_name?.message}
+          >
+            <Input
+              id="last_name"
+              {...register('last_name')}
+              className={errors.last_name ? 'border-red-500' : ''}
+            />
+          </FormField>
         </div>
-      </div>
 
-      <div className="grid grid-cols-2 gap-4">
-        <div className="space-y-2">
-          <Label htmlFor="email">
-            {tLabels('email')} <span className="text-red-500">*</span>
-          </Label>
-          <Input
-            id="email"
-            type="email"
-            {...register('email')}
-            className={errors.email ? 'border-red-500' : ''}
-          />
-          {errors.email && <p className="text-sm text-red-500">{errors.email.message}</p>}
-        </div>
-        <div className="space-y-2">
-          <Label htmlFor="user_name">
-            {tLabels('username')} <span className="text-red-500">*</span>
-          </Label>
-          <Input
+        <div className="grid grid-cols-2 gap-4">
+          <FormField id="email" label={tLabels('email')} required error={errors.email?.message}>
+            <Input
+              id="email"
+              type="email"
+              {...register('email')}
+              className={errors.email ? 'border-red-500' : ''}
+            />
+          </FormField>
+          <FormField
             id="user_name"
-            {...register('user_name')}
-            className={errors.user_name ? 'border-red-500' : ''}
-          />
-          {errors.user_name && <p className="text-sm text-red-500">{errors.user_name.message}</p>}
+            label={tLabels('username')}
+            required
+            error={errors.user_name?.message}
+          >
+            <Input
+              id="user_name"
+              {...register('user_name')}
+              className={errors.user_name ? 'border-red-500' : ''}
+            />
+          </FormField>
         </div>
-      </div>
 
-      <div className="space-y-2">
-        <Label htmlFor="password">
-          {tLabels('password')}{' '}
-          {isEdit ? (
-            `(${tForms('leaveBlankToKeepCurrent')})`
-          ) : (
-            <span className="text-red-500">*</span>
-          )}
-        </Label>
-        <Input
-          id="password"
-          type="password"
-          {...register('password')}
-          className={errors.password ? 'border-red-500' : ''}
-          placeholder={isEdit ? tForms('passwordHidden') : tCommon('enterPassword')}
-        />
-        {errors.password && <p className="text-sm text-red-500">{errors.password.message}</p>}
-      </div>
-
-      <div className="grid grid-cols-2 gap-4">
         <div className="space-y-2">
-          <Label htmlFor="phone_number">{tLabels('phoneNumber')}</Label>
+          <Label htmlFor="password">
+            {tLabels('password')}{' '}
+            {isEdit ? (
+              `(${tForms('leaveBlankToKeepCurrent')})`
+            ) : (
+              <span className="text-red-500">*</span>
+            )}
+          </Label>
           <Input
+            id="password"
+            type="password"
+            {...register('password')}
+            className={errors.password ? 'border-red-500' : ''}
+            placeholder={isEdit ? tForms('passwordHidden') : tCommon('enterPassword')}
+          />
+          {errors.password && <p className="text-sm text-red-500">{errors.password.message}</p>}
+        </div>
+
+        <div className="grid grid-cols-2 gap-4">
+          <FormField
             id="phone_number"
-            {...register('phone_number')}
-            className={errors.phone_number ? 'border-red-500' : ''}
-          />
-          {errors.phone_number && (
-            <p className="text-sm text-red-500">{errors.phone_number.message}</p>
-          )}
+            label={tLabels('phoneNumber')}
+            error={errors.phone_number?.message}
+          >
+            <Input
+              id="phone_number"
+              {...register('phone_number')}
+              className={errors.phone_number ? 'border-red-500' : ''}
+            />
+          </FormField>
+          <FormField id="birth" label={tLabels('birthDate')} error={errors.birth?.message}>
+            <Input
+              id="birth"
+              type="date"
+              {...register('birth')}
+              className={errors.birth ? 'border-red-500' : ''}
+            />
+          </FormField>
         </div>
-        <div className="space-y-2">
-          <Label htmlFor="birth">{tLabels('birthDate')}</Label>
+
+        <FormField id="address" label={tLabels('address')} error={errors.address?.message}>
           <Input
-            id="birth"
-            type="date"
-            {...register('birth')}
-            className={errors.birth ? 'border-red-500' : ''}
+            id="address"
+            {...register('address')}
+            className={errors.address ? 'border-red-500' : ''}
           />
-          {errors.birth && <p className="text-sm text-red-500">{errors.birth.message}</p>}
+        </FormField>
+
+        <div className="grid grid-cols-2 gap-4">
+          <FormField id="gender" label={tLabels('gender')} required error={errors.gender?.message}>
+            <OptionSelect
+              value={genderValue}
+              onChange={(value) => setValue('gender', Number(value) as Gender)}
+              options={enumOptions(GenderLabels)}
+            />
+          </FormField>
+          <FormField id="status" label={tLabels('status')} required error={errors.status?.message}>
+            <OptionSelect
+              value={statusValue}
+              onChange={(value) => setValue('status', Number(value) as AdminStatus)}
+              options={STATUS_OPTIONS}
+            />
+          </FormField>
         </div>
-      </div>
 
-      <div className="space-y-2">
-        <Label htmlFor="address">{tLabels('address')}</Label>
-        <Input
-          id="address"
-          {...register('address')}
-          className={errors.address ? 'border-red-500' : ''}
-        />
-        {errors.address && <p className="text-sm text-red-500">{errors.address.message}</p>}
-      </div>
+        <FormField id="role" label={tLabels('role')} required error={errors.role?.message}>
+          <OptionSelect
+            value={roleValue}
+            onChange={(value) => setValue('role', value as AdminRole)}
+            options={enumOptions(AdminRoleLabels)}
+          />
+        </FormField>
 
-      <div className="grid grid-cols-2 gap-4">
-        <div className="space-y-2">
-          <Label htmlFor="gender">
-            {tLabels('gender')} <span className="text-red-500">*</span>
-          </Label>
-          <Select
-            key={String(genderValue)}
-            value={genderValue !== undefined && genderValue !== null ? String(genderValue) : ''}
-            onValueChange={(value) => setValue('gender', Number(value) as Gender)}
+        <div className="mt-4 flex items-center gap-2">
+          <input type="checkbox" id="is_active" {...register('is_active')} className="rounded" />
+          <Label htmlFor="is_active">{tLabels('isActive')}</Label>
+        </div>
+
+        <div className="flex justify-end gap-2 pt-4">
+          <Button
+            type="button"
+            variant="outline"
+            onClick={onCancel}
+            disabled={loading || isActionProcessing}
           >
-            <SelectTrigger>
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value={Gender.MALE.toString()}>{GenderLabels[Gender.MALE]}</SelectItem>
-              <SelectItem value={Gender.FEMALE.toString()}>
-                {GenderLabels[Gender.FEMALE]}
-              </SelectItem>
-              <SelectItem value={Gender.OTHER.toString()}>{GenderLabels[Gender.OTHER]}</SelectItem>
-            </SelectContent>
-          </Select>
-          {errors.gender && <p className="text-sm text-red-500">{errors.gender.message}</p>}
+            {tCommon('cancel')}
+          </Button>
+          <Button type="submit" disabled={loading || isActionProcessing}>
+            {loading || isActionProcessing
+              ? isEdit
+                ? tCommon('updating')
+                : tCommon('creating')
+              : isEdit
+                ? tCommon('update')
+                : tCommon('create')}
+          </Button>
         </div>
-        <div className="space-y-2">
-          <Label htmlFor="status">
-            {tLabels('status')} <span className="text-red-500">*</span>
-          </Label>
-          <Select
-            key={String(statusValue)}
-            value={statusValue !== undefined && statusValue !== null ? String(statusValue) : ''}
-            onValueChange={(value) => setValue('status', Number(value) as AdminStatus)}
-          >
-            <SelectTrigger>
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value={AdminStatus.ACTIVE.toString()}>
-                {AdminStatusLabels[AdminStatus.ACTIVE]}
-              </SelectItem>
-              <SelectItem value={AdminStatus.INACTIVE.toString()}>
-                {AdminStatusLabels[AdminStatus.INACTIVE]}
-              </SelectItem>
-              <SelectItem value={AdminStatus.WAITING.toString()}>
-                {AdminStatusLabels[AdminStatus.WAITING]}
-              </SelectItem>
-              <SelectItem value={AdminStatus.SUSPENDED.toString()}>
-                {AdminStatusLabels[AdminStatus.SUSPENDED]}
-              </SelectItem>
-            </SelectContent>
-          </Select>
-          {errors.status && <p className="text-sm text-red-500">{errors.status.message}</p>}
-        </div>
-      </div>
-
-      <div className="space-y-2">
-        <MultiSelect
-          label={tLabels('roles')}
-          placeholder={tForms('selectRoles')}
-          options={roleOptions}
-          value={selectedRoleIds}
-          onChange={setSelectedRoleIds}
-        />
-      </div>
-
-      <div className="mt-4 flex items-center gap-2">
-        <input type="checkbox" id="is_active" {...register('is_active')} className="rounded" />
-        <Label htmlFor="is_active">{tLabels('isActive')}</Label>
-      </div>
-
-      <div className="flex justify-end gap-2 pt-4">
-        <Button
-          type="button"
-          variant="outline"
-          onClick={onCancel}
-          disabled={loading || isActionProcessing}
-        >
-          {tCommon('cancel')}
-        </Button>
-        <Button type="submit" disabled={loading || isActionProcessing}>
-          {loading || isActionProcessing
-            ? isEdit
-              ? tCommon('updating')
-              : tCommon('creating')
-            : isEdit
-              ? tCommon('update')
-              : tCommon('create')}
-        </Button>
-      </div>
-    </form>
+      </form>
+      {isEdit && initialData && (
+        <HistoryViewer auditableType={AUDITABLE_TYPE} recordId={initialData.id} className="mt-6" />
+      )}
+    </>
   );
 }

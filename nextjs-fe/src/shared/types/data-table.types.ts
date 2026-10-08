@@ -1,5 +1,5 @@
 import { ReactNode } from 'react';
-import type { SortOrder, ImageShape } from '../config/constant';
+import type { SortOrder } from '@/shared/config';
 
 /**
  * Data Table Column Definition
@@ -111,11 +111,6 @@ export interface AdvancedSearchProps {
 }
 
 /**
- * Import/Export Types (re-exported from constants for backward compatibility)
- */
-export type { ImageShape };
-
-/**
  * Avatar Upload Component Props
  */
 export interface AvatarUploadProps {
@@ -123,19 +118,6 @@ export interface AvatarUploadProps {
   onChange: (file: File | null, previewUrl: string | null) => void;
   maxSize?: number;
   className?: string;
-}
-
-/**
- * Image Upload Component Props
- */
-export interface ImageUploadProps {
-  value?: string;
-  onChange: (file: File | null, previewUrl: string | null) => void;
-  maxSize?: number;
-  className?: string;
-  label?: string;
-  shape?: ImageShape;
-  aspectRatio?: string;
 }
 
 /**
@@ -155,24 +137,6 @@ export interface BulkActionsProps {
   onClearSelection: () => void;
   actions?: BulkAction[];
   isLoading?: boolean;
-}
-
-/**
- * Department Tree Component Props
- */
-export interface DepartmentTreeProps {
-  departments: import('./models/master').DepartmentMst[];
-  onSelect?: (department: import('./models/master').DepartmentMst) => void;
-  selectedId?: number;
-  className?: string;
-}
-
-export interface TreeNodeProps {
-  department: import('./models/master').DepartmentMst;
-  childNodes: import('./models/master').DepartmentMst[];
-  level: number;
-  onSelect?: (department: import('./models/master').DepartmentMst) => void;
-  selectedId?: number;
 }
 
 /**
@@ -245,42 +209,6 @@ export interface FormBuilderProps {
 }
 
 /**
- * Multi Select Component Props
- */
-export interface MultiSelectProps {
-  label?: string;
-  placeholder?: string;
-  options: SelectOption[];
-  value: (string | number)[];
-  onChange: (value: (string | number)[]) => void;
-  required?: boolean;
-  disabled?: boolean;
-  className?: string;
-}
-
-/**
- * Permission Manager Types
- */
-export interface Permission {
-  id: number;
-  name: string;
-  description?: string;
-  category?: string;
-}
-
-export interface PermissionGroup {
-  name: string;
-  permissions: Permission[];
-}
-
-export interface PermissionManagerProps {
-  permissions: PermissionGroup[];
-  selectedPermissions: number[];
-  onChange: (selectedIds: number[]) => void;
-  disabled?: boolean;
-}
-
-/**
  * Saved Filters Types
  */
 export interface SavedFilter {
@@ -301,10 +229,8 @@ export interface SavedFiltersProps {
  * History Components Types
  */
 export interface HistoryViewerProps {
-  /** The `*-hist` resource endpoint, e.g. `/admin/entry-mgmt-hist`. */
-  endpoint: string;
-  /** History column that references the audited row, e.g. `entry_mgmt_id`. */
-  foreignKey: string;
+  /** audit_log.auditable_type of the record, e.g. `admin`. */
+  auditableType: string;
   recordId: number;
   className?: string;
 }

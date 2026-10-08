@@ -14,7 +14,7 @@ vi.mock('@/shared/utils/notification', () => ({
   notification: { success: vi.fn(), error: vi.fn(), info: vi.fn(), warning: vi.fn() },
 }));
 
-const ENDPOINT = '/admin/banner-mgmt';
+const ENDPOINT = '/admin/admin-mst';
 
 describe('useCrud', () => {
   beforeEach(() => vi.clearAllMocks());

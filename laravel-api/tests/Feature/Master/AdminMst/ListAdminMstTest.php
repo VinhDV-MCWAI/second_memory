@@ -7,18 +7,16 @@ namespace Tests\Feature\Master\AdminMst;
 use App\Constants\CommonVal;
 use App\Enums\Gender;
 use App\Models\Master\AdminMst;
-use App\Models\Master\RoleMst;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Redis;
-use Tests\Concerns\GrantsApiAccess;
+use Tests\Concerns\AuthenticatesAdmins;
 use Tests\TestCase;
 
 class ListAdminMstTest extends TestCase
 {
+    use AuthenticatesAdmins;
     use DatabaseTransactions;
-    use GrantsApiAccess;
 
     protected string $listUrl = '/api/admin/admin-mst/list';
 
@@ -27,40 +25,12 @@ class ListAdminMstTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        Redis::flushall();
+        Redis::flushdb();
     }
 
-    /**
-     * Helper to get authenticated cookies with 'root' role
-     */
     protected function getAuthCookies(AdminMst $admin): array
     {
-        $rootRole = RoleMst::where('name', 'root')->first();
-        if (! $rootRole) {
-            $rootRole = RoleMst::create(['name' => 'root', 'permission' => '{}', 'is_active' => 1, 'is_delete' => 0]);
-        }
-        $this->grantAccessTo($rootRole, 'GET', 'api/admin/admin-mst/list');
-
-        if (! DB::table('admin_role_mst')->where('admin_mst_id', $admin->id)->where('role_mst_id', $rootRole->id)->exists()) {
-            DB::table('admin_role_mst')->insert([
-                'admin_mst_id' => $admin->id,
-                'role_mst_id' => $rootRole->id,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ]);
-        }
-
-        $response = $this->postJson($this->loginUrl, [
-            'user_name' => $admin->user_name,
-            'password' => 'password',
-        ]);
-
-        $cookies = [];
-        foreach ($response->headers->getCookies() as $cookie) {
-            $cookies[$cookie->getName()] = $cookie->getValue();
-        }
-
-        return $cookies;
+        return $this->loginAsOwner($admin);
     }
 
     /**

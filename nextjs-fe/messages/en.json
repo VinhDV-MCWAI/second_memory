@@ -30,30 +30,19 @@
     "inactive": "Inactive",
     "unknown": "Unknown",
     "noImage": "No image",
-    "noImageSelected": "No image selected",
-    "clickToSelectImage": "Click to select an image from library",
-    "selectImage": "Select Image",
-    "changeImage": "Change Image",
     "noLink": "No link",
     "name": "Name",
     "description": "Description",
     "status": "Status",
-    "displayOrder": "Display Order",
     "isActive": "Is Active",
-    "isDisplay": "Is Display",
     "email": "Email",
     "password": "Password",
     "enterPassword": "Enter password",
-    "url": "URL",
     "link": "Link",
     "linkUrl": "Link URL",
     "title": "Title",
-    "slug": "Slug",
     "icon": "Icon",
     "image": "Image",
-    "sliderImage": "Slider Image",
-    "article": "Article",
-    "summary": "Summary",
     "details": "Details",
     "history": "History",
     "required": "*",
@@ -75,12 +64,6 @@
     "reset": "Reset",
     "preview": "Preview",
     "passwordRequired": "Password Required",
-    "entries": "Entries",
-    "descriptions": "Descriptions",
-    "entriesManagementComingSoon": "Entries Management Coming Soon",
-    "policyDepartments": "Policy Departments",
-    "junctionManagementComingSoon": "Junction Management Coming Soon",
-    "entry": "Entry",
     "parentId": "Parent ID",
     "review": "Review",
     "next": "Next",
@@ -128,7 +111,6 @@
     "E0504": "Gateway Timeout",
     "E1000": "Cannot connect to server. Please check your network connection.",
     "failedToGenerateUploadUrl": "Failed to generate upload URL",
-    "storageUploadFailed": "Storage upload failed with status: {status}",
     "uploadToMinioFailed": "Upload to MinIO failed:",
     "support": "Support"
   },
@@ -143,13 +125,7 @@
     "navigateTo": "Navigate to...",
     "adminDashboard": "Admin Dashboard",
     "dashboard": "Dashboard",
-    "fileManager": "File Manager",
-    "masterData": "Master Data",
-    "contentManagement": "Content Management",
-    "settings": "Settings",
-    "general": "General",
-    "security": "Security",
-    "notifications": "Notifications"
+    "masterData": "Master Data"
   },
   "search": {
     "placeholder": "Search...",
@@ -215,43 +191,13 @@
     "step3Description": "Review all changes before final confirmation"
   },
   "entities": {
-    "user": "User",
-    "users": "Users",
     "admin": "Admin",
     "admins": "Admins",
-    "role": "Role",
-    "roles": "Roles",
-    "category": "Category",
-    "categories": "Categories",
-    "department": "Department",
-    "departments": "Departments",
-    "feature": "Feature",
-    "features": "Features",
-    "entry": "Entry",
-    "entries": "Entries",
-    "entryDescription": "Entry Description",
-    "entryDescriptions": "Entry Descriptions",
     "skill": "Skill",
     "skills": "Skills",
     "skillDescription": "Skill Description",
     "skillDescriptions": "Skill Descriptions",
-    "banner": "Banner",
-    "banners": "Banners",
-    "slider": "Slider",
-    "sliders": "Sliders",
-    "social": "Social",
-    "socials": "Socials",
-    "token": "Token",
-    "tokens": "Tokens",
-    "api": "API",
-    "apis": "APIs",
-    "policyDepartment": "Policy Department",
-    "policyDepartments": "Policy Departments",
-    "settingLink": "Setting Link",
-    "settingLinks": "Setting Links",
-    "file": "File",
-    "files": "Files",
-    "fileManager": "File Manager"
+    "file": "File"
   },
   "fields": {
     "id": "ID",
@@ -261,30 +207,21 @@
     "firstName": "First Name",
     "lastName": "Last Name",
     "status": "Status",
+    "role": "Role",
     "gender": "Gender",
     "createdAt": "Created",
     "updatedAt": "Updated",
     "description": "Description",
     "title": "Title",
-    "url": "URL",
     "icon": "Icon",
-    "order": "Order",
     "type": "Type",
-    "key": "Key",
     "value": "Value",
     "path": "Path",
     "method": "Method",
-    "code": "Code",
     "platform": "Platform",
     "adminId": "Admin ID",
-    "token": "Token",
-    "entryId": "Entry ID",
     "image": "Image",
     "link": "Link",
-    "tableName": "Table Name",
-    "rowId": "Row ID",
-    "summary": "Summary",
-    "slug": "Slug",
     "accountId": "Account ID",
     "deviceName": "Device Name",
     "ipAddress": "IP Address",
@@ -299,7 +236,6 @@
     "uploadFile": "Upload File",
     "hideUpload": "Hide Upload",
     "searchFiles": "Search files...",
-    "deleteFile": "Delete file",
     "deleteFiles": "Delete files",
     "deleteFileConfirm": "Are you sure you want to delete this file?",
     "deleteFilesConfirm": "Delete {count} file(s)?",
@@ -310,39 +246,22 @@
     "failedToUploadFile": "Failed to upload file",
     "fileUploadedSuccessfully": "File uploaded successfully",
     "all": "All",
-    "images": "Images",
-    "videos": "Videos",
-    "documents": "Documents",
     "clickToUpload": "Click to upload",
     "orDragAndDrop": "or drag and drop",
-    "uploading": "Uploading...",
-    "preview": "Preview",
     "avatarPreview": "Avatar preview",
     "invalidFileType": "Invalid file type. Accepted: {accept}",
     "selectImageFile": "Please select an image file",
     "fileSizeExceeded": "File size must be less than {maxSize}MB",
     "fileSizeExceeds": "File size exceeds {maxSize}",
-    "uploadFailed": "Upload failed",
     "dragDropHere": "Drag and drop your file here, or click to browse",
     "maxSize": "Max size",
     "cancel": "Cancel",
     "upload": "Upload",
     "view": "View",
-    "download": "Download",
     "delete": "Delete",
     "previous": "Previous",
     "next": "Next",
-    "pageOf": "Page {page} of {totalPages}",
-    "changeImage": "Change Image",
-    "multipart": {
-      "noEtag": "No ETag in response",
-      "uploadFailedStatus": "Upload failed with status {status}",
-      "networkError": "Network error",
-      "timeout": "Request timeout - the server took too long to respond",
-      "partFailedMaxRetries": "Upload failed: Part {partNumber} failed after {maxRetries} attempts. Please check your connection and try again.",
-      "partFailedRetry": "Part {partNumber} failed, retrying in {delay}ms",
-      "uploadFailedAfterRetries": "Upload failed after multiple retry attempts. Please check your network connection and try again."
-    }
+    "pageOf": "Page {page} of {totalPages}"
   },
   "savedFilters": {
     "filterName": "Filter name",
@@ -358,154 +277,12 @@
     "saveFilterTitle": "Save Filter Title",
     "saveFilterDescription": "Save Filter Description"
   },
-  "fileManager": {
-    "noFiles": "No files found",
-    "featureUnavailable": "Feature unavailable",
-    "name": "Name",
-    "size": "Size",
-    "openMenu": "Open Menu",
-    "type": "Type",
-    "created": "Created",
-    "folder": "Folder",
-    "copyLink": "Copy Link",
-    "deleteFile": "Delete File",
-    "previewNotAvailable": "Preview not available",
-    "linkCopied": "Link copied to clipboard",
-    "confirmDelete": "Are you sure you want to delete this file?",
-    "home": "Home",
-    "preview": "Preview",
-    "download": "Download",
-    "rename": "Rename",
-    "upload": "Upload",
-    "newFolder": "New Folder",
-    "move": "Move",
-    "copy": "Copy",
-    "delete": "Delete",
-    "filter": "Filter",
-    "selectedCount": "{count} selected",
-    "searchPlaceholder": "Search files...",
-    "filterType": {
-      "all": "All",
-      "images": "Images",
-      "videos": "Videos",
-      "documents": "Documents",
-      "folders": "Folders"
-    },
-    "sort": "Sort",
-    "sortField": {
-      "name": "Name",
-      "date": "Date",
-      "size": "Size",
-      "type": "Type"
-    },
-    "listError": "Failed to load file list",
-    "createFolderSuccess": "Folder created successfully",
-    "createFolderError": "Failed to create folder",
-    "createFolderFailed": "Failed to create folder",
-    "uploadSuccess": "Uploaded",
-    "uploadError": "Failed to upload file",
-    "uploadFailed": "Failed to upload file",
-    "deleteSuccess": "File deleted",
-    "deleteError": "Failed to delete file",
-    "deleteFailed": "Failed to delete file",
-    "renameSuccess": "File renamed",
-    "renameError": "Failed to rename file",
-    "renameFailed": "Failed to rename file",
-    "moveSuccess": "File moved",
-    "moveError": "Failed to move file",
-    "moveFailed": "Failed to move file",
-    "copySuccess": "File copied",
-    "copyError": "Failed to copy file",
-    "copyFailed": "Failed to copy file",
-    "dialogs": {
-      "moveCopy": {
-        "moveTitle": "Move",
-        "copyTitle": "Copy",
-        "items": "items",
-        "description": "Are you sure you want to {action} these items?",
-        "move": "Move",
-        "copy": "Copy",
-        "targetFolder": "Target Folder",
-        "selectFolder": "Select folder",
-        "root": "Root"
-      },
-      "cancel": "Cancel",
-      "processing": "Processing...",
-      "rename": {
-        "title": "Rename Item",
-        "description": "Rename item",
-        "newNameLabel": "New Name",
-        "saveButton": "Rename",
-        "emptyNameError": "Name cannot be empty",
-        "invalidNameError": "Invalid file name",
-        "renameError": "Failed to rename item"
-      },
-      "deleteConfirm": {
-        "title": "Delete Item(s)",
-        "singleMessage": "Are you sure you want to delete \"{name}\"?",
-        "multipleMessage": "Are you sure you want to delete {count} items?",
-        "description": "This action cannot be undone.",
-        "delete": "Delete"
-      },
-      "delete": "Delete",
-      "creating": "Creating...",
-      "upload": {
-        "uploadFiles": "Upload Files",
-        "uploadTo": "Upload file to folder: {path}",
-        "clickToSelect": "Click to select",
-        "orDragDrop": "or drag and drop",
-        "supportedFiles": "Supported files: Images, Videos, Documents",
-        "uploadButton": "Upload",
-        "uploading": "Uploading...",
-        "uploadFailed": "Upload failed",
-        "uploadError": "An error occurred while uploading",
-        "uploadingToTemp": "Uploading to temporary storage...",
-        "finalizing": "Finalizing upload...",
-        "failedToUploadToTemp": "Failed to upload file to temporary storage",
-        "autoUploadError": "Auto-upload error",
-        "commitError": "Commit error",
-        "filesWithErrors": "Some files failed to upload",
-        "removeFailedFiles": "Please remove failed files before uploading. You can retry by removing them and adding them again."
-      },
-      "newFolder": {
-        "title": "New Folder",
-        "description": "Create a new folder to organize your files.",
-        "nameLabel": "Folder Name",
-        "placeholder": "Enter folder name",
-        "createButton": "Create",
-        "emptyNameError": "Folder name cannot be empty",
-        "invalidNameError": "Invalid folder name",
-        "createError": "Failed to create folder"
-      }
-    },
-    "loading": "Loading",
-    "sidebar": {
-      "title": "Title",
-      "foldersList": "Folders List",
-      "images": "Images",
-      "videos": "Videos",
-      "documents": "Documents",
-      "recent": "Recent",
-      "shared": "Shared"
-    }
-  },
   "upload": {
-    "uploadFiles": "Upload Files",
-    "uploadTo": "Upload file to folder: {path}",
     "avatar": "Avatar",
-    "image": "Image",
-    "imageFormats": "PNG, JPG, GIF up to {maxSize}MB",
-    "uploadError": "Upload error occurred",
-    "clickToSelect": "Click to select",
-    "orDragDrop": "or drag and drop",
-    "supportedFiles": "Supported files: Images, Videos, Documents",
-    "uploadButton": "Upload",
-    "uploadFailed": "Upload Failed",
-    "uploading": "Uploading..."
+    "imageFormats": "PNG, JPG, GIF up to {maxSize}MB"
   },
   "forms": {
     "labels": {
-      "roles": "Roles",
       "firstName": "First Name",
       "lastName": "Last Name",
       "username": "Username",
@@ -517,6 +294,7 @@
       "address": "Address",
       "gender": "Gender",
       "status": "Status",
+      "role": "Role",
       "isActive": "Is Active",
       "details": "Details",
       "history": "History",
@@ -525,7 +303,6 @@
       "ipAddress": "IP Address",
       "expiredAt": "Expired At",
       "iconImageUrl": "Icon/Image URL",
-      "feature": "Feature",
       "name": "Name",
       "groupName": "Group Name",
       "path": "Path",
@@ -533,48 +310,34 @@
       "description": "Description",
       "title": "Title",
       "linkUrl": "Link URL",
-      "position": "Position",
-      "slug": "Slug",
-      "displayOrder": "Display Order",
-      "isDisplay": "Is Display",
-      "code": "Code",
-      "tableName": "Table Name",
-      "rowId": "Row ID",
-      "permission": "Permission"
+      "position": "Position"
     },
     "placeholders": {
-      "apiName": "API Name",
-      "apiPath": "/api/v1/...",
       "urlExample": "https://example.com",
       "iconExample": "e.g., 📱 or fa-mobile",
       "termsOfService": "e.g. Terms of Service",
-      "slugExample": "e.g. javascript",
-      "socialName": "e.g. Facebook, Twitter",
-      "socialIcon": "e.g. fa-brands fa-facebook",
-      "socialUrl": "https://example.com/profile",
-      "enterToken": "Enter token key",
       "passwordHidden": "••••••••",
       "leaveBlankToKeepCurrent": "Leave Blank To Keep Current",
-      "selectFeature": "Select Feature",
-      "selectEntry": "Select Entry",
       "selectAccount": "Select Account",
       "deviceName": "Device Name",
       "ipAddress": "IP Address",
-      "selectRoles": "Select roles",
       "settingKey": "e.g. privacy_policy",
       "settingValue": "https://example.com/privacy"
     }
   },
   "history": {
-    "loading": "Loading",
-    "noHistory": "No History",
-    "title": "Title",
-    "description": "Description",
-    "user": "User: {id}",
-    "actions": {
-      "create": "Created",
-      "update": "Updated",
-      "delete": "Deleted"
+    "loading": "Loading history",
+    "noHistory": "No changes recorded yet",
+    "title": "History",
+    "description": "Changes to this record, newest first",
+    "by": "by {name}",
+    "events": {
+      "created": "Created",
+      "updated": "Updated",
+      "deleted": "Deleted",
+      "logged_in": "Logged in",
+      "logged_out": "Logged out",
+      "login_failed": "Login failed"
     }
   },
   "validation": {
@@ -610,18 +373,11 @@
     "avatar": {
       "maxLength": "Avatar path cannot exceed {max} characters"
     },
-    "name": {
-      "required": "Name is required",
-      "maxLength": "Name cannot exceed {max} characters"
-    },
     "title": {
       "required": "Title is required"
     },
     "content": {
       "required": "Content is required"
-    },
-    "slug": {
-      "required": "Slug is required"
     },
     "description": {
       "required": "Description is required"
@@ -635,58 +391,8 @@
     "position": {
       "required": "Position is required"
     },
-    "url": {
-      "required": "URL is required",
-      "invalid": "Must be a valid URL"
-    },
-    "order": {
-      "min": "Order must be {min} or greater"
-    },
-    "code": {
-      "required": "Code is required",
-      "maxLength": "Code cannot exceed {max} characters"
-    },
-    "permission": {
-      "required": "Permission is required",
-      "maxLength": "Permission cannot exceed {max} characters"
-    },
-    "entry": {
-      "required": "Entry is required"
-    },
-    "feature": {
-      "required": "Feature is required"
-    },
-    "category": {
-      "required": "Category is required"
-    },
-    "account": {
-      "required": "Account is required"
-    },
-    "groupName": {
-      "required": "Group Name is required",
-      "maxLength": "Group Name cannot exceed {max} characters"
-    },
-    "deviceName": {
-      "required": "Device name is required"
-    },
-    "type": {
-      "required": "Type is required"
-    },
-    "path": {
-      "required": "Path is required"
-    },
-    "tableName": {
-      "required": "Table name is required"
-    },
-    "rowId": {
-      "required": "Row ID is required"
-    },
     "invalidEmail": "Invalid Email",
     "saving": "Saving",
-    "key": {
-      "required": "Key is required",
-      "maxLength": "Key cannot exceed {max} characters"
-    },
     "value": {
       "required": "Value is required",
       "maxLength": "Value cannot exceed {max} characters"
@@ -715,49 +421,5 @@
   "download": "Download",
   "delete": "Delete",
   "previous": "Previous",
-  "next": "Next",
-  "multiSelect": {
-    "placeholder": "Placeholder",
-    "search": "Search",
-    "noItems": "No Items"
-  },
-  "permissions": {
-    "title": "Title",
-    "description": "Description"
-  },
-  "roleWizard": {
-    "step": "Step",
-    "step1Description": "Enter the role name and set the permission level",
-    "step2Description": "Select APIs that will be available for this role",
-    "step3Description": "Review all changes before final confirmation",
-    "roleSetup": "Role Setup",
-    "permissionSetup": "Permission Setup",
-    "selectedApis": "Selected APIs",
-    "searchFeature": "Search feature...",
-    "searchApi": "Search API or path...",
-    "filterByMethod": "Filter by HTTP method",
-    "noApis": "No APIs found",
-    "apisInThisFeature": "APIs in this feature",
-    "enterRoleName": "Enter role name",
-    "enterPermission": "Enter permission",
-    "skip": "Skip",
-    "back": "Back",
-    "roleInformation": "Role Information",
-    "operationType": "Operation Type",
-    "confirmCancel": "Cancel Changes?",
-    "cancelConfirmMessage": "Are you sure you want to cancel? All unsaved changes will be lost.",
-    "confirmSubmit": "Confirm Changes?",
-    "submitConfirmMessage": "Review the information above and confirm to proceed with the changes.",
-    "noPermissionsSelected": "No APIs selected - this role will have no permissions.",
-    "confirmationInfo": "Please review all information carefully before confirming.",
-    "roleNameHelp": "Enter a unique name for this role",
-    "permissionHelp": "Enter the permission code for this role",
-    "statusHelp": "Set whether this role is active or inactive",
-    "step1Info": "Complete the basic role information in this step. You can manage permissions in the next step.",
-    "step2Info": "Select the APIs that this role should have access to. You can skip this step if you want to add permissions later.",
-    "all": "All",
-    "selected": "selected",
-    "review": "Review",
-    "confirm": "Confirm"
-  }
+  "next": "Next"
 }

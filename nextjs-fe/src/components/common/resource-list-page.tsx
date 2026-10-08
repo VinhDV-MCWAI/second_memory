@@ -53,9 +53,9 @@ type Editor<T> =
   | { editor: ComponentType<ResourceEditorProps<T>>; form?: never; dialogClassName?: never };
 
 export type ResourceListPageProps<T extends { id: number }> = Editor<T> & {
-  /** API resource, e.g. `API_ENDPOINTS.MANAGEMENT.BANNER`. */
+  /** API resource, e.g. `API_ENDPOINTS.MASTER.ADMIN`. */
   endpoint: string;
-  /** `entities.*` message keys for one and many records, e.g. `banner` / `banners`. */
+  /** `entities.*` message keys for one and many records, e.g. `admin` / `admins`. */
   entity: { one: string; many: string };
   columns: Column<T>[];
   filterFields: FilterField[];

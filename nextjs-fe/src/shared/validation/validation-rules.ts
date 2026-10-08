@@ -3,7 +3,7 @@
  * Use these helpers across forms to ensure consistency with API
  */
 
-import { VALIDATION } from '@/shared/config/constant';
+import { VALIDATION } from '@/shared/config';
 
 export const ValidationRules = {
   // String lengths (matching back-end CommonVal)

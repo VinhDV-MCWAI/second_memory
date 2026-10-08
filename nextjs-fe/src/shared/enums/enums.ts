@@ -20,24 +20,6 @@ export const StatusEnumLabels: Record<StatusEnum, string> = {
 };
 
 // ==========================================
-// UserStatus (app/Enums/UserStatus.php)
-// Status for User users
-// ==========================================
-export enum UserStatus {
-  INACTIVE = 0,
-  ACTIVE = 1,
-  WAITING = 2,
-  SUSPENDED = 3,
-}
-
-export const UserStatusLabels: Record<UserStatus, string> = {
-  [UserStatus.INACTIVE]: 'Inactive',
-  [UserStatus.ACTIVE]: 'Active',
-  [UserStatus.WAITING]: 'Waiting',
-  [UserStatus.SUSPENDED]: 'Suspended',
-};
-
-// ==========================================
 // AdminStatus (app/Enums/AdminStatus.php)
 // Status for Admin users
 // ==========================================
@@ -53,6 +35,20 @@ export const AdminStatusLabels: Record<AdminStatus, string> = {
   [AdminStatus.ACTIVE]: 'Active',
   [AdminStatus.WAITING]: 'Waiting',
   [AdminStatus.SUSPENDED]: 'Suspended',
+};
+
+// ==========================================
+// AdminRole (app/Enums/AdminRole.php, ADR-0005)
+// An owner may change data, a viewer may only read it
+// ==========================================
+export enum AdminRole {
+  OWNER = 'owner',
+  VIEWER = 'viewer',
+}
+
+export const AdminRoleLabels: Record<AdminRole, string> = {
+  [AdminRole.OWNER]: 'Owner',
+  [AdminRole.VIEWER]: 'Viewer',
 };
 
 // ==========================================
@@ -104,135 +100,23 @@ export enum UploadStatus {
 }
 
 // ==========================================
-// CategoryStatus (app/Enums/CategoryStatus.php)
+// AuditEvent (app/Enums/AuditEvent.php, ADR-0006)
+// What an audit_log row records
 // ==========================================
-export enum CategoryStatus {
-  INACTIVE = 0,
-  ACTIVE = 1,
-  ARCHIVED = 2,
+export enum AuditEvent {
+  CREATED = 'created',
+  UPDATED = 'updated',
+  DELETED = 'deleted',
+  LOGGED_IN = 'logged_in',
+  LOGGED_OUT = 'logged_out',
+  LOGIN_FAILED = 'login_failed',
 }
-
-export const CategoryStatusLabels: Record<CategoryStatus, string> = {
-  [CategoryStatus.INACTIVE]: 'Inactive',
-  [CategoryStatus.ACTIVE]: 'Active',
-  [CategoryStatus.ARCHIVED]: 'Archived',
-};
-
-// ==========================================
-// DepartmentStatus (app/Enums/DepartmentStatus.php)
-// ==========================================
-export enum DepartmentStatus {
-  INACTIVE = 0,
-  ACTIVE = 1,
-  DRAFT = 2,
-  ARCHIVED = 3,
-}
-
-export const DepartmentStatusLabels: Record<DepartmentStatus, string> = {
-  [DepartmentStatus.INACTIVE]: 'Inactive',
-  [DepartmentStatus.ACTIVE]: 'Active',
-  [DepartmentStatus.DRAFT]: 'Draft',
-  [DepartmentStatus.ARCHIVED]: 'Archived',
-};
-
-// ==========================================
-// FeatureStatus (app/Enums/FeatureStatus.php)
-// ==========================================
-export enum FeatureStatus {
-  INACTIVE = 0,
-  ACTIVE = 1,
-  DRAFT = 2,
-  ARCHIVED = 3,
-}
-
-export const FeatureStatusLabels: Record<FeatureStatus, string> = {
-  [FeatureStatus.INACTIVE]: 'Inactive',
-  [FeatureStatus.ACTIVE]: 'Active',
-  [FeatureStatus.DRAFT]: 'Draft',
-  [FeatureStatus.ARCHIVED]: 'Archived',
-};
-
-// ==========================================
-// EntryStatus (app/Enums/EntryStatus.php)
-// ==========================================
-export enum EntryStatus {
-  INACTIVE = 0,
-  ACTIVE = 1,
-  WAITING = 2,
-  SUSPENDED = 3,
-}
-
-export const EntryStatusLabels: Record<EntryStatus, string> = {
-  [EntryStatus.INACTIVE]: 'Inactive',
-  [EntryStatus.ACTIVE]: 'Active',
-  [EntryStatus.WAITING]: 'Waiting',
-  [EntryStatus.SUSPENDED]: 'Suspended',
-};
-
-// ==========================================
-// SocialStatus (app/Enums/SocialStatus.php)
-// ==========================================
-export enum SocialStatus {
-  INACTIVE = 0,
-  ACTIVE = 1,
-  PENDING = 2,
-}
-
-export const SocialStatusLabels: Record<SocialStatus, string> = {
-  [SocialStatus.INACTIVE]: 'Inactive',
-  [SocialStatus.ACTIVE]: 'Active',
-  [SocialStatus.PENDING]: 'Pending',
-};
-
-// ==========================================
-// ActionType (app/Enums/ActionType.php)
-// History/Audit action types
-// ==========================================
-export enum ActionType {
-  CREATE = 1,
-  UPDATE = 2,
-  DELETE = 3,
-}
-
-// ==========================================
-// TypeOfMethod (app/Enums/TypeOfMethod.php)
-// HTTP methods for API permissions
-// ==========================================
-export enum TypeOfMethod {
-  GET = 0,
-  POST = 1,
-  PUT = 2,
-  PATCH = 3,
-  DELETE = 4,
-}
-
-export const TypeOfMethodLabels: Record<TypeOfMethod, string> = {
-  [TypeOfMethod.GET]: 'GET',
-  [TypeOfMethod.POST]: 'POST',
-  [TypeOfMethod.PUT]: 'PUT',
-  [TypeOfMethod.PATCH]: 'PATCH',
-  [TypeOfMethod.DELETE]: 'DELETE',
-};
 
 // ==========================================
 // DEPRECATED - Remove after migration
 // Legacy Status enum (use IsActive or specific status enums instead)
 // ==========================================
-/** @deprecated Use IsActive or specific status enums like AdminStatus, CategoryStatus, etc. */
+/** @deprecated Use IsActive or specific status enums like AdminStatus. */
 export const Status = IsActive;
 /** @deprecated Use IsActiveLabels or specific status labels */
 export const StatusLabels = IsActiveLabels;
-
-// ==========================================
-// IsDisplay (app/Enums/IsDisplay.php)
-// Boolean-like status for display visibility
-// ==========================================
-export enum IsDisplay {
-  FALSE = 0,
-  TRUE = 1,
-}
-
-export const IsDisplayLabels: Record<IsDisplay, string> = {
-  [IsDisplay.FALSE]: 'Hidden',
-  [IsDisplay.TRUE]: 'Visible',
-};

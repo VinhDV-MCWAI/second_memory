@@ -117,20 +117,19 @@ class CommonVal
 
     public const MAX_TEXT = 65535;
 
-    public const MAX_ACCESS_TTL = 60 * 5; // s * m => 5 min
+    /**
+     * Admin auth (Sanctum SPA session, ADR-0004)
+     */
+    public const ADMIN_GUARD = 'admin';
 
-    public const MAX_REFRESH_TTL = 60 * 60 * 24 * 3; // s * m * H * D => 3 day
+    public const GATE_WRITE = 'write';
 
-    public const ADMIN_PERMISSION_TABLE = 'admin_permission';
+    public const LOGIN_MAX_ATTEMPTS = 5;
 
-    public const LIMIT_ACCESS_FAIL = 5;
+    public const LOGIN_LOCK_SECONDS = 60 * 15; // 15 min
 
     /**
      * Admin master
      */
     public const ROOT = 'root';
-
-    public const ADMIN_TYPE = 'admin';
-
-    public const VERSION_TOKEN = 1;
 }

@@ -1,184 +1,88 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tests\Feature\Auth;
 
 use App\Constants\CommonVal;
+use App\Enums\AdminRole;
 use App\Models\Master\AdminMst;
-use App\Models\Master\RoleMst;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
-use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Redis;
+use Tests\Concerns\AuthenticatesAdmins;
 use Tests\TestCase;
 
-class MeApiTest extends TestCase
+final class MeApiTest extends TestCase
 {
-    use DatabaseTransactions;
-    use WithFaker;
+    use AuthenticatesAdmins;
 
-    protected string $uri = 'api/admin/credential/me';
+    private const string ME_URL = '/api/admin/credential/me';
 
-    protected ?AdminMst $admin;
+    private const string LIST_URL = 'api/admin/admin-mst/list';
 
-    protected string $password = 'password123';
+    private const string DELETE_URL = 'api/admin/admin-mst/delete';
 
-    protected function setUp(): void
+    public function test_me_without_a_session_is_401(): void
     {
-        parent::setUp();
-        // Flush Redis to ensure clean state for each test
-        Redis::flushall();
-
-        // Create Role
-        $role = RoleMst::create([
-            'name' => 'Super Admin',
-            'permission' => '{}',
-            'is_active' => 1,
-            'is_delete' => 0,
-        ]);
-
-        // Create Admin User
-        $this->admin = AdminMst::factory()->create([
-            'user_name' => 'me_user',
-            'email' => 'me_user@example.com',
-            'password' => Hash::make($this->password),
-            'status' => 1,
-            'is_active' => 1,
-        ]);
-
-        // Attach Role & Permission
-        DB::table('admin_role_mst')->insert([
-            'admin_mst_id' => $this->admin->id,
-            'role_mst_id' => $role->id,
-            'created_at' => now(),
-            'updated_at' => now(),
-        ]);
+        $this->getJson(self::ME_URL)->assertStatus(CommonVal::HTTP_UNAUTHORIZED);
     }
 
-    // --- Helper to Login and Get Cookies ---
-    protected function loginAndGetCookies(): array
+    public function test_me_returns_the_signed_in_admin_without_route_permissions(): void
     {
-        $response = $this->postJson('api/admin/credential/login', [
-            'user_name' => $this->admin->user_name,
-            'password' => $this->password,
-        ]);
+        $admin = AdminMst::factory()->create();
+        $cookies = $this->loginAs($admin);
 
-        $cookies = [];
-        foreach ($response->headers->getCookies() as $cookie) {
-            $cookies[$cookie->getName()] = $cookie->getValue();
-        }
-
-        // Set Permission for ME route in Redis (Mocking what AdminMiddleware checks)
-        $permissionKey = CommonVal::ADMIN_TYPE.":{$this->admin->id}:".CommonVal::ADMIN_PERMISSION_TABLE;
-        Redis::hset($permissionKey, 'GET', json_encode(['api/admin/credential/me']));
-
-        return $cookies;
+        $this->call('GET', self::ME_URL, [], $cookies)
+            ->assertOk()
+            ->assertJsonPath('data.id', $admin->id)
+            ->assertJsonPath('data.email', $admin->email)
+            ->assertJsonMissingPath('data.password');
     }
 
-    /**
-     * T001: Method Not Allowed (POST/PUT/DELETE)
-     */
-    public function test_t001_method_not_allowed()
+    public function test_a_deleted_admin_loses_the_session_on_the_next_request(): void
     {
-        $this->postJson($this->uri)->assertStatus(CommonVal::HTTP_METHOD_NOT_ALLOWED);
-        $this->putJson($this->uri)->assertStatus(CommonVal::HTTP_METHOD_NOT_ALLOWED);
-        $this->deleteJson($this->uri)->assertStatus(CommonVal::HTTP_METHOD_NOT_ALLOWED);
+        $admin = AdminMst::factory()->create();
+        $cookies = $this->loginAs($admin);
+
+        $admin->update(['is_delete' => true]);
+
+        // Was AUTH-GUIDE A13 / T019: a deleted admin kept getting new tokens
+        $this->call('GET', self::ME_URL, [], $cookies)->assertStatus(CommonVal::HTTP_UNAUTHORIZED);
     }
 
-    /**
-     * T002: Missing Access Token
-     */
-    public function test_t002_missing_access_token()
+    public function test_a_disabled_admin_loses_the_session_on_the_next_request(): void
     {
-        $response = $this->getJson($this->uri);
-        $response->assertStatus(CommonVal::HTTP_UNAUTHORIZED);
+        $admin = AdminMst::factory()->create();
+        $cookies = $this->loginAs($admin);
+
+        $admin->update(['is_active' => false]);
+
+        $this->call('GET', self::ME_URL, [], $cookies)->assertStatus(CommonVal::HTTP_UNAUTHORIZED);
     }
 
-    /**
-     * T003: Invalid Access Token (Tampered)
-     */
-    public function test_t003_invalid_access_token()
+    public function test_protected_route_is_401_without_a_session(): void
     {
-        $response = $this->call(
-            'GET',
-            $this->uri,
-            [],
-            ['access_token' => 'invalid.jwt.token']
-        );
-        // Expect 401 (handled by Middleware or Service)
-        $this->assertTrue(in_array($response->status(), [CommonVal::HTTP_UNAUTHORIZED, 500]));
+        $this->getJson(self::LIST_URL)->assertStatus(CommonVal::HTTP_UNAUTHORIZED);
     }
 
-    /**
-     * T004: Expired Access Token (Redis Missing / TTL)
-     * Note: JWT library checks 'exp' claim. Redis check happens in Middleware.
-     */
-    public function test_t004_expired_access_token_via_redis_deletion()
+    public function test_a_viewer_may_read_but_not_write(): void
     {
-        $cookies = $this->loginAndGetCookies();
-        $accessToken = $cookies['access_token'];
+        $cookies = $this->loginAs(AdminMst::factory()->create());
+        $other = AdminMst::factory()->create();
 
-        // Delete from Redis to simulate revocation/expiry
-        $tokenKey = CommonVal::ADMIN_TYPE.":{$this->admin->id}:{$accessToken}";
-        Redis::del($tokenKey);
-
-        $response = $this->call(
-            'GET',
-            $this->uri,
-            [],
-            $cookies
-        );
-
-        $response->assertStatus(CommonVal::HTTP_UNAUTHORIZED);
+        $this->call('GET', self::LIST_URL, [], $cookies)->assertOk();
+        $this->call('POST', self::DELETE_URL, ['ids' => [$other->id]], $cookies)->assertStatus(CommonVal::HTTP_FORBIDDEN);
     }
 
-    /**
-     * T006: Deleted User (Token Valid, DB Missing)
-     */
-    public function test_t006_deleted_user()
+    public function test_a_role_change_applies_without_logging_in_again(): void
     {
-        $cookies = $this->loginAndGetCookies();
+        AdminMst::factory()->owner()->create();
+        $admin = AdminMst::factory()->create();
+        $cookies = $this->loginAs($admin);
+        $other = AdminMst::factory()->create();
+        $this->call('POST', self::DELETE_URL, ['ids' => [$other->id]], $cookies)->assertStatus(CommonVal::HTTP_FORBIDDEN);
 
-        // Hard delete user from DB
-        $this->admin->delete();
+        $admin->update(['role' => AdminRole::OWNER]);
 
-        $response = $this->call(
-            'GET',
-            $this->uri,
-            [],
-            $cookies
-        );
-
-        $response->assertStatus(CommonVal::HTTP_UNAUTHORIZED);
-    }
-
-    /**
-     * T007: Success Scenario
-     */
-    public function test_t007_success_retrieval()
-    {
-        $cookies = $this->loginAndGetCookies();
-
-        $response = $this->call(
-            'GET',
-            $this->uri,
-            [],
-            $cookies
-        );
-
-        $response->assertOk();
-        $response->assertJsonStructure([
-            'data' => [
-                'id',
-                'email',
-                'status',
-                'is_active',
-                'expires_at',
-            ],
-        ]);
-
-        $data = $response->json('data');
-        $this->assertEquals($this->admin->id, $data['id']);
-        $this->assertEquals($this->admin->email, $data['email']);
+        // The role is read from the admin row on every request (ADR-0005)
+        $this->call('POST', self::DELETE_URL, ['ids' => [$other->id]], $cookies)->assertOk();
     }
 }

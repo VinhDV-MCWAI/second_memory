@@ -6,7 +6,7 @@ import { queryKeys } from '@/shared/api/query-keys';
 import { notification, getApiErrorMessage } from '@/shared/utils';
 import { AxiosError } from 'axios';
 import { useTranslations } from 'next-intl';
-import { HTTP_STATUS } from '@/shared/config/constant';
+import { HTTP_STATUS } from '@/shared/config';
 import type { UseCrudReturn, UseCrudOptions } from '@/shared/types/api';
 
 /**

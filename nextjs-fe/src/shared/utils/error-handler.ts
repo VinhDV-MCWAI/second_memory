@@ -1,5 +1,5 @@
 import { UseFormSetError, Path, FieldValues } from 'react-hook-form';
-import { HTTP_STATUS } from '@/shared/config/constant';
+import { HTTP_STATUS } from '@/shared/config';
 
 /** `error` part of the backend envelope; `messages` is a field map for 422 responses. */
 export interface ApiError {

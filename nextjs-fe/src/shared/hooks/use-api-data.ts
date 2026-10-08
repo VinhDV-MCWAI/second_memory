@@ -9,7 +9,7 @@ import type {
   UseApiDataReturn,
   FilterValue,
 } from '@/shared/types/api';
-import { PAGINATION, SORT_ORDER } from '@/shared/config/constant';
+import { PAGINATION, SORT_ORDER } from '@/shared/config';
 import { getPaginationInfo } from '@/shared/utils/pagination';
 
 /**

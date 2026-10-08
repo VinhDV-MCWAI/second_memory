@@ -1,10 +1,11 @@
 name: CI
 
+# Paused (2026-10-08, owner's decision): manual runs only, to keep PRs fast while
+# the Skill Ledger is built. Run `make verify` locally before every PR instead.
+# Re-enable in P5 by restoring the trigger:
+#   pull_request:
+#     branches: [developer, main]
 on:
-  pull_request:
-    branches:
-      - developer
-      - main
   workflow_dispatch:
 
 concurrency:
@@ -63,7 +64,10 @@ jobs:
         # nextjs-fe enforces coverage thresholds on src/shared (vitest.config.ts)
         run: pnpm test --coverage
 
-      - name: Audit dependencies
+      - name: Audit production dependencies
+        run: pnpm audit --prod --audit-level=high
+
+      - name: Audit all dependencies (informational)
         run: pnpm audit --audit-level=high
         continue-on-error: true
 
@@ -151,9 +155,7 @@ jobs:
         run: composer analyse -- --no-progress --error-format=github
 
       - name: Tests
-        # The 4 RefreshTokenApiTest cases fail until the manual auth rework
-        # lands (docs/auth/AUTH-GUIDE.md, A13). Remove the exclusion then.
-        run: php artisan test --exclude-filter 'RefreshTokenApiTest::test_t0(04|05|06|19)_'
+        run: php artisan test
 
       - name: OpenAPI spec is up to date
         # Runs after the tests so the testing DB has the schema Scramble inspects
