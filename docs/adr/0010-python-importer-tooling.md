@@ -87,6 +87,17 @@ A note is a `.md` file under the vault root; folders starting with `.` (`.obsidi
 
 > 🇻🇳 Hợp đồng note → API: chỉ file `.md`, bỏ qua thư mục bắt đầu bằng `.`. Chỉ import khi `publish` là boolean `true` thật. `external_key` = đường dẫn tương đối trong vault, dấu `/`, chuẩn Unicode NFC. `title` mặc định là tên file; `summary` mặc định là đoạn đầu tiên không phải tiêu đề, bỏ cú pháp link, cắt 300 ký tự. `date` bắt buộc. `url` lấy từ frontmatter, nếu không có thì ghép `LEDGER_NOTE_BASE_URL` với đường dẫn; thiếu cả hai là note lỗi. Tag thiếu thì server tạo; kỹ năng lạ chỉ báo cáo. Loại luôn là `note`, không gửi `is_public`. Nếu có note publish bị lỗi, CLI không gửi gì và thoát mã khác 0 — vì server sẽ ẩn mọi dòng không có trong danh sách, gửi thiếu là ẩn nhầm. Nội dung note không rời máy. Đổi tên note = ẩn dòng cũ, tạo dòng mới (chấp nhận). Tối đa 2.000 note mỗi lần. Mã thoát: 0 thành công, 1 note lỗi, 2 cấu hình sai, 3 lỗi API.
 
+### Implementation notes (P3-14a, 2026-10-08)
+
+Decided with the code, within the decision above:
+
+- **Ability check in `AdminMiddleware`, not Sanctum's `abilities` middleware.** Sanctum's middleware only guards the route it is put on; every other admin route would still accept the importer token, because `auth:sanctum` accepts any valid token. `AdminMiddleware` (already on every admin route) now takes the abilities as parameters, `auth.admin:evidence:import`: a personal access token gets 403 on any admin route that does not name its ability, reads included, so a leaked token opens only the import route. `credential/me` moved behind `auth.admin` for the same reason. A session login passes as before (transient token). The OpenAPI spec documents 403 on every admin route.
+- **Disabled admins.** Sanctum loads the token's admin without the `active-admins` provider, so `AppServiceProvider` adds `Sanctum::authenticateAccessTokensUsing`: the token of a deleted or disabled admin gives 401.
+- **Audit marker.** Every audit row written by the import has `new_values.via = "importer"`; the actor is the token's admin. Tags created by the import are audited the same way (`auditable_type = tag`).
+- **Response.** `created`, `updated`, `unchanged`, `hidden`, `unknown_skills[]` (first spelling of each unknown name). A row hidden earlier is not counted again; a republished note counts as `updated` and stays private.
+
+> 🇻🇳 Ghi chú triển khai (P3-14a): (1) Kiểm tra ability nằm trong `AdminMiddleware` (`auth.admin:evidence:import`) thay vì middleware `abilities` của Sanctum, vì middleware đó chỉ chặn route nó được gắn, các route admin khác vẫn nhận token. Giờ token chỉ mở được route import, mọi route admin khác (kể cả đọc và `credential/me`) trả 403; session đăng nhập vẫn như cũ. (2) Token của admin bị xoá hoặc bị khoá trả 401. (3) Mọi dòng audit do import ghi có `new_values.via = "importer"`, người thực hiện là chủ token; tag do import tạo cũng được audit. (4) Dòng đã ẩn không bị đếm lại; note publish lại tính là `updated` và vẫn ở trạng thái riêng tư.
+
 ## Consequences
 
 - **Easier:** no browser emulation or stored password; the audit shows who imported; a leaked token can only import evidence, expires and is revoked with one command; the importer is tested in isolation (pytest with `MockTransport`) while idempotency stays tested in PHP next to the data (RFC-002 §7).
