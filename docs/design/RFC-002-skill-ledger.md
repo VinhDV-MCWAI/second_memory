@@ -186,18 +186,18 @@ The CLI sends the **complete** set of published notes on every run, so the serve
 
 All new tables are additive, so no expand/contract step is needed; each slice is one or a few PRs and leaves the app working.
 
-| # | Slice | Backlog | Rollback |
-|---|---|---|---|
-| 1 | Remove the media API (ADR-0007): controller, requests, service, `MinioService`, jobs, events, scheduled cleanup, routes, tests, baseline entries, OpenAPI; keep `media_mgmt` rows and MinIO objects. Drop `users` and `password_reset_tokens` (`down()` recreates them) | P3-05b | revert commit; `migrate:rollback --step=1` |
-| 2 | Schema: migrations, models, enums (`SkillLevel`, `EvidenceType`, `EvidenceSource`, `GoalStatus`), factories, unit tests | P3-05 | `migrate:rollback` (tables are new and empty) |
-| 3 | API: skills, tags, level history (+ goal auto-achieve hook) | P3-06 | revert |
-| 4 | API: evidence, learning goals | P3-07 | revert |
-| 5 | API: search + public routes (after the P3-04 ADR) | P3-08 | revert; search migration rollback if any |
-| 6 | Contract tests | P3-09 | revert |
-| 7 | Admin UI + dashboard | P3-10, P3-11 | revert |
-| 8 | Public page + docs production build | P3-12 | revert |
-| 9 | Import endpoint + Python CLI | P3-13, P3-14 | revert; imported rows can be removed by `source = obsidian` |
-| 10 | E2E, k6 baseline, QA / PO acceptance, `v2.1.0` | P3-15 … P3-18 | – |
+| # | Slice | Backlog | Rollback | Status (2026-10-08) |
+|---|---|---|---|---|
+| 1 | Remove the media API (ADR-0007): controller, requests, service, `MinioService`, jobs, events, scheduled cleanup, routes, tests, baseline entries, OpenAPI; keep `media_mgmt` rows and MinIO objects. Drop `users` and `password_reset_tokens` (`down()` recreates them) | P3-05b | revert commit; `migrate:rollback --step=1` | done |
+| 2 | Schema: migrations, models, enums (`SkillLevel`, `EvidenceType`, `EvidenceSource`, `GoalStatus`), factories, unit tests | P3-05 | `migrate:rollback` (tables are new and empty) | done |
+| 3 | API: skills, tags, level history (+ goal auto-achieve hook) | P3-06 | revert | done |
+| 4 | API: evidence, learning goals | P3-07 | revert | todo |
+| 5 | API: search + public routes (after the P3-04 ADR) | P3-08 | revert; search migration rollback if any | todo |
+| 6 | Contract tests | P3-09 | revert | todo |
+| 7 | Admin UI + dashboard | P3-10, P3-11 | revert | todo |
+| 8 | Public page + docs production build | P3-12 | revert | todo |
+| 9 | Import endpoint + Python CLI | P3-13, P3-14 | revert; imported rows can be removed by `source = obsidian` | todo |
+| 10 | E2E, k6 baseline, QA / PO acceptance, `v2.1.0` | P3-15 … P3-18 | – | todo |
 
 Upgrade from `v2.0.0`: one `migrate` (slice 1 drop + new tables). No data migration. Backup before deploy as usual (handbook 07). CD is paused, so deploys are manual.
 

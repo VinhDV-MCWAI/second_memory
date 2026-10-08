@@ -14,6 +14,7 @@
 | P4–P11 | coarse | not started | – |
 
 Records written in P2: REQ-001, RFC-001, ADR-0003…0006, PRB-001 (solved), PRB-002 (solved), runbook `content-export.md`.
+Records written in P3 so far: REQ-002 (Ready), RFC-002 (Approved; slice status in its §6), ADR-0007 (remove media API), ADR-0008 (code-first OpenAPI + contract table), ADR-0009 (Postgres search), spike `docs/reports/spikes/search-2026-10-08/`.
 
 ## State
 
