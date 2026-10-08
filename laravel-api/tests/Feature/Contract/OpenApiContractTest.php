@@ -32,6 +32,19 @@ final class OpenApiContractTest extends TestCase
         OpenApiContract::instance()->assertMatches($response, 'GET');
     }
 
+    public function test_a_paginated_list_must_carry_links_and_meta(): void
+    {
+        $response = $this->call('GET', '/api/admin/tag/list', ['per_page' => 1], $this->loginAsOwner(AdminMst::factory()->create()));
+        $response->assertJsonPath('data.meta.per_page', 1)->assertJsonPath('data.links.prev', null);
+        $body = $response->json();
+        unset($body['data']['meta']);
+        $response->baseResponse->setContent((string) json_encode($body));
+
+        $this->expectException(AssertionFailedError::class);
+        $this->expectExceptionMessageMatches('#GET /admin/tag/list → 200 does not match openapi.json#');
+        OpenApiContract::instance()->assertMatches($response, 'GET');
+    }
+
     public function test_an_undocumented_status_is_rejected(): void
     {
         $response = $this->call('GET', '/api/public/skills');

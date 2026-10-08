@@ -724,6 +724,29 @@ export interface components {
       user_name: string;
       password: string;
     };
+    /** PaginationLinks */
+    PaginationLinks: {
+      first: string | null;
+      last: string | null;
+      prev: string | null;
+      next: string | null;
+    };
+    /** PaginationMeta */
+    PaginationMeta: {
+      current_page: number;
+      from: number | null;
+      last_page: number;
+      links: {
+        url: string | null;
+        label: string;
+        page: number | null;
+        active: boolean;
+      }[];
+      path: string;
+      per_page: number;
+      to: number | null;
+      total: number;
+    };
     /** PublicSkillDetailResource */
     PublicSkillDetailResource: {
       name: string;
@@ -1021,6 +1044,8 @@ export interface operations {
           'application/json': {
             data: {
               data: components['schemas']['AdminMstResource'][];
+              links: components['schemas']['PaginationLinks'];
+              meta: components['schemas']['PaginationMeta'];
             };
             error: {
               status: boolean;
@@ -1207,6 +1232,8 @@ export interface operations {
           'application/json': {
             data: {
               data: components['schemas']['AuditLogResource'][];
+              links: components['schemas']['PaginationLinks'];
+              meta: components['schemas']['PaginationMeta'];
             };
             error: {
               status: boolean;
@@ -1465,6 +1492,8 @@ export interface operations {
           'application/json': {
             data: {
               data: components['schemas']['EvidenceResource'][];
+              links: components['schemas']['PaginationLinks'];
+              meta: components['schemas']['PaginationMeta'];
             };
             error: {
               status: boolean;
@@ -1703,6 +1732,8 @@ export interface operations {
           'application/json': {
             data: {
               data: components['schemas']['LearningGoalResource'][];
+              links: components['schemas']['PaginationLinks'];
+              meta: components['schemas']['PaginationMeta'];
             };
             error: {
               status: boolean;
@@ -2031,6 +2062,8 @@ export interface operations {
           'application/json': {
             data: {
               data: components['schemas']['SkillResource'][];
+              links: components['schemas']['PaginationLinks'];
+              meta: components['schemas']['PaginationMeta'];
             };
             error: {
               status: boolean;
@@ -2212,6 +2245,8 @@ export interface operations {
           'application/json': {
             data: {
               data: components['schemas']['SkillLevelResource'][];
+              links: components['schemas']['PaginationLinks'];
+              meta: components['schemas']['PaginationMeta'];
             };
             error: {
               status: boolean;
@@ -2300,6 +2335,8 @@ export interface operations {
           'application/json': {
             data: {
               data: components['schemas']['TagResource'][];
+              links: components['schemas']['PaginationLinks'];
+              meta: components['schemas']['PaginationMeta'];
             };
             error: {
               status: boolean;

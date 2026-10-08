@@ -276,10 +276,18 @@
                                                     "items": {
                                                         "$ref": "#/components/schemas/AdminMstResource"
                                                     }
+                                                },
+                                                "links": {
+                                                    "$ref": "#/components/schemas/PaginationLinks"
+                                                },
+                                                "meta": {
+                                                    "$ref": "#/components/schemas/PaginationMeta"
                                                 }
                                             },
                                             "required": [
-                                                "data"
+                                                "data",
+                                                "links",
+                                                "meta"
                                             ]
                                         },
                                         "error": {
@@ -719,10 +727,18 @@
                                                     "items": {
                                                         "$ref": "#/components/schemas/AuditLogResource"
                                                     }
+                                                },
+                                                "links": {
+                                                    "$ref": "#/components/schemas/PaginationLinks"
+                                                },
+                                                "meta": {
+                                                    "$ref": "#/components/schemas/PaginationMeta"
                                                 }
                                             },
                                             "required": [
-                                                "data"
+                                                "data",
+                                                "links",
+                                                "meta"
                                             ]
                                         },
                                         "error": {
@@ -1368,10 +1384,18 @@
                                                     "items": {
                                                         "$ref": "#/components/schemas/EvidenceResource"
                                                     }
+                                                },
+                                                "links": {
+                                                    "$ref": "#/components/schemas/PaginationLinks"
+                                                },
+                                                "meta": {
+                                                    "$ref": "#/components/schemas/PaginationMeta"
                                                 }
                                             },
                                             "required": [
-                                                "data"
+                                                "data",
+                                                "links",
+                                                "meta"
                                             ]
                                         },
                                         "error": {
@@ -1877,10 +1901,18 @@
                                                     "items": {
                                                         "$ref": "#/components/schemas/LearningGoalResource"
                                                     }
+                                                },
+                                                "links": {
+                                                    "$ref": "#/components/schemas/PaginationLinks"
+                                                },
+                                                "meta": {
+                                                    "$ref": "#/components/schemas/PaginationMeta"
                                                 }
                                             },
                                             "required": [
-                                                "data"
+                                                "data",
+                                                "links",
+                                                "meta"
                                             ]
                                         },
                                         "error": {
@@ -2627,10 +2659,18 @@
                                                     "items": {
                                                         "$ref": "#/components/schemas/SkillResource"
                                                     }
+                                                },
+                                                "links": {
+                                                    "$ref": "#/components/schemas/PaginationLinks"
+                                                },
+                                                "meta": {
+                                                    "$ref": "#/components/schemas/PaginationMeta"
                                                 }
                                             },
                                             "required": [
-                                                "data"
+                                                "data",
+                                                "links",
+                                                "meta"
                                             ]
                                         },
                                         "error": {
@@ -3007,10 +3047,18 @@
                                                     "items": {
                                                         "$ref": "#/components/schemas/SkillLevelResource"
                                                     }
+                                                },
+                                                "links": {
+                                                    "$ref": "#/components/schemas/PaginationLinks"
+                                                },
+                                                "meta": {
+                                                    "$ref": "#/components/schemas/PaginationMeta"
                                                 }
                                             },
                                             "required": [
-                                                "data"
+                                                "data",
+                                                "links",
+                                                "meta"
                                             ]
                                         },
                                         "error": {
@@ -3222,10 +3270,18 @@
                                                     "items": {
                                                         "$ref": "#/components/schemas/TagResource"
                                                     }
+                                                },
+                                                "links": {
+                                                    "$ref": "#/components/schemas/PaginationLinks"
+                                                },
+                                                "meta": {
+                                                    "$ref": "#/components/schemas/PaginationMeta"
                                                 }
                                             },
                                             "required": [
-                                                "data"
+                                                "data",
+                                                "links",
+                                                "meta"
                                             ]
                                         },
                                         "error": {
@@ -4142,6 +4198,117 @@
                     "password"
                 ],
                 "title": "LoginRequest"
+            },
+            "PaginationLinks": {
+                "type": "object",
+                "properties": {
+                    "first": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "last": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "prev": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "next": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    }
+                },
+                "required": [
+                    "first",
+                    "last",
+                    "prev",
+                    "next"
+                ],
+                "title": "PaginationLinks"
+            },
+            "PaginationMeta": {
+                "type": "object",
+                "properties": {
+                    "current_page": {
+                        "type": "integer"
+                    },
+                    "from": {
+                        "type": [
+                            "integer",
+                            "null"
+                        ]
+                    },
+                    "last_page": {
+                        "type": "integer"
+                    },
+                    "links": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "url": {
+                                    "type": [
+                                        "string",
+                                        "null"
+                                    ]
+                                },
+                                "label": {
+                                    "type": "string"
+                                },
+                                "page": {
+                                    "type": [
+                                        "integer",
+                                        "null"
+                                    ]
+                                },
+                                "active": {
+                                    "type": "boolean"
+                                }
+                            },
+                            "required": [
+                                "url",
+                                "label",
+                                "page",
+                                "active"
+                            ]
+                        }
+                    },
+                    "path": {
+                        "type": "string"
+                    },
+                    "per_page": {
+                        "type": "integer"
+                    },
+                    "to": {
+                        "type": [
+                            "integer",
+                            "null"
+                        ]
+                    },
+                    "total": {
+                        "type": "integer"
+                    }
+                },
+                "required": [
+                    "current_page",
+                    "from",
+                    "last_page",
+                    "links",
+                    "path",
+                    "per_page",
+                    "to",
+                    "total"
+                ],
+                "title": "PaginationMeta"
             },
             "PublicSkillDetailResource": {
                 "type": "object",
