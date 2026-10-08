@@ -41,11 +41,4 @@ return [
     'position' => 'Position',
     'action' => 'Action',
     'author_id' => 'Author ID',
-    'media' => [
-        'not_found' => 'Media not found',
-        'name_or_parent_required' => 'Either name or new_parent_path must be provided',
-        'file_not_found_temp' => 'File not found in temporary storage: :key',
-        'move_temp_failed' => 'Failed to move file from temp to official storage.',
-        'move_folder_recursion' => 'Cannot move folder into itself or its subfolder',
-    ],
 ];
