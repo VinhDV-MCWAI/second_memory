@@ -10,7 +10,7 @@
 | P0 Baseline | P0-01…P0-09 | done locally; P0-02 push/PRs, P0-06 GitHub board, P0-09 remote cleanup wait for the owner | `v1.0.0` (local tag) |
 | P1 Handbook | P1-01…P1-14 | done | `v1.1.0` (local tag) |
 | P2 Slim down | P2-01…P2-13 | done | `v2.0.0` (local tag) |
-| P3 Skill Ledger | P3-00…P3-18 + P3-05b | P3-00…P3-04 done; **next: P3-05b media removal** | `v2.1.0` |
+| P3 Skill Ledger | P3-00…P3-18 + P3-05b | P3-00…P3-04, P3-05b done; **next: P3-05 schema** | `v2.1.0` |
 | P4–P11 | coarse | not started | – |
 
 Records written in P2: REQ-001, RFC-001, ADR-0003…0006, PRB-001 (solved), PRB-002 (solved), runbook `content-export.md`.
@@ -19,7 +19,7 @@ Records written in P2: REQ-001, RFC-001, ADR-0003…0006, PRB-001 (solved), PRB-
 
 | | |
 |---|---|
-| Active phase | P3 Skill Ledger (P0–P2 merged into `developer` and `main` via PRs #12, #13). P3-00…P3-04 done; next P3-05b |
+| Active phase | P3 Skill Ledger (P0–P2 merged into `developer` and `main` via PRs #12, #13). P3-00…P3-04, P3-05b done; next P3-05 |
 | Working branch | `feature/p3-skill-ledger` from `developer` at `90d48ee` (PR #12 merge). `refactor/p2-slim-down` merged and deleted (origin by `cleanup-branch.yml`, local by me). Local branches: `developer`, `main`, `feature/p3-skill-ledger`. Tags `v1.0.0` … `v2.0.0` exist locally only |
 | Old refactor | Frozen (`.claude/refactor/PLAN.md`, `PROGRESS.md`) |
 | Owner defaults | 8–10 h/week, backend role, §4 remove list accepted, Obsidian vault private (see analysis §9) |
@@ -46,6 +46,7 @@ Records written in P2: REQ-001, RFC-001, ADR-0003…0006, PRB-001 (solved), PRB-
 - **Auth by curl** (no browser): `GET /api/sanctum/csrf-cookie` with a `Referer: http://localhost:81/…` header and a cookie jar, then send the URL-decoded `XSRF-TOKEN` cookie as `X-XSRF-TOKEN` on POSTs.
 - **Dev DB is off-limits for rollbacks** (owner's rule). Test migrations on the `testing` DB: `docker exec -e DB_DATABASE=testing ml-php php artisan migrate|migrate:rollback --step=1 --force` (no config cache, so the override works; confirm with `tinker --execute 'echo DB::connection()->getDatabaseName();'`).
 - After removing a module: drop its stale entries from `laravel-api/phpstan-baseline.neon` (don't regenerate the whole baseline) and grep FE tests for fixtures that used the removed names.
+- After deleting PHP classes: `docker exec ml-php composer dump-autoload`. The vendor autoload is an optimized classmap, so a deleted class still "exists" until then and `scramble:export` fails with `include(.../User.php): Failed to open stream`.
 
 ## Log
 
@@ -121,6 +122,8 @@ Records written in P2: REQ-001, RFC-001, ADR-0003…0006, PRB-001 (solved), PRB-
 
 - 2026-10-08 — P3-04 done. Spike on a throwaway DB `spike_search` in `ml-postgres` (created, dropped afterwards; dev and testing DBs untouched): PostgreSQL 16.15 has `unaccent` 1.1 + `pg_trgm` 1.6. Full-text on `to_tsvector('simple', f_unaccent(...))` (generated column + GIN): "ky nang" ✓, prefix ✓, typo ✗, p95 0.64 ms at 1.5k rows / 24 ms at 150k. Trigram (`word_similarity`): typos ✓ only at threshold 0.4 (transposition "postgersql" = 0.47), p95 20 ms / 2.25 s at 150k. `unaccent` maps đ → d; "ký/kỳ/kỹ" all → "ky" (extra matches, accepted). Scripts + results: `docs/reports/spikes/search-2026-10-08/`. `docs/adr/0009-postgres-search.md`: FTS first, trigram fallback when nothing matches, response field `match: exact|fuzzy` (added to the ADR-0008 contract); `search_text` generated column + 2 GIN indexes per searchable table; `f_unaccent` is the only SQL function (normalization only); re-evaluate above ~50k rows or p95 > 100 ms.
 
+- 2026-10-08 — P3-05b done (RFC-002 slice 1). Baseline `make verify` exit 0 (79 / Vitest 53 / 89.35 %). `02af8d4` refactor(api)! — media API removed per ADR-0007 (26 files + `routes/api/management.php`, upload channel, daily schedule, `minio_*` disks, 33 baseline entries; −3.9k lines; OpenAPI 17 → 9 paths, FE types regenerated, FE still typechecks — slice 6 had removed the FE side). `8bb6012` build(deps) — `aws/aws-sdk-php`, `league/flysystem-aws-s3-v3` removed (`composer audit` clean). `c61cd63` refactor(api) — migration `2026_10_08_100001` drops `users` + `password_reset_tokens` (`down()` recreates only those two; `sessions` stays), `User` model + factory, `web` guard, `users` provider, password broker deleted, default guard `admin`, last broadcast channel removed. Migration up → down → up on `testing` OK; dev migrated forward (both tables were empty). Curl through nginx: csrf 204, me 401, bad login 401. First full verify failed in `scramble:export` on the stale optimized classmap (deleted `User.php`) → `composer dump-autoload`, then `make verify` exit 0: Pint 160 files, Larastan ✓, openapi-check ✓, backend 79 passed, Vitest 53, coverage 89.35 %. Left for P4: unused `AWS_*` lines in `laravel-api/.env.example` / `setup-env.sh`, idle `ml-queue` / `ml-reverb` and `laravel/reverb`. Noticed, not in scope: `app/Exceptions/GoogleDrive*Exception` look unused (check in P4 or a clean-up task).
+
 ## Next step
 
-**P3-05b** (RFC-002 slice 1, first code of P3): baseline `make verify`, then remove the media API per ADR-0007 — delete the 26 files listed by `grep -rl -i "media\|upload" laravel-api/app laravel-api/routes/api` (controller, requests incl. `Http/Requests/Media/`, resources, model, repository, service, `MinioService`, jobs, events `MediaMoveCompleted` / `UploadStatusUpdated`, commands + their schedule in `routes/console.php`, `MediaConst`, `UploadStatus`, `IsImageMedia`, media routes in `routes/api/management.php`), check config/broadcast channels / `filesystems.php` references, stale PHPStan baseline entries, `make openapi`. Keep `media_mgmt` table + MinIO data. Separate commit: migration dropping `users` + `password_reset_tokens` (`down()` recreates; keep `sessions`), test it up → down → up on `testing`. Then `make verify`, docs (`laravel-api/CLAUDE.md` media lines). Then P3-05 (schema).
+**P3-05** (RFC-002 slice 2): schema for the Skill Ledger. Migrations (`skill`, `skill_level`, `tag`, `skill_tag`, `evidence`, `evidence_skill`, `evidence_tag`, `learning_goal`) exactly as RFC-002 §4.2 + ADR-0008 field limits; unique `lower(name)` indexes on `skill` / `tag`; `skill.slug` unique; `evidence.external_key` unique nullable; FKs with cascade per RFC (skill delete cascades levels, goals, pivots; evidence/tag delete cascades pivots). The search pieces of ADR-0009 (`unaccent`, `pg_trgm`, `f_unaccent`, generated `search_text` + 2 GIN indexes on `skill`, `evidence`, `learning_goal`) can go in the same slice or in P3-08 — prefer a separate migration in P3-08 so the schema slice stays small. Models under `app/Models/Ledger/`, enums `SkillLevel` (1–4 with labels), `EvidenceType`, `EvidenceSource`, `GoalStatus`, factories, unit tests (enum labels, relations, cascade). Up → down → up on `testing`. Then P3-06.
