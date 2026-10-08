@@ -59,4 +59,5 @@ return [
     'target_level' => 'Target level',
     'target_date' => 'Target date',
     'note' => 'Note',
+    'search_query' => 'Search text',
 ];

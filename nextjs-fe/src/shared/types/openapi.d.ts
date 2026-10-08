@@ -288,6 +288,57 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/public/skills': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Public skills, by name */
+    get: operations['publicSkill.list'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/public/skills/{slug}': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** One public skill with its level history dates and public evidence; private or missing → 404 */
+    get: operations['publicSkill.show'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/admin/search': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Search skills, goals and evidence (accents and case ignored; typo fallback when nothing matches) */
+    get: operations['search.search'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/admin/skill/list': {
     parameters: {
       query?: never;
@@ -603,6 +654,46 @@ export interface components {
       user_name: string;
       password: string;
     };
+    /** PublicSkillDetailResource */
+    PublicSkillDetailResource: {
+      name: string;
+      slug: string;
+      category: string;
+      current_level: number;
+      /** @enum {string} */
+      current_level_label: 'Learning' | 'Can use with help' | 'Independent' | 'Can teach others';
+      tags: string[];
+      description: string | null;
+      history: {
+        level: number;
+        /** @enum {string} */
+        level_label: 'Learning' | 'Can use with help' | 'Independent' | 'Can teach others';
+        changed_on: string;
+      }[];
+      evidence: {
+        type: components['schemas']['EvidenceType'];
+        title: string;
+        url: string;
+        occurred_on: string;
+        summary: string | null;
+      }[];
+    };
+    /** PublicSkillResource */
+    PublicSkillResource: {
+      name: string;
+      slug: string;
+      category: string;
+      current_level: number;
+      /** @enum {string} */
+      current_level_label: 'Learning' | 'Can use with help' | 'Independent' | 'Can teach others';
+      tags: string[];
+    };
+    /**
+     * SearchMatch
+     * @description Which search mode answered (ADR-0009): the UI shows "did you mean" wording for fuzzy results.
+     * @enum {string}
+     */
+    SearchMatch: 'exact' | 'fuzzy';
     /**
      * SkillLevel
      * @description The fixed four-step skill scale (REQ-002 Q1).
@@ -1305,6 +1396,92 @@ export interface operations {
         };
         content: {
           'application/json': Record<string, never>;
+        };
+      };
+      401: components['responses']['AuthenticationException'];
+      422: components['responses']['ValidationException'];
+    };
+  };
+  'publicSkill.list': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Array of `PublicSkillResource` */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            data: components['schemas']['PublicSkillResource'][];
+          };
+        };
+      };
+    };
+  };
+  'publicSkill.show': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        slug: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description `PublicSkillDetailResource` */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            data: components['schemas']['PublicSkillDetailResource'];
+          };
+        };
+      };
+    };
+  };
+  'search.search': {
+    parameters: {
+      query: {
+        q: string;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            match: components['schemas']['SearchMatch'];
+            skills: {
+              id: number;
+              title: string;
+              snippet: string | null;
+            }[];
+            goals: {
+              id: number;
+              title: string;
+              snippet: string | null;
+            }[];
+            evidence: {
+              id: number;
+              title: string;
+              snippet: string | null;
+            }[];
+          };
         };
       };
       401: components['responses']['AuthenticationException'];

@@ -8,6 +8,8 @@ use App\Constants\LedgerConst;
 use App\Models\Ledger\Skill;
 use App\Repositories\CrudRepository;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Str;
 
 class SkillRepository extends CrudRepository
@@ -49,6 +51,37 @@ class SkillRepository extends CrudRepository
         $this->syncTags($id, $payload);
 
         return $id;
+    }
+
+    /**
+     * @return Collection<int, Skill>
+     */
+    public function publicSkills(): Collection
+    {
+        /** @var Collection<int, Skill> */
+        return $this->model->newQuery()
+            ->where('is_public', true)
+            ->with('tags:id,name')
+            ->orderBy('name')
+            ->get();
+    }
+
+    /**
+     * @throws ModelNotFoundException when the skill is missing or private
+     */
+    public function publicSkillBySlug(string $slug): Skill
+    {
+        /** @var Skill */
+        return $this->model->newQuery()
+            ->where('is_public', true)
+            ->where('slug', $slug)
+            ->with([
+                'tags:id,name',
+                'levels' => fn ($levels) => $levels->orderByDesc('changed_on')->orderByDesc('id'),
+                // Hidden imported notes keep is_public but carry unpublished_at (RFC-002 §4.5)
+                'evidence' => fn ($evidence) => $evidence->where('is_public', true)->whereNull('unpublished_at')->orderByDesc('occurred_on'),
+            ])
+            ->firstOrFail();
     }
 
     public function currentLevel(int $skillId): int

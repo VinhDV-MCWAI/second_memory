@@ -1210,6 +1210,204 @@
                 }
             }
         },
+        "/public/skills": {
+            "get": {
+                "operationId": "publicSkill.list",
+                "summary": "Public skills, by name",
+                "tags": [
+                    "PublicSkill"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Array of `PublicSkillResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/PublicSkillResource"
+                                            }
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": []
+            }
+        },
+        "/public/skills/{slug}": {
+            "get": {
+                "operationId": "publicSkill.show",
+                "summary": "One public skill with its level history dates and public evidence; private or missing \u2192 404",
+                "tags": [
+                    "PublicSkill"
+                ],
+                "parameters": [
+                    {
+                        "name": "slug",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "`PublicSkillDetailResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/PublicSkillDetailResource"
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": []
+            }
+        },
+        "/admin/search": {
+            "get": {
+                "operationId": "search.search",
+                "summary": "Search skills, goals and evidence (accents and case ignored; typo fallback when nothing matches)",
+                "tags": [
+                    "Search"
+                ],
+                "parameters": [
+                    {
+                        "name": "q",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "minLength": 2,
+                            "maxLength": 100
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "match": {
+                                            "$ref": "#/components/schemas/SearchMatch"
+                                        },
+                                        "skills": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "integer"
+                                                    },
+                                                    "title": {
+                                                        "type": "string"
+                                                    },
+                                                    "snippet": {
+                                                        "type": [
+                                                            "string",
+                                                            "null"
+                                                        ]
+                                                    }
+                                                },
+                                                "required": [
+                                                    "id",
+                                                    "title",
+                                                    "snippet"
+                                                ]
+                                            }
+                                        },
+                                        "goals": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "integer"
+                                                    },
+                                                    "title": {
+                                                        "type": "string"
+                                                    },
+                                                    "snippet": {
+                                                        "type": [
+                                                            "string",
+                                                            "null"
+                                                        ]
+                                                    }
+                                                },
+                                                "required": [
+                                                    "id",
+                                                    "title",
+                                                    "snippet"
+                                                ]
+                                            }
+                                        },
+                                        "evidence": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "integer"
+                                                    },
+                                                    "title": {
+                                                        "type": "string"
+                                                    },
+                                                    "snippet": {
+                                                        "type": [
+                                                            "string",
+                                                            "null"
+                                                        ]
+                                                    }
+                                                },
+                                                "required": [
+                                                    "id",
+                                                    "title",
+                                                    "snippet"
+                                                ]
+                                            }
+                                        }
+                                    },
+                                    "required": [
+                                        "match",
+                                        "skills",
+                                        "goals",
+                                        "evidence"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    }
+                }
+            }
+        },
         "/admin/skill/list": {
             "get": {
                 "operationId": "skill.list",
@@ -2344,6 +2542,167 @@
                     "password"
                 ],
                 "title": "LoginRequest"
+            },
+            "PublicSkillDetailResource": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "slug": {
+                        "type": "string"
+                    },
+                    "category": {
+                        "type": "string"
+                    },
+                    "current_level": {
+                        "type": "integer"
+                    },
+                    "current_level_label": {
+                        "type": "string",
+                        "enum": [
+                            "Learning",
+                            "Can use with help",
+                            "Independent",
+                            "Can teach others"
+                        ]
+                    },
+                    "tags": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "description": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "history": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "level": {
+                                    "type": "integer"
+                                },
+                                "level_label": {
+                                    "type": "string",
+                                    "enum": [
+                                        "Learning",
+                                        "Can use with help",
+                                        "Independent",
+                                        "Can teach others"
+                                    ]
+                                },
+                                "changed_on": {
+                                    "type": "string"
+                                }
+                            },
+                            "required": [
+                                "level",
+                                "level_label",
+                                "changed_on"
+                            ]
+                        }
+                    },
+                    "evidence": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "type": {
+                                    "$ref": "#/components/schemas/EvidenceType"
+                                },
+                                "title": {
+                                    "type": "string"
+                                },
+                                "url": {
+                                    "type": "string"
+                                },
+                                "occurred_on": {
+                                    "type": "string"
+                                },
+                                "summary": {
+                                    "type": [
+                                        "string",
+                                        "null"
+                                    ]
+                                }
+                            },
+                            "required": [
+                                "type",
+                                "title",
+                                "url",
+                                "occurred_on",
+                                "summary"
+                            ]
+                        }
+                    }
+                },
+                "required": [
+                    "name",
+                    "slug",
+                    "category",
+                    "current_level",
+                    "current_level_label",
+                    "tags",
+                    "description",
+                    "history",
+                    "evidence"
+                ],
+                "title": "PublicSkillDetailResource"
+            },
+            "PublicSkillResource": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "slug": {
+                        "type": "string"
+                    },
+                    "category": {
+                        "type": "string"
+                    },
+                    "current_level": {
+                        "type": "integer"
+                    },
+                    "current_level_label": {
+                        "type": "string",
+                        "enum": [
+                            "Learning",
+                            "Can use with help",
+                            "Independent",
+                            "Can teach others"
+                        ]
+                    },
+                    "tags": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "required": [
+                    "name",
+                    "slug",
+                    "category",
+                    "current_level",
+                    "current_level_label",
+                    "tags"
+                ],
+                "title": "PublicSkillResource"
+            },
+            "SearchMatch": {
+                "type": "string",
+                "description": "Which search mode answered (ADR-0009): the UI shows \"did you mean\" wording for fuzzy results.\n",
+                "enum": [
+                    "exact",
+                    "fuzzy"
+                ],
+                "title": "SearchMatch"
             },
             "SkillLevel": {
                 "type": "integer",

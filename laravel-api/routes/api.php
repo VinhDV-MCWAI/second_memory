@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use App\Http\Controllers\Audit\AuditLogController;
 use App\Http\Controllers\Custom\CredentialController;
+use App\Http\Controllers\Public\PublicSkillController;
 use Illuminate\Support\Facades\Broadcast;
 use Illuminate\Support\Facades\Route;
 
@@ -32,4 +33,12 @@ Route::prefix('admin')
                         Route::get('audit-log/list', [AuditLogController::class, 'list']);
                     });
             });
+    });
+
+// Public, read-only Skill Ledger (RFC-002 §4.3): no session, GET only, rate-limited per IP
+Route::prefix('public')
+    ->middleware(['api.response', 'throttle:public'])
+    ->group(function () {
+        Route::get('skills', [PublicSkillController::class, 'list']);
+        Route::get('skills/{slug}', [PublicSkillController::class, 'show']);
     });

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use App\Http\Controllers\Ledger\EvidenceController;
 use App\Http\Controllers\Ledger\LearningGoalController;
+use App\Http\Controllers\Ledger\SearchController;
 use App\Http\Controllers\Ledger\SkillController;
 use App\Http\Controllers\Ledger\SkillLevelController;
 use App\Http\Controllers\Ledger\TagController;
@@ -25,3 +26,6 @@ foreach ([
 // Level history is append-only (REQ-002 US-1)
 Route::get('skill-level/list', [SkillLevelController::class, 'list']);
 Route::post('skill-level/store', [SkillLevelController::class, 'store']);
+
+// One search box over skills, goals and evidence (REQ-002 US-5, ADR-0009)
+Route::get('search', [SearchController::class, 'search']);
