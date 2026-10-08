@@ -70,22 +70,9 @@ run_variant() {
   perf_flush_sessions
 }
 
+# Persistent connections are in the code since API-02, but config:cache bakes them off (API-06):
+# until that is fixed the *-cached variants run without them
 run_variant mount "$PERF_APP" no
 run_variant mount-cached "$PERF_APP" yes
 run_variant mount-cached-novalidate "$PERF_APP" yes -d opcache.validate_timestamps=0
 run_variant copy-cached "$WORK/app" yes
-
-# Persistent PDO connections, patched into the copy only (the repo config is not changed): one
-# PostgreSQL backend per server worker instead of a new one per request.
-docker exec ml-php sed -i "s/'sslmode' => 'prefer',/'sslmode' => 'prefer', 'options' => [PDO::ATTR_PERSISTENT => true],/" \
-  "$WORK/app/config/database.php"
-docker exec ml-php grep -q ATTR_PERSISTENT "$WORK/app/config/database.php" || { echo "persistent patch did not apply" >&2; exit 1; }
-run_variant copy-cached-persistent "$WORK/app" yes
-
-echo
-echo "======== load (ledger-baseline.js, 10 users, 8 workers) on copy-cached-persistent"
-read -ra persistent_env <<<"$(cache_env copy-cached-persistent)"
-perf_start_server 8 "$WORK/app" "${persistent_env[@]}"
-perf_k6 ledger-baseline.js load-persistent -e SCENARIO=load || echo "(thresholds crossed, see above)"
-perf_stop_server
-perf_flush_sessions
