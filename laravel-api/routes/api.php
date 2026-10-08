@@ -28,7 +28,6 @@ Route::prefix('admin')
                 Route::middleware('auth.admin')
                     ->group(function () {
                         Route::group([], base_path('routes/api/master.php'));
-                        Route::group([], base_path('routes/api/management.php'));
                         Route::get('audit-log/list', [AuditLogController::class, 'list']);
                     });
             });
