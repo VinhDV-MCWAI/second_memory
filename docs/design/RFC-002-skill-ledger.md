@@ -232,7 +232,7 @@ Upgrade from `v2.0.0`: one `migrate` (slice 1 drop + new tables). No data migrat
 | # | Question | Decided in |
 |---|---|---|
 | 1 | OpenAPI-first spec or keep code-first export + contract tests? | **Decided:** [ADR-0008](../adr/0008-code-first-openapi-contract.md) — reviewed contract table, code-first spec, response validation |
-| 2 | Postgres FTS with `unaccent` (needs an immutable wrapper function for an indexed column) vs `pg_trgm` vs both | P3-04 ADR |
+| 2 | Postgres FTS with `unaccent` (needs an immutable wrapper function for an indexed column) vs `pg_trgm` vs both | **Decided:** [ADR-0009](../adr/0009-postgres-search.md) — full-text on unaccented generated column, trigram fallback |
 | 3 | How the CLI authenticates (Sanctum personal access token with an `import` ability vs a static token) | P3-13 ADR |
 | 4 | Fixed list of categories or free text? Proposal: free text (≤ 50 chars) with suggestions from existing values; change later if it gets messy | P3-05 (default: free text) |
 

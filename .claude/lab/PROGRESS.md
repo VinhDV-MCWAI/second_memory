@@ -10,7 +10,7 @@
 | P0 Baseline | P0-01…P0-09 | done locally; P0-02 push/PRs, P0-06 GitHub board, P0-09 remote cleanup wait for the owner | `v1.0.0` (local tag) |
 | P1 Handbook | P1-01…P1-14 | done | `v1.1.0` (local tag) |
 | P2 Slim down | P2-01…P2-13 | done | `v2.0.0` (local tag) |
-| P3 Skill Ledger | P3-00…P3-18 + P3-05b | P3-00…P3-03 done; **next: P3-04 search spike** | `v2.1.0` |
+| P3 Skill Ledger | P3-00…P3-18 + P3-05b | P3-00…P3-04 done; **next: P3-05b media removal** | `v2.1.0` |
 | P4–P11 | coarse | not started | – |
 
 Records written in P2: REQ-001, RFC-001, ADR-0003…0006, PRB-001 (solved), PRB-002 (solved), runbook `content-export.md`.
@@ -19,7 +19,7 @@ Records written in P2: REQ-001, RFC-001, ADR-0003…0006, PRB-001 (solved), PRB-
 
 | | |
 |---|---|
-| Active phase | P3 Skill Ledger (P0–P2 merged into `developer` and `main` via PRs #12, #13). P3-00…P3-03 done; next P3-04 |
+| Active phase | P3 Skill Ledger (P0–P2 merged into `developer` and `main` via PRs #12, #13). P3-00…P3-04 done; next P3-05b |
 | Working branch | `feature/p3-skill-ledger` from `developer` at `90d48ee` (PR #12 merge). `refactor/p2-slim-down` merged and deleted (origin by `cleanup-branch.yml`, local by me). Local branches: `developer`, `main`, `feature/p3-skill-ledger`. Tags `v1.0.0` … `v2.0.0` exist locally only |
 | Old refactor | Frozen (`.claude/refactor/PLAN.md`, `PROGRESS.md`) |
 | Owner defaults | 8–10 h/week, backend role, §4 remove list accepted, Obsidian vault private (see analysis §9) |
@@ -119,6 +119,8 @@ Records written in P2: REQ-001, RFC-001, ADR-0003…0006, PRB-001 (solved), PRB-
 
 - 2026-10-08 — P3-03 done. `docs/adr/0008-code-first-openapi-contract.md`: "OpenAPI-first" = contract table reviewed in the RFC/ADR before code, spec still exported by Scramble, feature tests validate responses against `openapi.json` in P3-09 (proposed `osteel/openapi-httpfoundation-testing`, to confirm against Scramble's 3.1 output). Field-level Skill Ledger contract is in the ADR. Found on the way: (1) the OpenAPI drift check was CI-only, so with CI paused nothing checked it → `1567c02` build: `make openapi-check` (regenerate + `git diff --exit-code`) is now part of `make verify`; verify skill text updated (it still mentioned the long-gone `RefreshTokenApiTest` exclusions). (2) `5c9be6b` fix(api): Scramble description still told readers to use the removed `access_token` JWT cookie → now the Sanctum flow. `make openapi-check` exit 0 after both. No full `/verify` (no app code changed besides the config string).
 
+- 2026-10-08 — P3-04 done. Spike on a throwaway DB `spike_search` in `ml-postgres` (created, dropped afterwards; dev and testing DBs untouched): PostgreSQL 16.15 has `unaccent` 1.1 + `pg_trgm` 1.6. Full-text on `to_tsvector('simple', f_unaccent(...))` (generated column + GIN): "ky nang" ✓, prefix ✓, typo ✗, p95 0.64 ms at 1.5k rows / 24 ms at 150k. Trigram (`word_similarity`): typos ✓ only at threshold 0.4 (transposition "postgersql" = 0.47), p95 20 ms / 2.25 s at 150k. `unaccent` maps đ → d; "ký/kỳ/kỹ" all → "ky" (extra matches, accepted). Scripts + results: `docs/reports/spikes/search-2026-10-08/`. `docs/adr/0009-postgres-search.md`: FTS first, trigram fallback when nothing matches, response field `match: exact|fuzzy` (added to the ADR-0008 contract); `search_text` generated column + 2 GIN indexes per searchable table; `f_unaccent` is the only SQL function (normalization only); re-evaluate above ~50k rows or p95 > 100 ms.
+
 ## Next step
 
-**P3-04**: search spike + ADR-0009. On the `testing` DB (never the dev DB for experiments that drop things), seed REQ-002 volume (100 skills, 1,000 evidence, 500 notes; Vietnamese titles), compare: (a) `tsvector` with `unaccent` via an immutable wrapper function + GIN index (`simple` config, Vietnamese has no stemmer), (b) `pg_trgm` GIN on unaccented lower text (typos), (c) both. Measure p95 with `EXPLAIN ANALYZE` / a timing loop; check "ky nang" → "Kỹ năng" and one typo. Check that the extensions are available in the `ml-postgres` image. Write the spike note (`docs/reports/spikes/` or in the ADR) and the ADR; answer RFC-002 §9 Q2. Then P3-05b.
+**P3-05b** (RFC-002 slice 1, first code of P3): baseline `make verify`, then remove the media API per ADR-0007 — delete the 26 files listed by `grep -rl -i "media\|upload" laravel-api/app laravel-api/routes/api` (controller, requests incl. `Http/Requests/Media/`, resources, model, repository, service, `MinioService`, jobs, events `MediaMoveCompleted` / `UploadStatusUpdated`, commands + their schedule in `routes/console.php`, `MediaConst`, `UploadStatus`, `IsImageMedia`, media routes in `routes/api/management.php`), check config/broadcast channels / `filesystems.php` references, stale PHPStan baseline entries, `make openapi`. Keep `media_mgmt` table + MinIO data. Separate commit: migration dropping `users` + `password_reset_tokens` (`down()` recreates; keep `sessions`), test it up → down → up on `testing`. Then `make verify`, docs (`laravel-api/CLAUDE.md` media lines). Then P3-05 (schema).
