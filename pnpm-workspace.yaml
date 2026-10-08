@@ -11,9 +11,10 @@ allowBuilds:
   sharp: true
   unrs-resolver: true
 
-# One exact Tiptap 3 version across both apps (editor and docs renderer); extension
-# types break when two @tiptap/core copies are installed.
 overrides:
-  "@tiptap/core": 3.20.4
-  "@tiptap/pm": 3.20.4
-  "@tiptap/react": 3.20.4
+  # Security: solid-js (via @tanstack/react-query-devtools) pins a vulnerable seroval
+  # (GHSA-jp82-f5mq-hwhp, GHSA-p6vx-979v-rg4c). Drop once solid-js ships >= 1.6.3.
+  seroval: ^1.6.8
+  seroval-plugins: ^1.6.8
+  # 7.1 adds React Compiler lint errors (mostly in the auth provider); upgrade together with those fixes.
+  eslint-plugin-react-hooks: 7.0.1

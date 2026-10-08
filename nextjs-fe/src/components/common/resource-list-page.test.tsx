@@ -15,7 +15,7 @@ vi.mock('@/shared/utils/notification', () => ({
   notification: { success: vi.fn(), error: vi.fn() },
 }));
 
-const ENDPOINT = '/admin/banner-mgmt';
+const ENDPOINT = '/admin/admin-mst';
 
 interface Row {
   id: number;
@@ -37,7 +37,7 @@ const renderPage = () => {
     <Wrapper>
       <ResourceListPage<Row>
         endpoint={ENDPOINT}
-        entity={{ one: 'banner', many: 'banners' }}
+        entity={{ one: 'admin', many: 'admins' }}
         columns={columns}
         filterFields={[]}
         searchFields={[]}

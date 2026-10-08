@@ -19,7 +19,12 @@
     </source>
     <php>
         <!-- force="true": container/CI env vars must not override these, otherwise
-             RefreshDatabase would run against the main development database. -->
+             RefreshDatabase would run against the main development database.
+             Laravel reads $_SERVER before $_ENV, and the ml-php container exports APP_ENV,
+             DB_DATABASE and BROADCAST_CONNECTION, so those three are also set as <server>. -->
+        <server name="APP_ENV" value="testing" force="true"/>
+        <server name="BROADCAST_CONNECTION" value="log" force="true"/>
+        <server name="DB_DATABASE" value="testing" force="true"/>
         <env name="APP_ENV" value="testing" force="true"/>
         <env name="APP_MAINTENANCE_DRIVER" value="file" force="true"/>
         <env name="BCRYPT_ROUNDS" value="4" force="true"/>
@@ -29,6 +34,9 @@
         <env name="MAIL_MAILER" value="array" force="true"/>
         <env name="PULSE_ENABLED" value="false" force="true"/>
         <env name="QUEUE_CONNECTION" value="sync" force="true"/>
+        <!-- Separate Redis DBs: tests call Redis::flushdb() and must not wipe the dev DBs (0, 1). -->
+        <env name="REDIS_DB" value="14" force="true"/>
+        <env name="REDIS_CACHE_DB" value="15" force="true"/>
         <env name="SESSION_DRIVER" value="array" force="true"/>
         <env name="TELESCOPE_ENABLED" value="false" force="true"/>
     </php>

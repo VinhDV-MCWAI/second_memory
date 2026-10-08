@@ -1,0 +1,41 @@
+# Weekly grouped dependency PRs into developer (see Git flow in CLAUDE.md).
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: /
+    target-branch: developer
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 5
+    groups:
+      npm-security:
+        applies-to: security-updates
+        patterns: ["*"]
+      npm-minor-patch:
+        applies-to: version-updates
+        update-types: [minor, patch]
+        patterns: ["*"]
+
+  - package-ecosystem: composer
+    directory: /laravel-api
+    target-branch: developer
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 5
+    groups:
+      composer-security:
+        applies-to: security-updates
+        patterns: ["*"]
+      composer-minor-patch:
+        applies-to: version-updates
+        update-types: [minor, patch]
+        patterns: ["*"]
+
+  - package-ecosystem: github-actions
+    directory: /
+    target-branch: developer
+    schedule:
+      interval: monthly
+    groups:
+      actions:
+        patterns: ["*"]

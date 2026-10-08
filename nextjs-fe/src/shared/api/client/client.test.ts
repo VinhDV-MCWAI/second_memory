@@ -1,11 +1,11 @@
-import { describe, expect, it, beforeEach } from 'vitest';
+import { describe, expect, it, afterEach } from 'vitest';
 import { http, HttpResponse } from 'msw';
 import { apiClient } from './client';
 import { API_ENDPOINTS } from '@/shared/api/endpoints';
 import { apiUrl, envelope, errorEnvelope, server } from '@/test/server';
 
 describe('apiClient', () => {
-  beforeEach(() => localStorage.clear());
+  afterEach(() => apiClient.onUnauthorized(null));
 
   it('returns the response envelope and sends query params', async () => {
     let seenPage: string | null = null;
@@ -37,59 +37,60 @@ describe('apiClient', () => {
     });
   });
 
-  it('refreshes the session once on 401 and retries the request', async () => {
-    let calls = 0;
-    let refreshes = 0;
+  it('calls the unauthorized handler on a 401 from a normal endpoint', async () => {
+    let signedOut = 0;
+    apiClient.onUnauthorized(() => {
+      signedOut += 1;
+    });
     server.use(
-      http.get(apiUrl('/admin/credential/me'), () => {
-        calls += 1;
-        return calls === 1
-          ? HttpResponse.json(errorEnvelope(401, 'expired'), { status: 401 })
-          : HttpResponse.json(envelope({ id: 7 }));
-      }),
-      http.post(apiUrl(API_ENDPOINTS.AUTH.REFRESH), () => {
-        refreshes += 1;
-        return HttpResponse.json(envelope(null));
-      }),
+      http.get(apiUrl('/admin/role-mst/list'), () =>
+        HttpResponse.json(errorEnvelope(401, 'Unauthorized Access'), { status: 401 }),
+      ),
     );
 
-    const response = await apiClient.get<{ id: number }>('/admin/credential/me');
-
-    expect(response.data).toEqual({ id: 7 });
-    expect(refreshes).toBe(1);
-    expect(calls).toBe(2);
+    await expect(apiClient.get('/admin/role-mst/list')).rejects.toMatchObject({
+      response: { status: 401 },
+    });
+    expect(signedOut).toBe(1);
   });
 
-  it('does not try to refresh when the login itself returns 401', async () => {
-    let refreshes = 0;
+  it('leaves a 401 from the auth endpoints to the caller', async () => {
+    let signedOut = 0;
+    apiClient.onUnauthorized(() => {
+      signedOut += 1;
+    });
     server.use(
       http.post(apiUrl(API_ENDPOINTS.AUTH.LOGIN), () =>
         HttpResponse.json(errorEnvelope(401, 'bad credentials'), { status: 401 }),
       ),
-      http.post(apiUrl(API_ENDPOINTS.AUTH.REFRESH), () => {
-        refreshes += 1;
-        return HttpResponse.json(envelope(null));
-      }),
+      http.get(apiUrl(API_ENDPOINTS.AUTH.ME), () =>
+        HttpResponse.json(errorEnvelope(401, 'no session'), { status: 401 }),
+      ),
     );
 
     await expect(apiClient.post(API_ENDPOINTS.AUTH.LOGIN, {})).rejects.toMatchObject({
       response: { status: 401 },
     });
-    expect(refreshes).toBe(0);
+    await expect(apiClient.get(API_ENDPOINTS.AUTH.ME)).rejects.toMatchObject({
+      response: { status: 401 },
+    });
+    expect(signedOut).toBe(0);
   });
 
-  it('rejects when the refresh fails', async () => {
+  it('does not sign out on 403 (signed in but not allowed)', async () => {
+    let signedOut = 0;
+    apiClient.onUnauthorized(() => {
+      signedOut += 1;
+    });
     server.use(
-      http.get(apiUrl('/admin/credential/me'), () =>
-        HttpResponse.json(errorEnvelope(401, 'expired'), { status: 401 }),
-      ),
-      http.post(apiUrl(API_ENDPOINTS.AUTH.REFRESH), () =>
-        HttpResponse.json(errorEnvelope(401, 'refresh expired'), { status: 401 }),
+      http.get(apiUrl('/admin/role-mst/list'), () =>
+        HttpResponse.json(errorEnvelope(403, 'Access is forbidden'), { status: 403 }),
       ),
     );
 
-    await expect(apiClient.get('/admin/credential/me')).rejects.toMatchObject({
-      response: { status: 401 },
+    await expect(apiClient.get('/admin/role-mst/list')).rejects.toMatchObject({
+      response: { status: 403 },
     });
+    expect(signedOut).toBe(0);
   });
 });

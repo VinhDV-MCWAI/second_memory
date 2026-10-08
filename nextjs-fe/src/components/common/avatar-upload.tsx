@@ -7,8 +7,8 @@ import { X, Image as ImageIcon } from 'lucide-react';
 import { cn } from '@/shared/utils';
 import toast from 'react-hot-toast';
 import { useTranslations } from 'next-intl';
-import { MIME_TYPE_PREFIX } from '@/shared/config/constant';
-import { UPLOAD_CONFIG } from '@/shared/config/constant';
+import { MIME_TYPE_PREFIX } from '@/shared/config';
+import { UPLOAD_CONFIG } from '@/shared/config';
 import type { AvatarUploadProps } from '@/shared/types/data-table.types';
 
 export function AvatarUpload({

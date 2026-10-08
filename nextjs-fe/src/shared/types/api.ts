@@ -2,8 +2,7 @@
  * API Response Types
  */
 
-import { SORT_ORDER } from '../config/constant';
-import type { DepartmentMst, RoleMst } from './models';
+import { SORT_ORDER } from '@/shared/config';
 
 export interface ApiResponse<T> {
   data: T;
@@ -170,64 +169,6 @@ export interface LoginResponse {
   ttl: number;
   access_token: string;
   _cookie?: string;
-}
-
-export interface AuthUser {
-  id: number;
-  email: string;
-  user_name: string;
-  first_name: string;
-  last_name: string;
-  avatar?: string;
-  roles?: RoleMst[];
-  departments?: DepartmentMst[];
-}
-
-/**
- * API Endpoint Paths Constants
- */
-export const API_PATHS = {
-  LIST: '/list',
-  STORE: '/store',
-  UPDATE: '/update',
-  DELETE: '/delete',
-  PREPARE_UPLOAD: '/prepare-upload',
-  INIT_MULTIPART_UPLOAD: '/init-multipart-upload',
-  GET_MULTIPART_URL: '/get-multipart-url',
-  COMPLETE_MULTIPART_UPLOAD: '/complete-multipart-upload',
-} as const;
-
-/**
- * User Type
- */
-export interface User {
-  id: string | number;
-  email: string;
-  name: string;
-  avatar?: string;
-  role?: string;
-  permissions?: string[];
-  created_at?: string;
-  updated_at?: string;
-}
-
-/**
- * Auth Service Response Types
- */
-export interface LoginApiResponse {
-  user: User;
-  expires_at: number;
-  token?: string;
-}
-
-export interface RefreshApiResponse {
-  expires_at: number;
-  token?: string;
-}
-
-export interface MeApiResponse {
-  user: User;
-  expires_at: number;
 }
 
 /**

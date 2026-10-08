@@ -8,8 +8,6 @@ COMPOSE := docker compose -f docker/docker-compose.yml
 PHP     := docker exec ml-php
 FE      := docker exec ml-nextjs
 DOCS    := docker exec ml-nextjs-docs
-# Same exclusion as CI: these auth cases fail until the manual auth rework (AUTH-GUIDE A13)
-AUTH_TODO := RefreshTokenApiTest::test_t0(04|05|06|19)_
 
 ##@ Environment
 
@@ -45,12 +43,12 @@ sh: ## Shell into a container (make sh s=ml-php)
 ##@ Backend (laravel-api)
 
 .PHONY: test
-test: ## Run backend tests (make test f=CategoryMgmt to filter)
+test: ## Run backend tests (make test f=AdminMst to filter)
 	$(PHP) php artisan test $(if $(f),--filter=$(f),)
 
 .PHONY: test-ci
-test-ci: ## Run backend tests like CI (skips the known auth failures)
-	$(PHP) php artisan test --exclude-filter '$(AUTH_TODO)'
+test-ci: ## Run backend tests like CI
+	$(PHP) php artisan test
 
 .PHONY: pint
 pint: ## Format PHP code

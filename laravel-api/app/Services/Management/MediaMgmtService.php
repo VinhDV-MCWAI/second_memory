@@ -12,6 +12,7 @@ use App\Models\Management\MediaMgmt;
 use App\Repositories\Management\MediaMgmtRepository;
 use App\Services\MinioService;
 use Exception;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 
 class MediaMgmtService
@@ -262,7 +263,7 @@ class MediaMgmtService
         $isHeavyFile = $fileSize >= MediaConst::SIZE_100MB;
 
         // Get current user ID for audit
-        $currentUserId = request()->attributes->get('current_admin_id');
+        $currentUserId = Auth::id();
 
         $data = [
             'workspace_id' => $workspaceId,

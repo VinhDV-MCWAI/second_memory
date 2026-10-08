@@ -5,11 +5,11 @@
 | Path | Stack | Role | Details |
 |---|---|---|---|
 | `laravel-api/` | PHP, Laravel, PostgreSQL, Redis, Reverb, MinIO (S3) | REST API | [laravel-api/CLAUDE.md](laravel-api/CLAUDE.md) |
-| `nextjs-fe/` | Next.js App Router, React, TanStack Query, RHF + zod, next-intl, shadcn/ui, Tailwind 4, Tiptap 3 | Admin dashboard (:3000) | [nextjs-fe/CLAUDE.md](nextjs-fe/CLAUDE.md) |
-| `nextjs-docs/` | Next.js App Router, Tiptap renderer | Public docs site (:3457) | [nextjs-docs/CLAUDE.md](nextjs-docs/CLAUDE.md) |
+| `nextjs-fe/` | Next.js App Router, React, TanStack Query, RHF + zod, next-intl, shadcn/ui, Tailwind 4 | Admin dashboard (:3000) | [nextjs-fe/CLAUDE.md](nextjs-fe/CLAUDE.md) |
+| `nextjs-docs/` | Next.js App Router | Public docs site, now a "content moved" page (:3457) | [nextjs-docs/CLAUDE.md](nextjs-docs/CLAUDE.md) |
 | `docker/`, `ci-cd/`, `.github/`, `backup/` | Docker Compose, GitHub Actions (self-hosted deploy), shell | Runtime & ops | [docker/CLAUDE.md](docker/CLAUDE.md) |
 
-Root `0X-*.md` files are architecture docs (Vietnamese, may be outdated — code wins).
+All docs live in `docs/` (start at [docs/README.md](docs/README.md)). The old Vietnamese architecture docs are archived in `docs/archive/legacy-architecture/` (outdated — code wins).
 
 ## Running things
 
@@ -17,7 +17,7 @@ PHP, Composer, Node and pnpm are **not installed on the host**. Everything runs 
 
 ```bash
 make up          # generate env if missing, then build + start the stack (./start.sh does the same)
-make test        # backend tests (make test f=CategoryMgmt); make test-ci skips the known auth failures
+make test        # backend tests (make test f=AdminMst); make test-ci runs them as CI does
 make lint        # Pint + ESLint + Prettier checks, backend and both FE apps
 make verify      # everything CI runs
 make fresh       # DEV ONLY: wipe, re-migrate and seed the dev DB (asks first)
@@ -25,9 +25,11 @@ make fresh       # DEV ONLY: wipe, re-migrate and seed the dev DB (asks first)
 
 Use the `/verify` skill to run the full check suite before declaring work done.
 
-## Ongoing refactor
+## Engineering Lab roadmap
 
-A staged refactor is tracked in [.claude/refactor/PLAN.md](.claude/refactor/PLAN.md). Before working on any item, read the plan, follow the `/refactor-item` skill, and update the item's status when done. Do not start items the user has not approved.
+The project is being repurposed into an Engineering Lab ([ADR-0001](docs/adr/0001-engineering-lab-direction.md)). The single plan is [docs/plan/](docs/plan/) (analysis, roadmap, backlog); the handoff log for resuming work is [.claude/lab/PROGRESS.md](.claude/lab/PROGRESS.md) — read it first and update it after every task. Work items with the `/lab-task` skill. Docs conventions (bilingual EN + `> 🇻🇳` VI lines, IDs, templates): [docs/README.md](docs/README.md).
+
+The 2026-10 refactor ([.claude/refactor/PLAN.md](.claude/refactor/PLAN.md)) is **frozen**; its open items moved into the roadmap.
 
 ## Global rules
 

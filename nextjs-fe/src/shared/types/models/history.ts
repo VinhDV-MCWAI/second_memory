@@ -1,10 +1,7 @@
 /**
- * History (`*-hist`) list rows: a snapshot of the audited record plus these audit fields.
- * Generated from laravel-api/openapi.json (`pnpm gen:api`); every history resource shares them.
+ * Audit log rows (ADR-0006): one entry per change, with only the changed fields for updates.
+ * Generated from laravel-api/openapi.json (`pnpm gen:api`).
  */
 import type { components } from '@/shared/types/openapi';
 
-export type HistoryRecord = Pick<
-  components['schemas']['EntryMgmtHistResource'],
-  'id' | 'action' | 'author_id' | 'created_at'
->;
+export type AuditLogEntry = components['schemas']['AuditLogResource'];

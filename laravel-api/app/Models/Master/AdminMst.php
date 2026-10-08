@@ -4,18 +4,20 @@ declare(strict_types=1);
 
 namespace App\Models\Master;
 
-use App\Models\History\Master\AdminMstHist;
-use App\Traits\HasHistory;
+use App\Enums\AdminRole;
 use App\Traits\HasSoftDelete;
 use App\Traits\HasStatus;
+use Illuminate\Auth\Authenticatable;
+use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class AdminMst extends Model
+/**
+ * @property AdminRole $role
+ */
+class AdminMst extends Model implements AuthenticatableContract
 {
-    use HasFactory, HasHistory, HasSoftDelete, HasStatus;
+    use Authenticatable, HasFactory, HasSoftDelete, HasStatus;
 
     protected $table = 'admin_mst';
 
@@ -36,45 +38,12 @@ class AdminMst extends Model
         'gender',
         'status',
         'is_active',
+        'role',
         'avatar',
         'email_verified_at',
         'is_delete',
         'remember_token',
     ];
-
-    /**
-     * Get the roles associated with the admin.
-     */
-    public function roles(): BelongsToMany
-    {
-        return $this->belongsToMany(
-            RoleMst::class,
-            'admin_role_mst',
-            'admin_mst_id',
-            'role_mst_id'
-        )->withTimestamps();
-    }
-
-    /**
-     * Get the departments associated with the admin.
-     */
-    public function departments(): BelongsToMany
-    {
-        return $this->belongsToMany(
-            DepartmentMst::class,
-            'admin_department_mst',
-            'admin_mst_id',
-            'department_mst_id'
-        )->withTimestamps();
-    }
-
-    /**
-     * Get the history records for the admin.
-     */
-    public function history(): HasMany
-    {
-        return $this->hasMany(AdminMstHist::class, 'admin_mst_id');
-    }
 
     /**
      * The attributes that should be cast.
@@ -94,6 +63,7 @@ class AdminMst extends Model
             'gender' => 'integer',
             'status' => 'integer',
             'is_active' => 'boolean',
+            'role' => AdminRole::class,
             'avatar' => 'string',
             'email_verified_at' => 'datetime',
             'is_delete' => 'boolean',

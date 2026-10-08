@@ -1,5 +1,7 @@
 # Refactor plan — Second Memory (2026-10)
 
+> **FROZEN 2026-10-07.** Superseded by the Engineering Lab roadmap ([docs/plan/02-roadmap.md](../../docs/plan/02-roadmap.md), [ADR-0001](../../docs/adr/0001-engineering-lab-direction.md)). Open items were closed or moved (see the Status column). Do not start items from this file; use `docs/plan/03-backlog.md`.
+
 Status values: `proposed` → `approved` → `in-progress` → `done` | `skipped` | `blocked: <reason>`.
 Workflow: `/refactor-item <ID…>`. Only `approved` items may be started.
 
@@ -29,12 +31,13 @@ Workflow: `/refactor-item <ID…>`. Only `approved` items may be started.
 
 | ID | Item | Done when | Depends | Status |
 |---|---|---|---|---|
+| S9 | Dependabot alerts: patch vulnerable npm deps, blocking prod audit in CI, Dependabot config | `pnpm audit --prod` clean | – | done (`fix/security-deps`: 140 → 1 dev-only advisory, prod 0) |
 | S1 | Upgrade `next` → 16.3.x, `react`/`react-dom` → latest 19.2.x in both apps (CVE-2025-55182, critical RSC RCE) | Lockfile shows patched versions; both apps build | – | done (`refactor/p0-p1-foundation`: next 16.3.8, react 19.2.8) |
 | S2 | Remove tracked secrets (`docker/postgres/.env`, `laravel-api/.env.testing` if it holds secrets) → `.env.example`; **rotate DB password**. History purge with `git filter-repo` = separate decision | `git ls-files` shows no secret files; setup-env.sh generates them | – | done in code (`refactor/p0-p1-foundation`); manual: rotate secrets, history purge = open decision 5 |
 | S3 | Remove 30 MB `docker/minio/mc` binary; use `minio/mc` image in `ml-minio-init` | Binary gone; bucket init still works | – | done (`refactor/p0-p1-foundation`: mc from pinned `pgsty/minio` image) |
-| S4 | `env()` at runtime (AdminMiddleware etc.) → `config()` | `grep -rn "env(" app/` empty; works with `config:cache` | – | moved to auth guide (manual) |
+| S4 | `env()` at runtime (AdminMiddleware etc.) → `config()` | `grep -rn "env(" app/` empty; works with `config:cache` | – | moved to roadmap P2 (removed together with the custom auth) |
 | S5 | Harden exception handler: hide internal messages in prod, correct 401 vs 403, log all 5xx | Feature tests for 401/403/500 envelope | – | done (`refactor/p0-p1-foundation`: `ExceptionHandlerTest`) |
-| S6 | Replace hand-rolled JWT. **Option a:** `firebase/php-jwt` (minimal change). **Option b (recommended):** Sanctum SPA cookie auth, drop custom JWT + refresh endpoint, keep Redis permission cache | Auth tests green; FE login/refresh flow works | S4 | done as guide — user implements (`laravel-api/docs/auth/AUTH-GUIDE.md`) |
+| S6 | Replace hand-rolled JWT. **Option a:** `firebase/php-jwt` (minimal change). **Option b (recommended):** Sanctum SPA cookie auth, drop custom JWT + refresh endpoint, keep Redis permission cache | Auth tests green; FE login/refresh flow works | S4 | moved to roadmap P2 (P2-10/P2-11: Sanctum, documented transition) |
 | S8 | `phpunit.xml` env `force="true"` + idempotent `testing` DB creation (tests were wiping the dev DB) | Tests run against `testing` DB | – | done (`refactor/p0-p1-foundation`) |
 | T1 | Repair test suite: tests drift from schema (`feature_mst.description`, `social_mgmt.name`, status expectations) → 450 failing on `developer` | Feature suite green | – | done (`refactor/p0-p1-foundation`: 593 pass; 4 auth refresh tests left for the manual auth work, see AUTH-GUIDE A13) |
 | S7 | FE never shows server error messages (`useCrud`/`useJunctionTable` read `data.message`, backend sends `error.messages`) → use `error-handler.ts` everywhere | Unit test for error extraction; manual check | – | done (`refactor/p0-p1-foundation`: `getApiErrorMessage` + Vitest spec) |
@@ -76,22 +79,22 @@ Workflow: `/refactor-item <ID…>`. Only `approved` items may be started.
 |---|---|---|---|---|
 | FE1 | Tests first: Vitest specs for api client, error-handler, `useApiData`, `useCrud` (MSW) | Coverage on `src/shared` ≥ 70% | F3 | done (`refactor/p4-frontend`: 88 tests, `src/shared` 88% stmts / 76% branches, thresholds enforced in CI) |
 | FE2 | `app/admin/layout.tsx` hosts `AdminLayout` (remove per-page wrapping in 48 places) | No page imports `AdminLayout` | – | done (`refactor/p4-frontend`) |
-| FE3 | Auth guard in `proxy.ts` (Next 16) for `/admin/*` | Unauthenticated → redirect without flash | S6 | proposed |
+| FE3 | Auth guard in `proxy.ts` (Next 16) for `/admin/*` | Unauthenticated → redirect without flash | S6 | moved to roadmap P2; done in P2-11 (`148af31`) |
 | FE4 | Generated API types (openapi-typescript) replace hand-written `types/api.ts`; query-key factory; merge `useApiData`/`useCrud` into `useResource(resource)` | No hand-written API model types | B6, FE1 | done (`refactor/p4-frontend`: generated `openapi.d.ts`, `queryKeys`; `useApiData`/`useCrud` kept separate, see PROGRESS) |
 | FE5 | Config-driven `<ResourceListPage>`: 17 near-identical 300+ line pages → column/filter/form config per entity | Each entity page < 80 lines; behavior same | FE1, FE2, FE4 | done (`refactor/p4-frontend`: 12/15 pages < 80 lines, rest 85–97; 5139 → ~1060 lines) |
-| FE6 | Feature-based folders: `src/features/<domain>/{api,components,schemas,hooks}`; split oversized files (`layout-structure-editor`, `constant.ts`, `types/api.ts`) | No file > 300 lines outside `ui/` | FE5 | in-progress (`refactor/p4-frontend`: feature folders done; form props + file splits left) |
-| FE7 | *(optional)* Shared workspace package `packages/editor` (Tiptap extensions + schema) used by both admin editor and docs renderer | Single source of extensions | U2 | proposed |
-| D1 | Docs site: API base URL from env (no hard-coded `ml-nginx`), drop custom request dedup, use Next caching (`revalidate`/Cache Components + tag revalidation on publish), `generateMetadata`, sitemap | Pages cached; content updates visible after publish | U2 | proposed |
+| FE6 | Feature-based folders: `src/features/<domain>/{api,components,schemas,hooks}`; split oversized files (`layout-structure-editor`, `constant.ts`, `types/api.ts`) | No file > 300 lines outside `ui/` | FE5 | done for kept code (`chore/p0-baseline`); remaining splits are in features removed by roadmap P2 |
+| FE7 | *(optional)* Shared workspace package `packages/editor` (Tiptap extensions + schema) used by both admin editor and docs renderer | Single source of extensions | U2 | skipped (Tiptap editor is removed in roadmap P2) |
+| D1 | Docs site: API base URL from env (no hard-coded `ml-nginx`), drop custom request dedup, use Next caching (`revalidate`/Cache Components + tag revalidation on publish), `generateMetadata`, sitemap | Pages cached; content updates visible after publish | U2 | superseded (docs site becomes the portfolio site, roadmap P3/P10) |
 
 ## P5 — Infrastructure
 
 | ID | Item | Done when | Depends | Status |
 |---|---|---|---|---|
-| I1 | Docker: pin all images, non-root, healthchecks + `depends_on: service_healthy`, compose v2, Redis 8 | `docker compose up` healthy from clean | – | proposed |
-| I2 | *(optional)* PostgreSQL 16 → 18 via dump/restore script | Data verified after restore | I1, I4 | proposed |
-| I3 | Object storage decision: pin last MinIO release **or** move to another S3-compatible server; app code stays on S3 API | Upload/download/multipart tests pass | I1 | proposed |
-| I4 | Backup: `set -euo pipefail`, retention, scheduled run, automated restore test | Restore into scratch DB succeeds | – | proposed |
-| I5 | CD: images tagged by commit SHA (+ `latest` alias), docs image too, deploy health check + one-command rollback | Rollback tested once | F4 | proposed |
+| I1 | Docker: pin all images, non-root, healthchecks + `depends_on: service_healthy`, compose v2, Redis 8 | `docker compose up` healthy from clean | – | moved to roadmap P4 |
+| I2 | *(optional)* PostgreSQL 16 → 18 via dump/restore script | Data verified after restore | I1, I4 | skipped |
+| I3 | Object storage decision: pin last MinIO release **or** move to another S3-compatible server; app code stays on S3 API | Upload/download/multipart tests pass | I1 | moved to roadmap P4 (keep pinned `pgsty/minio` until then) |
+| I4 | Backup: `set -euo pipefail`, retention, scheduled run, automated restore test | Restore into scratch DB succeeds | – | moved to roadmap P7 (DR drills) |
+| I5 | CD: images tagged by commit SHA (+ `latest` alias), docs image too, deploy health check + one-command rollback | Rollback tested once | F4 | moved to roadmap P5 |
 
 ## Open decisions
 

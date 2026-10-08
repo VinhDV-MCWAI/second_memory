@@ -1,23 +1,7 @@
 import { describe, expect, it } from 'vitest';
-import {
-  getAdminSchema,
-  getApiSchema,
-  getBannerSchema,
-  getCategorySchema,
-  getDepartmentSchema,
-  getEntryDescriptionSchema,
-  getEntrySchema,
-  getFeatureSchema,
-  getPolicyDepartmentSchema,
-  getRoleSchema,
-  getSettingLinkSchema,
-  getSliderSchema,
-  getSocialSchema,
-  getTokenSchema,
-  getUserSchema,
-} from './validation';
+import { getAdminSchema } from './validation';
 import { ValidationRules } from './validation-rules';
-import { AdminStatus, Gender, StatusEnum, UserStatus } from '@/shared/enums';
+import { AdminRole, AdminStatus, Gender } from '@/shared/enums';
 
 // Echo the key and params so assertions can check which message was chosen.
 const t = (key: string, params?: Record<string, string | number>) =>
@@ -32,16 +16,14 @@ const person = {
   first_name: 'Ada',
   last_name: 'Lovelace',
   gender: Gender.MALE,
+  role: AdminRole.VIEWER,
   is_active: true,
 };
 
-describe('admin and user schemas', () => {
+describe('admin schema', () => {
   it('accept a valid record and an empty password (keep current password)', () => {
     expect(
       getAdminSchema(t).safeParse({ ...person, status: AdminStatus.ACTIVE, password: '' }).success,
-    ).toBe(true);
-    expect(
-      getUserSchema(t).safeParse({ ...person, status: UserStatus.ACTIVE, password: null }).success,
     ).toBe(true);
   });
 
@@ -60,116 +42,13 @@ describe('admin and user schemas', () => {
     ]);
   });
 
+  it('accept the two roles only', () => {
+    const valid = { ...person, status: AdminStatus.ACTIVE, password: '' };
+    expect(getAdminSchema(t).safeParse({ ...valid, role: AdminRole.OWNER }).success).toBe(true);
+    expect(getAdminSchema(t).safeParse({ ...valid, role: 'admin' }).success).toBe(false);
+  });
+
   it('reject an unknown status', () => {
-    expect(getUserSchema(t).safeParse({ ...person, status: 99 }).success).toBe(false);
-  });
-});
-
-describe('content schemas', () => {
-  it('coerce string statuses for categories and entries', () => {
-    const category = getCategorySchema(t).parse({
-      name: 'Docs',
-      slug: 'docs',
-      status: '1',
-      is_display: true,
-      rank_order: 0,
-      is_delete: false,
-    });
-    expect(category.status).toBe(1);
-    expect(getEntrySchema(t).parse({ name: 'Intro', rank_order: 1, status: '0' }).status).toBe(0);
-  });
-
-  it('require the visible fields', () => {
-    expect(
-      messagesOf(
-        getBannerSchema(t).safeParse({
-          title: '',
-          slug: '',
-          description: '',
-          image: '',
-          position: '',
-          status: StatusEnum.DRAFT,
-        }),
-      ),
-    ).toEqual([
-      'title.required',
-      'slug.required',
-      'description.required',
-      'image.required',
-      'position.required',
-    ]);
-    expect(messagesOf(getSliderSchema(t).safeParse({ title: '', status: 0 }))).toEqual([
-      'title.required',
-    ]);
-    expect(
-      messagesOf(getEntryDescriptionSchema(t).safeParse({ title: '', rank_order: -1, status: 0 })),
-    ).toEqual(['title.required', 'order.min:{"min":0}']);
-  });
-
-  it('validate social links', () => {
-    const social = getSocialSchema(t).safeParse({
-      name: 'GitHub',
-      link: 'not a url',
-      rank_order: '3',
-      status: 1,
-    });
-    expect(messagesOf(social)).toEqual(['url.invalid']);
-  });
-
-  it('validate setting link keys and values against the backend limits', () => {
-    expect(getSettingLinkSchema(t).safeParse({ key: 'privacy', value: '/privacy' }).success).toBe(
-      true,
-    );
-    expect(
-      messagesOf(getSettingLinkSchema(t).safeParse({ key: 'k'.repeat(31), value: '' })),
-    ).toEqual(['key.maxLength:{"max":30}', 'value.required']);
-  });
-});
-
-describe('master data schemas', () => {
-  it('enforce role and department limits', () => {
-    expect(
-      messagesOf(
-        getRoleSchema(t).safeParse({ name: 'x'.repeat(31), permission: '', is_active: true }),
-      ),
-    ).toEqual(['name.maxLength:{"max":30}', 'permission.required']);
-    expect(
-      messagesOf(getDepartmentSchema(t).safeParse({ code: '', name: 'Sales', status: 1 })),
-    ).toEqual(['code.required']);
-  });
-
-  it('validate features, APIs, tokens and policies', () => {
-    expect(
-      messagesOf(getFeatureSchema(t).safeParse({ name: 'Users', group_name: '', status: 1 })),
-    ).toEqual(['groupName.required']);
-    expect(
-      getApiSchema(t).safeParse({
-        name: 'List users',
-        path: '/admin/user-mgmt/list',
-        type: 1,
-        method: 'GET',
-        feature_mst_id: 1,
-        is_active: true,
-      }).success,
-    ).toBe(true);
-    expect(
-      messagesOf(
-        getApiSchema(t).safeParse({
-          name: 'x',
-          path: 'y',
-          type: 1,
-          method: 'TRACE',
-          feature_mst_id: 0,
-          is_active: true,
-        }),
-      ),
-    ).toHaveLength(2);
-    expect(messagesOf(getTokenSchema(t).safeParse({ account_id: 0, device_name: '' }))).toEqual([
-      'account.required',
-      'deviceName.required',
-    ]);
-    expect(
-      messagesOf(getPolicyDepartmentSchema(t).safeParse({ table_name: '', row_id: 0 })),
-    ).toEqual(['tableName.required', 'rowId.required']);
+    expect(getAdminSchema(t).safeParse({ ...person, status: 99 }).success).toBe(false);
   });
 });

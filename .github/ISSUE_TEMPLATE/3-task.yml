@@ -1,0 +1,19 @@
+name: Task
+description: A technical task from the backlog
+labels: ["type:task"]
+body:
+  - type: input
+    id: backlog
+    attributes:
+      label: Backlog ID
+      placeholder: "P2-03"
+  - type: textarea
+    id: what
+    attributes:
+      label: What and why
+    validations:
+      required: true
+  - type: textarea
+    id: done
+    attributes:
+      label: Done when

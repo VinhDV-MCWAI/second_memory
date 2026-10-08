@@ -45,8 +45,9 @@ return [
             'driver' => 'session',
             'provider' => 'users',
         ],
-        'adminAuth' => [
-            'driver' => 'jwt',
+        // Admin SPA: session cookie checked through auth:sanctum (ADR-0004)
+        'admin' => [
+            'driver' => 'session',
             'provider' => 'admins',
         ],
     ],
@@ -73,8 +74,9 @@ return [
             'driver' => 'eloquent',
             'model' => env('AUTH_MODEL', User::class),
         ],
+        // Only active, not deleted admins can log in or keep a session (AppServiceProvider)
         'admins' => [
-            'driver' => 'eloquent',
+            'driver' => 'active-admins',
             'model' => AdminMst::class,
         ],
 

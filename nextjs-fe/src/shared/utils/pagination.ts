@@ -1,4 +1,4 @@
-import { PAGINATION } from '@/shared/config/constant';
+import { PAGINATION } from '@/shared/config';
 import type { PaginationSource } from '@/shared/types/api';
 
 /**

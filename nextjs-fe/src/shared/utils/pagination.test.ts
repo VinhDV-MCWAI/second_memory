@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { getPaginationInfo } from './pagination';
-import { PAGINATION } from '@/shared/config/constant';
+import { PAGINATION } from '@/shared/config';
 
 describe('getPaginationInfo', () => {
   it('falls back to defaults without data', () => {

@@ -4,10 +4,9 @@ declare(strict_types=1);
 
 namespace Tests\Feature\Requests;
 
-use App\Models\Management\BannerMgmt;
 use App\Models\Master\AdminMst;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Tests\Concerns\GrantsApiAccess;
+use Tests\Concerns\AuthenticatesAdmins;
 use Tests\TestCase;
 
 /**
@@ -16,16 +15,16 @@ use Tests\TestCase;
  */
 final class ListPagingTest extends TestCase
 {
-    use GrantsApiAccess;
+    use AuthenticatesAdmins;
     use RefreshDatabase;
 
-    private const LIST_URI = 'api/admin/banner-mgmt/list';
+    private const LIST_URI = 'api/admin/admin-mst/list';
 
     public function test_paging_and_sorting_reach_the_repository(): void
     {
         $admin = AdminMst::factory()->create();
-        $banners = BannerMgmt::factory()->count(3)->create();
-        $cookies = $this->loginWithAccess($admin, [['GET', self::LIST_URI]]);
+        $others = AdminMst::factory()->count(3)->create();
+        $cookies = $this->loginAs($admin);
 
         $response = $this->call('GET', self::LIST_URI, [
             'per_page' => 2,
@@ -36,13 +35,13 @@ final class ListPagingTest extends TestCase
 
         $response->assertOk();
         $ids = array_column($response->json('data.data'), 'id');
-        $this->assertSame([$banners[2]->id, $banners[1]->id], $ids);
+        $this->assertSame([$others[2]->id, $others[1]->id], $ids);
     }
 
     public function test_invalid_page_is_rejected(): void
     {
         $admin = AdminMst::factory()->create();
-        $cookies = $this->loginWithAccess($admin, [['GET', self::LIST_URI]]);
+        $cookies = $this->loginAs($admin);
 
         $this->call('GET', self::LIST_URI, ['page' => 0], $cookies)->assertStatus(422);
     }

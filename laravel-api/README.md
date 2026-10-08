@@ -79,13 +79,9 @@ REDIS_PASSWORD=ml_redis_password
 # REDIS_PASSWORD=ml_redis_password
 ```
 
-### 4. Cấu hình JWT Authentication
+### 4. Xác thực
 
-```bash
-# Tạo khóa JWT
-php -r 'echo base64_encode(random_bytes(32));' # Copy kết quả vào ACCESS_TOKEN_SECRET
-php -r 'echo base64_encode(random_bytes(32));' # Copy kết quả vào REFRESH_TOKEN_SECRET
-```
+Admin SPA dùng Laravel Sanctum (session cookie + CSRF), không cần tạo khóa riêng; xem `docs/adr/0004-sanctum-spa-cookie-auth.md`.
 
 ### 5. Chạy Migrations
 
@@ -105,19 +101,13 @@ php artisan db:seed
 
 ## 📋 Quản lý quyền
 
-Hệ thống quản lý quyền hai lớp:
-
-### 1. Quản lý dựa trên vai trò (Role-Based)
+Quản lý quyền dựa trên vai trò (Role-Based):
 
 - Mỗi tài khoản được gán một hoặc nhiều vai trò
 - Mỗi vai trò chịu trách nhiệm cho một số API cụ thể
 - Các API được nhóm thành các tính năng (feature) để dễ quản lý
 
-### 2. Quản lý dựa trên phòng ban (Department-Based)
-
-- Mỗi tài khoản thuộc về một hoặc nhiều phòng ban
-- Phòng ban được giao quản lý một số bảng và bản ghi cụ thể
-- Quyền truy cập và thao tác được xác định dựa trên phòng ban của tài khoản
+Lớp phân quyền theo phòng ban đã bị xoá (RFC-001 slice 4); RBAC sẽ được thay bằng hai vai trò `owner` / `viewer` ở slice 8.
 
 ## 📂 Cấu trúc thư mục
 

@@ -1,7 +1,11 @@
-'use client';
-
+import type { Metadata } from 'next';
 import './globals.css';
 import { ThemeProvider } from '@/components/theme-provider';
+
+export const metadata: Metadata = {
+  title: 'Second Memory - Documentation',
+  description: 'Knowledge journal and documentation system',
+};
 
 export default function RootLayout({
   children,
@@ -10,10 +14,6 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <head>
-        <title>Second Memory - Documentation</title>
-        <meta name="description" content="Knowledge journal and documentation system" />
-      </head>
       <body>
         <ThemeProvider
           attribute="class"

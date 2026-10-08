@@ -15,14 +15,6 @@ return RectorConfig::configure()
         __DIR__.'/routes',
         __DIR__.'/tests',
     ])
-    // Auth code is reworked by hand (docs/auth/AUTH-GUIDE.md) — keep Rector out of it.
-    ->withSkip([
-        __DIR__.'/app/Utilities/JsonWebToken.php',
-        __DIR__.'/app/Services/Custom/CredentialService.php',
-        __DIR__.'/app/Http/Middleware/AdminMiddleware.php',
-        __DIR__.'/app/Http/Middleware/BroadcastingAuthMiddleware.php',
-        __DIR__.'/app/Http/Controllers/Custom/CredentialController.php',
-    ])
     ->withCache(__DIR__.'/storage/framework/cache/rector')
     ->withPhpSets(php83: true)
     ->withSets([LaravelLevelSetList::UP_TO_LARAVEL_130_WITHOUT_ATTRIBUTES]);

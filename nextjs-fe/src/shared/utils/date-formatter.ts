@@ -4,7 +4,7 @@
  */
 
 import { format, parseISO, isValid, formatDistanceToNow } from 'date-fns';
-import { DATE_FORMATS } from '@/shared/config/constant';
+import { DATE_FORMATS } from '@/shared/config';
 
 /**
  * Format a date to HTML input format (yyyy-MM-dd)

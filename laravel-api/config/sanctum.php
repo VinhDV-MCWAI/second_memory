@@ -38,7 +38,10 @@ return [
     |
     */
 
-    'guard' => ['web'],
+    'guard' => ['admin'],
+
+    // Under /api so nginx routes the CSRF cookie endpoint to Laravel
+    'prefix' => 'api/sanctum',
 
     /*
     |--------------------------------------------------------------------------
