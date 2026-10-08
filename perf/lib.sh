@@ -4,7 +4,8 @@
 # and the nginx/php-fpm stack are never touched.
 
 PERF_DB=perf
-PERF_PORT=8099
+# Another conversation may run its own php -S in ml-php: override with PERF_PORT=… if 8099 is taken
+PERF_PORT=${PERF_PORT:-8099}
 PERF_NETWORK=ml_network
 PERF_K6_IMAGE=grafana/k6:0.57.0
 # shellcheck disable=SC2034  # used by the scripts that source this file
@@ -43,6 +44,10 @@ perf_start_server() {
   done
   echo "==> Starting the API on ml-php:$PERF_PORT ($workers workers, $app)"
   perf_stop_server
+  if docker exec ml-php curl -s -o /dev/null --max-time 2 "http://localhost:$PERF_PORT/"; then
+    echo "Port $PERF_PORT in ml-php is used by another process; rerun with PERF_PORT=<free port>" >&2
+    return 1
+  fi
   # Laravel's router script serves from the working directory, so start in public/. The dev image
   # loads Xdebug, which would dominate the timings: off. OPcache on, as under php-fpm.
   docker exec -d "${PERF_APP_ENV[@]}" "${env_args[@]}" -e PHP_CLI_SERVER_WORKERS="$workers" -e XDEBUG_MODE=off \
@@ -51,7 +56,11 @@ perf_start_server() {
     "$app/vendor/laravel/framework/src/Illuminate/Foundation/resources/server.php"
   local _
   for _ in $(seq 1 30); do
-    docker exec ml-php curl -fs -o /dev/null "http://localhost:$PERF_PORT/api/public/skills" && return 0
+    if docker exec ml-php curl -fs -o /dev/null "http://localhost:$PERF_PORT/api/public/skills"; then
+      docker exec ml-php pgrep -f -- "-S 0.0.0.0:$PERF_PORT" >/dev/null && return 0
+      echo "Something else answers on port $PERF_PORT; rerun with PERF_PORT=<free port>" >&2
+      return 1
+    fi
     sleep 1
   done
   echo "API on port $PERF_PORT did not answer 200" >&2

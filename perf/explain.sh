@@ -34,7 +34,9 @@ sleep 1
 mkdir -p perf/results
 # One backend per request (no persistent connections), so the [pid] in each line identifies the request
 docker logs --since "$since" ml-postgres 2>&1 | grep -v -E 'statement: |^\s*$' >"$OUT"
-echo "==> $(grep -c 'Query Text:' "$OUT") plans in $OUT"
+plans=$(grep -c 'Query Text:' "$OUT" || true)
+echo "==> $plans plans in $OUT"
+[ "$plans" -gt 0 ] || { echo "No plans logged: did the k6 round reach the API?" >&2; exit 1; }
 perf_flush_sessions
 
 perf_psql "ALTER DATABASE $PERF_DB RESET ALL"
