@@ -114,3 +114,6 @@ pnpm-debug.log*
 
 # Simulated stakeholder sealed briefs (local only, revealed at review time)
 .claude/sim/sealed/
+
+# k6 summary exports (scripts/perf-baseline.sh); the numbers go into docs/reports/perf/
+/perf/results/
