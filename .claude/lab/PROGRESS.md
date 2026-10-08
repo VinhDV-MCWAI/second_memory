@@ -3,14 +3,14 @@
 > Handoff log. Updated after every task so a new conversation can resume.
 > To resume: read this file, then `docs/plan/03-backlog.md`, then continue at **Next step** with the `/lab-task` skill.
 
-## Plan status at a glance (2026-10-07)
+## Plan status at a glance (2026-10-08)
 
 | Phase | Tasks | Status | Release |
 |---|---|---|---|
 | P0 Baseline | P0-01…P0-09 | done locally; P0-02 push/PRs, P0-06 GitHub board, P0-09 remote cleanup wait for the owner | `v1.0.0` (local tag) |
 | P1 Handbook | P1-01…P1-14 | done | `v1.1.0` (local tag) |
-| P2 Slim down | P2-01…P2-12 done (RFC-001 slices 1–9) | **P2-13 doing** (metrics, regression, notes, retro done; final `make verify` + tag left) | `v2.0.0` pending |
-| P3 Skill Ledger | P3-00…P3-08 | todo (starts with P3-00 refinement) | `v2.1.0` |
+| P2 Slim down | P2-01…P2-13 | done | `v2.0.0` (local tag) |
+| P3 Skill Ledger | P3-00…P3-08 | **next: P3-00 refinement** | `v2.1.0` |
 | P4–P11 | coarse | not started | – |
 
 Records written in P2: REQ-001, RFC-001, ADR-0003…0006, PRB-001 (solved), PRB-002 (solved), runbook `content-export.md`.
@@ -19,8 +19,8 @@ Records written in P2: REQ-001, RFC-001, ADR-0003…0006, PRB-001 (solved), PRB-
 
 | | |
 |---|---|
-| Active phase | P2 Slim down (P0, P1 done locally). P2-01…P2-12 done (RFC-001 slices 1–9). Left: P2-13 release (slice 10) |
-| Working branch | `refactor/p2-slim-down` = the whole local stack (P0 + P1 + P2) on top of `developer`; local only, nothing pushed. Phase boundaries are tags: `v1.0.0` (P0), `v1.1.0` (P1), `v1.2.0`. The stacked branches `chore/p0-baseline`, `docs/p1-handbook`, `fix/security-deps`, `refactor/fe6-features`, `refactor/p4-frontend` were deleted locally on 2026-10-07 (no unique commits); recreate one from its tag if a separate PR is wanted (`git branch chore/p0-baseline v1.0.0`). Local branches left: `developer`, `main` (fast-forwarded to `origin/main`), `refactor/p2-slim-down` |
+| Active phase | P3 Skill Ledger (P0, P1, P2 done locally; P2 = `v2.0.0`). Starts with P3-00 |
+| Working branch | `refactor/p2-slim-down` = the whole local stack (P0 + P1 + P2) on top of `developer`; local only, nothing pushed. Phase boundaries are tags: `v1.0.0` (P0), `v1.1.0` (P1), `v1.2.0`, `v2.0.0` (P2). The stacked branches `chore/p0-baseline`, `docs/p1-handbook`, `fix/security-deps`, `refactor/fe6-features`, `refactor/p4-frontend` were deleted locally on 2026-10-07 (no unique commits); recreate one from its tag if a separate PR is wanted (`git branch chore/p0-baseline v1.0.0`). Local branches left: `developer`, `main` (fast-forwarded to `origin/main`), `refactor/p2-slim-down` |
 | Old refactor | Frozen (`.claude/refactor/PLAN.md`, `PROGRESS.md`) |
 | Owner defaults | 8–10 h/week, backend role, §4 remove list accepted, Obsidian vault private (see analysis §9) |
 
@@ -106,11 +106,8 @@ Records written in P2: REQ-001, RFC-001, ADR-0003…0006, PRB-001 (solved), PRB-
 
 - 2026-10-07 — P2-13 (slice 10) mostly done, **paused at the owner's request** (commit + handoff). After-metrics with `scripts/metrics.sh --tests --images` on `ce20094`: app/ 20.6k → 4.9k lines, FE 30.2k → 9.7k, routes 143 → 20, tables 43 → 12, views/triggers 2 → 0, backend tests 598/82 s → 79/12 s, Vitest 106 → 53, images 1802 → 1799 MB / 309 → 304 MB (image size is base-image bound → P4). Regression: `migrate:fresh` on `testing` runs all 61 migrations → 12/0/0; `migrate:rollback --step=9` → exactly 43 tables / 2 views / 2 triggers, `migrate` again → 12/0/0; curl flow through nginx all as expected (owner login/me, create + edit viewer, audit shows `created` + `updated` with changed field only and no password, viewer read 200 / write 403, logout → me 401, `logged_in` rows recorded, `/admin` 307, `/docs` + `/docs/a/b` 200, `/api/docs/category` 404); temporary admins `lab_owner` / `lab_viewer` deleted (their audit rows stay in dev). My mistake on the way: the temp owner was first created with a plaintext password via the factory → login 500 (`Hash::check` on a non-bcrypt value); app writes always hash, so not a product bug. Docs: `docs/releases/v1.2.0.md`, `docs/releases/v2.0.0.md` (breaking changes, upgrade order, before/after, verification, known issues), RFC-001 → Implemented + §10 metrics after, retro `docs/reports/retro/P2.md` with 3 handbook changes (06 test isolation guard, 04 `git diff --cached --stat`, 07 single-release expand/contract exception). `make verify` **not** run after these docs-only changes (last green run: `3e90988`).
 
+- 2026-10-08 — P2-13 done, **P2 done**. Stack was partly down (only MinIO + both Next apps running) → `make up`. `make verify` exit 0 on `b97887f` (code unchanged since `3e90988`): Pint 188 files ✓, Larastan no errors, backend 79 passed (263 assertions), ESLint ✓, tsc ✓, Vitest 53 (15 files), coverage 89.35 %. Verification line in `docs/releases/v2.0.0.md` updated; backlog P2-13 and RFC-001 slice 10 → done; weekly report `2026-W41` got a P2 update. Local tag `v2.0.0`. Roadmap P2 "done when": §4 list executed with two exceptions recorded — media API kept (RFC-001 §3 correction, open owner decision, item 8) and startup time not measured before (retro P2); before/after table in `docs/releases/v2.0.0.md` and RFC-001 §10.
+
 ## Next step
 
-Finish **P2-13**, then P3-00.
-
-1. `make verify` on the current commit (code unchanged since the last green run at `3e90988`, so it should pass; report the real result). If green, update the "Verification" line in `docs/releases/v2.0.0.md` with the counts.
-2. Local tag: `git tag -a v2.0.0 -m "v2.0.0 — slim down"`; backlog P2-13 → done, RFC-001 slice 10 → done, roadmap P2 done criteria checked (§4 list executed; exceptions: media API kept — RFC-001 §3 correction, open owner decision; startup time not measured — retro P2), plan-status table here → P2 done.
-3. Optional: weekly report entry for P2 (handbook 07 step 7 "announce").
-4. Then **P3-00**: refine the Skill Ledger tasks (`docs/plan/03-backlog.md` P3) before any code.
+**P3-00**: refine the Skill Ledger phase (`docs/plan/03-backlog.md` P3, roadmap P3) into tasks of 1–3 sessions before any code. Inputs: roadmap P3 scope, `docs/search.md`, open owner decision on the media API (Evidence files may need it). Likely first real task: P3-01 `REQ-002` intake with `/simulate-po`.

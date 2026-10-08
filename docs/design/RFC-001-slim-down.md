@@ -121,7 +121,7 @@ Plus framework tables (`cache`, `jobs`, sessions in Redis). 43 tables / 2 views 
 | 7 | Replace custom JWT with Sanctum SPA cookie auth | P2-10/11 | Largest risk; done when fewer modules depend on auth | done |
 | 8 | Roles → `owner` / `viewer` with Gates/Policies; drop RBAC tables, view, trigger, tokens | P2-12 | Needs slice 7 (login no longer reads `admin_permission_view`) | done |
 | 9 | `audit_log` replaces remaining `*_hist` (expand → backfill → switch → contract) | P2-08 | Only `admin_mst` history is left by then; small, clean exercise | done |
-| 10 | Regression, metrics after, release notes, `v2.0.0` | P2-13 | – | doing (metrics, regression, notes done; final `make verify` + tag left) |
+| 10 | Regression, metrics after, release notes, `v2.0.0` | P2-13 | – | done |
 
 **Removal pattern per module:** (a) FE pages, navigation, types, tests; (b) routes, controllers, requests, resources, services, repositories, models, enums, tests; (c) a new migration that drops the tables, with a `down()` that recreates them empty (data comes back only from backup); (d) `make openapi`, `make verify`.
 
