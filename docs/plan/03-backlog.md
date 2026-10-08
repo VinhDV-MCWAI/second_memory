@@ -91,11 +91,36 @@ Refined in P3-00 (2026-10-08). Same lifecycle as P2: requirement → design → 
 | P3-17 | QA sign-off (`/simulate-qa`) and PO acceptance (`/simulate-po`) against REQ-002; bugs filed and fixed | Sign-off | todo |
 | P3-18 | Release `v2.1.0` with notes, before/after numbers, retro | Release + retro | todo |
 
-## P4–P11 (coarse)
+## P4 — Infrastructure as Code
+
+Refined in P4-00 (2026-10-08). Goal ([roadmap](02-roadmap.md#p4--infrastructure-as-code-34-weeks)): recreate the whole environment from zero with one command and prove it with a timed destroy / apply / restore. Inputs carried over: Docker hardening and the MinIO choice from the frozen refactor (I1, I3), the docs container healthcheck port and the 1.8 GB API image ([v2.0.0 known issues](../releases/v2.0.0.md#known-issues)), idle `ml-queue` / `ml-reverb` (nothing queues or broadcasts since ADR-0007), Laravel caches in non-dev images (OPS-02, [request profile](../reports/perf/2026-10-08-request-profile.md)), the full restore OPS-01 could not run without a scratch environment ([runbook](../runbooks/backup-restore.md)), and k6 on production images ([baseline](../reports/perf/2026-10-08-baseline.md)). Order: decide → harden the images → Terraform → environments → TLS and secrets → drill → measure. Dev keeps hot reload; how dev and Terraform relate is the ADR's call.
+
+> 🇻🇳 Đã chi tiết hoá ở P4-00. Mục tiêu: dựng lại toàn bộ môi trường từ số 0 bằng một lệnh và chứng minh bằng một lần destroy / apply / restore có đo thời gian. Việc tồn được gom vào: hardening Docker và lựa chọn MinIO (I1, I3), healthcheck của container docs, image API 1,8 GB, `ml-queue` / `ml-reverb` không còn dùng, cache Laravel trong image không phải dev (OPS-02), restore toàn phần mà OPS-01 chưa làm được, k6 trên image production. Thứ tự: quyết định → hardening image → Terraform → môi trường → TLS và secret → diễn tập → đo lại.
+
+| ID | Task | Output | Status |
+|---|---|---|---|
+| P4-00 | Refine this phase into tasks of 1–3 sessions | This table + board rows | todo |
+| P4-01 | ADR-0011 IaC approach: Terraform (Docker + MinIO providers) vs Compose only vs both (Compose for dev hot reload, Terraform for `staging` / `prod-like`); state location and locking for one person, module layout under `infra/`, what differs between environments (names, ports, volumes, images), how secrets enter (SOPS + age, decided here, built in P4-09); revisit the MinIO choice (I3: pinned `pgsty/minio` vs another S3 server) | ADR-0011 | todo |
+| P4-02 | Docker hardening (I1): pin every image to a version (digests with P5), non-root in every service, healthchecks + `depends_on: service_healthy` everywhere, fix the `ml-nextjs-docs` healthcheck / port mismatch, tight `.dockerignore`; `docker compose up` healthy from a clean checkout | PR + before/after `docker compose ps` | todo |
+| P4-03 | Production images: API image size down from ~1.8 GB (target set in the PR, measured with `scripts/metrics.sh --images`), Laravel caches built at container start outside dev (`php artisan optimize`, folds OPS-02), docs production image builds and serves the P3-12 public pages | PR + image size table | todo |
+| P4-04 | Remove idle `ml-queue` and `ml-reverb` (and the Reverb / broadcasting wiring the API no longer uses — API part in lane `api`); compose, nginx, env generation, docs | PRs | todo |
+| P4-05 | Terraform, Docker provider: network, volumes and the app containers (postgres, redis, php, nginx, nextjs, docs) for one environment; `make tf-plan` / `tf-apply` in a pinned Terraform container (nothing on the host) | `infra/` module + Make targets | todo |
+| P4-06 | Terraform, MinIO provider: buckets, lifecycle, policies and the app user, replacing `docker/minio/create-buckets.sh` for Terraform-managed environments | Module + check that the app reads / writes | todo |
+| P4-07 | Three environments (`dev`, `staging`, `prod-like`) from one module set with per-environment variables; side by side on one host without name or port clashes | Variables per env + runbook section | todo |
+| P4-08 | Reverse proxy with local TLS (`mkcert`) for `staging` / `prod-like`: HTTPS only, Sanctum stateful domains and `SESSION_SECURE_COOKIE` per environment; login checked over HTTPS | Proxy config + check | todo |
+| P4-09 | Secrets with SOPS + age instead of plain `.env` for `staging` / `prod-like`: encrypted files in git, key kept outside, `setup-env.sh` decrypts; key rotation and loss in a runbook | Encrypted env files + runbook | todo |
+| P4-10 | Drill: `terraform destroy && terraform apply` + `restore.sh` brings `prod-like` back with data; time each step vs RTO 30 min; the full end-to-end restore OPS-01 left open | Runbook `docs/runbooks/rebuild-environment.md` with measured times | todo |
+| P4-11 | k6 baseline on `prod-like` (production images, php-fpm behind nginx, TLS) against the 2026-10-08 numbers | `docs/reports/perf/` report | todo |
+| P4-12 | Phase close: as-is architecture update, release notes, retro | Release + retro | todo |
+
+Optional, only with time left: AWS-style practice with LocalStack or an open-source emulator (roadmap); not planned as a task.
+
+> 🇻🇳 Tuỳ chọn khi còn thời gian: luyện kiểu AWS với LocalStack hoặc emulator mã nguồn mở; không lập thành task.
+
+## P5–P11 (coarse)
 
 | ID | Phase | Key tasks |
 |---|---|---|
-| P4-xx | IaC | Terraform Docker/MinIO modules, 3 environments, local TLS, SOPS+age, Docker hardening, destroy/apply drill |
 | P5-xx | CI/CD | Re-enable `ci.yml` (PR trigger) and `cd.yml` (push to `developer`), paused on 2026-10-08 — manual runs only until then; rulesets, commitlint, release-please, SBOM/Trivy/gitleaks, SHA images, staged deploys, auto rollback, Pennant flags, DORA report |
 | P6-xx | Observability | otel-lgtm, OTel instrumentation, JSON logs, RED/USE dashboards, SLOs, alerts, runbooks |
 | P7-xx | Reliability | `chaos-master` skill, Toxiproxy, 8+ incidents + postmortems, DR drill |
