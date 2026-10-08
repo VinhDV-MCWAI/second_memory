@@ -47,7 +47,7 @@ Owns: `tools/ledger-importer/` (new).
 
 | ID | Task | Docs | Depends | Status |
 |---|---|---|---|---|
-| P3-14b | CLI: scan vault, only `publish: true`, note → request mapping, `--dry-run`, any invalid published note → nothing sent (exit 1); ruff, `mypy --strict`, pytest with a mocked API; Dockerfile | [ADR-0010 §Tooling + §Importer contract](../../docs/adr/0010-python-importer-tooling.md#tooling) | – | todo |
+| P3-14b | CLI: scan vault, only `publish: true`, note → request mapping, `--dry-run`, any invalid published note → nothing sent (exit 1); ruff, `mypy --strict`, pytest with a mocked API; Dockerfile | [ADR-0010 §Tooling + §Importer contract](../../docs/adr/0010-python-importer-tooling.md#tooling) | – | done 2026-10-08: a27117e, 31a0472 — CLI in tools/ledger-importer (Python 3.14, uv lock, non-root image): publish: true only (YAML 1.2 booleans), ADR-0010 note→item mapping, any invalid published note → exit 1 and nothing sent, --dry-run via API dry_run; ruff + mypy --strict + 63 pytest green; checked on the perf DB against the real API: 2nd run unchanged 2, removed note hidden 1, bad token exit 3 |
 | P3-14c | Wire it up: `make import vault=… [dry=1]`, importer checks in `make lint` / `make verify`, run against the stack twice (second run 0 changes), runbook `docs/runbooks/ledger-import.md` | [ADR-0010](../../docs/adr/0010-python-importer-tooling.md), [runbook template](../../docs/templates/) | P3-14a, P3-14b | todo |
 
 ## Lane `perf` — Performance & database

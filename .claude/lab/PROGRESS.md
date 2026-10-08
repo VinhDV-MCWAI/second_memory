@@ -167,6 +167,8 @@ Records written in P3 so far: REQ-002 (Ready), RFC-002 (Approved; slice status i
 
 - 2026-10-08 — [lane perf] PERF-02 done: 30b2fba, 9afa0ad, 465a24e — seed v2: PostgreSQL kept in 25 % of evidence on purpose (HOT_TERM), the other 19 words ~9 % each (before: 4 words at 25 %, 16 never in titles); DB-01 re-checked on it, same conclusions (trigram 33–40 ms, FTS 2.8–6.2 ms, fixes < 1–12 ms). Perf scripts now refuse a taken port (another lane's php -S on 8099). Re-baseline moved to PERF-03 (after API-02/03)
 
+- 2026-10-08 — [lane importer] P3-14b done: a27117e, 31a0472 — CLI in tools/ledger-importer (Python 3.14, uv lock, non-root image): publish: true only (YAML 1.2 booleans), ADR-0010 note→item mapping, any invalid published note → exit 1 and nothing sent, --dry-run via API dry_run; ruff + mypy --strict + 63 pytest green; checked on the perf DB against the real API: 2nd run unchanged 2, removed note hidden 1, bad token exit 3
+
 ## Next step
 
 Since 2026-10-08 work runs in **parallel lanes**: the live task list and who is on what is [BOARD.md](BOARD.md) (`scripts/lane.sh status`); start a conversation with `/lane`. When this file and the board disagree on status, the board wins. Lanes `public` (P3-12) and `perf` (P3-16) were already in progress when the board was created.
