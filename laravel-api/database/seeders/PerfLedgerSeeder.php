@@ -40,6 +40,14 @@ class PerfLedgerSeeder extends Seeder
 
     private const GOALS = 60;
 
+    /**
+     * The owner's main skill, deliberately in every 4th evidence title: the worst case for search
+     * (the k6 scripts query it and its typo). Must stay self::EN[0], see titleTerm().
+     */
+    private const HOT_TERM = 'PostgreSQL';
+
+    private const HOT_TERM_EVERY = 4;
+
     /** Mixed Vietnamese / English text, like the real ledger, so search has something to rank. */
     private const VI = ['kỹ năng', 'thiết kế', 'cơ sở dữ liệu', 'tối ưu', 'truy vấn', 'bảo mật', 'kiểm thử', 'triển khai', 'giám sát', 'hiệu năng', 'đồng bộ', 'phân quyền', 'sự cố', 'khôi phục', 'ghi chú', 'bộ nhớ đệm', 'hàng đợi', 'xử lý lỗi', 'tài liệu', 'kiến trúc'];
 
@@ -97,7 +105,7 @@ class PerfLedgerSeeder extends Seeder
             $factory = $imported ? Evidence::factory()->fromObsidian() : Evidence::factory();
             $evidence = $factory->create([
                 'type' => $imported ? EvidenceType::NOTE : fake()->randomElement([EvidenceType::PR, EvidenceType::ADR, EvidenceType::INCIDENT]),
-                'title' => ucfirst(self::VI[($i * 7) % count(self::VI)]).' '.self::EN[($i * 5) % count(self::EN)].' #'.$i,
+                'title' => ucfirst(self::VI[($i * 7) % count(self::VI)]).' '.$this->titleTerm($i).' #'.$i,
                 'summary' => 'Ghi chú về '.self::VI[($i * 3) % count(self::VI)].' với '.self::EN[($i * 11) % count(self::EN)].'. '.str_repeat('Nội dung tóm tắt ngắn gọn. ', 1 + $i % 8),
                 'occurred_on' => now()->subDays($i % 700)->toDateString(),
                 'is_public' => $i % 4 !== 0,
@@ -105,5 +113,20 @@ class PerfLedgerSeeder extends Seeder
             $evidence->skills()->attach(fake()->randomElements($skillIds, 1 + $i % 3));
             $evidence->tags()->attach(fake()->randomElements($tagIds, $i % 3));
         }
+    }
+
+    /**
+     * HOT_TERM (self::EN[0]) on every HOT_TERM_EVERY-th row; the other rows cycle through the
+     * remaining 19 words with step 3 (coprime with 19), so each of them is in ~4 % of titles.
+     */
+    private function titleTerm(int $i): string
+    {
+        if ($i % self::HOT_TERM_EVERY === 0) {
+            return self::HOT_TERM;
+        }
+        $others = count(self::EN) - 1;
+        $nth = $i - intdiv($i, self::HOT_TERM_EVERY);
+
+        return self::EN[1 + ($nth * 3) % $others];
     }
 }

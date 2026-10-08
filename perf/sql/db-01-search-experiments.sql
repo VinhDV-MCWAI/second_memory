@@ -1,6 +1,7 @@
 -- DB-01: the two slow search statements on evidence and candidate fixes, on the perf seed.
 -- Run by perf/explain.sh after the plan capture; everything is rolled back at the end.
--- Terms: 'postgresql' is in 25 % of the seeded evidence (title word pool skew), 'kubernetes' in 5 %.
+-- Terms: 'postgresql' is in 25 % of the seeded evidence (PerfLedgerSeeder::HOT_TERM, the worst case),
+-- 'kubernetes' in ~9 % (like every other word since PERF-02; 5 % before).
 \set ON_ERROR_STOP on
 \pset pager off
 BEGIN;
@@ -9,7 +10,7 @@ SET LOCAL pg_trgm.word_similarity_threshold = 0.4;
 \echo '### A1 current full text, postgresql:* (25 %)'
 \set q 'postgresql:*'
 EXPLAIN (ANALYZE, BUFFERS, COSTS OFF) select id, title, summary from evidence where to_tsvector('simple', search_text) @@ to_tsquery('simple', f_unaccent(lower(:'q'))) order by ts_rank(to_tsvector('simple', search_text), to_tsquery('simple', f_unaccent(lower(:'q')))) desc limit 10;
-\echo '### A2 current full text, kubernetes:* (5 %)'
+\echo '### A2 current full text, kubernetes:* (~9 %)'
 \set q 'kubernetes:*'
 EXPLAIN (ANALYZE, BUFFERS, COSTS OFF) select id, title, summary from evidence where to_tsvector('simple', search_text) @@ to_tsquery('simple', f_unaccent(lower(:'q'))) order by ts_rank(to_tsvector('simple', search_text), to_tsquery('simple', f_unaccent(lower(:'q')))) desc limit 10;
 
