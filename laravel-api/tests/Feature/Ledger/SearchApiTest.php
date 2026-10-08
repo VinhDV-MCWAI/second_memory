@@ -45,6 +45,21 @@ final class SearchApiTest extends TestCase
             ->assertJsonPath('data.goals', []);
     }
 
+    public function test_the_stored_search_vector_follows_an_edit(): void
+    {
+        $evidence = Evidence::factory()->create(['title' => 'Redis sentinel', 'summary' => null]);
+        $evidence->update(['title' => 'Kafka partitions']);
+
+        $this->call('GET', self::URL, ['q' => 'kafka'], $this->viewer)
+            ->assertOk()
+            ->assertJsonPath('data.match', 'exact')
+            ->assertJsonPath('data.evidence.0.id', $evidence->id);
+        // The old title is gone from both the vector and the trigram text
+        $this->call('GET', self::URL, ['q' => 'sentinel'], $this->viewer)
+            ->assertOk()
+            ->assertJsonPath('data.evidence', []);
+    }
+
     public function test_results_are_grouped_by_type_best_match_first(): void
     {
         $skill = Skill::factory()->create(['name' => 'PostgreSQL', 'category' => 'database', 'description' => 'Tối ưu truy vấn']);

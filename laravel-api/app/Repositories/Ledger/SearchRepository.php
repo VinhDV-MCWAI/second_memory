@@ -10,8 +10,10 @@ use Illuminate\Support\Facades\DB;
 
 /**
  * Admin search over skills, goals and evidence (ADR-0009). Every text is compared through
- * f_unaccent(lower(...)), so "ky nang" finds "Kỹ năng". Goals have no search column: they
- * are few, and they match on their note and their skill's name.
+ * f_unaccent(lower(...)), so "ky nang" finds "Kỹ năng". Skills and evidence keep that text in
+ * `search_text` and its vector in `search_tsv` (stored, GIN); `search_text` also has a GiST trigram
+ * index for the typo fallback. Goals have no search columns: they are few, and they match on
+ * their note and their skill's name.
  */
 final class SearchRepository
 {
@@ -24,10 +26,15 @@ final class SearchRepository
      */
     public function fullText(string $tsQuery): array
     {
-        $match = fn (string $text): array => [
-            "to_tsvector('simple', {$text}) @@ to_tsquery('simple', f_unaccent(lower(?)))",
-            "ts_rank(to_tsvector('simple', {$text}), to_tsquery('simple', f_unaccent(lower(?)))) DESC",
-        ];
+        $match = function (string $text, ?string $vector): array {
+            // Rank on the stored vector where there is one; recomputing it per match was the cost (DB-01)
+            $vector ??= "to_tsvector('simple', {$text})";
+
+            return [
+                "{$vector} @@ to_tsquery('simple', f_unaccent(lower(?)))",
+                "ts_rank({$vector}, to_tsquery('simple', f_unaccent(lower(?)))) DESC",
+            ];
+        };
 
         return $this->run($match, $tsQuery);
     }
@@ -40,9 +47,10 @@ final class SearchRepository
     public function fuzzy(string $text): array
     {
         return DB::transaction(function () use ($text): array {
-            // Local to this transaction; the `<%` operator reads it and can use the trigram index
+            // Local to this transaction; the `<%` operator reads it. With the GiST index, ORDER BY `<<->`
+            // walks the index in distance order and stops after SEARCH_LIMIT rows
             DB::select("SELECT set_config('pg_trgm.word_similarity_threshold', ?, true)", [LedgerConst::SEARCH_FUZZY_THRESHOLD]);
-            $match = fn (string $column): array => [
+            $match = fn (string $column, ?string $vector): array => [
                 "f_unaccent(lower(?)) <% {$column}",
                 "f_unaccent(lower(?)) <<-> {$column}",
             ];
@@ -52,7 +60,7 @@ final class SearchRepository
     }
 
     /**
-     * @param  callable(string): array{0: string, 1: string}  $match  where clause and order by for a text expression
+     * @param  callable(string, ?string): array{0: string, 1: string}  $match  where clause and order by for a text expression and its stored vector, if any
      * @return array{skills: list<object>, goals: list<object>, evidence: list<object>}
      */
     private function run(callable $match, string $term): array
@@ -60,19 +68,19 @@ final class SearchRepository
         return [
             'skills' => $this->top(
                 DB::table('skill')->select(['id', 'name as title', 'description as snippet']),
-                $match('search_text'),
+                $match('search_text', 'search_tsv'),
                 $term,
             ),
             'goals' => $this->top(
                 DB::table('learning_goal')
                     ->join('skill', 'skill.id', '=', 'learning_goal.skill_id')
                     ->select(['learning_goal.id', 'skill.name as title', 'learning_goal.target_level', 'learning_goal.note as snippet']),
-                $match(self::GOAL_TEXT),
+                $match(self::GOAL_TEXT, null),
                 $term,
             ),
             'evidence' => $this->top(
                 DB::table('evidence')->select(['id', 'title', 'summary as snippet']),
-                $match('search_text'),
+                $match('search_text', 'search_tsv'),
                 $term,
             ),
         ];
