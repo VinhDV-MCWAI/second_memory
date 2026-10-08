@@ -9,12 +9,14 @@ use App\Models\Master\AdminMst;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Carbon;
 
 /**
  * One entry of a skill's level history. Rows are only ever inserted (REQ-002 US-1).
  *
  * @property int $skill_id
  * @property SkillLevelEnum $level
+ * @property Carbon $changed_on
  */
 class SkillLevel extends Model
 {

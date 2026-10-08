@@ -85,6 +85,21 @@ abstract class BaseRepository
     }
 
     /**
+     * Payload with `sort_by` dropped unless it is one of the allowed columns
+     * (new modules use this instead of the Schema::hasColumn check in applySorting).
+     *
+     * @param  array<int, string>  $columns
+     */
+    protected function allowedSort(array $payload, array $columns): array
+    {
+        if (isset($payload['sort_by']) && ! in_array($payload['sort_by'], $columns, true)) {
+            unset($payload['sort_by']);
+        }
+
+        return $payload;
+    }
+
+    /**
      * Validate that foreign key references exist
      *
      * @param  array  $foreignKeys  Array of ['field' => 'ModelClass']

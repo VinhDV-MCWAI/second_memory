@@ -41,4 +41,13 @@ return [
     'position' => 'Position',
     'action' => 'Action',
     'author_id' => 'Author ID',
+    // Skill Ledger (RFC-002)
+    'name' => 'Name',
+    'category' => 'Category',
+    'is_public' => 'Public',
+    'tag_ids' => 'Tags',
+    'level' => 'Level',
+    'changed_on' => 'Changed on',
+    'reason' => 'Reason',
+    'skill_id' => 'Skill',
 ];

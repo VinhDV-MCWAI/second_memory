@@ -18,7 +18,7 @@ docker exec ml-php php artisan migrate:fresh --seed      # DEV ONLY, destroys da
 
 `Route → Middleware → Controller → FormRequest → Service → Repository → Model`
 
-- **Module scopes:** `Master` (`*Mst` — admins only), `Audit` (`audit_log`, read-only list; ADR-0006). The Skill Ledger adds `Ledger` (RFC-002).
+- **Module scopes:** `Master` (`*Mst` — admins only), `Audit` (`audit_log`, read-only list; ADR-0006), `Ledger` (Skill Ledger, RFC-002: singular table names, ISO dates `LedgerConst::DATE_FORMAT`, sort allow-lists via `BaseRepository::allowedSort`, case-insensitive names via `Rules\UniqueIgnoringCase`).
 - Each entity has: Controller, `List/Store/Update/Delete` FormRequests, Repository, Service, Resource, Model, Factory, Feature tests under `tests/Feature/{Master,Audit,Auth}`. Services type-hint the concrete repository (no interfaces).
 - **Controllers** stay explicit (typed FormRequests, `$request->validated()` only). **List requests** extend `Http/Requests/ListRequest` (shared `id`/`page`/`per_page`/`sort_by`/`sort_order` rules) and declare `filters()`. A field without a rule never reaches the service.
 - **Services:** `CrudService` (list/store/update/delete via `$resource`) or `AuditedCrudService` (also writes an `audit_log` row per create/update/delete through `AuditLogger`; set `$auditableType`, e.g. `admin`; updates log only the changed fields, secrets never). Entity services usually only declare those properties and a constructor.
@@ -29,10 +29,11 @@ docker exec ml-php php artisan migrate:fresh --seed      # DEV ONLY, destroys da
 
 ## HTTP contract (FE depends on it — do not break)
 
-- Routes live in `routes/api.php` (credential + admin group) which loads `routes/api/master.php` and the `audit-log/list` route; standard resources are declared in a `$resource => Controller` list. Middleware aliases (`api.response`, `db.transaction`, `auth.admin`) are in `bootstrap/app.php`; `statefulApi()` adds Sanctum's session + CSRF middleware for requests from the SPA.
+- Routes live in `routes/api.php` (credential + admin group) which loads `routes/api/{master,ledger}.php` and the `audit-log/list` route; standard resources are declared in a `$resource => Controller` list. Middleware aliases (`api.response`, `db.transaction`, `auth.admin`) are in `bootstrap/app.php`; `statefulApi()` adds Sanctum's session + CSRF middleware for requests from the SPA.
 - Route shape: `GET {resource}/list`, `POST {resource}/store`, `PUT {resource}/update/{id}`, `POST {resource}/delete` (body `{ ids: [] }`). Admin routes under `/api/admin`; there is no public API since RFC-001 slice 5.
 - Envelope (`GenerateResponseMiddleware` + `bootstrap/app.php`): `{ "data": ..., "error": { "status": bool, "code": int, "messages": string|object|null } }`. Validation errors → 422 with field map in `error.messages`.
 - Auth (ADR-0004): Sanctum SPA session. The SPA calls `GET /api/sanctum/csrf-cookie`, then `POST /api/admin/credential/login`; the `laravel_session` cookie + `X-XSRF-TOKEN` header authenticate later calls through `auth:sanctum` (guard `admin`, provider `active-admins` = not deleted and active). Roles (ADR-0005): `admin_mst.role` is `owner` or `viewer`; `AdminMiddleware` lets reads (GET/HEAD/OPTIONS) through and authorizes every other method with the `write` Gate (owner only): 401 = no session, 403 = viewer writing. The last active owner cannot be demoted, deactivated or deleted (422, `AdminMstService`). Login is throttled per user name + IP (`CommonVal::LOGIN_*`). Use `Auth::id()` for the current admin.
+- Skill Ledger rules: `skill/store` creates the first `skill_level` row; levels change only through `skill-level/store` (no update/delete route), which refreshes `skill.current_level` (newest by `changed_on`, then id — a backdated entry does not win) and marks reached open goals `achieved` (`SkillLevelService`). The slug is set once on create.
 - Writes run inside `TransactionMiddleware` (commit on success, rollback on any error), except the credential routes: a failed login's `login_failed` audit row must survive the 401.
 
 ## Gotchas

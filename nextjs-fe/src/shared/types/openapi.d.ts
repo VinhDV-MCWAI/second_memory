@@ -156,6 +156,169 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/admin/skill/list': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations['skill.list'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/admin/skill/store': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** Create a skill with its first level entry */
+    post: operations['skill.store'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/admin/skill/update/{id}': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    /** Update a skill (its level changes through skill-level/store) */
+    put: operations['skill.update'];
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/admin/skill/delete': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations['skill.delete'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/admin/skill-level/list': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations['skillLevel.list'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/admin/skill-level/store': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** Record a level change; open goals reached by it become achieved */
+    post: operations['skillLevel.store'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/admin/tag/list': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations['tag.list'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/admin/tag/store': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations['tag.store'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/admin/tag/update/{id}': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put: operations['tag.update'];
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/admin/tag/delete': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations['tag.delete'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -217,6 +380,14 @@ export interface components {
     DeleteAdminMstRequest: {
       ids: number[];
     };
+    /** DeleteSkillRequest */
+    DeleteSkillRequest: {
+      ids: number[];
+    };
+    /** DeleteTagRequest */
+    DeleteTagRequest: {
+      ids: number[];
+    };
     /**
      * Gender
      * @enum {integer}
@@ -236,6 +407,39 @@ export interface components {
     LoginRequest: {
       user_name: string;
       password: string;
+    };
+    /**
+     * SkillLevel
+     * @description The fixed four-step skill scale (REQ-002 Q1).
+     * @enum {integer}
+     */
+    SkillLevel: 1 | 2 | 3 | 4;
+    /** SkillLevelResource */
+    SkillLevelResource: {
+      id: number;
+      skill_id: number;
+      level: number;
+      /** @enum {string} */
+      level_label: 'Learning' | 'Can use with help' | 'Independent' | 'Can teach others';
+      reason: string | null;
+      changed_on: string;
+      recorded_by_user_name: string | null;
+      created_at: string;
+    };
+    /** SkillResource */
+    SkillResource: {
+      id: number;
+      name: string;
+      slug: string;
+      category: string;
+      description: string | null;
+      is_public: boolean;
+      current_level: number;
+      /** @enum {string} */
+      current_level_label: 'Learning' | 'Can use with help' | 'Independent' | 'Can teach others';
+      tags?: components['schemas']['TagResource'][];
+      created_at: string | null;
+      updated_at: string | null;
     };
     /**
      * StatusEnum
@@ -260,6 +464,38 @@ export interface components {
       avatar?: string | null;
       is_delete: components['schemas']['IsDelete'];
     };
+    /** StoreSkillLevelRequest */
+    StoreSkillLevelRequest: {
+      skill_id: number;
+      level: components['schemas']['SkillLevel'];
+      /** Format: date */
+      changed_on?: string;
+      reason?: string | null;
+    };
+    /**
+     * StoreSkillRequest
+     * @description A skill is created together with its first level entry (RFC-002 §4.2).
+     */
+    StoreSkillRequest: {
+      name: string;
+      category: string;
+      description?: string | null;
+      is_public?: boolean;
+      tag_ids?: number[];
+      level: components['schemas']['SkillLevel'];
+      /** Format: date */
+      changed_on?: string;
+      reason?: string | null;
+    };
+    /** StoreTagRequest */
+    StoreTagRequest: {
+      name: string;
+    };
+    /** TagResource */
+    TagResource: {
+      id: number;
+      name: string;
+    };
     /** UpdateAdminMstRequest */
     UpdateAdminMstRequest: {
       id: number;
@@ -278,6 +514,22 @@ export interface components {
       role?: components['schemas']['AdminRole'];
       avatar?: string | null;
       is_delete?: components['schemas']['IsDelete'] | null;
+    };
+    /**
+     * UpdateSkillRequest
+     * @description No level field: levels change only through skill-level/store, so the history stays complete.
+     *     The slug is not editable either; public URLs stay stable across renames.
+     */
+    UpdateSkillRequest: {
+      name?: string;
+      category?: string;
+      description?: string | null;
+      is_public?: boolean;
+      tag_ids?: number[];
+    };
+    /** UpdateTagRequest */
+    UpdateTagRequest: {
+      name: string;
     };
   };
   responses: {
@@ -573,6 +825,282 @@ export interface operations {
           'application/json': unknown[];
         };
       };
+    };
+  };
+  'skill.list': {
+    parameters: {
+      query?: {
+        id?: number | null;
+        page?: number | null;
+        per_page?: number | null;
+        sort_by?: string | null;
+        sort_order?: string | null;
+        name?: string | null;
+        category?: string | null;
+        is_public?: boolean | null;
+        current_level?: components['schemas']['SkillLevel'] | null;
+        tag_id?: number | null;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Array of `SkillResource` */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            data: components['schemas']['SkillResource'][];
+          };
+        };
+      };
+      401: components['responses']['AuthenticationException'];
+      422: components['responses']['ValidationException'];
+    };
+  };
+  'skill.store': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['StoreSkillRequest'];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': number;
+        };
+      };
+      401: components['responses']['AuthenticationException'];
+      422: components['responses']['ValidationException'];
+    };
+  };
+  'skill.update': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: {
+      content: {
+        'application/json': components['schemas']['UpdateSkillRequest'];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': number;
+        };
+      };
+      401: components['responses']['AuthenticationException'];
+      422: components['responses']['ValidationException'];
+    };
+  };
+  'skill.delete': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['DeleteSkillRequest'];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': Record<string, never>;
+        };
+      };
+      401: components['responses']['AuthenticationException'];
+      422: components['responses']['ValidationException'];
+    };
+  };
+  'skillLevel.list': {
+    parameters: {
+      query: {
+        id?: number | null;
+        page?: number | null;
+        per_page?: number | null;
+        sort_by?: string | null;
+        sort_order?: string | null;
+        skill_id: number;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Array of `SkillLevelResource` */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            data: components['schemas']['SkillLevelResource'][];
+          };
+        };
+      };
+      401: components['responses']['AuthenticationException'];
+      422: components['responses']['ValidationException'];
+    };
+  };
+  'skillLevel.store': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['StoreSkillLevelRequest'];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': number;
+        };
+      };
+      401: components['responses']['AuthenticationException'];
+      422: components['responses']['ValidationException'];
+    };
+  };
+  'tag.list': {
+    parameters: {
+      query?: {
+        id?: number | null;
+        page?: number | null;
+        per_page?: number | null;
+        sort_by?: string | null;
+        sort_order?: string | null;
+        name?: string | null;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Array of `TagResource` */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            data: components['schemas']['TagResource'][];
+          };
+        };
+      };
+      401: components['responses']['AuthenticationException'];
+      422: components['responses']['ValidationException'];
+    };
+  };
+  'tag.store': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['StoreTagRequest'];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': number;
+        };
+      };
+      401: components['responses']['AuthenticationException'];
+      422: components['responses']['ValidationException'];
+    };
+  };
+  'tag.update': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['UpdateTagRequest'];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': number;
+        };
+      };
+      401: components['responses']['AuthenticationException'];
+      422: components['responses']['ValidationException'];
+    };
+  };
+  'tag.delete': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['DeleteTagRequest'];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': Record<string, never>;
+        };
+      };
+      401: components['responses']['AuthenticationException'];
+      422: components['responses']['ValidationException'];
     };
   };
 }
