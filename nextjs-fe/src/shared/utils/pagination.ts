@@ -1,44 +1,19 @@
 import { PAGINATION } from '@/shared/config';
-import type { PaginationSource } from '@/shared/types/api';
+import type { PaginatedResponse } from '@/shared/types/api';
 
 /**
- * Extracts standardized pagination information from various API response structures.
- * Supports:
- * 1. Nested `meta` object (standard back-end Resource Collection)
- * 2. Flat structure (standard back-end Paginator)
- * 3. CamelCase variations
+ * Pagination info of a `{resource}/list` response, read from its `meta` block.
+ * Defaults apply before the first response; `from` / `to` are null on an empty page.
  */
-export const getPaginationInfo = (data: PaginationSource | undefined) => {
-  if (!data) {
-    return {
-      currentPage: PAGINATION.DEFAULT_PAGE,
-      lastPage: PAGINATION.DEFAULT_TOTAL_PAGES,
-      total: PAGINATION.DEFAULT_TOTAL,
-      perPage: PAGINATION.DEFAULT_PER_PAGE,
-      from: PAGINATION.DEFAULT_FROM,
-      to: PAGINATION.DEFAULT_TO,
-    };
-  }
+export const getPaginationInfo = (data: PaginatedResponse<unknown> | undefined) => {
+  const meta = data?.meta;
 
-  // Check for nested meta object (back-end Resource Collection)
-  if (data.meta) {
-    return {
-      currentPage: data.meta.current_page || PAGINATION.DEFAULT_PAGE,
-      lastPage: data.meta.last_page || PAGINATION.DEFAULT_TOTAL_PAGES,
-      total: data.meta.total || PAGINATION.DEFAULT_TOTAL,
-      perPage: data.meta.per_page || PAGINATION.DEFAULT_PER_PAGE,
-      from: data.meta.from || PAGINATION.DEFAULT_FROM,
-      to: data.meta.to || PAGINATION.DEFAULT_TO,
-    };
-  }
-
-  // Flat structure (back-end Paginator default)
   return {
-    currentPage: data.current_page || data.currentPage || PAGINATION.DEFAULT_PAGE,
-    lastPage: data.last_page || data.lastPage || PAGINATION.DEFAULT_TOTAL_PAGES,
-    total: data.total || PAGINATION.DEFAULT_TOTAL,
-    perPage: data.per_page || data.perPage || PAGINATION.DEFAULT_PER_PAGE,
-    from: data.from || PAGINATION.DEFAULT_FROM,
-    to: data.to || PAGINATION.DEFAULT_TO,
+    currentPage: meta?.current_page ?? PAGINATION.DEFAULT_PAGE,
+    lastPage: meta?.last_page ?? PAGINATION.DEFAULT_TOTAL_PAGES,
+    total: meta?.total ?? PAGINATION.DEFAULT_TOTAL,
+    perPage: meta?.per_page ?? PAGINATION.DEFAULT_PER_PAGE,
+    from: meta?.from ?? PAGINATION.DEFAULT_FROM,
+    to: meta?.to ?? PAGINATION.DEFAULT_TO,
   };
 };

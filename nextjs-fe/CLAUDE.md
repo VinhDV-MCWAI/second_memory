@@ -25,4 +25,4 @@ docker exec ml-nextjs pnpm format:check    # Prettier (.prettierrc.json, same as
 
 ## API contract
 
-Responses are wrapped: `{ data, error: { status, code, messages } }`. Read server errors from `error.messages` (string or field map), never `response.data.message`. Lists are Laravel paginators inside `data`.
+Responses are wrapped: `{ data, error: { status, code, messages } }`. Read server errors from `error.messages` (string or field map), never `response.data.message`. Lists are Laravel resource collections inside `data`: `{ data: T[], links, meta }`, typed as `PaginatedResponse<T>` (`src/shared/types/api.ts`) from the generated `PaginationLinks` / `PaginationMeta`; `getPaginationInfo` reads `meta` (`from` / `to` are null on an empty page).
