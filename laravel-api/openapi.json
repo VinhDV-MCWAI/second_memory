@@ -1084,6 +1084,105 @@
                 }
             }
         },
+        "/admin/dashboard/summary": {
+            "get": {
+                "operationId": "dashboard.summary",
+                "summary": "Skill Ledger counts for the dashboard",
+                "tags": [
+                    "Dashboard"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "skills": {
+                                                    "type": "integer"
+                                                },
+                                                "public_skills": {
+                                                    "type": "integer"
+                                                },
+                                                "evidence": {
+                                                    "type": "integer"
+                                                },
+                                                "public_evidence": {
+                                                    "type": "integer"
+                                                },
+                                                "open_goals": {
+                                                    "type": "integer"
+                                                },
+                                                "levels": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "level": {
+                                                                "type": "integer"
+                                                            },
+                                                            "level_label": {
+                                                                "type": "string"
+                                                            },
+                                                            "count": {
+                                                                "type": "integer"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "level",
+                                                            "level_label",
+                                                            "count"
+                                                        ]
+                                                    }
+                                                }
+                                            },
+                                            "required": [
+                                                "skills",
+                                                "public_skills",
+                                                "evidence",
+                                                "public_evidence",
+                                                "open_goals",
+                                                "levels"
+                                            ]
+                                        },
+                                        "error": {
+                                            "type": "object",
+                                            "properties": {
+                                                "status": {
+                                                    "type": "boolean"
+                                                },
+                                                "code": {
+                                                    "type": "integer"
+                                                },
+                                                "messages": {
+                                                    "type": "null"
+                                                }
+                                            },
+                                            "required": [
+                                                "status",
+                                                "code",
+                                                "messages"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data",
+                                        "error"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
         "/admin/evidence/list": {
             "get": {
                 "operationId": "evidence.list",

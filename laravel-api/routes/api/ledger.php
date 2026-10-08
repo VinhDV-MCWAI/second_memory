@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Http\Controllers\Ledger\DashboardController;
 use App\Http\Controllers\Ledger\EvidenceController;
 use App\Http\Controllers\Ledger\LearningGoalController;
 use App\Http\Controllers\Ledger\SearchController;
@@ -29,3 +30,6 @@ Route::post('skill-level/store', [SkillLevelController::class, 'store']);
 
 // One search box over skills, goals and evidence (REQ-002 US-5, ADR-0009)
 Route::get('search', [SearchController::class, 'search']);
+
+// Real dashboard numbers (REQ-002 US-7)
+Route::get('dashboard/summary', [DashboardController::class, 'summary']);

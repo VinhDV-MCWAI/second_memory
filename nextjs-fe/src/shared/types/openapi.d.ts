@@ -156,6 +156,23 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/admin/dashboard/summary': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Skill Ledger counts for the dashboard */
+    get: operations['dashboard.summary'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/admin/evidence/list': {
     parameters: {
       query?: never;
@@ -1302,6 +1319,44 @@ export interface operations {
           'application/json': unknown[];
         };
       };
+    };
+  };
+  'dashboard.summary': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            data: {
+              skills: number;
+              public_skills: number;
+              evidence: number;
+              public_evidence: number;
+              open_goals: number;
+              levels: {
+                level: number;
+                level_label: string;
+                count: number;
+              }[];
+            };
+            error: {
+              status: boolean;
+              code: number;
+              messages: null;
+            };
+          };
+        };
+      };
+      401: components['responses']['AuthenticationException'];
     };
   };
   'evidence.list': {
