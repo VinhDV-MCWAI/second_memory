@@ -10,18 +10,19 @@
 | P0 Baseline | P0-01…P0-09 | done locally; P0-02 push/PRs, P0-06 GitHub board, P0-09 remote cleanup wait for the owner | `v1.0.0` (local tag) |
 | P1 Handbook | P1-01…P1-14 | done | `v1.1.0` (local tag) |
 | P2 Slim down | P2-01…P2-13 | done | `v2.0.0` (local tag) |
-| P3 Skill Ledger | P3-00…P3-18 + P3-05b | P3-00…P3-06 done; **next: P3-07 API evidence/goals** | `v2.1.0` |
-| P4–P11 | coarse | not started | – |
+| P3 Skill Ledger | P3-00…P3-18 + P3-05b | done except P3-12 (doing, lane `public`), P3-15 (E2E, after P3-12), P3-17 QA/PO, P3-18 release; follow-ups API-01…04, FE-01, PERF-01…03, DB-01, OPS-01 on [BOARD.md](BOARD.md) | `v2.1.0` |
+| P4 IaC | P4-00…P4-12 + API-05 | refined in P4-00 (backlog §P4); claimable: P4-01 ADR-0011, P4-02 Docker hardening (lane `infra`), API-05 (lane `api`) | – |
+| P5–P11 | coarse | not started | – |
 
 Records written in P2: REQ-001, RFC-001, ADR-0003…0006, PRB-001 (solved), PRB-002 (solved), runbook `content-export.md`.
-Records written in P3 so far: REQ-002 (Ready), RFC-002 (Approved; slice status in its §6), ADR-0007 (remove media API), ADR-0008 (code-first OpenAPI + contract table), ADR-0009 (Postgres search), spike `docs/reports/spikes/search-2026-10-08/`.
+Records written in P3 so far: REQ-002 (Ready), RFC-002 (Approved; slice status in its §6), ADR-0007 (remove media API), ADR-0008 (code-first OpenAPI + contract table; paginator update API-01), ADR-0009 (Postgres search; storage amendment API-03), ADR-0010 (importer tooling + API token; implementation notes P3-14a), spike `docs/reports/spikes/search-2026-10-08/`, perf reports `docs/reports/perf/` (baseline, request profile, DB-01), runbooks `ledger-import.md`, `backup-restore.md`.
 
 ## State
 
 | | |
 |---|---|
-| Active phase | P3 Skill Ledger (P0–P2 merged into `developer` and `main` via PRs #12, #13). P3-00…P3-06 done; next P3-07 |
-| Working branch | `feature/p3-skill-ledger` from `developer` at `90d48ee` (PR #12 merge). `refactor/p2-slim-down` merged and deleted (origin by `cleanup-branch.yml`, local by me). Local branches: `developer`, `main`, `feature/p3-skill-ledger`. Tags `v1.0.0` … `v2.0.0` exist locally only |
+| Active phase | P3 Skill Ledger closing, worked in parallel lanes ([BOARD.md](BOARD.md), `/lane`); P4 refined. P0–P2 merged into `developer` and `main` via PRs #12, #13 |
+| Working branch | `feature/p3-ledger-api` — every lane commits here with `scripts/lane.sh commit`; the owner pushes. Earlier: `feature/p3-skill-ledger` from `developer` at `90d48ee` (PR #12 merge). `refactor/p2-slim-down` merged and deleted (origin by `cleanup-branch.yml`, local by me). Local branches: `developer`, `main`, `feature/p3-skill-ledger`. Tags `v1.0.0` … `v2.0.0` exist locally only |
 | Old refactor | Frozen (`.claude/refactor/PLAN.md`, `PROGRESS.md`) |
 | Owner defaults | 8–10 h/week, backend role, §4 remove list accepted, Obsidian vault private (see analysis §9) |
 
