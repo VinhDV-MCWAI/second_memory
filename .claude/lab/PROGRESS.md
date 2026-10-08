@@ -175,6 +175,8 @@ Records written in P3 so far: REQ-002 (Ready), RFC-002 (Approved; slice status i
 
 - 2026-10-08 — [lane api] API-04 done: fb004a1 — applySorting takes the sortable columns (all 6 lists), Schema::hasColumn and allowedSort removed: no pg_attribute query per list; admin/audit lists now allow-listed (password can no longer reach ORDER BY); test asserts no schema query. make verify exit 0 (backend 161, Vitest 70)
 
+- 2026-10-08 — [lane infra] OPS-01 done: f82c16b, ca24e51 — old backup.sh exited 0 with NO backup when rclone is missing (archive always deleted); fixed: fails loudly, keeps the archive unless every remote has it, --local-only; restore.sh: single-transaction pg_restore (errors stop, DB never half-dropped), test mode --target-db/--target-bucket, compose v2. Checked: backup 1 s + test restore 2 s for dev and the perf volume (7,068 rows), row counts identical in all 19 tables — far inside RTO 30 min; full DR mode not run (would overwrite dev). Runbook docs/runbooks/backup-restore.md
+
 ## Next step
 
 Since 2026-10-08 work runs in **parallel lanes**: the live task list and who is on what is [BOARD.md](BOARD.md) (`scripts/lane.sh status`); start a conversation with `/lane`. When this file and the board disagree on status, the board wins. Lanes `public` (P3-12) and `perf` (P3-16) were already in progress when the board was created.
