@@ -79,7 +79,7 @@ Refined in P3-00 (2026-10-08). Same lifecycle as P2: requirement → design → 
 | P3-05b | RFC-002 slice 1: remove the media API code per ADR-0007 (keep `media_mgmt` rows and MinIO objects); drop `users` / `password_reset_tokens` | PR | done (`02af8d4`, `8bb6012`, `c61cd63`; OpenAPI 17 → 9 paths) |
 | P3-06 | API slice: skills + tags CRUD, level changes as append-only history, audit log entries, owner / viewer rules; integration tests | PR | done (`e546b65`; 10 routes, 19 feature tests, goal auto-achieve rule included) |
 | P3-07 | API slice: learning goals + evidence (links to PR / ADR / INC / note, no files — ADR-0007); integration tests | PR | done (`b275b5a`; 8 routes, 19 feature tests; goal target must be above the current level, imported evidence: only `type` / `is_public` editable) |
-| P3-08 | API slice: search endpoint (per P3-04 ADR) + public read-only endpoints (published items only, no auth, rate-limited) | PR | todo |
+| P3-08 | API slice: search endpoint (per P3-04 ADR) + public read-only endpoints (published items only, no auth, rate-limited) | PR | done (`e17d093`; search migration, `admin/search`, `public/skills[/{slug}]`, 11 feature tests) |
 | P3-09 | Contract tests: backend responses validated against the spec; FE types generated from it, the check fails on drift. Runs in `make verify` while CI is paused (since 2026-10-08); CI job added when CI is re-enabled | Tests + `make` target | todo |
 | P3-10 | Admin UI: skills list / detail / form, level history timeline, tags | PR | todo |
 | P3-11 | Admin UI: goals, evidence, search box; dashboard shows real counts instead of the hard-coded sample numbers | PR | todo |

@@ -194,7 +194,7 @@ All new tables are additive, so no expand/contract step is needed; each slice is
 | 2 | Schema: migrations, models, enums (`SkillLevel`, `EvidenceType`, `EvidenceSource`, `GoalStatus`), factories, unit tests | P3-05 | `migrate:rollback` (tables are new and empty) | done |
 | 3 | API: skills, tags, level history (+ goal auto-achieve hook) | P3-06 | revert | done |
 | 4 | API: evidence, learning goals | P3-07 | revert | done |
-| 5 | API: search + public routes (after the P3-04 ADR) | P3-08 | revert; search migration rollback if any | todo |
+| 5 | API: search + public routes (after the P3-04 ADR) | P3-08 | revert; search migration rollback if any | done |
 | 6 | Contract tests | P3-09 | revert | todo |
 | 7 | Admin UI + dashboard | P3-10, P3-11 | revert | todo |
 | 8 | Public page + docs production build | P3-12 | revert | todo |

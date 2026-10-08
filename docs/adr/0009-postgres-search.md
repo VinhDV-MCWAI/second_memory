@@ -48,6 +48,10 @@ We choose **option 5**.
 
 > 🇻🇳 Chi tiết: migration bật `unaccent`, `pg_trgm` (extension "trusted", không cần superuser) và tạo hàm `f_unaccent` IMMUTABLE — hàm SQL duy nhất, chỉ chuẩn hoá văn bản, không chứa nghiệp vụ. Mỗi bảng tìm kiếm có cột sinh `search_text` và hai index GIN (full-text và trigram). Truy vấn: full-text có tiền tố cho từ cuối, xếp hạng `ts_rank`; nếu không ra gì thì chạy trigram ngưỡng 0.4; response báo chế độ khớp (`exact` / `fuzzy`). Xem lại khi bảng vượt ~50 nghìn dòng hoặc p95 vượt 100 ms.
 
+Implementation note (P3-08, 2026-10-08): `learning_goal` got **no** `search_text` column. A goal is found by its note *and* its skill's name ("postgres" should find "PostgreSQL → Independent"), which spans two tables, so a generated column cannot hold it; goals are a few dozen rows, so the expression is evaluated per query without an index. Migration `2026_10_08_100003_add_ledger_search`; `down()` drops the columns and `f_unaccent` but keeps the extensions.
+
+> 🇻🇳 Ghi chú triển khai (P3-08): bảng `learning_goal` **không** có cột `search_text`. Mục tiêu được tìm theo ghi chú *và* tên kỹ năng (nằm ở hai bảng nên cột sinh không chứa được); số mục tiêu rất ít nên tính biểu thức lúc truy vấn, không cần index. `down()` xoá cột và hàm, giữ extension.
+
 ## Consequences
 
 - **Easier:** no new service; search stays transactional with the data (an item is searchable the moment it is saved); the spike scripts double as a regression check for the normalization.
