@@ -152,6 +152,8 @@ Records written in P3 so far: REQ-002 (Ready), RFC-002 (Approved; slice status i
 
 - 2026-10-08 — [lane perf] P3-16 done: 2af8d88, d10b7c9 — k6 smoke + load on the REQ-002 seed: 0 % errors; at 10 users p95 search 292–295 ms (target 300, just), others 207–238 ms; ~66–69 req/s capped by ~28 ms per-request overhead outside the queries (PERF-01). Report docs/reports/perf/2026-10-08-baseline.md
 
+- 2026-10-08 — [lane api] P3-14a done: ea7d9c5, fb32d8f — POST admin/evidence/import (upsert by external_key, unknown skills reported, removed notes hidden, unchanged not written, dry_run) + Sanctum import token (ledger:import-token, ability enforced in AdminMiddleware so the token opens only this route; disabled admins' tokens 401); 18 new tests, make verify exit 0 (backend 159, Vitest 70, cov 90.25%); personal_access_tokens migrated on testing + dev. Dev DB has no active owner, so the live curl check waits for P3-14c
+
 ## Next step
 
 Since 2026-10-08 work runs in **parallel lanes**: the live task list and who is on what is [BOARD.md](BOARD.md) (`scripts/lane.sh status`); start a conversation with `/lane`. When this file and the board disagree on status, the board wins. Lanes `public` (P3-12) and `perf` (P3-16) were already in progress when the board was created.
