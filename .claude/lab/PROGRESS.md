@@ -189,6 +189,8 @@ Records written in P3 so far: REQ-002 (Ready), RFC-002 (Approved; slice status i
 
 - 2026-10-08 — [lane fe] FE-01 done: 4a2aac1 — PaginatedResponse<T> = { data, links, meta } from generated PaginationLinks/PaginationMeta; getPaginationInfo reads meta only (flat/camelCase fallbacks and 2 hand-written types removed). make verify exit 0 (backend 162, Vitest 70, cov 90.16%)
 
+- 2026-10-08 — [lane infra] P4-00 done: 9fbc585 — P4 refined into P4-01 … P4-12 in the backlog (ADR first, then hardening, production images, Terraform Docker/MinIO, 3 envs, TLS, SOPS, timed destroy/apply/restore drill, k6 on prod-like, close); board rows added in infra (P4-01…P4-10), api (API-05: drop queue/broadcast wiring before P4-04), perf (P4-11), release (P4-12); OPS-02 folded into P4-03
+
 ## Next step
 
 Since 2026-10-08 work runs in **parallel lanes**: the live task list and who is on what is [BOARD.md](BOARD.md) (`scripts/lane.sh status`); start a conversation with `/lane`. When this file and the board disagree on status, the board wins. Lanes `public` (P3-12) and `perf` (P3-16) were already in progress when the board was created.
