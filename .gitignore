@@ -117,3 +117,7 @@ pnpm-debug.log*
 
 # k6 summary exports (scripts/perf-baseline.sh); the numbers go into docs/reports/perf/
 /perf/results/
+
+# Backup archives (they contain docker/.env) and restore work folder (backup/backup.sh, restore.sh)
+/backups/
+/restore_tmp/
