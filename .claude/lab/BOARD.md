@@ -31,7 +31,7 @@ Owns: `nextjs-fe/` (except `src/shared/types/openapi.d.ts`), `e2e/` (new).
 | ID | Task | Docs | Depends | Status |
 |---|---|---|---|---|
 | P3-15 | Playwright E2E, critical journey only: login → create skill → add evidence → find it by search → see it on the public page; `make e2e` target | [Backlog P3-15](../../docs/plan/03-backlog.md#p3--skill-ledger), [RFC-002 §7](../../docs/design/RFC-002-skill-ledger.md#7-testing-plan), [handbook testing](../../docs/handbook/06-testing-qa.md) | P3-12 | todo |
-| FE-01 | Replace the hand-written paging types in `shared/types/api.ts` (`meta`, `links`, `last_page` …) with the generated `PaginationMeta` / `PaginationLinks` from `openapi.d.ts`; drop the fields the API never sends | [ADR-0008 update API-01](../../docs/adr/0008-code-first-openapi-contract.md) | API-01 | todo |
+| FE-01 | Replace the hand-written paging types in `shared/types/api.ts` (`meta`, `links`, `last_page` …) with the generated `PaginationMeta` / `PaginationLinks` from `openapi.d.ts`; drop the fields the API never sends | [ADR-0008 update API-01](../../docs/adr/0008-code-first-openapi-contract.md) | API-01 | doing since 2026-10-08 14:58 |
 
 ## Lane `public` — Public site (`nextjs-docs`)
 
@@ -79,7 +79,7 @@ Owns: `docs/handbook/`, `docs/reports/daily/`, `docs/reports/weekly/`, `docs/tem
 
 | ID | Task | Docs | Depends | Status |
 |---|---|---|---|---|
-| DOC-01 | Handbook section "Parallel work with several AI sessions": lanes, path ownership, pathspec commits, locks, test lock — the process on this board | [handbook git](../../docs/handbook/04-git.md), [parallel-lanes rules](../rules/parallel-lanes.md) | – | todo |
+| DOC-01 | Handbook section "Parallel work with several AI sessions": lanes, path ownership, pathspec commits, locks, test lock — the process on this board | [handbook git](../../docs/handbook/04-git.md), [parallel-lanes rules](../rules/parallel-lanes.md) | – | done 2026-10-08: 63f570b — handbook 04-git §Parallel work with several AI sessions: lanes own paths, task lifecycle table (claim/lock/run/commit/done/block/add), forbidden git commands, five lessons from day one (working tree vs commits, shared runtime resources, foreign verify failures, shared-store writes, one status source) |
 | DOC-02 | Daily + weekly reports catching up on P3 so far (from the PROGRESS log and git log) | [handbook reporting](../../docs/handbook/09-reporting.md), [templates](../../docs/templates/) | – | done 2026-10-08: 986f502 — daily 2026-10-08 + W41 night update from the PROGRESS and git log: P3 16/20, lanes, tests 107→160 + importer 63, perf 66→128 req/s, OPS-01 / API-04 findings, owner steps |
 
 ## Lane `release` — QA, acceptance, release
