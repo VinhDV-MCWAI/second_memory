@@ -10,7 +10,7 @@
 | P0 Baseline | P0-01…P0-09 | done locally; P0-02 push/PRs, P0-06 GitHub board, P0-09 remote cleanup wait for the owner | `v1.0.0` (local tag) |
 | P1 Handbook | P1-01…P1-14 | done | `v1.1.0` (local tag) |
 | P2 Slim down | P2-01…P2-13 | done | `v2.0.0` (local tag) |
-| P3 Skill Ledger | P3-00…P3-18 (refined) | P3-00 done; **next: P3-01 REQ-002** | `v2.1.0` |
+| P3 Skill Ledger | P3-00…P3-18 (refined) | P3-00, P3-01 done; **next: P3-02 RFC-002** | `v2.1.0` |
 | P4–P11 | coarse | not started | – |
 
 Records written in P2: REQ-001, RFC-001, ADR-0003…0006, PRB-001 (solved), PRB-002 (solved), runbook `content-export.md`.
@@ -19,14 +19,14 @@ Records written in P2: REQ-001, RFC-001, ADR-0003…0006, PRB-001 (solved), PRB-
 
 | | |
 |---|---|
-| Active phase | P3 Skill Ledger (P0, P1, P2 done locally; P2 = `v2.0.0`). P3-00 done (19 tasks); next P3-01 |
-| Working branch | `refactor/p2-slim-down` = the whole local stack (P0 + P1 + P2) on top of `developer`; local only, nothing pushed. Phase boundaries are tags: `v1.0.0` (P0), `v1.1.0` (P1), `v1.2.0`, `v2.0.0` (P2). The stacked branches `chore/p0-baseline`, `docs/p1-handbook`, `fix/security-deps`, `refactor/fe6-features`, `refactor/p4-frontend` were deleted locally on 2026-10-07 (no unique commits); recreate one from its tag if a separate PR is wanted (`git branch chore/p0-baseline v1.0.0`). Local branches left: `developer`, `main` (fast-forwarded to `origin/main`), `refactor/p2-slim-down` |
+| Active phase | P3 Skill Ledger (P0–P2 merged into `developer` and `main` via PRs #12, #13). P3-00, P3-01 done; next P3-02 |
+| Working branch | `feature/p3-skill-ledger` from `developer` at `90d48ee` (PR #12 merge). `refactor/p2-slim-down` merged and deleted (origin by `cleanup-branch.yml`, local by me). Local branches: `developer`, `main`, `feature/p3-skill-ledger`. Tags `v1.0.0` … `v2.0.0` exist locally only |
 | Old refactor | Frozen (`.claude/refactor/PLAN.md`, `PROGRESS.md`) |
 | Owner defaults | 8–10 h/week, backend role, §4 remove list accepted, Obsidian vault private (see analysis §9) |
 
 ## Needs the owner (Claude cannot do these)
 
-1. Push `refactor/p2-slim-down`, open PR → `developer`, then `developer` → `main` (CI/CD paused since 2026-10-08: no checks run on the PR and merging does not deploy; `cleanup-branch.yml` still deletes the merged head branch on origin). One big PR, or recreate `chore/p0-baseline` (`v1.0.0`) and `docs/p1-handbook` (`v1.1.0`) from the tags for smaller stacked PRs.
+1. Push branches yourself: Claude's environment has no GitHub credentials (HTTPS without token, no SSH key, no `gh`). P2 was pushed and merged by the owner on 2026-10-08 (PRs #12, #13). For each phase: push the branch, PR → `developer`, then `developer` → `main` (CI/CD paused: no checks, no deploy).
 2. Push tags `v1.0.0`, `v1.1.0`, `v1.2.0`, `v2.0.0` after the merge (`git push origin v1.0.0 v1.1.0 v1.2.0 v2.0.0`; the local `archive/*` tags need not be pushed) and create the GitHub release from `docs/releases/v1.0.0.md`.
 3. GitHub board and labels (P0-06): see `docs/plan/github-setup.md`.
 4. Remote branch cleanup (P0-09), approved by the owner on 2026-10-07 but no GitHub credentials in Claude's environment: `git push origin --delete staging feature/Refactor-readme feature/laravel-api/create-migration feature/temp-test feature/nuxtjs-fe/demo feature/temp-test2`. The first four are merged into `main`; the last two hold an abandoned 2023 Nuxt FE and a `demo2` test commit, kept locally as tags `archive/nuxtjs-fe-demo`, `archive/temp-test2`. Delete `refactor/fe6-features` on origin only after `refactor/p2-slim-down` is pushed (its commits are not on origin otherwise).
@@ -112,6 +112,9 @@ Records written in P2: REQ-001, RFC-001, ADR-0003…0006, PRB-001 (solved), PRB-
 
 - 2026-10-08 — Merge check before the owner's manual PRs (after `git fetch`): local `developer` / `main` = origin; `refactor/p2-slim-down` is 84 ahead / 0 behind `origin/developer` (fast-forward, no conflict); `origin/main` is ahead of `origin/developer` only by merge commit `91e7e3b` (PR #10) with identical trees; `git merge-tree origin/main refactor/p2-slim-down` clean. **CI/CD paused** at the owner's request (speed first, gates back in P5): `ci.yml` and `cd.yml` now trigger on `workflow_dispatch` only (old triggers kept as comments); `cleanup-branch.yml` unchanged. Noted in `docker/CLAUDE.md` and backlog P5. Gate until P5 = local `make verify` before each PR.
 
+- 2026-10-08 — Owner pushed and merged P2 (PR #12 → `developer`, PR #13 → `main`); my push had failed (no credentials). Local `developer` / `main` synced, `refactor/p2-slim-down` deleted, branch `feature/p3-skill-ledger` created from `developer`.
+- 2026-10-08 — P3-01 done (docs only, no `/verify`): `/simulate-po` request → sealed brief `.claude/sim/sealed/REQ-002.md` (gitignored) → 11 clarification questions → `docs/requirements/REQ-002-skill-ledger.md` Ready (7 stories: US-1–3 Must, US-4/5/7 Should, US-6 Could; NFR p95 < 300 ms, private = 404 on the public API; cut line: goals first, then typo tolerance). Answers that change the plan: evidence is links only → RFC-002 proposes removing the media API (keep MinIO objects); importer never overwrites admin data, unpublished notes are hidden not deleted; search must ignore Vietnamese diacritics. As in P1-14, Claude played both PO and TL, so the questions were not independent of the brief — the PO review in P3-17 is the real check. Backlog P3-09 / P3-15 reworded: run through `make` while CI is paused.
+
 ## Next step
 
-**P3-01**: `REQ-002` intake. Create branch `feature/p3-skill-ledger` from `refactor/p2-slim-down`, run `/simulate-po` for the Skill Ledger request, ask clarification questions (handbook 02 question bank; must cover evidence files / media API, what is public, importer overwrite rules), write `docs/requirements/REQ-002-skill-ledger.md` from `docs/templates/requirement.md` until it meets the Definition of Ready. Then P3-02 (RFC-002).
+**P3-02**: RFC-002 Skill Ledger design from `docs/templates/design-doc.md` (domain model, to-be ERD, endpoint list admin vs public, audit, slices, test strategy, risks), based on REQ-002. Decisions inside: remove the media API (ADR, keeps the MinIO objects), drop `users` / `password_reset_tokens`, append-only level history, goal auto-achieve, public visibility rules. Then P3-03 (contract ADR) and P3-04 (search spike) — they can run in either order.
