@@ -38,6 +38,8 @@ Records written in P3 so far: REQ-002 (Ready), RFC-002 (Approved; slice status i
 10. To store sessions in Redis as ADR-0004 says: `make setup` (regenerates `laravel-api/.env` from `.env.example`, `SESSION_DRIVER=redis`) and `make restart`. Until then sessions use the `database` driver, which also works. Old `LARAVEL_*_TOKEN_SECRET` lines in `docker/.env` can be deleted by hand.
 11. Browser check of the new login (log in, reload, log out in one tab → the other tab goes to login on its next request); only curl was used here.
 12. Perf decisions waiting for you (lane `api`): **API-02** persistent PostgreSQL connections (`DB_PERSISTENT`; risk: a fatal error inside a transaction leaves it open for the next request) and **API-03** stored `tsvector` + GiST trigram index (amends ADR-0009). Evidence: [request profile](../../docs/reports/perf/2026-10-08-request-profile.md), [DB-01](../../docs/reports/perf/2026-10-08-db-01-explain.md). PERF-03 (re-baseline for the v2.1.0 notes) waits for both.
+13. **Backups**: until 2026-10-08 `backup.sh` deleted its archive even when the upload failed, and this host has no rclone — so no backup has actually been kept. Install and configure rclone with the remotes in `RCLONE_REMOTES` (or run `bash backup/backup.sh --local-only` and copy the archive off the machine), then schedule it daily (RPO 24 h). Runbook: [backup-restore.md](../../docs/runbooks/backup-restore.md).
+14. **Importer on the dev stack** (P3-14c): the dev DB had no owner when it was done; run [ledger-import.md](../../docs/runbooks/ledger-import.md) once against your vault.
 
 ## Environment gotchas (read before running anything)
 
