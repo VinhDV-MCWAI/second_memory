@@ -8,7 +8,7 @@ description: Run the project's quality gates (backend style, static analysis, te
 All tooling runs inside containers; the host has no PHP/Node.
 
 1. Check the stack is up: `docker ps --format '{{.Names}}'`. Need `ml-php`, `ml-postgres`, `ml-redis`, and for FE `ml-nextjs` / `ml-nextjs-docs`. If missing, tell the user (suggest `make up`) and stop — don't report "passed".
-2. Full run: `make verify` (same steps as CI; backend tests skip the 4 known `RefreshTokenApiTest` auth failures). Otherwise scope to what changed (`git diff --name-only developer...HEAD` plus working tree). Run only the relevant blocks unless asked for everything.
+2. Full run: `make verify` (the CI steps plus `openapi-check`, which regenerates the spec and FE types and fails on a diff; CI is paused since 2026-10-08, so this is the only gate). Otherwise scope to what changed (`git diff --name-only developer...HEAD` plus working tree). Run only the relevant blocks unless asked for everything.
 
 ## Backend (`laravel-api/` changed)
 ```bash

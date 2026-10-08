@@ -15,7 +15,7 @@ return [
 
     'info' => [
         'version' => '1.0.0',
-        'description' => 'Second Memory admin and docs API. Admin routes authenticate with the `access_token` httpOnly cookie set by `POST /admin/credential/login`. Every response uses the `{ data, error: { status, code, messages } }` envelope.',
+        'description' => 'Second Memory admin API. Admin routes authenticate with the Sanctum session cookie: call `GET /sanctum/csrf-cookie`, then `POST /admin/credential/login`, and send the `X-XSRF-TOKEN` header on writes (ADR-0004). Every response uses the `{ data, error: { status, code, messages } }` envelope.',
     ],
 
     // Relative, so the spec works behind any host (nginx serves the API under /api)
