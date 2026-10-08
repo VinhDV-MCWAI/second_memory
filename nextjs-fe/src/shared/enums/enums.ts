@@ -137,3 +137,48 @@ export const SkillLevelLabels: Record<SkillLevel, string> = {
   [SkillLevel.INDEPENDENT]: 'Independent',
   [SkillLevel.CAN_TEACH]: 'Can teach others',
 };
+
+// ==========================================
+// EvidenceType, EvidenceSource (app/Enums, REQ-002 US-2 / US-4)
+// ==========================================
+export enum EvidenceType {
+  PR = 'pr',
+  ADR = 'adr',
+  INCIDENT = 'incident',
+  NOTE = 'note',
+  OTHER = 'other',
+}
+
+export const EvidenceTypeLabels: Record<EvidenceType, string> = {
+  [EvidenceType.PR]: 'Pull request',
+  [EvidenceType.ADR]: 'Decision record',
+  [EvidenceType.INCIDENT]: 'Incident',
+  [EvidenceType.NOTE]: 'Note',
+  [EvidenceType.OTHER]: 'Other',
+};
+
+export enum EvidenceSource {
+  MANUAL = 'manual',
+  OBSIDIAN = 'obsidian',
+}
+
+export const EvidenceSourceLabels: Record<EvidenceSource, string> = {
+  [EvidenceSource.MANUAL]: 'Manual',
+  [EvidenceSource.OBSIDIAN]: 'Obsidian',
+};
+
+// ==========================================
+// GoalStatus (app/Enums/GoalStatus.php, REQ-002 US-6)
+// `achieved` is set by a level change only
+// ==========================================
+export enum GoalStatus {
+  OPEN = 'open',
+  ACHIEVED = 'achieved',
+  DROPPED = 'dropped',
+}
+
+export const GoalStatusLabels: Record<GoalStatus, string> = {
+  [GoalStatus.OPEN]: 'Open',
+  [GoalStatus.ACHIEVED]: 'Achieved',
+  [GoalStatus.DROPPED]: 'Dropped',
+};

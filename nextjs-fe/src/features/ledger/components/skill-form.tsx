@@ -13,7 +13,7 @@ import { OptionSelect } from '@/components/common/option-select';
 import type { ResourceFormProps } from '@/components/common/resource-list-page';
 import { HistoryViewer } from '@/features/history/components/history-viewer';
 import { SkillLevelTimeline } from '@/features/ledger/components/skill-level-timeline';
-import { TagPicker } from '@/features/ledger/components/tag-picker';
+import { IdPicker } from '@/features/ledger/components/id-picker';
 import { useCrud } from '@/shared/hooks/use-crud';
 import { API_ENDPOINTS } from '@/shared/api';
 import { SkillLevel, SkillLevelLabels } from '@/shared/enums';
@@ -35,6 +35,7 @@ export function SkillForm({ initialData, onSuccess, onCancel }: ResourceFormProp
   const tCommon = useTranslations('common');
   const tLabels = useTranslations('forms.labels');
   const tValidation = useTranslations('validation');
+  const tLedger = useTranslations('ledger');
   const isEdit = !!initialData;
   const { create, update, loading } = useCrud(API_ENDPOINTS.LEDGER.SKILL, {
     invalidateKeys: [API_ENDPOINTS.LEDGER.SKILL, API_ENDPOINTS.LEDGER.SKILL_LEVEL],
@@ -108,7 +109,14 @@ export function SkillForm({ initialData, onSuccess, onCancel }: ResourceFormProp
           <Controller
             control={control}
             name="tag_ids"
-            render={({ field }) => <TagPicker value={field.value} onChange={field.onChange} />}
+            render={({ field }) => (
+              <IdPicker
+                endpoint={API_ENDPOINTS.LEDGER.TAG}
+                emptyMessage={tLedger('noTags')}
+                value={field.value}
+                onChange={field.onChange}
+              />
+            )}
           />
         </FormField>
 

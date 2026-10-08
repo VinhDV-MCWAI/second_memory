@@ -12,16 +12,18 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback, useEffect, type FormEvent } from 'react';
+import { useRouter } from 'next/navigation';
 import { Search, Bell, Sun, Moon, User, Settings, LogOut } from 'lucide-react';
 import { useTheme } from 'next-themes';
 import { useTranslations } from 'next-intl';
-import { THEME } from '@/shared/config';
+import { ADMIN_ROUTES, SEARCH_PARAM, THEME } from '@/shared/config';
 import { formatTimestamp } from '@/shared/utils';
 import type { Notification } from '@/shared/types/ui.types';
 
 export function Header() {
   const { theme, setTheme } = useTheme();
+  const router = useRouter();
   const [mounted, setMounted] = useState(false);
   const t = useTranslations('header');
   const tCommon = useTranslations('common');
@@ -46,6 +48,13 @@ export function Header() {
     setNotifications((prev) => prev.map((n) => ({ ...n, read: true })));
   }, []);
 
+  // Enter opens the search page (REQ-002 US-5)
+  const handleSearch = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const q = String(new FormData(event.currentTarget).get(SEARCH_PARAM) ?? '').trim();
+    if (q) router.push(`${ADMIN_ROUTES.SEARCH}?${new URLSearchParams({ [SEARCH_PARAM]: q })}`);
+  };
+
   const toggleTheme = () => {
     setTheme(theme === THEME.DARK ? THEME.LIGHT : THEME.DARK);
   };
@@ -58,7 +67,15 @@ export function Header() {
           <div className="hidden flex-1 md:flex">
             <div className="relative w-full max-w-md">
               <Search className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-slate-400" />
-              <Input placeholder={t('searchPlaceholder')} className="pl-10" type="search" />
+              <form role="search" onSubmit={handleSearch}>
+                <Input
+                  name={SEARCH_PARAM}
+                  placeholder={t('searchPlaceholder')}
+                  aria-label={t('searchPlaceholder')}
+                  className="pl-10"
+                  type="search"
+                />
+              </form>
             </div>
           </div>
         </div>

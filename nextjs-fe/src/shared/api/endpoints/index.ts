@@ -17,6 +17,10 @@ export const API_ENDPOINTS = {
     SKILL: '/admin/skill',
     SKILL_LEVEL: '/admin/skill-level',
     TAG: '/admin/tag',
+    EVIDENCE: '/admin/evidence',
+    LEARNING_GOAL: '/admin/learning-goal',
+    SEARCH: '/admin/search',
+    DASHBOARD: '/admin/dashboard/summary',
   },
 } as const;
 

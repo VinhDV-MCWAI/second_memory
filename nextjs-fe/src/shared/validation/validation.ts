@@ -1,5 +1,12 @@
 import { z } from 'zod';
-import { Gender, AdminStatus, AdminRole, SkillLevel } from '@/shared/enums';
+import {
+  Gender,
+  AdminStatus,
+  AdminRole,
+  EvidenceType,
+  GoalStatus,
+  SkillLevel,
+} from '@/shared/enums';
 import { ValidationRules } from './validation-rules';
 
 type Translator = (key: string, params?: Record<string, string | number>) => string;
@@ -158,3 +165,66 @@ export const getSkillSchema = (t: Translator) =>
   });
 
 export type SkillFormData = z.infer<ReturnType<typeof getSkillSchema>>;
+
+/** http(s) only, like the API's `url:http,https` rule: no javascript: or data: links (REQ-002 US-2). */
+const isHttpUrl = (value: string) => {
+  try {
+    return ['http:', 'https:'].includes(new URL(value).protocol);
+  } catch {
+    return false;
+  }
+};
+
+// Evidence schema matching StoreEvidenceRequest
+export const getEvidenceSchema = (t: Translator) =>
+  z.object({
+    type: z.nativeEnum(EvidenceType),
+    title: z
+      .string()
+      .trim()
+      .min(1, t('evidenceTitle.required'))
+      .max(
+        ValidationRules.EVIDENCE_TITLE_MAX,
+        t('evidenceTitle.maxLength', { max: ValidationRules.EVIDENCE_TITLE_MAX }),
+      ),
+    url: z
+      .string()
+      .trim()
+      .max(
+        ValidationRules.EVIDENCE_URL_MAX,
+        t('url.maxLength', { max: ValidationRules.EVIDENCE_URL_MAX }),
+      )
+      .refine(isHttpUrl, { message: t('url.invalid') }),
+    occurred_on: z.string().min(1, t('occurredOn.required')),
+    summary: z
+      .string()
+      .max(
+        ValidationRules.EVIDENCE_SUMMARY_MAX,
+        t('summary.maxLength', { max: ValidationRules.EVIDENCE_SUMMARY_MAX }),
+      ),
+    is_public: z.boolean(),
+    skill_ids: z.array(z.number()).min(1, t('skillIds.required')),
+    tag_ids: z.array(z.number()),
+  });
+
+export type EvidenceFormData = z.infer<ReturnType<typeof getEvidenceSchema>>;
+
+// Learning goal schema matching StoreLearningGoalRequest / UpdateLearningGoalRequest
+export const getLearningGoalSchema = (t: Translator) =>
+  z.object({
+    skill_id: z
+      .number({ message: t('skill.required') })
+      .int()
+      .positive(t('skill.required')),
+    target_level: z.nativeEnum(SkillLevel, { message: t('level.required') }),
+    target_date: z.string(),
+    status: z.nativeEnum(GoalStatus),
+    note: z
+      .string()
+      .max(
+        ValidationRules.GOAL_NOTE_MAX,
+        t('note.maxLength', { max: ValidationRules.GOAL_NOTE_MAX }),
+      ),
+  });
+
+export type LearningGoalFormData = z.infer<ReturnType<typeof getLearningGoalSchema>>;

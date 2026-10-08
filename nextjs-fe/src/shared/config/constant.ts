@@ -179,10 +179,19 @@ export const THEME = {
 export const SESSION_COOKIE_NAME = 'laravel_session';
 
 // Admin Routes
+/** Shortest text the admin search accepts (laravel-api LedgerConst::SEARCH_QUERY_MIN). */
+export const SEARCH_QUERY_MIN = 2;
+
+/** Query-string parameter of the search page. */
+export const SEARCH_PARAM = 'q';
+
 export const ADMIN_ROUTES = {
   DASHBOARD: '/admin',
   ADMINS: '/admin/admins',
   SKILLS: '/admin/skills',
   TAGS: '/admin/tags',
+  EVIDENCE: '/admin/evidence',
+  GOALS: '/admin/goals',
+  SEARCH: '/admin/search',
   LOGIN: '/login',
 } as const;

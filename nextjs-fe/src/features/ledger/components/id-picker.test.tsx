@@ -1,11 +1,9 @@
 import { describe, expect, it, vi } from 'vitest';
 import { fireEvent, render, screen } from '@testing-library/react';
 import { http, HttpResponse } from 'msw';
-import { TagPicker } from './tag-picker';
+import { IdPicker } from './id-picker';
 import { apiUrl, envelope, server } from '@/test/server';
 import { createQueryWrapper } from '@/test/query-wrapper';
-
-vi.mock('next-intl', () => ({ useTranslations: () => (key: string) => key }));
 
 const tags = (data: { id: number; name: string }[]) =>
   HttpResponse.json(envelope({ data, current_page: 1, last_page: 1, per_page: 100, total: 2 }));
@@ -14,13 +12,13 @@ const renderPicker = (value: number[], onChange = vi.fn()) => {
   const { Wrapper } = createQueryWrapper();
   render(
     <Wrapper>
-      <TagPicker value={value} onChange={onChange} />
+      <IdPicker endpoint="/admin/tag" emptyMessage="noTags" value={value} onChange={onChange} />
     </Wrapper>,
   );
   return onChange;
 };
 
-describe('TagPicker', () => {
+describe('IdPicker', () => {
   it('adds and removes tag ids', async () => {
     server.use(
       http.get(apiUrl('/admin/tag/list'), () =>

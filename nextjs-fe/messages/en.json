@@ -200,7 +200,11 @@
     "skillDescriptions": "Skill Descriptions",
     "file": "File",
     "tag": "Tag",
-    "tags": "Tags"
+    "tags": "Tags",
+    "evidence": "Evidence",
+    "evidenceMany": "Evidence",
+    "goal": "Goal",
+    "goals": "Goals"
   },
   "fields": {
     "id": "ID",
@@ -232,7 +236,14 @@
     "category": "Category",
     "currentLevel": "Level",
     "visibility": "Visibility",
-    "tags": "Tags"
+    "tags": "Tags",
+    "source": "Source",
+    "occurredOn": "Date",
+    "skill": "Skill",
+    "targetLevel": "Target level",
+    "targetDate": "Target date",
+    "achievedOn": "Achieved on",
+    "skills": "Skills"
   },
   "management": {
     "title": "{entity} Management",
@@ -323,7 +334,16 @@
       "changedOn": "Changed on",
       "reason": "Reason",
       "isPublic": "Show on the public page",
-      "tags": "Tags"
+      "tags": "Tags",
+      "type": "Type",
+      "url": "Link (http or https)",
+      "occurredOn": "Date",
+      "summary": "Summary",
+      "skills": "Skills",
+      "skill": "Skill",
+      "targetLevel": "Target level",
+      "targetDate": "Target date",
+      "note": "Note"
     },
     "placeholders": {
       "urlExample": "https://example.com",
@@ -431,6 +451,29 @@
     },
     "changedOn": {
       "future": "The date cannot be in the future"
+    },
+    "evidenceTitle": {
+      "required": "Title is required",
+      "maxLength": "Title cannot exceed {max} characters"
+    },
+    "url": {
+      "invalid": "Enter an http or https link",
+      "maxLength": "The link cannot exceed {max} characters"
+    },
+    "occurredOn": {
+      "required": "Date is required"
+    },
+    "summary": {
+      "maxLength": "Summary cannot exceed {max} characters"
+    },
+    "skillIds": {
+      "required": "Pick at least one skill"
+    },
+    "skill": {
+      "required": "Skill is required"
+    },
+    "note": {
+      "maxLength": "Note cannot exceed {max} characters"
     }
   },
   "advancedSearch": {
@@ -469,6 +512,30 @@
       "recording": "Recording",
       "recorded": "Level recorded",
       "by": "by {name}"
+    },
+    "noSkills": "Create a skill first",
+    "importedHint": "Imported from Obsidian: edit the title, link, date, summary, skills and tags in the vault.",
+    "achievedHint": "Achieved goals keep their target; only the date and note can change.",
+    "search": {
+      "title": "Search",
+      "description": "Skills, goals and evidence. Accents and case are ignored.",
+      "fuzzy": "No exact match — showing similar results",
+      "empty": "Nothing found for “{q}”",
+      "hint": "Type at least {min} characters",
+      "skills": "Skills",
+      "goals": "Goals",
+      "evidence": "Evidence",
+      "openList": "Open list"
+    },
+    "dashboard": {
+      "skills": "Skills",
+      "publicSkills": "Public skills",
+      "evidence": "Evidence",
+      "publicEvidence": "Public evidence",
+      "openGoals": "Open goals",
+      "levels": "Skills per level",
+      "recentActivity": "Recent changes",
+      "noActivity": "No changes yet"
     }
   }
 }
