@@ -101,3 +101,23 @@ Not proposed: moving the code off the bind mount (no gain) and turning off OPcac
 - One host for k6, PHP and PostgreSQL; ±10 % between runs at 1 user, more under load. The load test on the persistent variant ran twice.
 
 > 🇻🇳 Giới hạn: dùng server có sẵn của PHP (không phải php-fpm), image dev vẫn nạp Xdebug; số liệu kết nối persistent đo trên bản copy đã vá, chưa phải thay đổi thật; mọi thứ chạy trên một máy; phép đo tải chạy hai lần; số dao động ±10 % giữa các lần chạy.
+
+## Follow-up: API-02 applied (2026-10-08, `edf8489`)
+
+Proposal 1 is in the code: `config/database.php` sets `PDO::ATTR_PERSISTENT` for web requests when `DB_PERSISTENT` is not false (default on). Measured on the real change, not a patched copy: same `perf` database, `perf_start_server 8` with `-e DB_PERSISTENT=false|true`, alternating off / on twice, smoke then load each time (`ledger-baseline.js`, unchanged). Runs as `api02-<scenario>-<persistent>-<round>.json` in `perf/results/` (not committed).
+
+| Load, 10 users | req/s | p95 `public/skills` | p95 `public/skills/{slug}` | p95 `admin/search` | p95 `admin/skill/list` |
+|---|---|---|---|---|---|
+| off, round 1 | 51.2 | 288 | 284 | **365** | 303 |
+| on, round 1 | 81.3 | 218 | 195 | 274 | 206 |
+| off, round 2 | 66.3 | 214 | 232 | 278 | 243 |
+| on, round 2 | **127.5** | 124 | 106 | **176** | 116 |
+
+Smoke (1 user), p50 ms off → on: `public/skills` 43–49 → 24–33, `public/skills/{slug}` 46–51 → 22–29, `admin/search` 50 → 21–33, `admin/skill/list` 49–54 → 24–34. Error rate 0 % in every run.
+
+- **Persistent wins in every pair**, by +59 % / +92 % throughput under load. The host was noisy (round 1 slower in both variants; the other lanes share it), so read the pairs, not the absolute values. The prediction (~110 req/s, `public/skills` ~20 ms) is inside the measured range (81–128 req/s, 22–33 ms p50).
+- The control (off) crossed the 300 ms p95 threshold on search and the skill list in round 1; the persistent runs stayed under it in both rounds.
+- Risks checked on the `testing` database: a fatal error inside a transaction (PDO `beginTransaction()` or a raw `BEGIN`) is rolled back by PHP at request end, the next request on the same backend sees no open transaction; a killed backend is reconnected by Laravel without an error reaching the client; a session-level `set_config(…, false)` does survive into the next request, and the app sets none (search uses `set_config(…, true)` inside a transaction). On dev php-fpm, 20 requests opened 2 backends (one per worker; `pm.max_children = 5` ≪ `max_connections = 200`).
+- **CLI is excluded on purpose.** With persistence on in PHPUnit, 3 tests failed and rows leaked into `testing`: each test boots a fresh app, two PDO objects share the handle, and freeing the old one rolls back the running test's transaction. Tests, artisan and queue workers keep one connection per process anyway, so they lose nothing.
+
+> 🇻🇳 Theo dõi: đã áp dụng API-02 (`edf8489`). Đo trên thay đổi thật, chạy xen kẽ tắt/bật hai vòng trên cùng DB `perf`. Bật persistent thắng ở mọi cặp: tải 10 user từ 51 → 81 và 66 → 128 req/s; p95 search 365 → 274 và 278 → 176 ms; với 1 user p50 `public/skills` từ 43–49 còn 24–33 ms; lỗi 0 %. Máy đo bị nhiễu (vòng 1 chậm ở cả hai biến thể) nên chỉ so theo cặp. Lượt đối chứng (tắt) vòng 1 vượt ngưỡng p95 300 ms, các lượt bật persistent thì không. Rủi ro đã kiểm tra trên DB `testing`: transaction còn mở khi fatal error được PHP rollback; backend bị ngắt thì Laravel tự kết nối lại; setting cấp session có bị mang sang request sau, nhưng app không dùng. Trên php-fpm dev, 20 request chỉ mở 2 backend. CLI (test, artisan, queue) cố ý không dùng persistent vì trong PHPUnit hai object PDO dùng chung handle làm rollback mất transaction của test đang chạy (3 test fail, dữ liệu bị commit vào `testing`).
