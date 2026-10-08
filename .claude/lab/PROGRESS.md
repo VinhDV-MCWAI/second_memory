@@ -150,6 +150,8 @@ Records written in P3 so far: REQ-002 (Ready), RFC-002 (Approved; slice status i
 
 - 2026-10-08 — Parallel lanes set up at the owner's request (several conversations, one branch, one working tree): [BOARD.md](BOARD.md) with 8 lanes (api, fe, public, importer, perf, infra, docs, release) and task links to their docs, `scripts/lane.sh` (claim / done / block / release / add with a board lock, mkdir locks for shared files, `run` queues Docker checks with `flock` so two lanes never share the `testing` DB, `commit` stages and commits by pathspec), rules `.claude/rules/parallel-lanes.md`, skill `/lane`. P3-14 split into P3-14a (API, lane `api`), P3-14b (CLI), P3-14c (wiring); new tasks API-01, DB-01, OPS-01, P4-00, DOC-01, DOC-02. Tested in a throwaway repo (claim conflicts, deps, split-task backlog mirroring, lock timeout, pathspec commit).
 
+- 2026-10-08 — [lane perf] P3-16 done: 2af8d88, d10b7c9 — k6 smoke + load on the REQ-002 seed: 0 % errors; at 10 users p95 search 292–295 ms (target 300, just), others 207–238 ms; ~66–69 req/s capped by ~28 ms per-request overhead outside the queries (PERF-01). Report docs/reports/perf/2026-10-08-baseline.md
+
 ## Next step
 
 Since 2026-10-08 work runs in **parallel lanes**: the live task list and who is on what is [BOARD.md](BOARD.md) (`scripts/lane.sh status`); start a conversation with `/lane`. When this file and the board disagree on status, the board wins. Lanes `public` (P3-12) and `perf` (P3-16) were already in progress when the board was created.

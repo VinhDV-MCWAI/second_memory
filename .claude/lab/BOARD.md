@@ -52,8 +52,9 @@ Owns: `perf/`, `scripts/perf-baseline.sh`, `docs/reports/perf/`, `laravel-api/da
 
 | ID | Task | Docs | Depends | Status |
 |---|---|---|---|---|
-| P3-16 | First k6 baseline: smoke + load on `admin/search`, `public/skills[/{slug}]`, one list endpoint; REQ-002 volume on a throwaway DB; p50/p95/p99, RPS, error rate | [Backlog P3-16](../../docs/plan/03-backlog.md#p3--skill-ledger), [PROGRESS next step](PROGRESS.md#next-step), [ADR-0009](../../docs/adr/0009-postgres-search.md) | – | doing since 2026-10-08 (started before this board) |
+| P3-16 | First k6 baseline: smoke + load on `admin/search`, `public/skills[/{slug}]`, one list endpoint; REQ-002 volume on a throwaway DB; p50/p95/p99, RPS, error rate | [Backlog P3-16](../../docs/plan/03-backlog.md#p3--skill-ledger), [PROGRESS next step](PROGRESS.md#next-step), [ADR-0009](../../docs/adr/0009-postgres-search.md) | – | done 2026-10-08: 2af8d88, d10b7c9 — k6 smoke + load on the REQ-002 seed: 0 % errors; at 10 users p95 search 292–295 ms (target 300, just), others 207–238 ms; ~66–69 req/s capped by ~28 ms per-request overhead outside the queries (PERF-01). Report docs/reports/perf/2026-10-08-baseline.md |
 | DB-01 | `EXPLAIN (ANALYZE, BUFFERS)` of the hot queries (search, public list/detail, dashboard summary) on the perf seed; report with index / query proposals (each accepted one becomes an `api` task) | [ADR-0009](../../docs/adr/0009-postgres-search.md), [roadmap P8](../../docs/plan/02-roadmap.md#p8--performance--security-34-weeks) | P3-16 | todo |
+| PERF-01 | Profile where ~28 ms per request goes beyond the queries (new PostgreSQL connection, session start + Redis write, no config/route cache, WSL2 bind mount) on the perf setup; report with numbers before proposing changes (accepted changes → lane api / infra) | [Baseline 2026-10-08](../../docs/reports/perf/2026-10-08-baseline.md) | P3-16 | todo |
 
 ## Lane `infra` — Docker, backup, infrastructure
 
