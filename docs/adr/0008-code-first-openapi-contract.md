@@ -1,0 +1,64 @@
+# ADR-0008 — Code-first OpenAPI with a reviewed contract table and response validation
+
+> 🇻🇳 OpenAPI sinh từ code, kèm bảng hợp đồng được review trước khi code và kiểm tra response theo spec.
+
+| | |
+|---|---|
+| Status | Accepted |
+| Date | 2026-10-08 |
+| Deciders | TL |
+| Related | [RFC-002](../design/RFC-002-skill-ledger.md) §4.3 / §9 Q1, roadmap P3 ("OpenAPI-first"), backlog P3-03, P3-09 |
+
+## Context
+
+The roadmap asks for an "OpenAPI-first" Skill Ledger. Today the spec is **generated from code**: Scramble reads routes, FormRequests and Resources and `make openapi` exports `laravel-api/openapi.json`, from which `openapi-typescript` generates the admin FE types. Both files are committed; a drift check fails when they are stale (`make openapi-check`, part of `make verify` since CI is paused). Nothing checks that real responses match the spec: Scramble infers Resource shapes, and an inference error would pass silently into the FE types.
+
+What "first" is meant to buy is a contract that is agreed **before** the code and that the code cannot drift from. There is one developer, and the FE and BE are in the same repo and the same PR.
+
+> 🇻🇳 Bối cảnh: roadmap muốn "OpenAPI-first". Hiện spec sinh từ code (Scramble đọc route, FormRequest, Resource), FE sinh type từ spec, có kiểm tra drift. Chưa có gì kiểm tra response thật khớp spec. Mục đích thật của "first": hợp đồng được thống nhất trước khi code và code không thể lệch khỏi nó. Chỉ có một dev, FE và BE cùng repo, cùng PR.
+
+## Options
+
+1. **Spec-first, hand-written YAML.** The spec is the source; server code is checked against it. Classic contract-first. Cost: every field is written twice (spec + FormRequest/Resource), and keeping 15+ endpoints in sync by hand is the kind of busywork that rots for a single developer.
+2. **Spec-first with code generation** (generate Laravel stubs from the spec). Removes the double writing on the server, but PHP generators produce code that does not fit the project's layers (Controller → FormRequest → Service → Repository → Resource) and is overwritten on regeneration.
+3. **Code-first, plus a reviewed contract and response validation.** The contract is agreed first as a table in the RFC (routes, fields, status codes), reviewed before code. Code is then written; Scramble exports the spec; feature tests validate every response against that spec, so an inference mistake or a Resource change that the spec does not show fails a test.
+
+> 🇻🇳 Các phương án: (1) viết tay spec YAML trước — mỗi trường phải viết hai lần, một người giữ đồng bộ rất dễ bỏ bê; (2) spec trước rồi sinh code PHP — code sinh ra không hợp kiến trúc tầng của dự án; (3) code trước, nhưng hợp đồng được review trước dưới dạng bảng trong RFC, sau đó test feature kiểm tra mọi response theo spec đã export.
+
+## Decision
+
+We choose **option 3**. "OpenAPI-first" in this project means *contract-first review, code-first spec*.
+
+> 🇻🇳 Chọn **phương án 3**. "OpenAPI-first" ở dự án này nghĩa là: review hợp đồng trước, spec sinh từ code.
+
+- **Before code:** each new endpoint is listed in its RFC with route, request fields (type, required, limits), response fields, and status codes. That table is the reviewed contract (for the Skill Ledger: RFC-002 §4.3 plus the field lists in §4.2; details below).
+- **While coding:** FormRequests and Resources implement exactly those fields; `make openapi` regenerates the spec and FE types in the same commit; `make openapi-check` fails on drift.
+- **Contract tests (P3-09):** feature tests validate each response body against `openapi.json` for its route and status. Proposed tool: `osteel/openapi-httpfoundation-testing` (dev dependency; validates Laravel test responses against an OpenAPI 3.1 file via `league/openapi-psr7-validator`); the choice is confirmed in P3-09 against Scramble's 3.1 output, and a small custom validator is the fallback.
+- A spec change that is not in the RFC contract is a review finding.
+
+### Contract details for the Skill Ledger (complements RFC-002 §4.3)
+
+| Resource | Request fields (store; update = same, all optional unless noted) | Response fields |
+|---|---|---|
+| `skill` | `name` string 1–100 required, `category` string 1–50 required, `description` string ≤ 2000, `is_public` bool, `tag_ids` int[]; store only: `level` int 1–4 required, `changed_on` date ≤ today (default today), `reason` string ≤ 500 | `id`, `name`, `slug`, `category`, `description`, `is_public`, `current_level`, `current_level_label`, `tags[]{id,name}`, `created_at`, `updated_at` (ISO 8601) |
+| `skill-level` | `skill_id` required, `level` 1–4 required, `changed_on` date ≤ today, `reason` ≤ 500 | `id`, `skill_id`, `level`, `level_label`, `reason`, `changed_on`, `recorded_by_user_name`, `created_at` |
+| `tag` | `name` string 1–50 required, unique ignoring case | `id`, `name` |
+| `evidence` | `type` enum required, `title` 1–200 required, `url` http(s) ≤ 2048 required, `occurred_on` date required, `summary` ≤ 1000, `is_public` bool, `skill_ids` int[] min 1, `tag_ids` int[] | `id`, `type`, `title`, `url`, `occurred_on`, `summary`, `is_public`, `source`, `unpublished_at`, `skills[]{id,name}`, `tags[]{id,name}`, `created_at`, `updated_at` |
+| `learning-goal` | `skill_id` required, `target_level` 1–4 required, `target_date` date, `status` enum (update only), `note` ≤ 1000 | `id`, `skill{id,name,current_level}`, `target_level`, `target_date`, `status`, `achieved_on`, `note`, `created_at`, `updated_at` |
+| `search?q=` | `q` string 2–100 required | `match` (`exact` \| `fuzzy`, ADR-0009), `skills[]`, `goals[]`, `evidence[]` (≤ 10 each, best first; item = `id`, `title`, `snippet`) |
+| `dashboard/summary` | – | `skills`, `public_skills`, `evidence`, `public_evidence`, `open_goals`, `levels{1..4: count}` |
+| `evidence/import` | `notes[]{external_key, title, url, occurred_on, summary, tags[], skills[]}` (≤ 2000), `dry_run` bool | `created`, `updated`, `unchanged`, `hidden`, `unknown_skills[]` |
+| public `skills` | – | `[]{name, slug, category, current_level, current_level_label, tags[]}` |
+| public `skills/{slug}` | – | `name`, `slug`, `category`, `description`, `current_level`, `current_level_label`, `tags[]`, `history[]{level, level_label, changed_on}`, `evidence[]{type, title, url, occurred_on, summary}` |
+
+Lists use the existing `ListRequest` paging (`page`, `per_page`, `sort_by`, `sort_order`) and envelope. Delete uses `{ ids: [] }`.
+
+> 🇻🇳 Bảng trên là hợp đồng chi tiết của Skill Ledger (trường request với giới hạn, trường response). Danh sách dùng phân trang `ListRequest` hiện có; xoá dùng `{ ids: [] }`.
+
+## Consequences
+
+- **Easier:** each field is written once (FormRequest / Resource); the spec and FE types cannot be stale (`openapi-check`); response shapes are tested, not only inferred.
+- **Harder:** the spec is only as complete as Scramble's inference; some shapes need PHPDoc hints on Resources. A consumer outside this repo (none today) would not get a spec before the code exists.
+- **Must do next:** P3-09 adds the response validation to the feature tests of all Skill Ledger endpoints (and the existing ones if cheap).
+
+> 🇻🇳 Hệ quả: **dễ hơn** — mỗi trường viết một lần, spec và type FE không thể cũ, hình dạng response được test. **Khó hơn** — spec phụ thuộc khả năng suy luận của Scramble, đôi khi phải thêm PHPDoc; client bên ngoài (hiện không có) không có spec trước khi có code. **Việc tiếp** — P3-09 thêm kiểm tra response vào test.

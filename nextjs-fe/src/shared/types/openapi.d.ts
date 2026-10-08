@@ -156,15 +156,14 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
-  '/admin/media-mgmt/list': {
+  '/admin/skill/list': {
     parameters: {
       query?: never;
       header?: never;
       path?: never;
       cookie?: never;
     };
-    /** List media (files and folders) */
-    get: operations['mediaMgmt.list'];
+    get: operations['skill.list'];
     put?: never;
     post?: never;
     delete?: never;
@@ -173,7 +172,7 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
-  '/admin/media-mgmt/prepare-upload': {
+  '/admin/skill/store': {
     parameters: {
       query?: never;
       header?: never;
@@ -182,15 +181,15 @@ export interface paths {
     };
     get?: never;
     put?: never;
-    /** Prepare a presigned URL for direct upload */
-    post: operations['mediaMgmt.prepareUpload'];
+    /** Create a skill with its first level entry */
+    post: operations['skill.store'];
     delete?: never;
     options?: never;
     head?: never;
     patch?: never;
     trace?: never;
   };
-  '/admin/media-mgmt/init-multipart-upload': {
+  '/admin/skill/update/{id}': {
     parameters: {
       query?: never;
       header?: never;
@@ -198,76 +197,8 @@ export interface paths {
       cookie?: never;
     };
     get?: never;
-    put?: never;
-    /** Initialize Multipart Upload */
-    post: operations['mediaMgmt.initMultipartUpload'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/admin/media-mgmt/get-multipart-url': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    /** Get Multipart Presigned URL */
-    post: operations['mediaMgmt.getMultipartUrl'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/admin/media-mgmt/complete-multipart-upload': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    /** Complete Multipart Upload */
-    post: operations['mediaMgmt.completeMultipartUpload'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/admin/media-mgmt/store': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    /** Store media (file upload or folder creation) */
-    post: operations['mediaMgmt.store'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/admin/media-mgmt/update/{id}': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    /** Update media (rename or move) */
-    put: operations['mediaMgmt.update'];
+    /** Update a skill (its level changes through skill-level/store) */
+    put: operations['skill.update'];
     post?: never;
     delete?: never;
     options?: never;
@@ -275,7 +206,7 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
-  '/admin/media-mgmt/delete/{id}': {
+  '/admin/skill/delete': {
     parameters: {
       query?: never;
       header?: never;
@@ -284,9 +215,105 @@ export interface paths {
     };
     get?: never;
     put?: never;
+    post: operations['skill.delete'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/admin/skill-level/list': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations['skillLevel.list'];
+    put?: never;
     post?: never;
-    /** Delete media (file or folder) */
-    delete: operations['mediaMgmt.delete'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/admin/skill-level/store': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** Record a level change; open goals reached by it become achieved */
+    post: operations['skillLevel.store'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/admin/tag/list': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations['tag.list'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/admin/tag/store': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations['tag.store'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/admin/tag/update/{id}': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put: operations['tag.update'];
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/admin/tag/delete': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations['tag.delete'];
+    delete?: never;
     options?: never;
     head?: never;
     patch?: never;
@@ -349,23 +376,16 @@ export interface components {
       /** @description Full timestamp (ISO 8601): the time of day matters in an audit trail */
       created_at: string;
     };
-    /** CompleteMultipartUploadRequest */
-    CompleteMultipartUploadRequest: {
-      key: string;
-      upload_id: string;
-      parts: {
-        part_number: number;
-        etag: string;
-      }[];
-      original_name: string;
-      extension: string;
-      size: number;
-      parent_path?: string | null;
-      workspace_id?: number | null;
-      mime_type?: string | null;
-    };
     /** DeleteAdminMstRequest */
     DeleteAdminMstRequest: {
+      ids: number[];
+    };
+    /** DeleteSkillRequest */
+    DeleteSkillRequest: {
+      ids: number[];
+    };
+    /** DeleteTagRequest */
+    DeleteTagRequest: {
       ids: number[];
     };
     /**
@@ -373,20 +393,6 @@ export interface components {
      * @enum {integer}
      */
     Gender: 1 | 2 | 3;
-    /** GetMultipartUrlRequest */
-    GetMultipartUrlRequest: {
-      key: string;
-      upload_id: string;
-      part_number: number;
-      size: number;
-    };
-    /** InitMultipartUploadRequest */
-    InitMultipartUploadRequest: {
-      extension: string;
-      size: number;
-      mime_type?: string | null;
-      original_name?: string | null;
-    };
     /**
      * IsActive
      * @enum {integer}
@@ -402,12 +408,38 @@ export interface components {
       user_name: string;
       password: string;
     };
-    /** PrepareUploadRequest */
-    PrepareUploadRequest: {
-      extension: string;
-      original_name: string;
-      size?: number;
-      mime_type?: string;
+    /**
+     * SkillLevel
+     * @description The fixed four-step skill scale (REQ-002 Q1).
+     * @enum {integer}
+     */
+    SkillLevel: 1 | 2 | 3 | 4;
+    /** SkillLevelResource */
+    SkillLevelResource: {
+      id: number;
+      skill_id: number;
+      level: number;
+      /** @enum {string} */
+      level_label: 'Learning' | 'Can use with help' | 'Independent' | 'Can teach others';
+      reason: string | null;
+      changed_on: string;
+      recorded_by_user_name: string | null;
+      created_at: string;
+    };
+    /** SkillResource */
+    SkillResource: {
+      id: number;
+      name: string;
+      slug: string;
+      category: string;
+      description: string | null;
+      is_public: boolean;
+      current_level: number;
+      /** @enum {string} */
+      current_level_label: 'Learning' | 'Can use with help' | 'Independent' | 'Can teach others';
+      tags?: components['schemas']['TagResource'][];
+      created_at: string | null;
+      updated_at: string | null;
     };
     /**
      * StatusEnum
@@ -432,29 +464,37 @@ export interface components {
       avatar?: string | null;
       is_delete: components['schemas']['IsDelete'];
     };
-    /** StoreMediaMgmtRequest */
-    StoreMediaMgmtRequest: {
-      /**
-       * Format: binary
-       * @description For file upload
-       */
-      file?: string | null;
-      /**
-       * @description For folder creation
-       *     For Folder creation OR File from Temp
-       */
-      name?: string;
-      /** @description For File from Temp (Pre-uploaded to MinIO) */
-      key?: string | null;
-      /** @description The temp key */
-      original_name?: string;
-      extension?: string;
-      mime_type?: string | null;
-      size?: number | null;
-      /** @description Common fields */
-      parent_path?: string | null;
-      workspace_id?: number | null;
-      is_delete?: components['schemas']['IsDelete'] | null;
+    /** StoreSkillLevelRequest */
+    StoreSkillLevelRequest: {
+      skill_id: number;
+      level: components['schemas']['SkillLevel'];
+      /** Format: date */
+      changed_on?: string;
+      reason?: string | null;
+    };
+    /**
+     * StoreSkillRequest
+     * @description A skill is created together with its first level entry (RFC-002 §4.2).
+     */
+    StoreSkillRequest: {
+      name: string;
+      category: string;
+      description?: string | null;
+      is_public?: boolean;
+      tag_ids?: number[];
+      level: components['schemas']['SkillLevel'];
+      /** Format: date */
+      changed_on?: string;
+      reason?: string | null;
+    };
+    /** StoreTagRequest */
+    StoreTagRequest: {
+      name: string;
+    };
+    /** TagResource */
+    TagResource: {
+      id: number;
+      name: string;
     };
     /** UpdateAdminMstRequest */
     UpdateAdminMstRequest: {
@@ -475,10 +515,21 @@ export interface components {
       avatar?: string | null;
       is_delete?: components['schemas']['IsDelete'] | null;
     };
-    /** UpdateMediaMgmtRequest */
-    UpdateMediaMgmtRequest: {
-      name?: string | null;
-      new_parent_path?: string | null;
+    /**
+     * UpdateSkillRequest
+     * @description No level field: levels change only through skill-level/store, so the history stays complete.
+     *     The slug is not editable either; public URLs stay stable across renames.
+     */
+    UpdateSkillRequest: {
+      name?: string;
+      category?: string;
+      description?: string | null;
+      is_public?: boolean;
+      tag_ids?: number[];
+    };
+    /** UpdateTagRequest */
+    UpdateTagRequest: {
+      name: string;
     };
   };
   responses: {
@@ -776,7 +827,7 @@ export interface operations {
       };
     };
   };
-  'mediaMgmt.list': {
+  'skill.list': {
     parameters: {
       query?: {
         id?: number | null;
@@ -784,15 +835,11 @@ export interface operations {
         per_page?: number | null;
         sort_by?: string | null;
         sort_order?: string | null;
-        /** @description A single status or a list of statuses */
-        upload_status?: string | null;
-        parent_path?: string | null;
-        folder_path?: string | null;
-        is_file?: boolean | null;
-        mime_type?: string | null;
-        search?: string | null;
-        order_by?: 'created_at' | 'original_name' | 'size' | null;
-        order_direction?: 'asc' | 'desc' | null;
+        name?: string | null;
+        category?: string | null;
+        is_public?: boolean | null;
+        current_level?: components['schemas']['SkillLevel'] | null;
+        tag_id?: number | null;
       };
       header?: never;
       path?: never;
@@ -800,19 +847,22 @@ export interface operations {
     };
     requestBody?: never;
     responses: {
+      /** @description Array of `SkillResource` */
       200: {
         headers: {
           [name: string]: unknown;
         };
         content: {
-          'application/json': unknown[][];
+          'application/json': {
+            data: components['schemas']['SkillResource'][];
+          };
         };
       };
       401: components['responses']['AuthenticationException'];
       422: components['responses']['ValidationException'];
     };
   };
-  'mediaMgmt.prepareUpload': {
+  'skill.store': {
     parameters: {
       query?: never;
       header?: never;
@@ -821,180 +871,7 @@ export interface operations {
     };
     requestBody: {
       content: {
-        'application/json': components['schemas']['PrepareUploadRequest'];
-      };
-    };
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': {
-            upload_url: string;
-            /** @constant */
-            method: 'PUT';
-            key: string;
-            uuid: string;
-            /** @description Extract UUID from key (temp path is {uuid}.ext) */
-            headers: {
-              /** @constant */
-              'Content-Type': 'application/octet-stream';
-            };
-            /** @constant */
-            expires_in: 300;
-          };
-        };
-      };
-      401: components['responses']['AuthenticationException'];
-      422: components['responses']['ValidationException'];
-    };
-  };
-  'mediaMgmt.initMultipartUpload': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['InitMultipartUploadRequest'];
-      };
-    };
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': {
-            upload_id: string;
-            key: string;
-            part_size: unknown;
-            parts_count: number;
-          };
-        };
-      };
-      401: components['responses']['AuthenticationException'];
-      422: components['responses']['ValidationException'];
-    };
-  };
-  'mediaMgmt.getMultipartUrl': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['GetMultipartUrlRequest'];
-      };
-    };
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': {
-            url: string;
-            part_number: string;
-            /** @constant */
-            expires_in: 120;
-          };
-        };
-      };
-      401: components['responses']['AuthenticationException'];
-      422: components['responses']['ValidationException'];
-    };
-  };
-  'mediaMgmt.completeMultipartUpload': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['CompleteMultipartUploadRequest'];
-      };
-    };
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': {
-            key: string;
-            original_name: string;
-            extension: string;
-            mime_type: string | null;
-            size: string | 0;
-            parent_path: string | '/';
-            workspace_id: number | null;
-          };
-        };
-      };
-      401: components['responses']['AuthenticationException'];
-      422: components['responses']['ValidationException'];
-    };
-  };
-  'mediaMgmt.store': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: {
-      content: {
-        'multipart/form-data': components['schemas']['StoreMediaMgmtRequest'];
-      };
-    };
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json':
-            | number
-            | {
-                media_id: number;
-                room_id: null;
-                status: number;
-                /** @constant */
-                message: 'File uploaded successfully.';
-              }
-            | {
-                media_id: number;
-                room_id: string;
-                status: number;
-                /** @constant */
-                message: 'File is being processed. You will be notified when it is ready.';
-              };
-        };
-      };
-      401: components['responses']['AuthenticationException'];
-      422: components['responses']['ValidationException'];
-    };
-  };
-  'mediaMgmt.update': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        id: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: {
-      content: {
-        'application/json': components['schemas']['UpdateMediaMgmtRequest'];
+        'application/json': components['schemas']['StoreSkillRequest'];
       };
     };
     responses: {
@@ -1010,18 +887,209 @@ export interface operations {
       422: components['responses']['ValidationException'];
     };
   };
-  'mediaMgmt.delete': {
+  'skill.update': {
     parameters: {
-      query: {
-        'ids[]': number[];
-      };
+      query?: never;
       header?: never;
       path: {
         id: string;
       };
       cookie?: never;
     };
+    requestBody?: {
+      content: {
+        'application/json': components['schemas']['UpdateSkillRequest'];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': number;
+        };
+      };
+      401: components['responses']['AuthenticationException'];
+      422: components['responses']['ValidationException'];
+    };
+  };
+  'skill.delete': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['DeleteSkillRequest'];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': Record<string, never>;
+        };
+      };
+      401: components['responses']['AuthenticationException'];
+      422: components['responses']['ValidationException'];
+    };
+  };
+  'skillLevel.list': {
+    parameters: {
+      query: {
+        id?: number | null;
+        page?: number | null;
+        per_page?: number | null;
+        sort_by?: string | null;
+        sort_order?: string | null;
+        skill_id: number;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
     requestBody?: never;
+    responses: {
+      /** @description Array of `SkillLevelResource` */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            data: components['schemas']['SkillLevelResource'][];
+          };
+        };
+      };
+      401: components['responses']['AuthenticationException'];
+      422: components['responses']['ValidationException'];
+    };
+  };
+  'skillLevel.store': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['StoreSkillLevelRequest'];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': number;
+        };
+      };
+      401: components['responses']['AuthenticationException'];
+      422: components['responses']['ValidationException'];
+    };
+  };
+  'tag.list': {
+    parameters: {
+      query?: {
+        id?: number | null;
+        page?: number | null;
+        per_page?: number | null;
+        sort_by?: string | null;
+        sort_order?: string | null;
+        name?: string | null;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Array of `TagResource` */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            data: components['schemas']['TagResource'][];
+          };
+        };
+      };
+      401: components['responses']['AuthenticationException'];
+      422: components['responses']['ValidationException'];
+    };
+  };
+  'tag.store': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['StoreTagRequest'];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': number;
+        };
+      };
+      401: components['responses']['AuthenticationException'];
+      422: components['responses']['ValidationException'];
+    };
+  };
+  'tag.update': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['UpdateTagRequest'];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': number;
+        };
+      };
+      401: components['responses']['AuthenticationException'];
+      422: components['responses']['ValidationException'];
+    };
+  };
+  'tag.delete': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['DeleteTagRequest'];
+      };
+    };
     responses: {
       200: {
         headers: {

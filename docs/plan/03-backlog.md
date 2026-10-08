@@ -71,21 +71,22 @@ Refined in P3-00 (2026-10-08). Same lifecycle as P2: requirement → design → 
 | ID | Task | Output | Status |
 |---|---|---|---|
 | P3-00 | Refine this phase into tasks of 1–3 sessions | This table | done |
-| P3-01 | `REQ-002` from the simulated PO (`/simulate-po`): stories, Given/When/Then acceptance criteria, clarification log, Definition of Ready. Ask about evidence files (→ media API decision), what is public, what the importer may overwrite | REQ-002 Ready | todo |
-| P3-02 | RFC-002 design: domain model, to-be ERD, endpoint list, public vs admin access, audit, slices, test strategy per layer, risks. Decide the media API (reuse for evidence files or remove — ADR if kept) and drop `users` / `password_reset_tokens` | RFC-002 (+ ADR if needed) | todo |
-| P3-03 | ADR: OpenAPI-first vs today's code-first Scramble export (CI only checks drift). Write the contract for the Skill Ledger endpoints and review it before code | ADR + spec | todo |
-| P3-04 | Search spike + ADR: Postgres full-text (`tsvector`, `unaccent` for Vietnamese, `ts_rank`) vs `pg_trgm` for typos, measured on seeded data; answer the open questions in `docs/search.md` that matter here | Spike note + ADR | todo |
-| P3-05 | Schema slice: migrations, models, enums, factories for `Skill`, `SkillLevel` history, `LearningGoal`, `Evidence`, `Tag`; drop unused framework tables; unit tests | Migrations + tests | todo |
-| P3-06 | API slice: skills + tags CRUD, level changes as append-only history, audit log entries, owner / viewer rules; integration tests | PR | todo |
-| P3-07 | API slice: learning goals + evidence (links to PR / ADR / INC / note; files only if P3-02 keeps the media API); integration tests | PR | todo |
+| P3-01 | `REQ-002` from the simulated PO (`/simulate-po`): stories, Given/When/Then acceptance criteria, clarification log, Definition of Ready. Ask about evidence files (→ media API decision), what is public, what the importer may overwrite | [REQ-002](../requirements/REQ-002-skill-ledger.md) Ready | done (11 questions; evidence = links only → RFC-002 proposes removing the media API) |
+| P3-02 | RFC-002 design: domain model, to-be ERD, endpoint list, public vs admin access, audit, slices, test strategy per layer, risks. Decide the media API (reuse for evidence files or remove — ADR if kept) and drop `users` / `password_reset_tokens` | [RFC-002](../design/RFC-002-skill-ledger.md), [ADR-0007](../adr/0007-remove-media-api.md) | done (media API removed in P3-05b, files kept; one idempotent import endpoint; `sessions` table stays) |
+| P3-03 | ADR: OpenAPI-first vs today's code-first Scramble export (CI only checks drift). Write the contract for the Skill Ledger endpoints and review it before code | [ADR-0008](../adr/0008-code-first-openapi-contract.md) (contract table inside) | done (code-first spec + reviewed contract + response validation in P3-09; `make verify` now runs the drift check) |
+| P3-04 | Search spike + ADR: Postgres full-text (`tsvector`, `unaccent` for Vietnamese, `ts_rank`) vs `pg_trgm` for typos, measured on seeded data; answer the open questions in `docs/search.md` that matter here | [Spike](../reports/spikes/search-2026-10-08/README.md) + [ADR-0009](../adr/0009-postgres-search.md) | done (full-text p95 0.64 ms, trigram 20 ms at REQ volume; FTS first, trigram fallback) |
+| P3-05 | Schema slice: migrations, models, enums, factories for `Skill`, `SkillLevel` history, `LearningGoal`, `Evidence`, `Tag` (RFC-002 §4.2, slice 2); unit tests | Migrations + tests | done (`752af6a`; 8 tables, 1–4 CHECKs, case-insensitive unique names; search columns follow in P3-08) |
+| P3-05b | RFC-002 slice 1: remove the media API code per ADR-0007 (keep `media_mgmt` rows and MinIO objects); drop `users` / `password_reset_tokens` | PR | done (`02af8d4`, `8bb6012`, `c61cd63`; OpenAPI 17 → 9 paths) |
+| P3-06 | API slice: skills + tags CRUD, level changes as append-only history, audit log entries, owner / viewer rules; integration tests | PR | done (`e546b65`; 10 routes, 19 feature tests, goal auto-achieve rule included) |
+| P3-07 | API slice: learning goals + evidence (links to PR / ADR / INC / note, no files — ADR-0007); integration tests | PR | todo |
 | P3-08 | API slice: search endpoint (per P3-04 ADR) + public read-only endpoints (published items only, no auth, rate-limited) | PR | todo |
-| P3-09 | Contract tests in CI: backend responses validated against the spec; FE types generated from it, CI fails on drift | CI job | todo |
+| P3-09 | Contract tests: backend responses validated against the spec; FE types generated from it, the check fails on drift. Runs in `make verify` while CI is paused (since 2026-10-08); CI job added when CI is re-enabled | Tests + `make` target | todo |
 | P3-10 | Admin UI: skills list / detail / form, level history timeline, tags | PR | todo |
 | P3-11 | Admin UI: goals, evidence, search box; dashboard shows real counts instead of the hard-coded sample numbers | PR | todo |
 | P3-12 | Public read-only view in `nextjs-docs` (first piece of the portfolio): skill list + detail; `/docs` "content moved" page stays | PR | todo |
 | P3-13 | ADR for Python tooling (version, packaging, runs in Docker — no Python on the host) + importer contract: frontmatter schema, stable external key, how the CLI authenticates (ADR-0004 has session auth only) | ADR | todo |
 | P3-14 | Python Obsidian importer: only `publish: true` notes, upsert by external key, `--dry-run`, pytest; idempotency test (second run changes nothing) | CLI + tests | todo |
-| P3-15 | E2E (Playwright), critical journey only: login → create skill → add evidence → find it by search → see it on the public page; runs in CI | E2E + CI job | todo |
+| P3-15 | E2E (Playwright), critical journey only: login → create skill → add evidence → find it by search → see it on the public page; a `make` target (CI job when CI is re-enabled) | E2E + `make` target | todo |
 | P3-16 | First k6 baseline: smoke + load on read / search / public endpoints; p50 / p95 / p99, RPS, error rate recorded | `docs/reports/perf/` baseline | todo |
 | P3-17 | QA sign-off (`/simulate-qa`) and PO acceptance (`/simulate-po`) against REQ-002; bugs filed and fixed | Sign-off | todo |
 | P3-18 | Release `v2.1.0` with notes, before/after numbers, retro | Release + retro | todo |

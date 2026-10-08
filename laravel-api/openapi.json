@@ -3,7 +3,7 @@
     "info": {
         "title": "Second Memory API",
         "version": "1.0.0",
-        "description": "Second Memory admin and docs API. Admin routes authenticate with the `access_token` httpOnly cookie set by `POST /admin/credential/login`. Every response uses the `{ data, error: { status, code, messages } }` envelope."
+        "description": "Second Memory admin API. Admin routes authenticate with the Sanctum session cookie: call `GET /sanctum/csrf-cookie`, then `POST /admin/credential/login`, and send the `X-XSRF-TOKEN` header on writes (ADR-0004). Every response uses the `{ data, error: { status, code, messages } }` envelope."
     },
     "servers": [
         {
@@ -697,12 +697,11 @@
                 }
             }
         },
-        "/admin/media-mgmt/list": {
+        "/admin/skill/list": {
             "get": {
-                "operationId": "mediaMgmt.list",
-                "summary": "List media (files and folders)",
+                "operationId": "skill.list",
                 "tags": [
-                    "MediaMgmt"
+                    "Skill"
                 ],
                 "parameters": [
                     {
@@ -758,50 +757,7 @@
                         }
                     },
                     {
-                        "name": "upload_status",
-                        "in": "query",
-                        "description": "A single status or a list of statuses",
-                        "schema": {
-                            "type": [
-                                "string",
-                                "null"
-                            ]
-                        }
-                    },
-                    {
-                        "name": "parent_path",
-                        "in": "query",
-                        "schema": {
-                            "type": [
-                                "string",
-                                "null"
-                            ],
-                            "maxLength": 1000
-                        }
-                    },
-                    {
-                        "name": "folder_path",
-                        "in": "query",
-                        "schema": {
-                            "type": [
-                                "string",
-                                "null"
-                            ],
-                            "maxLength": 1000
-                        }
-                    },
-                    {
-                        "name": "is_file",
-                        "in": "query",
-                        "schema": {
-                            "type": [
-                                "boolean",
-                                "null"
-                            ]
-                        }
-                    },
-                    {
-                        "name": "mime_type",
+                        "name": "name",
                         "in": "query",
                         "schema": {
                             "type": [
@@ -812,59 +768,69 @@
                         }
                     },
                     {
-                        "name": "search",
+                        "name": "category",
                         "in": "query",
                         "schema": {
                             "type": [
                                 "string",
                                 "null"
                             ],
-                            "maxLength": 255
+                            "maxLength": 50
                         }
                     },
                     {
-                        "name": "order_by",
+                        "name": "is_public",
                         "in": "query",
                         "schema": {
                             "type": [
-                                "string",
+                                "boolean",
                                 "null"
-                            ],
-                            "enum": [
-                                "created_at",
-                                "original_name",
-                                "size",
-                                null
                             ]
                         }
                     },
                     {
-                        "name": "order_direction",
+                        "name": "current_level",
+                        "in": "query",
+                        "schema": {
+                            "anyOf": [
+                                {
+                                    "$ref": "#/components/schemas/SkillLevel"
+                                },
+                                {
+                                    "type": "null"
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "name": "tag_id",
                         "in": "query",
                         "schema": {
                             "type": [
-                                "string",
+                                "integer",
                                 "null"
-                            ],
-                            "enum": [
-                                "asc",
-                                "desc",
-                                null
                             ]
                         }
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "",
+                        "description": "Array of `SkillResource`",
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "type": "array",
-                                    "items": {
-                                        "type": "array",
-                                        "items": {}
-                                    }
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/SkillResource"
+                                            }
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
                                 }
                             }
                         }
@@ -878,397 +844,19 @@
                 }
             }
         },
-        "/admin/media-mgmt/prepare-upload": {
+        "/admin/skill/store": {
             "post": {
-                "operationId": "mediaMgmt.prepareUpload",
-                "summary": "Prepare a presigned URL for direct upload",
+                "operationId": "skill.store",
+                "summary": "Create a skill with its first level entry",
                 "tags": [
-                    "MediaMgmt"
+                    "Skill"
                 ],
                 "requestBody": {
                     "required": true,
                     "content": {
                         "application/json": {
                             "schema": {
-                                "$ref": "#/components/schemas/PrepareUploadRequest"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "upload_url": {
-                                            "type": "string"
-                                        },
-                                        "method": {
-                                            "type": "string",
-                                            "const": "PUT"
-                                        },
-                                        "key": {
-                                            "type": "string"
-                                        },
-                                        "uuid": {
-                                            "type": "string"
-                                        },
-                                        "headers": {
-                                            "type": "object",
-                                            "description": "Extract UUID from key (temp path is {uuid}.ext)",
-                                            "properties": {
-                                                "Content-Type": {
-                                                    "type": "string",
-                                                    "const": "application/octet-stream"
-                                                }
-                                            },
-                                            "required": [
-                                                "Content-Type"
-                                            ]
-                                        },
-                                        "expires_in": {
-                                            "type": "integer",
-                                            "const": 300
-                                        }
-                                    },
-                                    "required": [
-                                        "upload_url",
-                                        "method",
-                                        "key",
-                                        "uuid",
-                                        "headers",
-                                        "expires_in"
-                                    ]
-                                }
-                            }
-                        }
-                    },
-                    "401": {
-                        "$ref": "#/components/responses/AuthenticationException"
-                    },
-                    "422": {
-                        "$ref": "#/components/responses/ValidationException"
-                    }
-                }
-            }
-        },
-        "/admin/media-mgmt/init-multipart-upload": {
-            "post": {
-                "operationId": "mediaMgmt.initMultipartUpload",
-                "summary": "Initialize Multipart Upload",
-                "tags": [
-                    "MediaMgmt"
-                ],
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/InitMultipartUploadRequest"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "upload_id": {
-                                            "type": "string"
-                                        },
-                                        "key": {
-                                            "type": "string"
-                                        },
-                                        "part_size": {},
-                                        "parts_count": {
-                                            "type": "number"
-                                        }
-                                    },
-                                    "required": [
-                                        "upload_id",
-                                        "key",
-                                        "part_size",
-                                        "parts_count"
-                                    ]
-                                }
-                            }
-                        }
-                    },
-                    "401": {
-                        "$ref": "#/components/responses/AuthenticationException"
-                    },
-                    "422": {
-                        "$ref": "#/components/responses/ValidationException"
-                    }
-                }
-            }
-        },
-        "/admin/media-mgmt/get-multipart-url": {
-            "post": {
-                "operationId": "mediaMgmt.getMultipartUrl",
-                "summary": "Get Multipart Presigned URL",
-                "tags": [
-                    "MediaMgmt"
-                ],
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/GetMultipartUrlRequest"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "url": {
-                                            "type": "string"
-                                        },
-                                        "part_number": {
-                                            "type": "string"
-                                        },
-                                        "expires_in": {
-                                            "type": "integer",
-                                            "const": 120
-                                        }
-                                    },
-                                    "required": [
-                                        "url",
-                                        "part_number",
-                                        "expires_in"
-                                    ]
-                                }
-                            }
-                        }
-                    },
-                    "401": {
-                        "$ref": "#/components/responses/AuthenticationException"
-                    },
-                    "422": {
-                        "$ref": "#/components/responses/ValidationException"
-                    }
-                }
-            }
-        },
-        "/admin/media-mgmt/complete-multipart-upload": {
-            "post": {
-                "operationId": "mediaMgmt.completeMultipartUpload",
-                "summary": "Complete Multipart Upload",
-                "tags": [
-                    "MediaMgmt"
-                ],
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/CompleteMultipartUploadRequest"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "key": {
-                                            "type": "string"
-                                        },
-                                        "original_name": {
-                                            "type": "string"
-                                        },
-                                        "extension": {
-                                            "type": "string"
-                                        },
-                                        "mime_type": {
-                                            "type": [
-                                                "string",
-                                                "null"
-                                            ]
-                                        },
-                                        "size": {
-                                            "anyOf": [
-                                                {
-                                                    "type": "string"
-                                                },
-                                                {
-                                                    "type": "integer",
-                                                    "enum": [
-                                                        0
-                                                    ]
-                                                }
-                                            ]
-                                        },
-                                        "parent_path": {
-                                            "anyOf": [
-                                                {
-                                                    "type": "string"
-                                                },
-                                                {
-                                                    "type": "string",
-                                                    "enum": [
-                                                        "/"
-                                                    ]
-                                                }
-                                            ]
-                                        },
-                                        "workspace_id": {
-                                            "type": [
-                                                "integer",
-                                                "null"
-                                            ]
-                                        }
-                                    },
-                                    "required": [
-                                        "key",
-                                        "original_name",
-                                        "extension",
-                                        "mime_type",
-                                        "size",
-                                        "parent_path",
-                                        "workspace_id"
-                                    ]
-                                }
-                            }
-                        }
-                    },
-                    "401": {
-                        "$ref": "#/components/responses/AuthenticationException"
-                    },
-                    "422": {
-                        "$ref": "#/components/responses/ValidationException"
-                    }
-                }
-            }
-        },
-        "/admin/media-mgmt/store": {
-            "post": {
-                "operationId": "mediaMgmt.store",
-                "summary": "Store media (file upload or folder creation)",
-                "tags": [
-                    "MediaMgmt"
-                ],
-                "requestBody": {
-                    "content": {
-                        "multipart/form-data": {
-                            "schema": {
-                                "$ref": "#/components/schemas/StoreMediaMgmtRequest"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "anyOf": [
-                                        {
-                                            "type": "integer"
-                                        },
-                                        {
-                                            "type": "object",
-                                            "properties": {
-                                                "media_id": {
-                                                    "type": "integer"
-                                                },
-                                                "room_id": {
-                                                    "type": "null"
-                                                },
-                                                "status": {
-                                                    "type": "integer"
-                                                },
-                                                "message": {
-                                                    "type": "string",
-                                                    "const": "File uploaded successfully."
-                                                }
-                                            },
-                                            "required": [
-                                                "media_id",
-                                                "room_id",
-                                                "status",
-                                                "message"
-                                            ]
-                                        },
-                                        {
-                                            "type": "object",
-                                            "properties": {
-                                                "media_id": {
-                                                    "type": "integer"
-                                                },
-                                                "room_id": {
-                                                    "type": "string"
-                                                },
-                                                "status": {
-                                                    "type": "integer"
-                                                },
-                                                "message": {
-                                                    "type": "string",
-                                                    "const": "File is being processed. You will be notified when it is ready."
-                                                }
-                                            },
-                                            "required": [
-                                                "media_id",
-                                                "room_id",
-                                                "status",
-                                                "message"
-                                            ]
-                                        }
-                                    ]
-                                }
-                            }
-                        }
-                    },
-                    "401": {
-                        "$ref": "#/components/responses/AuthenticationException"
-                    },
-                    "422": {
-                        "$ref": "#/components/responses/ValidationException"
-                    }
-                }
-            }
-        },
-        "/admin/media-mgmt/update/{id}": {
-            "put": {
-                "operationId": "mediaMgmt.update",
-                "summary": "Update media (rename or move)",
-                "tags": [
-                    "MediaMgmt"
-                ],
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                ],
-                "requestBody": {
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/UpdateMediaMgmtRequest"
+                                "$ref": "#/components/schemas/StoreSkillRequest"
                             }
                         }
                     }
@@ -1293,12 +881,12 @@
                 }
             }
         },
-        "/admin/media-mgmt/delete/{id}": {
-            "delete": {
-                "operationId": "mediaMgmt.delete",
-                "summary": "Delete media (file or folder)",
+        "/admin/skill/update/{id}": {
+            "put": {
+                "operationId": "skill.update",
+                "summary": "Update a skill (its level changes through skill-level/store)",
                 "tags": [
-                    "MediaMgmt"
+                    "Skill"
                 ],
                 "parameters": [
                     {
@@ -1308,20 +896,409 @@
                         "schema": {
                             "type": "string"
                         }
-                    },
-                    {
-                        "name": "ids[]",
-                        "in": "query",
-                        "required": true,
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "type": "integer",
-                                "minimum": 1
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateSkillRequest"
                             }
                         }
                     }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "integer"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    }
+                }
+            }
+        },
+        "/admin/skill/delete": {
+            "post": {
+                "operationId": "skill.delete",
+                "tags": [
+                    "Skill"
                 ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/DeleteSkillRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    }
+                }
+            }
+        },
+        "/admin/skill-level/list": {
+            "get": {
+                "operationId": "skillLevel.list",
+                "tags": [
+                    "SkillLevel"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "query",
+                        "schema": {
+                            "type": [
+                                "integer",
+                                "null"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "schema": {
+                            "type": [
+                                "integer",
+                                "null"
+                            ],
+                            "minimum": 1
+                        }
+                    },
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "schema": {
+                            "type": [
+                                "integer",
+                                "null"
+                            ],
+                            "minimum": 1
+                        }
+                    },
+                    {
+                        "name": "sort_by",
+                        "in": "query",
+                        "schema": {
+                            "type": [
+                                "string",
+                                "null"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "sort_order",
+                        "in": "query",
+                        "schema": {
+                            "type": [
+                                "string",
+                                "null"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "skill_id",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Array of `SkillLevelResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/SkillLevelResource"
+                                            }
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    }
+                }
+            }
+        },
+        "/admin/skill-level/store": {
+            "post": {
+                "operationId": "skillLevel.store",
+                "summary": "Record a level change; open goals reached by it become achieved",
+                "tags": [
+                    "SkillLevel"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/StoreSkillLevelRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "integer"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    }
+                }
+            }
+        },
+        "/admin/tag/list": {
+            "get": {
+                "operationId": "tag.list",
+                "tags": [
+                    "Tag"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "query",
+                        "schema": {
+                            "type": [
+                                "integer",
+                                "null"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "schema": {
+                            "type": [
+                                "integer",
+                                "null"
+                            ],
+                            "minimum": 1
+                        }
+                    },
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "schema": {
+                            "type": [
+                                "integer",
+                                "null"
+                            ],
+                            "minimum": 1
+                        }
+                    },
+                    {
+                        "name": "sort_by",
+                        "in": "query",
+                        "schema": {
+                            "type": [
+                                "string",
+                                "null"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "sort_order",
+                        "in": "query",
+                        "schema": {
+                            "type": [
+                                "string",
+                                "null"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "name",
+                        "in": "query",
+                        "schema": {
+                            "type": [
+                                "string",
+                                "null"
+                            ],
+                            "maxLength": 50
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Array of `TagResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/TagResource"
+                                            }
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    }
+                }
+            }
+        },
+        "/admin/tag/store": {
+            "post": {
+                "operationId": "tag.store",
+                "tags": [
+                    "Tag"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/StoreTagRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "integer"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    }
+                }
+            }
+        },
+        "/admin/tag/update/{id}": {
+            "put": {
+                "operationId": "tag.update",
+                "tags": [
+                    "Tag"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateTagRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "integer"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    }
+                }
+            }
+        },
+        "/admin/tag/delete": {
+            "post": {
+                "operationId": "tag.delete",
+                "tags": [
+                    "Tag"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/DeleteTagRequest"
+                            }
+                        }
+                    }
+                },
                 "responses": {
                     "200": {
                         "description": "",
@@ -1524,74 +1501,6 @@
                 ],
                 "title": "AuditLogResource"
             },
-            "CompleteMultipartUploadRequest": {
-                "type": "object",
-                "properties": {
-                    "key": {
-                        "type": "string"
-                    },
-                    "upload_id": {
-                        "type": "string"
-                    },
-                    "parts": {
-                        "type": "array",
-                        "items": {
-                            "type": "object",
-                            "properties": {
-                                "part_number": {
-                                    "type": "integer",
-                                    "minimum": 1
-                                },
-                                "etag": {
-                                    "type": "string"
-                                }
-                            },
-                            "required": [
-                                "part_number",
-                                "etag"
-                            ]
-                        },
-                        "minItems": 1
-                    },
-                    "original_name": {
-                        "type": "string"
-                    },
-                    "extension": {
-                        "type": "string"
-                    },
-                    "size": {
-                        "type": "integer",
-                        "minimum": 1
-                    },
-                    "parent_path": {
-                        "type": [
-                            "string",
-                            "null"
-                        ]
-                    },
-                    "workspace_id": {
-                        "type": [
-                            "integer",
-                            "null"
-                        ]
-                    },
-                    "mime_type": {
-                        "type": [
-                            "string",
-                            "null"
-                        ]
-                    }
-                },
-                "required": [
-                    "key",
-                    "upload_id",
-                    "parts",
-                    "original_name",
-                    "extension",
-                    "size"
-                ],
-                "title": "CompleteMultipartUploadRequest"
-            },
             "DeleteAdminMstRequest": {
                 "type": "object",
                 "properties": {
@@ -1610,6 +1519,38 @@
                 ],
                 "title": "DeleteAdminMstRequest"
             },
+            "DeleteSkillRequest": {
+                "type": "object",
+                "properties": {
+                    "ids": {
+                        "type": "array",
+                        "items": {
+                            "type": "integer"
+                        },
+                        "minItems": 1
+                    }
+                },
+                "required": [
+                    "ids"
+                ],
+                "title": "DeleteSkillRequest"
+            },
+            "DeleteTagRequest": {
+                "type": "object",
+                "properties": {
+                    "ids": {
+                        "type": "array",
+                        "items": {
+                            "type": "integer"
+                        },
+                        "minItems": 1
+                    }
+                },
+                "required": [
+                    "ids"
+                ],
+                "title": "DeleteTagRequest"
+            },
             "Gender": {
                 "type": "integer",
                 "enum": [
@@ -1618,61 +1559,6 @@
                     3
                 ],
                 "title": "Gender"
-            },
-            "GetMultipartUrlRequest": {
-                "type": "object",
-                "properties": {
-                    "key": {
-                        "type": "string"
-                    },
-                    "upload_id": {
-                        "type": "string"
-                    },
-                    "part_number": {
-                        "type": "integer",
-                        "minimum": 1
-                    },
-                    "size": {
-                        "type": "integer",
-                        "minimum": 0
-                    }
-                },
-                "required": [
-                    "key",
-                    "upload_id",
-                    "part_number",
-                    "size"
-                ],
-                "title": "GetMultipartUrlRequest"
-            },
-            "InitMultipartUploadRequest": {
-                "type": "object",
-                "properties": {
-                    "extension": {
-                        "type": "string"
-                    },
-                    "size": {
-                        "type": "integer",
-                        "minimum": 1
-                    },
-                    "mime_type": {
-                        "type": [
-                            "string",
-                            "null"
-                        ]
-                    },
-                    "original_name": {
-                        "type": [
-                            "string",
-                            "null"
-                        ]
-                    }
-                },
-                "required": [
-                    "extension",
-                    "size"
-                ],
-                "title": "InitMultipartUploadRequest"
             },
             "IsActive": {
                 "type": "integer",
@@ -1710,31 +1596,137 @@
                 ],
                 "title": "LoginRequest"
             },
-            "PrepareUploadRequest": {
+            "SkillLevel": {
+                "type": "integer",
+                "description": "The fixed four-step skill scale (REQ-002 Q1).\n",
+                "enum": [
+                    1,
+                    2,
+                    3,
+                    4
+                ],
+                "title": "SkillLevel"
+            },
+            "SkillLevelResource": {
                 "type": "object",
                 "properties": {
-                    "extension": {
-                        "type": "string",
-                        "maxLength": 10
+                    "id": {
+                        "type": "integer"
                     },
-                    "original_name": {
-                        "type": "string",
-                        "maxLength": 255
+                    "skill_id": {
+                        "type": "integer"
                     },
-                    "size": {
-                        "type": "integer",
-                        "minimum": 0
+                    "level": {
+                        "type": "integer"
                     },
-                    "mime_type": {
+                    "level_label": {
                         "type": "string",
-                        "maxLength": 255
+                        "enum": [
+                            "Learning",
+                            "Can use with help",
+                            "Independent",
+                            "Can teach others"
+                        ]
+                    },
+                    "reason": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "changed_on": {
+                        "type": "string"
+                    },
+                    "recorded_by_user_name": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "created_at": {
+                        "type": "string"
                     }
                 },
                 "required": [
-                    "extension",
-                    "original_name"
+                    "id",
+                    "skill_id",
+                    "level",
+                    "level_label",
+                    "reason",
+                    "changed_on",
+                    "recorded_by_user_name",
+                    "created_at"
                 ],
-                "title": "PrepareUploadRequest"
+                "title": "SkillLevelResource"
+            },
+            "SkillResource": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "slug": {
+                        "type": "string"
+                    },
+                    "category": {
+                        "type": "string"
+                    },
+                    "description": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "is_public": {
+                        "type": "boolean"
+                    },
+                    "current_level": {
+                        "type": "integer"
+                    },
+                    "current_level_label": {
+                        "type": "string",
+                        "enum": [
+                            "Learning",
+                            "Can use with help",
+                            "Independent",
+                            "Can teach others"
+                        ]
+                    },
+                    "tags": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/TagResource"
+                        }
+                    },
+                    "created_at": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "updated_at": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    }
+                },
+                "required": [
+                    "id",
+                    "name",
+                    "slug",
+                    "category",
+                    "description",
+                    "is_public",
+                    "current_level",
+                    "current_level_label",
+                    "created_at",
+                    "updated_at"
+                ],
+                "title": "SkillResource"
             },
             "StatusEnum": {
                 "type": "integer",
@@ -1833,78 +1825,112 @@
                 ],
                 "title": "StoreAdminMstRequest"
             },
-            "StoreMediaMgmtRequest": {
+            "StoreSkillLevelRequest": {
                 "type": "object",
                 "properties": {
-                    "file": {
+                    "skill_id": {
+                        "type": "integer"
+                    },
+                    "level": {
+                        "$ref": "#/components/schemas/SkillLevel"
+                    },
+                    "changed_on": {
+                        "type": "string",
+                        "format": "date"
+                    },
+                    "reason": {
                         "type": [
                             "string",
                             "null"
                         ],
-                        "format": "binary",
-                        "contentMediaType": "application/octet-stream",
-                        "description": "For file upload"
-                    },
-                    "name": {
-                        "type": "string",
-                        "description": "For folder creation\nFor Folder creation OR File from Temp",
-                        "pattern": "^[a-zA-Z0-9_\\-\\s]+$",
-                        "maxLength": 255
-                    },
-                    "key": {
-                        "type": [
-                            "string",
-                            "null"
-                        ],
-                        "description": "For File from Temp (Pre-uploaded to MinIO)"
-                    },
-                    "original_name": {
-                        "type": "string",
-                        "description": "The temp key",
-                        "maxLength": 255
-                    },
-                    "extension": {
-                        "type": "string",
-                        "maxLength": 10
-                    },
-                    "mime_type": {
-                        "type": [
-                            "string",
-                            "null"
-                        ]
-                    },
-                    "size": {
-                        "type": [
-                            "number",
-                            "null"
-                        ]
-                    },
-                    "parent_path": {
-                        "type": [
-                            "string",
-                            "null"
-                        ],
-                        "description": "Common fields",
-                        "maxLength": 1000
-                    },
-                    "workspace_id": {
-                        "type": [
-                            "integer",
-                            "null"
-                        ]
-                    },
-                    "is_delete": {
-                        "anyOf": [
-                            {
-                                "$ref": "#/components/schemas/IsDelete"
-                            },
-                            {
-                                "type": "null"
-                            }
-                        ]
+                        "maxLength": 500
                     }
                 },
-                "title": "StoreMediaMgmtRequest"
+                "required": [
+                    "skill_id",
+                    "level"
+                ],
+                "title": "StoreSkillLevelRequest"
+            },
+            "StoreSkillRequest": {
+                "type": "object",
+                "description": "A skill is created together with its first level entry (RFC-002 \u00a74.2).",
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "maxLength": 100
+                    },
+                    "category": {
+                        "type": "string",
+                        "maxLength": 50
+                    },
+                    "description": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "maxLength": 2000
+                    },
+                    "is_public": {
+                        "type": "boolean"
+                    },
+                    "tag_ids": {
+                        "type": "array",
+                        "items": {
+                            "type": "integer"
+                        },
+                        "uniqueItems": true
+                    },
+                    "level": {
+                        "$ref": "#/components/schemas/SkillLevel"
+                    },
+                    "changed_on": {
+                        "type": "string",
+                        "format": "date"
+                    },
+                    "reason": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "maxLength": 500
+                    }
+                },
+                "required": [
+                    "name",
+                    "category",
+                    "level"
+                ],
+                "title": "StoreSkillRequest"
+            },
+            "StoreTagRequest": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "maxLength": 50
+                    }
+                },
+                "required": [
+                    "name"
+                ],
+                "title": "StoreTagRequest"
+            },
+            "TagResource": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "name": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "id",
+                    "name"
+                ],
+                "title": "TagResource"
             },
             "UpdateAdminMstRequest": {
                 "type": "object",
@@ -2009,26 +2035,50 @@
                 ],
                 "title": "UpdateAdminMstRequest"
             },
-            "UpdateMediaMgmtRequest": {
+            "UpdateSkillRequest": {
+                "type": "object",
+                "description": "No level field: levels change only through skill-level/store, so the history stays complete.\nThe slug is not editable either; public URLs stay stable across renames.",
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "maxLength": 100
+                    },
+                    "category": {
+                        "type": "string",
+                        "maxLength": 50
+                    },
+                    "description": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "maxLength": 2000
+                    },
+                    "is_public": {
+                        "type": "boolean"
+                    },
+                    "tag_ids": {
+                        "type": "array",
+                        "items": {
+                            "type": "integer"
+                        },
+                        "uniqueItems": true
+                    }
+                },
+                "title": "UpdateSkillRequest"
+            },
+            "UpdateTagRequest": {
                 "type": "object",
                 "properties": {
                     "name": {
-                        "type": [
-                            "string",
-                            "null"
-                        ],
-                        "pattern": "^[a-zA-Z0-9_\\-\\s]+$",
-                        "maxLength": 255
-                    },
-                    "new_parent_path": {
-                        "type": [
-                            "string",
-                            "null"
-                        ],
-                        "maxLength": 1000
+                        "type": "string",
+                        "maxLength": 50
                     }
                 },
-                "title": "UpdateMediaMgmtRequest"
+                "required": [
+                    "name"
+                ],
+                "title": "UpdateTagRequest"
             }
         },
         "responses": {

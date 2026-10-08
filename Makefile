@@ -112,8 +112,12 @@ lint: ## All linters/format checks (backend + frontend)
 	$(FE) pnpm format:check
 	$(DOCS) pnpm format:check
 
+.PHONY: openapi-check
+openapi-check: openapi ## Fail if openapi.json or the FE types were stale (CI is paused, so make verify runs this)
+	git diff --exit-code -- laravel-api/openapi.json nextjs-fe/src/shared/types/openapi.d.ts || { echo "OpenAPI spec or FE types were stale: review and commit the regenerated files"; exit 1; }
+
 .PHONY: verify
-verify: lint analyse fe-typecheck test-ci fe-test ## Everything CI runs
+verify: lint analyse openapi-check fe-typecheck test-ci fe-test ## Everything CI runs, plus the OpenAPI drift check
 
 ##@ Data
 
