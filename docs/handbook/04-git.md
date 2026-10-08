@@ -117,3 +117,39 @@ Reviewer etiquette: comment on the code, not the person; prefix optional remarks
 5. If the conflict is about behaviour (two people changed the same rule), stop and ask the other author/TL.
 
 > 🇻🇳 Hiểu cả hai phía trước khi chọn; file sinh tự động thì không sửa tay mà sinh lại; xung đột về hành vi thì hỏi người kia hoặc TL.
+
+## Parallel work with several AI sessions
+
+> 🇻🇳 Làm song song với nhiều phiên AI trên cùng một branch và một thư mục làm việc.
+
+Since 2026-10-08 several Claude conversations work at the same time on **one branch and one working tree** (no worktree per session: the Docker stack bind-mounts this directory). What keeps them apart is a board of **lanes**: [.claude/lab/BOARD.md](../../.claude/lab/BOARD.md), driven by `scripts/lane.sh`; the rules are in [.claude/rules/parallel-lanes.md](../../.claude/rules/parallel-lanes.md) and a session starts with the `/lane` skill.
+
+> 🇻🇳 Từ 2026-10-08 nhiều conversation Claude làm cùng lúc trên một branch và một thư mục (không dùng worktree riêng vì stack Docker mount chính thư mục này). Thứ giữ chúng không giẫm chân nhau là bảng **lane** trong `BOARD.md`, điều khiển bằng `scripts/lane.sh`; bắt đầu bằng skill `/lane`.
+
+**Lanes own paths.** Each lane (api, fe, public, importer, perf, infra, docs, release) lists the folders it owns and runs one task at a time. A session edits only its lane's paths plus the records its task names. Files nobody owns (`Makefile`, `docker/docker-compose.yml`, `.gitignore`, `package.json`, `pnpm-lock.yaml`, `CLAUDE.md`, `docs/plan/*`, the PROGRESS file outside its log) are edited under a lock, in a few minutes.
+
+**Lifecycle of a task:**
+
+| Step | Command | What it does |
+|---|---|---|
+| Pick | `scripts/lane.sh status` / `next [lane]` | Busy and free lanes, tasks whose dependencies are done |
+| Claim | `scripts/lane.sh claim <id>` | `todo` → `doing`; fails if taken, if the lane is busy or a dependency is open |
+| Shared file | `lock <path>` → edit → `commit` → `unlock <path>` | Exclusive edit of an unowned file |
+| Check | `scripts/lane.sh run make test f=…` / `run make verify` | Docker-backed checks one lane at a time (shared `testing` DB, CPU) |
+| Commit | `scripts/lane.sh commit "<msg>" <paths…>` | Stages and commits only those paths, under a git lock |
+| Finish | `scripts/lane.sh done <id> "<sha> — result"` | Board → `done`, mirrors the backlog row, appends the PROGRESS log, commits those three files |
+| Stuck / new work | `block <id> "<reason>"` / `add <lane> <id> …` | Frees the lane / puts the work in the lane that owns the code |
+
+Never use `git add -A` / `.` / `-u`, `commit -a`, `stash`, `restore`, `checkout -- .`, `reset --hard`, `clean`, rebase, amend or a branch switch: each of them touches another session's uncommitted work. Uncommitted changes you did not make belong to someone else — don't format, stage or revert them, even when they break your build; say so in your task note.
+
+> 🇻🇳 Vòng đời task: `claim` → làm trong path của lane → kiểm tra qua `run` → `commit` theo path → `done`. File không ai sở hữu thì `lock` / `commit` / `unlock`. Cấm các lệnh git đụng toàn bộ thư mục (`add -A`, `commit -a`, `stash`, `restore`, `reset --hard`, `clean`, rebase, amend, đổi branch). Thay đổi chưa commit không phải của mình thì không đụng vào, chỉ ghi chú lại.
+
+**Lessons from the first day:**
+
+- **The stack sees the working tree, not the commits.** A perf run once measured another lane's uncommitted config change. Before timing or testing something that others may be editing, check `git status -- <area>` and say what was in the tree; measure committed code for numbers that go into a report.
+- **Shared runtime resources need the same care as files.** Two sessions started their own `php -S` on the same port inside `ml-php`; the perf scripts now refuse a taken port (`PERF_PORT` overrides). The same holds for database names, buckets and Docker image tags: prefix them with the lane or task.
+- **`make verify` may fail on someone else's half-done work.** Run your area's checks; report a foreign failure instead of fixing it.
+- **Data changes on shared stores are decisions.** Seeding accounts on the dev DB or restoring over it is the owner's call; use throwaway databases (`perf`, `restore_check`) for anything that writes.
+- **Status lives in one place.** The board is the source of truth for who does what; the backlog and the PROGRESS log are written by `lane.sh`, never by hand, so two sessions never edit the same status line.
+
+> 🇻🇳 Bài học ngày đầu: (1) stack chạy trên thư mục làm việc chứ không phải commit — trước khi đo hay test, xem `git status` khu vực đó, số liệu báo cáo phải đo trên code đã commit; (2) tài nguyên chạy chung (cổng, tên DB, bucket, tag image) cũng cần tránh trùng như file; (3) `make verify` có thể đỏ vì việc dở của lane khác — báo lại, không tự sửa; (4) ghi dữ liệu lên kho dùng chung (DB dev) là quyết định của owner — dùng DB tạm; (5) trạng thái chỉ nằm ở board, backlog và PROGRESS do `lane.sh` ghi.

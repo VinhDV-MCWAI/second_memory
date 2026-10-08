@@ -24,7 +24,7 @@ flowchart LR
 | Who does what | [01-team.md](01-team.md) | RACI |
 | Request → Ready | [02-intake.md](02-intake.md) | `REQ-xxx` with acceptance criteria |
 | Design | [03-design.md](03-design.md) | RFC, ADR, diagrams |
-| Code & review | [04-git.md](04-git.md), [05-coding.md](05-coding.md) | Branch, commits, PR |
+| Code & review | [04-git.md](04-git.md), [05-coding.md](05-coding.md) | Branch, commits, PR, parallel AI sessions (lanes) |
 | Test & QA | [06-testing-qa.md](06-testing-qa.md) | Tests, test report, bug reports |
 | Release & deploy | [07-release.md](07-release.md) | Tag, release notes, deployment |
 | Operate & incidents | [08-operations.md](08-operations.md) | Alerts, `INC-xxx`, postmortem |
