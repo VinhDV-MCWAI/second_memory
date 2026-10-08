@@ -7,6 +7,7 @@ namespace Tests;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 use Illuminate\Support\Facades\Redis;
+use Tests\Support\OpenApiContract;
 
 abstract class TestCase extends BaseTestCase
 {
@@ -23,6 +24,7 @@ abstract class TestCase extends BaseTestCase
     /**
      * Each request starts without a resolved user, as it does under PHP-FPM; otherwise the
      * guards keep the user of the previous request and a revoked session still looks valid.
+     * Every response is also checked against openapi.json (contract test, P3-09).
      *
      * {@inheritDoc}
      */
@@ -30,7 +32,10 @@ abstract class TestCase extends BaseTestCase
     {
         $this->app['auth']->forgetGuards();
 
-        return parent::call($method, $uri, $parameters, $cookies, $files, $server, $content);
+        $response = parent::call($method, $uri, $parameters, $cookies, $files, $server, $content);
+        OpenApiContract::instance()->assertMatches($response, $method);
+
+        return $response;
     }
 
     protected function tearDown(): void

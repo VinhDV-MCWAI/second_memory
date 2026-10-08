@@ -535,6 +535,19 @@ export interface components {
      * @enum {integer}
      */
     AdminStatus: 0 | 1 | 2 | 3;
+    /** ApiError */
+    ApiError: {
+      data: null;
+      error: {
+        status: boolean;
+        code: number;
+        messages:
+          | string
+          | {
+              [key: string]: string[];
+            };
+      };
+    };
     /**
      * AuditEvent
      * @description What an audit_log row records (ADR-0006).
@@ -892,10 +905,7 @@ export interface components {
         [name: string]: unknown;
       };
       content: {
-        'application/json': {
-          /** @description Error overview. */
-          message: string;
-        };
+        'application/json': components['schemas']['ApiError'];
       };
     };
     /** @description Validation error */
@@ -904,14 +914,7 @@ export interface components {
         [name: string]: unknown;
       };
       content: {
-        'application/json': {
-          /** @description Errors overview. */
-          message: string;
-          /** @description A detailed description of each field that failed validation. */
-          errors: {
-            [key: string]: string[];
-          };
-        };
+        'application/json': components['schemas']['ApiError'];
       };
     };
   };
@@ -959,7 +962,14 @@ export interface operations {
         };
         content: {
           'application/json': {
-            data: components['schemas']['AdminMstResource'][];
+            data: {
+              data: components['schemas']['AdminMstResource'][];
+            };
+            error: {
+              status: boolean;
+              code: number;
+              messages: null;
+            };
           };
         };
       };
@@ -985,10 +995,26 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          'application/json': number;
+          'application/json': {
+            data: number;
+            error: {
+              status: boolean;
+              code: number;
+              messages: null;
+            };
+          };
         };
       };
       401: components['responses']['AuthenticationException'];
+      /** @description Forbidden */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ApiError'];
+        };
+      };
       422: components['responses']['ValidationException'];
     };
   };
@@ -1012,10 +1038,35 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          'application/json': number;
+          'application/json': {
+            data: number;
+            error: {
+              status: boolean;
+              code: number;
+              messages: null;
+            };
+          };
         };
       };
       401: components['responses']['AuthenticationException'];
+      /** @description Forbidden */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ApiError'];
+        };
+      };
+      /** @description Not Found */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ApiError'];
+        };
+      };
       422: components['responses']['ValidationException'];
     };
   };
@@ -1037,10 +1088,26 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          'application/json': Record<string, never>;
+          'application/json': {
+            data: null;
+            error: {
+              status: boolean;
+              code: number;
+              messages: null;
+            };
+          };
         };
       };
       401: components['responses']['AuthenticationException'];
+      /** @description Forbidden */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ApiError'];
+        };
+      };
       422: components['responses']['ValidationException'];
     };
   };
@@ -1072,7 +1139,14 @@ export interface operations {
         };
         content: {
           'application/json': {
-            data: components['schemas']['AuditLogResource'][];
+            data: {
+              data: components['schemas']['AuditLogResource'][];
+            };
+            error: {
+              status: boolean;
+              code: number;
+              messages: null;
+            };
           };
         };
       };
@@ -1098,7 +1172,30 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          'application/json': unknown[];
+          'application/json': {
+            data: {
+              id: number;
+              email: string;
+              user_name: string;
+              first_name: string;
+              last_name: string;
+              address: string;
+              phone_number: string;
+              birth: string | null;
+              gender: number;
+              status: number;
+              is_active: boolean;
+              role: string;
+              avatar: string;
+              is_delete: boolean;
+              updated_at: string;
+            };
+            error: {
+              status: boolean;
+              code: number;
+              messages: null;
+            };
+          };
         };
       };
       401: components['responses']['AuthenticationException'];
@@ -1109,10 +1206,7 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          'application/json': {
-            /** @description Error overview. */
-            message: string;
-          };
+          'application/json': components['schemas']['ApiError'];
         };
       };
     };
@@ -1131,7 +1225,14 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          'application/json': Record<string, never>;
+          'application/json': {
+            data: null;
+            error: {
+              status: boolean;
+              code: number;
+              messages: null;
+            };
+          };
         };
       };
     };
@@ -1150,7 +1251,30 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          'application/json': unknown[];
+          'application/json': {
+            data: {
+              id: number;
+              email: string;
+              user_name: string;
+              first_name: string;
+              last_name: string;
+              address: string;
+              phone_number: string;
+              birth: string | null;
+              gender: number;
+              status: number;
+              is_active: boolean;
+              role: string;
+              avatar: string;
+              is_delete: boolean;
+              updated_at: string;
+            };
+            error: {
+              status: boolean;
+              code: number;
+              messages: null;
+            };
+          };
         };
       };
       401: components['responses']['AuthenticationException'];
@@ -1208,7 +1332,14 @@ export interface operations {
         };
         content: {
           'application/json': {
-            data: components['schemas']['EvidenceResource'][];
+            data: {
+              data: components['schemas']['EvidenceResource'][];
+            };
+            error: {
+              status: boolean;
+              code: number;
+              messages: null;
+            };
           };
         };
       };
@@ -1234,10 +1365,26 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          'application/json': number;
+          'application/json': {
+            data: number;
+            error: {
+              status: boolean;
+              code: number;
+              messages: null;
+            };
+          };
         };
       };
       401: components['responses']['AuthenticationException'];
+      /** @description Forbidden */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ApiError'];
+        };
+      };
       422: components['responses']['ValidationException'];
     };
   };
@@ -1261,10 +1408,35 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          'application/json': number;
+          'application/json': {
+            data: number;
+            error: {
+              status: boolean;
+              code: number;
+              messages: null;
+            };
+          };
         };
       };
       401: components['responses']['AuthenticationException'];
+      /** @description Forbidden */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ApiError'];
+        };
+      };
+      /** @description Not Found */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ApiError'];
+        };
+      };
       422: components['responses']['ValidationException'];
     };
   };
@@ -1286,10 +1458,26 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          'application/json': Record<string, never>;
+          'application/json': {
+            data: null;
+            error: {
+              status: boolean;
+              code: number;
+              messages: null;
+            };
+          };
         };
       };
       401: components['responses']['AuthenticationException'];
+      /** @description Forbidden */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ApiError'];
+        };
+      };
       422: components['responses']['ValidationException'];
     };
   };
@@ -1317,7 +1505,14 @@ export interface operations {
         };
         content: {
           'application/json': {
-            data: components['schemas']['LearningGoalResource'][];
+            data: {
+              data: components['schemas']['LearningGoalResource'][];
+            };
+            error: {
+              status: boolean;
+              code: number;
+              messages: null;
+            };
           };
         };
       };
@@ -1343,10 +1538,26 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          'application/json': number;
+          'application/json': {
+            data: number;
+            error: {
+              status: boolean;
+              code: number;
+              messages: null;
+            };
+          };
         };
       };
       401: components['responses']['AuthenticationException'];
+      /** @description Forbidden */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ApiError'];
+        };
+      };
       422: components['responses']['ValidationException'];
     };
   };
@@ -1370,10 +1581,35 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          'application/json': number;
+          'application/json': {
+            data: number;
+            error: {
+              status: boolean;
+              code: number;
+              messages: null;
+            };
+          };
         };
       };
       401: components['responses']['AuthenticationException'];
+      /** @description Forbidden */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ApiError'];
+        };
+      };
+      /** @description Not Found */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ApiError'];
+        };
+      };
       422: components['responses']['ValidationException'];
     };
   };
@@ -1395,10 +1631,26 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          'application/json': Record<string, never>;
+          'application/json': {
+            data: null;
+            error: {
+              status: boolean;
+              code: number;
+              messages: null;
+            };
+          };
         };
       };
       401: components['responses']['AuthenticationException'];
+      /** @description Forbidden */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ApiError'];
+        };
+      };
       422: components['responses']['ValidationException'];
     };
   };
@@ -1418,8 +1670,24 @@ export interface operations {
         };
         content: {
           'application/json': {
-            data: components['schemas']['PublicSkillResource'][];
+            data: {
+              data: components['schemas']['PublicSkillResource'][];
+            };
+            error: {
+              status: boolean;
+              code: number;
+              messages: null;
+            };
           };
+        };
+      };
+      /** @description Too Many Requests */
+      429: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ApiError'];
         };
       };
     };
@@ -1442,8 +1710,33 @@ export interface operations {
         };
         content: {
           'application/json': {
-            data: components['schemas']['PublicSkillDetailResource'];
+            data: {
+              data: components['schemas']['PublicSkillDetailResource'];
+            };
+            error: {
+              status: boolean;
+              code: number;
+              messages: null;
+            };
           };
+        };
+      };
+      /** @description Not Found */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ApiError'];
+        };
+      };
+      /** @description Too Many Requests */
+      429: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ApiError'];
         };
       };
     };
@@ -1465,22 +1758,29 @@ export interface operations {
         };
         content: {
           'application/json': {
-            match: components['schemas']['SearchMatch'];
-            skills: {
-              id: number;
-              title: string;
-              snippet: string | null;
-            }[];
-            goals: {
-              id: number;
-              title: string;
-              snippet: string | null;
-            }[];
-            evidence: {
-              id: number;
-              title: string;
-              snippet: string | null;
-            }[];
+            data: {
+              match: components['schemas']['SearchMatch'];
+              skills: {
+                id: number;
+                title: string;
+                snippet: string | null;
+              }[];
+              goals: {
+                id: number;
+                title: string;
+                snippet: string | null;
+              }[];
+              evidence: {
+                id: number;
+                title: string;
+                snippet: string | null;
+              }[];
+            };
+            error: {
+              status: boolean;
+              code: number;
+              messages: null;
+            };
           };
         };
       };
@@ -1515,7 +1815,14 @@ export interface operations {
         };
         content: {
           'application/json': {
-            data: components['schemas']['SkillResource'][];
+            data: {
+              data: components['schemas']['SkillResource'][];
+            };
+            error: {
+              status: boolean;
+              code: number;
+              messages: null;
+            };
           };
         };
       };
@@ -1541,10 +1848,26 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          'application/json': number;
+          'application/json': {
+            data: number;
+            error: {
+              status: boolean;
+              code: number;
+              messages: null;
+            };
+          };
         };
       };
       401: components['responses']['AuthenticationException'];
+      /** @description Forbidden */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ApiError'];
+        };
+      };
       422: components['responses']['ValidationException'];
     };
   };
@@ -1568,10 +1891,35 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          'application/json': number;
+          'application/json': {
+            data: number;
+            error: {
+              status: boolean;
+              code: number;
+              messages: null;
+            };
+          };
         };
       };
       401: components['responses']['AuthenticationException'];
+      /** @description Forbidden */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ApiError'];
+        };
+      };
+      /** @description Not Found */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ApiError'];
+        };
+      };
       422: components['responses']['ValidationException'];
     };
   };
@@ -1593,10 +1941,26 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          'application/json': Record<string, never>;
+          'application/json': {
+            data: null;
+            error: {
+              status: boolean;
+              code: number;
+              messages: null;
+            };
+          };
         };
       };
       401: components['responses']['AuthenticationException'];
+      /** @description Forbidden */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ApiError'];
+        };
+      };
       422: components['responses']['ValidationException'];
     };
   };
@@ -1623,7 +1987,14 @@ export interface operations {
         };
         content: {
           'application/json': {
-            data: components['schemas']['SkillLevelResource'][];
+            data: {
+              data: components['schemas']['SkillLevelResource'][];
+            };
+            error: {
+              status: boolean;
+              code: number;
+              messages: null;
+            };
           };
         };
       };
@@ -1649,10 +2020,26 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          'application/json': number;
+          'application/json': {
+            data: number;
+            error: {
+              status: boolean;
+              code: number;
+              messages: null;
+            };
+          };
         };
       };
       401: components['responses']['AuthenticationException'];
+      /** @description Forbidden */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ApiError'];
+        };
+      };
       422: components['responses']['ValidationException'];
     };
   };
@@ -1679,7 +2066,14 @@ export interface operations {
         };
         content: {
           'application/json': {
-            data: components['schemas']['TagResource'][];
+            data: {
+              data: components['schemas']['TagResource'][];
+            };
+            error: {
+              status: boolean;
+              code: number;
+              messages: null;
+            };
           };
         };
       };
@@ -1705,10 +2099,26 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          'application/json': number;
+          'application/json': {
+            data: number;
+            error: {
+              status: boolean;
+              code: number;
+              messages: null;
+            };
+          };
         };
       };
       401: components['responses']['AuthenticationException'];
+      /** @description Forbidden */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ApiError'];
+        };
+      };
       422: components['responses']['ValidationException'];
     };
   };
@@ -1732,10 +2142,35 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          'application/json': number;
+          'application/json': {
+            data: number;
+            error: {
+              status: boolean;
+              code: number;
+              messages: null;
+            };
+          };
         };
       };
       401: components['responses']['AuthenticationException'];
+      /** @description Forbidden */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ApiError'];
+        };
+      };
+      /** @description Not Found */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ApiError'];
+        };
+      };
       422: components['responses']['ValidationException'];
     };
   };
@@ -1757,10 +2192,26 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          'application/json': Record<string, never>;
+          'application/json': {
+            data: null;
+            error: {
+              status: boolean;
+              code: number;
+              messages: null;
+            };
+          };
         };
       };
       401: components['responses']['AuthenticationException'];
+      /** @description Forbidden */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ApiError'];
+        };
+      };
       422: components['responses']['ValidationException'];
     };
   };

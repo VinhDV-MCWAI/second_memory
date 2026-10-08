@@ -31,7 +31,7 @@ final class CredentialController extends Controller
         /** @var array{user_name: string, password: string} $credentials */
         $credentials = $request->validated();
 
-        return (new AdminMstResource($this->credentialService->login($credentials, $request)))->resolve($request);
+        return (new AdminMstResource($this->credentialService->login($credentials, $request)))->toArray($request);
     }
 
     /**
@@ -49,6 +49,6 @@ final class CredentialController extends Controller
      */
     public function me(Request $request): array
     {
-        return (new AdminMstResource($request->user()))->resolve($request);
+        return (new AdminMstResource($request->user()))->toArray($request);
     }
 }

@@ -8,6 +8,7 @@ use App\Constants\CommonVal;
 use App\Constants\LedgerConst;
 use App\Enums\AdminRole;
 use App\Models\Master\AdminMst;
+use App\OpenApi\ResponseEnvelope;
 use Dedoc\Scramble\Scramble;
 use Dedoc\Scramble\Support\Generator\OpenApi;
 use Dedoc\Scramble\Support\Generator\SecurityScheme;
@@ -58,6 +59,7 @@ class AppServiceProvider extends ServiceProvider
             ->expose(ui: 'api/openapi', document: 'api/openapi.json')
             ->withDocumentTransformers(function (OpenApi $openApi): void {
                 $openApi->secure(SecurityScheme::apiKey('cookie', config('session.cookie')));
+                (new ResponseEnvelope)($openApi);
             });
     }
 }
