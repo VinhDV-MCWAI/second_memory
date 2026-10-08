@@ -8,6 +8,7 @@ COMPOSE := docker compose -f docker/docker-compose.yml
 PHP     := docker exec ml-php
 FE      := docker exec ml-nextjs
 DOCS    := docker exec ml-nextjs-docs
+IMPORTER_DIR := tools/ledger-importer
 
 ##@ Environment
 
@@ -111,13 +112,36 @@ lint: ## All linters/format checks (backend + frontend)
 	$(MAKE) fe-lint
 	$(FE) pnpm format:check
 	$(DOCS) pnpm format:check
+	$(MAKE) importer-lint
 
 .PHONY: openapi-check
 openapi-check: openapi ## Fail if openapi.json or the FE types were stale (CI is paused, so make verify runs this)
 	git diff --exit-code -- laravel-api/openapi.json nextjs-fe/src/shared/types/openapi.d.ts || { echo "OpenAPI spec or FE types were stale: review and commit the regenerated files"; exit 1; }
 
 .PHONY: verify
-verify: lint analyse openapi-check fe-typecheck test-ci fe-test ## Everything CI runs, plus the OpenAPI drift check
+verify: lint analyse openapi-check fe-typecheck test-ci fe-test importer-test ## Everything CI runs, plus the OpenAPI drift check
+
+##@ Ledger importer (tools/ledger-importer, ADR-0010)
+
+.PHONY: importer-dev-image
+importer-dev-image:
+	docker build -q --target dev -t ledger-importer-dev $(IMPORTER_DIR) >/dev/null
+
+.PHONY: importer-lint
+importer-lint: importer-dev-image ## Importer: ruff + mypy --strict
+	docker run --rm ledger-importer-dev sh -c 'ruff check && ruff format --check && mypy'
+
+.PHONY: importer-test
+importer-test: importer-dev-image ## Importer: pytest (API mocked)
+	docker run --rm ledger-importer-dev pytest -p no:cacheprovider
+
+.PHONY: import
+import: ## Import published Obsidian notes (make import vault=<path> [dry=1]; needs LEDGER_API_TOKEN)
+	@test -d "$(vault)" || { echo "usage: make import vault=<path to the vault> [dry=1]"; exit 2; }
+	docker build -q -t ledger-importer $(IMPORTER_DIR) >/dev/null
+	docker run --rm --network ml_network -v "$(abspath $(vault)):/vault:ro" \
+		-e LEDGER_API_TOKEN -e LEDGER_API_URL -e LEDGER_NOTE_BASE_URL \
+		ledger-importer $(if $(dry),--dry-run)
 
 ##@ Data
 
