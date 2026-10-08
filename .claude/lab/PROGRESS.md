@@ -169,6 +169,8 @@ Records written in P3 so far: REQ-002 (Ready), RFC-002 (Approved; slice status i
 
 - 2026-10-08 — [lane importer] P3-14b done: a27117e, 31a0472 — CLI in tools/ledger-importer (Python 3.14, uv lock, non-root image): publish: true only (YAML 1.2 booleans), ADR-0010 note→item mapping, any invalid published note → exit 1 and nothing sent, --dry-run via API dry_run; ruff + mypy --strict + 63 pytest green; checked on the perf DB against the real API: 2nd run unchanged 2, removed note hidden 1, bad token exit 3
 
+- 2026-10-08 — [lane api] API-02 done: edf8489, 5c90e79 — persistent PDO for web requests (DB_PERSISTENT, default on; CLI excluded after PHPUnit leaked rows with it on). A/B off→on, 10 users: 51→81 and 66→128 req/s, search p95 365→274 / 278→176 ms, 0 % errors; fatal-in-transaction rollback and reconnect after a killed backend checked on testing. make verify exit 0 (backend 160, Vitest 70)
+
 ## Next step
 
 Since 2026-10-08 work runs in **parallel lanes**: the live task list and who is on what is [BOARD.md](BOARD.md) (`scripts/lane.sh status`); start a conversation with `/lane`. When this file and the board disagree on status, the board wins. Lanes `public` (P3-12) and `perf` (P3-16) were already in progress when the board was created.
