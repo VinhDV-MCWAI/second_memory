@@ -2,9 +2,9 @@
 # Plans of the statements behind the hot read endpoints (DB-01). Idempotent: recreates the
 # throwaway `perf` database, enables auto_explain (ANALYZE, BUFFERS) on that database only, sends
 # one warm-up and one logged round of perf/k6/explain-requests.js, and writes the plans logged
-# during the second round to perf/results/explain.log. Then runs the search experiments in
-# perf/sql/ (rolled back) into perf/results/db-01-search-experiments.txt. Results are not
-# committed; dev data is not touched.
+# during the second round to perf/results/explain.log. Then runs perf/sql/search-plans.sql
+# (EXPLAIN ANALYZE of the search statements, rolled back) into perf/results/search-plans.txt.
+# Results are not committed; dev data is not touched.
 #
 # Usage: scripts/lane.sh run perf/explain.sh
 set -euo pipefail
@@ -40,7 +40,7 @@ echo "==> $plans plans in $OUT"
 perf_flush_sessions
 
 perf_psql "ALTER DATABASE $PERF_DB RESET ALL"
-echo "==> Search experiments"
+echo "==> Search plans"
 docker exec -i ml-postgres sh -c "psql -U \"\$POSTGRES_USER\" -d $PERF_DB -X -q" \
-  <perf/sql/db-01-search-experiments.sql >perf/results/db-01-search-experiments.txt
-echo "==> perf/results/db-01-search-experiments.txt"
+  <perf/sql/search-plans.sql >perf/results/search-plans.txt
+echo "==> perf/results/search-plans.txt"
