@@ -79,7 +79,7 @@ Owns: `docs/handbook/`, `docs/reports/daily/`, `docs/reports/weekly/`, `docs/tem
 | ID | Task | Docs | Depends | Status |
 |---|---|---|---|---|
 | DOC-01 | Handbook section "Parallel work with several AI sessions": lanes, path ownership, pathspec commits, locks, test lock — the process on this board | [handbook git](../../docs/handbook/04-git.md), [parallel-lanes rules](../rules/parallel-lanes.md) | – | todo |
-| DOC-02 | Daily + weekly reports catching up on P3 so far (from the PROGRESS log and git log) | [handbook reporting](../../docs/handbook/09-reporting.md), [templates](../../docs/templates/) | – | todo |
+| DOC-02 | Daily + weekly reports catching up on P3 so far (from the PROGRESS log and git log) | [handbook reporting](../../docs/handbook/09-reporting.md), [templates](../../docs/templates/) | – | done 2026-10-08: 986f502 — daily 2026-10-08 + W41 night update from the PROGRESS and git log: P3 16/20, lanes, tests 107→160 + importer 63, perf 66→128 req/s, OPS-01 / API-04 findings, owner steps |
 
 ## Lane `release` — QA, acceptance, release
 

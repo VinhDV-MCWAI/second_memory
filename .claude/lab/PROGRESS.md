@@ -179,6 +179,8 @@ Records written in P3 so far: REQ-002 (Ready), RFC-002 (Approved; slice status i
 
 - 2026-10-08 — [lane infra] OPS-01 done: f82c16b, ca24e51 — old backup.sh exited 0 with NO backup when rclone is missing (archive always deleted); fixed: fails loudly, keeps the archive unless every remote has it, --local-only; restore.sh: single-transaction pg_restore (errors stop, DB never half-dropped), test mode --target-db/--target-bucket, compose v2. Checked: backup 1 s + test restore 2 s for dev and the perf volume (7,068 rows), row counts identical in all 19 tables — far inside RTO 30 min; full DR mode not run (would overwrite dev). Runbook docs/runbooks/backup-restore.md
 
+- 2026-10-08 — [lane docs] DOC-02 done: 986f502 — daily 2026-10-08 + W41 night update from the PROGRESS and git log: P3 16/20, lanes, tests 107→160 + importer 63, perf 66→128 req/s, OPS-01 / API-04 findings, owner steps
+
 ## Next step
 
 Since 2026-10-08 work runs in **parallel lanes**: the live task list and who is on what is [BOARD.md](BOARD.md) (`scripts/lane.sh status`); start a conversation with `/lane`. When this file and the board disagree on status, the board wins. Lanes `public` (P3-12) and `perf` (P3-16) were already in progress when the board was created.
