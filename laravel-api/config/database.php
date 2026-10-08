@@ -94,6 +94,12 @@ return [
             'prefix_indexes' => true,
             'search_path' => 'public',
             'sslmode' => 'prefer',
+            // Reuse one backend per PHP-FPM worker instead of a new connection per request (~10-15 ms each,
+            // perf report 2026-10-08-request-profile). PHP rolls back a transaction left open by a fatal
+            // error at request end; Laravel re-applies encoding, timezone and search_path on every connect.
+            // Web requests only: a CLI process keeps its connection anyway, and PHPUnit's fresh app per test
+            // would share one handle between two PDO objects, so freeing the old one rolls back the new test's transaction.
+            'options' => [PDO::ATTR_PERSISTENT => PHP_SAPI !== 'cli' && (bool) env('DB_PERSISTENT', true)],
         ],
 
         'sqlsrv' => [
