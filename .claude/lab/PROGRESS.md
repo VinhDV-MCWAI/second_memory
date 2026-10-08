@@ -181,6 +181,8 @@ Records written in P3 so far: REQ-002 (Ready), RFC-002 (Approved; slice status i
 
 - 2026-10-08 — [lane docs] DOC-02 done: 986f502 — daily 2026-10-08 + W41 night update from the PROGRESS and git log: P3 16/20, lanes, tests 107→160 + importer 63, perf 66→128 req/s, OPS-01 / API-04 findings, owner steps
 
+- 2026-10-08 — [lane api] API-03 done: 52609c0, 960967e — stored search_tsv (GIN) + GiST trigram index on skill/evidence (ADR-0009 amendment, migration up/down/up checked on testing, dev migrated); explain: evidence full text 5.7–10 → 0.4 ms, worst-case typo 37–47 → 21 ms (GiST KNN); k6 98.6 req/s, search p95 166 ms, 0 % errors. make verify exit 0 (backend 162). Experiments SQL broken by the new schema → PERF-04
+
 ## Next step
 
 Since 2026-10-08 work runs in **parallel lanes**: the live task list and who is on what is [BOARD.md](BOARD.md) (`scripts/lane.sh status`); start a conversation with `/lane`. When this file and the board disagree on status, the board wins. Lanes `public` (P3-12) and `perf` (P3-16) were already in progress when the board was created.
