@@ -112,8 +112,10 @@ Rules the model enforces:
 | On a level change, every `open` goal of that skill with `target_level <= level` becomes `achieved` (`achieved_on` = `changed_on`); `dropped` goals are never touched | `SkillLevelService` | US-6 |
 | Deleting a skill deletes its level history, goals and pivot rows (cascade); evidence and tags stay. The audit log keeps the deleted values | migration + service | – |
 | The importer owns only `title`, `summary`, `occurred_on`, `url`, tags and skill links of `source = obsidian` rows; it never touches skills, levels, goals or manual evidence | import service | US-4 |
+| A new goal is `open` and its `target_level` must be above the skill's current level (a goal already reached could never be auto-achieved) → 422 otherwise. Status changes by hand only between `open` and `dropped`; reopening needs a target above the current level; an `achieved` goal can change only `target_date` and `note` | `LearningGoalService` (P3-07) | US-6 |
+| In the admin API, an imported (`source = obsidian`) row accepts changes to `type` and `is_public` only; a different value for a vault-owned field → 422 (sending the current value back is fine). `source`, `external_key`, `unpublished_at` are never writable there | `EvidenceService` (P3-07) | US-4 |
 
-> 🇻🇳 Quy tắc chính: tạo kỹ năng kèm cấp độ đầu; mỗi lần đổi cấp thêm một dòng lịch sử và cập nhật `current_level` trong cùng transaction; không có route sửa/xoá lịch sử; tên không trùng (không phân biệt hoa thường); URL chỉ http(s); đổi cấp đạt mục tiêu thì mục tiêu `open` tự thành `achieved`; xoá kỹ năng xoá lịch sử, mục tiêu, liên kết; importer chỉ sở hữu vài trường của bằng chứng nguồn Obsidian.
+> 🇻🇳 Quy tắc chính: tạo kỹ năng kèm cấp độ đầu; mỗi lần đổi cấp thêm một dòng lịch sử và cập nhật `current_level` trong cùng transaction; không có route sửa/xoá lịch sử; tên không trùng (không phân biệt hoa thường); URL chỉ http(s); đổi cấp đạt mục tiêu thì mục tiêu `open` tự thành `achieved`; xoá kỹ năng xoá lịch sử, mục tiêu, liên kết; importer chỉ sở hữu vài trường của bằng chứng nguồn Obsidian. Bổ sung ở P3-07: mục tiêu mới luôn `open` và cấp mục tiêu phải cao hơn cấp hiện tại (nếu không trả 422); chỉ chuyển tay giữa `open` và `dropped`; mục tiêu đã `achieved` chỉ sửa ngày và ghi chú. Bằng chứng nhập từ Obsidian: admin chỉ đổi được `type` và `is_public`.
 
 `current_level` is stored, not computed: the public list and the dashboard read it for every skill, and keeping it in the same transaction as the history insert is one line of code. The history stays the source of truth (a test checks they agree).
 
@@ -191,7 +193,7 @@ All new tables are additive, so no expand/contract step is needed; each slice is
 | 1 | Remove the media API (ADR-0007): controller, requests, service, `MinioService`, jobs, events, scheduled cleanup, routes, tests, baseline entries, OpenAPI; keep `media_mgmt` rows and MinIO objects. Drop `users` and `password_reset_tokens` (`down()` recreates them) | P3-05b | revert commit; `migrate:rollback --step=1` | done |
 | 2 | Schema: migrations, models, enums (`SkillLevel`, `EvidenceType`, `EvidenceSource`, `GoalStatus`), factories, unit tests | P3-05 | `migrate:rollback` (tables are new and empty) | done |
 | 3 | API: skills, tags, level history (+ goal auto-achieve hook) | P3-06 | revert | done |
-| 4 | API: evidence, learning goals | P3-07 | revert | todo |
+| 4 | API: evidence, learning goals | P3-07 | revert | done |
 | 5 | API: search + public routes (after the P3-04 ADR) | P3-08 | revert; search migration rollback if any | todo |
 | 6 | Contract tests | P3-09 | revert | todo |
 | 7 | Admin UI + dashboard | P3-10, P3-11 | revert | todo |
