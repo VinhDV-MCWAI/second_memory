@@ -52,6 +52,18 @@ Implementation note (P3-08, 2026-10-08): `learning_goal` got **no** `search_text
 
 > 🇻🇳 Ghi chú triển khai (P3-08): bảng `learning_goal` **không** có cột `search_text`. Mục tiêu được tìm theo ghi chú *và* tên kỹ năng (nằm ở hai bảng nên cột sinh không chứa được); số mục tiêu rất ít nên tính biểu thức lúc truy vấn, không cần index. `down()` xoá cột và hàm, giữ extension.
 
+### Amendment (API-03, 2026-10-08): storage of the search indexes
+
+The [DB-01 report](../reports/perf/2026-10-08-db-01-explain.md) found both search statements on `evidence` slow at the REQ-002 volume, for storage reasons, not because of the approach: `ts_rank` recomputed `to_tsvector` for every match (the expression index does not hold the vector), and the planner never chose the GIN trigram index, so the typo fallback scanned the table. Migration `2026_10_08_100005_store_ledger_search_vectors` changes the storage, nothing else:
+
+- `skill` and `evidence` get a stored generated column `search_tsv = to_tsvector('simple', f_unaccent(lower(<fields>)))` with a GIN index (`*_search_tsv`), replacing the expression index `*_search_fts`. Full text matches and ranks on it. The column repeats the `search_text` expression because a generated column cannot read another one.
+- The GIN trigram index `*_search_trgm` becomes GiST (`*_search_trgm_gist`, `gist_trgm_ops`): it answers `ORDER BY <<-> LIMIT 10` by walking the index in distance order and stops after ten rows.
+- Unchanged: `search_text`, `f_unaccent`, the `simple` config, prefix on the last word, the 0.4 threshold, the `exact` / `fuzzy` response. `down()` restores the previous indexes and drops the column (up → down → up checked on `testing`: identical schema).
+
+Measured on the perf seed after the migration (`perf/explain.sh`, plans the app really gets): evidence full text **0.4 ms** (bitmap scan on `evidence_search_tsv`; 5.7–10 ms before), evidence trigram for the worst-case typo `postgersql` (its term is in 25 % of rows) **21 ms** by a GiST index scan (37–47 ms sequential scan before). One k6 baseline run right after (with API-02's persistent connections): 0 % errors, 98.6 req/s at 10 users, admin search p95 **166 ms** (292–295 ms in the first baseline, 176–274 ms with API-02 alone); 1 user search p95 54 ms. The full before/after is PERF-03's report. Cost: the stored vector adds ~0.5 kB per evidence row (~690 kB at 1,500 rows); the GiST index is slower to build and update than GIN, irrelevant at this write rate.
+
+> 🇻🇳 Bổ sung (API-03): báo cáo DB-01 cho thấy hai truy vấn search trên `evidence` chậm vì cách lưu index chứ không phải vì hướng tiếp cận: `ts_rank` tính lại `to_tsvector` cho từng dòng khớp, còn index GIN trigram không bao giờ được planner chọn nên phải quét cả bảng. Migration `2026_10_08_100005` chỉ đổi phần lưu trữ: thêm cột sinh lưu sẵn `search_tsv` có index GIN (thay index biểu thức `*_search_fts`), và đổi index trigram sang GiST để `ORDER BY <<-> LIMIT 10` đi theo thứ tự khoảng cách rồi dừng sau 10 dòng. Mọi thứ khác giữ nguyên; `down()` khôi phục index cũ (đã thử up → down → up trên `testing`). Đo trên seed perf: full-text trên evidence 0,4 ms (trước 5,7–10 ms); tìm lỗi chính tả với từ khóa xấu nhất (có trong 25 % dòng) 21 ms bằng index GiST (trước 37–47 ms quét tuần tự). Một lần chạy k6 ngay sau đó (đã có kết nối persistent của API-02): lỗi 0 %, 98,6 req/s với 10 user, p95 search **166 ms** (baseline đầu tiên 292–295 ms, chỉ có API-02 là 176–274 ms). Số liệu trước/sau đầy đủ nằm trong báo cáo của PERF-03.
+
 ## Consequences
 
 - **Easier:** no new service; search stays transactional with the data (an item is searchable the moment it is saved); the spike scripts double as a regression check for the normalization.
