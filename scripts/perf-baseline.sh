@@ -58,14 +58,18 @@ done
 $ready || { echo "API on port $PORT did not answer 200" >&2; exit 1; }
 
 mkdir -p perf/results
+status=0
 for scenario in "${scenarios[@]}"; do
   echo "==> k6 scenario: $scenario"
   docker run --rm --network "$NETWORK" -u "$(id -u):$(id -g)" \
     -v "$PWD/perf/k6:/scripts:ro" -v "$PWD/perf/results:/results" \
     -e BASE_URL="http://ml-php:$PORT" -e SCENARIO="$scenario" -e PERF_USER="$OWNER" -e PERF_PASSWORD="$PASSWORD" \
     "$K6_IMAGE" run --quiet --summary-trend-stats="avg,min,med,p(95),p(99),max" \
-    --summary-export="/results/$scenario.json" /scripts/ledger-baseline.js
+    --summary-export="/results/$scenario.json" /scripts/ledger-baseline.js || status=$?
 done
 
 # Drop the perf sessions (Redis DB 13 only; dev uses 0/1, tests 14/15)
 docker exec ml-redis sh -c 'REDISCLI_AUTH="$REDIS_PASSWORD" redis-cli -n 13 FLUSHDB' >/dev/null
+
+# k6 exits non-zero when a threshold is crossed; report it after cleaning up
+exit "$status"
