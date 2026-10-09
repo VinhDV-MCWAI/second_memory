@@ -202,6 +202,8 @@ Records written in P3 so far: REQ-002 (Ready), RFC-002 (Approved; slice status i
 
 - 2026-10-09 — [lane api] API-05 done: dbee56b — laravel/reverb (+ pusher, react deps) removed, config/broadcasting.php, config/reverb.php, routes/channels.php, Broadcast::routes gone; config/queue.php sync only; jobs/job_batches/failed_jobs dropped (2026_10_09_100001, up/down/up checked on testing, dev migrated); openapi.json unchanged. Pint, Larastan, backend 166 green; full make verify stopped at openapi/FE steps: ml-nextjs now runs as node (uncommitted P4-02) and pnpm/mkdir get EACCES. ml-reverb restart-loops (no reverb:start) until P4-04 removes ml-queue/ml-reverb; FE-02 added
 
+- 2026-10-09 — [lane fe] FE-02 done: 9ef2797 — nextjs-fe/.tenv.example keeps only NEXT_PUBLIC_API_URL (5 NEXT_PUBLIC_REVERB_* lines dropped; nothing in nextjs-fe reads them). setup-env.sh's REVERB sed is now a no-op, removed with P4-04
+
 ## Next step
 
 Since 2026-10-08 work runs in **parallel lanes**: the live task list and who is on what is [BOARD.md](BOARD.md) (`scripts/lane.sh status`); start a conversation with `/lane`. When this file and the board disagree on status, the board wins. Lanes `public` (P3-12) and `perf` (P3-16) were already in progress when the board was created.
