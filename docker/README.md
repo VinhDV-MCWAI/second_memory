@@ -50,7 +50,8 @@ make logs s=ml-php      # follow one container's logs
 make sh s=ml-php        # shell into a container
 make restart            # recreate containers and rebuild images (after env or Dockerfile changes)
 make down               # stop the stack, keep the volumes
-docker exec ml-nginx nginx -t && docker exec ml-nginx nginx -s reload   # after editing nginx config
+docker exec ml-nginx nginx -t && docker exec ml-nginx nginx -s reload   # after editing nginx config in place
+(cd docker && docker compose up -d --no-deps --force-recreate ml-nginx) # if the container still sees the old file
 ```
 
 ## Troubleshooting
@@ -60,6 +61,7 @@ docker exec ml-nginx nginx -t && docker exec ml-nginx nginx -s reload   # after 
 | Symptom | Fix |
 |---|---|
 | Containers exit with code 127 after a Docker Desktop / WSL restart | stale bind mounts: `make up` recreates them |
+| nginx ignores a config edit, or `docker restart ml-nginx` fails with "no such file or directory" | the single-file bind mount still points at the old file (`sed -i` / editors write a new one): recreate the container, see Commands |
 | `ml-redis is unhealthy` on `make up` | Redis is replaying a large AOF; wait for `PONG`, then `make up` again |
 | A host port is already in use | change the `*_PORT_OUTSIDE_ENV` value in `docker/.env`, then `make restart` |
 | nginx answers 502 | the upstream container is down or restarting: `make ps`, then `make logs s=<container>` |
