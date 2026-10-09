@@ -217,6 +217,8 @@ Records written in P3 so far: REQ-002 (Ready), RFC-002 (Approved; slice status i
 
 - 2026-10-09 — [lane infra] OPS-03 done: 0148a20 — comment-only change in docker/laravel/Dockerfile.dockerignore (no build impact)
 
+- 2026-10-09 — [lane public] P3-12 done: af52203, ca0d77c — resumed (original conversation ended 2026-10-08). /skills (by category, level, tags) + /skills/[slug] (level history dates, public evidence; private/missing → same 404), server components over the existing server-only client (internal URL fixed to ml-nginx:8080 after P4-02); docs production image builds (standalone + public/, 300 MB, uid 1001). Checked on the perf DB: 67/67 public skills listed, 0 of 33 private leaked; skill-1 shows 18/18 public evidence, 0 of 9 private, no level reasons; private + missing slug 404; same on the production image. Through :81 needs nginx /skills → OPS-04 (infra). make verify exit 0 (backend 166, Vitest 70, pytest 63)
+
 ## Next step
 
 Since 2026-10-08 work runs in **parallel lanes**: the live task list and who is on what is [BOARD.md](BOARD.md) (`scripts/lane.sh status`); start a conversation with `/lane`. When this file and the board disagree on status, the board wins. Lanes `public` (P3-12) and `perf` (P3-16) were already in progress when the board was created.
