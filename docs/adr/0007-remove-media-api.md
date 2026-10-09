@@ -4,7 +4,7 @@
 
 | | |
 |---|---|
-| Status | Accepted |
+| Status | Superseded by [ADR-0012](0012-restore-features-dev-first.md) (2026-10-09); was: Accepted |
 | Date | 2026-10-08 |
 | Deciders | PO, TL |
 | Related | [REQ-001](../requirements/REQ-001-slim-down.md) Q3 / US-3, [RFC-001](../design/RFC-001-slim-down.md) §3 correction, [REQ-002](../requirements/REQ-002-skill-ledger.md) Q3, [RFC-002](../design/RFC-002-skill-ledger.md) slice 1, backlog P3-05b |

@@ -2,7 +2,7 @@
 
 | | |
 |---|---|
-| Status | Accepted (2026-10-07, owner: "start implementing") |
+| Status | Superseded by [ADR-0012](0012-restore-features-dev-first.md) (2026-10-09); was: Accepted (2026-10-07, owner: "start implementing") |
 | Date | 2026-10-07 |
 | Deciders | Owner (all roles) |
 | Related | [plan/01-analysis.md](../plan/01-analysis.md), [plan/02-roadmap.md](../plan/02-roadmap.md) |
