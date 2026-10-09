@@ -206,6 +206,8 @@ Records written in P3 so far: REQ-002 (Ready), RFC-002 (Approved; slice status i
 
 - 2026-10-09 — [lane perf] PERF-05 done: 240664c, 159ed98 — perf_build_caches (lib.sh) shared by profile.sh and new PERF_CACHED=1 switch of perf-baseline.sh, prints the cached ATTR_PERSISTENT (true in every run); stale API-06 comment dropped. Profile: cached variants DB 2.6–4.9 ms (was 17–26), PHP −2 ms (−5–6 with validate_timestamps=0). 10-user load in 3 back-to-back pairs no cache → cache: 119→99, 58*→140, 85→89 req/s, 0 % errors, all p95 < 300 ms (host shared, ±25 %). Follow-up in rebaseline report §Config cache
 
+- 2026-10-09 — [lane infra] P4-02 done: 6c806bc — pinned every image to the running versions (postgres 16.15, redis 7.4.11, php 8.5.11, node 24.21.0, composer 2.10.3; nginx → nginx-unprivileged 1.25.5); no root process left in postgres/redis/nginx/php/nextjs/docs/minio (redis was root via sh -c; UID 1000 for php/node/minio, one-time chown of vendor/storage/minio volume); healthchecks on every service, docs port 3457 fixed (was always unhealthy); Laravel allowlist dockerignore (prod image builds, no tests). compose ps all healthy except ml-reverb (crash-loops since API-05 → P4-04). make verify exit 0 (backend 166, Vitest 70, pytest 63). Containers were recreated (lane.sh run)
+
 ## Next step
 
 Since 2026-10-08 work runs in **parallel lanes**: the live task list and who is on what is [BOARD.md](BOARD.md) (`scripts/lane.sh status`); start a conversation with `/lane`. When this file and the board disagree on status, the board wins. Lanes `public` (P3-12) and `perf` (P3-16) were already in progress when the board was created.
