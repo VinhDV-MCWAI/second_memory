@@ -1,6 +1,6 @@
 'use client';
 
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -11,15 +11,28 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Input } from '@/components/ui/input';
-import { Badge } from '@/components/ui/badge';
-import { useState, useCallback, useEffect, type FormEvent } from 'react';
+import { useState, useEffect, type FormEvent } from 'react';
 import { useRouter } from 'next/navigation';
-import { Search, Bell, Sun, Moon, User, Settings, LogOut } from 'lucide-react';
+import { Search, Sun, Moon, LogOut } from 'lucide-react';
 import { useTheme } from 'next-themes';
 import { useTranslations } from 'next-intl';
 import { ADMIN_ROUTES, SEARCH_PARAM, THEME } from '@/shared/config';
-import { formatTimestamp } from '@/shared/utils';
-import type { Notification } from '@/shared/types/ui.types';
+import { useAuth } from '@/providers/use-auth';
+import type { User } from '@/shared/types';
+
+/** "First Last", or the user name when both are empty. */
+export function adminDisplayName(user: User): string {
+  return [user.first_name, user.last_name].filter(Boolean).join(' ').trim() || user.user_name;
+}
+
+/** Up to two letters for the avatar, from the display name. */
+export function adminInitials(user: User): string {
+  return adminDisplayName(user)
+    .split(/\s+/)
+    .slice(0, 2)
+    .map((part) => part.charAt(0).toUpperCase())
+    .join('');
+}
 
 export function Header() {
   const { theme, setTheme } = useTheme();
@@ -28,7 +41,9 @@ export function Header() {
   const t = useTranslations('header');
   const tCommon = useTranslations('common');
 
-  const [notifications, setNotifications] = useState<Notification[]>([]);
+  const { user, logout } = useAuth();
+  const displayName = user ? adminDisplayName(user) : '';
+  const initials = user ? adminInitials(user) : '';
 
   // Prevent hydration mismatch for theme
   useEffect(() => {
@@ -36,16 +51,6 @@ export function Header() {
       setMounted(true);
     });
     return () => cancelAnimationFrame(timer);
-  }, []);
-
-  const unreadCount = notifications.filter((n) => !n.read).length;
-
-  const handleMarkAsRead = useCallback((id: string) => {
-    setNotifications((prev) => prev.map((n) => (n.id === id ? { ...n, read: true } : n)));
-  }, []);
-
-  const handleMarkAllAsRead = useCallback(() => {
-    setNotifications((prev) => prev.map((n) => ({ ...n, read: true })));
   }, []);
 
   // Enter opens the search page (REQ-002 US-5)
@@ -104,106 +109,30 @@ export function Header() {
             </Button>
           )}
 
-          {/* Notifications */}
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="relative"
-                aria-label={`${t('notifications')}${unreadCount > 0 ? ` (${unreadCount} unread)` : ''}`}
-              >
-                <Bell className="h-5 w-5" />
-                {unreadCount > 0 && (
-                  <Badge
-                    variant="default"
-                    className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 p-0 text-xs text-white"
-                  >
-                    {unreadCount}
-                  </Badge>
-                )}
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-80">
-              <div className="flex items-center justify-between p-4">
-                <h3 className="font-semibold">{t('notifications')}</h3>
-                {unreadCount > 0 && (
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="h-auto p-0 text-xs text-blue-600 hover:text-blue-700 dark:text-blue-400"
-                    onClick={handleMarkAllAsRead}
-                  >
-                    {t('markAllAsRead')}
-                  </Button>
-                )}
-              </div>
-              <DropdownMenuSeparator />
-              <div className="max-h-96 overflow-y-auto">
-                {notifications.length > 0 ? (
-                  notifications.map((notification) => (
-                    <DropdownMenuItem
-                      key={notification.id}
-                      className={cn(
-                        'cursor-pointer p-3 transition-colors',
-                        !notification.read && 'bg-blue-50 dark:bg-blue-950/20',
-                      )}
-                      onClick={() => handleMarkAsRead(notification.id)}
-                    >
-                      <div className="flex flex-1 gap-3">
-                        <div className="flex-1">
-                          <p className="text-sm font-medium">{notification.title}</p>
-                          <p className="text-sm text-slate-600 dark:text-slate-400">
-                            {notification.message}
-                          </p>
-                          <p className="mt-1 text-xs text-slate-500 dark:text-slate-500">
-                            {formatTimestamp(notification.timestamp)}
-                          </p>
-                        </div>
-                        {!notification.read && (
-                          <div className="flex items-start">
-                            <div className="h-2 w-2 rounded-full bg-blue-600" />
-                          </div>
-                        )}
-                      </div>
-                    </DropdownMenuItem>
-                  ))
-                ) : (
-                  <div className="p-8 text-center">
-                    <Bell className="mx-auto mb-2 h-12 w-12 text-slate-300 dark:text-slate-700" />
-                    <p className="text-sm text-slate-500 dark:text-slate-400">
-                      {t('noNotifications')}
-                    </p>
-                  </div>
-                )}
-              </div>
-            </DropdownMenuContent>
-          </DropdownMenu>
-
           {/* User Menu */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="gap-2 rounded-full" aria-label="User menu">
+              <Button variant="ghost" className="gap-2 rounded-full" aria-label={t('userMenu')}>
                 <Avatar className="h-8 w-8">
-                  <AvatarImage src="https://github.com/shadcn.png" alt="User avatar" />
-                  <AvatarFallback>VD</AvatarFallback>
+                  <AvatarFallback>{initials}</AvatarFallback>
                 </Avatar>
-                <span className="hidden text-sm font-medium sm:inline">Vinh Dv</span>
+                <span className="hidden text-sm font-medium sm:inline">{displayName}</span>
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-56">
-              <DropdownMenuLabel>{t('myAccount')}</DropdownMenuLabel>
+              <DropdownMenuLabel className="font-normal">
+                <p className="text-sm font-medium">{displayName}</p>
+                {user && (
+                  <p className="text-xs text-slate-500 dark:text-slate-400">
+                    @{user.user_name} · {user.role}
+                  </p>
+                )}
+              </DropdownMenuLabel>
               <DropdownMenuSeparator />
-              <DropdownMenuItem>
-                <User className="mr-2 h-4 w-4" />
-                {tCommon('profile')}
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <Settings className="mr-2 h-4 w-4" />
-                {tCommon('settings')}
-              </DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem className="text-red-600 focus:text-red-600 dark:text-red-400">
+              <DropdownMenuItem
+                className="text-red-600 focus:text-red-600 dark:text-red-400"
+                onSelect={() => void logout()}
+              >
                 <LogOut className="mr-2 h-4 w-4" />
                 {tCommon('logout')}
               </DropdownMenuItem>
@@ -213,9 +142,4 @@ export function Header() {
       </div>
     </header>
   );
-}
-
-// Helper function for className merging (if not already imported)
-function cn(...classes: (string | boolean | undefined)[]) {
-  return classes.filter(Boolean).join(' ');
 }

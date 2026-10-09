@@ -138,17 +138,6 @@ export interface SearchFilterProps {
 }
 
 /**
- * Notification Type for Header
- */
-export interface Notification {
-  id: string;
-  title: string;
-  message: string;
-  read: boolean;
-  timestamp: Date;
-}
-
-/**
  * Lazy Image Props
  */
 export interface LazyImageProps extends React.ImgHTMLAttributes<HTMLImageElement> {

@@ -25,9 +25,6 @@ const queryClient = new QueryClient({
 import { AuthProvider } from '@/providers/auth-provider';
 import { GlobalLoadingProvider } from '@/shared/providers/global-loading-provider';
 
-// WebSocketNotification removed - WebSocket connections are now handled
-// per upload session in HeavyUploadNotification component
-
 export function Providers({
   children,
   locale = 'en',
