@@ -15,7 +15,7 @@ Ask "what would hurt most if it broke, and what is the cheapest test that would 
 | **Unit** | A function/class follows its rules | `laravel-api/tests/Unit`, Vitest specs | ms | Business rules, parsing, calculations, hooks |
 | **Integration / feature** | Components work together with real DB/Redis | `laravel-api/tests/Feature` (HTTP + DB) | 100 ms | Every endpoint: happy path, 422, 401/403, 404 |
 | **Contract** | FE and API agree on shapes | OpenAPI → generated TS types; CI fails if `openapi.json` is stale | s | Any API change |
-| **E2E / system** | A real user journey works in a browser | Playwright (from P3) | s–min | Only critical journeys (login, core flow) |
+| **E2E / system** | A real user journey works in a browser | Playwright, `e2e/` (`make e2e`) | s–min | Only critical journeys (login, core flow) |
 | **Performance** | Latency/throughput under load | k6 (from P3/P8) | min | Before release of heavy endpoints; after optimisations |
 | **Security** | Known attack classes are blocked | Feature tests for authz, ZAP baseline (P8) | min | Auth, input handling, file upload |
 
@@ -26,6 +26,10 @@ The pyramid: many unit and feature tests, few E2E tests, performance and securit
 **Tests never touch dev data.** Feature tests use their own database (`testing`) and their own Redis DBs (14/15), forced in `phpunit.xml` with `<server force="true">` because container environment variables win over `<env>`. `TestEnvironmentTest` fails the suite if this ever breaks. Any new store (queue, search index, bucket) gets the same isolation and a guard test before the first test writes to it ([PRB-002](../problems/PRB-002-tests-used-dev-database.md), retro P2).
 
 > 🇻🇳 **Test không bao giờ chạm dữ liệu dev.** Test dùng DB `testing` và Redis DB 14/15 riêng, ép bằng `<server force="true">` trong `phpunit.xml`; `TestEnvironmentTest` làm suite fail nếu cô lập bị hỏng. Kho lưu trữ mới nào (queue, search index, bucket) cũng phải được cô lập và có test canh gác trước khi test đầu tiên ghi vào.
+
+**The one exception is the E2E journey** (`make e2e`, P3-15): it drives the running stack in a browser, and that stack has only the dev database. It runs Playwright in its own container on the Compose network (the browser maps `localhost:81` to nginx so cookies and CSRF see the real origin) and keeps its footprint reversible: a dedicated owner `e2e_owner` with a fresh random password per run, disabled afterwards; every record named `E2E <run id>`; the records and that account's `audit_log` rows deleted at the end, also after a failure or an interrupted run. Run it through `scripts/lane.sh run make e2e`. A failed run leaves its report, screenshot and trace in `e2e/artifacts/`.
+
+> 🇻🇳 **Ngoại lệ duy nhất là E2E** (`make e2e`, P3-15): nó điều khiển stack đang chạy qua trình duyệt, mà stack đó chỉ có DB dev. Playwright chạy trong container riêng trên mạng Compose (trình duyệt map `localhost:81` sang nginx để cookie/CSRF thấy đúng origin) và chỉ để lại dấu vết có thể xóa: tài khoản owner riêng `e2e_owner` với mật khẩu ngẫu nhiên mỗi lần, bị vô hiệu hóa sau khi chạy; mọi bản ghi tên `E2E <run id>`; bản ghi và các dòng `audit_log` của tài khoản đó bị xóa khi kết thúc, kể cả khi fail hay bị ngắt giữa chừng. Chạy qua `scripts/lane.sh run make e2e`; lần chạy fail để lại report, ảnh chụp và trace trong `e2e/artifacts/`.
 
 ## Definition of Done (DoD)
 
