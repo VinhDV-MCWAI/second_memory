@@ -250,6 +250,8 @@ Records written in P3 so far: REQ-002 (Ready), RFC-002 (Approved; slice status i
 
 - 2026-10-09 — [lane infra] BUG-02 done: e0908612 — limit_req_status 429 (http level, both zones; Terraform stack reuses the file). Burst of 65 on :81/api/public/skills: 38×200 + 27×429 (was 25×200 + 40×503); /health, /skills, /docs, / 200. ml-nginx recreated (docker compose up --force-recreate ml-nginx): sed -i had replaced the bind-mounted file and docker restart failed on the stale mount — gotcha added to docker/CLAUDE.md + README
 
+- 2026-10-09 — [lane api] BUG-04 done: 2f2391fb — search_tsv recreated with weights (A title/name, B summary/category, C description, migration 2026_10_09_100002, up/down/up on testing, dev migrated) + ts_rank weights {0.05,0.1,0.2,1.0} (LedgerConst::SEARCH_RANK_WEIGHTS): QA pair 0.984 vs 0.991 → 0.84 vs 0.99; new test title-above-summary; ADR-0009 amendment; make verify exit 0 (backend 167, pytest 63)
+
 ## Next step
 
 Since 2026-10-08 work runs in **parallel lanes**: the live task list and who is on what is [BOARD.md](BOARD.md) (`scripts/lane.sh status`); start a conversation with `/lane`. When this file and the board disagree on status, the board wins. Lanes `public` (P3-12) and `perf` (P3-16) were already in progress when the board was created.
