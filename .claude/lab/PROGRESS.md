@@ -196,6 +196,8 @@ Records written in P3 so far: REQ-002 (Ready), RFC-002 (Approved; slice status i
 
 - 2026-10-08 — [lane perf] PERF-03 done: 8c49676, 81ef263 — re-baseline on committed f930935: 10 users 55–69 → 116–134 req/s, search p95 292–399 → 123–144 ms (others 111–158), 0 % errors; 1 user public/skills 37.5 → 20.8 ms (DB 18.6 → 3.0); search statements ~1 ms (typo 1–14 ms). Found: config:cache bakes ATTR_PERSISTENT=false → API-06 (lane api) before P4-03 builds caches. Report docs/reports/perf/2026-10-08-rebaseline.md (numbers for v2.1.0)
 
+- 2026-10-09 — [lane infra] P4-01 done: 66bb503, 6a64d77 — ADR-0011: Compose stays dev (ml-* names, hot reload); Terraform (OpenTofu-compatible) owns staging + prod-like (sm-<env>-*, HTTPS-only *.sm.localhost:8443/9443, ≤1.5 GB each, label sm.env); infra/modules/{stack,storage} + live/<env>/{stack,storage} applied in order, local state (secrets inside, never in git/backup), SOPS+age via sops exec-env; keep pinned pgsty/minio (app has no S3 caller) with revisit triggers; P4-03 must make FE images runtime-configured (same-origin /api); backlog P4-03/07/09 updated
+
 ## Next step
 
 Since 2026-10-08 work runs in **parallel lanes**: the live task list and who is on what is [BOARD.md](BOARD.md) (`scripts/lane.sh status`); start a conversation with `/lane`. When this file and the board disagree on status, the board wins. Lanes `public` (P3-12) and `perf` (P3-16) were already in progress when the board was created.
