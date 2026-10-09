@@ -61,6 +61,7 @@ Records written in P3 so far: REQ-002 (Ready), RFC-002 (Approved; slice status i
 - **Measure committed code only**: the stack bind-mounts the working tree, so another lane's uncommitted change (e.g. `config/database.php`) is part of any perf run. Check `git status -- laravel-api` before timing and say what was in the tree.
 - **Laravel caches in experiments**: point `APP_CONFIG_CACHE` / `APP_ROUTES_CACHE` / `APP_EVENTS_CACHE` at `/tmp` instead of running `artisan optimize` — `bootstrap/cache` is shared by every lane and the dev stack.
 - **SQL plans of the real app queries**: `ALTER DATABASE perf SET session_preload_libraries = 'auto_explain'` (+ `auto_explain.log_analyze`, `log_buffers`, `log_min_duration = 0`) and read `docker logs ml-postgres`; never on the dev DB. `perf/explain.sh` does this.
+- **No container runs as root since P4-02** (`6c806bc`): `ml-php` and the Next.js dev containers run as UID 1000 (the host user). `Permission denied` / `EACCES` on `vendor/`, `storage/`, `coverage/`, `.next/` = a file left by an old root container: `docker run --rm -v "$PWD":/r alpine:3.24 chown -R 1000:1000 /r/<path>`. After a `pnpm-lock.yaml` change rebuild the Next.js images (`docker compose -f docker/docker-compose.yml up -d --build ml-nextjs ml-nextjs-docs`): pnpm no longer reinstalls at run time. nginx listens on 8080 inside (host port 81 unchanged).
 
 ## Log
 
