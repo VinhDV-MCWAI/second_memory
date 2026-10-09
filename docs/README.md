@@ -28,16 +28,16 @@ docs/
 ├── plan/                analysis, roadmap, backlog, GitHub setup (living documents)
 ├── releases/            release notes per version tag
 ├── adr/                 Architecture Decision Records: one decision per file, never edited after "Accepted"
-├── architecture/        system snapshots: as-is.md (v1.0.0), later to-be.md
+├── architecture/        system snapshots: as-is.md (v1.0.0, frozen)
 ├── templates/           copy these to start a new record (REQ, RFC, ADR, PRB, INC, postmortem, runbook, reports)
 ├── handbook/            how we work: team, intake, design, git, coding, QA, release, operations, reporting, docs & data
-├── requirements/        (planned, Phase 2+) REQ-xxx: request → clarification → user stories → acceptance criteria
-├── design/              (planned, Phase 2+) design docs / RFCs, ERD, API contracts, sequence diagrams
+├── requirements/        REQ-xxx: request → clarification → user stories → acceptance criteria
+├── design/              design docs / RFCs: ERD, API contracts, sequence diagrams, rollout
 ├── problems/            PRB-xxx: problem records (origin → impact → solution → follow-ups)
 ├── incidents/           (planned, Phase 7) INC-xxx: incident reports and postmortems
-├── runbooks/            (planned, Phase 6) step-by-step operational procedures
-├── reports/             (planned, Phase 1) daily / weekly reports, retrospectives
-└── archive/             outdated docs kept for history (legacy-architecture/ = the old root 01–10 files, learning/ = write-ups of replaced hand-built code)
+├── runbooks/            step-by-step operational procedures (backup / restore, ledger import, content export)
+├── reports/             daily / weekly reports, retrospectives, perf measurements, spikes
+└── archive/             outdated docs kept for history (legacy-architecture/ = the old root 01–10 files, learning/ = the owner's learning notes, indexed in its README)
 ```
 
 ## Writing conventions

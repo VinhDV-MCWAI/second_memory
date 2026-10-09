@@ -1,3 +1,7 @@
+> **Learning note (archived 2026-10-09).** The owner's research on search, written before the Skill Ledger. It was the input of the P3-04 spike; the decision is [ADR-0009](../../adr/0009-postgres-search.md) (PostgreSQL full text + `unaccent` + trigram, no separate search engine). Kept unchanged otherwise.
+>
+> 🇻🇳 **Ghi chú học tập, đã lưu trữ (2026-10-09).** Nghiên cứu về search của owner, viết trước Skill Ledger; là đầu vào cho spike P3-04. Quyết định cuối cùng: ADR-0009 (full text PostgreSQL + `unaccent` + trigram, không thêm search engine riêng). Nội dung còn lại giữ nguyên.
+
 - Search một chức năng giúp người sử dụng nhanh chóng lọc ra các thông tin mà họ cần tìm kiếm dựa trên các từ khóa hoặc cụm từ khóa mà họ nhập vào ô tìm kiếm.
 
 - Hiện tại search rất phổ biến và sử dụng hầu hết trong các ứng dụng, khi chúng ngày càng phình to. Do đó việc lọc dữ liệu là thành phần quan trọng trong trải nghiệm sử dụng. Có nhiều công cụ search hiện đại và tiện dụng khiến người dùng trở nên ngày càng được nuông chiều, thí dụ họ có thể nhập sai chính tả, mô tả không rõ, mô tả liên quan không cần chính xác, sự đơn giản hóa khi mọi thứ trước mắt người sử dụng chỉ có 1 form search duy nhất, họ có thể nhanh chóng tìm kiếm chính xác thông tin mà họ cần.

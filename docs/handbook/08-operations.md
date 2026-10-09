@@ -63,7 +63,7 @@ Useful commands today:
 
 ```bash
 make ps                       # container health
-make logs s=ml-php            # API logs (also ml-nginx, ml-queue, ml-postgres …)
+make logs s=ml-php            # API logs (also ml-nginx, ml-postgres, ml-nextjs …)
 docker stats --no-stream      # CPU / memory per container
 docker exec ml-postgres sh -c 'psql -U "$POSTGRES_USER" -d "$POSTGRES_DB" -c "select state, count(*) from pg_stat_activity group by 1"' 
 df -h && docker system df     # disk
