@@ -204,6 +204,8 @@ Records written in P3 so far: REQ-002 (Ready), RFC-002 (Approved; slice status i
 
 - 2026-10-09 — [lane fe] FE-02 done: 9ef2797 — nextjs-fe/.tenv.example keeps only NEXT_PUBLIC_API_URL (5 NEXT_PUBLIC_REVERB_* lines dropped; nothing in nextjs-fe reads them). setup-env.sh's REVERB sed is now a no-op, removed with P4-04
 
+- 2026-10-09 — [lane perf] PERF-05 done: 240664c, 159ed98 — perf_build_caches (lib.sh) shared by profile.sh and new PERF_CACHED=1 switch of perf-baseline.sh, prints the cached ATTR_PERSISTENT (true in every run); stale API-06 comment dropped. Profile: cached variants DB 2.6–4.9 ms (was 17–26), PHP −2 ms (−5–6 with validate_timestamps=0). 10-user load in 3 back-to-back pairs no cache → cache: 119→99, 58*→140, 85→89 req/s, 0 % errors, all p95 < 300 ms (host shared, ±25 %). Follow-up in rebaseline report §Config cache
+
 ## Next step
 
 Since 2026-10-08 work runs in **parallel lanes**: the live task list and who is on what is [BOARD.md](BOARD.md) (`scripts/lane.sh status`); start a conversation with `/lane`. When this file and the board disagree on status, the board wins. Lanes `public` (P3-12) and `perf` (P3-16) were already in progress when the board was created.
