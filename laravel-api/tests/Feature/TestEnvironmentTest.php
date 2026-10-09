@@ -16,6 +16,5 @@ final class TestEnvironmentTest extends TestCase
     {
         $this->assertSame('testing', app()->environment());
         $this->assertSame('testing', DB::connection()->getDatabaseName());
-        $this->assertSame('log', config('broadcasting.default'));
     }
 }

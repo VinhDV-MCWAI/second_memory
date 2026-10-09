@@ -8,7 +8,7 @@ declare(strict_types=1);
 return [
     'api_path' => [
         'include' => 'api',
-        'exclude' => ['api/admin/broadcasting', 'api/openapi', 'api/openapi.json'],
+        'exclude' => ['api/openapi', 'api/openapi.json'],
     ],
 
     'export_path' => 'openapi.json',

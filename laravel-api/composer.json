@@ -12,7 +12,6 @@
         "dedoc/scramble": "^0.13.47",
         "google/apiclient": "^2.15",
         "laravel/framework": "^13.0",
-        "laravel/reverb": "^1.12",
         "laravel/sanctum": "^4.3",
         "laravel/tinker": "^3.0",
         "predis/predis": "^3.0"

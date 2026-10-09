@@ -7,11 +7,9 @@ use App\Http\Controllers\Audit\AuditLogController;
 use App\Http\Controllers\Custom\CredentialController;
 use App\Http\Controllers\Ledger\EvidenceImportController;
 use App\Http\Controllers\Public\PublicSkillController;
-use Illuminate\Support\Facades\Broadcast;
 use Illuminate\Support\Facades\Route;
 
 // Middleware aliases are registered in bootstrap/app.php. Auth: Sanctum SPA session (ADR-0004).
-Broadcast::routes(['middleware' => ['api', 'auth:sanctum'], 'prefix' => 'admin']);
 
 // No db.transaction here: a failed login throws, and its audit_log row must not be rolled back
 Route::prefix('admin/credential')
