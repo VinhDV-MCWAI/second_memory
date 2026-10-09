@@ -96,6 +96,10 @@ fe-typecheck: ## Type-check both Next.js apps
 fe-test: ## Run admin FE unit tests
 	$(FE) pnpm test --run --coverage
 
+.PHONY: e2e
+e2e: ## Critical-journey E2E (Playwright) against the running stack; see e2e/run.sh
+	bash e2e/run.sh
+
 .PHONY: fe-format
 fe-format: ## Format both Next.js apps (Prettier)
 	$(FE) pnpm format
