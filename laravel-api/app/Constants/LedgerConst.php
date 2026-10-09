@@ -44,6 +44,13 @@ final class LedgerConst
     /** `pg_trgm.word_similarity_threshold` of the typo fallback (ADR-0009: transpositions score ~0.47). */
     public const SEARCH_FUZZY_THRESHOLD = '0.4';
 
+    /**
+     * ts_rank weights for the {D, C, B, A} labels of `search_tsv` (A title / name, B summary / category,
+     * C description). Steeper than the default {0.1, 0.2, 0.4, 1.0}, whose ranks saturate near 1 so a
+     * summary repeating the words almost ties with a title match (BUG-04).
+     */
+    public const SEARCH_RANK_WEIGHTS = '{0.05, 0.1, 0.2, 1.0}';
+
     /** Requests per minute and IP on /api/public (RFC-002 §4.3). */
     public const PUBLIC_RATE_PER_MINUTE = 60;
 

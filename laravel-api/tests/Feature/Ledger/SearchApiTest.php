@@ -75,6 +75,18 @@ final class SearchApiTest extends TestCase
             ->assertJsonPath('data.evidence.1.id', $weak->id);
     }
 
+    public function test_a_title_match_ranks_above_a_summary_match(): void
+    {
+        // BUG-04: the summary repeats the words, the title only has them once
+        $inSummary = Evidence::factory()->create(['title' => 'Ghi chú tuần 41', 'summary' => 'Kỹ năng mềm, kỹ năng đọc code, kỹ năng viết']);
+        $inTitle = Evidence::factory()->create(['title' => 'Kỹ năng thiết kế database', 'summary' => null]);
+
+        $this->call('GET', self::URL, ['q' => 'ky nang'], $this->viewer)
+            ->assertOk()
+            ->assertJsonPath('data.evidence.0.id', $inTitle->id)
+            ->assertJsonPath('data.evidence.1.id', $inSummary->id);
+    }
+
     public function test_last_word_is_a_prefix_while_typing(): void
     {
         $skill = Skill::factory()->create(['name' => 'Kiểm thử tự động', 'description' => null]);

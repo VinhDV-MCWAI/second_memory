@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\DB;
 /**
  * Admin search over skills, goals and evidence (ADR-0009). Every text is compared through
  * f_unaccent(lower(...)), so "ky nang" finds "Kỹ năng". Skills and evidence keep that text in
- * `search_text` and its vector in `search_tsv` (stored, GIN); `search_text` also has a GiST trigram
+ * `search_text` and its weighted vector in `search_tsv` (stored, GIN; title / name ranks first); `search_text` also has a GiST trigram
  * index for the typo fallback. Goals have no search columns: they are few, and they match on
  * their note and their skill's name.
  */
@@ -27,12 +27,13 @@ final class SearchRepository
     public function fullText(string $tsQuery): array
     {
         $match = function (string $text, ?string $vector): array {
-            // Rank on the stored vector where there is one; recomputing it per match was the cost (DB-01)
+            // Rank on the stored, weighted vector where there is one; recomputing it per match was the cost (DB-01)
             $vector ??= "to_tsvector('simple', {$text})";
+            $weights = LedgerConst::SEARCH_RANK_WEIGHTS;
 
             return [
                 "{$vector} @@ to_tsquery('simple', f_unaccent(lower(?)))",
-                "ts_rank({$vector}, to_tsquery('simple', f_unaccent(lower(?)))) DESC",
+                "ts_rank('{$weights}', {$vector}, to_tsquery('simple', f_unaccent(lower(?)))) DESC",
             ];
         };
 
