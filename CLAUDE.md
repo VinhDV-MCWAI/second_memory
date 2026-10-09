@@ -4,10 +4,13 @@
 
 | Path | Stack | Role | Details |
 |---|---|---|---|
-| `laravel-api/` | PHP, Laravel, PostgreSQL, Redis, Reverb, MinIO (S3) | REST API | [laravel-api/CLAUDE.md](laravel-api/CLAUDE.md) |
+| `laravel-api/` | PHP, Laravel, Sanctum, PostgreSQL, Redis | REST API (:81/api via nginx) | [laravel-api/CLAUDE.md](laravel-api/CLAUDE.md) |
 | `nextjs-fe/` | Next.js App Router, React, TanStack Query, RHF + zod, next-intl, shadcn/ui, Tailwind 4 | Admin dashboard (:3000) | [nextjs-fe/CLAUDE.md](nextjs-fe/CLAUDE.md) |
-| `nextjs-docs/` | Next.js App Router | Public docs site, now a "content moved" page (:3457) | [nextjs-docs/CLAUDE.md](nextjs-docs/CLAUDE.md) |
+| `nextjs-docs/` | Next.js App Router (server components) | Public site: Skill Ledger at `/skills`, old `/docs` links show "content moved" (:3457) | [nextjs-docs/CLAUDE.md](nextjs-docs/CLAUDE.md) |
 | `docker/`, `ci-cd/`, `.github/`, `backup/` | Docker Compose, GitHub Actions (self-hosted deploy), shell | Runtime & ops | [docker/CLAUDE.md](docker/CLAUDE.md) |
+| `infra/` | Terraform (Docker provider) in a pinned tools container | Production-like environments, production images (ADR-0011) | [infra/README.md](infra/README.md) |
+| `tools/ledger-importer/` | Python, uv, ruff, mypy, pytest | Obsidian → evidence importer (`make import`) | [tools/ledger-importer/README.md](tools/ledger-importer/README.md) |
+| `e2e/`, `perf/` | Playwright; k6, SQL | End-to-end journey (`make e2e`); load tests and query plans | [handbook testing](docs/handbook/06-testing-qa.md), [perf reports](docs/reports/perf/) |
 
 All docs live in `docs/` (start at [docs/README.md](docs/README.md)). The old Vietnamese architecture docs are archived in `docs/archive/legacy-architecture/` (outdated — code wins).
 

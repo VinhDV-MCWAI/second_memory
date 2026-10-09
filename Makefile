@@ -154,7 +154,7 @@ backup: ## Back up PostgreSQL + MinIO
 	bash backup/backup.sh
 
 .PHONY: restore
-restore: ## Restore from a backup (see backup/README.md)
+restore: ## Restore from a backup (docs/runbooks/backup-restore.md)
 	bash backup/restore.sh
 
 ##@ Terraform environments (ADR-0011: staging / prod-like; dev stays on Compose)

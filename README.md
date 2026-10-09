@@ -1,536 +1,120 @@
-# Second Memory - Personal Knowledge Management System (PKMS)
+# Second Memory — Engineering Lab
 
-> Hệ thống Quản trị Tri thức và Di sản Số Cá nhân
+> 🇻🇳 Second Memory — phòng thí nghiệm kỹ thuật: một sản phẩm nhỏ nhưng thật, dùng để luyện toàn bộ vòng đời phần mềm.
 
-[![PHP](https://img.shields.io/badge/PHP-8.3-777BB4?logo=php&logoColor=white)](https://www.php.net/)
-[![Laravel](https://img.shields.io/badge/Laravel-11-FF2D20?logo=laravel&logoColor=white)](https://laravel.com/)
-[![Next.js](https://img.shields.io/badge/Next.js-16-000000?logo=next.js&logoColor=white)](https://nextjs.org/)
-[![React](https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=white)](https://reactjs.org/)
-[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-4169E1?logo=postgresql&logoColor=white)](https://www.postgresql.org/)
-[![Docker](https://img.shields.io/badge/Docker-Compose-2496ED?logo=docker&logoColor=white)](https://www.docker.com/)
+Second Memory started as a personal knowledge system. Since [ADR-0001](docs/adr/0001-engineering-lab-direction.md) it is an **Engineering Lab**: a small, real product used to practise the whole software lifecycle (requirements, design, code, tests, release, operations, incidents) with written records for each step. Notes and long-form writing live in Obsidian; this repository holds the product and the process around it.
 
----
+> 🇻🇳 Ban đầu là hệ thống quản lý tri thức cá nhân. Từ ADR-0001 dự án thành Engineering Lab: sản phẩm nhỏ nhưng thật để luyện cả vòng đời phần mềm, mỗi bước đều có hồ sơ. Ghi chú nằm ở Obsidian; repo này chứa sản phẩm và quy trình.
 
-## 📖 Giới thiệu
+## What it does
 
-**Second Memory** là một hệ thống quản lý tri thức cá nhân (PKMS - Personal Knowledge Management System) được xây dựng nhằm mục đích lưu trữ, tổ chức và khai thác toàn bộ kiến thức, kinh nghiệm, sở thích và suy nghĩ cá nhân một cách có hệ thống.
+> 🇻🇳 Sản phẩm làm gì.
 
-> [!NOTE]
-> Test update to verify GitHub Actions Runner functionality.
+The product is the **Skill Ledger** ([REQ-002](docs/requirements/REQ-002-skill-ledger.md), [RFC-002](docs/design/RFC-002-skill-ledger.md)): skills, their level history, learning goals and evidence (links to PRs, ADRs, incidents, notes).
 
-### 🎯 Tầm nhìn
+| Part | Who uses it | What it does |
+|---|---|---|
+| Admin dashboard (`nextjs-fe`) | the owner (role `owner`), a read-only demo account (role `viewer`) | manage skills, levels, goals, evidence and tags; one search box over all of them; audit log |
+| Public site (`nextjs-docs`) | anyone | `/skills`: public skills, level history and public evidence; old `/docs` links show a "content moved" page |
+| REST API (`laravel-api`) | both sites, the importer | cookie auth (Sanctum SPA), OpenAPI contract, PostgreSQL search (Vietnamese without diacritics, typo tolerant) |
+| Importer (`tools/ledger-importer`) | the owner | imports Obsidian notes marked `publish: true` as evidence (Python CLI, API token) |
 
-Tạo ra một "Di sản số cá nhân" - một nền tảng hợp nhất để:
-- ✅ **Chống phân mảnh tri thức**: Tập trung toàn bộ kiến thức từ nhiều nguồn vào một nơi duy nhất
-- ✅ **Bảo toàn tri thức**: Lưu trữ an toàn, có khả năng phục hồi cao
-- ✅ **Tái sử dụng kiến thức**: Tìm kiếm nhanh chóng và áp dụng kinh nghiệm cũ
-- ✅ **Tự động hóa**: Ứng dụng AI để hỗ trợ quản lý tri thức hiệu quả
+> 🇻🇳 Sản phẩm là Skill Ledger: kỹ năng, lịch sử cấp độ, mục tiêu học và bằng chứng. Bảng trên: trang quản trị, trang công khai `/skills`, REST API và công cụ import từ Obsidian.
 
----
+## Architecture
 
-## 🏗️ Kiến trúc Hệ thống
+> 🇻🇳 Kiến trúc.
 
-### Mô hình Tổng quan
-
-```
-┌─────────────────────────────────────────────────────────────┐
-│                      Users / Clients                        │
-└─────────────────────────────────────────────────────────────┘
-                              │
-              ┌───────────────┴───────────────┐
-              │                               │
-    ┌─────────▼─────────┐         ┌──────────▼──────────┐
-    │  Dashboard (FE)   │         │  Documentation (FE)  │
-    │   Next.js :3000   │         │    Next.js :3457     │
-    │   (Admin Panel)   │         │   (Public Docs)      │
-    └─────────┬─────────┘         └──────────┬──────────┘
-              │                               │
-              └───────────────┬───────────────┘
-                              │
-                    ┌─────────▼─────────┐
-                    │   Laravel API     │
-                    │   PHP 8.5 + FPM   │
-                    │   (Business Logic)│
-                    └─────────┬─────────┘
-                              │
-              ┌───────────────┼───────────────┐
-              │               │               │
-    ┌─────────▼─────┐  ┌──────▼──────┐  ┌────▼─────┐
-    │  PostgreSQL   │  │    Redis    │  │  MinIO   │
-    │   (Database)  │  │   (Cache)   │  │ (S3 Obj) │
-    └───────────────┘  └─────────────┘  └──────────┘
+```text
+browser ──► ml-nginx :81 ─┬─ /api/*            ─► ml-php (Laravel, php-fpm) ─┬─► ml-postgres (data, search)
+                          ├─ /skills, /docs    ─► ml-nextjs-docs (public)     ├─► ml-redis (sessions, cache)
+                          └─ everything else   ─► ml-nextjs (admin)           └─  ml-minio (kept data, backups only)
 ```
 
-### Các Thành phần Chính
+| Component | Technology | Container | Host port (dev) |
+|---|---|---|---|
+| Reverse proxy | nginx 1.25 (unprivileged) | `ml-nginx` | **81** (the entry point) |
+| API | Laravel 13, PHP 8.5 (php-fpm), Sanctum | `ml-php` | – (through nginx) |
+| Admin dashboard | Next.js 16, React 19, TanStack Query, react-hook-form + zod, next-intl, shadcn/ui, Tailwind 4 | `ml-nextjs` | 3456 |
+| Public site | Next.js 16 (server components) | `ml-nextjs-docs` | 3002 |
+| Database | PostgreSQL 16 | `ml-postgres` | 5502 |
+| Cache / sessions | Redis 7.4 | `ml-redis` | 6601 |
+| Object storage | MinIO (S3) — holds the kept `media_mgmt` objects only ([ADR-0007](docs/adr/0007-remove-media-api.md)) | `ml-minio` | 9100, console 9102 |
 
-| Thành phần | Công nghệ | Port | Mô tả |
-|:-----------|:----------|:-----|:------|
-| **Dashboard** | Next.js 16 + React 19 | 3000 | Giao diện quản trị (Admin Panel) |
-| **Documentation** | Next.js 16 + React 19 | 3457 | Giao diện hiển thị tài liệu công khai |
-| **API Backend** | Laravel 13 (PHP 8.5) | 9000 | RESTful API, Business Logic |
-| **Database** | PostgreSQL 16 Alpine | 5555 | Lưu trữ dữ liệu có cấu trúc |
-| **Cache** | Redis 7 Alpine | 6379 | Cache và Session Management |
-| **Object Storage** | MinIO | 9001 | S3-compatible File/Media Storage |
-| **WebSocket** | Laravel Reverb | 8080 | Real-time Communication |
-| **Proxy** | Nginx Alpine | 80/443 | Reverse Proxy, SSL Termination |
+> 🇻🇳 Mọi request đi qua nginx cổng 81. Ports trên là mặc định trong `docker/.env.example`. MinIO chỉ còn giữ dữ liệu cũ (ADR-0007), không code nào đọc/ghi.
 
----
+Dev runs on Docker Compose (`docker/docker-compose.yml`). Terraform builds the production-like environments from production images ([ADR-0011](docs/adr/0011-infrastructure-as-code.md), [infra/README.md](infra/README.md)). Architecture before the Engineering Lab: [docs/architecture/as-is.md](docs/architecture/as-is.md).
 
-## 🚀 Tech Stack
+> 🇻🇳 Môi trường dev chạy bằng Docker Compose; Terraform dựng các môi trường giống production (ADR-0011).
 
-### Frontend
+## Quick start
 
-- **Framework**: Next.js 16 (App Router) + React 19
-- **Language**: TypeScript 5.x
-- **Styling**: TailwindCSS 4.x
-- **UI Components**: Radix UI (Headless)
-- **Rich Text Editor**: Tiptap 3.x (ProseMirror)
-- **State Management**: Redux Toolkit 2.10 + React Query 5.90
-- **HTTP Client**: Axios 1.13
-- **i18n**: next-intl 4.7
-- **Testing**: Vitest 1.0
+> 🇻🇳 Chạy nhanh.
 
-### Backend
+The host needs only **Docker** (Docker Desktop on WSL2 works) and **make**. PHP, Composer, Node and pnpm run inside the containers.
 
-- **Framework**: Laravel 13
-- **Language**: PHP 8.5
-- **Database ORM**: Eloquent
-- **Authentication**: Laravel Sanctum (SPA session cookie + CSRF)
-- **Queue**: Laravel Queue (Redis driver)
-- **WebSocket**: Laravel Reverb
-- **Real-time Broadcasting**: Reverb + Redis
-
-### Database & Storage
-
-- **RDBMS**: PostgreSQL 16 Alpine
-- **Cache**: Redis 7 Alpine
-- **Object Storage**: MinIO (S3-compatible)
-- **Backup**: Rclone (multi-cloud sync)
-
-### DevOps
-
-- **Containerization**: Docker + Docker Compose v2
-- **Web Server**: Nginx Alpine
-- **Package Manager**: pnpm (monorepo workspace)
-- **Build Tool**: Webpack (via Next.js), Vite (optional)
-- **CI/CD**: GitHub Actions
-- **Deployment Strategy**: Blue-Green Deployment
-- **Infrastructure**: Self-hosted GitHub Runner on Ubuntu VM
-- **Traffic Management**: Nginx Reverse Proxy (Dynamic Upstreams)
-
----
-
-## 🚀 CI/CD & Deployment
-
-Dự án sử dụng quy trình CI/CD hiện đại để đảm bảo tính ổn định và khả năng mở rộng:
-
-### 1. CI Pipeline (Continuous Integration)
-- **Trigger**: Khi có Pull Request merge vào branch `dev`.
-- **Nhiệm vụ**:
-    - Linting & Code Style check.
-    - Type-checking (TypeScript).
-    - Security Audit (Dependencies).
-    - Unit & Integration Testing.
-
-### 2. CD Pipeline (Continuous Deployment)
-- **Trigger**: Khi code được push/merge thành công vào branch `dev`.
-- **Quy trình**:
-    - Build Docker images trên GitHub hosted runner.
-    - Push images lên GitHub Container Registry (GHCR).
-    - Kích hoạt deployment trên **Self-hosted Runner** (Ubuntu VM).
-
-### 3. Chiến lược Blue-Green Deployment
-Hệ thống sử dụng chiến lược Blue-Green để đạt được zero-downtime:
-- **Môi trường song song**: Duy trì hai môi trường `blue` và `green` độc lập.
-- **Traffic Switching**: Sử dụng Nginx để chuyển đổi lưu lượng giữa hai môi trường.
-- **Health Check**: Tự động kiểm tra trạng thái dịch vụ trước khi switch traffic. Nếu không đạt yêu cầu, hệ thống sẽ giữ nguyên version cũ (Auto Rollback).
-- **Cleanup**: Tự động dọn dẹp tài nguyên của version cũ sau khi deploy thành công để tối ưu hóa tài nguyên máy chủ.
-
----
-
-## 📁 Cấu trúc Thư mục
-
-```
-second-memory/
-├── docker/                    # Docker configuration & scripts
-│   ├── docker-compose.yml     # Main orchestration file
-│   ├── laravel/               # Laravel Dockerfile & config
-│   ├── nextjs/                # Next.js Dockerfile & config
-│   ├── nginx/                 # Nginx configuration
-│   ├── postgres/              # PostgreSQL configuration
-│   ├── redis/                 # Redis configuration
-│   └── minio/                 # MinIO configuration & scripts
-│
-├── laravel-api/               # Backend API (Laravel 13)
-│   ├── app/                   # Application code
-│   │   ├── Http/Controllers   # API Controllers
-│   │   ├── Models/            # Eloquent Models
-│   │   ├── Services/          # Business Logic
-│   │   ├── Repositories/      # Data Access Layer
-│   │   └── ...
-│   ├── config/                # Configuration files
-│   ├── database/              # Migrations, Seeders
-│   ├── routes/                # API routes
-│   ├── tests/                 # Unit & Feature tests
-│   └── composer.json          # PHP dependencies
-│
-├── nextjs-fe/                 # Frontend Dashboard (Next.js)
-│   ├── src/
-│   │   ├── app/               # App Router pages
-│   │   ├── components/        # React Components
-│   │   ├── lib/               # Utilities, API clients
-│   │   └── store/             # Redux store
-│   ├── public/                # Static assets
-│   └── package.json           # Node dependencies
-│
-├── nextjs-docs/               # Documentation Site (Next.js)
-│   ├── src/
-│   │   ├── app/               # Documentation pages
-│   │   └── components/        # Doc-specific components
-│   └── package.json
-│
-├── backup/                    # Backup scripts & documentation
-│   ├── backup.sh              # Automated backup script
-│   └── restore.sh             # Restore script
-│
-├── docs/                      # Engineering Lab docs: plan, ADRs, handbook, archive (see docs/README.md)
-│
-├── pnpm-workspace.yaml        # pnpm monorepo config
-├── package.json               # Root package.json
-├── setup-env.sh               # Environment setup script
-└── start.sh                   # Quick start script
-```
-
----
-
-## ⚡ Quick Start
-
-### Yêu cầu hệ thống
-
-- **Docker**: 20.x+ và Docker Compose v2
-- **pnpm**: 8.x+ (cho frontend development)
-- **Memory**: Tối thiểu 8GB RAM (khuyến nghị 16GB)
-- **Disk**: Tối thiểu 20GB trống
-
-### 1. Clone Repository
+> 🇻🇳 Máy chỉ cần Docker và make; PHP, Composer, Node, pnpm đều chạy trong container.
 
 ```bash
-git clone <repository-url>
-cd second-memory
+make up        # first run: generates docker/.env and the app env files, builds and starts the stack;
+               # an empty database is migrated and seeded on start
+make ps        # every container should be healthy
+make migrate   # later: apply new migrations to the dev database
 ```
 
-### 2. Setup Environment
+Open <http://localhost:81> (admin) and <http://localhost:81/skills> (public site). The seed creates a local-only owner account, `root@gmail.com` / `12345678` (`RootAccountSeeder`); never use it outside dev.
 
-```bash
-# Chạy script setup tự động
-bash setup-env.sh
-```
+> 🇻🇳 Mở `http://localhost:81` (quản trị) và `http://localhost:81/skills` (trang công khai). Lần đầu khởi động, DB trống được migrate và seed tài khoản owner chỉ dùng cho dev: `root@gmail.com` / `12345678`.
 
-Hoặc setup thủ công:
+## Everyday commands
 
-```bash
-# Tạo file .env cho Laravel
-cd laravel-api
-cp .env.example .env
-# Chỉnh sửa .env theo môi trường
+> 🇻🇳 Lệnh hằng ngày. `make help` liệt kê tất cả.
 
-# Tạo file .env cho Next.js
-cd ../nextjs-fe
-cp .env.example .env.local
-# Chỉnh sửa .env.local
+| Command | What it does |
+|---|---|
+| `make help` | list every target |
+| `make test` / `make test f=Skill` | backend tests (PHPUnit, on the separate `testing` database) |
+| `make lint` · `make format` | Pint + ESLint + Prettier checks · fix formatting |
+| `make verify` | everything CI would run: lint, Larastan, OpenAPI drift check, type checks, backend + FE + importer tests |
+| `make openapi` | regenerate `laravel-api/openapi.json` and the admin FE types |
+| `make e2e` | Playwright journey through nginx (login → skill → evidence → search → public page) |
+| `make import vault=<path> [dry=1]` | import published Obsidian notes ([runbook](docs/runbooks/ledger-import.md)) |
+| `make backup` · `make restore` | PostgreSQL + MinIO backup / restore ([runbook](docs/runbooks/backup-restore.md)) |
+| `make tf-images` · `make tf-plan` · `make tf-apply` | build production images, plan / apply the Terraform environment |
+| `make fresh` | **dev only**: drop, re-migrate and seed the dev database (asks first) |
 
-cd ../nextjs-docs
-cp .env.example .env.local
-```
+## Repository layout
 
-### 3. Build & Start Services
+> 🇻🇳 Cấu trúc thư mục.
 
-```bash
-# Quay về root directory
-cd ..
+| Path | Content |
+|---|---|
+| [laravel-api/](laravel-api/) | REST API |
+| [nextjs-fe/](nextjs-fe/) | admin dashboard |
+| [nextjs-docs/](nextjs-docs/) | public site |
+| [tools/ledger-importer/](tools/ledger-importer/) | Python Obsidian importer |
+| [e2e/](e2e/) | Playwright end-to-end test |
+| [perf/](perf/) | k6 load tests, SQL plans, request profiling ([reports](docs/reports/perf/)) |
+| [docker/](docker/) | Compose stack, Dockerfiles, nginx / Postgres / Redis config |
+| [infra/](infra/) | Terraform modules and environments, production image build |
+| [backup/](backup/) | backup and restore scripts |
+| [docs/](docs/) | plan, handbook, ADRs, requirements, designs, runbooks, reports, releases |
+| [scripts/](scripts/) | `lane.sh` (parallel work board), perf baseline, metrics |
+| `.claude/` | instructions for Claude Code: rules, skills, the work board and handoff log |
 
-# Tạo env (lần đầu), build và start tất cả services
-make up
-```
+## Documentation and status
 
-`bash start.sh` vẫn dùng được (gọi `make up`). Xem toàn bộ lệnh bằng `make help`.
+> 🇻🇳 Tài liệu và tiến độ.
 
-### 4. Initialize Database
+- Start at [docs/README.md](docs/README.md): the plan ([analysis](docs/plan/01-analysis.md), [roadmap](docs/plan/02-roadmap.md), [backlog](docs/plan/03-backlog.md)), the [handbook](docs/handbook/README.md) (how work is done) and the writing conventions.
+- Current state and the live task list: [.claude/lab/PROGRESS.md](.claude/lab/PROGRESS.md) and [.claude/lab/BOARD.md](.claude/lab/BOARD.md).
+- Releases: [docs/releases/](docs/releases/) (`v1.0.0` baseline → `v2.0.0` slim-down; `v2.1.0` Skill Ledger in progress, then P4 infrastructure as code).
+- Git flow: `feature/*` or `refactor/*` → PR to `developer` → PR to `main`, Conventional Commits ([handbook 04](docs/handbook/04-git.md)).
 
-```bash
-# Chạy migrations
-make migrate
+> 🇻🇳 Bắt đầu từ `docs/README.md`. Tiến độ hiện tại ở `PROGRESS.md` và `BOARD.md`. Release notes trong `docs/releases/`.
 
-# (Optional) Seed dữ liệu mẫu
-docker exec ml-php php artisan db:seed
+## License
 
-# Hoặc xóa toàn bộ dev DB, migrate lại và seed (hỏi xác nhận trước)
-make fresh
-```
+Personal project, all rights reserved; not open for outside contributions.
 
-### 5. Access Applications
-
-| Service | URL | Credentials |
-|:--------|:----|:------------|
-| **Dashboard** | http://localhost:3000 | Admin panel |
-| **Documentation** | http://localhost:3457 | Public docs |
-| **API** | http://localhost/api | - |
-| **MinIO Console** | http://localhost:9001 | Set in `.env` |
-| **PostgreSQL** | localhost:5555 | Set in `.env` |
-| **Redis** | localhost:6379 | - |
-
----
-
-## 🛠️ Development
-
-### Frontend Development
-
-```bash
-# Dashboard (nextjs-fe)
-pnpm --filter nextjs-fe dev        # http://localhost:3000
-
-# Documentation (nextjs-docs)
-pnpm --filter nextjs-docs dev      # http://localhost:3457
-```
-
-### Backend Development
-
-```bash
-# Chạy Laravel development server (nếu không dùng Docker)
-cd laravel-api
-php artisan serve
-
-# Watch queue jobs
-php artisan queue:work
-
-# Run tests (trong Docker)
-make test
-```
-
-### Quality checks
-
-```bash
-make lint      # Pint + ESLint + Prettier
-make analyse   # Larastan
-make verify    # toàn bộ những gì CI chạy
-```
-
-### Database Migrations
-
-```bash
-# Tạo migration mới
-php artisan make:migration create_example_table
-
-# Chạy migrations
-php artisan migrate
-
-# Rollback
-php artisan migrate:rollback
-
-# Fresh migrate (xóa toàn bộ và chạy lại)
-php artisan migrate:fresh --seed
-```
-
----
-
-## 🎯 Features
-
-### ✅ Đã hoàn thành
-
-- ✅ **Content Management System**
-  - CRUD Category, Entry, Entry Description
-  - Hierarchical structure (Category → Entry → Description)
-  - Rich text editor (Tiptap) với markdown support
-  
-- ✅ **Authentication & Authorization**
-  - Session authentication (Laravel Sanctum SPA)
-  - Two roles: `owner` (read + write) and `viewer` (read-only), see ADR-0005
-  - Admin, Editor, Viewer roles
-  
-- ✅ **Media Management**
-  - Upload files to MinIO (S3-compatible)
-  - Image optimization
-  - File organization & categorization
-  
-- ✅ **Backup & Restore**
-  - Automated backup scripts
-  - Multi-cloud sync (Rclone)
-  - Database + file backup
-  
-- ✅ **Real-time Features**
-  - WebSocket với Laravel Reverb
-  - Real-time notifications (basic)
-
-### 🚧 Đang phát triển
-
-- 🚧 **Full-text Search**
-  - PostgreSQL Full-text Search
-  - Autocomplete suggestions
-  - Advanced search filters
-
-### 📋 Roadmap
-
-- 📋 **AI Integration**
-  - RAG (Retrieval-Augmented Generation)
-  - LLM integration cho knowledge extraction
-  - Smart tagging & categorization
-  
-- 📋 **Mobile App**
-  - React Native app
-  - Offline-first architecture
-  
-- 📋 **Advanced Analytics**
-  - Knowledge graph visualization
-  - Usage statistics
-  - Content recommendations
-
----
-
-## 📚 Documentation
-
-Start at [docs/README.md](docs/README.md): plan, roadmap, ADRs and templates. The original architecture docs (Vietnamese, partly outdated) are archived in [docs/archive/legacy-architecture/](docs/archive/legacy-architecture/); the current snapshot is [docs/architecture/as-is.md](docs/architecture/as-is.md).
-
----
-
-## 🧪 Testing
-
-### Frontend Tests
-
-```bash
-# Run Vitest
-pnpm --filter nextjs-fe test
-
-# Watch mode
-pnpm --filter nextjs-fe test:watch
-
-# Coverage
-pnpm --filter nextjs-fe test:coverage
-```
-
-### Backend Tests
-
-```bash
-cd laravel-api
-
-# Run all tests
-php artisan test
-
-# Run specific test suite
-php artisan test --testsuite=Feature
-php artisan test --testsuite=Unit
-
-# Run with coverage
-php artisan test --coverage
-```
-
----
-
-## 🔒 Security
-
-- ✅ Session authentication (Sanctum SPA cookie + CSRF), login rate limiting
-- ✅ CORS configuration
-- ✅ Rate limiting (Laravel)
-- ✅ SQL injection protection (Eloquent ORM)
-- ✅ XSS protection (Laravel Blade escaping)
-- ✅ CSRF protection
-- ✅ Environment variables cho sensitive data
-- ✅ Docker isolation
-
----
-
-## 📦 Backup & Restore
-
-### Automated Backup
-
-```bash
-# Chạy backup script
-bash backup/backup.sh
-```
-
-Script sẽ backup:
-- PostgreSQL database dump
-- MinIO object storage
-- Application files
-- Sync to cloud storage (Google Drive, S3, etc.)
-
-### Restore
-
-```bash
-# Restore từ backup
-bash backup/restore.sh <backup-date>
-```
-
----
-
-## 🐛 Troubleshooting
-
-### Container không start
-
-```bash
-# Check logs
-docker-compose logs <service-name>
-
-# Restart service
-docker-compose restart <service-name>
-
-# Rebuild
-docker-compose up -d --build --force-recreate
-```
-
-### Database connection error
-
-```bash
-# Check PostgreSQL đang chạy
-docker-compose ps postgres
-
-# Test connection
-docker exec -it postgres psql -U <username> -d <database>
-```
-
-### Frontend không kết nối API
-
-- Kiểm tra `NEXT_PUBLIC_API_URL` trong `.env.local`
-- Verify CORS configuration trong Laravel `config/cors.php`
-- Check network trong Docker Compose
-
----
-
-## 🤝 Contributing
-
-Dự án hiện tại là personal project, chưa mở cho public contribution.
-
----
-
-## 📝 License
-
-Proprietary - Personal Use Only
-
----
-
-## 👤 Author
-
-**Vinh DV**
-
-- GitHub: [@vinhdv](https://github.com/vinhdv)
-
----
-
-## 📞 Support
-
-Nếu gặp vấn đề, vui lòng:
-1. Check [Documentation](docs/)
-2. Review [Troubleshooting](#troubleshooting)
-3. Check Docker logs
-
----
-
-## 🙏 Acknowledgments
-
-- Laravel Team - Amazing PHP framework
-- Next.js Team - Best React framework
-- Tiptap - Excellent rich text editor
-- Open Source Community
-
----
-
-<p align="center">Made with ❤️ by Vinh DV</p>
+> 🇻🇳 Dự án cá nhân, giữ toàn quyền; chưa nhận đóng góp từ bên ngoài.
