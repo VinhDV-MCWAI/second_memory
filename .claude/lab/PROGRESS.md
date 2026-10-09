@@ -213,6 +213,8 @@ Records written in P3 so far: REQ-002 (Ready), RFC-002 (Approved; slice status i
 
 - 2026-10-09 — [lane api] API-07 done: a2e0bfe7 — laravel-api/.dockerignore deleted: compose, ci.yml and cd.yml all build with docker/laravel/Dockerfile, so Dockerfile.dockerignore (allowlist) applies; production image rebuilt after the delete: app/config/vendor… present, no tests/, no .env. Stale remark in Dockerfile.dockerignore → OPS-03 (infra)
 
+- 2026-10-09 — [lane infra] OPS-03 done: 0148a20 — comment-only change in docker/laravel/Dockerfile.dockerignore (no build impact)
+
 ## Next step
 
 Since 2026-10-08 work runs in **parallel lanes**: the live task list and who is on what is [BOARD.md](BOARD.md) (`scripts/lane.sh status`); start a conversation with `/lane`. When this file and the board disagree on status, the board wins. Lanes `public` (P3-12) and `perf` (P3-16) were already in progress when the board was created.

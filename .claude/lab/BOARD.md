@@ -88,7 +88,7 @@ Owns: `docker/`, `backup/`, `infra/` (new), `ci-cd/`, `.github/`, `start.sh`, `s
 | P4-08 | Local TLS reverse proxy (`mkcert`) for `staging` / `prod-like`; Sanctum stateful domains + secure cookies per environment; login checked over HTTPS | [Backlog P4](../../docs/plan/03-backlog.md#p4--infrastructure-as-code) | P4-07 | todo |
 | P4-09 | Secrets with SOPS + age for `staging` / `prod-like` (encrypted files in git, key outside, Terraform via `sops exec-env`, dev keeps `setup-env.sh`); runbook for rotation and key loss | [Backlog P4](../../docs/plan/03-backlog.md#p4--infrastructure-as-code), ADR-0011 | P4-01, P4-07 | todo |
 | P4-10 | Drill: `terraform destroy && terraform apply` + `restore.sh` brings `prod-like` back with data, each step timed vs RTO 30 min; runbook `docs/runbooks/rebuild-environment.md` | [Backlog P4](../../docs/plan/03-backlog.md#p4--infrastructure-as-code), [backup runbook](../../docs/runbooks/backup-restore.md) | P4-07, P4-08, P4-09 | todo |
-| OPS-03 | Drop the "(this file takes precedence over laravel-api/.dockerignore)" remark from `docker/laravel/Dockerfile.dockerignore`: that file is gone since API-07 | [docker/CLAUDE.md](../../docker/CLAUDE.md) | API-07 | todo |
+| OPS-03 | Drop the "(this file takes precedence over laravel-api/.dockerignore)" remark from `docker/laravel/Dockerfile.dockerignore`: that file is gone since API-07 | [docker/CLAUDE.md](../../docker/CLAUDE.md) | API-07 | done 2026-10-09: 0148a20 — comment-only change in docker/laravel/Dockerfile.dockerignore (no build impact) |
 
 ## Lane `docs` — Handbook, reports, planning
 
