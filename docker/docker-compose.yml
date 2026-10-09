@@ -4,7 +4,7 @@ services:
   # PostgreSQL Database
   ml-postgres:
     container_name: ml-postgres
-    image: postgres:16-alpine
+    image: postgres:16.15-alpine3.24
     restart: unless-stopped
     environment:
       POSTGRES_DB: ${POSTGRES_DB}
@@ -37,7 +37,7 @@ services:
   # Redis Cache
   ml-redis:
     container_name: ml-redis
-    image: redis:7-alpine
+    image: redis:7.4.11-alpine3.21
     restart: unless-stopped
     environment:
       REDIS_PASSWORD: ${REDIS_PASSWORD}
@@ -46,7 +46,8 @@ services:
       - ./redis/redis.conf:/usr/local/etc/redis/redis.conf:ro
     ports:
       - "${REDIS_PORT_OUTSIDE_ENV}:${REDIS_PORT_INSIDE_ENV}"
-    command: ["sh", "-c", "exec redis-server /usr/local/etc/redis/redis.conf --requirepass \"$$REDIS_PASSWORD\""]
+    # Exec form so the image entrypoint drops to the redis user (a `sh -c` command ran as root)
+    command: ["redis-server", "/usr/local/etc/redis/redis.conf", "--requirepass", "${REDIS_PASSWORD}"]
     healthcheck:
       test: ["CMD-SHELL", "redis-cli --no-auth-warning -a \"$$REDIS_PASSWORD\" ping | grep -q PONG"]
       interval: 10s
@@ -69,8 +70,6 @@ services:
       context: ../laravel-api
       dockerfile: ../docker/laravel/Dockerfile
       target: development
-      args:
-        PHP_VERSION: "8.5"
     restart: unless-stopped
     working_dir: /var/www/laravel-api
     volumes:
@@ -105,7 +104,7 @@ services:
       ml-minio-init:
         condition: service_completed_successfully
     healthcheck:
-      test: ["CMD-SHELL", "php-fpm -t || exit 1"]
+      test: ["CMD", "php", "-r", "exit(@fsockopen('127.0.0.1', 9000) ? 0 : 1);"]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -128,8 +127,6 @@ services:
       context: ../laravel-api
       dockerfile: ../docker/laravel/Dockerfile
       target: development
-      args:
-        PHP_VERSION: "8.5"
     restart: unless-stopped
     working_dir: /var/www/laravel-api
     command: php artisan reverb:start --debug
@@ -157,6 +154,12 @@ services:
       REVERB_SCHEME: ${REVERB_SCHEME}
     ports:
       - "${REVERB_PORT_OUTSIDE_ENV}:${REVERB_PORT}"
+    healthcheck:
+      test: ["CMD", "php", "-r", "exit(@fsockopen('127.0.0.1', (int) getenv('REVERB_PORT')) ? 0 : 1);"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 90s
     depends_on:
       ml-postgres:
         condition: service_healthy
@@ -178,11 +181,15 @@ services:
       context: ../laravel-api
       dockerfile: ../docker/laravel/Dockerfile
       target: development
-      args:
-        PHP_VERSION: "8.5"
     restart: unless-stopped
     working_dir: /var/www/laravel-api
     command: php artisan queue:work --verbose --tries=3 --timeout=900
+    healthcheck:
+      test: ["CMD-SHELL", "pgrep -f 'artisan queue:work' >/dev/null"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 90s
     volumes:
       - ../laravel-api:/var/www/laravel-api
       - ./laravel/php.ini:/usr/local/etc/php/conf.d/custom.ini:ro
@@ -289,18 +296,16 @@ services:
       - /repo/nextjs-docs/node_modules
     environment:
       NODE_ENV: development
-      PORT: ${NEXTJS_DOCS_PORT_INSIDE_ENV}
       HOSTNAME: 0.0.0.0
       NEXT_PUBLIC_API_URL: http://localhost:81/api
     ports:
-      - "${NEXTJS_DOCS_PORT_OUTSIDE_ENV}:${NEXTJS_DOCS_PORT_INSIDE_ENV}"
-    expose:
-      - "${NEXTJS_DOCS_PORT_INSIDE_ENV}"
+      # 3457 is fixed by nextjs-docs/package.json (`next dev -p 3457`) and the nginx upstream
+      - "${NEXTJS_DOCS_PORT_OUTSIDE_ENV}:3457"
     healthcheck:
       test:
         [
           "CMD-SHELL",
-          "wget --no-verbose --tries=1 --spider http://localhost:${NEXTJS_DOCS_PORT_INSIDE_ENV}/ || exit 1",
+          "wget --no-verbose --tries=1 --spider --timeout=15 http://localhost:3457/ || exit 1",
         ]
       interval: 30s
       timeout: 10s
@@ -318,22 +323,22 @@ services:
   # Nginx Reverse Proxy
   ml-nginx:
     container_name: ml-nginx
-    image: nginx:1.25-alpine
+    image: nginxinc/nginx-unprivileged:1.25.5-alpine3.19
     restart: unless-stopped
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
       - ./nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
       - ../laravel-api/public:/var/www/laravel-api/public:ro
     ports:
-      - "${NGINX_PORT_OUTSIDE_ENV}:${NGINX_PORT_INSIDE_ENV}"
-      - "${NGINX_PORT_SECURE_OUTSIDE_ENV}:${NGINX_PORT_SECURE_INSIDE_ENV}"
+      # Unprivileged nginx listens on 8080 (no TLS in dev; local TLS comes with P4-08)
+      - "${NGINX_PORT_OUTSIDE_ENV}:8080"
     depends_on:
       ml-php:
         condition: service_healthy
       ml-nextjs:
         condition: service_healthy
       ml-nextjs-docs:
-        condition: service_started
+        condition: service_healthy
     healthcheck:
       test:
         [
@@ -342,7 +347,7 @@ services:
           "--quiet",
           "--tries=1",
           "--spider",
-          "http://localhost/health",
+          "http://localhost:8080/health",
         ]
       interval: 30s
       timeout: 10s
@@ -360,7 +365,10 @@ services:
   # MinIO Object Storage (S3-compatible)
   ml-minio:
     container_name: ml-minio
-    image: ${MINIO_IMAGE:-pgsty/minio:RELEASE.2026-08-04T00-00-00Z}
+    build:
+      context: ./minio
+      args:
+        MINIO_IMAGE: ${MINIO_IMAGE:-pgsty/minio:RELEASE.2026-08-04T00-00-00Z}
     restart: unless-stopped
     ports:
       - "${MINIO_PORT_OUTSIDE_ENV}:${MINIO_PORT_INSIDE_ENV}"
@@ -398,6 +406,7 @@ services:
   ml-minio-init:
     container_name: ml-minio-init
     image: ${MINIO_IMAGE:-pgsty/minio:RELEASE.2026-08-04T00-00-00Z}
+    user: "1000:1000"
     depends_on:
       ml-minio:
         condition: service_healthy
@@ -408,6 +417,8 @@ services:
       MINIO_BUCKET_TEMP: ${MINIO_BUCKET_TEMP}
       MINIO_IAM_USER: ${MINIO_IAM_USER}
       MINIO_IAM_PASSWORD: ${MINIO_IAM_PASSWORD}
+      # mc keeps its config under $HOME/.mc; the unprivileged user has no home
+      HOME: /tmp
     volumes:
       - ./minio:/minio:ro
     entrypoint: ["/bin/sh", "/minio/create-buckets.sh"]

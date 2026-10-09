@@ -3,12 +3,14 @@
 #   docker build -f docker/nextjs/Dockerfile --build-arg APP=nextjs-fe --target production .
 # Context filtering: docker/nextjs/Dockerfile.dockerignore
 
-ARG NODE_IMAGE=node:24-alpine
+ARG NODE_IMAGE=node:24.21.0-alpine3.24
 
 # ============ Base: pnpm pinned by the root package.json "packageManager" ============
 FROM ${NODE_IMAGE} AS base
 RUN apk add --no-cache libc6-compat
-ENV NEXT_TELEMETRY_DISABLED=1
+# Shared corepack cache so the unprivileged dev user finds the pinned pnpm without a download
+ENV NEXT_TELEMETRY_DISABLED=1 \
+  COREPACK_HOME=/usr/local/share/corepack
 WORKDIR /repo
 COPY package.json pnpm-workspace.yaml ./
 RUN corepack enable && corepack install
@@ -51,8 +53,17 @@ CMD ["node", "server.js"]
 # ============ Development (source is bind-mounted at /repo/<app>) ============
 FROM deps AS development
 ARG APP
-RUN apk add --no-cache wget bash
-ENV NODE_ENV=development
+RUN apk add --no-cache wget bash \
+  && mkdir -p "/repo/${APP}/.next" \
+  && chown node:node /repo "/repo/${APP}" "/repo/${APP}/.next"
+# Dependencies come from the lockfile at build time (`--filter` one app), so pnpm's
+# run-time check would reinstall the whole workspace into the root-owned node_modules
+# before every script. A lockfile change means rebuilding the image instead.
+ENV NODE_ENV=development \
+  pnpm_config_verify_deps_before_run=false
 WORKDIR /repo/${APP}
+# The image's `node` user has UID 1000, the usual host UID, so the bind-mounted source and
+# the .next volume stay writable without root
+USER node
 EXPOSE 6543
 CMD ["pnpm", "dev"]

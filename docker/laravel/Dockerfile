@@ -1,5 +1,5 @@
-ARG PHP_VERSION=8.5
-FROM php:${PHP_VERSION}-fpm-alpine AS base
+ARG PHP_IMAGE=php:8.5.11-fpm-alpine3.24
+FROM ${PHP_IMAGE} AS base
 
 # Install system dependencies and PHP extensions
 RUN apk add --no-cache \
@@ -33,7 +33,7 @@ RUN apk add --no-cache --virtual .build-deps \
   && apk del .build-deps
 
 # Install Composer
-COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
+COPY --from=composer:2.10.3 /usr/bin/composer /usr/bin/composer
 
 # Set working directory
 WORKDIR /var/www/laravel-api
@@ -97,7 +97,15 @@ RUN apk add --no-cache --virtual .build-deps \
 # Copy custom PHP development configuration
 COPY --from=base /usr/local/etc/php/php.ini-development /usr/local/etc/php/php.ini
 
+# Run as the host user's UID so files written to the bind-mounted source (vendor, storage,
+# caches) stay owned by the developer, never by root
+ARG UID=1000
+ARG GID=1000
+RUN addgroup -g "${GID}" laravel && \
+  adduser -D -u "${UID}" -G laravel laravel
+
 WORKDIR /var/www/laravel-api
+USER laravel
 
 # Note: composer.json, composer.lock, and other files will be mounted via volume
 # Composer install will be handled by the entrypoint script for flexibility

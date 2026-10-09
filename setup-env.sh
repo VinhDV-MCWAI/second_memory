@@ -94,7 +94,6 @@ NEXTJS_DOCS_ENV="$ROOT_DIR/nextjs-docs/.env"
 if [ -d "$ROOT_DIR/nextjs-docs" ]; then
     rm -f "$NEXTJS_DOCS_ENV"
     echo "NEXT_PUBLIC_API_URL=http://localhost:${NGINX_PORT_OUTSIDE_ENV}/api" > "$NEXTJS_DOCS_ENV"
-    echo "PORT=${NEXTJS_DOCS_PORT_INSIDE_ENV:-3001}" >> "$NEXTJS_DOCS_ENV"
     echo "   - nextjs-docs/.env updated from master configuration."
 fi
 

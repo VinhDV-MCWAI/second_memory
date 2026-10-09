@@ -1,0 +1,22 @@
+# Build context for docker/laravel/Dockerfile is laravel-api/. Send only what the
+# production stage needs to run the API (this file takes precedence over laravel-api/.dockerignore).
+**
+!app/
+!bootstrap/
+!config/
+!database/
+!public/
+!resources/
+!routes/
+!storage/
+!artisan
+!composer.json
+!composer.lock
+
+bootstrap/cache/*.php
+public/hot
+public/storage
+storage/app/**
+storage/framework/**
+storage/logs/**
+!storage/**/.gitignore
