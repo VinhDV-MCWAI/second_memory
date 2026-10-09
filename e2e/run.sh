@@ -61,6 +61,5 @@ mkdir -p e2e/artifacts
 echo "==> Running the journey"
 docker run --rm --network ml_network --user "$(id -u):$(id -g)" -e HOME=/tmp \
   -e E2E_USER="$E2E_USER" -e E2E_PASSWORD="$E2E_PASSWORD" \
-  -e E2E_PUBLIC_URL -e E2E_PUBLIC_UPSTREAM \
   -v "$PWD/e2e/artifacts:/repo/e2e/artifacts" \
   "$IMAGE"

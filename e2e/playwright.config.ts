@@ -1,13 +1,11 @@
 import { defineConfig, devices } from '@playwright/test';
-import { ADMIN_UPSTREAM, ADMIN_URL, PUBLIC_UPSTREAM, PUBLIC_URL } from './env';
+import { ADMIN_UPSTREAM, ADMIN_URL } from './env';
 
 // The browser runs in a container on the Compose network, but the pages must keep the origins
 // the stack is configured for (Sanctum stateful domain, CSRF Referer, NEXT_PUBLIC_API_URL), so
-// Chromium resolves the host URLs to the services instead of rewriting them.
-const hostRules = [`MAP ${new URL(ADMIN_URL).host} ${ADMIN_UPSTREAM}`];
-if (!PUBLIC_URL.startsWith(ADMIN_URL)) {
-  hostRules.push(`MAP ${new URL(PUBLIC_URL).host} ${PUBLIC_UPSTREAM}`);
-}
+// Chromium resolves localhost:81 to nginx instead of rewriting the URLs. The public pages are
+// behind the same nginx (/skills).
+const hostRule = `MAP ${new URL(ADMIN_URL).host} ${ADMIN_UPSTREAM}`;
 
 export default defineConfig({
   testDir: './tests',
@@ -25,7 +23,7 @@ export default defineConfig({
     trace: 'retain-on-failure',
     screenshot: 'only-on-failure',
     navigationTimeout: 60_000,
-    launchOptions: { args: [`--host-resolver-rules=${hostRules.join(',')}`] },
+    launchOptions: { args: [`--host-resolver-rules=${hostRule}`] },
   },
   projects: [{ name: 'chromium', use: { ...devices['Desktop Chrome'] } }],
 });
