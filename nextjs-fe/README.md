@@ -1,138 +1,51 @@
-# Next.js Frontend - My Life Management
+# nextjs-fe — Second Memory admin dashboard
 
-This is a [Next.js](https://nextjs.org) project configured as a **Single Page Application (SPA)** with **full Client-Side Rendering (CSR)**.
+> 🇻🇳 Trang quản trị Skill Ledger: Next.js 16, React 19, render phía client, gọi Laravel API bằng cookie session.
 
-## 🎯 Architecture
+The admin panel of the Skill Ledger: skills and their level history, learning goals, evidence, tags, one search box over all of them, admin accounts and the audit history. Next.js 16 (App Router) with React 19; every page is a client component that talks to the Laravel API with the Sanctum session cookie. In dev it runs in the `ml-nextjs` container and is reached through nginx at <http://localhost:81> (directly: <http://localhost:3456>).
 
-This application is built using:
+> 🇻🇳 Quản lý kỹ năng, lịch sử cấp độ, mục tiêu, bằng chứng, tag, tìm kiếm, tài khoản admin và lịch sử audit. Mọi trang là client component gọi API bằng cookie session. Dev chạy trong container `ml-nextjs`, truy cập qua `http://localhost:81`.
 
-- **Single Page Application (SPA)** - All pages are rendered on the client side
-- **Full Client-Side Rendering (CSR)** - No server-side rendering (SSR) or static site generation (SSG)
-- **Static Export** - Configured with `output: 'export'` in `next.config.ts`
-- **No Node.js Server Required** - Can be deployed to any static hosting (CDN, nginx, etc.)
+| Area  | Libraries                                                                                                  |
+| ----- | ---------------------------------------------------------------------------------------------------------- |
+| Data  | TanStack Query 5, axios (session cookie + `X-XSRF-TOKEN`), types generated from `laravel-api/openapi.json` |
+| Forms | react-hook-form + zod                                                                                      |
+| UI    | shadcn/ui, Tailwind CSS 4                                                                                  |
+| Text  | next-intl (`messages/en.json`)                                                                             |
+| Tests | Vitest 4 (jsdom); the end-to-end journey is in [`e2e/`](../e2e/)                                           |
 
-### Why SPA/CSR?
+## Pages
 
-- ✅ Full control over rendering on the client
-- ✅ Can be deployed as static files
-- ✅ No server runtime required
-- ✅ Works perfectly with nginx proxy
-- ✅ Ideal for applications with authentication and dynamic content
+> 🇻🇳 Các trang. Chưa đăng nhập vào `/admin/*` sẽ bị chuyển về `/login`.
 
-### Single Source of Truth for Docker
+`/login`, then under `/admin`: dashboard, `skills`, `goals`, `evidence`, `tags`, `search`, `admins`. Without the session cookie, `/admin/*` redirects to `/login` (`src/proxy.ts`); the API decides what the account may do (role `owner` writes, `viewer` reads).
 
-Note that all Docker-related configuration (`Dockerfile`, `docker-compose.yml`) is removed from this directory to enforce a single source of truth. The `.dockerignore` remains here as required by the Docker build context. All Docker commands must be run from the root `docker/` directory.
+## Commands
 
-## 🚀 Getting Started
-
-### Development (Docker)
-
-The recommended way to run this application is via Docker:
+> 🇻🇳 Lệnh, chạy từ thư mục gốc repo.
 
 ```bash
-cd ../docker
-docker compose up ml-nextjs
+make fe-lint            # ESLint, both Next.js apps
+make fe-typecheck       # tsc --noEmit
+make fe-test            # Vitest
+make fe-format          # Prettier
+make openapi            # after an API change: regenerate openapi.json and src/shared/types/openapi.d.ts
+make e2e                # Playwright journey through nginx
 ```
 
-The application will be available at:
+Single commands inside the container: `docker exec ml-nextjs pnpm <script>` (see `package.json`). After a `pnpm-lock.yaml` change, rebuild the dev image (`docker compose up -d --build ml-nextjs` from `docker/`).
 
-- Via nginx: `http://localhost:81`
-- Direct access: `http://localhost:3456`
+> 🇻🇳 Đổi `pnpm-lock.yaml` thì phải build lại image dev.
 
-### Development (Local)
+## Build
 
-If you want to run locally without Docker:
+> 🇻🇳 Bản production: Next.js `standalone` chạy bằng Node sau nginx.
 
-```bash
-npm install
-npm run dev
-```
+Production uses `output: 'standalone'`: a small Node server (`node server.js`) behind nginx, built by `docker/nextjs/Dockerfile` (`--build-arg APP=nextjs-fe --target production`, see `make tf-images`). The build bakes `NEXT_PUBLIC_API_URL=/api`, so the same image works in every environment that serves the API on the same origin.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+> 🇻🇳 Build dùng `NEXT_PUBLIC_API_URL=/api` (cùng origin), nên một image dùng được cho mọi môi trường.
 
-**Note**: The dev script uses `--webpack` flag for better compatibility with static export mode.
+## More
 
-## 📁 Project Structure
-
-```
-src/
-├── app/              # App router pages
-├── components/       # Reusable UI components
-├── hooks/           # Custom React hooks
-├── redux/           # Redux store and slices
-├── lib/             # Utility functions
-└── styles/          # Global styles
-```
-
-## 🔧 Configuration
-
-### Next.js Config
-
-The application is configured in `next.config.ts`:
-
-```typescript
-{
-  output: 'export',        // Static export mode
-  images: {
-    unoptimized: true,     // Disable image optimization
-  }
-}
-```
-
-### Environment Variables
-
-Create a `.env.local` file for local development:
-
-```env
-NEXT_PUBLIC_API_URL=http://localhost:81/api
-```
-
-## 🏗️ Building for Production
-
-To build the static files:
-
-```bash
-npm run build
-```
-
-This will generate static HTML/CSS/JS files in the `out/` directory, which can be deployed to:
-
-- Any static hosting service (Vercel, Netlify, etc.)
-- CDN (CloudFront, Cloudflare, etc.)
-- Web servers (nginx, Apache, etc.)
-
-## 🐳 Docker Development
-
-The Docker setup includes:
-
-- **Pre-installed dependencies** in the image for fast startup
-- **Hot-reload support** with file watching polling
-- **Smart dependency caching** - only updates when package.json changes
-- **Optimized volume mounts** for better performance
-
-Performance metrics:
-
-- Container startup: < 3 seconds
-- Container restart: ~1.5 seconds
-- Server ready: ~2 seconds
-
-## 📚 Learn More
-
-To learn more about Next.js and SPA development:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API
-- [Next.js Static Exports](https://nextjs.org/docs/app/building-your-application/deploying/static-exports) - learn about static export mode
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial
-
-## 🔐 Authentication
-
-Default credentials for development:
-
-- Username: `root`
-- Password: `12345678`
-
-## 📝 Notes
-
-- This application uses **webpack mode** instead of Turbopack for better compatibility with static export
-- File watching uses **polling** in Docker environments for reliable hot-reload
-- All rendering happens on the client - no server-side code execution
+- Layout, API contract and gotchas: [CLAUDE.md](CLAUDE.md).
+- Conventions: [.claude/rules/frontend-nextjs.md](../.claude/rules/frontend-nextjs.md), [handbook 05](../docs/handbook/05-coding.md).
