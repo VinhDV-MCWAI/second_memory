@@ -252,6 +252,8 @@ Records written in P3 so far: REQ-002 (Ready), RFC-002 (Approved; slice status i
 
 - 2026-10-09 — [lane api] BUG-04 done: 2f2391fb — search_tsv recreated with weights (A title/name, B summary/category, C description, migration 2026_10_09_100002, up/down/up on testing, dev migrated) + ts_rank weights {0.05,0.1,0.2,1.0} (LedgerConst::SEARCH_RANK_WEIGHTS): QA pair 0.984 vs 0.991 → 0.84 vs 0.99; new test title-above-summary; ADR-0009 amendment; make verify exit 0 (backend 167, pytest 63)
 
+- 2026-10-09 — [lane release] P3-18 done: 5bee1ca4, local tag v2.1.0 (owner pushes) — release notes docs/releases/v2.1.0.md (highlights per story, breaking changes: media API / queue / Reverb gone, nginx 8080 inside; 7 migrations + upgrade order; before/after: routes 20 → 34, tests 79 → 167 backend / 53 → 74 FE / 63 pytest / 1 E2E, API image 1799 → 242 MB, 10-user load 55–69 → 116–134 req/s, search p95 292–399 → 123–144 ms); acceptance report §7 fixes of BUG-01…04; retro P3 (3 changes → DOC-03)
+
 ## Next step
 
 Since 2026-10-08 work runs in **parallel lanes**: the live task list and who is on what is [BOARD.md](BOARD.md) (`scripts/lane.sh status`); start a conversation with `/lane`. When this file and the board disagree on status, the board wins. Lanes `public` (P3-12) and `perf` (P3-16) were already in progress when the board was created.
