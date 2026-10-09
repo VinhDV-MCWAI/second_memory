@@ -198,6 +198,8 @@ Records written in P3 so far: REQ-002 (Ready), RFC-002 (Approved; slice status i
 
 - 2026-10-09 — [lane infra] P4-01 done: 66bb503, 6a64d77 — ADR-0011: Compose stays dev (ml-* names, hot reload); Terraform (OpenTofu-compatible) owns staging + prod-like (sm-<env>-*, HTTPS-only *.sm.localhost:8443/9443, ≤1.5 GB each, label sm.env); infra/modules/{stack,storage} + live/<env>/{stack,storage} applied in order, local state (secrets inside, never in git/backup), SOPS+age via sops exec-env; keep pinned pgsty/minio (app has no S3 caller) with revisit triggers; P4-03 must make FE images runtime-configured (same-origin /api); backlog P4-03/07/09 updated
 
+- 2026-10-09 — [lane api] API-06 done: 3815730 — ATTR_PERSISTENT from DB_PERSISTENT only (no PHP_SAPI), phpunit.xml forces false; real config:cache now bakes [12 => true] (was false); PersistentConnectionConfigTest (4 tests: suite off, config file in CLI unset/true/false). make verify exit 0 (backend 166, Vitest 70; one cold-start Vitest timeout on the 1st run, green on re-run). P4-03 may build caches; PERF-05 (lane perf) re-measures the cached variants
+
 ## Next step
 
 Since 2026-10-08 work runs in **parallel lanes**: the live task list and who is on what is [BOARD.md](BOARD.md) (`scripts/lane.sh status`); start a conversation with `/lane`. When this file and the board disagree on status, the board wins. Lanes `public` (P3-12) and `perf` (P3-16) were already in progress when the board was created.
