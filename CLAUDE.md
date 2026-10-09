@@ -28,11 +28,14 @@ make fresh       # DEV ONLY: wipe, re-migrate and seed the dev DB (asks first)
 
 Use the `/verify` skill to run the full check suite before declaring work done.
 
-## Engineering Lab roadmap
+## Plan and way of working (since 2026-10-09)
 
-The project is being repurposed into an Engineering Lab ([ADR-0001](docs/adr/0001-engineering-lab-direction.md)). The single plan is [docs/plan/](docs/plan/) (analysis, roadmap, backlog); the handoff log for resuming work is [.claude/lab/PROGRESS.md](.claude/lab/PROGRESS.md) — read it first and update it after every task. Work items with the `/lab-task` skill. **Several conversations run in parallel** on one branch: tasks are split into lanes on [.claude/lab/BOARD.md](.claude/lab/BOARD.md), taken with the `/lane` skill under the rules in [.claude/rules/parallel-lanes.md](.claude/rules/parallel-lanes.md) (claim → work in your lane's paths → `scripts/lane.sh commit` your own paths → `scripts/lane.sh done`). Docs conventions (bilingual EN + `> 🇻🇳` VI lines, IDs, templates): [docs/README.md](docs/README.md).
+The slim-down "Engineering Lab" direction is reversed ([ADR-0012](docs/adr/0012-restore-features-dev-first.md)): upgrade from the current code and bring back dynamic permissions (spatie/laravel-permission), MinIO media + uploads, end-user / department / policy management. **Dev environment only**; staging, production, Terraform (`infra/`), load tests (`perf/`) and automatic CI/CD are paused.
 
-The 2026-10 refactor ([.claude/refactor/PLAN.md](.claude/refactor/PLAN.md)) is **frozen**; its open items moved into the roadmap.
+- Start every session with [.claude/lab/PROGRESS.md](.claude/lab/PROGRESS.md), then the plan in [docs/plan/](docs/plan/) (goals and workflow, roadmap, backlog) and [docs/dev-guide.md](docs/dev-guide.md) (build, test, fix on dev).
+- Workflow: request → proposal with benefits and harms against the owner's goals → owner confirms → implement → quick test. Tasks marked **[XÁC NHẬN]** on the board stop after the proposal. Never remove or replace a feature, delete or move folders, add a dependency, or change auth / permissions / DB structure without the owner's explicit yes.
+- Track work with `scripts/lane.sh` on [.claude/lab/BOARD.md](.claude/lab/BOARD.md) (claim → work → `scripts/lane.sh commit` → `scripts/lane.sh done`); rules in [.claude/rules/parallel-lanes.md](.claude/rules/parallel-lanes.md). The `/lab-task` skill walks through one task.
+- Docs: **Vietnamese only**, plain language, full feature names instead of IDs (conventions in [docs/plan/01-goals-and-workflow.md](docs/plan/01-goals-and-workflow.md)). Older English + `> 🇻🇳` docs are rewritten when touched. The old plans are in [docs/archive/engineering-lab/](docs/archive/engineering-lab/).
 
 ## Global rules
 

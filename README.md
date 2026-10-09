@@ -106,7 +106,7 @@ Open <http://localhost:81> (admin) and <http://localhost:81/skills> (public site
 
 > 🇻🇳 Tài liệu và tiến độ.
 
-- Start at [docs/README.md](docs/README.md): the plan ([analysis](docs/plan/01-analysis.md), [roadmap](docs/plan/02-roadmap.md), [backlog](docs/plan/03-backlog.md)), the [handbook](docs/handbook/README.md) (how work is done) and the writing conventions.
+- Kế hoạch (tiếng Việt): [mục tiêu và cách làm việc](docs/plan/01-goals-and-workflow.md), [lộ trình](docs/plan/02-roadmap.md), [danh sách việc](docs/plan/03-backlog.md). Chạy và sửa lỗi trên máy dev: [docs/dev-guide.md](docs/dev-guide.md).
 - Current state and the live task list: [.claude/lab/PROGRESS.md](.claude/lab/PROGRESS.md) and [.claude/lab/BOARD.md](.claude/lab/BOARD.md).
 - Releases: [docs/releases/](docs/releases/) (`v1.0.0` baseline → `v2.0.0` slim-down; `v2.1.0` Skill Ledger in progress, then P4 infrastructure as code).
 - Git flow: `feature/*` or `refactor/*` → PR to `developer` → PR to `main`, Conventional Commits ([handbook 04](docs/handbook/04-git.md)).

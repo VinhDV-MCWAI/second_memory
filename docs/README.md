@@ -10,14 +10,17 @@ This folder is the single home for everything that is not code: the plan, the wa
 
 > 🇻🇳 Bắt đầu đọc từ đây.
 
-| # | Document | What it answers |
+| # | Tài liệu | Trả lời câu hỏi |
 |---|---|---|
-| 1 | [plan/01-analysis.md](plan/01-analysis.md) | Where are we, what is wrong, what to keep / remove / change |
-| 2 | [plan/02-roadmap.md](plan/02-roadmap.md) | The phases, their goals, outputs and "done" criteria |
-| 3 | [plan/03-backlog.md](plan/03-backlog.md) | The concrete task list with IDs and status |
-| 4 | [adr/0001-engineering-lab-direction.md](adr/0001-engineering-lab-direction.md) | Why the project changed direction |
-| 5 | [architecture/current.md](architecture/current.md) | How the system is built and runs today (containers, API, auth, data, environments) |
-| 6 | [architecture/as-is.md](architecture/as-is.md) | What the system looked like before the change (`v1.0.0`) |
+| 1 | [plan/01-goals-and-workflow.md](plan/01-goals-and-workflow.md) | Mục tiêu, luồng làm việc, quy ước viết tài liệu |
+| 2 | [plan/02-roadmap.md](plan/02-roadmap.md) | Các giai đoạn và khi nào thì xong |
+| 3 | [plan/03-backlog.md](plan/03-backlog.md) | Danh sách việc và trạng thái |
+| 4 | [dev-guide.md](dev-guide.md) | Chạy, test, sửa lỗi trên máy dev |
+| 5 | [adr/0012-restore-features-dev-first.md](adr/0012-restore-features-dev-first.md) | Vì sao đổi hướng ngày 2026-10-09 |
+| 6 | [plan/04-ai-prompts.md](plan/04-ai-prompts.md) | Prompt giao việc cho AI: làm tiếp, xác nhận đề xuất, kiểm tra tiến độ, nghiệm thu |
+| 7 | [architecture/current.md](architecture/current.md) | Hệ thống đang chạy thế nào (container, API, đăng nhập, dữ liệu) |
+
+> Các phần bên dưới vẫn theo quy ước cũ (song ngữ); sẽ viết lại ở việc "Rút gọn docs/" (NEN-04). Quy ước mới: chỉ tiếng Việt, xem mục "Quy ước viết tài liệu" trong [01-goals-and-workflow.md](plan/01-goals-and-workflow.md).
 
 ## Folder map
 
