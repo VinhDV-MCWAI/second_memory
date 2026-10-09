@@ -153,6 +153,26 @@ backup: ## Back up PostgreSQL + MinIO
 restore: ## Restore from a backup (see backup/README.md)
 	bash backup/restore.sh
 
+##@ Terraform environments (ADR-0011: staging / prod-like; dev stays on Compose)
+
+TF_ENV := $(or $(env),prod-like)
+
+.PHONY: tf-images
+tf-images: ## Build the production images from committed code (make tf-images [ref=<git ref>])
+	infra/build-images.sh $(or $(ref),HEAD)
+
+.PHONY: tf-plan
+tf-plan: ## Terraform plan (make tf-plan [env=prod-like] [tag=<image tag>])
+	TAG=$(tag) scripts/lane.sh run infra/tf.sh $(TF_ENV) plan
+
+.PHONY: tf-apply
+tf-apply: ## Create / update an environment; shows the plan and asks (make tf-apply [env=…] [tag=…])
+	TAG=$(tag) scripts/lane.sh run infra/tf.sh $(TF_ENV) apply
+
+.PHONY: tf-destroy
+tf-destroy: ## Remove an environment and its volumes; asks first (make tf-destroy [env=…])
+	TAG=$(tag) scripts/lane.sh run infra/tf.sh $(TF_ENV) destroy
+
 ##@ Help
 
 .PHONY: help
