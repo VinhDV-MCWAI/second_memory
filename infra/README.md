@@ -37,9 +37,27 @@ Open `http://localhost:9443` (prod-like). Nothing is installed on the host: Terr
 
 > 🇻🇳 Cấu hình nginx / PostgreSQL / Redis dùng chung với Compose (đọc bằng `file()`, đổi tên upstream `ml-*` thành `sm-<env>-*`). Migration chạy trong container một lần trước php-fpm. Secret do provider `random` sinh và nằm trong state cho tới P4-09 — state là secret, không commit, không backup. Mất state: xoá theo nhãn rồi apply lại.
 
+## Production images
+
+Built by `build-images.sh` from the `production` targets of `docker/laravel/Dockerfile` and `docker/nextjs/Dockerfile` (P4-03):
+
+- **API:** PHP extensions are compiled and their headers / compilers removed in one layer; Composer installs in a separate `vendor` stage and never reaches the final image; files are owned by `laravel` at copy time (the old `chown -R` layer duplicated 291 MB). The entrypoint runs `php artisan optimize` (config, events, routes, views) **at start**, from the container's own environment, then `exec`s the command — so caches always match the environment, and the `migrate` container builds them too. Dev keeps no caches.
+- **Admin and docs:** the build bakes `NEXT_PUBLIC_API_URL=/api` (same origin): the browser calls `/api` on whatever host serves the page, so one tag runs in every environment. The docs app calls the API server-side through `API_INTERNAL_URL` (`http://sm-<env>-proxy:8080/api`).
+
+| Image | Before | After (P4-03, `9c64d56`) |
+|---|---|---|
+| `sm-api` | 1 600 MB (v2.0.0: 1 802 MB) | **493 MB** (target ≤ 500 MB; ~285 MB once API-08 drops the unused `google/apiclient`, 210 MB of `vendor/`) |
+| `sm-nextjs-fe` | 307 MB | 307 MB (base image + standalone bundle, nothing left to cut cheaply) |
+| `sm-nextjs-docs` | – (no production build) | 300 MB |
+| dev `ml-php` (side effect, same base stage) | 937 MB | 252 MB |
+
+Checked on a throwaway network with the dev nginx config: `/health` 200, `/api/public/skills` 200, `/api/sanctum/csrf-cookie` 204, `/docs` 200, admin login page 200, no `localhost:8000` left in the admin bundle; the docs `/skills` list shows a public skill and hides a private one (its detail page 404). `/skills` through the proxy waits for OPS-04.
+
+> 🇻🇳 Image production (P4-03): API biên dịch extension rồi xoá header/trình biên dịch trong cùng một layer, Composer chạy ở stage riêng, file gán owner ngay khi copy (bỏ layer `chown` 291 MB); entrypoint chạy `php artisan optimize` **lúc container khởi động** theo env của chính nó rồi mới `exec` lệnh, nên cache luôn khớp môi trường; dev không có cache. Admin và docs nhúng `NEXT_PUBLIC_API_URL=/api` (cùng origin) nên một tag chạy được ở mọi môi trường; docs gọi API phía server qua `API_INTERNAL_URL`. API 1,6 GB → 493 MB (còn ~285 MB sau API-08 gỡ `google/apiclient` không dùng), docs 300 MB, ml-php dev 937 → 252 MB. `/skills` qua proxy chờ OPS-04.
+
 ## Limits until later P4 tasks
 
-- **P4-03:** the docs app has no production build yet (`docs_enabled = false`, `/docs` answers 502); the admin app bakes `NEXT_PUBLIC_API_URL` at build time; the API image is ~1.6 GB and builds no Laravel caches.
+- **OPS-04:** nginx has no `/skills` location yet, so the public pages answer 404 through the proxy (they work on the docs container).
 - **P4-06:** no MinIO in these environments yet. **P4-07:** only `prod-like` has a root. **P4-08:** HTTP on 9443, no TLS, no `*.sm.localhost` names, so the admin login is not set up for this origin.
 
-> 🇻🇳 Giới hạn: docs chưa có bản build production (P4-03), FE admin còn nhúng URL API lúc build; chưa có MinIO (P4-06); mới có root `prod-like` (P4-07); chưa có TLS và tên miền `*.sm.localhost`, nên đăng nhập admin chưa cấu hình cho origin này (P4-08).
+> 🇻🇳 Giới hạn: nginx chưa có route `/skills` (OPS-04); chưa có MinIO (P4-06); mới có root `prod-like` (P4-07); chưa có TLS và tên miền `*.sm.localhost`, nên đăng nhập admin chưa cấu hình cho origin này (P4-08).
