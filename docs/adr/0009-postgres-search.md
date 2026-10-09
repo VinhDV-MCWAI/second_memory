@@ -7,7 +7,7 @@
 | Status | Accepted |
 | Date | 2026-10-08 |
 | Deciders | TL |
-| Related | [REQ-002](../requirements/REQ-002-skill-ledger.md) US-5, NFR; [RFC-002](../design/RFC-002-skill-ledger.md) §9 Q2; [spike](../reports/spikes/search-2026-10-08/README.md); research note [`docs/search.md`](../search.md); backlog P3-04, P3-08 |
+| Related | [REQ-002](../requirements/REQ-002-skill-ledger.md) US-5, NFR; [RFC-002](../design/RFC-002-skill-ledger.md) §9 Q2; [spike](../reports/spikes/search-2026-10-08/README.md); research note [`docs/search.md`](../archive/learning/search-research.md); backlog P3-04, P3-08 |
 
 ## Context
 

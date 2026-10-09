@@ -64,7 +64,7 @@ Status: `todo` → `doing` → `done` | `cut` (with reason). When GitHub Project
 
 ## P3 — Skill Ledger
 
-Refined in P3-00 (2026-10-08). Same lifecycle as P2: requirement → design → small vertical slices → QA / PO acceptance → release. Inputs carried over from P2: the open media API decision (RFC-001 §3), the unused framework tables `users` / `password_reset_tokens` and the fake dashboard numbers ([v2.0.0 known issues](../releases/v2.0.0.md#known-issues)), and the research note [docs/search.md](../search.md).
+Refined in P3-00 (2026-10-08). Same lifecycle as P2: requirement → design → small vertical slices → QA / PO acceptance → release. Inputs carried over from P2: the open media API decision (RFC-001 §3), the unused framework tables `users` / `password_reset_tokens` and the fake dashboard numbers ([v2.0.0 known issues](../releases/v2.0.0.md#known-issues)), and the research note [docs/search.md](../archive/learning/search-research.md).
 
 > 🇻🇳 Đã chi tiết hoá ở P3-00. Cùng vòng đời với P2: yêu cầu → thiết kế → các lát dọc nhỏ → QA / PO nghiệm thu → release. Việc tồn từ P2: quyết định media API, bảng mặc định không dùng, số liệu giả trên dashboard, ghi chú nghiên cứu search.
 
@@ -88,7 +88,7 @@ Refined in P3-00 (2026-10-08). Same lifecycle as P2: requirement → design → 
 | P3-14 | Python Obsidian importer: only `publish: true` notes, upsert by external key, `--dry-run`, pytest; idempotency test (second run changes nothing) | CLI + tests | done (last part P3-14c: 1ba8649, 7219d35 — make import vault=… [dry=1] (runtime image, vault read-only, ml_network), importer-lint in make lint, importer-test in make verify; runbook docs/runbooks/ledger-import.md; make import run twice against the real API on the perf DB: 2nd run unchanged 2 / 0 created-updated-hidden; make verify exit 0 (backend 160, FE 70, importer 63). Not run on the dev stack: dev DB has no owner account (runbook precondition, owner step)) |
 | P3-15 | E2E (Playwright), critical journey only: login → create skill → add evidence → find it by search → see it on the public page; a `make` target (CI job when CI is re-enabled) | E2E + `make` target | done (5105804, 8b61695, f76c261 — make e2e: Playwright 1.63 container on ml_network, 1 journey (login → public + private skill → evidence → header search → public page shows it, private slug 404) passes in 11–30 s, 5 runs green; throwaway e2e_owner + E2E-prefixed rows + their audit_log deleted after each run; make verify exit 0 (backend 166, Vitest 70, importer 63). Lockfile: next now resolves the optional peer @playwright/test (npm package only, no browsers) — rebuild Next.js images on the next lockfile rebuild) |
 | P3-16 | First k6 baseline: smoke + load on read / search / public endpoints; p50 / p95 / p99, RPS, error rate recorded | `docs/reports/perf/` baseline | done (2af8d88, d10b7c9 — k6 smoke + load on the REQ-002 seed: 0 % errors; at 10 users p95 search 292–295 ms (target 300, just), others 207–238 ms; ~66–69 req/s capped by ~28 ms per-request overhead outside the queries (PERF-01). Report docs/reports/perf/2026-10-08-baseline.md) |
-| P3-17 | QA sign-off (`/simulate-qa`) and PO acceptance (`/simulate-po`) against REQ-002; bugs filed and fixed | Sign-off | todo |
+| P3-17 | QA sign-off (`/simulate-qa`) and PO acceptance (`/simulate-po`) against REQ-002; bugs filed and fixed | Sign-off | doing |
 | P3-18 | Release `v2.1.0` with notes, before/after numbers, retro | Release + retro | todo |
 
 ## P4 — Infrastructure as Code
