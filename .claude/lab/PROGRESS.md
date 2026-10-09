@@ -246,6 +246,8 @@ Records written in P3 so far: REQ-002 (Ready), RFC-002 (Approved; slice status i
 
 - 2026-10-09 — [lane importer] BUG-01 done: f008deb8 — DEFAULT_API_URL http://ml-nginx → http://ml-nginx:8080 (+ README, runbook, test_cli); ruff/mypy clean, pytest 63 passed; make import dry=1 without LEDGER_API_URL now reaches the API (fake token → 401 instead of connection refused)
 
+- 2026-10-09 — [lane fe] BUG-03 done: a4d0a5d0 — header: name = first + last name (else user_name), initials avatar, no github.com/shadcn.png, menu shows @user_name · role and Logout now calls logout() (was a dead item, like Profile / Settings, removed); notification bell + Notification type + 5 unused message keys removed; header.test.tsx 4 tests; make verify exit 0 (backend 166, Vitest 74, pytest 63), make e2e green
+
 ## Next step
 
 Since 2026-10-08 work runs in **parallel lanes**: the live task list and who is on what is [BOARD.md](BOARD.md) (`scripts/lane.sh status`); start a conversation with `/lane`. When this file and the board disagree on status, the board wins. Lanes `public` (P3-12) and `perf` (P3-16) were already in progress when the board was created.
