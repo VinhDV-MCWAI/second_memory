@@ -42,7 +42,6 @@ Records written in P3 so far: REQ-002 (Ready), RFC-002 (Approved; slice status i
 13. **Backups**: until 2026-10-08 `backup.sh` deleted its archive even when the upload failed, and this host has no rclone — so no backup has actually been kept. Install and configure rclone with the remotes in `RCLONE_REMOTES` (or run `bash backup/backup.sh --local-only` and copy the archive off the machine), then schedule it daily (RPO 24 h). Runbook: [backup-restore.md](../../docs/runbooks/backup-restore.md).
 14. **Importer on the dev stack** (P3-14c): the dev DB had no owner when it was done; run [ledger-import.md](../../docs/runbooks/ledger-import.md) once against your vault.
 15. **First Terraform apply (P4-05)**: Claude may not run `terraform apply` / `destroy` (auto mode blocks it), so the Make targets show the plan and ask. Since P4-03 the stack also runs `sm-nextjs-docs`, which has no `6c0b542f` tag: run `make tf-images` (builds `sm-api` / `sm-nextjs-fe` / `sm-nextjs-docs` from HEAD), then `make tf-apply`, `curl localhost:9443/health`, `curl localhost:9443/api/public/skills`, `make tf-plan` (expect "No changes"), optionally `make tf-destroy` + `make tf-apply` again; then tell the lane `infra` conversation to close P4-05. Details: [infra/README.md](../../infra/README.md).
-16. Root `CLAUDE.md` has a stray `r` before its first heading (`r# CLAUDE.md`, uncommitted, not from a lane task): delete it or tell the lane that made it.
 
 ## Environment gotchas (read before running anything)
 
