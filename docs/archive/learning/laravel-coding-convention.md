@@ -1,3 +1,7 @@
+> **Learning note (archived 2026-10-09, HK-01; was `laravel-api/docs/CodingConvention.md`).** The owner's first Laravel coding convention (Master / Management / History modules, interfaces per repository, CRUD generator). The current rules are [`.claude/rules/backend-laravel.md`](../../../.claude/rules/backend-laravel.md), [handbook 05](../../handbook/05-coding.md) and [`laravel-api/CLAUDE.md`](../../../laravel-api/CLAUDE.md); the modules it describes were removed in RFC-001. Kept unchanged otherwise.
+>
+> 🇻🇳 **Ghi chú học tập, đã lưu trữ (2026-10-09).** Quy ước code Laravel đầu tiên của owner. Quy tắc hiện tại: `.claude/rules/backend-laravel.md`, handbook 05 và `laravel-api/CLAUDE.md`; các module nó mô tả đã bị xoá trong RFC-001. Nội dung còn lại giữ nguyên.
+
 # Quy ước mã hóa cho dự án Laravel API
 
 ## Mục lục

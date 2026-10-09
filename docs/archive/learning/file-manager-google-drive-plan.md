@@ -1,3 +1,7 @@
+> **Learning note (archived 2026-10-09, HK-01; was `laravel-api/docs/manager-file.md`).** A plan for storing media on Google Drive through the API. Never built: media went to MinIO, and the media API itself was removed in [ADR-0007](../../adr/0007-remove-media-api.md); the unused `google/apiclient` package went in API-08. Kept unchanged otherwise.
+>
+> 🇻🇳 **Ghi chú học tập, đã lưu trữ (2026-10-09).** Kế hoạch lưu media lên Google Drive qua API. Chưa từng làm: media dùng MinIO, rồi API media bị xoá ở ADR-0007; package `google/apiclient` bị gỡ ở API-08. Nội dung còn lại giữ nguyên.
+
 Dưới đây là **PLAN triển khai đầy đủ, rõ ràng, theo thứ tự thực hiện** cho mô hình:
 **Next.js (FE) → Laravel API → Google Drive (Storage)**
 

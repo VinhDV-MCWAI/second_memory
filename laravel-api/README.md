@@ -1,190 +1,54 @@
-# Laravel API - My Life Management
+# laravel-api — Second Memory REST API
 
-## 📑 Giới thiệu
+> 🇻🇳 REST API của Second Memory (Skill Ledger): Laravel 13, PHP 8.5, PostgreSQL, Redis, Sanctum.
 
-Backend API được xây dựng bằng Laravel 8+, cung cấp các API RESTful cho hệ thống My Life Management, với tính năng quản lý phân quyền nâng cao và hệ thống tự động tạo API.
+The API behind the admin dashboard, the public site and the Obsidian importer. Laravel 13 on PHP 8.5 (php-fpm), PostgreSQL 16, Redis 7 for sessions and cache, Laravel Sanctum for auth. It runs only in Docker: the container is `ml-php`, reached through nginx at `http://localhost:81/api`.
 
-## 🛠️ Yêu cầu môi trường
+> 🇻🇳 API cho trang quản trị, trang công khai và công cụ import. Chỉ chạy trong Docker (container `ml-php`), truy cập qua nginx tại `http://localhost:81/api`.
 
-- **Nginx**: Phiên bản x
-- **PHP**: Phiên bản 8.2+
-- **PostgreSQL**: Phiên bản 15+
-- **Redis**: Phiên bản 5.0+
-- **Composer**: Phiên bản 2.0+
+## Endpoints
 
-## 🚀 Hướng dẫn cài đặt
+> 🇻🇳 Các nhóm endpoint. Hợp đồng đầy đủ nằm trong `openapi.json`.
 
-### 1. Thiết lập môi trường
+| Group | Path | Access |
+|---|---|---|
+| Auth | `GET /api/sanctum/csrf-cookie`, `POST /api/admin/credential/login`, `logout`, `GET credential/me` | session cookie (Sanctum SPA, [ADR-0004](../docs/adr/0004-sanctum-spa-cookie-auth.md)) |
+| Admin accounts | `/api/admin/admin-mst/*` | `owner` writes, `viewer` reads ([ADR-0005](../docs/adr/0005-owner-viewer-roles.md)) |
+| Skill Ledger | `/api/admin/{skill,skill-level,learning-goal,evidence,tag}/*`, `search`, `dashboard/summary` | same |
+| Audit log | `GET /api/admin/audit-log/list` | read-only ([ADR-0006](../docs/adr/0006-audit-log.md)) |
+| Import | `POST /api/admin/evidence/import` | API token with ability `evidence:import` ([ADR-0010](../docs/adr/0010-python-importer-tooling.md)) |
+| Public | `GET /api/public/skills`, `GET /api/public/skills/{slug}` | anyone, rate-limited per IP |
 
-#### Trong Docker (Khuyến nghị)
+Every response uses one envelope, `{ "data": …, "error": { "status", "code", "messages" } }`. The contract is generated from the code into [openapi.json](openapi.json) ([ADR-0008](../docs/adr/0008-code-first-openapi-contract.md)); the tests validate every response against it and `make openapi` regenerates it with the admin FE types.
 
-```bash
-# Toàn bộ cấu hình Docker (như Dockerfile, docker-entrypoint.sh, docker-compose.yml)
-# được quản lý tập trung và duy nhất tại thư mục `docker/` ở gốc dự án (single source of truth).
-# Bạn cần chạy Docker từ thư mục đó thay vì trong project này.
-cd ../docker
-docker compose up -d ml-php
-```
+> 🇻🇳 Mọi response có cùng một envelope. `openapi.json` sinh từ code; test kiểm tra từng response theo nó; `make openapi` sinh lại cả spec và type cho FE.
 
-#### Trên máy local
+## Working on it
 
-```bash
-# Clone dự án (nếu chưa có)
-git clone https://github.com/WAIMC/my_life_management.git
-cd my_life_management/laravel-api
-
-# Cài đặt dependencies
-composer install
-
-# Tạo file .env
-cp .env.example .env
-php artisan key:generate
-```
-
-### 2. Cấu hình cơ sở dữ liệu
-
-Mở file `.env` và cập nhật thông tin kết nối:
+> 🇻🇳 Làm việc với API. Chạy từ thư mục gốc repo.
 
 ```bash
-# Kết nối trong Docker
-DB_CONNECTION=pgsql
-DB_HOST=ml-postgres
-DB_PORT=5432
-DB_DATABASE=ml_pg_db
-DB_USERNAME=ml_pg_user
-DB_PASSWORD=ml_pg_password
-
-# Kết nối từ local vào Docker
-# DB_CONNECTION=pgsql
-# DB_HOST=localhost
-# DB_PORT=5502
-# DB_DATABASE=ml_pg_db
-# DB_USERNAME=ml_pg_user
-# DB_PASSWORD=ml_pg_password
+make up                         # start the stack; an empty DB is migrated and seeded on start
+make test f=Skill               # PHPUnit on the separate `testing` database
+make lint && make analyse       # Pint (PSR-12) and Larastan level 6
+make openapi                    # after changing a response: regenerate the spec and FE types
+make migrate                    # apply new migrations to the dev database
+docker exec ml-php php artisan route:list --path=api
+docker exec ml-php php artisan ledger:import-token <user_name>   # mint the importer token (printed once)
 ```
 
-### 3. Cấu hình Redis
+The dev seed creates the local-only owner `root@gmail.com` / `12345678` (`database/seeders/RootAccountSeeder.php`).
 
-```bash
-# Kết nối Redis trong Docker
-REDIS_CLIENT=predis
-REDIS_HOST=ml-redis
-REDIS_PORT=6379
-REDIS_PASSWORD=ml_redis_password
+> 🇻🇳 Seed dev tạo tài khoản owner chỉ dùng local: `root@gmail.com` / `12345678`.
 
-# Kết nối Redis từ local vào Docker
-# REDIS_CLIENT=predis
-# REDIS_HOST=localhost
-# REDIS_PORT=6601
-# REDIS_PASSWORD=ml_redis_password
-```
+## Code layout
 
-### 4. Xác thực
+> 🇻🇳 Cấu trúc code: Route → Middleware → Controller → FormRequest → Service → Repository → Model.
 
-Admin SPA dùng Laravel Sanctum (session cookie + CSRF), không cần tạo khóa riêng; xem `docs/adr/0004-sanctum-spa-cookie-auth.md`.
+`Route → Middleware → Controller → FormRequest → Service → Repository → Model`, grouped by module: `Master` (admin accounts), `Ledger` (Skill Ledger), `Audit`, `Public`. Settings come from the `laravel-api/.env` that `make setup` generates from [.env.example](.env.example).
 
-### 5. Chạy Migrations
+- Conventions: [.claude/rules/backend-laravel.md](../.claude/rules/backend-laravel.md) and [handbook 05](../docs/handbook/05-coding.md).
+- Architecture details, HTTP contract and gotchas: [CLAUDE.md](CLAUDE.md).
+- Design of the Skill Ledger: [RFC-002](../docs/design/RFC-002-skill-ledger.md); search: [ADR-0009](../docs/adr/0009-postgres-search.md).
 
-```bash
-# Di chuyển tất cả bảng
-php artisan migrate
-
-# Rollback tất cả nếu cần
-php artisan migrate:rollback
-```
-
-### 6. Khởi tạo dữ liệu ban đầu
-
-```bash
-php artisan db:seed
-```
-
-## 📋 Quản lý quyền
-
-Quản lý quyền dựa trên vai trò (Role-Based):
-
-- Mỗi tài khoản được gán một hoặc nhiều vai trò
-- Mỗi vai trò chịu trách nhiệm cho một số API cụ thể
-- Các API được nhóm thành các tính năng (feature) để dễ quản lý
-
-Lớp phân quyền theo phòng ban đã bị xoá (RFC-001 slice 4); RBAC sẽ được thay bằng hai vai trò `owner` / `viewer` ở slice 8.
-
-## 📂 Cấu trúc thư mục
-
-```
-laravel-api/
-├── app/                 # Logic chính của ứng dụng
-│   ├── Console/         # Commands và tasks
-│   ├── Constants/       # Các hằng số
-│   ├── Enums/           # Enumerations
-│   ├── Http/            # Controllers, Middlewares, Requests
-│   ├── Interfaces/      # Interfaces
-│   ├── Models/          # Eloquent models
-│   ├── Providers/       # Service providers
-│   ├── Repositories/    # Repository pattern
-│   ├── Rules/           # Validation rules
-│   ├── Services/        # Business logic
-│   ├── Traits/          # Traits
-│   └── Utilities/       # Helper utilities
-├── auto_script/         # Auto-generator scripts
-│   ├── run_generator.sh
-│   ├── fix_permissions.sh
-│   └── ...
-├── bootstrap/           # Application bootstrap
-├── config/              # Configuration files
-├── database/            # Migrations, factories, seeders
-│   ├── factories/
-│   ├── migrations/
-│   ├── schema/          # Schema definitions
-│   └── seeders/
-├── public/              # Publicly accessible files
-├── resources/           # Views, assets, language files
-├── routes/              # Route definitions
-│   ├── api_generated.php # Auto-generated routes
-│   ├── api.php          # API routes
-│   └── web.php          # Web routes
-├── storage/             # Logs, cache, uploads
-└── tests/               # Unit and feature tests
-```
-
-## 🖥️ API Endpoints
-
-Danh sách API endpoints được tự động quản lý và có thể được xem bằng:
-
-```bash
-php artisan route:list
-```
-
-## 🔧 Xử lý sự cố
-
-### Vấn đề quyền truy cập trong Docker/WSL
-
-```bash
-# Chạy từ thư mục gốc dự án
-./start.sh
-
-# Hoặc thủ công
-chmod -R 755 laravel-api/
-chmod -R 777 laravel-api/storage laravel-api/bootstrap/cache
-chmod -R 755 laravel-api/app/Providers/
-```
-
-### Lỗi kết nối cơ sở dữ liệu
-
-Kiểm tra:
-1. Docker containers đang chạy (`docker ps`)
-2. Thông tin kết nối trong .env
-3. Network giữa các containers
-
-### Lỗi tạo API mới
-
-Sau khi thêm API mới:
-```bash
-php artisan app:sync-api-permission
-```
-
-## 📝 Tham khảo
-
-- [Laravel Documentation](https://laravel.com/docs)
-- [PostgreSQL Documentation](https://www.postgresql.org/docs/)
-- [Redis Documentation](https://redis.io/documentation)
+> 🇻🇳 Quy ước, chi tiết kiến trúc và các lưu ý nằm ở các file trên.

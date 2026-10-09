@@ -1,3 +1,7 @@
+> **Learning note (archived 2026-10-09, HK-01; was `laravel-api/prompt-unit-test.md`).** A prompt that asks an AI to list every feature-test case of one endpoint, step by step. The test rules now live in [handbook 06](../../handbook/06-testing-qa.md) and `.claude/rules/backend-laravel.md` §Tests. Kept unchanged otherwise.
+>
+> 🇻🇳 **Ghi chú học tập, đã lưu trữ (2026-10-09).** Prompt yêu cầu AI liệt kê mọi test case cho một endpoint. Quy tắc test hiện tại ở handbook 06 và `.claude/rules/backend-laravel.md`. Nội dung còn lại giữ nguyên.
+
 You are a senior backend QA engineer and test architect specializing in Laravel REST APIs.
 
 Your task is to DESIGN exhaustive Feature Test cases using PHPUnit.

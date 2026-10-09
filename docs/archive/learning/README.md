@@ -10,5 +10,9 @@ Write-ups and research notes the owner wrote while learning, before the Engineer
 |---|---|---|
 | [AUTH-GUIDE.md](AUTH-GUIDE.md) | Hand-written JWT auth and how to fix it | [ADR-0004](../../adr/0004-sanctum-spa-cookie-auth.md) (Sanctum SPA cookie auth), [PRB-001](../../problems/PRB-001-custom-jwt-auth.md) |
 | [search-research.md](search-research.md) | Classic vs inverted-index search, ranking, what "good search" means | [ADR-0009](../../adr/0009-postgres-search.md) (PostgreSQL search) |
+| [laravel-coding-convention.md](laravel-coding-convention.md) | First Laravel convention: modules, interfaces, CRUD generator | `.claude/rules/backend-laravel.md`, [handbook 05](../../handbook/05-coding.md) |
+| [file-manager-google-drive-plan.md](file-manager-google-drive-plan.md) | Media storage on Google Drive (never built) | [ADR-0007](../../adr/0007-remove-media-api.md) (media API removed) |
+| [ai-codegen-and-jwt-notes.md](ai-codegen-and-jwt-notes.md) | AI prompts for CRUD generation; JWT login review | [ADR-0004](../../adr/0004-sanctum-spa-cookie-auth.md), [handbook](../../handbook/README.md) |
+| [prompt-feature-test-design.md](prompt-feature-test-design.md) | Prompt to enumerate feature-test cases of an endpoint | [handbook 06](../../handbook/06-testing-qa.md) |
 
 > 🇻🇳 Bảng trên liệt kê từng file, chủ đề và tài liệu đã thay thế nó.

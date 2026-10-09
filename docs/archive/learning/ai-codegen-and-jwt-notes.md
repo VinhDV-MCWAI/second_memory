@@ -1,3 +1,7 @@
+> **Learning note (archived 2026-10-09, HK-01; was `laravel-api/docs/synthetic.md`).** Notes on generating CRUD modules with AI prompts from schema metadata, and a review of the hand-written JWT login. The generator scripts no longer exist; auth is Sanctum ([ADR-0004](../../adr/0004-sanctum-spa-cookie-auth.md)); AI-assisted work now follows the [handbook](../../handbook/README.md) and `.claude/`. Kept unchanged otherwise.
+>
+> 🇻🇳 **Ghi chú học tập, đã lưu trữ (2026-10-09).** Ghi chú sinh module CRUD bằng prompt AI từ metadata schema và nhận xét về login JWT tự viết. Script generator không còn; auth đã là Sanctum (ADR-0004); làm việc với AI theo handbook và `.claude/`. Nội dung còn lại giữ nguyên.
+
 - CodingConvention.md (chuẩn kiến trúc + naming + convention rõ ràng)
 - Agent (mô tả mục tiêu, rule, behavior, workflow)
 - Prompt mẫu (cách bạn feed input: scope, table, schema, FK, status)
