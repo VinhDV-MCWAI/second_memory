@@ -254,6 +254,8 @@ Records written in P3 so far: REQ-002 (Ready), RFC-002 (Approved; slice status i
 
 - 2026-10-09 — [lane release] P3-18 done: 5bee1ca4, local tag v2.1.0 (owner pushes) — release notes docs/releases/v2.1.0.md (highlights per story, breaking changes: media API / queue / Reverb gone, nginx 8080 inside; 7 migrations + upgrade order; before/after: routes 20 → 34, tests 79 → 167 backend / 53 → 74 FE / 63 pytest / 1 E2E, API image 1799 → 242 MB, 10-user load 55–69 → 116–134 req/s, search p95 292–399 → 123–144 ms); acceptance report §7 fixes of BUG-01…04; retro P3 (3 changes → DOC-03)
 
+- 2026-10-09 — [lane docs] DOC-03 done: 3927845c — handbook 04 §Parallel work lesson 6 (interface change → consumer search across lanes + lane.sh add, BUG-01); 06: order / identity get their own acceptance test (BUG-03/04), production-critical settings tested the way production loads them (API-06); contract row now says make verify (CI paused)
+
 ## Next step
 
 Since 2026-10-08 work runs in **parallel lanes**: the live task list and who is on what is [BOARD.md](BOARD.md) (`scripts/lane.sh status`); start a conversation with `/lane`. When this file and the board disagree on status, the board wins. Lanes `public` (P3-12) and `perf` (P3-16) were already in progress when the board was created.
