@@ -3,8 +3,8 @@
 # The build context is `git archive <ref>`, so only committed code goes in: another lane's
 # uncommitted work in the shared tree never ends up in an image.
 #
-# Usage: infra/build-images.sh [ref] [app...]   (default: HEAD, api + nextjs-fe)
-#   e.g. infra/build-images.sh HEAD api nextjs-fe
+# Usage: infra/build-images.sh [ref] [app...]   (default: HEAD, all three apps)
+#   e.g. infra/build-images.sh HEAD api
 # Tags: sm-<app>:<short sha of ref>. Idempotent: rebuilding a tag reuses the layer cache.
 set -euo pipefail
 
@@ -13,8 +13,7 @@ cd "$(dirname "$0")/.."
 ref=${1:-HEAD}
 shift || true
 apps=("$@")
-# nextjs-docs joins the default once the docs app has a production build (standalone output, P4-03)
-[ ${#apps[@]} -gt 0 ] || apps=(api nextjs-fe)
+[ ${#apps[@]} -gt 0 ] || apps=(api nextjs-fe nextjs-docs)
 tag=$(git rev-parse --short "$ref")
 
 src=$(mktemp -d)

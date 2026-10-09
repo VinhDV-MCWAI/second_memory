@@ -34,20 +34,15 @@ variable "app_url" {
   type = string
 }
 
-variable "docs_enabled" {
-  type = bool
-}
-
 module "stack" {
   source = "../../../modules/stack"
 
-  env          = "prod-like"
-  app_env      = var.app_env
-  image_tag    = var.image_tag
-  proxy_port   = var.proxy_port
-  app_url      = var.app_url
-  docs_enabled = var.docs_enabled
-  config_dir   = "${path.root}/../../../../docker"
+  env        = "prod-like"
+  app_env    = var.app_env
+  image_tag  = var.image_tag
+  proxy_port = var.proxy_port
+  app_url    = var.app_url
+  config_dir = "${path.root}/../../../../docker"
 }
 
 output "url" {

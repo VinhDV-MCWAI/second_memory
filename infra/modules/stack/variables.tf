@@ -18,12 +18,6 @@ variable "image_tag" {
   type        = string
 }
 
-variable "docs_enabled" {
-  description = "Create the public docs container. Off until the docs app builds a production image (P4-03)."
-  type        = bool
-  default     = true
-}
-
 variable "proxy_port" {
   description = "Host port of the proxy, the only published port (HTTP until P4-08 adds TLS)."
   type        = number

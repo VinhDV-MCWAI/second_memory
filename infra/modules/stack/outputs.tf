@@ -10,8 +10,5 @@ output "network" {
 
 output "containers" {
   description = "Container names."
-  value = concat(
-    [for c in [docker_container.postgres, docker_container.redis, docker_container.php, docker_container.nextjs, docker_container.proxy] : c.name],
-    docker_container.docs[*].name,
-  )
+  value       = [for c in [docker_container.postgres, docker_container.redis, docker_container.php, docker_container.nextjs, docker_container.docs, docker_container.proxy] : c.name]
 }

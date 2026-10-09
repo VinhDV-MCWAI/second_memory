@@ -294,12 +294,16 @@ resource "docker_container" "nextjs" {
 }
 
 resource "docker_container" "docs" {
-  count   = var.docs_enabled ? 1 : 0
   name    = local.hosts.docs
   image   = "sm-nextjs-docs:${var.image_tag}"
   restart = "unless-stopped"
   memory  = var.memory_mb.docs
-  env     = ["PORT=3457", "HOSTNAME=0.0.0.0"]
+  # Server-side calls to the public API go through this environment's proxy, not dev's ml-nginx
+  env = [
+    "PORT=3457",
+    "HOSTNAME=0.0.0.0",
+    "API_INTERNAL_URL=http://${local.name}-proxy:8080/api",
+  ]
 
   networks_advanced {
     name = docker_network.this.id
