@@ -1,3 +1,7 @@
+> **Learning note (archived 2026-10-09, HK-04; was `docker/minio/docs.md`).** The owner's design notes for the media pipeline on MinIO: buckets and lifecycle rules, upload flow with queue jobs and Reverb progress events, transcoding ideas. The media API, queue worker and Reverb were removed ([ADR-0007](../../adr/0007-remove-media-api.md), API-05, P4-04); MinIO only keeps the old objects, and buckets are still created by `docker/minio/create-buckets.sh` (Terraform MinIO provider in P4-06). Kept unchanged otherwise.
+>
+> 🇻🇳 **Ghi chú học tập, đã lưu trữ (2026-10-09).** Ghi chú thiết kế pipeline media trên MinIO (bucket, lifecycle, upload qua queue + Reverb, transcoding). API media, queue và Reverb đã bị xoá (ADR-0007, API-05, P4-04); MinIO chỉ còn giữ dữ liệu cũ. Nội dung còn lại giữ nguyên.
+
 ### KHỞI TẠO
 
 khi sử dụng minio để quản lý dữ liệu media, tôi cần thực hiện việc đầu tiên là khởi tạo, thực hiện khi build env:
