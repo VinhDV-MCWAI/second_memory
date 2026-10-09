@@ -225,6 +225,8 @@ Records written in P3 so far: REQ-002 (Ready), RFC-002 (Approved; slice status i
 
 - 2026-10-09 — [lane infra] OPS-04 done: b5e2095, bdd1a30 — one nginx regex location ^/(docs|skills)(/|$) → ml-nextjs-docs (Terraform stack reuses the file); nginx -t + reload, no restart. Through :81: /skills 200, /docs 200, /skillsx 404, /admin/skills still admin FE, make e2e with E2E_PUBLIC_URL=http://localhost:81 green (public slug 200, private slug 404 in the nginx log). One transient 500 on /api/public/skills right after the reload, 5/5 OK afterwards, no Laravel error
 
+- 2026-10-09 — [lane api] API-08 done: 99a814b, 30de099 — google/apiclient removed (with apiclient-services, google/auth, firebase/php-jwt + 1 more: 5 packages) and the 4 dead GoogleDrive*Exception classes + their 4 Larastan baseline entries; composer audit clean. Production API image 493 → 242 MB (sm-api:99a814bb boots, optimize OK). make verify exit 0 (backend 166, Vitest 70, pytest 63)
+
 ## Next step
 
 Since 2026-10-08 work runs in **parallel lanes**: the live task list and who is on what is [BOARD.md](BOARD.md) (`scripts/lane.sh status`); start a conversation with `/lane`. When this file and the board disagree on status, the board wins. Lanes `public` (P3-12) and `perf` (P3-16) were already in progress when the board was created.
