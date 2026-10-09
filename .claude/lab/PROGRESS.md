@@ -232,6 +232,8 @@ Records written in P3 so far: REQ-002 (Ready), RFC-002 (Approved; slice status i
 
 - 2026-10-09 — [lane release] P3-17 done: 8b68e629 — QA passed with known issues, PO accepted with follow-ups (docs/releases/v2.1.0-acceptance.md). All REQ-002 scenarios US-1…US-7 + roles, audit, rate limit pass on a throwaway env from the 952887d production images (dev DB untouched) + make e2e 1 passed; NFR from k6 re-baseline (search p95 123–144 ms). 4 bugs filed: BUG-01 importer default URL port 80 (S3), BUG-02 nginx 503 not 429 (S3), BUG-03 hard-coded header name/avatar (S3), BUG-04 search title ranking (S4). PO: BUG-01 + BUG-03 before v2.1.0 → added to P3-18 deps
 
+- 2026-10-09 — [lane docs] HK-06 done: 107caa98 — root README rewritten for the Engineering Lab (580 → ~130 lines: product, nginx :81 architecture, versions, quick start with the dev seed account, make targets, layout, docs/status), CLAUDE.md: stray r gone (owner item 16), no Reverb/MinIO in the API stack, nextjs-docs = public /skills, rows for infra/, importer, e2e/perf; .agents/ deleted; Makefile restore help → runbook
+
 ## Next step
 
 Since 2026-10-08 work runs in **parallel lanes**: the live task list and who is on what is [BOARD.md](BOARD.md) (`scripts/lane.sh status`); start a conversation with `/lane`. When this file and the board disagree on status, the board wins. Lanes `public` (P3-12) and `perf` (P3-16) were already in progress when the board was created.
