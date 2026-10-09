@@ -1,6 +1,7 @@
 packages:
   - "nextjs-fe"
   - "nextjs-docs"
+  - "e2e"
 
 # Dependencies allowed to run install (build) scripts.
 allowBuilds:
