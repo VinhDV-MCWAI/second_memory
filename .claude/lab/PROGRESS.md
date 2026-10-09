@@ -242,6 +242,8 @@ Records written in P3 so far: REQ-002 (Ready), RFC-002 (Approved; slice status i
 
 - 2026-10-09 — [lane public] HK-03 done: c8c98ab5 — nextjs-docs/README.md (new): what /skills, /skills/{slug} and /docs serve, ports, API_INTERNAL_URL + 60 s cache, make targets, standalone build; prettier clean
 
+- 2026-10-09 — [lane docs] HK-07 done: e60475be — docs/architecture/current.md (living): container diagram through nginx :81, API groups + envelope, Sanctum/roles/token/audit sequence, ER diagram + tables incl. kept media_mgmt, search indexes, environments/delivery (Compose dev, paused CI, Terraform prod-like :9443, image sizes, backup, import), measured numbers vs v1.0.0; linked as start-here #5 in docs/README
+
 ## Next step
 
 Since 2026-10-08 work runs in **parallel lanes**: the live task list and who is on what is [BOARD.md](BOARD.md) (`scripts/lane.sh status`); start a conversation with `/lane`. When this file and the board disagree on status, the board wins. Lanes `public` (P3-12) and `perf` (P3-16) were already in progress when the board was created.
