@@ -18,7 +18,7 @@ docker run --rm --network ml_network -v /path/to/vault:/vault:ro \
 | Variable | Meaning |
 |---|---|
 | `LEDGER_API_TOKEN` | Required. Sanctum token with the `evidence:import` ability; never printed |
-| `LEDGER_API_URL` | API base URL, default `http://ml-nginx` (inside the Compose network) |
+| `LEDGER_API_URL` | API base URL, default `http://ml-nginx:8080` (inside the Compose network) |
 | `LEDGER_NOTE_BASE_URL` | Base of the published note URLs, used when a note has no `url` in its frontmatter |
 
 `--dry-run` validates the vault and asks the API what would change (`dry_run: true`), writing nothing. Any invalid published note stops the run before anything is sent, because the API hides every imported row missing from the list. Exit codes: `0` ok, `1` invalid notes or more than 2,000 published notes (nothing sent), `2` usage / configuration, `3` API error.

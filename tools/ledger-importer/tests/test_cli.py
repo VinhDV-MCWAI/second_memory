@@ -68,7 +68,7 @@ def test_sends_published_notes_with_the_token(vault: Vault, run: Run) -> None:
     assert code == ExitCode.OK
     request = api.requests[0]
     assert request.method == "POST"
-    assert request.url == f"http://ml-nginx{IMPORT_PATH}"
+    assert request.url == f"http://ml-nginx:8080{IMPORT_PATH}"
     assert request.headers["Authorization"] == f"Bearer {TOKEN}"
     assert request.headers["Accept"] == "application/json"
     assert api.payload["dry_run"] is False

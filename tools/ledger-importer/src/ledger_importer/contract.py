@@ -25,7 +25,7 @@ HTTP_TIMEOUT_SECONDS = 30.0
 ENV_API_URL = "LEDGER_API_URL"
 ENV_API_TOKEN = "LEDGER_API_TOKEN"  # noqa: S105 - the name of the variable, not a secret
 ENV_NOTE_BASE_URL = "LEDGER_NOTE_BASE_URL"
-DEFAULT_API_URL = "http://ml-nginx"
+DEFAULT_API_URL = "http://ml-nginx:8080"  # nginx listens on 8080 inside the Compose network (P4-02)
 DEFAULT_VAULT = "/vault"
 
 

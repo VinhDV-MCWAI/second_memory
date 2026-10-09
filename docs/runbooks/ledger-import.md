@@ -44,7 +44,7 @@ Contract (which frontmatter counts, exit codes): [ADR-0010](../adr/0010-python-i
    docker exec ml-php php artisan ledger:import-token root --revoke
    ```
 
-`LEDGER_API_URL` defaults to `http://ml-nginx` (the Compose network); set it only to reach another API.
+`LEDGER_API_URL` defaults to `http://ml-nginx:8080` (the Compose network; nginx listens on 8080 inside); set it only to reach another API.
 
 > 🇻🇳 Các bước: (1) tạo token cho owner và export vào `LEDGER_API_TOKEN`; (2) đặt `LEDGER_NOTE_BASE_URL` nếu note không có `url`; (3) chạy thử `make import vault=… dry=1` — mã thoát 1 kèm danh sách note lỗi thì sửa rồi chạy lại; (4) chạy thật `make import vault=…`; (5) thu hồi token.
 
