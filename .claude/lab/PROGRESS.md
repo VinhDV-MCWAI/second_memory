@@ -221,6 +221,8 @@ Records written in P3 so far: REQ-002 (Ready), RFC-002 (Approved; slice status i
 
 - 2026-10-09 — [lane infra] P4-03 done: 076c5a9, 9c64d56, 31b5bd8 — API production image 1.6 GB → 493 MB (ext headers dropped in one layer, Composer in its own stage, no chown layer; ~285 MB after API-08 drops unused google/apiclient), php artisan optimize at container start (folds OPS-02), Next.js builds bake same-origin NEXT_PUBLIC_API_URL=/api, docs image 300 MB now built + run by Terraform (docs_enabled removed, API_INTERNAL_URL → sm-<env>-proxy); dev ml-php image 937 → 252 MB (not recreated). Smoke on a throwaway network: health/public API/csrf/docs 200, docs /skills lists public, hides private (404). /skills via proxy → OPS-04. make verify exit 0 (backend 166, Vitest 70, pytest 63). Not applied with Terraform (owner item 15)
 
+- 2026-10-09 — [lane fe] P3-15 done: 5105804, 8b61695, f76c261 — make e2e: Playwright 1.63 container on ml_network, 1 journey (login → public + private skill → evidence → header search → public page shows it, private slug 404) passes in 11–30 s, 5 runs green; throwaway e2e_owner + E2E-prefixed rows + their audit_log deleted after each run; make verify exit 0 (backend 166, Vitest 70, importer 63). Lockfile: next now resolves the optional peer @playwright/test (npm package only, no browsers) — rebuild Next.js images on the next lockfile rebuild
+
 ## Next step
 
 Since 2026-10-08 work runs in **parallel lanes**: the live task list and who is on what is [BOARD.md](BOARD.md) (`scripts/lane.sh status`); start a conversation with `/lane`. When this file and the board disagree on status, the board wins. Lanes `public` (P3-12) and `perf` (P3-16) were already in progress when the board was created.
