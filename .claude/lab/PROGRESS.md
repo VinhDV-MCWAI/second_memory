@@ -3,15 +3,15 @@
 > Handoff log. Updated after every task so a new conversation can resume.
 > To resume: read this file, then `docs/plan/03-backlog.md`, then continue at **Next step** with the `/lab-task` skill.
 
-## Plan status at a glance (2026-10-08)
+## Plan status at a glance (2026-10-09)
 
 | Phase | Tasks | Status | Release |
 |---|---|---|---|
 | P0 Baseline | P0-01…P0-09 | done locally; P0-02 push/PRs, P0-06 GitHub board, P0-09 remote cleanup wait for the owner | `v1.0.0` (local tag) |
 | P1 Handbook | P1-01…P1-14 | done | `v1.1.0` (local tag) |
 | P2 Slim down | P2-01…P2-13 | done | `v2.0.0` (local tag) |
-| P3 Skill Ledger | P3-00…P3-18 + P3-05b | done except P3-12 (doing, lane `public`), P3-15 (E2E, after P3-12), P3-17 QA/PO, P3-18 release; follow-ups API-01…04, FE-01, PERF-01…03, DB-01, OPS-01 on [BOARD.md](BOARD.md) | `v2.1.0` |
-| P4 IaC | P4-00…P4-12 + API-05 | refined in P4-00 (backlog §P4); claimable: P4-01 ADR-0011, P4-02 Docker hardening (lane `infra`), API-05 (lane `api`) | – |
+| P3 Skill Ledger | P3-00…P3-18 + P3-05b | done except P3-12 (doing, lane `public`), P3-15 (E2E, after P3-12), P3-17 QA/PO, P3-18 release; follow-ups API-01…07, FE-01…02, PERF-01…05, DB-01, OPS-01…03 all done ([BOARD.md](BOARD.md)) | `v2.1.0` |
+| P4 IaC | P4-00…P4-12 + API-05…07 | done: P4-00…P4-02, P4-04, API-05/06/07. P4-05 (Terraform stack, `infra/`) code committed, waits for the owner's first `make tf-apply` (item 15 below). P4-03 waits for P3-12; P4-06…P4-12 follow in order | – |
 | P5–P11 | coarse | not started | – |
 
 Records written in P2: REQ-001, RFC-001, ADR-0003…0006, PRB-001 (solved), PRB-002 (solved), runbook `content-export.md`.
@@ -21,7 +21,7 @@ Records written in P3 so far: REQ-002 (Ready), RFC-002 (Approved; slice status i
 
 | | |
 |---|---|
-| Active phase | P3 Skill Ledger closing, worked in parallel lanes ([BOARD.md](BOARD.md), `/lane`); P4 refined. P0–P2 merged into `developer` and `main` via PRs #12, #13 |
+| Active phase | P3 Skill Ledger closing (P3-12 → P3-15 → P3-17/18) and P4 IaC in parallel lanes ([BOARD.md](BOARD.md), `/lane`). P0–P2 merged into `developer` and `main` via PRs #12, #13 |
 | Working branch | `feature/p3-ledger-api` — every lane commits here with `scripts/lane.sh commit`; the owner pushes. Earlier: `feature/p3-skill-ledger` from `developer` at `90d48ee` (PR #12 merge). `refactor/p2-slim-down` merged and deleted (origin by `cleanup-branch.yml`, local by me). Local branches: `developer`, `main`, `feature/p3-skill-ledger`. Tags `v1.0.0` … `v2.0.0` exist locally only |
 | Old refactor | Frozen (`.claude/refactor/PLAN.md`, `PROGRESS.md`) |
 | Owner defaults | 8–10 h/week, backend role, §4 remove list accepted, Obsidian vault private (see analysis §9) |
@@ -38,9 +38,11 @@ Records written in P3 so far: REQ-002 (Ready), RFC-002 (Approved; slice status i
 9. Dev DB is empty (PRB-002: test runs wiped it). To use the admin UI: `docker exec ml-php php artisan db:seed --class=RootAccountSeeder` (creates owner `root` / `12345678`, idempotent), then log in. Slice 8 migrations already ran on the dev DB (forward only).
 10. To store sessions in Redis as ADR-0004 says: `make setup` (regenerates `laravel-api/.env` from `.env.example`, `SESSION_DRIVER=redis`) and `make restart`. Until then sessions use the `database` driver, which also works. Old `LARAVEL_*_TOKEN_SECRET` lines in `docker/.env` can be deleted by hand.
 11. Browser check of the new login (log in, reload, log out in one tab → the other tab goes to login on its next request); only curl was used here.
-12. Perf decisions waiting for you (lane `api`): **API-02** persistent PostgreSQL connections (`DB_PERSISTENT`; risk: a fatal error inside a transaction leaves it open for the next request) and **API-03** stored `tsvector` + GiST trigram index (amends ADR-0009). Evidence: [request profile](../../docs/reports/perf/2026-10-08-request-profile.md), [DB-01](../../docs/reports/perf/2026-10-08-db-01-explain.md). PERF-03 (re-baseline for the v2.1.0 notes) waits for both.
+12. ~~Perf decisions API-02 / API-03~~ — approved and done 2026-10-08; PERF-03 re-baselined, API-06 / PERF-05 fixed and re-measured the config-cache case on 2026-10-09.
 13. **Backups**: until 2026-10-08 `backup.sh` deleted its archive even when the upload failed, and this host has no rclone — so no backup has actually been kept. Install and configure rclone with the remotes in `RCLONE_REMOTES` (or run `bash backup/backup.sh --local-only` and copy the archive off the machine), then schedule it daily (RPO 24 h). Runbook: [backup-restore.md](../../docs/runbooks/backup-restore.md).
 14. **Importer on the dev stack** (P3-14c): the dev DB had no owner when it was done; run [ledger-import.md](../../docs/runbooks/ledger-import.md) once against your vault.
+15. **First Terraform apply (P4-05)**: Claude may not run `terraform apply` / `destroy` (auto mode blocks it), so the Make targets show the plan and ask. Run `make tf-apply tag=6c0b542f` (images `sm-api` / `sm-nextjs-fe:6c0b542f` are built; rebuild for a newer commit with `make tf-images` and drop `tag=`), then `curl localhost:9443/health`, `curl localhost:9443/api/public/skills`, `make tf-plan tag=6c0b542f` (expect "No changes"), optionally `make tf-destroy` + `make tf-apply` again; then tell the lane `infra` conversation to close P4-05. Details: [infra/README.md](../../infra/README.md).
+16. Root `CLAUDE.md` has a stray `r` before its first heading (`r# CLAUDE.md`, uncommitted, not from a lane task): delete it or tell the lane that made it.
 
 ## Environment gotchas (read before running anything)
 
@@ -219,4 +221,4 @@ Records written in P3 so far: REQ-002 (Ready), RFC-002 (Approved; slice status i
 
 Since 2026-10-08 work runs in **parallel lanes**: the live task list and who is on what is [BOARD.md](BOARD.md) (`scripts/lane.sh status`); start a conversation with `/lane`. When this file and the board disagree on status, the board wins. Lanes `public` (P3-12) and `perf` (P3-16) were already in progress when the board was created.
 
-Branch: `feature/p3-ledger-api` (shared for the rest of P3). Lane `perf`: all tasks done (P3-16, PERF-01…04, DB-01); before/after numbers for the `v2.1.0` notes are in [rebaseline](../../docs/reports/perf/2026-10-08-rebaseline.md) (10 users 55–69 → 116–134 req/s, search p95 292–399 → 123–144 ms). Open risk handed to lane `api`: API-06 (config cache turns persistent connections off) must land before P4-03 builds Laravel caches. Gotchas for perf runs (more under Environment gotchas): `scripts/perf-baseline.sh` must run through `scripts/lane.sh run` (it loads the shared `ml-php` / `ml-postgres` CPU); `artisan serve` drops env vars such as `DB_DATABASE`, so the script calls `php -S` with Laravel's `server.php` from `public/`; the dev image loads Xdebug (`XDEBUG_MODE=off` for any timing); k6 clears its cookie jar every iteration unless `noCookiesReset: true`; Redis needs `REDISCLI_AUTH="$REDIS_PASSWORD"` inside `ml-redis`. P3-15 (E2E) waits for P3-12's public page.
+Branch: `feature/p3-ledger-api` (shared for the rest of P3). Lane `perf`: all tasks done (P3-16, PERF-01…05, DB-01); before/after numbers for the `v2.1.0` notes are in [rebaseline](../../docs/reports/perf/2026-10-08-rebaseline.md) (10 users 55–69 → 116–134 req/s, search p95 292–399 → 123–144 ms). API-06 fixed the config-cache risk (cached builds keep persistent connections, PERF-05 follow-up in the rebaseline report), so P4-03 may build Laravel caches. Lane `infra`: P4-05 waits for the owner's first apply (owner item 15); P4-06 (MinIO provider) is next, P4-03 needs P3-12 first. Gotchas for perf runs (more under Environment gotchas): `scripts/perf-baseline.sh` must run through `scripts/lane.sh run` (it loads the shared `ml-php` / `ml-postgres` CPU); `artisan serve` drops env vars such as `DB_DATABASE`, so the script calls `php -S` with Laravel's `server.php` from `public/`; the dev image loads Xdebug (`XDEBUG_MODE=off` for any timing); k6 clears its cookie jar every iteration unless `noCookiesReset: true`; Redis needs `REDISCLI_AUTH="$REDIS_PASSWORD"` inside `ml-redis`. P3-15 (E2E) waits for P3-12's public page.
