@@ -236,6 +236,8 @@ Records written in P3 so far: REQ-002 (Ready), RFC-002 (Approved; slice status i
 
 - 2026-10-09 — [lane api] HK-01 done: ef71e4ed — 4 pre-Lab notes (CodingConvention, Google Drive plan, AI-codegen/JWT notes, test-design prompt) moved to docs/archive/learning with banners + index rows; laravel-api/docs/ gone; README rewritten (189 → 50 lines: endpoints, envelope/OpenAPI, make commands, dev seed account, layout); CLAUDE.md: public routes exist since P3-12, ml-queue/ml-reverb gone (P4-04), test folders; docs only, no code touched
 
+- 2026-10-09 — [lane infra] HK-04 done: ea69b7bc — docker/cleanup_minio.sh + cleanup_minio_host.sh deleted (one-off purge of media-official with hard-coded dev credentials); docker/minio/docs.md and backup DR write-up (README + docs.md) archived in docs/archive/learning with banners; docker/README 464 → ~75 lines (services, ports, memory limits, files, commands, troubleshooting), backup/README 83 → ~35 lines (scripts, RPO/RTO/retention targets the runbook links to); docs only + 2 unused scripts, no compose change
+
 ## Next step
 
 Since 2026-10-08 work runs in **parallel lanes**: the live task list and who is on what is [BOARD.md](BOARD.md) (`scripts/lane.sh status`); start a conversation with `/lane`. When this file and the board disagree on status, the board wins. Lanes `public` (P3-12) and `perf` (P3-16) were already in progress when the board was created.
