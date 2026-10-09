@@ -16,7 +16,8 @@ This folder is the single home for everything that is not code: the plan, the wa
 | 2 | [plan/02-roadmap.md](plan/02-roadmap.md) | The phases, their goals, outputs and "done" criteria |
 | 3 | [plan/03-backlog.md](plan/03-backlog.md) | The concrete task list with IDs and status |
 | 4 | [adr/0001-engineering-lab-direction.md](adr/0001-engineering-lab-direction.md) | Why the project changed direction |
-| 5 | [architecture/as-is.md](architecture/as-is.md) | What the system looked like before the change (`v1.0.0`) |
+| 5 | [architecture/current.md](architecture/current.md) | How the system is built and runs today (containers, API, auth, data, environments) |
+| 6 | [architecture/as-is.md](architecture/as-is.md) | What the system looked like before the change (`v1.0.0`) |
 
 ## Folder map
 
@@ -28,7 +29,7 @@ docs/
 ├── plan/                analysis, roadmap, backlog, GitHub setup (living documents)
 ├── releases/            release notes per version tag
 ├── adr/                 Architecture Decision Records: one decision per file, never edited after "Accepted"
-├── architecture/        system snapshots: as-is.md (v1.0.0, frozen)
+├── architecture/        current.md (living: the system today), as-is.md (v1.0.0, frozen)
 ├── templates/           copy these to start a new record (REQ, RFC, ADR, PRB, INC, postmortem, runbook, reports)
 ├── handbook/            how we work: team, intake, design, git, coding, QA, release, operations, reporting, docs & data
 ├── requirements/        REQ-xxx: request → clarification → user stories → acceptance criteria
