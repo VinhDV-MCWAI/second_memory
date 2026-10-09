@@ -3,6 +3,8 @@
 # `perf` database every run, so results always start from the same REQ-002 volume.
 #
 # Usage: scripts/lane.sh run scripts/perf-baseline.sh [smoke|load|all]   (default: all)
+#        PERF_CACHED=1 … also builds Laravel's config / route / event caches first, as the
+#        production images do (P4-03); default off, like the dev stack.
 # Results: perf/results/<scenario>.json (k6 summary export, not committed) + stdout.
 #
 # The API runs as `php -S` with several workers inside ml-php against the `perf` database —
@@ -18,10 +20,23 @@ source perf/lib.sh
 scenarios=("${1:-all}")
 [ "${scenarios[0]}" = all ] && scenarios=(smoke load)
 
-trap perf_stop_server EXIT
+CACHE_DIR=/tmp/perf-baseline-cache
+cache_env=()
+
+# shellcheck disable=SC2317  # called by the EXIT trap
+cleanup() {
+  perf_stop_server
+  docker exec ml-php rm -rf "$CACHE_DIR"
+}
+trap cleanup EXIT
 
 perf_recreate_db
-perf_start_server 8 "$PERF_APP"
+if [ "${PERF_CACHED:-0}" = 1 ]; then
+  echo "==> Building Laravel caches in $CACHE_DIR"
+  read -ra cache_env <<<"$(perf_cache_env "$CACHE_DIR")"
+  perf_build_caches "$PERF_APP" "$CACHE_DIR"
+fi
+perf_start_server 8 "$PERF_APP" "${cache_env[@]}"
 
 status=0
 for scenario in "${scenarios[@]}"; do

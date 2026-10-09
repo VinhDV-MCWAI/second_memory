@@ -32,6 +32,24 @@ perf_recreate_db() {
   perf_psql "ANALYZE" "$PERF_DB"
 }
 
+# perf_cache_env <dir in ml-php>: docker exec -e args that point Laravel's config / route / event caches into <dir>
+perf_cache_env() {
+  echo "-e APP_CONFIG_CACHE=$1/config.php -e APP_ROUTES_CACHE=$1/routes-v7.php -e APP_EVENTS_CACHE=$1/events.php"
+}
+
+# perf_build_caches <app dir> <cache dir>: build the caches a production image builds (P4-03) into <cache dir>
+# and print the cached PDO::ATTR_PERSISTENT (API-06: it must stay true under config:cache)
+perf_build_caches() {
+  local app=$1 dir=$2 cache_env=() command
+  read -ra cache_env <<<"$(perf_cache_env "$dir")"
+  docker exec ml-php mkdir -p "$dir"
+  for command in config:cache route:cache event:cache; do
+    docker exec "${PERF_APP_ENV[@]}" "${cache_env[@]}" -w "$app" ml-php php artisan "$command" >/dev/null
+  done
+  docker exec ml-php php -r '$c = require $argv[1]; echo "cached ATTR_PERSISTENT: ",
+    var_export($c["database"]["connections"]["pgsql"]["options"][PDO::ATTR_PERSISTENT] ?? null, true), PHP_EOL;' "$dir/config.php"
+}
+
 perf_stop_server() { docker exec ml-php pkill -f -- "-S 0.0.0.0:$PERF_PORT" >/dev/null 2>&1 || true; }
 
 # perf_start_server <workers> <app dir in ml-php> [extra docker exec / php args...]

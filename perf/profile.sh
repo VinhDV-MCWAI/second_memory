@@ -42,11 +42,6 @@ printf("select 1 on an open connection: %.2f ms\n", (hrtime(true) - $t) / 1e8);'
 echo "==> Copying the API code onto the container filesystem ($WORK/app)"
 docker exec ml-php sh -c "mkdir -p $WORK/app && tar -C $PERF_APP --exclude=./node_modules --exclude='./storage/logs/*' -cf - . | tar -C $WORK/app -xf -"
 
-# cache_env <name>: Laravel config / route / event caches of a variant, kept under $WORK
-cache_env() {
-  echo "-e APP_CONFIG_CACHE=$WORK/cache-$1/config.php -e APP_ROUTES_CACHE=$WORK/cache-$1/routes-v7.php -e APP_EVENTS_CACHE=$WORK/cache-$1/events.php"
-}
-
 # run_variant <name> <app dir> <laravel caches: yes|no> [php -d args...]
 run_variant() {
   local name=$1 app=$2 caches=$3 cache_env=()
@@ -54,12 +49,8 @@ run_variant() {
   echo
   echo "======== variant: $name"
   if [ "$caches" = yes ]; then
-    read -ra cache_env <<<"$(cache_env "$name")"
-    docker exec ml-php mkdir -p "$WORK/cache-$name"
-    local command
-    for command in config:cache route:cache event:cache; do
-      docker exec "${PERF_APP_ENV[@]}" "${cache_env[@]}" -w "$app" ml-php php artisan "$command" >/dev/null
-    done
+    read -ra cache_env <<<"$(perf_cache_env "$WORK/cache-$name")"
+    perf_build_caches "$app" "$WORK/cache-$name"
   fi
   perf_start_server "$WORKERS" "$app" "${cache_env[@]}" -e "PERF_TIMING_LOG=$WORK/$name.log" \
     -d "auto_prepend_file=$WORK/timing-prepend.php" "$@"
@@ -70,8 +61,6 @@ run_variant() {
   perf_flush_sessions
 }
 
-# Persistent connections are in the code since API-02, but config:cache bakes them off (API-06):
-# until that is fixed the *-cached variants run without them
 run_variant mount "$PERF_APP" no
 run_variant mount-cached "$PERF_APP" yes
 run_variant mount-cached-novalidate "$PERF_APP" yes -d opcache.validate_timestamps=0
