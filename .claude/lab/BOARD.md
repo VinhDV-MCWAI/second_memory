@@ -50,7 +50,7 @@ Owns: `nextjs-docs/`.
 | ID | Task | Docs | Depends | Status |
 |---|---|---|---|---|
 | P3-12 | Public read-only skill list + detail (published items only); `/docs` "content moved" page stays | [RFC-002 §4.4](../../docs/design/RFC-002-skill-ledger.md#44-frontends), [REQ-002](../../docs/requirements/REQ-002-skill-ledger.md) US-3 | – | done 2026-10-09: af52203, ca0d77c — resumed (original conversation ended 2026-10-08). /skills (by category, level, tags) + /skills/[slug] (level history dates, public evidence; private/missing → same 404), server components over the existing server-only client (internal URL fixed to ml-nginx:8080 after P4-02); docs production image builds (standalone + public/, 300 MB, uid 1001). Checked on the perf DB: 67/67 public skills listed, 0 of 33 private leaked; skill-1 shows 18/18 public evidence, 0 of 9 private, no level reasons; private + missing slug 404; same on the production image. Through :81 needs nginx /skills → OPS-04 (infra). make verify exit 0 (backend 166, Vitest 70, pytest 63) |
-| HK-03 | Housekeeping nextjs-docs: add a short `nextjs-docs/README.md` (what the public site serves today: /skills ledger + /docs 'content moved', ports, commands), EN + VI | [nextjs-docs/CLAUDE.md](../../nextjs-docs/CLAUDE.md) | – | todo |
+| HK-03 | Housekeeping nextjs-docs: add a short `nextjs-docs/README.md` (what the public site serves today: /skills ledger + /docs 'content moved', ports, commands), EN + VI | [nextjs-docs/CLAUDE.md](../../nextjs-docs/CLAUDE.md) | – | done 2026-10-09: c8c98ab5 — nextjs-docs/README.md (new): what /skills, /skills/{slug} and /docs serve, ports, API_INTERNAL_URL + 60 s cache, make targets, standalone build; prettier clean |
 
 ## Lane `importer` — Python Obsidian importer
 
