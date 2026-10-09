@@ -229,6 +229,8 @@ Records written in P3 so far: REQ-002 (Ready), RFC-002 (Approved; slice status i
 
 - 2026-10-09 — [lane fe] FE-03 done: 5b43a508 — e2e/env.ts: PUBLIC_URL = http://localhost:81, :3002 mapping and E2E_PUBLIC_* overrides removed; make e2e green in 17 s, nginx log shows /skills/<public> 200 and /skills/<private> 404 through :81; tsc + shellcheck clean
 
+- 2026-10-09 — [lane docs] HK-05 done: 7596a617 + link fix — docs/search.md → docs/archive/learning/search-research.md (banner → ADR-0009), new learning/README index, handbook 08 drops ml-queue, docs/README folder map no longer lists live folders as planned; link check clean for docs/
+
 ## Next step
 
 Since 2026-10-08 work runs in **parallel lanes**: the live task list and who is on what is [BOARD.md](BOARD.md) (`scripts/lane.sh status`); start a conversation with `/lane`. When this file and the board disagree on status, the board wins. Lanes `public` (P3-12) and `perf` (P3-16) were already in progress when the board was created.
