@@ -14,7 +14,7 @@ Ask "what would hurt most if it broke, and what is the cheapest test that would 
 |---|---|---|---|---|
 | **Unit** | A function/class follows its rules | `laravel-api/tests/Unit`, Vitest specs | ms | Business rules, parsing, calculations, hooks |
 | **Integration / feature** | Components work together with real DB/Redis | `laravel-api/tests/Feature` (HTTP + DB) | 100 ms | Every endpoint: happy path, 422, 401/403, 404 |
-| **Contract** | FE and API agree on shapes | OpenAPI → generated TS types; CI fails if `openapi.json` is stale | s | Any API change |
+| **Contract** | FE and API agree on shapes | every test response validated against `openapi.json`; generated TS types; `make verify` fails if the spec is stale (CI when re-enabled) | s | Any API change |
 | **E2E / system** | A real user journey works in a browser | Playwright, `e2e/` (`make e2e`) | s–min | Only critical journeys (login, core flow) |
 | **Performance** | Latency/throughput under load | k6 (from P3/P8) | min | Before release of heavy endpoints; after optimisations |
 | **Security** | Known attack classes are blocked | Feature tests for authz, ZAP baseline (P8) | min | Auth, input handling, file upload |
@@ -30,6 +30,14 @@ The pyramid: many unit and feature tests, few E2E tests, performance and securit
 **The one exception is the E2E journey** (`make e2e`, P3-15): it drives the running stack in a browser, and that stack has only the dev database. It runs Playwright in its own container on the Compose network (the browser maps `localhost:81` to nginx so cookies and CSRF see the real origin) and keeps its footprint reversible: a dedicated owner `e2e_owner` with a fresh random password per run, disabled afterwards; every record named `E2E <run id>`; the records and that account's `audit_log` rows deleted at the end, also after a failure or an interrupted run. Run it through `scripts/lane.sh run make e2e`. A failed run leaves its report, screenshot and trace in `e2e/artifacts/`.
 
 > 🇻🇳 **Ngoại lệ duy nhất là E2E** (`make e2e`, P3-15): nó điều khiển stack đang chạy qua trình duyệt, mà stack đó chỉ có DB dev. Playwright chạy trong container riêng trên mạng Compose (trình duyệt map `localhost:81` sang nginx để cookie/CSRF thấy đúng origin) và chỉ để lại dấu vết có thể xóa: tài khoản owner riêng `e2e_owner` với mật khẩu ngẫu nhiên mỗi lần, bị vô hiệu hóa sau khi chạy; mọi bản ghi tên `E2E <run id>`; bản ghi và các dòng `audit_log` của tài khoản đó bị xóa khi kết thúc, kể cả khi fail hay bị ngắt giữa chừng. Chạy qua `scripts/lane.sh run make e2e`; lần chạy fail để lại report, ảnh chụp và trace trong `e2e/artifacts/`.
+
+**Test the order and the identity, not only the presence** (retro P3). When a story says "best match first", "newest first" or "the signed-in user", that is an acceptance criterion with its own test: two rows that compete, asserted in order; a page rendered as a specific account, asserted by name. Tests that only check "a result is there" let a summary match outrank a title match (BUG-04) and a hard-coded name reach the header (BUG-03).
+
+> 🇻🇳 **Kiểm tra thứ tự và danh tính, không chỉ sự tồn tại.** "Khớp nhất lên đầu", "mới nhất lên đầu", "người đang đăng nhập" là tiêu chí chấp nhận cần test riêng: hai dòng cạnh tranh và assert đúng thứ tự; trang hiển thị cho một tài khoản cụ thể và assert đúng tên (bài học BUG-03, BUG-04).
+
+**Test production-critical settings the way production loads them** (retro P3). A setting that must hold in production (connection persistence, caches, timeouts, limits) gets a test that loads it as production does: through `config:cache`, the production image, or nginx itself. `config/database.php` once decided persistent connections with `PHP_SAPI`, which `config:cache` (a CLI command) baked as `false` for every web request; `PersistentConnectionConfigTest` now evaluates the config file in the CLI, as `config:cache` does (API-06).
+
+> 🇻🇳 **Cấu hình quan trọng ở production phải được test đúng cách production nạp nó** (qua `config:cache`, image production, hoặc chính nginx). Ví dụ: persistent connection từng bị `config:cache` "nướng" thành `false` (API-06).
 
 ## Definition of Done (DoD)
 
