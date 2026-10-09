@@ -27,7 +27,11 @@ RUN --mount=type=cache,id=pnpm,target=/root/.local/share/pnpm/store \
 FROM deps AS builder
 ARG APP
 COPY ${APP} ./${APP}
-ENV NODE_ENV=production
+# Same-origin API path: the browser calls /api on whatever host serves the page (the proxy routes
+# it to php-fpm), so one image tag runs in every environment (ADR-0011). Only nextjs-fe reads it.
+ARG NEXT_PUBLIC_API_URL=/api
+ENV NODE_ENV=production \
+  NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}
 RUN pnpm --filter "./${APP}" build
 
 # ============ Production runner (Next.js standalone output) ============
