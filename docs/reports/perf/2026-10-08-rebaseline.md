@@ -12,7 +12,7 @@
 
 ## Result in one line
 
-At 10 concurrent users the API now serves **116–134 requests/s instead of 55–69**, and search p95 is **123–144 ms instead of 292–399 ms** (target 300 ms) with 0 % errors; at one user every endpoint answers in 26–30 ms (p50). One new risk: building Laravel's config cache turns persistent connections off again (API-06).
+At 10 concurrent users the API now serves **116–134 requests/s instead of 55–69**, and search p95 is **123–144 ms instead of 292–399 ms** (target 300 ms) with 0 % errors; at one user every endpoint answers in 26–30 ms (p50). One new risk: building Laravel's config cache turned persistent connections off again (fixed by API-06, follow-up below).
 
 > 🇻🇳 Với 10 user đồng thời: **116–134 req/s thay vì 55–69**, p95 search **123–144 ms thay vì 292–399 ms** (ngưỡng 300 ms), 0 % lỗi; với 1 user mọi endpoint 26–30 ms (p50). Rủi ro mới: build config cache của Laravel làm tắt lại kết nối persistent (API-06).
 
@@ -68,11 +68,38 @@ Nothing builds the config cache today, so the running stack is not affected. P4-
 
 > 🇻🇳 `config:cache` chạy ở CLI nên ghi `false` cho `ATTR_PERSISTENT` vào cache, khiến mọi request web sau đó không dùng kết nối persistent (DB 17–26 ms thay vì 3–5; 10 user chỉ còn 57 req/s, p95 > 300 ms). Hiện chưa có gì build cache nên stack đang chạy không bị ảnh hưởng; P4-03 sẽ dính. Đã thêm task API-06 cho lane `api`; P4-03 phải chờ.
 
+### Follow-up 2026-10-09: fixed by API-06 (PERF-05)
+
+API-06 (`3815730`) takes persistence from `DB_PERSISTENT` alone and switches it off for PHPUnit in `phpunit.xml`. Measured on `80c59e8` (no uncommitted change under `laravel-api/`; lane `infra` had uncommitted Docker hardening in the tree, which the throwaway `php -S` server does not use):
+
+- Every cached build now holds `ATTR_PERSISTENT: true`. `perf_build_caches` (`perf/lib.sh`) prints it each time, so a regression shows in every run.
+- `perf/profile.sh`, server side, 1 user, PHP / database ms (medians):
+
+| Request | `mount` (no caches) | `mount-cached` | `mount-cached-novalidate` | `copy-cached` |
+|---|---|---|---|---|
+| `GET public/skills` | 18.3 / 2.8 | 16.5 / 2.9 | 12.9 / 2.6 | 15.3 / 2.7 |
+| `GET public/skills` with session | 22.3 / 3.4 | 20.2 / 3.5 | 16.2 / 3.1 | 19.2 / 3.2 |
+| `GET admin/search?q=postgresql` | 17.9 / 4.9 | 15.8 / 4.9 | 12.1 / 4.5 | 15.0 / 4.6 |
+| `GET admin/search?q=postgersql` | 37.8 / 23.8 | 36.7 / 24.9 | 31.2 / 22.7 | 34.1 / 22.5 |
+
+  Database time with caches is 2.6–4.9 ms (typo search ~23 ms, its query) instead of 17–26 ms. Caches now save PHP time on top: 2 ms per request, 5–6 ms with `opcache.validate_timestamps=0` (production images, P4-03).
+- 10-user load, `PERF_CACHED=1 scripts/perf-baseline.sh load` (new switch: the same caches before the server starts) against the default, in pairs run back to back:
+
+| Pair | Requests/s, no caches → caches | p95 range of the four endpoints, no caches → caches |
+|---|---|---|
+| 1 | 119 → 99 | 126–141 → 168–189 |
+| 2 | 58\* → 140 | 175–196 → 109–125 |
+| 3 | 85 → 89 | 189–211 → 189–212 |
+
+  0 % errors in all six runs, every p95 under 300 ms. \* One request hung for 67 s (host stall) and stretched that run. Other lanes shared the host (pair 3 waited for another lane's Docker run), so runs differ by up to ±25 %. Which side is faster flips from pair to pair, so caches neither add nor cost throughput at this load, and the 57 requests/s with p95 > 300 ms from the cached server before API-06 is gone.
+
+> 🇻🇳 Đã sửa bởi API-06. Mọi lần build cache giờ giữ `ATTR_PERSISTENT: true` (`perf_build_caches` in ra mỗi lần chạy). Có cache: DB 2,6–4,9 ms/request thay vì 17–26 ms, PHP còn nhanh hơn 2 ms (5–6 ms khi tắt `validate_timestamps`). Tải 10 user theo cặp (không cache → có cache): 119 → 99, 58\* → 140, 85 → 89 req/s; 0 % lỗi, mọi p95 < 300 ms. Máy chạy chung nên lệch tới ±25 %, nhưng không còn tình trạng 57 req/s, p95 > 300 ms như trước API-06. Thêm công tắc `PERF_CACHED=1` cho `scripts/perf-baseline.sh`.
+
 ## Limits
 
 - The baseline ran on seed v1, this one on seed v2 (PERF-02): search terms are spread differently, the worst-case term (`postgresql`, 25 %) is the same. Public and list endpoints do not depend on the seed's word spread.
 - One host for k6, PHP and PostgreSQL; other lanes' sessions may have used the CPU; the three load runs differ by ±8 %.
 - Built-in PHP server, not php-fpm; repeat on the production images in P4.
-- `perf/profile.sh` lost its "persistent connections patched into a copy" variant and the load run on it: persistence is in the code now. Its cached variants measure the API-06 problem until that is fixed.
+- `perf/profile.sh` lost its "persistent connections patched into a copy" variant and the load run on it: persistence is in the code now. Since API-06 its cached variants keep persistence (follow-up above).
 
 > 🇻🇳 Giới hạn: baseline cũ chạy seed v1, lần này seed v2 (từ khóa xấu nhất giữ nguyên); một máy chạy chung, ba lần đo tải lệch ±8 %; dùng server có sẵn của PHP, cần đo lại trên image production ở P4.
