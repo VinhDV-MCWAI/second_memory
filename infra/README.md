@@ -46,14 +46,14 @@ Built by `build-images.sh` from the `production` targets of `docker/laravel/Dock
 
 | Image | Before | After (P4-03, `9c64d56`) |
 |---|---|---|
-| `sm-api` | 1 600 MB (v2.0.0: 1 802 MB) | **493 MB** (target ≤ 500 MB; ~285 MB once API-08 drops the unused `google/apiclient`, 210 MB of `vendor/`) |
+| `sm-api` | 1 600 MB (v2.0.0: 1 802 MB) | 493 MB (target ≤ 500 MB) → **242 MB** after API-08 (`99a814b`) dropped the unused `google/apiclient` (210 MB of `vendor/`) |
 | `sm-nextjs-fe` | 307 MB | 307 MB (base image + standalone bundle, nothing left to cut cheaply) |
 | `sm-nextjs-docs` | – (no production build) | 300 MB |
 | dev `ml-php` (side effect, same base stage) | 937 MB | 252 MB |
 
 Checked on a throwaway network with the dev nginx config: `/health` 200, `/api/public/skills` 200, `/api/sanctum/csrf-cookie` 204, `/docs` 200, admin login page 200, no `localhost:8000` left in the admin bundle; the docs `/skills` list shows a public skill and hides a private one (its detail page 404). `/skills` through the proxy waits for OPS-04.
 
-> 🇻🇳 Image production (P4-03): API biên dịch extension rồi xoá header/trình biên dịch trong cùng một layer, Composer chạy ở stage riêng, file gán owner ngay khi copy (bỏ layer `chown` 291 MB); entrypoint chạy `php artisan optimize` **lúc container khởi động** theo env của chính nó rồi mới `exec` lệnh, nên cache luôn khớp môi trường; dev không có cache. Admin và docs nhúng `NEXT_PUBLIC_API_URL=/api` (cùng origin) nên một tag chạy được ở mọi môi trường; docs gọi API phía server qua `API_INTERNAL_URL`. API 1,6 GB → 493 MB (còn ~285 MB sau API-08 gỡ `google/apiclient` không dùng), docs 300 MB, ml-php dev 937 → 252 MB. `/skills` qua proxy chờ OPS-04.
+> 🇻🇳 Image production (P4-03): API biên dịch extension rồi xoá header/trình biên dịch trong cùng một layer, Composer chạy ở stage riêng, file gán owner ngay khi copy (bỏ layer `chown` 291 MB); entrypoint chạy `php artisan optimize` **lúc container khởi động** theo env của chính nó rồi mới `exec` lệnh, nên cache luôn khớp môi trường; dev không có cache. Admin và docs nhúng `NEXT_PUBLIC_API_URL=/api` (cùng origin) nên một tag chạy được ở mọi môi trường; docs gọi API phía server qua `API_INTERNAL_URL`. API 1,6 GB → 493 MB, rồi 242 MB sau API-08 (gỡ `google/apiclient` không dùng), docs 300 MB, ml-php dev 937 → 252 MB. `/skills` qua proxy chờ OPS-04.
 
 ## Limits until later P4 tasks
 
