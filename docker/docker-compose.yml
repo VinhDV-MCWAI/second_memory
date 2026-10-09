@@ -89,13 +89,6 @@ services:
       APP_ENV: local
       APP_DEBUG: "true"
       SEED_DB: ${SEED_DB:-false}
-      REVERB_APP_ID: ${REVERB_APP_ID}
-      REVERB_APP_KEY: ${REVERB_APP_KEY}
-      REVERB_APP_SECRET: ${REVERB_APP_SECRET}
-      REVERB_SERVER_HOST: ${REVERB_SERVER_HOST}
-      REVERB_PORT: ${REVERB_PORT}
-      REVERB_SCHEME: ${REVERB_SCHEME}
-      BROADCAST_CONNECTION: ${BROADCAST_CONNECTION}
     depends_on:
       ml-postgres:
         condition: service_healthy
@@ -119,119 +112,6 @@ services:
         reservations:
           memory: 512M
           cpus: "2"
-
-  # Laravel Reverb (WebSocket Server)
-  ml-reverb:
-    container_name: ml-reverb
-    build:
-      context: ../laravel-api
-      dockerfile: ../docker/laravel/Dockerfile
-      target: development
-    restart: unless-stopped
-    working_dir: /var/www/laravel-api
-    command: php artisan reverb:start --debug
-    volumes:
-      - ../laravel-api:/var/www/laravel-api
-      - ./laravel/php.ini:/usr/local/etc/php/conf.d/custom.ini:ro
-      - ./laravel/docker-entrypoint.sh:/usr/local/bin/docker-entrypoint.sh:ro
-    environment:
-      DB_CONNECTION: pgsql
-      DB_HOST: ${POSTGRES_HOST_INSIDE_ENV}
-      DB_PORT: ${POSTGRES_PORT_INSIDE_ENV}
-      DB_DATABASE: ${POSTGRES_DB}
-      DB_USERNAME: ${POSTGRES_USER}
-      DB_PASSWORD: ${POSTGRES_PASSWORD}
-      REDIS_HOST: ${REDIS_HOST_INSIDE_ENV}
-      REDIS_PORT: ${REDIS_PORT_INSIDE_ENV}
-      REDIS_PASSWORD: ${REDIS_PASSWORD}
-      APP_ENV: local
-      APP_DEBUG: "true"
-      REVERB_APP_ID: ${REVERB_APP_ID}
-      REVERB_APP_KEY: ${REVERB_APP_KEY}
-      REVERB_APP_SECRET: ${REVERB_APP_SECRET}
-      REVERB_HOST: ${REVERB_HOST}
-      REVERB_PORT: ${REVERB_PORT}
-      REVERB_SCHEME: ${REVERB_SCHEME}
-    ports:
-      - "${REVERB_PORT_OUTSIDE_ENV}:${REVERB_PORT}"
-    healthcheck:
-      test: ["CMD", "php", "-r", "exit(@fsockopen('127.0.0.1', (int) getenv('REVERB_PORT')) ? 0 : 1);"]
-      interval: 30s
-      timeout: 5s
-      retries: 3
-      start_period: 90s
-    depends_on:
-      ml-postgres:
-        condition: service_healthy
-      ml-redis:
-        condition: service_healthy
-      ml-php:
-        condition: service_healthy
-    networks:
-      - app-network
-    deploy:
-      resources:
-        limits:
-          memory: 512M
-
-  # Laravel Queue Worker
-  ml-queue:
-    container_name: ml-queue
-    build:
-      context: ../laravel-api
-      dockerfile: ../docker/laravel/Dockerfile
-      target: development
-    restart: unless-stopped
-    working_dir: /var/www/laravel-api
-    command: php artisan queue:work --verbose --tries=3 --timeout=900
-    healthcheck:
-      test: ["CMD-SHELL", "pgrep -f 'artisan queue:work' >/dev/null"]
-      interval: 30s
-      timeout: 5s
-      retries: 3
-      start_period: 90s
-    volumes:
-      - ../laravel-api:/var/www/laravel-api
-      - ./laravel/php.ini:/usr/local/etc/php/conf.d/custom.ini:ro
-      - ./laravel/docker-entrypoint.sh:/usr/local/bin/docker-entrypoint.sh:ro
-    environment:
-      DB_CONNECTION: pgsql
-      DB_HOST: ${POSTGRES_HOST_INSIDE_ENV}
-      DB_PORT: ${POSTGRES_PORT_INSIDE_ENV}
-      DB_DATABASE: ${POSTGRES_DB}
-      DB_USERNAME: ${POSTGRES_USER}
-      DB_PASSWORD: ${POSTGRES_PASSWORD}
-      REDIS_HOST: ${REDIS_HOST_INSIDE_ENV}
-      REDIS_PORT: ${REDIS_PORT_INSIDE_ENV}
-      REDIS_PASSWORD: ${REDIS_PASSWORD}
-      APP_ENV: local
-      APP_DEBUG: "true"
-      REVERB_APP_ID: ${REVERB_APP_ID}
-      REVERB_APP_KEY: ${REVERB_APP_KEY}
-      REVERB_APP_SECRET: ${REVERB_APP_SECRET}
-      REVERB_SERVER_HOST: ${REVERB_SERVER_HOST}
-      REVERB_PORT: ${REVERB_PORT}
-      REVERB_SCHEME: ${REVERB_SCHEME}
-      BROADCAST_CONNECTION: ${BROADCAST_CONNECTION}
-    depends_on:
-      ml-postgres:
-        condition: service_healthy
-      ml-redis:
-        condition: service_healthy
-      ml-php:
-        condition: service_healthy
-      ml-minio-init:
-        condition: service_completed_successfully
-    networks:
-      - app-network
-    deploy:
-      resources:
-        limits:
-          memory: 1G
-          cpus: "2"
-        reservations:
-          memory: 256M
-          cpus: "1"
 
   # Next.js Frontend
   ml-nextjs:

@@ -68,7 +68,7 @@ if $TEST_MODE; then
   echo "=== TEST restore into database $DB_NAME${BUCKET:+ and bucket $BUCKET} (live data untouched) ==="
 else
   echo "=== FULL restore into $DB_NAME / $BUCKET (overwrites live data) ==="
-  running=$(docker ps --format '{{.Names}}' | grep -E '^ml-(php|reverb|queue|nextjs)' || true)
+  running=$(docker ps --format '{{.Names}}' | grep -E '^ml-(php|nextjs)' || true)
   if [ -n "$running" ] && ! $ASSUME_YES; then
     echo "Application containers are running (put the site in maintenance first):"
     echo "$running"
@@ -151,6 +151,6 @@ set +a
 # The restored role may carry an older password than the restored docker/.env
 docker exec -e NEW_PASSWORD="$POSTGRES_PASSWORD" "$PG_CONTAINER" sh -c \
   "psql -U \"\$POSTGRES_USER\" -d postgres -v ON_ERROR_STOP=1 -qc \"ALTER USER \\\"\$POSTGRES_USER\\\" WITH PASSWORD '\$NEW_PASSWORD'\""
-"${COMPOSE[@]}" up -d --force-recreate ml-php ml-reverb ml-queue ml-redis
+"${COMPOSE[@]}" up -d --force-recreate ml-php ml-redis
 docker exec ml-php php artisan config:clear
 echo "Done in ${SECONDS}s. Check the site, then end maintenance mode."

@@ -42,13 +42,13 @@ Without an archive argument the newest backup on the first remote is downloaded 
 
 ### Full restore (disaster recovery)
 
-1. Maintenance mode: stop traffic at nginx, stop the app containers (`docker compose -f docker/docker-compose.yml stop ml-php ml-reverb ml-queue ml-nextjs ml-nextjs-docs`).
+1. Maintenance mode: stop traffic at nginx, stop the app containers (`docker compose -f docker/docker-compose.yml stop ml-php ml-nextjs ml-nextjs-docs`).
 2. Make sure `ml-postgres` and `ml-minio` run: `docker compose -f docker/docker-compose.yml up -d ml-postgres ml-minio`.
 3. Restore (newest cloud backup, or pass the archive path):
    ```bash
    bash backup/restore.sh [backups/history/system_backup_<timestamp>.tar.gz]
    ```
-   The database restore runs in **one transaction** (`--clean --if-exists --single-transaction`): on any error nothing is changed and the script stops, so the old data is still there. Then it puts back `docker/.env`, runs `setup-env.sh`, re-syncs the database role password and recreates `ml-php`, `ml-reverb`, `ml-queue`, `ml-redis`.
+   The database restore runs in **one transaction** (`--clean --if-exists --single-transaction`): on any error nothing is changed and the script stops, so the old data is still there. Then it puts back `docker/.env`, runs `setup-env.sh`, re-syncs the database role password and recreates `ml-php` and `ml-redis`.
 4. Start the rest (`docker compose -f docker/docker-compose.yml up -d`), check the site, end maintenance mode.
 
 > 🇻🇳 Các bước: (1) backup — `backup.sh` (đẩy cloud) hoặc `--local-only`; chỉ xoá file cục bộ khi mọi remote đã nhận. (2) Khôi phục thử — `restore.sh <file> --target-db restore_check --target-bucket restore-check`, không đụng dữ liệu thật. (3) Khôi phục thật — bật bảo trì, dừng container ứng dụng, chạy `restore.sh` (DB khôi phục trong một transaction: lỗi thì không đổi gì), rồi khởi động lại và kiểm tra.

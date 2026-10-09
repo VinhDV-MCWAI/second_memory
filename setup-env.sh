@@ -41,8 +41,6 @@ generate_and_inject POSTGRES_PASSWORD hex
 generate_and_inject REDIS_PASSWORD hex
 generate_and_inject MINIO_ROOT_PASSWORD hex
 generate_and_inject MINIO_IAM_PASSWORD hex
-generate_and_inject REVERB_APP_KEY hex
-generate_and_inject REVERB_APP_SECRET hex
 generate_and_inject LARAVEL_APP_KEY base64
 
 # Now source the variables so we can inject them into sub-projects
@@ -68,8 +66,6 @@ if [ -f "$LARAVEL_ENV_EXAMPLE" ]; then
     sed -i "s|^REDIS_PASSWORD=.*|REDIS_PASSWORD=${REDIS_PASSWORD}|" "$LARAVEL_ENV"
     sed -i "s|^AWS_ACCESS_KEY_ID=.*|AWS_ACCESS_KEY_ID=${MINIO_IAM_USER}|" "$LARAVEL_ENV"
     sed -i "s|^AWS_SECRET_ACCESS_KEY=.*|AWS_SECRET_ACCESS_KEY=${MINIO_IAM_PASSWORD}|" "$LARAVEL_ENV"
-    sed -i "s|^REVERB_APP_KEY=.*|REVERB_APP_KEY=${REVERB_APP_KEY}|" "$LARAVEL_ENV"
-    sed -i "s|^REVERB_APP_SECRET=.*|REVERB_APP_SECRET=${REVERB_APP_SECRET}|" "$LARAVEL_ENV"
     
     # Inject Laravel security variables
     sed -i "s|^APP_KEY=.*|APP_KEY=${LARAVEL_APP_KEY}|" "$LARAVEL_ENV"
@@ -84,7 +80,6 @@ NEXTJS_FE_ENV="$ROOT_DIR/nextjs-fe/.env"
 if [ -f "$ROOT_DIR/nextjs-fe/.tenv.example" ]; then
     rm -f "$NEXTJS_FE_ENV"
     cp "$ROOT_DIR/nextjs-fe/.tenv.example" "$NEXTJS_FE_ENV"
-    sed -i "s|^NEXT_PUBLIC_REVERB_APP_KEY=.*|NEXT_PUBLIC_REVERB_APP_KEY=${REVERB_APP_KEY}|" "$NEXTJS_FE_ENV"
     sed -i "s|^NEXT_PUBLIC_API_URL=.*|NEXT_PUBLIC_API_URL=http://localhost:${NGINX_PORT_OUTSIDE_ENV}/api|" "$NEXTJS_FE_ENV"
     echo "   - nextjs-fe/.env updated from master configuration."
 fi
@@ -106,7 +101,7 @@ if [ -n "$RUNNING_CONTAINERS" ]; then
     echo ""
     echo ">> [CẢNH BÁO] Hệ thống Docker đang chạy! Các thay đổi về mật khẩu (.env) SẼ KHÔNG có hiệu lực ngay lập tức."
     echo ">> Bạn CẦN thực hiện khởi động lại container để áp dụng cấu hình mới:"
-    echo "   cd docker && docker-compose up -d --force-recreate ml-php ml-reverb ml-queue ml-redis"
+    echo "   docker compose -f docker/docker-compose.yml up -d --force-recreate ml-php ml-redis"
     echo ""
     
     # Optional: Automatically try to sync DB password if postgres is running
