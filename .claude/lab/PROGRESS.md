@@ -248,6 +248,8 @@ Records written in P3 so far: REQ-002 (Ready), RFC-002 (Approved; slice status i
 
 - 2026-10-09 — [lane fe] BUG-03 done: a4d0a5d0 — header: name = first + last name (else user_name), initials avatar, no github.com/shadcn.png, menu shows @user_name · role and Logout now calls logout() (was a dead item, like Profile / Settings, removed); notification bell + Notification type + 5 unused message keys removed; header.test.tsx 4 tests; make verify exit 0 (backend 166, Vitest 74, pytest 63), make e2e green
 
+- 2026-10-09 — [lane infra] BUG-02 done: e0908612 — limit_req_status 429 (http level, both zones; Terraform stack reuses the file). Burst of 65 on :81/api/public/skills: 38×200 + 27×429 (was 25×200 + 40×503); /health, /skills, /docs, / 200. ml-nginx recreated (docker compose up --force-recreate ml-nginx): sed -i had replaced the bind-mounted file and docker restart failed on the stale mount — gotcha added to docker/CLAUDE.md + README
+
 ## Next step
 
 Since 2026-10-08 work runs in **parallel lanes**: the live task list and who is on what is [BOARD.md](BOARD.md) (`scripts/lane.sh status`); start a conversation with `/lane`. When this file and the board disagree on status, the board wins. Lanes `public` (P3-12) and `perf` (P3-16) were already in progress when the board was created.
