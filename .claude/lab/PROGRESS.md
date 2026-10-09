@@ -200,6 +200,8 @@ Records written in P3 so far: REQ-002 (Ready), RFC-002 (Approved; slice status i
 
 - 2026-10-09 — [lane api] API-06 done: 3815730 — ATTR_PERSISTENT from DB_PERSISTENT only (no PHP_SAPI), phpunit.xml forces false; real config:cache now bakes [12 => true] (was false); PersistentConnectionConfigTest (4 tests: suite off, config file in CLI unset/true/false). make verify exit 0 (backend 166, Vitest 70; one cold-start Vitest timeout on the 1st run, green on re-run). P4-03 may build caches; PERF-05 (lane perf) re-measures the cached variants
 
+- 2026-10-09 — [lane api] API-05 done: dbee56b — laravel/reverb (+ pusher, react deps) removed, config/broadcasting.php, config/reverb.php, routes/channels.php, Broadcast::routes gone; config/queue.php sync only; jobs/job_batches/failed_jobs dropped (2026_10_09_100001, up/down/up checked on testing, dev migrated); openapi.json unchanged. Pint, Larastan, backend 166 green; full make verify stopped at openapi/FE steps: ml-nextjs now runs as node (uncommitted P4-02) and pnpm/mkdir get EACCES. ml-reverb restart-loops (no reverb:start) until P4-04 removes ml-queue/ml-reverb; FE-02 added
+
 ## Next step
 
 Since 2026-10-08 work runs in **parallel lanes**: the live task list and who is on what is [BOARD.md](BOARD.md) (`scripts/lane.sh status`); start a conversation with `/lane`. When this file and the board disagree on status, the board wins. Lanes `public` (P3-12) and `perf` (P3-16) were already in progress when the board was created.
