@@ -20,13 +20,12 @@ Mọi thứ không phải code nằm ở đây. Tài liệu viết bằng tiến
 |---|---|---|
 | [plan/](plan/) | Mục tiêu, lộ trình, danh sách việc, prompt cho AI | Khi đổi kế hoạch. Trạng thái việc chỉ đổi bằng `scripts/lane.sh` |
 | [dev-guide.md](dev-guide.md) | Hướng dẫn môi trường dev | Khi có lệnh mới hoặc gặp lỗi mới |
+| [features/](features/) | Mỗi tính năng một file: làm gì, màn hình, API, bảng, ai được dùng | Cùng commit với code làm thay đổi tính năng |
 | [architecture/](architecture/) | `current.md`: kiến trúc hiện tại | Khi đổi container, luồng đăng nhập, cấu trúc dữ liệu |
 | [adr/](adr/) | Các quyết định kỹ thuật, mỗi quyết định một file. Đã "Accepted" thì không sửa, muốn đổi thì viết quyết định mới | Khi có một lựa chọn thật sự giữa nhiều phương án |
 | [releases/](releases/) | Ghi chú phát hành theo từng phiên bản | Khi gắn tag phiên bản mới |
 | [runbooks/](runbooks/) | Hướng dẫn vận hành từng bước: sao lưu và khôi phục, xuất nội dung, nhập từ Obsidian | Khi đổi script vận hành |
 | [archive/](archive/) | Tài liệu cũ, giữ để tra lịch sử, không cập nhật nữa | Không sửa |
-
-Sắp có: `features/`, mỗi tính năng một file (việc "Mô tả từng tính năng").
 
 ## Tài liệu cũ trong archive
 
