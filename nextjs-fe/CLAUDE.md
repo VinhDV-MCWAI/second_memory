@@ -22,6 +22,7 @@ docker exec ml-nextjs pnpm format:check    # Prettier (.prettierrc.json, same as
 - `src/shared/types`, `src/shared/enums`, `src/shared/config` — UI types, enums mirrored from the backend, constants.
 - `src/components/ui` — shadcn primitives (generated; edit sparingly). `src/components/common` reusable widgets, `src/components/layout`. Feature code lives in `src/features/{history,ledger,master}`.
 - i18n: `messages/en.json` via next-intl; every user-facing string goes through `useTranslations`.
+- Permissions (ADR-0013): `usePermissions().can('<feature>.<action>')` reads `user.permissions` from `credential/me`. `ResourceListPage` derives the feature from its endpoint's last segment and hides create / edit / delete (and row selection) without `store` / `update` / `delete`; menu entries carry a `permission` and `filterMenu` drops the rest (`src/shared/utils/permissions.ts`). Hiding is cosmetic, the API answers 403. Roles screen: `app/admin/roles` + `features/master/components/{role-form,permission-matrix}.tsx`.
 
 ## API contract
 

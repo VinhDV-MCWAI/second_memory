@@ -20,7 +20,9 @@ Mỗi API quản trị là một quyền, cấp qua vai trò ([phân quyền đ�
 | Vai trò | Xem | Thêm / sửa / xóa |
 |---|---|---|
 | Chủ (`owner`) | Được | Được |
-| Chỉ xem (`viewer`) | Được | Không: API trả 403. Giao diện chưa ẩn nút, bấm vào thì báo lỗi |
+| Chỉ xem (`viewer`) | Được | Không: API trả 403, giao diện ẩn các nút Thêm / Sửa / Xóa |
+
+Vai trò tự tạo trên màn hình Vai trò chỉ thấy menu và nút ứng với quyền đã tick.
 
 | Mã lỗi | Nghĩa |
 |---|---|

@@ -2,7 +2,19 @@
 
 Mỗi API của trang quản trị là một **quyền**. Quyền được gom vào **vai trò**, vai trò được gán cho quản trị viên. Vai trò và quyền lưu trong DB, nên thêm hay sửa vai trò không phải sửa code. Quyết định thiết kế: [ADR-0013](../adr/0013-dynamic-permissions.md). Làm bằng thư viện `spatie/laravel-permission`.
 
-Trạng thái: **backend và API xong**. Form quản trị viên đã chọn được nhiều vai trò. Chưa có màn hình quản lý vai trò và ma trận quyền; menu và nút chưa ẩn theo quyền (bước tiếp theo của giai đoạn phân quyền động).
+Trạng thái: **xong** (backend, API, giao diện).
+
+## Màn hình
+
+| Địa chỉ | Làm gì |
+|---|---|
+| http://localhost:81/admin/roles (menu "Master Data" → "Roles") | Bảng vai trò: tên, loại (có sẵn / tự tạo), số quyền, số admin đang giữ. Thêm, sửa, xóa |
+| Form vai trò | Tên + **ma trận quyền**: mỗi hàng là một chức năng, các cột Xem / Thêm / Sửa / Xóa, cột "Khác" cho việc riêng (nhập Obsidian, tìm kiếm, tổng quan). Ô đầu hàng tick cả hàng. Vai trò Chủ chỉ hiện dòng "luôn có toàn quyền". Phía dưới có lịch sử thay đổi |
+| Form quản trị viên | Ô "Roles": tick nhiều vai trò. Để trống khi thêm mới thì tài khoản là Chỉ xem |
+| Menu bên trái | Chỉ hiện mục mà admin có quyền xem (`*.list`); nhóm không còn mục nào thì ẩn cả nhóm |
+| Mọi trang danh sách | Nút Thêm, Sửa, Xóa, chọn nhiều để xóa chỉ hiện khi có quyền `store` / `update` / `delete` của chức năng đó |
+
+Giao diện chỉ ẩn những gì API sẽ từ chối; API vẫn là nơi kiểm tra thật (403).
 
 ## Quyền là gì
 
