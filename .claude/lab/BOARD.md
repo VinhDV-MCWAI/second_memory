@@ -22,7 +22,7 @@ Phạm vi: cả repo. Mỗi lúc chỉ làm một việc.
 |---|---|---|---|---|
 | NEN-01 | Tài liệu môi trường dev | [dev-guide.md](../../docs/dev-guide.md) | – | done 2026-10-09: docs/dev-guide.md |
 | NEN-02 | Kế hoạch mới, quy ước tài liệu, quyết định đổi hướng, chuyển kế hoạch cũ vào archive | [ADR-0012](../../docs/adr/0012-restore-features-dev-first.md) | – | done 2026-10-09: docs/plan/, ADR-0012 |
-| NEN-03 | Dọn thư mục gốc: xóa `start.sh`, chuyển `setup-env.sh` vào `scripts/`, sửa Makefile, README, tài liệu nhắc tới hai file đó | [backlog §1](../../docs/plan/03-backlog.md) | NEN-02 | todo |
+| NEN-03 | Dọn thư mục gốc: xóa `start.sh`, chuyển `setup-env.sh` vào `scripts/`, sửa Makefile, README, tài liệu nhắc tới hai file đó | [backlog §1](../../docs/plan/03-backlog.md) | NEN-02 | done 2026-10-13: 42ce9580, 774c59da — setup-env.sh chuyển vào scripts/, xóa start.sh, sửa mọi chỗ nhắc tới |
 | NEN-04 | Rút gọn `docs/` và viết lại `docs/README.md` bằng tiếng Việt. **[XÁC NHẬN]** danh sách file giữ / chuyển vào archive trước khi chuyển | [backlog §1](../../docs/plan/03-backlog.md) | NEN-03 | todo |
 | NEN-05 | Mỗi tính năng hiện có một file trong `docs/features/` | [backlog §1](../../docs/plan/03-backlog.md) | NEN-04 | todo |
 | NEN-06 | Dọn `.claude/`: bỏ các vai giả lập, skill làm việc theo luồng mới, cập nhật rules và CLAUDE.md. **[XÁC NHẬN]** danh sách file xóa | [backlog §1](../../docs/plan/03-backlog.md) | NEN-04 | todo |
