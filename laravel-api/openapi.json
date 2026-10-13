@@ -19,7 +19,7 @@
     "paths": {
         "/admin/admin-mst/list": {
             "get": {
-                "operationId": "adminMst.list",
+                "operationId": "admin-mst.list",
                 "tags": [
                     "AdminMst"
                 ],
@@ -339,7 +339,7 @@
         },
         "/admin/admin-mst/store": {
             "post": {
-                "operationId": "adminMst.store",
+                "operationId": "admin-mst.store",
                 "summary": "Store admin mst",
                 "tags": [
                     "AdminMst"
@@ -414,7 +414,7 @@
         },
         "/admin/admin-mst/update/{id}": {
             "put": {
-                "operationId": "adminMst.update",
+                "operationId": "admin-mst.update",
                 "summary": "Update admin mst",
                 "tags": [
                     "AdminMst"
@@ -509,7 +509,7 @@
         },
         "/admin/admin-mst/delete": {
             "post": {
-                "operationId": "adminMst.delete",
+                "operationId": "admin-mst.delete",
                 "summary": "Delete admin mst",
                 "tags": [
                     "AdminMst"
@@ -584,7 +584,7 @@
         },
         "/admin/audit-log/list": {
             "get": {
-                "operationId": "auditLog.list",
+                "operationId": "audit-log.list",
                 "summary": "Audit log, newest first by default (read-only, ADR-0006)",
                 "tags": [
                     "AuditLog"
@@ -1690,7 +1690,7 @@
         },
         "/admin/evidence/import": {
             "post": {
-                "operationId": "evidenceImport.import",
+                "operationId": "evidence.import",
                 "description": "Called by the importer CLI with an API token that has the `evidence:import` ability, or by the owner's session.",
                 "summary": "Sync the complete list of published Obsidian notes (idempotent; `dry_run` only counts)",
                 "tags": [
@@ -1803,7 +1803,7 @@
         },
         "/admin/learning-goal/list": {
             "get": {
-                "operationId": "learningGoal.list",
+                "operationId": "learning-goal.list",
                 "tags": [
                     "LearningGoal"
                 ],
@@ -1964,7 +1964,7 @@
         },
         "/admin/learning-goal/store": {
             "post": {
-                "operationId": "learningGoal.store",
+                "operationId": "learning-goal.store",
                 "summary": "Create an open goal; the target must be above the current level",
                 "tags": [
                     "LearningGoal"
@@ -2039,7 +2039,7 @@
         },
         "/admin/learning-goal/update/{id}": {
             "put": {
-                "operationId": "learningGoal.update",
+                "operationId": "learning-goal.update",
                 "summary": "Update a goal (status open or dropped; achieved goals: date and note only)",
                 "tags": [
                     "LearningGoal"
@@ -2133,7 +2133,7 @@
         },
         "/admin/learning-goal/delete": {
             "post": {
-                "operationId": "learningGoal.delete",
+                "operationId": "learning-goal.delete",
                 "tags": [
                     "LearningGoal"
                 ],
@@ -2366,7 +2366,7 @@
         },
         "/admin/search": {
             "get": {
-                "operationId": "search.search",
+                "operationId": "search.query",
                 "summary": "Search skills, goals and evidence (accents and case ignored; typo fallback when nothing matches)",
                 "tags": [
                     "Search"
@@ -2965,7 +2965,7 @@
         },
         "/admin/skill-level/list": {
             "get": {
-                "operationId": "skillLevel.list",
+                "operationId": "skill-level.list",
                 "tags": [
                     "SkillLevel"
                 ],
@@ -3110,7 +3110,7 @@
         },
         "/admin/skill-level/store": {
             "post": {
-                "operationId": "skillLevel.store",
+                "operationId": "skill-level.store",
                 "summary": "Record a level change; open goals reached by it become achieved",
                 "tags": [
                     "SkillLevel"

@@ -26,14 +26,15 @@ Route::prefix('admin')
             ->group(function () {
                 Route::middleware('auth.admin')
                     ->group(function () {
-                        Route::get('credential/me', [CredentialController::class, 'me']);
+                        Route::get('credential/me', [CredentialController::class, 'me'])->name('credential.me');
                         Route::group([], base_path('routes/api/master.php'));
                         Route::group([], base_path('routes/api/ledger.php'));
-                        Route::get('audit-log/list', [AuditLogController::class, 'list']);
+                        Route::get('audit-log/list', [AuditLogController::class, 'list'])->name('audit-log.list');
                     });
 
                 // The only route an API token opens (ADR-0010): the Obsidian importer CLI, or the owner's session
                 Route::post('evidence/import', [EvidenceImportController::class, 'import'])
+                    ->name('evidence.import')
                     ->middleware(['auth.admin:'.LedgerConst::IMPORT_ABILITY, 'throttle:'.LedgerConst::IMPORT_RATE_PER_MINUTE.',1']);
             });
     });

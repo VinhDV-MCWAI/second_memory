@@ -11,7 +11,7 @@ export interface paths {
       path?: never;
       cookie?: never;
     };
-    get: operations['adminMst.list'];
+    get: operations['admin-mst.list'];
     put?: never;
     post?: never;
     delete?: never;
@@ -30,7 +30,7 @@ export interface paths {
     get?: never;
     put?: never;
     /** Store admin mst */
-    post: operations['adminMst.store'];
+    post: operations['admin-mst.store'];
     delete?: never;
     options?: never;
     head?: never;
@@ -46,7 +46,7 @@ export interface paths {
     };
     get?: never;
     /** Update admin mst */
-    put: operations['adminMst.update'];
+    put: operations['admin-mst.update'];
     post?: never;
     delete?: never;
     options?: never;
@@ -64,7 +64,7 @@ export interface paths {
     get?: never;
     put?: never;
     /** Delete admin mst */
-    post: operations['adminMst.delete'];
+    post: operations['admin-mst.delete'];
     delete?: never;
     options?: never;
     head?: never;
@@ -79,7 +79,7 @@ export interface paths {
       cookie?: never;
     };
     /** Audit log, newest first by default (read-only, ADR-0006) */
-    get: operations['auditLog.list'];
+    get: operations['audit-log.list'];
     put?: never;
     post?: never;
     delete?: never;
@@ -252,7 +252,7 @@ export interface paths {
      * Sync the complete list of published Obsidian notes (idempotent; `dry_run` only counts)
      * @description Called by the importer CLI with an API token that has the `evidence:import` ability, or by the owner's session.
      */
-    post: operations['evidenceImport.import'];
+    post: operations['evidence.import'];
     delete?: never;
     options?: never;
     head?: never;
@@ -266,7 +266,7 @@ export interface paths {
       path?: never;
       cookie?: never;
     };
-    get: operations['learningGoal.list'];
+    get: operations['learning-goal.list'];
     put?: never;
     post?: never;
     delete?: never;
@@ -285,7 +285,7 @@ export interface paths {
     get?: never;
     put?: never;
     /** Create an open goal; the target must be above the current level */
-    post: operations['learningGoal.store'];
+    post: operations['learning-goal.store'];
     delete?: never;
     options?: never;
     head?: never;
@@ -301,7 +301,7 @@ export interface paths {
     };
     get?: never;
     /** Update a goal (status open or dropped; achieved goals: date and note only) */
-    put: operations['learningGoal.update'];
+    put: operations['learning-goal.update'];
     post?: never;
     delete?: never;
     options?: never;
@@ -318,7 +318,7 @@ export interface paths {
     };
     get?: never;
     put?: never;
-    post: operations['learningGoal.delete'];
+    post: operations['learning-goal.delete'];
     delete?: never;
     options?: never;
     head?: never;
@@ -367,7 +367,7 @@ export interface paths {
       cookie?: never;
     };
     /** Search skills, goals and evidence (accents and case ignored; typo fallback when nothing matches) */
-    get: operations['search.search'];
+    get: operations['search.query'];
     put?: never;
     post?: never;
     delete?: never;
@@ -449,7 +449,7 @@ export interface paths {
       path?: never;
       cookie?: never;
     };
-    get: operations['skillLevel.list'];
+    get: operations['skill-level.list'];
     put?: never;
     post?: never;
     delete?: never;
@@ -468,7 +468,7 @@ export interface paths {
     get?: never;
     put?: never;
     /** Record a level change; open goals reached by it become achieved */
-    post: operations['skillLevel.store'];
+    post: operations['skill-level.store'];
     delete?: never;
     options?: never;
     head?: never;
@@ -1005,7 +1005,7 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
-  'adminMst.list': {
+  'admin-mst.list': {
     parameters: {
       query?: {
         id?: number | null;
@@ -1068,7 +1068,7 @@ export interface operations {
       422: components['responses']['ValidationException'];
     };
   };
-  'adminMst.store': {
+  'admin-mst.store': {
     parameters: {
       query?: never;
       header?: never;
@@ -1109,7 +1109,7 @@ export interface operations {
       422: components['responses']['ValidationException'];
     };
   };
-  'adminMst.update': {
+  'admin-mst.update': {
     parameters: {
       query?: never;
       header?: never;
@@ -1161,7 +1161,7 @@ export interface operations {
       422: components['responses']['ValidationException'];
     };
   };
-  'adminMst.delete': {
+  'admin-mst.delete': {
     parameters: {
       query?: never;
       header?: never;
@@ -1202,7 +1202,7 @@ export interface operations {
       422: components['responses']['ValidationException'];
     };
   };
-  'auditLog.list': {
+  'audit-log.list': {
     parameters: {
       query?: {
         id?: number | null;
@@ -1650,7 +1650,7 @@ export interface operations {
       422: components['responses']['ValidationException'];
     };
   };
-  'evidenceImport.import': {
+  'evidence.import': {
     parameters: {
       query?: never;
       header?: never;
@@ -1706,7 +1706,7 @@ export interface operations {
       };
     };
   };
-  'learningGoal.list': {
+  'learning-goal.list': {
     parameters: {
       query?: {
         id?: number | null;
@@ -1756,7 +1756,7 @@ export interface operations {
       422: components['responses']['ValidationException'];
     };
   };
-  'learningGoal.store': {
+  'learning-goal.store': {
     parameters: {
       query?: never;
       header?: never;
@@ -1797,7 +1797,7 @@ export interface operations {
       422: components['responses']['ValidationException'];
     };
   };
-  'learningGoal.update': {
+  'learning-goal.update': {
     parameters: {
       query?: never;
       header?: never;
@@ -1849,7 +1849,7 @@ export interface operations {
       422: components['responses']['ValidationException'];
     };
   };
-  'learningGoal.delete': {
+  'learning-goal.delete': {
     parameters: {
       query?: never;
       header?: never;
@@ -1977,7 +1977,7 @@ export interface operations {
       };
     };
   };
-  'search.search': {
+  'search.query': {
     parameters: {
       query: {
         q: string;
@@ -2220,7 +2220,7 @@ export interface operations {
       422: components['responses']['ValidationException'];
     };
   };
-  'skillLevel.list': {
+  'skill-level.list': {
     parameters: {
       query: {
         id?: number | null;
@@ -2269,7 +2269,7 @@ export interface operations {
       422: components['responses']['ValidationException'];
     };
   };
-  'skillLevel.store': {
+  'skill-level.store': {
     parameters: {
       query?: never;
       header?: never;

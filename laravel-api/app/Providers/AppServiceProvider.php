@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Providers;
 
-use App\Constants\CommonVal;
 use App\Constants\LedgerConst;
 use App\Enums\AdminRole;
 use App\Models\Master\AdminMst;
@@ -54,8 +53,8 @@ class AppServiceProvider extends ServiceProvider
         Sanctum::authenticateAccessTokensUsing(fn (PersonalAccessToken $token, bool $isValid): bool => $isValid
             && $token->tokenable instanceof AdminMst && ! $token->tokenable->isDeleted() && $token->tokenable->isActive());
 
-        // Roles (ADR-0005): only an owner may change data; checked by AdminMiddleware for non-read requests
-        Gate::define(CommonVal::GATE_WRITE, fn (AdminMst $admin): bool => $admin->role === AdminRole::OWNER);
+        // Dynamic permissions (ADR-0013): the owner role passes every check, so it can never lock itself out
+        Gate::before(fn (mixed $admin): ?bool => $admin instanceof AdminMst && $admin->hasRole(AdminRole::OWNER->value) ? true : null);
 
         RateLimiter::for('public', fn (Request $request): Limit => Limit::perMinute(LedgerConst::PUBLIC_RATE_PER_MINUTE)->by((string) $request->ip()));
 

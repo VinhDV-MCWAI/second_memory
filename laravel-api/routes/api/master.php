@@ -9,8 +9,8 @@ use Illuminate\Support\Facades\Route;
 foreach ([
     'admin-mst' => AdminMstController::class,
 ] as $resource => $controller) {
-    Route::get("{$resource}/list", [$controller, 'list']);
-    Route::post("{$resource}/store", [$controller, 'store']);
-    Route::put("{$resource}/update/{id}", [$controller, 'update']);
-    Route::post("{$resource}/delete", [$controller, 'delete']);
+    Route::get("{$resource}/list", [$controller, 'list'])->name("{$resource}.list");
+    Route::post("{$resource}/store", [$controller, 'store'])->name("{$resource}.store");
+    Route::put("{$resource}/update/{id}", [$controller, 'update'])->name("{$resource}.update");
+    Route::post("{$resource}/delete", [$controller, 'delete'])->name("{$resource}.delete");
 }

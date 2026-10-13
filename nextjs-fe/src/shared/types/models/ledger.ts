@@ -20,4 +20,4 @@ type OkData<Operation> = Operation extends {
   : never;
 
 export type DashboardSummary = OkData<operations['dashboard.summary']>;
-export type SearchResult = OkData<operations['search.search']>;
+export type SearchResult = OkData<operations['search.query']>;

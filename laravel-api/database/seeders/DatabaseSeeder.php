@@ -9,10 +9,12 @@ use Illuminate\Database\Seeder;
 class DatabaseSeeder extends Seeder
 {
     /**
-     * Seed the dev database: the root owner plus sample data (DevSampleSeeder refuses production).
+     * Seed the dev database: permissions for every admin route (ADR-0013), the root owner and
+     * sample data (DevSampleSeeder refuses production).
      */
     public function run(): void
     {
+        $this->command->call('permission:sync-routes');
         $this->call([
             RootAccountSeeder::class,
             DevSampleSeeder::class,
