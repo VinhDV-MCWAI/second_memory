@@ -82,6 +82,9 @@ export function Providers({
             defaultTheme="system"
             enableSystem
             disableTransitionOnChange={false}
+            // RootLayout renders the providers on the client only, so next-themes' anti-flash script
+            // never runs; as a data block it stops React's "Encountered a script tag" warning
+            scriptProps={{ type: 'application/json' }}
           >
             <GlobalLoadingProvider>{children}</GlobalLoadingProvider>
             <Toaster
