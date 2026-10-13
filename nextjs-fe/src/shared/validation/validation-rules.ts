@@ -34,7 +34,7 @@ export const ValidationRules = {
   ADDRESS_MAX: 100,
   PHONE_MAX: 20,
   AVATAR_MAX: 30,
-  ROLE_NAME_MAX: 30,
+  ROLE_NAME_MAX: 50, // laravel-api PermissionConst::ROLE_NAME_MAX
   ROLE_PERMISSION_MAX: 50,
   CODE_MAX: 50,
   ICON_MAX: 50,

@@ -66,6 +66,8 @@ export interface MenuItem {
   icon: LucideIcon;
   href?: string;
   children?: MenuItem[];
+  /** Permission needed to see the entry (ADR-0013); groups show when one child is allowed. */
+  permission?: string;
   badge?: string | number;
   disabled?: boolean;
 }

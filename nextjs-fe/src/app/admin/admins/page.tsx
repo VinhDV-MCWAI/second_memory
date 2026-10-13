@@ -10,6 +10,7 @@ import { API_ENDPOINTS } from '@/shared/api';
 import { enumOptions } from '@/shared/utils/enum-options';
 import { AdminStatusLabels } from '@/shared/enums';
 import { useApiData } from '@/shared/hooks/use-api-data';
+import { usePermissions } from '@/shared/hooks/use-permissions';
 import { SORT_FIELDS } from '@/shared/config';
 import type { AdminMst } from '@/shared/types/api';
 import type { Role } from '@/shared/types/models';
@@ -21,7 +22,11 @@ const ROLE_PAGE_SIZE = 100;
 export default function AdminListPage() {
   const tCommon = useTranslations('common');
   const tFields = useTranslations('fields');
-  const { data: roles } = useApiData<Role>(API_ENDPOINTS.MASTER.ROLE, { per_page: ROLE_PAGE_SIZE });
+  const { can } = usePermissions();
+  const { data: roles } = useApiData<Role>(API_ENDPOINTS.MASTER.ROLE, {
+    per_page: ROLE_PAGE_SIZE,
+    enabled: can('role.list'),
+  });
   const roleOptions = roles.map((role) => ({ value: String(role.id), label: role.name }));
 
   const columns: Column<AdminMst>[] = [

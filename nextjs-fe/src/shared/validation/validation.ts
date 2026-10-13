@@ -111,6 +111,22 @@ export const getTagSchema = (t: Translator) =>
 
 export type TagFormData = z.infer<ReturnType<typeof getTagSchema>>;
 
+// Role schema matching StoreRoleRequest (ADR-0013)
+export const getRoleSchema = (t: Translator) =>
+  z.object({
+    name: z
+      .string()
+      .trim()
+      .min(1, t('roleName.required'))
+      .max(
+        ValidationRules.ROLE_NAME_MAX,
+        t('roleName.maxLength', { max: ValidationRules.ROLE_NAME_MAX }),
+      ),
+    permissions: z.array(z.string()),
+  });
+
+export type RoleFormData = z.infer<ReturnType<typeof getRoleSchema>>;
+
 // Level entry matching StoreSkillLevelRequest (without skill_id)
 export const getSkillLevelSchema = (t: Translator) =>
   z.object({

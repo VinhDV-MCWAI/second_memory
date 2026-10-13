@@ -199,7 +199,9 @@
     "evidence": "Evidence",
     "evidenceMany": "Evidence",
     "goal": "Goal",
-    "goals": "Goals"
+    "goals": "Goals",
+    "role": "Role",
+    "roles": "Roles"
   },
   "fields": {
     "id": "ID",
@@ -239,7 +241,9 @@
     "targetLevel": "Target level",
     "targetDate": "Target date",
     "achievedOn": "Achieved on",
-    "skills": "Skills"
+    "skills": "Skills",
+    "permissions": "Permissions",
+    "adminCount": "Admins"
   },
   "management": {
     "title": "{entity} Management",
@@ -340,7 +344,8 @@
       "skill": "Skill",
       "targetLevel": "Target level",
       "targetDate": "Target date",
-      "note": "Note"
+      "note": "Note",
+      "permissions": "Permissions"
     },
     "placeholders": {
       "urlExample": "https://example.com",
@@ -473,6 +478,10 @@
     },
     "note": {
       "maxLength": "Note cannot exceed {max} characters"
+    },
+    "roleName": {
+      "required": "Name is required",
+      "maxLength": "Name cannot exceed {max} characters"
     }
   },
   "advancedSearch": {
@@ -536,5 +545,38 @@
       "recentActivity": "Recent changes",
       "noActivity": "No changes yet"
     }
+  },
+  "permissions": {
+    "feature": "Feature",
+    "wholeFeature": "All of {feature}",
+    "actions": {
+      "list": "View",
+      "store": "Add",
+      "update": "Edit",
+      "delete": "Delete",
+      "other": "Other",
+      "import": "Import",
+      "query": "Search",
+      "summary": "Summary"
+    },
+    "features": {
+      "admin-mst": "Admins",
+      "audit-log": "Change log",
+      "dashboard": "Dashboard",
+      "evidence": "Evidence",
+      "learning-goal": "Learning goals",
+      "permission": "Permission list",
+      "role": "Roles",
+      "search": "Search",
+      "skill": "Skills",
+      "skill-level": "Skill levels",
+      "tag": "Tags"
+    },
+    "builtInName": "Built-in role: the name cannot change.",
+    "ownerHasAll": "The owner role always has every permission.",
+    "kind": "Kind",
+    "builtIn": "Built-in",
+    "custom": "Custom",
+    "all": "All"
   }
 }

@@ -23,6 +23,8 @@ import {
 import { useApiData } from '@/shared/hooks/use-api-data';
 import { useCrud } from '@/shared/hooks/use-crud';
 import { useActionLock } from '@/shared/hooks/use-action-lock';
+import { usePermissions } from '@/shared/hooks/use-permissions';
+import { featureOfEndpoint, PERMISSION_ACTIONS, permissionName } from '@/shared/utils/permissions';
 import {
   ADMIN_ROUTES,
   PAGINATION,
@@ -94,6 +96,11 @@ export function ResourceListPage<T extends { id: number }>({
   const tManagement = useTranslations('management');
   const tCrud = useTranslations('crud');
   const tBulkActions = useTranslations('bulkActions');
+  const { can } = usePermissions();
+  const feature = featureOfEndpoint(endpoint);
+  const canCreate = can(permissionName(feature, PERMISSION_ACTIONS.STORE));
+  const canUpdate = can(permissionName(feature, PERMISSION_ACTIONS.UPDATE));
+  const canDelete = can(permissionName(feature, PERMISSION_ACTIONS.DELETE));
   const one = tEntities(entity.one);
   const many = tEntities(entity.many);
 
@@ -178,9 +185,11 @@ export function ResourceListPage<T extends { id: number }>({
           { label: many, isActive: true },
         ]}
         action={
-          <Button onClick={() => openEditor(null)}>
-            <Plus className="mr-2 h-4 w-4" /> {tCrud('createEntity', { entity: one })}
-          </Button>
+          canCreate ? (
+            <Button onClick={() => openEditor(null)}>
+              <Plus className="mr-2 h-4 w-4" /> {tCrud('createEntity', { entity: one })}
+            </Button>
+          ) : undefined
         }
       />
 
@@ -201,27 +210,34 @@ export function ResourceListPage<T extends { id: number }>({
           fields={filterFields}
         />
 
-        <BulkActions
-          selectedIds={selectedIds}
-          onClearSelection={() => setSelectedIds([])}
-          actions={bulkActions}
-          isLoading={loading}
-        />
+        {canDelete && (
+          <BulkActions
+            selectedIds={selectedIds}
+            onClearSelection={() => setSelectedIds([])}
+            actions={bulkActions}
+            isLoading={loading}
+          />
+        )}
 
         <DataTable
           data={data}
           columns={columns}
           loading={loading}
           selectedIds={selectedIds}
-          onSelectionChange={setSelectedIds}
+          onSelectionChange={canDelete ? setSelectedIds : undefined}
           onSort={handleSort}
           sortBy={sortBy}
           sortOrder={sortOrder}
-          onEdit={(id) => {
-            const record = data.find((row) => row.id === id);
-            if (record) openEditor(record);
-          }}
-          onDelete={(id) => askDelete([id])}
+          onEdit={
+            canUpdate
+              ? (id) => {
+                  const record = data.find((row) => row.id === id);
+                  if (record) openEditor(record);
+                }
+              : undefined
+          }
+          onDelete={canDelete ? (id) => askDelete([id]) : undefined}
+          showActions={canUpdate || canDelete}
         />
 
         <Pagination

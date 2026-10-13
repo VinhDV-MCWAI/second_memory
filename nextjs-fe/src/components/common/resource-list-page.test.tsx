@@ -11,6 +11,11 @@ vi.mock('next-intl', () => {
   const t = (key: string) => key;
   return { useTranslations: () => t };
 });
+// Permissions of the signed-in admin (ADR-0013); each test sets them
+let granted: string[] = [];
+vi.mock('@/shared/hooks/use-permissions', () => ({
+  usePermissions: () => ({ can: (permission: string) => granted.includes(permission) }),
+}));
 vi.mock('@/shared/utils/notification', () => ({
   notification: { success: vi.fn(), error: vi.fn() },
 }));
@@ -54,6 +59,7 @@ describe('ResourceListPage', () => {
   let listParams: URLSearchParams[];
 
   beforeEach(() => {
+    granted = ['admin-mst.list', 'admin-mst.store', 'admin-mst.update', 'admin-mst.delete'];
     listParams = [];
     server.use(
       http.get(apiUrl(`${ENDPOINT}/list`), ({ request }) => {
@@ -112,5 +118,16 @@ describe('ResourceListPage', () => {
     fireEvent.click(within(dialog).getByRole('button', { name: 'delete' }));
 
     await waitFor(() => expect(deleted).toEqual({ ids: [2] }));
+  });
+
+  it('hides create, edit and delete without their permissions', async () => {
+    granted = ['admin-mst.list'];
+    renderPage();
+    await screen.findByText('Spring sale');
+
+    expect(screen.queryByRole('button', { name: /createEntity/ })).toBeNull();
+    expect(screen.queryByRole('button', { name: 'edit' })).toBeNull();
+    expect(screen.queryByRole('button', { name: 'delete' })).toBeNull();
+    expect(screen.queryByRole('checkbox')).toBeNull();
   });
 });

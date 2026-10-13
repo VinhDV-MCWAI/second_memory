@@ -188,6 +188,7 @@ export const SEARCH_PARAM = 'q';
 export const ADMIN_ROUTES = {
   DASHBOARD: '/admin',
   ADMINS: '/admin/admins',
+  ROLES: '/admin/roles',
   SKILLS: '/admin/skills',
   TAGS: '/admin/tags',
   EVIDENCE: '/admin/evidence',
