@@ -1,10 +1,29 @@
 # Quản lý file
 
-> Trạng thái: **backend chạy đủ** (thư mục, upload file nhỏ tới 100 MB, upload file lớn tới 10 GB chia phần, tải về, đổi tên, di chuyển, xóa, dọn upload treo) và bộ upload phía trình duyệt. Chưa có: màn hình. Thông báo khi file lớn xử lý xong dùng [việc nền và thông báo tức thì](viec-nen-va-thong-bao.md). Thiết kế: [ADR-0014](../adr/0014-media-minio-upload.md).
+> Trạng thái: **chạy đủ** (màn hình, thư mục, upload file nhỏ và file lớn tới 10 GB, tải về, đổi tên, di chuyển, xóa, dọn upload treo). Thông báo khi file lớn xử lý xong dùng [việc nền và thông báo tức thì](viec-nen-va-thong-bao.md). Thiết kế: [ADR-0014](../adr/0014-media-minio-upload.md).
 
 ## Làm gì
 
 Lưu file cá nhân trên MinIO, sắp xếp theo thư mục; upload file nhỏ và file lớn (tới 10 GB) có thanh %; tải về, đổi tên, di chuyển, xóa. Khi file lớn xử lý xong ở nền, màn hình hiện thông báo ngay.
+
+## Màn hình
+
+Menu **Files** (`/admin/files`, cần quyền `media.list`).
+
+| Thao tác | Cách làm | Quyền |
+|---|---|---|
+| Mở thư mục | Bấm tên thư mục; thanh đường dẫn phía trên để quay lại. Thư mục đang mở nằm trên URL (`?folder=/Docs`), nên nút Back của trình duyệt và gửi link đều được | `media.list` |
+| Lọc theo tên | Ô "Filter by name" | `media.list` |
+| Tạo thư mục | Nút **New folder** | `media.store-folder` |
+| Upload | Nút **Upload** (chọn nhiều file) hoặc **kéo-thả file vào trang**; file vào thư mục đang mở | `media.upload-url` + `media.multipart-start` (và các quyền `media.multipart-*`, `media.complete`) |
+| Theo dõi upload | Khung **Uploads**: %, đã gửi / tổng, nút X để hủy; file lớn hiện "Processing in the background…" rồi "Done" khi việc nền báo về | — |
+| Tải về | Nút tải ở dòng file (link tạm 5 phút, tải đúng tên file) | `media.download-url` |
+| Đổi tên / Di chuyển | Nút bút chì / nút chuyển thư mục; di chuyển bằng cách gõ đường dẫn thư mục đích (ví dụ `/Docs/2026`) | `media.update` |
+| Xóa | Nút thùng rác ở dòng, hoặc tick nhiều dòng rồi **Delete (n)**; hỏi lại trước khi xóa | `media.delete` |
+
+Nút nào không có quyền thì không hiện (API vẫn chặn bằng 403). Vai trò Chỉ xem: xem và tải về.
+
+Upload chạy lần lượt từng file (file lớn đã tự gửi 4 phần cùng lúc). Rời trang giữa chừng thì upload đang chạy dừng lại; phần đã gửi được lệnh dọn upload treo xóa sau 24 giờ.
 
 ## Cách chạy (giống môi trường thật)
 
@@ -106,6 +125,8 @@ Mọi thay đổi (tạo thư mục, upload xong, đổi tên, chuyển, xóa) g
 | Truy vấn | `app/Repositories/Media/MediaRepository.php` |
 | Test | `tests/Feature/Media/{MediaApiTest,MultipartUploadApiTest}.php` (MinIO giả trong bộ nhớ: `tests/Fakes/FakeObjectStorage.php`) |
 | Bộ upload phía trình duyệt | `nextjs-fe/src/features/media/lib/uploader.ts` (`uploadFile(file, {folder, onProgress, signal})`) |
+| Màn hình | `nextjs-fe/src/app/admin/files/page.tsx`, `src/features/media/components/` (trình duyệt file, khung upload, hộp thoại), `src/features/media/hooks/` (danh sách, hàng chờ upload) |
+| Test e2e | `e2e/tests/files.spec.ts` (thư mục, file nhỏ, file 120 MB qua việc nền, đổi tên, tải về, xóa) |
 | nginx | nhánh `/media-official/` trong `docker/nginx/default.conf` |
 | MinIO | `docker/minio/create-buckets.sh` (kho, quyền, tắt đọc công khai) |
 
@@ -116,4 +137,4 @@ Mọi thay đổi (tạo thư mục, upload xong, đổi tên, chuyển, xóa) g
 | Backend: kết nối MinIO, thư mục, upload file nhỏ, tải về, xóa | Xong |
 | [Việc nền và thông báo tức thì](viec-nen-va-thong-bao.md) (dùng chung) | Xong |
 | Upload file lớn chia phần, xử lý nền, dọn upload treo | Xong |
-| Giao diện quản lý file | Chưa |
+| Giao diện quản lý file | Xong |
