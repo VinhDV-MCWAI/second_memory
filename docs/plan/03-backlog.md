@@ -22,7 +22,7 @@ Các giai đoạn 2–5 mới ghi ở mức việc lớn; khi bắt đầu giai 
 
 | Mã | Việc | Kết quả | Trạng thái |
 |---|---|---|---|
-| QUYEN-01 | Đề xuất thiết kế: vai trò, quyền, chức năng, cách tự đăng ký API thành quyền, chuyển vai trò owner/viewer hiện tại sang | Đề xuất được xác nhận | todo |
+| QUYEN-01 | Đề xuất thiết kế: vai trò, quyền, chức năng, cách tự đăng ký API thành quyền, chuyển vai trò owner/viewer hiện tại sang | Đề xuất được xác nhận | done (4dc16a4b — ADR-0013: phân quyền động bằng spatie, chọn phương án A (gom theo tên quyền, Chủ toàn quyền, nhiều vai trò)) |
 | QUYEN-02 | Backend: cài thư viện, bảng, kiểm tra quyền mỗi request, lệnh đồng bộ API → quyền, vai trò mặc định, test | API bị chặn đúng theo quyền | todo |
 | QUYEN-03 | API quản lý vai trò, quyền, gán vai trò cho admin | Các API mới trong OpenAPI | todo |
 | QUYEN-04 | Giao diện: màn hình vai trò, ma trận quyền theo chức năng, gán vai trò; ẩn menu và nút theo quyền | Cấu hình quyền không cần sửa code | todo |
