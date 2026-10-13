@@ -88,6 +88,40 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/admin/background-task/test': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** Queue a test job that finishes (or fails, with `fail`) after `seconds`; the result arrives as a live event */
+    post: operations['background-task.test'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/admin/background-task/status/{id}': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Status of one of your background tasks (kept one day), for a screen that missed the live event */
+    get: operations['background-task.status'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/admin/credential/login': {
     parameters: {
       query?: never;
@@ -806,6 +840,16 @@ export interface components {
       /** @description Full timestamp (ISO 8601): the time of day matters in an audit trail */
       created_at: string;
     };
+    /** BackgroundTaskResource */
+    BackgroundTaskResource: {
+      id: string;
+      type: string;
+      subject_id: number | null;
+      /** @description queued | running | completed | failed */
+      status: string;
+      message: string | null;
+      updated_at: string;
+    };
     /**
      * CreateUploadRequest
      * @description One-PUT upload of a small file (ADR-0014); bigger files use multipart upload.
@@ -1154,6 +1198,11 @@ export interface components {
       id: number;
       name: string;
     };
+    /** TestBackgroundTaskRequest */
+    TestBackgroundTaskRequest: {
+      seconds?: number | null;
+      fail?: boolean | null;
+    };
     /** UpdateAdminMstRequest */
     UpdateAdminMstRequest: {
       id: number;
@@ -1251,6 +1300,15 @@ export interface components {
     };
     /** @description Validation error */
     ValidationException: {
+      headers: {
+        [name: string]: unknown;
+      };
+      content: {
+        'application/json': components['schemas']['ApiError'];
+      };
+    };
+    /** @description Not found */
+    NotFoundHttpException: {
       headers: {
         [name: string]: unknown;
       };
@@ -1515,6 +1573,92 @@ export interface operations {
         };
       };
       422: components['responses']['ValidationException'];
+    };
+  };
+  'background-task.test': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: {
+      content: {
+        'application/json': components['schemas']['TestBackgroundTaskRequest'];
+      };
+    };
+    responses: {
+      /** @description `BackgroundTaskResource` */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            data: {
+              data: components['schemas']['BackgroundTaskResource'];
+            };
+            error: {
+              status: boolean;
+              code: number;
+              messages: null;
+            };
+          };
+        };
+      };
+      401: components['responses']['AuthenticationException'];
+      /** @description Forbidden */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ApiError'];
+        };
+      };
+      422: components['responses']['ValidationException'];
+    };
+  };
+  'background-task.status': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description `BackgroundTaskResource` */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            data: {
+              data: components['schemas']['BackgroundTaskResource'];
+            };
+            error: {
+              status: boolean;
+              code: number;
+              messages: null;
+            };
+          };
+        };
+      };
+      401: components['responses']['AuthenticationException'];
+      /** @description Forbidden */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ApiError'];
+        };
+      };
+      404: components['responses']['NotFoundHttpException'];
     };
   };
   'credential.login': {

@@ -90,6 +90,8 @@ class Messages
 
     const E0035 = 'This file type is not allowed';
 
+    const E0036 = 'The background task failed';
+
     /**
      * Errors http messages
      */

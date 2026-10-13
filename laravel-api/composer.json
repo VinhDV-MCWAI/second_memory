@@ -12,6 +12,7 @@
         "aws/aws-sdk-php": "^3.356",
         "dedoc/scramble": "^0.13.47",
         "laravel/framework": "^13.0",
+        "laravel/reverb": "^1.12",
         "laravel/sanctum": "^4.3",
         "laravel/tinker": "^3.0",
         "predis/predis": "^3.0",
