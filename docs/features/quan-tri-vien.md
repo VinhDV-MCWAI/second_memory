@@ -1,6 +1,6 @@
 # Quản trị viên
 
-Quản lý các tài khoản được vào trang quản trị: thêm, sửa, xóa, đổi vai trò, khóa tài khoản. Vai trò hiện có: **chủ** và **chỉ xem** ([ADR-0005](../adr/0005-owner-viewer-roles.md)). Giai đoạn "Phân quyền động" sẽ thay hai vai trò cố định này.
+Quản lý các tài khoản được vào trang quản trị: thêm, sửa, xóa, đổi vai trò, khóa tài khoản. Quyền của từng tài khoản đến từ vai trò của nó, xem [phân quyền động](phan-quyen-dong.md).
 
 ## Màn hình
 
@@ -11,12 +11,12 @@ Quản lý các tài khoản được vào trang quản trị: thêm, sửa, xó
 
 ## API
 
-| API | Làm gì | Ai dùng |
+| API | Làm gì | Quyền |
 |---|---|---|
-| `GET /api/admin/admin-mst/list` | Danh sách, có lọc và phân trang | Mọi quản trị viên |
-| `POST /api/admin/admin-mst/store` | Thêm tài khoản | Chủ |
-| `PUT /api/admin/admin-mst/update/{id}` | Sửa tài khoản | Chủ |
-| `POST /api/admin/admin-mst/delete` | Xóa nhiều tài khoản (`ids`) | Chủ |
+| `GET /api/admin/admin-mst/list` | Danh sách, có lọc và phân trang | `admin-mst.list` |
+| `POST /api/admin/admin-mst/store` | Thêm tài khoản | `admin-mst.store` |
+| `PUT /api/admin/admin-mst/update/{id}` | Sửa tài khoản | `admin-mst.update` |
+| `POST /api/admin/admin-mst/delete` | Xóa nhiều tài khoản (`ids`) | `admin-mst.delete` |
 
 ## Thông tin một tài khoản
 
@@ -27,7 +27,7 @@ Quản lý các tài khoản được vào trang quản trị: thêm, sửa, xó
 | Mật khẩu | Có khi thêm | Lưu dạng băm, không bao giờ trả về hay ghi vào nhật ký |
 | Họ, tên | Có | Tối đa 20 ký tự mỗi ô |
 | Giới tính, trạng thái, đang hoạt động | Có | Trạng thái: chưa kích hoạt / hoạt động / chờ / tạm khóa |
-| Vai trò | Không | `owner` (chủ) hoặc `viewer` (chỉ xem) |
+| Vai trò | Không | `owner` (chủ) hoặc `viewer` (chỉ xem). Khi lưu, tài khoản được gán đúng vai trò này trong bảng phân quyền |
 | Địa chỉ, số điện thoại, ngày sinh, ảnh đại diện | Không | |
 
 ## Quy tắc

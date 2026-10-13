@@ -64,6 +64,7 @@ Thư mục code được gắn thẳng vào container, nên phần lớn thay đ
 | Thêm migration | `docker exec ml-php php artisan migrate --force` |
 | Thêm hoặc xóa class PHP | `docker exec ml-php composer dump-autoload` |
 | Đổi route hoặc request/response của API | `make openapi`, để sinh lại kiểu dữ liệu cho giao diện |
+| Thêm API quản trị mới | Đặt tên route (`->name('skill.list')`), rồi `make permissions` để tạo quyền ([phân quyền động](features/phan-quyen-dong.md)) |
 | Thêm thư viện PHP | `docker exec ml-php composer require <tên gói>` |
 | Thêm thư viện JS (sửa `pnpm-lock.yaml`) | `docker compose -f docker/docker-compose.yml up -d --build ml-nextjs ml-nextjs-docs` |
 | Sửa `docker/.env` hoặc Dockerfile | `make restart` |
@@ -108,6 +109,8 @@ Test dùng một database riêng tên `testing`, không đụng dữ liệu dev.
 | `make up` báo "ml-redis is unhealthy" | Redis đang nạp lại dữ liệu | Đợi một lúc rồi `make up` lại |
 | `Permission denied` / `EACCES` trên `vendor/`, `storage/`, `.next/` | File do container chạy quyền root tạo ra trước đây | `docker run --rm -v "$PWD":/r alpine:3.24 chown -R 1000:1000 /r/<đường dẫn>` |
 | Bảng không tồn tại khi chạy test có lọc (`f=...`) | Test có lọc không tự tạo bảng trong DB `testing` | `docker exec -e DB_DATABASE=testing ml-php php artisan migrate --force` |
+| API quản trị mới trả 403 cho mọi người trừ Chủ | Route chưa có tên, hoặc quyền chưa được tạo, hoặc chưa vai trò nào có quyền đó | Đặt tên route, `make permissions`, rồi gán quyền cho vai trò |
+| `DynamicPermissionTest` báo "run make permissions" | DB `testing` chưa có quyền cho route mới | `make permissions` |
 | `make openapi` thoát với mã 137 ngay sau khi khởi động | Container chưa sẵn sàng | Chạy lại |
 | Class PHP đã xóa vẫn báo lỗi `include(...)` | Bộ nạp class còn nhớ file cũ | `docker exec ml-php composer dump-autoload` |
 

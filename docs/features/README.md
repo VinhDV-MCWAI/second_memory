@@ -5,7 +5,8 @@ Mỗi tính năng một file: nó làm gì, màn hình nào, API nào, bảng n�
 | Tính năng | File | Tóm tắt |
 |---|---|---|
 | Đăng nhập | [dang-nhap.md](dang-nhap.md) | Đăng nhập bằng tên đăng nhập + mật khẩu, giữ phiên bằng cookie |
-| Quản trị viên | [quan-tri-vien.md](quan-tri-vien.md) | Thêm, sửa, xóa tài khoản quản trị; hai vai trò chủ và chỉ xem |
+| Quản trị viên | [quan-tri-vien.md](quan-tri-vien.md) | Thêm, sửa, xóa tài khoản quản trị, chọn vai trò |
+| Phân quyền động | [phan-quyen-dong.md](phan-quyen-dong.md) | Mỗi API là một quyền, quyền gom vào vai trò, vai trò gán cho admin |
 | Skill Ledger | [skill-ledger.md](skill-ledger.md) | Kỹ năng, lịch sử cấp độ, bằng chứng, mục tiêu học, nhãn, trang tổng quan |
 | Tìm kiếm | [tim-kiem.md](tim-kiem.md) | Một ô tìm kiếm cho kỹ năng, mục tiêu và bằng chứng; gõ không dấu, gõ sai vẫn ra |
 | Nhật ký thay đổi | [nhat-ky-thay-doi.md](nhat-ky-thay-doi.md) | Ghi lại ai đổi gì, lúc nào, và mọi lần đăng nhập |
@@ -14,7 +15,7 @@ Mỗi tính năng một file: nó làm gì, màn hình nào, API nào, bảng n�
 
 ## Quyền dùng chung cho mọi tính năng quản trị
 
-Hiện có hai vai trò, cố định trong code. Giai đoạn "Phân quyền động" sẽ thay bằng vai trò và quyền cấu hình được.
+Mỗi API quản trị là một quyền, cấp qua vai trò ([phân quyền động](phan-quyen-dong.md)). Hai vai trò có sẵn:
 
 | Vai trò | Xem | Thêm / sửa / xóa |
 |---|---|---|
