@@ -26,7 +26,7 @@ Phạm vi: cả repo. Mỗi lúc chỉ làm một việc.
 | NEN-04 | Rút gọn `docs/` và viết lại `docs/README.md` bằng tiếng Việt. **[XÁC NHẬN]** danh sách file giữ / chuyển vào archive trước khi chuyển | [backlog §1](../../docs/plan/03-backlog.md) | NEN-03 | done 2026-10-13: 78462665, e4743898 — docs/ còn plan, adr, releases, runbooks, architecture; tài liệu Engineering Lab vào archive; mục lục tiếng Việt |
 | NEN-05 | Mỗi tính năng hiện có một file trong `docs/features/` | [backlog §1](../../docs/plan/03-backlog.md) | NEN-04 | done 2026-10-13: 982773ee — docs/features/: 7 file mô tả tính năng + mục lục; docs/README.md trỏ tới |
 | NEN-06 | Dọn `.claude/`: bỏ các vai giả lập, skill làm việc theo luồng mới, cập nhật rules và CLAUDE.md. **[XÁC NHẬN]** danh sách file xóa | [backlog §1](../../docs/plan/03-backlog.md) | NEN-04 | done 2026-10-13: d0e0895f — bỏ 3 vai giả lập và skill lane (gộp vào lab-task), rules + CLAUDE.md theo cách làm một branch |
-| NEN-07 | Seeder dữ liệu mẫu cho dev | [backlog §1](../../docs/plan/03-backlog.md) | NEN-03 | todo |
+| NEN-07 | Seeder dữ liệu mẫu cho dev | [backlog §1](../../docs/plan/03-backlog.md) | NEN-03 | done 2026-10-13: 31dfab61, bb6fe637, 300cd787 — make seed: tài khoản chỉ xem viewer + 5 skill, 6 bằng chứng, 4 mục tiêu, 5 nhãn; chạy lại không trùng |
 | QUYEN-01 | **[XÁC NHẬN]** Đề xuất thiết kế phân quyền động bằng spatie/laravel-permission | [roadmap §2](../../docs/plan/02-roadmap.md) | NEN-07 | todo |
 | QUYEN-02 | Phân quyền động: backend, kiểm tra quyền mỗi request, đồng bộ API → quyền, test | [roadmap §2](../../docs/plan/02-roadmap.md) | QUYEN-01 | todo |
 | QUYEN-03 | Phân quyền động: API quản lý vai trò, quyền, gán vai trò | [roadmap §2](../../docs/plan/02-roadmap.md) | QUYEN-02 | todo |
