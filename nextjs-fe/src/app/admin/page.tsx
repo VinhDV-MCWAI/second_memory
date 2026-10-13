@@ -4,6 +4,7 @@ import { useTranslations } from 'next-intl';
 import { PageHeader } from '@/components/layout/page-header';
 import { Card } from '@/components/ui/card';
 import { useDashboardSummary } from '@/features/ledger/hooks/use-ledger-queries';
+import { BackgroundTaskTestCard } from '@/features/system/components/background-task-test-card';
 import { useApiData } from '@/shared/hooks/use-api-data';
 import { API_ENDPOINTS } from '@/shared/api';
 import { ADMIN_ROUTES, SORT_ORDER } from '@/shared/config';
@@ -93,6 +94,10 @@ export default function AdminDashboard() {
             </ul>
           )}
         </Card>
+      </div>
+
+      <div className="mt-8 grid gap-6 lg:grid-cols-3">
+        <BackgroundTaskTestCard />
       </div>
     </>
   );

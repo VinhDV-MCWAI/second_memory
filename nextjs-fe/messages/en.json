@@ -561,11 +561,14 @@
       "store-folder": "New folder",
       "upload-url": "Upload",
       "complete": "Finish upload",
-      "download-url": "Download"
+      "download-url": "Download",
+      "test": "Run test",
+      "status": "Status"
     },
     "features": {
       "admin-mst": "Admins",
       "audit-log": "Change log",
+      "background-task": "Background jobs",
       "dashboard": "Dashboard",
       "evidence": "Evidence",
       "learning-goal": "Learning goals",
@@ -583,6 +586,15 @@
     "builtIn": "Built-in",
     "custom": "Custom",
     "all": "All"
+  },
+  "backgroundTasks": {
+    "title": "Background jobs",
+    "description": "Runs a test job on the queue worker. Its result comes back here as a live notification, even if you switch pages.",
+    "runTest": "Run test job",
+    "runFailing": "Run failing job",
+    "queued": "Test job queued. You will be notified when it finishes.",
+    "completed": "Background job finished",
+    "failed": "Background job failed"
   },
   "dialog": {
     "discardTitle": "Discard changes?",

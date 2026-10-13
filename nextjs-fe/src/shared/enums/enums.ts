@@ -176,3 +176,13 @@ export const GoalStatusLabels: Record<GoalStatus, string> = {
   [GoalStatus.ACHIEVED]: 'Achieved',
   [GoalStatus.DROPPED]: 'Dropped',
 };
+
+// ==========================================
+// BackgroundTaskStatus (app/Enums, ADR-0014)
+// ==========================================
+export enum BackgroundTaskStatus {
+  QUEUED = 'queued',
+  RUNNING = 'running',
+  COMPLETED = 'completed',
+  FAILED = 'failed',
+}

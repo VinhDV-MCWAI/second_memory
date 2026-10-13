@@ -24,6 +24,10 @@ export const API_ENDPOINTS = {
     SEARCH: '/admin/search',
     DASHBOARD: '/admin/dashboard/summary',
   },
+  SYSTEM: {
+    BACKGROUND_TASK: '/admin/background-task',
+    BROADCASTING_AUTH: '/broadcasting/auth',
+  },
 } as const;
 
 export const ENDPOINTS = API_ENDPOINTS;
