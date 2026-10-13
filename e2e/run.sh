@@ -32,10 +32,14 @@ cleanup() {
     $roles = Spatie\Permission\Models\Role::where("name", "like", "E2E %")->get()->each->delete();
     $admin = DB::table("admin_mst")->where("user_name", getenv("E2E_USER"));
     $audit = DB::table("audit_log")->where("admin_mst_id", $admin->value("id"))->delete();
+    // Files of files.spec.ts: drop the MinIO objects (or unfinished parts), then hide the rows
+    $media = App\Models\Media\MediaMgmt::query()->live()->where("virtual_path", "like", "/E2E %")->get();
+    $media->each(fn ($row) => app(App\Services\Media\MediaService::class)->discardObject($row));
+    App\Models\Media\MediaMgmt::query()->whereKey($media->modelKeys())->update(["is_delete" => true]);
     // The failing test background job (background-jobs.spec.ts) is kept as a failed job
     $failed = DB::table("failed_jobs")->where("payload", "like", "%TestBackgroundJob%")->delete();
     $admin->update(["is_active" => false]);
-    echo "deleted skills={$skills->count()} evidence={$evidence->count()} roles={$roles->count()} audit_log={$audit} failed_jobs={$failed}\n";
+    echo "deleted skills={$skills->count()} evidence={$evidence->count()} roles={$roles->count()} audit_log={$audit} failed_jobs={$failed} media={$media->count()}\n";
   '
 }
 trap cleanup EXIT
