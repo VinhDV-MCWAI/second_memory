@@ -10,7 +10,7 @@ Quản trị viên đăng nhập bằng **tên đăng nhập** và mật khẩu.
 | Nút đăng xuất ở góc trên | Kết thúc phiên, quay về `/login` |
 | Mọi trang `/admin/...` | Chưa đăng nhập thì tự chuyển tới `/login` |
 
-Tài khoản dev: `root` / `12345678` (tạo bằng `RootAccountSeeder`, xem [dev-guide.md](../dev-guide.md)).
+Tài khoản dev: chủ `root` / `12345678` và chỉ xem `viewer` / `12345678` (tạo bằng `make seed`, xem [dev-guide.md](../dev-guide.md)).
 
 ## Luồng
 

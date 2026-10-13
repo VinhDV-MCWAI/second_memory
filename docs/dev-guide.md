@@ -9,17 +9,28 @@ Máy không cần cài PHP, Composer, Node hay pnpm. Mọi thứ chạy trong Do
 ```bash
 make up                                                        # tạo file env nếu chưa có, build và chạy toàn bộ container
 docker exec ml-php php artisan migrate --force                 # tạo bảng trong DB dev
-docker exec ml-php php artisan db:seed --class=RootAccountSeeder   # tạo tài khoản quản trị
+make seed                                                      # tạo tài khoản và dữ liệu mẫu
 ```
 
 Mở trình duyệt vào **http://localhost:81/admin** và đăng nhập:
 
 | Ô | Giá trị |
 |---|---|
-| Tên đăng nhập | `root` (không phải email `root@gmail.com`) |
-| Mật khẩu | `12345678` |
+| Tài khoản | Tên đăng nhập | Mật khẩu | Được làm gì |
+|---|---|---|---|
+| Chủ | `root` (không phải email `root@gmail.com`) | `12345678` | Toàn quyền |
+| Chỉ xem | `viewer` | `12345678` | Xem mọi trang, sửa gì cũng bị báo lỗi 403 |
 
-Đây là tài khoản chủ, có toàn quyền. Seeder chạy lại nhiều lần cũng không tạo trùng.
+`make seed` còn thêm dữ liệu mẫu cho Skill Ledger để có cái mà thử:
+
+| Loại | Số lượng | Ghi chú |
+|---|---|---|
+| Skill | 5 | PostgreSQL, Laravel, Docker công khai; React, Terraform riêng tư. Mỗi skill có lịch sử cấp độ |
+| Nhãn | 5 | database, backend, devops, frontend, performance |
+| Bằng chứng | 6 | Pull request, quyết định thiết kế, sự cố, và 2 ghi chú như được nhập từ Obsidian |
+| Mục tiêu học | 4 | 2 đang theo, 1 đã đạt, 1 đã bỏ |
+
+Chạy lại `make seed` bao nhiêu lần cũng được: dòng đã có thì giữ nguyên (kể cả khi bạn đã sửa), không tạo trùng, không xóa gì. Muốn làm lại từ đầu thì `make fresh` (xóa sạch DB dev, hỏi trước). Seeder dữ liệu mẫu (`DevSampleSeeder`) từ chối chạy trên production.
 
 ## 2. Các địa chỉ
 
@@ -106,7 +117,8 @@ Test dùng một database riêng tên `testing`, không đụng dữ liệu dev.
 |---|---|---|
 | Khởi động lại container | `make restart` | Không mất gì |
 | Tắt hết | `make down` | Không mất gì, dữ liệu vẫn còn |
-| Xóa sạch DB dev rồi tạo lại | `make fresh` (sẽ hỏi trước khi chạy) | **Mất toàn bộ dữ liệu dev** |
+| Thêm lại tài khoản và dữ liệu mẫu bị thiếu | `make seed` | Không mất gì |
+| Xóa sạch DB dev rồi tạo lại (kèm tài khoản và dữ liệu mẫu) | `make fresh` (sẽ hỏi trước khi chạy) | **Mất toàn bộ dữ liệu dev** |
 
 Không dùng `migrate:rollback` trên DB dev. Muốn thử rollback một migration thì làm trên DB `testing`:
 `docker exec -e DB_DATABASE=testing ml-php php artisan migrate:rollback --step=1 --force`.
