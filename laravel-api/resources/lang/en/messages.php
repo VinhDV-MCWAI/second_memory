@@ -17,6 +17,7 @@ return [
     'status' => 'status',
     'is_active' => 'is active',
     'role' => 'role',
+    'permissions' => 'permissions',
     'avatar' => 'avatar',
     'email_verified_at' => 'email verified',
     'remember_token' => 'remember token',

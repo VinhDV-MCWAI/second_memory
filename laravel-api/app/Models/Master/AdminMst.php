@@ -16,11 +16,9 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Auth\Access\Authorizable;
 use Laravel\Sanctum\Contracts\HasAbilities;
 use Laravel\Sanctum\HasApiTokens;
+use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Traits\HasRoles;
 
-/**
- * @property AdminRole $role
- */
 class AdminMst extends Model implements AuthenticatableContract, AuthorizableContract
 {
     use Authenticatable, Authorizable, HasFactory, HasSoftDelete, HasStatus;
@@ -56,7 +54,6 @@ class AdminMst extends Model implements AuthenticatableContract, AuthorizableCon
         'gender',
         'status',
         'is_active',
-        'role',
         'avatar',
         'email_verified_at',
         'is_delete',
@@ -81,7 +78,6 @@ class AdminMst extends Model implements AuthenticatableContract, AuthorizableCon
             'gender' => 'integer',
             'status' => 'integer',
             'is_active' => 'boolean',
-            'role' => AdminRole::class,
             'avatar' => 'string',
             'email_verified_at' => 'datetime',
             'is_delete' => 'boolean',
@@ -92,14 +88,16 @@ class AdminMst extends Model implements AuthenticatableContract, AuthorizableCon
     }
 
     /**
-     * Until the admin API assigns roles itself, the `role` column picks the matching system role.
+     * Names of the permissions this admin holds; the owner role holds them all (ADR-0013).
+     *
+     * @return list<string>
      */
-    protected static function booted(): void
+    public function permissionNames(): array
     {
-        static::saved(function (AdminMst $admin): void {
-            if ($admin->wasChanged('role') || $admin->wasRecentlyCreated) {
-                $admin->syncRoles([($admin->role ?? AdminRole::VIEWER)->value]);
-            }
-        });
+        $permissions = $this->hasRole(AdminRole::OWNER->value)
+            ? Permission::query()->where('guard_name', CommonVal::ADMIN_GUARD)->get()
+            : $this->getAllPermissions();
+
+        return $permissions->pluck('name')->sort()->values()->all();
     }
 }

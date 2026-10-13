@@ -188,7 +188,7 @@ class DevSampleSeeder extends Seeder
 
     private function viewer(): void
     {
-        AdminMst::firstOrCreate(
+        $viewer = AdminMst::firstOrCreate(
             ['user_name' => self::VIEWER_USER_NAME],
             [
                 'email' => 'viewer@gmail.com',
@@ -197,9 +197,11 @@ class DevSampleSeeder extends Seeder
                 'last_name' => 'Only',
                 'status' => 1,
                 'is_active' => true,
-                'role' => AdminRole::VIEWER,
             ]
         );
+        if ($viewer->wasRecentlyCreated) {
+            $viewer->assignRole(AdminRole::VIEWER->value);
+        }
     }
 
     /**

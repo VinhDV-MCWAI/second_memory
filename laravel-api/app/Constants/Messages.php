@@ -68,6 +68,12 @@ class Messages
 
     const E0024 = 'Imported evidence: change this field in the vault';
 
+    const E0025 = 'A built-in role cannot be renamed or deleted';
+
+    const E0026 = 'The owner role always holds every permission';
+
+    const E0027 = 'This role is still assigned to an admin';
+
     /**
      * Errors http messages
      */

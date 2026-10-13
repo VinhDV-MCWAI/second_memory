@@ -8,14 +8,21 @@ import type { FilterField } from '@/components/common/data-table/filter-panel';
 import { AdminForm } from '@/features/master/components/admin-form';
 import { API_ENDPOINTS } from '@/shared/api';
 import { enumOptions } from '@/shared/utils/enum-options';
-import { AdminRole, AdminRoleLabels, AdminStatusLabels } from '@/shared/enums';
+import { AdminStatusLabels } from '@/shared/enums';
+import { useApiData } from '@/shared/hooks/use-api-data';
 import { SORT_FIELDS } from '@/shared/config';
 import type { AdminMst } from '@/shared/types/api';
+import type { Role } from '@/shared/types/models';
 import type { SearchField } from '@/shared/types/data-table.types';
+
+/** Roles fit on one page: a handful per installation. */
+const ROLE_PAGE_SIZE = 100;
 
 export default function AdminListPage() {
   const tCommon = useTranslations('common');
   const tFields = useTranslations('fields');
+  const { data: roles } = useApiData<Role>(API_ENDPOINTS.MASTER.ROLE, { per_page: ROLE_PAGE_SIZE });
+  const roleOptions = roles.map((role) => ({ value: String(role.id), label: role.name }));
 
   const columns: Column<AdminMst>[] = [
     { key: 'id', label: tFields('id'), sortable: true },
@@ -23,10 +30,9 @@ export default function AdminListPage() {
     { key: 'last_name', label: tFields('lastName'), sortable: true },
     { key: 'email', label: tFields('email'), sortable: true },
     {
-      key: 'role',
-      label: tFields('role'),
-      sortable: true,
-      render: (item) => AdminRoleLabels[item.role as AdminRole],
+      key: 'roles',
+      label: tFields('roles'),
+      render: (item) => item.roles.map((role) => role.name).join(', '),
     },
     {
       key: 'status',
@@ -44,7 +50,7 @@ export default function AdminListPage() {
   const filterFields: FilterField[] = [
     { key: 'first_name', label: tFields('firstName'), type: 'text' },
     { key: 'email', label: tFields('email'), type: 'text' },
-    { key: 'role', label: tFields('role'), type: 'select', options: enumOptions(AdminRoleLabels) },
+    { key: 'role_id', label: tFields('roles'), type: 'select', options: roleOptions },
     {
       key: 'status',
       label: tFields('status'),

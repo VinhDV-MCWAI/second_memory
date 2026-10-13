@@ -80,9 +80,9 @@ final class MeApiTest extends TestCase
         $other = AdminMst::factory()->create();
         $this->call('POST', self::DELETE_URL, ['ids' => [$other->id]], $cookies)->assertStatus(CommonVal::HTTP_FORBIDDEN);
 
-        $admin->update(['role' => AdminRole::OWNER]);
+        $admin->syncRoles([AdminRole::OWNER->value]);
 
-        // The role is read from the admin row on every request (ADR-0005)
+        // Roles are read from the database on every request (ADR-0013)
         $this->call('POST', self::DELETE_URL, ['ids' => [$other->id]], $cookies)->assertOk();
     }
 }

@@ -200,16 +200,12 @@
                         }
                     },
                     {
-                        "name": "role",
+                        "name": "role_id",
                         "in": "query",
                         "schema": {
-                            "anyOf": [
-                                {
-                                    "$ref": "#/components/schemas/AdminRole"
-                                },
-                                {
-                                    "type": "null"
-                                }
+                            "type": [
+                                "integer",
+                                "null"
                             ]
                         }
                     },
@@ -852,8 +848,23 @@
                                                 "is_active": {
                                                     "type": "boolean"
                                                 },
-                                                "role": {
-                                                    "type": "string"
+                                                "roles": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "integer"
+                                                            },
+                                                            "name": {
+                                                                "type": "string"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "id",
+                                                            "name"
+                                                        ]
+                                                    }
                                                 },
                                                 "avatar": {
                                                     "type": "string"
@@ -863,6 +874,12 @@
                                                 },
                                                 "updated_at": {
                                                     "type": "string"
+                                                },
+                                                "permissions": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string"
+                                                    }
                                                 }
                                             },
                                             "required": [
@@ -877,10 +894,11 @@
                                                 "gender",
                                                 "status",
                                                 "is_active",
-                                                "role",
+                                                "roles",
                                                 "avatar",
                                                 "is_delete",
-                                                "updated_at"
+                                                "updated_at",
+                                                "permissions"
                                             ]
                                         },
                                         "error": {
@@ -1033,8 +1051,23 @@
                                                 "is_active": {
                                                     "type": "boolean"
                                                 },
-                                                "role": {
-                                                    "type": "string"
+                                                "roles": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "integer"
+                                                            },
+                                                            "name": {
+                                                                "type": "string"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "id",
+                                                            "name"
+                                                        ]
+                                                    }
                                                 },
                                                 "avatar": {
                                                     "type": "string"
@@ -1044,6 +1077,12 @@
                                                 },
                                                 "updated_at": {
                                                     "type": "string"
+                                                },
+                                                "permissions": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string"
+                                                    }
                                                 }
                                             },
                                             "required": [
@@ -1058,10 +1097,11 @@
                                                 "gender",
                                                 "status",
                                                 "is_active",
-                                                "role",
+                                                "roles",
                                                 "avatar",
                                                 "is_delete",
-                                                "updated_at"
+                                                "updated_at",
+                                                "permissions"
                                             ]
                                         },
                                         "error": {
@@ -2205,6 +2245,105 @@
                 }
             }
         },
+        "/admin/permission/list": {
+            "get": {
+                "operationId": "permission.list",
+                "summary": "Every permission (one per admin API), grouped by feature",
+                "tags": [
+                    "Permission"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "feature": {
+                                                        "type": "string"
+                                                    },
+                                                    "permissions": {
+                                                        "type": "array",
+                                                        "items": {
+                                                            "type": "object",
+                                                            "properties": {
+                                                                "name": {
+                                                                    "type": "string"
+                                                                },
+                                                                "action": {
+                                                                    "type": "string"
+                                                                },
+                                                                "method": {
+                                                                    "type": [
+                                                                        "string",
+                                                                        "null"
+                                                                    ]
+                                                                }
+                                                            },
+                                                            "required": [
+                                                                "name",
+                                                                "action",
+                                                                "method"
+                                                            ]
+                                                        }
+                                                    }
+                                                },
+                                                "required": [
+                                                    "feature",
+                                                    "permissions"
+                                                ]
+                                            }
+                                        },
+                                        "error": {
+                                            "type": "object",
+                                            "properties": {
+                                                "status": {
+                                                    "type": "boolean"
+                                                },
+                                                "code": {
+                                                    "type": "integer"
+                                                },
+                                                "messages": {
+                                                    "type": "null"
+                                                }
+                                            },
+                                            "required": [
+                                                "status",
+                                                "code",
+                                                "messages"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data",
+                                        "error"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/public/skills": {
             "get": {
                 "operationId": "publicSkill.list",
@@ -2362,6 +2501,396 @@
                     }
                 },
                 "security": []
+            }
+        },
+        "/admin/role/list": {
+            "get": {
+                "operationId": "role.list",
+                "tags": [
+                    "Role"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "query",
+                        "schema": {
+                            "type": [
+                                "integer",
+                                "null"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "schema": {
+                            "type": [
+                                "integer",
+                                "null"
+                            ],
+                            "minimum": 1
+                        }
+                    },
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "schema": {
+                            "type": [
+                                "integer",
+                                "null"
+                            ],
+                            "minimum": 1
+                        }
+                    },
+                    {
+                        "name": "sort_by",
+                        "in": "query",
+                        "schema": {
+                            "type": [
+                                "string",
+                                "null"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "sort_order",
+                        "in": "query",
+                        "schema": {
+                            "type": [
+                                "string",
+                                "null"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "name",
+                        "in": "query",
+                        "schema": {
+                            "type": [
+                                "string",
+                                "null"
+                            ],
+                            "maxLength": 50
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Array of `RoleResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "data": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "$ref": "#/components/schemas/RoleResource"
+                                                    }
+                                                },
+                                                "links": {
+                                                    "$ref": "#/components/schemas/PaginationLinks"
+                                                },
+                                                "meta": {
+                                                    "$ref": "#/components/schemas/PaginationMeta"
+                                                }
+                                            },
+                                            "required": [
+                                                "data",
+                                                "links",
+                                                "meta"
+                                            ]
+                                        },
+                                        "error": {
+                                            "type": "object",
+                                            "properties": {
+                                                "status": {
+                                                    "type": "boolean"
+                                                },
+                                                "code": {
+                                                    "type": "integer"
+                                                },
+                                                "messages": {
+                                                    "type": "null"
+                                                }
+                                            },
+                                            "required": [
+                                                "status",
+                                                "code",
+                                                "messages"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data",
+                                        "error"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/admin/role/store": {
+            "post": {
+                "operationId": "role.store",
+                "tags": [
+                    "Role"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/StoreRoleRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "integer"
+                                        },
+                                        "error": {
+                                            "type": "object",
+                                            "properties": {
+                                                "status": {
+                                                    "type": "boolean"
+                                                },
+                                                "code": {
+                                                    "type": "integer"
+                                                },
+                                                "messages": {
+                                                    "type": "null"
+                                                }
+                                            },
+                                            "required": [
+                                                "status",
+                                                "code",
+                                                "messages"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data",
+                                        "error"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/admin/role/update/{id}": {
+            "put": {
+                "operationId": "role.update",
+                "tags": [
+                    "Role"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateRoleRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "integer"
+                                        },
+                                        "error": {
+                                            "type": "object",
+                                            "properties": {
+                                                "status": {
+                                                    "type": "boolean"
+                                                },
+                                                "code": {
+                                                    "type": "integer"
+                                                },
+                                                "messages": {
+                                                    "type": "null"
+                                                }
+                                            },
+                                            "required": [
+                                                "status",
+                                                "code",
+                                                "messages"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data",
+                                        "error"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiError"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/admin/role/delete": {
+            "post": {
+                "operationId": "role.delete",
+                "tags": [
+                    "Role"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/DeleteRoleRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "null"
+                                        },
+                                        "error": {
+                                            "type": "object",
+                                            "properties": {
+                                                "status": {
+                                                    "type": "boolean"
+                                                },
+                                                "code": {
+                                                    "type": "integer"
+                                                },
+                                                "messages": {
+                                                    "type": "null"
+                                                }
+                                            },
+                                            "required": [
+                                                "status",
+                                                "code",
+                                                "messages"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data",
+                                        "error"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiError"
+                                }
+                            }
+                        }
+                    }
+                }
             }
         },
         "/admin/search": {
@@ -3622,8 +4151,23 @@
                     "is_active": {
                         "type": "boolean"
                     },
-                    "role": {
-                        "type": "string"
+                    "roles": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "id": {
+                                    "type": "integer"
+                                },
+                                "name": {
+                                    "type": "string"
+                                }
+                            },
+                            "required": [
+                                "id",
+                                "name"
+                            ]
+                        }
                     },
                     "avatar": {
                         "type": "string"
@@ -3647,21 +4191,12 @@
                     "gender",
                     "status",
                     "is_active",
-                    "role",
+                    "roles",
                     "avatar",
                     "is_delete",
                     "updated_at"
                 ],
                 "title": "AdminMstResource"
-            },
-            "AdminRole": {
-                "type": "string",
-                "description": "The two admin roles (ADR-0005): an owner may change data, a viewer may only read it.\n",
-                "enum": [
-                    "owner",
-                    "viewer"
-                ],
-                "title": "AdminRole"
             },
             "AdminStatus": {
                 "type": "integer",
@@ -3849,6 +4384,22 @@
                     "ids"
                 ],
                 "title": "DeleteLearningGoalRequest"
+            },
+            "DeleteRoleRequest": {
+                "type": "object",
+                "properties": {
+                    "ids": {
+                        "type": "array",
+                        "items": {
+                            "type": "integer"
+                        },
+                        "minItems": 1
+                    }
+                },
+                "required": [
+                    "ids"
+                ],
+                "title": "DeleteRoleRequest"
             },
             "DeleteSkillRequest": {
                 "type": "object",
@@ -4462,6 +5013,38 @@
                 ],
                 "title": "PublicSkillResource"
             },
+            "RoleResource": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "is_built_in": {
+                        "type": "boolean",
+                        "description": "Built-in roles (`owner`, `viewer`) cannot be renamed or deleted."
+                    },
+                    "permissions": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "admin_count": {
+                        "type": "integer"
+                    }
+                },
+                "required": [
+                    "id",
+                    "name",
+                    "is_built_in",
+                    "permissions",
+                    "admin_count"
+                ],
+                "title": "RoleResource"
+            },
             "SearchMatch": {
                 "type": "string",
                 "description": "Which search mode answered (ADR-0009): the UI shows \"did you mean\" wording for fuzzy results.\n",
@@ -4672,8 +5255,12 @@
                     "is_active": {
                         "$ref": "#/components/schemas/IsActive"
                     },
-                    "role": {
-                        "$ref": "#/components/schemas/AdminRole"
+                    "role_ids": {
+                        "type": "array",
+                        "items": {
+                            "type": "integer"
+                        },
+                        "uniqueItems": true
                     },
                     "avatar": {
                         "type": [
@@ -4786,6 +5373,26 @@
                     "target_level"
                 ],
                 "title": "StoreLearningGoalRequest"
+            },
+            "StoreRoleRequest": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "maxLength": 50
+                    },
+                    "permissions": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "uniqueItems": true
+                    }
+                },
+                "required": [
+                    "name"
+                ],
+                "title": "StoreRoleRequest"
             },
             "StoreSkillLevelRequest": {
                 "type": "object",
@@ -4962,8 +5569,12 @@
                     "is_active": {
                         "$ref": "#/components/schemas/IsActive"
                     },
-                    "role": {
-                        "$ref": "#/components/schemas/AdminRole"
+                    "role_ids": {
+                        "type": "array",
+                        "items": {
+                            "type": "integer"
+                        },
+                        "uniqueItems": true
                     },
                     "avatar": {
                         "type": [
@@ -5077,6 +5688,26 @@
                     }
                 },
                 "title": "UpdateLearningGoalRequest"
+            },
+            "UpdateRoleRequest": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "maxLength": 50
+                    },
+                    "permissions": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "uniqueItems": true
+                    }
+                },
+                "required": [
+                    "name"
+                ],
+                "title": "UpdateRoleRequest"
             },
             "UpdateSkillRequest": {
                 "type": "object",

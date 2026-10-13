@@ -69,6 +69,17 @@ final class DynamicPermissionTest extends TestCase
         $this->call('POST', '/api/admin/tag/store', ['name' => 'go'], $cookies)->assertOk();
     }
 
+    public function test_me_lists_the_permissions_the_ui_may_show(): void
+    {
+        $viewer = $this->call('GET', '/api/admin/credential/me', [], $this->loginAs(AdminMst::factory()->create()))->assertOk();
+        $this->assertContains('skill.list', $viewer->json('data.permissions'));
+        $this->assertNotContains('skill.store', $viewer->json('data.permissions'));
+        $viewer->assertJsonPath('data.roles.0.name', AdminRole::VIEWER->value);
+
+        $owner = $this->call('GET', '/api/admin/credential/me', [], $this->loginAsOwner(AdminMst::factory()->create()))->assertOk();
+        $this->assertEqualsCanonicalizing(array_keys(app(AdminRoutePermissions::class)->all()), $owner->json('data.permissions'));
+    }
+
     public function test_the_sync_command_adds_missing_and_prunes_stale_permissions(): void
     {
         Permission::query()->where('name', 'tag.list')->delete();

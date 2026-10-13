@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { getAdminSchema, getSkillLevelSchema, getSkillSchema, getTagSchema } from './validation';
 import { ValidationRules } from './validation-rules';
-import { AdminRole, AdminStatus, Gender, SkillLevel } from '@/shared/enums';
+import { AdminStatus, Gender, SkillLevel } from '@/shared/enums';
 
 // Echo the key and params so assertions can check which message was chosen.
 const t = (key: string, params?: Record<string, string | number>) =>
@@ -16,7 +16,7 @@ const person = {
   first_name: 'Ada',
   last_name: 'Lovelace',
   gender: Gender.MALE,
-  role: AdminRole.VIEWER,
+  role_ids: [],
   is_active: true,
 };
 
@@ -42,10 +42,10 @@ describe('admin schema', () => {
     ]);
   });
 
-  it('accept the two roles only', () => {
+  it('accept a list of role ids only', () => {
     const valid = { ...person, status: AdminStatus.ACTIVE, password: '' };
-    expect(getAdminSchema(t).safeParse({ ...valid, role: AdminRole.OWNER }).success).toBe(true);
-    expect(getAdminSchema(t).safeParse({ ...valid, role: 'admin' }).success).toBe(false);
+    expect(getAdminSchema(t).safeParse({ ...valid, role_ids: [1, 2] }).success).toBe(true);
+    expect(getAdminSchema(t).safeParse({ ...valid, role_ids: ['admin'] }).success).toBe(false);
   });
 
   it('reject an unknown status', () => {

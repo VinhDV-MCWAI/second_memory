@@ -1,7 +1,7 @@
-import type { AdminMst } from './models/master';
+import type { CurrentAdmin } from './models/master';
 
 /** The signed-in admin, as `POST /admin/credential/login` and `GET /admin/credential/me` return it. */
-export type User = AdminMst;
+export type User = CurrentAdmin;
 
 export interface LoginCredentials {
   user_name: string;

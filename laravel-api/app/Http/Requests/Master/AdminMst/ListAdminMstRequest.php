@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Http\Requests\Master\AdminMst;
 
 use App\Constants\CommonVal;
-use App\Enums\AdminRole;
 use App\Enums\Gender;
 use App\Enums\IsActive;
 use App\Enums\IsDelete;
@@ -32,7 +31,7 @@ class ListAdminMstRequest extends ListRequest
             'gender' => ['nullable', Rule::enum(Gender::class)],
             'status' => ['nullable', Rule::enum(StatusEnum::class)],
             'is_active' => ['nullable', Rule::enum(IsActive::class)],
-            'role' => ['nullable', Rule::enum(AdminRole::class)],
+            'role_id' => ['nullable', 'integer'],
             'avatar' => ['nullable', 'string', 'min:'.CommonVal::MIN_VARCHAR, 'max:30'],
             'is_delete' => ['nullable', Rule::enum(IsDelete::class)],
             'from_date' => [
@@ -63,7 +62,7 @@ class ListAdminMstRequest extends ListRequest
             'gender' => __('messages.gender'),
             'status' => __('messages.status'),
             'is_active' => __('messages.is_active'),
-            'role' => __('messages.role'),
+            'role_id' => __('messages.role'),
             'avatar' => __('messages.avatar'),
             'is_delete' => __('messages.is_delete'),
             'from_date' => __('messages.from_date'),

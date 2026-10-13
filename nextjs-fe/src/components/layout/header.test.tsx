@@ -9,7 +9,7 @@ const qaOwner = {
   user_name: 'qa_owner',
   first_name: 'Quality',
   last_name: 'Owner',
-  role: 'owner',
+  roles: [{ id: 1, name: 'owner' }],
 } as User;
 
 vi.mock('next-intl', () => ({ useTranslations: () => (key: string) => key }));

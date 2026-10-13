@@ -1,12 +1,5 @@
 import { z } from 'zod';
-import {
-  Gender,
-  AdminStatus,
-  AdminRole,
-  EvidenceType,
-  GoalStatus,
-  SkillLevel,
-} from '@/shared/enums';
+import { Gender, AdminStatus, EvidenceType, GoalStatus, SkillLevel } from '@/shared/enums';
 import { ValidationRules } from './validation-rules';
 
 type Translator = (key: string, params?: Record<string, string | number>) => string;
@@ -90,7 +83,7 @@ export const getAdminSchema = (t: Translator) =>
     birth: z.string().optional(),
     gender: genderValidation,
     status: adminStatusValidation,
-    role: z.nativeEnum(AdminRole),
+    role_ids: z.array(z.number()),
     is_active: z.boolean(),
     avatar: getAvatarValidation(t),
   });

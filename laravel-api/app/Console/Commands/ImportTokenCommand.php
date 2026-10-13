@@ -28,7 +28,7 @@ final class ImportTokenCommand extends Command
     {
         $admin = AdminMst::query()->notDeleted()->active()
             ->where('user_name', (string) $this->argument('login_id'))
-            ->where('role', AdminRole::OWNER)
+            ->whereHas('roles', fn ($roles) => $roles->where('name', AdminRole::OWNER->value))
             ->first();
         if ($admin === null) {
             $this->error('No active owner with this login id.');

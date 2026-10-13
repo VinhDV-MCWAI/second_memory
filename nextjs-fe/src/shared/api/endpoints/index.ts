@@ -9,6 +9,8 @@ export const API_ENDPOINTS = {
   },
   MASTER: {
     ADMIN: '/admin/admin-mst',
+    ROLE: '/admin/role',
+    PERMISSION: '/admin/permission/list',
   },
   AUDIT: {
     LOG: '/admin/audit-log',

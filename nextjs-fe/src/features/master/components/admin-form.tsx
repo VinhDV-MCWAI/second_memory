@@ -19,18 +19,12 @@ import { enumOptions } from '@/shared/utils/enum-options';
 import { AvatarUpload } from '@/components/common/avatar-upload';
 import type { AdminMst } from '@/shared/types/api';
 import { ENDPOINTS } from '@/shared/api';
-import {
-  AdminRole,
-  AdminRoleLabels,
-  AdminStatus,
-  Gender,
-  GenderLabels,
-  AdminStatusLabels,
-} from '@/shared/enums';
+import { AdminStatus, Gender, GenderLabels, AdminStatusLabels } from '@/shared/enums';
 import { UPLOAD_CONFIG } from '@/shared/config';
 import { getAdminSchema, type AdminFormData } from '@/shared/validation/validation';
 import type { ResourceFormProps } from '@/components/common/resource-list-page';
 import { HistoryViewer } from '@/features/history/components/history-viewer';
+import { IdPicker } from '@/features/ledger/components/id-picker';
 
 /** audit_log.auditable_type of admins (AdminMstService::$auditableType). */
 const AUDITABLE_TYPE = 'admin';
@@ -66,7 +60,7 @@ export function AdminForm({ initialData, onSuccess, onCancel }: ResourceFormProp
     defaultValues: {
       gender: Gender.MALE,
       status: AdminStatus.ACTIVE,
-      role: AdminRole.VIEWER,
+      role_ids: [],
       is_active: true,
     },
   });
@@ -83,7 +77,7 @@ export function AdminForm({ initialData, onSuccess, onCancel }: ResourceFormProp
         birth: formatDateForInput(initialData.birth),
         gender: initialData.gender ? Number(initialData.gender) : Gender.MALE,
         status: initialData.status !== undefined ? Number(initialData.status) : AdminStatus.ACTIVE,
-        role: initialData.role as AdminRole,
+        role_ids: initialData.roles.map((role) => role.id),
         is_active: initialData.is_active,
         avatar: initialData.avatar,
       });
@@ -99,7 +93,7 @@ export function AdminForm({ initialData, onSuccess, onCancel }: ResourceFormProp
         birth: '',
         gender: Gender.MALE,
         status: AdminStatus.ACTIVE,
-        role: AdminRole.VIEWER,
+        role_ids: [],
         is_active: true,
         avatar: '',
       });
@@ -134,8 +128,11 @@ export function AdminForm({ initialData, onSuccess, onCancel }: ResourceFormProp
           }
           await update(initialData.id, payload);
         } else {
+          // No role picked: the API makes the new admin a viewer (read-only)
+          const { role_ids, ...rest } = payload;
           await create({
-            ...payload,
+            ...rest,
+            ...(role_ids.length > 0 ? { role_ids } : {}),
             is_delete: false,
           });
         }
@@ -151,7 +148,7 @@ export function AdminForm({ initialData, onSuccess, onCancel }: ResourceFormProp
   // Use useWatch hook instead of watch() to avoid React Compiler issues
   const genderValue = useWatch({ control, name: 'gender' });
   const statusValue = useWatch({ control, name: 'status' });
-  const roleValue = useWatch({ control, name: 'role' });
+  const roleIds = useWatch({ control, name: 'role_ids' });
 
   return (
     <>
@@ -280,12 +277,14 @@ export function AdminForm({ initialData, onSuccess, onCancel }: ResourceFormProp
           </FormField>
         </div>
 
-        <FormField id="role" label={tLabels('role')} required error={errors.role?.message}>
-          <OptionSelect
-            value={roleValue}
-            onChange={(value) => setValue('role', value as AdminRole)}
-            options={enumOptions(AdminRoleLabels)}
+        <FormField id="role_ids" label={tLabels('roles')} error={errors.role_ids?.message}>
+          <IdPicker
+            endpoint={ENDPOINTS.MASTER.ROLE}
+            emptyMessage={tForms('noRoles')}
+            value={roleIds}
+            onChange={(ids) => setValue('role_ids', ids)}
           />
+          {!isEdit && <p className="text-xs text-muted-foreground">{tForms('rolesDefault')}</p>}
         </FormField>
 
         <div className="mt-4 flex items-center gap-2">

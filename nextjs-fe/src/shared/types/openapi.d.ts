@@ -325,6 +325,23 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/admin/permission/list': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Every permission (one per admin API), grouped by feature */
+    get: operations['permission.list'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/public/skills': {
     parameters: {
       query?: never;
@@ -353,6 +370,70 @@ export interface paths {
     get: operations['publicSkill.show'];
     put?: never;
     post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/admin/role/list': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations['role.list'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/admin/role/store': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations['role.store'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/admin/role/update/{id}': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put: operations['role.update'];
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/admin/role/delete': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations['role.delete'];
     delete?: never;
     options?: never;
     head?: never;
@@ -556,17 +637,14 @@ export interface components {
       gender: number;
       status: number;
       is_active: boolean;
-      role: string;
+      roles: {
+        id: number;
+        name: string;
+      }[];
       avatar: string;
       is_delete: boolean;
       updated_at: string;
     };
-    /**
-     * AdminRole
-     * @description The two admin roles (ADR-0005): an owner may change data, a viewer may only read it.
-     * @enum {string}
-     */
-    AdminRole: 'owner' | 'viewer';
     /**
      * AdminStatus
      * @enum {integer}
@@ -619,6 +697,10 @@ export interface components {
     };
     /** DeleteLearningGoalRequest */
     DeleteLearningGoalRequest: {
+      ids: number[];
+    };
+    /** DeleteRoleRequest */
+    DeleteRoleRequest: {
       ids: number[];
     };
     /** DeleteSkillRequest */
@@ -781,6 +863,15 @@ export interface components {
       current_level_label: 'Learning' | 'Can use with help' | 'Independent' | 'Can teach others';
       tags: string[];
     };
+    /** RoleResource */
+    RoleResource: {
+      id: number;
+      name: string;
+      /** @description Built-in roles (`owner`, `viewer`) cannot be renamed or deleted. */
+      is_built_in: boolean;
+      permissions: string[];
+      admin_count: number;
+    };
     /**
      * SearchMatch
      * @description Which search mode answered (ADR-0009): the UI shows "did you mean" wording for fuzzy results.
@@ -839,7 +930,7 @@ export interface components {
       gender: components['schemas']['Gender'];
       status: components['schemas']['AdminStatus'];
       is_active: components['schemas']['IsActive'];
-      role?: components['schemas']['AdminRole'];
+      role_ids?: number[];
       avatar?: string | null;
       is_delete: components['schemas']['IsDelete'];
     };
@@ -873,6 +964,11 @@ export interface components {
       /** Format: date */
       target_date?: string | null;
       note?: string | null;
+    };
+    /** StoreRoleRequest */
+    StoreRoleRequest: {
+      name: string;
+      permissions?: string[];
     };
     /** StoreSkillLevelRequest */
     StoreSkillLevelRequest: {
@@ -921,7 +1017,7 @@ export interface components {
       gender: components['schemas']['Gender'];
       status: components['schemas']['AdminStatus'];
       is_active: components['schemas']['IsActive'];
-      role?: components['schemas']['AdminRole'];
+      role_ids?: number[];
       avatar?: string | null;
       is_delete?: components['schemas']['IsDelete'] | null;
     };
@@ -960,6 +1056,11 @@ export interface components {
        */
       status?: 'open' | 'dropped';
       note?: string | null;
+    };
+    /** UpdateRoleRequest */
+    UpdateRoleRequest: {
+      name: string;
+      permissions?: string[];
     };
     /**
      * UpdateSkillRequest
@@ -1023,7 +1124,7 @@ export interface operations {
         gender?: components['schemas']['Gender'] | null;
         status?: components['schemas']['StatusEnum'] | null;
         is_active?: components['schemas']['IsActive'] | null;
-        role?: components['schemas']['AdminRole'] | null;
+        role_id?: number | null;
         avatar?: string | null;
         is_delete?: components['schemas']['IsDelete'] | null;
         from_date?: string | null;
@@ -1287,10 +1388,14 @@ export interface operations {
               gender: number;
               status: number;
               is_active: boolean;
-              role: string;
+              roles: {
+                id: number;
+                name: string;
+              }[];
               avatar: string;
               is_delete: boolean;
               updated_at: string;
+              permissions: string[];
             };
             error: {
               status: boolean;
@@ -1366,10 +1471,14 @@ export interface operations {
               gender: number;
               status: number;
               is_active: boolean;
-              role: string;
+              roles: {
+                id: number;
+                name: string;
+              }[];
               avatar: string;
               is_delete: boolean;
               updated_at: string;
+              permissions: string[];
             };
             error: {
               status: boolean;
@@ -1890,6 +1999,49 @@ export interface operations {
       422: components['responses']['ValidationException'];
     };
   };
+  'permission.list': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            data: {
+              feature: string;
+              permissions: {
+                name: string;
+                action: string;
+                method: string | null;
+              }[];
+            }[];
+            error: {
+              status: boolean;
+              code: number;
+              messages: null;
+            };
+          };
+        };
+      };
+      401: components['responses']['AuthenticationException'];
+      /** @description Forbidden */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ApiError'];
+        };
+      };
+    };
+  };
   'publicSkill.list': {
     parameters: {
       query?: never;
@@ -1975,6 +2127,189 @@ export interface operations {
           'application/json': components['schemas']['ApiError'];
         };
       };
+    };
+  };
+  'role.list': {
+    parameters: {
+      query?: {
+        id?: number | null;
+        page?: number | null;
+        per_page?: number | null;
+        sort_by?: string | null;
+        sort_order?: string | null;
+        name?: string | null;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Array of `RoleResource` */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            data: {
+              data: components['schemas']['RoleResource'][];
+              links: components['schemas']['PaginationLinks'];
+              meta: components['schemas']['PaginationMeta'];
+            };
+            error: {
+              status: boolean;
+              code: number;
+              messages: null;
+            };
+          };
+        };
+      };
+      401: components['responses']['AuthenticationException'];
+      /** @description Forbidden */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ApiError'];
+        };
+      };
+      422: components['responses']['ValidationException'];
+    };
+  };
+  'role.store': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['StoreRoleRequest'];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            data: number;
+            error: {
+              status: boolean;
+              code: number;
+              messages: null;
+            };
+          };
+        };
+      };
+      401: components['responses']['AuthenticationException'];
+      /** @description Forbidden */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ApiError'];
+        };
+      };
+      422: components['responses']['ValidationException'];
+    };
+  };
+  'role.update': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['UpdateRoleRequest'];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            data: number;
+            error: {
+              status: boolean;
+              code: number;
+              messages: null;
+            };
+          };
+        };
+      };
+      401: components['responses']['AuthenticationException'];
+      /** @description Forbidden */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ApiError'];
+        };
+      };
+      /** @description Not Found */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ApiError'];
+        };
+      };
+      422: components['responses']['ValidationException'];
+    };
+  };
+  'role.delete': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['DeleteRoleRequest'];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            data: null;
+            error: {
+              status: boolean;
+              code: number;
+              messages: null;
+            };
+          };
+        };
+      };
+      401: components['responses']['AuthenticationException'];
+      /** @description Forbidden */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ApiError'];
+        };
+      };
+      422: components['responses']['ValidationException'];
     };
   };
   'search.query': {

@@ -45,7 +45,7 @@ final class DevSampleSeederTest extends TestCase
     {
         $this->seed(DevSampleSeeder::class);
         $viewer = AdminMst::query()->where('user_name', DevSampleSeeder::VIEWER_USER_NAME)->firstOrFail();
-        $this->assertSame(AdminRole::VIEWER, $viewer->role);
+        $this->assertSame([AdminRole::VIEWER->value], $viewer->getRoleNames()->all());
 
         $cookies = $this->loginAs($viewer, DevSampleSeeder::VIEWER_PASSWORD);
 

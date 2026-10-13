@@ -124,7 +124,7 @@ export function Header() {
                 <p className="text-sm font-medium">{displayName}</p>
                 {user && (
                   <p className="text-xs text-slate-500 dark:text-slate-400">
-                    @{user.user_name} · {user.role}
+                    @{user.user_name} · {user.roles.map((role) => role.name).join(', ')}
                   </p>
                 )}
               </DropdownMenuLabel>
