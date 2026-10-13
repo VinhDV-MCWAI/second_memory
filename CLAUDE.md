@@ -19,7 +19,7 @@ All docs live in `docs/` (start at [docs/README.md](docs/README.md)). The old Vi
 PHP, Composer, Node and pnpm are **not installed on the host**. Everything runs in Docker (containers prefixed `ml-`). The root `Makefile` wraps the common commands (`make help` lists them):
 
 ```bash
-make up          # generate env if missing, then build + start the stack (./start.sh does the same)
+make up          # generate env if missing, then build + start the stack
 make test        # backend tests (make test f=AdminMst); make test-ci runs them as CI does
 make lint        # Pint + ESLint + Prettier checks, backend and both FE apps
 make verify      # everything CI runs
