@@ -128,3 +128,4 @@ pnpm-debug.log*
 *.tfstate.*
 *.tfplan
 crash.log
+.claude/settings.local.json
