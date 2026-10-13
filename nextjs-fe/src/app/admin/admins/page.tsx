@@ -86,7 +86,7 @@ export default function AdminListPage() {
       defaultSortBy={SORT_FIELDS.CREATED_AT}
       filtersKey="admin-filters"
       form={AdminForm}
-      dialogClassName="max-w-2xl"
+      dialogClassName="sm:max-w-2xl"
     />
   );
 }

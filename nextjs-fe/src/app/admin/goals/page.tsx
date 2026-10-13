@@ -66,7 +66,7 @@ export default function LearningGoalListPage() {
       defaultSortBy="target_date"
       filtersKey="goal-filters"
       form={LearningGoalForm}
-      dialogClassName="max-w-xl"
+      dialogClassName="sm:max-w-xl"
     />
   );
 }

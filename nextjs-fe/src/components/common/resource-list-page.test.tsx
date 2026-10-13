@@ -49,7 +49,7 @@ const renderPage = () => {
         defaultSortBy="rank_order"
         filtersKey="test-filters"
         form={TestForm}
-        dialogClassName="max-w-xl"
+        dialogClassName="sm:max-w-xl"
       />
     </Wrapper>,
   );
