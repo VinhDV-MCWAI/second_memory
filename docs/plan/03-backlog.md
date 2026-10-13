@@ -31,9 +31,10 @@ Các giai đoạn 2–5 mới ghi ở mức việc lớn; khi bắt đầu giai 
 
 | Mã | Việc | Kết quả | Trạng thái |
 |---|---|---|---|
-| MEDIA-01 | Đề xuất thiết kế: thư mục, upload nhỏ, upload lớn chia phần, file tạm, xử lý nền, cách hiện tiến trình; rà lại cấu hình MinIO | Đề xuất được xác nhận | todo |
+| MEDIA-01 | Đề xuất thiết kế: thư mục, upload nhỏ, upload lớn chia phần, file tạm, xử lý nền, cách hiện tiến trình; rà lại cấu hình MinIO | Đề xuất được xác nhận | doing |
 | MEDIA-02 | Backend: kết nối MinIO, thư mục, upload file nhỏ, tải về, xóa, test | Upload file nhỏ chạy được | todo |
-| MEDIA-03 | Upload file lớn chia phần, xử lý nền, dọn upload treo | Upload file vài GB chạy được | todo |
+| NEN-08 | Việc nền và thông báo tức thì, dùng chung cho mọi tính năng: hàng đợi Redis, container việc nền, Reverb, việc hẹn giờ, kênh riêng mỗi người, sự kiện "việc nền đã xong", test | Một việc nền thử báo kết quả lên màn hình | todo |
+| MEDIA-03 | Upload file lớn chia phần, xử lý sau upload bằng việc nền, dọn upload treo | Upload file vài GB chạy được | todo |
 | MEDIA-04 | Giao diện quản lý file | Màn hình quản lý file | todo |
 
 ## 4. Người dùng cuối, phòng ban, chính sách

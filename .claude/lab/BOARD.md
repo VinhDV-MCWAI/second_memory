@@ -31,9 +31,9 @@ Phạm vi: cả repo. Mỗi lúc chỉ làm một việc.
 | QUYEN-02 | Phân quyền động: backend, kiểm tra quyền mỗi request, đồng bộ API → quyền, test | [roadmap §2](../../docs/plan/02-roadmap.md) | QUYEN-01 | done 2026-10-13: 82e2290a, df35bb8a, b8df0fda, bed9905a — mỗi API quản trị là một quyền, kiểm tra mỗi request, vai trò Chủ/Chỉ xem chuyển vào DB, make permissions; 176 test pass |
 | QUYEN-03 | Phân quyền động: API quản lý vai trò, quyền, gán vai trò | [roadmap §2](../../docs/plan/02-roadmap.md) | QUYEN-02 | done 2026-10-13: 8e6bb0fd — API vai trò (thêm/sửa/xóa, quyền), danh sách quyền theo chức năng, admin nhận role_ids, bỏ cột role, me trả permissions; make verify pass |
 | QUYEN-04 | Phân quyền động: giao diện vai trò, ma trận quyền, ẩn menu và nút theo quyền | [roadmap §2](../../docs/plan/02-roadmap.md) | QUYEN-03 | done 2026-10-13: 83e45637, 8dc53eb3 — màn hình Vai trò + ma trận quyền, menu và nút ẩn theo quyền; 79 test FE, 2 e2e, make verify pass |
-| MEDIA-01 | **[XÁC NHẬN]** Đề xuất thiết kế media MinIO + upload, rà cấu hình MinIO | [roadmap §3](../../docs/plan/02-roadmap.md) | QUYEN-04 | todo |
+| MEDIA-01 | **[XÁC NHẬN]** Đề xuất thiết kế media MinIO + upload, rà cấu hình MinIO | [roadmap §3](../../docs/plan/02-roadmap.md) | QUYEN-04 | doing since 2026-10-13 13:56 |
 | MEDIA-02 | Media: kết nối MinIO, thư mục, upload file nhỏ, tải về, xóa, test | [roadmap §3](../../docs/plan/02-roadmap.md) | MEDIA-01 | todo |
-| MEDIA-03 | Media: upload file lớn chia phần, xử lý nền, dọn upload treo | [roadmap §3](../../docs/plan/02-roadmap.md) | MEDIA-02 | todo |
+| MEDIA-03 | Media: upload file lớn chia phần, xử lý sau upload bằng việc nền, dọn upload treo | [ADR-0014](../../docs/adr/0014-media-minio-upload.md) | NEN-08 | todo |
 | MEDIA-04 | Media: giao diện quản lý file | [roadmap §3](../../docs/plan/02-roadmap.md) | MEDIA-03 | todo |
 | USER-01 | **[XÁC NHẬN]** Đề xuất thiết kế người dùng cuối, phòng ban, chính sách | [roadmap §4](../../docs/plan/02-roadmap.md) | MEDIA-04 | todo |
 | USER-02 | Quản lý người dùng cuối: API + giao diện + test | [roadmap §4](../../docs/plan/02-roadmap.md) | USER-01 | todo |
@@ -41,3 +41,4 @@ Phạm vi: cả repo. Mỗi lúc chỉ làm một việc.
 | CI-01 | **[XÁC NHẬN]** Đề xuất CI/CD gộp chung trong thư mục `ci/` | [roadmap §5](../../docs/plan/02-roadmap.md) | USER-03 | todo |
 | CI-02 | CI/CD: làm và test trên máy và GitHub | [roadmap §5](../../docs/plan/02-roadmap.md) | CI-01 | todo |
 | CI-03 | CI/CD: tắt chạy tự động, hướng dẫn bật lại | [roadmap §5](../../docs/plan/02-roadmap.md) | CI-02 | todo |
+| NEN-08 | Việc nền và thông báo tức thì (dùng chung): hàng đợi, Reverb, việc hẹn giờ, kênh riêng mỗi người, test | [ADR-0014](../../docs/adr/0014-media-minio-upload.md) | MEDIA-02 | todo |

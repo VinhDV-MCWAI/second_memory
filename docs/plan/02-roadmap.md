@@ -31,8 +31,8 @@ Mỗi giai đoạn bắt đầu bằng **một đề xuất thiết kế** để
 | | |
 |---|---|
 | Mục tiêu | Lấy lại quản lý file: thư mục, upload file nhỏ, upload file lớn chia phần, file tạm, thanh tiến trình |
-| Cách làm | Tham khảo code ở `v1.0.0` và ghi chú `docs/archive/learning/minio-media-pipeline-notes.md`, viết lại cho khớp nền hiện tại; dùng lại bảng `media_mgmt` |
-| Gồm | Rà lại cấu hình MinIO (bucket, quyền, đọc công khai, tự xóa file tạm); xử lý nền cho file lớn; dọn upload bị treo; màn hình quản lý file |
+| Cách làm | Theo [ADR-0014](../adr/0014-media-minio-upload.md): trình duyệt gửi file thẳng lên kho chính MinIO bằng link ký tạm; việc nền xử lý sau upload và Reverb báo kết quả (dùng chung cho mọi tính năng chạy ngầm); dùng lại bảng `media_mgmt`. Tham khảo code `v1.0.0`, viết lại cho khớp nền hiện tại |
+| Gồm | Sửa cấu hình MinIO (tắt đọc công khai, thêm quyền cho tài khoản backend); việc nền và thông báo tức thì (hàng đợi, Reverb, việc hẹn giờ); upload file lớn chia phần; dọn upload bị treo; màn hình quản lý file |
 | Xong khi | Upload được file vài KB và file vài GB, tải lại được, xóa được, có test |
 
 ## 4. Người dùng cuối, phòng ban, chính sách
