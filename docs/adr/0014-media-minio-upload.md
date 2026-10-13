@@ -42,7 +42,7 @@ Kết quả rà cấu hình MinIO:
 | Đường tới MinIO từ trình duyệt | Qua nginx cổng 81, đường dẫn `/media-official/...`, giữ nguyên header `Host` để chữ ký khớp; không mở thêm cổng. Nhánh này cho phép request lớn hơn 50 MB |
 | Upload treo | Bản ghi ở trạng thái "đang tải lên" quá 24 giờ thì một lệnh hẹn giờ xóa bản ghi và phần đã gửi |
 | Xóa file | Đánh dấu đã xóa trong bảng và xóa object; MinIO còn giữ bản cũ 30 ngày để khôi phục |
-| Thư viện backend | `league/flysystem-aws-s3-v3` (kéo theo `aws/aws-sdk-php`), cách chính thức để Laravel nói chuyện với S3/MinIO |
+| Thư viện backend | `aws/aws-sdk-php`. Đề xuất ban đầu là `league/flysystem-aws-s3-v3`; khi làm thì chỉ cần ký link và hỏi/xóa file, nên dùng thẳng thư viện AWS mà flysystem vẫn kéo theo, bớt một lớp (2026-10-13) |
 
 ### Việc nền và thông báo tức thì
 

@@ -39,6 +39,7 @@ Luôn vào qua cổng **81**. nginx ở cổng này chia request cho từng ph�
 ```
 Trình duyệt → http://localhost:81 (nginx)
   ├─ /api/...           → Laravel API
+  ├─ /media-official/… → MinIO (chỉ link ký tạm do API cấp; quản lý file)
   ├─ /skills, /docs     → trang public
   └─ mọi đường dẫn khác → trang quản trị (Next.js): /login, /admin, ...
 ```
@@ -113,6 +114,9 @@ Test dùng một database riêng tên `testing`, không đụng dữ liệu dev.
 | `DynamicPermissionTest` báo "run make permissions" | DB `testing` chưa có quyền cho route mới | `make permissions` |
 | `make openapi` thoát với mã 137 ngay sau khi khởi động | Container chưa sẵn sàng | Chạy lại |
 | Class PHP đã xóa vẫn báo lỗi `include(...)` | Bộ nạp class còn nhớ file cũ | `docker exec ml-php composer dump-autoload` |
+| Upload hoặc tải file báo 403 `SignatureDoesNotMatch` | Link ký cho một địa chỉ khác địa chỉ trình duyệt đang dùng (ví dụ mở bằng `127.0.0.1` thay vì `localhost:81`), hoặc nginx không giữ nguyên header `Host` | Mở trang bằng http://localhost:81; kiểm tra `AWS_PUBLIC_ENDPOINT` (sinh bởi `make setup`) và nhánh `/media-official/` trong `docker/nginx/default.conf` |
+| Link file mở thẳng (không có chữ ký) báo 403 | Đúng thiết kế: kho file không cho đọc công khai | Xin link tải qua API `media/download-url/{id}` |
+| Đổi `docker/minio/create-buckets.sh` mà MinIO không đổi | Script chỉ chạy khi khởi động | `cd docker && docker compose up ml-minio-init` |
 
 ## 7. Làm lại từ đầu
 
