@@ -66,6 +66,7 @@ if [ -f "$LARAVEL_ENV_EXAMPLE" ]; then
     sed -i "s|^REDIS_PASSWORD=.*|REDIS_PASSWORD=${REDIS_PASSWORD}|" "$LARAVEL_ENV"
     sed -i "s|^AWS_ACCESS_KEY_ID=.*|AWS_ACCESS_KEY_ID=${MINIO_IAM_USER}|" "$LARAVEL_ENV"
     sed -i "s|^AWS_SECRET_ACCESS_KEY=.*|AWS_SECRET_ACCESS_KEY=${MINIO_IAM_PASSWORD}|" "$LARAVEL_ENV"
+    sed -i "s|^AWS_PUBLIC_ENDPOINT=.*|AWS_PUBLIC_ENDPOINT=http://localhost:${NGINX_PORT_OUTSIDE_ENV}|" "$LARAVEL_ENV"
     
     # Inject Laravel security variables
     sed -i "s|^APP_KEY=.*|APP_KEY=${LARAVEL_APP_KEY}|" "$LARAVEL_ENV"
