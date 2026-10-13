@@ -4,7 +4,7 @@
 
 | | |
 |---|---|
-| Status | Superseded by [ADR-0012](0012-restore-features-dev-first.md) (2026-10-09); was: Accepted |
+| Status | Superseded by [ADR-0012](0012-restore-features-dev-first.md) (2026-10-09) and [ADR-0013](0013-dynamic-permissions.md) (2026-10-13); was: Accepted |
 | Date | 2026-10-07 |
 | Deciders | PO, TL |
 | Related | [REQ-001](../archive/engineering-lab/requirements/REQ-001-slim-down.md), [RFC-001](../archive/engineering-lab/design/RFC-001-slim-down.md) slice 8, [ADR-0004](0004-sanctum-spa-cookie-auth.md), [analysis §4](../archive/engineering-lab/01-analysis.md#4-keep--simplify--remove), backlog P2-12 |
