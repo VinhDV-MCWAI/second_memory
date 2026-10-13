@@ -48,6 +48,61 @@ class ObjectStorage
         return (string) $this->publicClient()->createPresignedRequest($command, "+{$ttlSeconds} seconds")->getUri();
     }
 
+    /** Starts an S3 multipart upload; the parts go up with presignedPartUrl(), then complete or abort. */
+    public function createMultipartUpload(string $key, string $contentType): string
+    {
+        $result = $this->internalClient()->createMultipartUpload([
+            'Bucket' => $this->bucket(),
+            'Key' => $key,
+            'ContentType' => $contentType,
+        ]);
+
+        return (string) $result['UploadId'];
+    }
+
+    public function presignedPartUrl(string $key, string $uploadId, int $partNumber, int $ttlSeconds): string
+    {
+        $command = $this->publicClient()->getCommand('UploadPart', [
+            'Bucket' => $this->bucket(),
+            'Key' => $key,
+            'UploadId' => $uploadId,
+            'PartNumber' => $partNumber,
+        ]);
+
+        return (string) $this->publicClient()->createPresignedRequest($command, "+{$ttlSeconds} seconds")->getUri();
+    }
+
+    /**
+     * Joins the parts into one object. MinIO checks every ETag; a missing or wrong part fails the call.
+     *
+     * @param  list<array{part_number: int, etag: string}>  $parts
+     */
+    public function completeMultipartUpload(string $key, string $uploadId, array $parts): void
+    {
+        usort($parts, fn (array $a, array $b): int => $a['part_number'] <=> $b['part_number']);
+
+        $this->internalClient()->completeMultipartUpload([
+            'Bucket' => $this->bucket(),
+            'Key' => $key,
+            'UploadId' => $uploadId,
+            'MultipartUpload' => [
+                'Parts' => array_map(fn (array $part): array => ['PartNumber' => $part['part_number'], 'ETag' => $part['etag']], $parts),
+            ],
+        ]);
+    }
+
+    /** Drops the uploaded parts; an upload that is already gone (finished, aborted, expired) is fine. */
+    public function abortMultipartUpload(string $key, string $uploadId): void
+    {
+        try {
+            $this->internalClient()->abortMultipartUpload(['Bucket' => $this->bucket(), 'Key' => $key, 'UploadId' => $uploadId]);
+        } catch (S3Exception $e) {
+            if ($e->getStatusCode() !== self::HTTP_NOT_FOUND) {
+                throw $e;
+            }
+        }
+    }
+
     /**
      * Size, ETag and content type of a stored object, or null when it does not exist.
      *

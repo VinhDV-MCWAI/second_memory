@@ -3109,6 +3109,404 @@
                 }
             }
         },
+        "/admin/media/multipart/start": {
+            "post": {
+                "operationId": "media.multipart-start",
+                "summary": "Start a large-file upload (up to 10 GB); returns the part size and number of parts to send",
+                "tags": [
+                    "MultipartUpload"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/StartMultipartUploadRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer"
+                                                },
+                                                "part_size": {
+                                                    "type": "integer"
+                                                },
+                                                "part_count": {
+                                                    "type": "integer"
+                                                }
+                                            },
+                                            "required": [
+                                                "id",
+                                                "part_size",
+                                                "part_count"
+                                            ]
+                                        },
+                                        "error": {
+                                            "type": "object",
+                                            "properties": {
+                                                "status": {
+                                                    "type": "boolean"
+                                                },
+                                                "code": {
+                                                    "type": "integer"
+                                                },
+                                                "messages": {
+                                                    "type": "null"
+                                                }
+                                            },
+                                            "required": [
+                                                "status",
+                                                "code",
+                                                "messages"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data",
+                                        "error"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/admin/media/multipart/part-urls/{id}": {
+            "post": {
+                "operationId": "media.multipart-part-urls",
+                "summary": "Presigned PUT URLs for some parts of your upload (at most 100 per call); read each part's ETag response header",
+                "tags": [
+                    "MultipartUpload"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/PartUrlsRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "parts": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "part_number": {
+                                                                "type": "integer"
+                                                            },
+                                                            "url": {
+                                                                "type": "string"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "part_number",
+                                                            "url"
+                                                        ]
+                                                    }
+                                                },
+                                                "expires_at": {
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "required": [
+                                                "parts",
+                                                "expires_at"
+                                            ]
+                                        },
+                                        "error": {
+                                            "type": "object",
+                                            "properties": {
+                                                "status": {
+                                                    "type": "boolean"
+                                                },
+                                                "code": {
+                                                    "type": "integer"
+                                                },
+                                                "messages": {
+                                                    "type": "null"
+                                                }
+                                            },
+                                            "required": [
+                                                "status",
+                                                "code",
+                                                "messages"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data",
+                                        "error"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiError"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/admin/media/multipart/complete/{id}": {
+            "post": {
+                "operationId": "media.multipart-complete",
+                "summary": "Report every part with its ETag; joining and checking the file runs in the background",
+                "tags": [
+                    "MultipartUpload"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CompleteMultipartUploadRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "`BackgroundTaskResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "data": {
+                                                    "$ref": "#/components/schemas/BackgroundTaskResource"
+                                                }
+                                            },
+                                            "required": [
+                                                "data"
+                                            ]
+                                        },
+                                        "error": {
+                                            "type": "object",
+                                            "properties": {
+                                                "status": {
+                                                    "type": "boolean"
+                                                },
+                                                "code": {
+                                                    "type": "integer"
+                                                },
+                                                "messages": {
+                                                    "type": "null"
+                                                }
+                                            },
+                                            "required": [
+                                                "status",
+                                                "code",
+                                                "messages"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data",
+                                        "error"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiError"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/admin/media/multipart/abort/{id}": {
+            "post": {
+                "operationId": "media.multipart-abort",
+                "summary": "Cancel your unfinished upload and drop the parts already sent",
+                "tags": [
+                    "MultipartUpload"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "null"
+                                        },
+                                        "error": {
+                                            "type": "object",
+                                            "properties": {
+                                                "status": {
+                                                    "type": "boolean"
+                                                },
+                                                "code": {
+                                                    "type": "integer"
+                                                },
+                                                "messages": {
+                                                    "type": "null"
+                                                }
+                                            },
+                                            "required": [
+                                                "status",
+                                                "code",
+                                                "messages"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data",
+                                        "error"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiError"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/admin/permission/list": {
             "get": {
                 "operationId": "permission.list",
@@ -5238,6 +5636,40 @@
                 ],
                 "title": "BackgroundTaskResource"
             },
+            "CompleteMultipartUploadRequest": {
+                "type": "object",
+                "description": "Every part with the ETag MinIO returned for it.",
+                "properties": {
+                    "parts": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "part_number": {
+                                    "type": "integer",
+                                    "minimum": 1,
+                                    "maximum": 10000
+                                },
+                                "etag": {
+                                    "type": "string",
+                                    "maxLength": 100
+                                }
+                            },
+                            "required": [
+                                "part_number",
+                                "etag"
+                            ]
+                        },
+                        "minItems": 1,
+                        "maxItems": 10000,
+                        "uniqueItems": true
+                    }
+                },
+                "required": [
+                    "parts"
+                ],
+                "title": "CompleteMultipartUploadRequest"
+            },
             "CreateUploadRequest": {
                 "type": "object",
                 "description": "One-PUT upload of a small file (ADR-0014); bigger files use multipart upload.",
@@ -5880,6 +6312,26 @@
                 ],
                 "title": "PaginationMeta"
             },
+            "PartUrlsRequest": {
+                "type": "object",
+                "properties": {
+                    "part_numbers": {
+                        "type": "array",
+                        "items": {
+                            "type": "integer",
+                            "minimum": 1,
+                            "maximum": 10000
+                        },
+                        "minItems": 1,
+                        "maxItems": 100,
+                        "uniqueItems": true
+                    }
+                },
+                "required": [
+                    "part_numbers"
+                ],
+                "title": "PartUrlsRequest"
+            },
             "PublicSkillDetailResource": {
                 "type": "object",
                 "properties": {
@@ -6204,6 +6656,41 @@
                     "updated_at"
                 ],
                 "title": "SkillResource"
+            },
+            "StartMultipartUploadRequest": {
+                "type": "object",
+                "description": "Multipart upload of a large file (ADR-0014): same fields as a small upload, up to MAX_FILE_BYTES.",
+                "properties": {
+                    "folder": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "pattern": "^\\/(?:[^\\/\\x00-\\x1F\\x7F]+(?:\\/[^\\/\\x00-\\x1F\\x7F]+)*)?$",
+                        "maxLength": 1000
+                    },
+                    "name": {
+                        "type": "string",
+                        "pattern": "^(?!\\.{1,2}$)[^\\/\\\\\\x00-\\x1F\\x7F]+$",
+                        "maxLength": 255
+                    },
+                    "size": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 10737418240
+                    },
+                    "mime_type": {
+                        "type": "string",
+                        "pattern": "^[\\w.+-]+\\/[\\w.+-]+$",
+                        "maxLength": 100
+                    }
+                },
+                "required": [
+                    "name",
+                    "size",
+                    "mime_type"
+                ],
+                "title": "StartMultipartUploadRequest"
             },
             "StatusEnum": {
                 "type": "integer",

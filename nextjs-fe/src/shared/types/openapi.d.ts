@@ -478,6 +478,74 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/admin/media/multipart/start': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** Start a large-file upload (up to 10 GB); returns the part size and number of parts to send */
+    post: operations['media.multipart-start'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/admin/media/multipart/part-urls/{id}': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** Presigned PUT URLs for some parts of your upload (at most 100 per call); read each part's ETag response header */
+    post: operations['media.multipart-part-urls'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/admin/media/multipart/complete/{id}': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** Report every part with its ETag; joining and checking the file runs in the background */
+    post: operations['media.multipart-complete'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/admin/media/multipart/abort/{id}': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** Cancel your unfinished upload and drop the parts already sent */
+    post: operations['media.multipart-abort'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/admin/permission/list': {
     parameters: {
       query?: never;
@@ -851,6 +919,16 @@ export interface components {
       updated_at: string;
     };
     /**
+     * CompleteMultipartUploadRequest
+     * @description Every part with the ETag MinIO returned for it.
+     */
+    CompleteMultipartUploadRequest: {
+      parts: {
+        part_number: number;
+        etag: string;
+      }[];
+    };
+    /**
      * CreateUploadRequest
      * @description One-PUT upload of a small file (ADR-0014); bigger files use multipart upload.
      */
@@ -1020,6 +1098,10 @@ export interface components {
       to: number | null;
       total: number;
     };
+    /** PartUrlsRequest */
+    PartUrlsRequest: {
+      part_numbers: number[];
+    };
     /** PublicSkillDetailResource */
     PublicSkillDetailResource: {
       name: string;
@@ -1101,6 +1183,16 @@ export interface components {
       tags?: components['schemas']['TagResource'][];
       created_at: string | null;
       updated_at: string | null;
+    };
+    /**
+     * StartMultipartUploadRequest
+     * @description Multipart upload of a large file (ADR-0014): same fields as a small upload, up to MAX_FILE_BYTES.
+     */
+    StartMultipartUploadRequest: {
+      folder?: string | null;
+      name: string;
+      size: number;
+      mime_type: string;
     };
     /**
      * StatusEnum
@@ -2635,6 +2727,211 @@ export interface operations {
         };
       };
       422: components['responses']['ValidationException'];
+    };
+  };
+  'media.multipart-start': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['StartMultipartUploadRequest'];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            data: {
+              id: number;
+              part_size: number;
+              part_count: number;
+            };
+            error: {
+              status: boolean;
+              code: number;
+              messages: null;
+            };
+          };
+        };
+      };
+      401: components['responses']['AuthenticationException'];
+      /** @description Forbidden */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ApiError'];
+        };
+      };
+      422: components['responses']['ValidationException'];
+    };
+  };
+  'media.multipart-part-urls': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['PartUrlsRequest'];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            data: {
+              parts: {
+                part_number: number;
+                url: string;
+              }[];
+              expires_at: string;
+            };
+            error: {
+              status: boolean;
+              code: number;
+              messages: null;
+            };
+          };
+        };
+      };
+      401: components['responses']['AuthenticationException'];
+      /** @description Forbidden */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ApiError'];
+        };
+      };
+      /** @description Not Found */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ApiError'];
+        };
+      };
+      422: components['responses']['ValidationException'];
+    };
+  };
+  'media.multipart-complete': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['CompleteMultipartUploadRequest'];
+      };
+    };
+    responses: {
+      /** @description `BackgroundTaskResource` */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            data: {
+              data: components['schemas']['BackgroundTaskResource'];
+            };
+            error: {
+              status: boolean;
+              code: number;
+              messages: null;
+            };
+          };
+        };
+      };
+      401: components['responses']['AuthenticationException'];
+      /** @description Forbidden */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ApiError'];
+        };
+      };
+      /** @description Not Found */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ApiError'];
+        };
+      };
+      422: components['responses']['ValidationException'];
+    };
+  };
+  'media.multipart-abort': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            data: null;
+            error: {
+              status: boolean;
+              code: number;
+              messages: null;
+            };
+          };
+        };
+      };
+      401: components['responses']['AuthenticationException'];
+      /** @description Forbidden */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ApiError'];
+        };
+      };
+      /** @description Not Found */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ApiError'];
+        };
+      };
     };
   };
   'permission.list': {

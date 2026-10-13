@@ -22,9 +22,14 @@ class CreateUploadRequest extends FormRequest
         return [
             'folder' => MediaRules::folder(),
             'name' => ['required', ...MediaRules::name()],
-            'size' => ['required', 'integer', 'min:0', 'max:'.MediaConst::SINGLE_UPLOAD_MAX_BYTES],
+            'size' => ['required', 'integer', 'min:0', 'max:'.$this->maxSize()],
             'mime_type' => ['required', 'string', 'max:'.MediaConst::MIME_TYPE_MAX, 'regex:/^[\w.+-]+\/[\w.+-]+$/'],
         ];
+    }
+
+    protected function maxSize(): int
+    {
+        return MediaConst::SINGLE_UPLOAD_MAX_BYTES;
     }
 
     public function attributes(): array

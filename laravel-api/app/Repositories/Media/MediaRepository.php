@@ -5,13 +5,17 @@ declare(strict_types=1);
 namespace App\Repositories\Media;
 
 use App\Constants\MediaConst;
+use App\Constants\Messages;
 use App\Enums\UploadStatus;
 use App\Models\Media\MediaMgmt;
 use App\Repositories\BaseRepository;
+use Carbon\CarbonInterface;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\UniqueConstraintViolationException;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\ValidationException;
 
 /**
  * Folders are rows too; the tree is the `virtual_path` column (`/Docs/report.pdf`).
@@ -90,10 +94,32 @@ class MediaRepository extends BaseRepository
 
     /**
      * @param  array<string, mixed>  $attributes
+     *
+     * @throws ValidationException when the unique index refuses the path
      */
     public function create(array $attributes): MediaMgmt
     {
-        return $this->query()->create($attributes);
+        return $this->unique(fn (): MediaMgmt => $this->query()->create($attributes));
+    }
+
+    /** @throws ValidationException when the unique index refuses the path */
+    public function save(MediaMgmt $item): void
+    {
+        $this->unique(fn (): bool => $item->save());
+    }
+
+    /**
+     * Unfinished uploads (still uploading or processing) last touched before $before.
+     *
+     * @return Collection<int, MediaMgmt>
+     */
+    public function stuckUploads(CarbonInterface $before): Collection
+    {
+        return $this->query()->live()
+            ->where('is_file', true)
+            ->whereIn('upload_status', [UploadStatus::UPLOADING->value, UploadStatus::PROCESSING->value])
+            ->where('updated_at', '<', $before)
+            ->get();
     }
 
     /**
@@ -102,6 +128,23 @@ class MediaRepository extends BaseRepository
     public function markDeleted(array $ids, ?int $actorId): void
     {
         $this->query()->whereKey($ids)->update(['is_delete' => true, 'updated_by' => $actorId, 'updated_at' => now()]);
+    }
+
+    /**
+     * Two requests can pass pathTaken() together; the partial unique index decides, the loser gets a 422.
+     *
+     * @template T
+     *
+     * @param  callable(): T  $write
+     * @return T
+     */
+    private function unique(callable $write): mixed
+    {
+        try {
+            return $write();
+        } catch (UniqueConstraintViolationException) {
+            throw ValidationException::withMessages(['name' => Messages::E0029]);
+        }
     }
 
     /**

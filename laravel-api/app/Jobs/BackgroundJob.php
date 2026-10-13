@@ -6,6 +6,7 @@ namespace App\Jobs;
 
 use App\Constants\Messages;
 use App\Enums\BackgroundTaskStatus;
+use App\Exceptions\BackgroundTaskFailed;
 use App\Services\BackgroundTasks\BackgroundTaskTracker;
 use Illuminate\Contracts\Container\Container;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -15,7 +16,8 @@ use Throwable;
 
 /**
  * A queued job whose result reaches the admin who started it (ADR-0014). Subclasses implement type()
- * and run(); run() may type-hint dependencies and returns the message shown on screen. Start one with
+ * and run(); run() may type-hint dependencies and returns the message shown on screen; it throws
+ * BackgroundTaskFailed for a failure that retrying cannot fix. Start one with
  * BackgroundTaskTracker::dispatch(), which records it so the screen can read the status back.
  */
 abstract class BackgroundJob implements ShouldQueue
@@ -40,14 +42,25 @@ abstract class BackgroundJob implements ShouldQueue
     final public function handle(BackgroundTaskTracker $tracker, Container $container): void
     {
         $tracker->running($this->taskId);
-        /** @var string $message */
-        $message = $container->call([$this, 'run']);
+        try {
+            /** @var string $message */
+            $message = $container->call([$this, 'run']);
+        } catch (BackgroundTaskFailed $e) {
+            // No retry; outside a queue (called directly) there is no job to mark, so report it here
+            $this->job !== null ? $this->fail($e) : $this->failed($e);
+
+            return;
+        }
         $tracker->finish($this->taskId, BackgroundTaskStatus::COMPLETED, $message);
     }
 
-    /** Called once every try has failed; the exception itself goes to the log and `failed_jobs`. */
+    /**
+     * Called once every try has failed, or at once for BackgroundTaskFailed. The screen gets that
+     * exception's message, or a generic one; details go to the log and `failed_jobs`.
+     */
     public function failed(?Throwable $exception): void
     {
-        app(BackgroundTaskTracker::class)->finish($this->taskId, BackgroundTaskStatus::FAILED, Messages::E0036);
+        $message = $exception instanceof BackgroundTaskFailed ? $exception->getMessage() : Messages::E0036;
+        app(BackgroundTaskTracker::class)->finish($this->taskId, BackgroundTaskStatus::FAILED, $message);
     }
 }

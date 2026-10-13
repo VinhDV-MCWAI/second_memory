@@ -92,6 +92,10 @@ class Messages
 
     const E0036 = 'The background task failed';
 
+    const E0037 = 'Some parts of the file are missing';
+
+    const E0038 = 'The uploaded parts could not be joined into one file';
+
     /**
      * Errors http messages
      */

@@ -13,7 +13,6 @@ use App\Repositories\Media\MediaRepository;
 use App\Services\AuditLogger;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Illuminate\Database\UniqueConstraintViolationException;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
@@ -51,13 +50,13 @@ final class MediaService
     {
         $path = $this->freePath($payload['folder'] ?? MediaConst::ROOT, $payload['name']);
 
-        $folder = $this->saveUnique(fn (): MediaMgmt => $this->media->create([
+        $folder = $this->media->create([
             'is_file' => false,
             'virtual_path' => $path,
             'original_name' => $payload['name'],
             'upload_status' => UploadStatus::COMPLETED,
             'created_by' => Auth::id(),
-        ]));
+        ]);
         $this->auditLogger->record(self::AUDIT_TYPE, $folder->id, AuditEvent::CREATED, null, $this->auditValues($folder));
 
         return $folder->id;
@@ -71,22 +70,8 @@ final class MediaService
      */
     public function createUpload(array $payload): array
     {
-        $path = $this->freePath($payload['folder'] ?? MediaConst::ROOT, $payload['name']);
-        $extension = Str::lower(pathinfo($payload['name'], PATHINFO_EXTENSION));
-        $key = now()->format('Y/m').'/'.Str::uuid()->toString().($extension === '' ? '' : '.'.$extension);
-
-        $file = $this->media->create([
-            'is_file' => true,
-            'virtual_path' => $path,
-            'original_name' => $payload['name'],
-            'extension' => $extension === '' ? null : $extension,
-            'mime_type' => $payload['mime_type'],
-            'size' => $payload['size'],
-            'minio_bucket' => $this->storage->bucket(),
-            'minio_object_key' => $key,
-            'upload_status' => UploadStatus::UPLOADING,
-            'created_by' => Auth::id(),
-        ]);
+        $file = $this->reserveFile($payload);
+        $key = (string) $file->minio_object_key;
 
         return [
             'id' => $file->id,
@@ -95,6 +80,31 @@ final class MediaService
             'headers' => ['Content-Type' => $payload['mime_type']],
             'expires_at' => now()->addSeconds(MediaConst::UPLOAD_URL_TTL_SECONDS)->toIso8601String(),
         ];
+    }
+
+    /**
+     * The "uploading" row of a new file, with its object key (`year/month/uuid.ext`). It holds no name
+     * yet: the name is checked again when the upload finishes.
+     *
+     * @param  array{folder?: string|null, name: string, size: int, mime_type: string}  $payload
+     */
+    public function reserveFile(array $payload): MediaMgmt
+    {
+        $path = $this->freePath($payload['folder'] ?? MediaConst::ROOT, $payload['name']);
+        $extension = Str::lower(pathinfo($payload['name'], PATHINFO_EXTENSION));
+
+        return $this->media->create([
+            'is_file' => true,
+            'virtual_path' => $path,
+            'original_name' => $payload['name'],
+            'extension' => $extension === '' ? null : $extension,
+            'mime_type' => $payload['mime_type'],
+            'size' => $payload['size'],
+            'minio_bucket' => $this->storage->bucket(),
+            'minio_object_key' => now()->format('Y/m').'/'.Str::uuid()->toString().($extension === '' ? '' : '.'.$extension),
+            'upload_status' => UploadStatus::UPLOADING,
+            'created_by' => Auth::id(),
+        ]);
     }
 
     /**
@@ -120,16 +130,29 @@ final class MediaService
             throw ValidationException::withMessages(['id' => Messages::E0031]);
         }
 
+        $this->markCompleted($file, $object, Auth::id());
+
+        return $file;
+    }
+
+    /**
+     * The object is in place and checked: the file becomes visible under its name.
+     *
+     * @param  array{size: int, etag: string, mime_type: string|null}  $object
+     *
+     * @throws ValidationException when another item took the name meanwhile
+     */
+    public function markCompleted(MediaMgmt $file, array $object, ?int $actorId): void
+    {
         $file->fill([
             'minio_etag' => $object['etag'],
             'mime_type' => $object['mime_type'] ?? $file->mime_type,
+            'upload_id' => null,
             'upload_status' => UploadStatus::COMPLETED,
-            'updated_by' => Auth::id(),
+            'updated_by' => $actorId,
         ]);
-        $this->saveUnique(fn (): bool => $file->save());
-        $this->auditLogger->record(self::AUDIT_TYPE, $file->id, AuditEvent::CREATED, null, $this->auditValues($file));
-
-        return $file;
+        $this->media->save($file);
+        $this->auditLogger->record(self::AUDIT_TYPE, $file->id, AuditEvent::CREATED, null, $this->auditValues($file), $actorId);
     }
 
     /**
@@ -170,7 +193,7 @@ final class MediaService
 
         $old = $this->auditValues($item);
         $item->fill(['virtual_path' => $newPath, 'original_name' => $name, 'updated_by' => Auth::id()]);
-        $this->saveUnique(fn (): bool => $item->save());
+        $this->media->save($item);
         if (! $item->is_file) {
             $this->media->moveDescendants($oldPath, $newPath);
         }
@@ -187,29 +210,40 @@ final class MediaService
      */
     public function delete(array $payload): void
     {
-        $ids = [];
-        $keys = [];
+        $rows = [];
         foreach ($payload['ids'] as $id) {
             $item = $this->media->findLive($id);
             if ($item === null) {
                 continue;
             }
-            $items = $item->is_file ? [$item] : [$item, ...$this->media->descendants($item->virtual_path)];
-            foreach ($items as $row) {
-                $ids[] = $row->id;
-                if ($row->is_file && $row->minio_object_key !== null) {
-                    $keys[] = $row->minio_object_key;
-                }
+            foreach ($item->is_file ? [$item] : [$item, ...$this->media->descendants($item->virtual_path)] as $row) {
+                $rows[$row->id] = $row;
             }
             $this->auditLogger->record(self::AUDIT_TYPE, $item->id, AuditEvent::DELETED, $this->auditValues($item));
         }
 
-        $this->media->markDeleted(array_values(array_unique($ids)), Auth::id());
-        DB::afterCommit(function () use ($keys): void {
-            foreach ($keys as $key) {
-                $this->storage->delete($key);
+        $this->media->markDeleted(array_keys($rows), Auth::id());
+        DB::afterCommit(function () use ($rows): void {
+            foreach ($rows as $row) {
+                $this->discardObject($row);
             }
         });
+    }
+
+    /**
+     * Removes what MinIO holds for a file row: the parts of an unfinished multipart upload, or the
+     * object. Folders hold nothing.
+     */
+    public function discardObject(MediaMgmt $file): void
+    {
+        if (! $file->is_file || $file->minio_object_key === null) {
+            return;
+        }
+        if ($file->upload_id !== null) {
+            $this->storage->abortMultipartUpload($file->minio_object_key, $file->upload_id);
+        } else {
+            $this->storage->delete($file->minio_object_key);
+        }
     }
 
     private function liveFile(int $id): MediaMgmt
@@ -248,23 +282,6 @@ final class MediaService
         $parent = substr($path, 0, (int) strrpos($path, MediaConst::PATH_SEPARATOR));
 
         return $parent === '' ? MediaConst::ROOT : $parent;
-    }
-
-    /**
-     * Two requests can pass pathTaken() together; the unique index decides, and the loser gets a 422.
-     *
-     * @template T
-     *
-     * @param  callable(): T  $save
-     * @return T
-     */
-    private function saveUnique(callable $save): mixed
-    {
-        try {
-            return $save();
-        } catch (UniqueConstraintViolationException) {
-            throw ValidationException::withMessages(['name' => Messages::E0029]);
-        }
     }
 
     /**

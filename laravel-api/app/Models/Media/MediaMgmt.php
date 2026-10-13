@@ -23,6 +23,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property string|null $minio_bucket
  * @property string|null $minio_object_key
  * @property string|null $minio_etag
+ * @property string|null $upload_id
  * @property UploadStatus $upload_status
  * @property bool $is_delete
  * @property int|null $created_by
@@ -44,6 +45,7 @@ class MediaMgmt extends Model
         'minio_bucket',
         'minio_object_key',
         'minio_etag',
+        'upload_id',
         'upload_status',
         'is_delete',
         'created_by',
