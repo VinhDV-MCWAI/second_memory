@@ -40,7 +40,7 @@ Conventions (bilingual marker, permanent IDs, immutable ADRs): [ADR-0002](../adr
 | Dev data | Created by seeders/factories (`make fresh` on the dev DB only); reproducible from scratch |
 | Test data | Each test builds its own data with factories; tests run on the separate `testing` DB |
 | Personal data | Never real personal data in the repo, seeds, screenshots, logs or reports (the repo is public) |
-| Secrets | Only in gitignored env files (`setup-env.sh` generates them); never in docs, commits or issues |
+| Secrets | Only in gitignored env files (`scripts/setup-env.sh` generates them); never in docs, commits or issues |
 | Schema changes | Reversible migrations or expand/contract ([07-release.md](07-release.md#database-migrations)) |
 | Backups | Database + object storage + config, same point in time; restore is tested, not assumed (P7) |
 | Retention | Backups kept per `backup/README.md`; logs kept short locally (they may contain IDs) |

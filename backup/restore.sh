@@ -143,7 +143,7 @@ fi
 
 echo "[4/4] Configuration and application containers"
 cp "$EXTRACTED/core/docker.env" "$ENV_FILE"
-bash "$PROJECT_DIR/setup-env.sh"
+bash "$PROJECT_DIR/scripts/setup-env.sh"
 set -a
 # shellcheck source=/dev/null
 source "$ENV_FILE"

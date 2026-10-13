@@ -14,7 +14,7 @@ IMPORTER_DIR := tools/ledger-importer
 
 .PHONY: setup
 setup: ## Generate docker/.env and app env files (idempotent)
-	bash setup-env.sh
+	bash scripts/setup-env.sh
 
 .PHONY: up
 up: ## Start the whole stack (generates env on first run)

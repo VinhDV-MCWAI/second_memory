@@ -56,6 +56,7 @@ Thư mục code được gắn thẳng vào container, nên phần lớn thay đ
 | Thêm thư viện PHP | `docker exec ml-php composer require <tên gói>` |
 | Thêm thư viện JS (sửa `pnpm-lock.yaml`) | `docker compose -f docker/docker-compose.yml up -d --build ml-nextjs ml-nextjs-docs` |
 | Sửa `docker/.env` hoặc Dockerfile | `make restart` |
+| Thiếu hoặc hỏng file env của Laravel / giao diện | `make setup` (chạy `scripts/setup-env.sh`: giữ bí mật đã có trong `docker/.env`, tạo lại `laravel-api/.env`, `nextjs-fe/.env`, `nextjs-docs/.env`), rồi `make restart` |
 
 ## 4. Test nhanh
 

@@ -2,7 +2,7 @@
 
 - `docker-compose.yml` services: `ml-postgres`, `ml-redis`, `ml-php` (php-fpm), `ml-nextjs`, `ml-nextjs-docs`, `ml-nginx` (reverse proxy, host :81 → 8080 inside), `ml-minio` + `ml-minio-init` (bucket + lifecycle setup).
 - No queue worker or websocket server since P4-04 (ADR-0007: nothing queues or broadcasts; the API wiring went in API-05). Bring one back only with a requirement that needs it.
-- Env: `../setup-env.sh` generates `docker/.env`, `laravel-api/.env`, FE env. Never hand-edit generated secrets into tracked files.
+- Env: `../scripts/setup-env.sh` (`make setup`) generates `docker/.env`, `laravel-api/.env`, FE env. Never hand-edit generated secrets into tracked files.
 - `ci-cd/deploy.sh` runs on the self-hosted runner after `.github/workflows/cd.yml` pushes images to GHCR.
 - CI and CD are **paused** since 2026-10-08 (owner's decision, speed over gates until P5): both workflows run only on manual `workflow_dispatch`; merging into `developer` does not deploy. `make verify` locally is the gate before every PR.
 - `backup/backup.sh` / `restore.sh` — PostgreSQL + MinIO backup. Test restore after any change.

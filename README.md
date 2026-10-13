@@ -73,6 +73,7 @@ Open <http://localhost:81> (admin) and <http://localhost:81/skills> (public site
 | Command | What it does |
 |---|---|
 | `make help` | list every target |
+| `make setup` | (re)generate the env files with `scripts/setup-env.sh`; keeps the secrets already in `docker/.env` |
 | `make test` / `make test f=Skill` | backend tests (PHPUnit, on the separate `testing` database) |
 | `make lint` · `make format` | Pint + ESLint + Prettier checks · fix formatting |
 | `make verify` | everything CI would run: lint, Larastan, OpenAPI drift check, type checks, backend + FE + importer tests |

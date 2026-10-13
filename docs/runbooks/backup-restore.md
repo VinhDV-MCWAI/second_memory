@@ -48,7 +48,7 @@ Without an archive argument the newest backup on the first remote is downloaded 
    ```bash
    bash backup/restore.sh [backups/history/system_backup_<timestamp>.tar.gz]
    ```
-   The database restore runs in **one transaction** (`--clean --if-exists --single-transaction`): on any error nothing is changed and the script stops, so the old data is still there. Then it puts back `docker/.env`, runs `setup-env.sh`, re-syncs the database role password and recreates `ml-php` and `ml-redis`.
+   The database restore runs in **one transaction** (`--clean --if-exists --single-transaction`): on any error nothing is changed and the script stops, so the old data is still there. Then it puts back `docker/.env`, runs `scripts/setup-env.sh`, re-syncs the database role password and recreates `ml-php` and `ml-redis`.
 4. Start the rest (`docker compose -f docker/docker-compose.yml up -d`), check the site, end maintenance mode.
 
 > 🇻🇳 Các bước: (1) backup — `backup.sh` (đẩy cloud) hoặc `--local-only`; chỉ xoá file cục bộ khi mọi remote đã nhận. (2) Khôi phục thử — `restore.sh <file> --target-db restore_check --target-bucket restore-check`, không đụng dữ liệu thật. (3) Khôi phục thật — bật bảo trì, dừng container ứng dụng, chạy `restore.sh` (DB khôi phục trong một transaction: lỗi thì không đổi gì), rồi khởi động lại và kiểm tra.

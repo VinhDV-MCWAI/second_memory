@@ -2,7 +2,7 @@
 set -e
 echo "=== SECOND MEMORY: UNIFIED CONFIGURATION SETUP ==="
 
-ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 DOCKER_ENV_EXAMPLE="$ROOT_DIR/docker/.env.example"
 DOCKER_ENV="$ROOT_DIR/docker/.env"
 

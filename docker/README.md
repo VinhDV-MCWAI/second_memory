@@ -31,7 +31,7 @@ Every image is pinned to an exact version and no service runs as root; the detai
 | Path | Content |
 |---|---|
 | `docker-compose.yml` | the services above, health checks, volumes, network `ml_network` |
-| `.env.example` | template of `docker/.env`, which `make setup` (`setup-env.sh`) generates with fresh secrets; never commit `.env` |
+| `.env.example` | template of `docker/.env`, which `make setup` (`scripts/setup-env.sh`) generates with fresh secrets; never commit `.env` |
 | `laravel/` | PHP image (dev and production targets), entrypoint, `php.ini` |
 | `nextjs/` | one image for both Next.js apps (`--build-arg APP=…`), dev and production targets |
 | `nginx/` | `nginx.conf`, `default.conf` (routing; the Terraform stack reuses it) |
