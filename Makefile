@@ -75,6 +75,10 @@ rector: ## Preview automated refactors (dry run)
 migrate: ## Run pending migrations on the dev database
 	$(PHP) php artisan migrate
 
+.PHONY: seed
+seed: ## Add the root owner, the viewer account and sample Skill Ledger data (idempotent, keeps existing rows)
+	$(PHP) php artisan db:seed
+
 .PHONY: fresh
 fresh: ## DROP all dev tables, re-migrate and seed (asks first)
 	@read -r -p "This wipes the dev database. Type 'yes' to continue: " ans; [ "$$ans" = yes ]
