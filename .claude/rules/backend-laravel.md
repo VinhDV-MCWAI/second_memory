@@ -5,7 +5,7 @@ paths:
 
 # Laravel backend conventions
 
-These apply to **new and touched code**. Don't reformat untouched files in feature work (that's a dedicated refactor item).
+These apply to **new and touched code**. Don't reformat untouched files in feature work.
 
 ## Style
 - PSR-12 via Laravel Pint (`pint.json` at `laravel-api/`), 4-space indent, `declare(strict_types=1);` in every file.

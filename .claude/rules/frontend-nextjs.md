@@ -24,7 +24,7 @@ paths:
 ## API
 - All HTTP through `@/shared/api` client. Endpoints from `API_ENDPOINTS`, routes from `ADMIN_ROUTES`.
 - Backend envelope: `{ data, error: { status, code, messages } }`. Extract errors with `getApiErrorMessage` / `handleBindErrors` (`src/shared/utils/error-handler.ts`); never read `response.data.message`.
-- Types for API payloads live in `src/shared/types` (or are generated from OpenAPI once that refactor lands).
+- API payload types are generated from OpenAPI into `src/shared/types/openapi.d.ts` (`make openapi`); never edit it, alias its schemas in `src/shared/types`.
 
 ## UI
 - shadcn/ui in `components/ui` is generated code: extend via composition, edit only when necessary.

@@ -1,6 +1,6 @@
-# Parallel lanes: several conversations, one branch, one working tree
+# Lanes: tracking work on one branch, one working tree
 
-The owner runs several Claude conversations at once on the same branch and directory. Work is split into **lanes** on [.claude/lab/BOARD.md](../lab/BOARD.md); each lane owns paths, and only one conversation works a lane at a time. Start with the `/lane` skill.
+Tasks live on [.claude/lab/BOARD.md](../lab/BOARD.md) and change state only through `scripts/lane.sh`. Today there is one lane, `main` (the whole repo); the script still keeps two conversations from claiming the same task or running tests at the same time. Start with the `/lab-task` skill.
 
 ## Claiming and finishing
 - Take work only through `scripts/lane.sh claim <id>`; finish with `scripts/lane.sh done <id> "<commit> + one-line result"` (it mirrors `03-backlog.md`, appends to the PROGRESS log and commits those files). Never edit the board's Status column, a backlog Status cell, or the PROGRESS log by hand.
@@ -19,4 +19,4 @@ The owner runs several Claude conversations at once on the same branch and direc
 ## Docker, tests, databases
 - Wrap every Docker-backed check in `scripts/lane.sh run …` (e.g. `scripts/lane.sh run make test f=EvidenceApiTest`, `scripts/lane.sh run make verify`). It queues lanes so two test runs never share the `testing` DB at once.
 - Run the checks for your own area. A full `make verify` may fail on another lane's unfinished work: report it in your task note, don't fix it.
-- `make restart`, `make down`, `make fresh`, `make setup`, migrations on the dev DB and container rebuilds belong to lane `infra` / `api` and only while no other lane is running checks (`run` holds the lock).
+- `make restart`, `make down`, `make setup`, migrations on the dev DB and container rebuilds only while no other conversation is running checks (`run` holds the lock). `make fresh` only when the owner asks.
