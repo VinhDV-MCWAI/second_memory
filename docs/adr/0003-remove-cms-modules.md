@@ -5,7 +5,7 @@
 | Status | Partly superseded by [ADR-0012](0012-restore-features-dev-first.md) (2026-10-09): end-user, department and policy management come back; the content CMS stays removed. Was: Accepted |
 | Date | 2026-10-07 |
 | Deciders | PO, TL |
-| Related | [REQ-001](../requirements/REQ-001-slim-down.md), [RFC-001](../design/RFC-001-slim-down.md) |
+| Related | [REQ-001](../archive/engineering-lab/requirements/REQ-001-slim-down.md), [RFC-001](../archive/engineering-lab/design/RFC-001-slim-down.md) |
 
 ## Context
 

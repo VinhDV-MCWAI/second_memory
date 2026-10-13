@@ -47,8 +47,8 @@ The dev seed creates the local-only owner `root@gmail.com` / `12345678` (`databa
 
 `Route → Middleware → Controller → FormRequest → Service → Repository → Model`, grouped by module: `Master` (admin accounts), `Ledger` (Skill Ledger), `Audit`, `Public`. Settings come from the `laravel-api/.env` that `make setup` generates from [.env.example](.env.example).
 
-- Conventions: [.claude/rules/backend-laravel.md](../.claude/rules/backend-laravel.md) and [handbook 05](../docs/handbook/05-coding.md).
+- Conventions: [.claude/rules/backend-laravel.md](../.claude/rules/backend-laravel.md) and [handbook 05](../docs/archive/engineering-lab/handbook/05-coding.md).
 - Architecture details, HTTP contract and gotchas: [CLAUDE.md](CLAUDE.md).
-- Design of the Skill Ledger: [RFC-002](../docs/design/RFC-002-skill-ledger.md); search: [ADR-0009](../docs/adr/0009-postgres-search.md).
+- Design of the Skill Ledger: [RFC-002](../docs/archive/engineering-lab/design/RFC-002-skill-ledger.md); search: [ADR-0009](../docs/adr/0009-postgres-search.md).
 
 > 🇻🇳 Quy ước, chi tiết kiến trúc và các lưu ý nằm ở các file trên.

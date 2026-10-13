@@ -10,7 +10,7 @@
 | `docker/`, `ci-cd/`, `.github/`, `backup/` | Docker Compose, GitHub Actions (self-hosted deploy), shell | Runtime & ops | [docker/CLAUDE.md](docker/CLAUDE.md) |
 | `infra/` | Terraform (Docker provider) in a pinned tools container | Production-like environments, production images (ADR-0011) | [infra/README.md](infra/README.md) |
 | `tools/ledger-importer/` | Python, uv, ruff, mypy, pytest | Obsidian → evidence importer (`make import`) | [tools/ledger-importer/README.md](tools/ledger-importer/README.md) |
-| `e2e/`, `perf/` | Playwright; k6, SQL | End-to-end journey (`make e2e`); load tests and query plans | [handbook testing](docs/handbook/06-testing-qa.md), [perf reports](docs/reports/perf/) |
+| `e2e/`, `perf/` | Playwright; k6, SQL | End-to-end journey (`make e2e`); load tests and query plans | [handbook testing](docs/archive/engineering-lab/handbook/06-testing-qa.md), [perf reports](docs/archive/engineering-lab/reports/perf/) |
 
 All docs live in `docs/` (start at [docs/README.md](docs/README.md)). The old Vietnamese architecture docs are archived in `docs/archive/legacy-architecture/` (outdated — code wins).
 

@@ -1,5 +1,5 @@
 blank_issues_enabled: false
 contact_links:
-  - name: Handbook — how we work
-    url: https://github.com/VinhDV-MCWAI/second_memory/tree/main/docs/handbook
-    about: Read the intake and QA chapters before filing.
+  - name: How we work
+    url: https://github.com/VinhDV-MCWAI/second_memory/blob/main/docs/plan/01-goals-and-workflow.md
+    about: Goals, the request → proposal → confirm → build → quick test workflow, doc conventions.

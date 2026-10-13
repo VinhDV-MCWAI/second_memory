@@ -2,7 +2,7 @@
 
 > 🇻🇳 Kiến trúc hiện tại: hệ thống đang chạy thế nào sau P3 (Skill Ledger) và phần đã xong của P4 (IaC). Cập nhật khi kiến trúc thay đổi; lần cập nhật lớn tiếp theo là P4-12.
 
-The system as it runs today: after P2 (slim-down, `v2.0.0`), P3 (Skill Ledger, `v2.1.0`) and the finished part of P4 (production images, queue / websocket removal, the first Terraform stack). It replaces the "to-be" picture that [as-is.md](as-is.md) promised; as-is stays frozen as the `v1.0.0` "before". This file is living: update it in the change that alters what it describes. P4-12 revises it at the P4 close.
+The system as it runs today: after P2 (slim-down, `v2.0.0`), P3 (Skill Ledger, `v2.1.0`) and the finished part of P4 (production images, queue / websocket removal, the first Terraform stack). It replaces the "to-be" picture that [as-is.md](../archive/engineering-lab/architecture/as-is.md) promised; as-is stays frozen as the `v1.0.0` "before". This file is living: update it in the change that alters what it describes. P4-12 revises it at the P4 close.
 
 > 🇻🇳 Hệ thống như đang chạy hôm nay. File này thay cho bản "to-be" mà as-is.md hứa; as-is vẫn giữ nguyên làm ảnh "trước". File sống: sửa cùng commit làm thay đổi kiến trúc; P4-12 cập nhật lần lớn.
 
@@ -98,7 +98,7 @@ erDiagram
 
 | Table | Purpose |
 |---|---|
-| `skill`, `skill_level`, `learning_goal`, `evidence`, `tag` (+ 3 link tables) | the Skill Ledger ([RFC-002 §4.2](../design/RFC-002-skill-ledger.md#42-data-model-to-be-v210)); `skill.current_level` is refreshed from the newest `skill_level` row |
+| `skill`, `skill_level`, `learning_goal`, `evidence`, `tag` (+ 3 link tables) | the Skill Ledger ([RFC-002 §4.2](../archive/engineering-lab/design/RFC-002-skill-ledger.md#42-data-model-to-be-v210)); `skill.current_level` is refreshed from the newest `skill_level` row |
 | `admin_mst` | admin accounts with `role` |
 | `audit_log` | who changed what, and every login attempt |
 | `personal_access_tokens` | importer tokens |
@@ -128,7 +128,7 @@ Search ([ADR-0009](../adr/0009-postgres-search.md)): stored `search_tsv` columns
 
 | What | Value | Source |
 |---|---|---|
-| Load, 10 users | ~116–134 req/s, 0 % errors (first baseline 55–69) | [re-baseline](../reports/perf/2026-10-08-rebaseline.md) |
+| Load, 10 users | ~116–134 req/s, 0 % errors (first baseline 55–69) | [re-baseline](../archive/engineering-lab/reports/perf/2026-10-08-rebaseline.md) |
 | Search p95 | 123–144 ms (target < 300 ms) | same |
 | Backend | ~5.9k lines PHP in `app/`, 166 PHPUnit tests, 67 migrations | `make verify`, 2026-10-09 |
 | Admin FE | ~13k lines TS/TSX, 70 Vitest tests | same |

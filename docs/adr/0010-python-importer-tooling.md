@@ -7,7 +7,7 @@
 | Status | Accepted |
 | Date | 2026-10-08 |
 | Deciders | TL |
-| Related | [REQ-002](../requirements/REQ-002-skill-ledger.md) US-4, Q6, Q7; [RFC-002](../design/RFC-002-skill-ledger.md) §4.5, §9 Q3; [ADR-0004](0004-sanctum-spa-cookie-auth.md); [ADR-0005](0005-owner-viewer-roles.md); [ADR-0008](0008-code-first-openapi-contract.md) contract row `evidence/import`; backlog P3-13, P3-14 |
+| Related | [REQ-002](../archive/engineering-lab/requirements/REQ-002-skill-ledger.md) US-4, Q6, Q7; [RFC-002](../archive/engineering-lab/design/RFC-002-skill-ledger.md) §4.5, §9 Q3; [ADR-0004](0004-sanctum-spa-cookie-auth.md); [ADR-0005](0005-owner-viewer-roles.md); [ADR-0008](0008-code-first-openapi-contract.md) contract row `evidence/import`; backlog P3-13, P3-14 |
 
 ## Context
 

@@ -10,7 +10,7 @@
 # The API runs as `php -S` with several workers inside ml-php against the `perf` database —
 # the dev database, dev Redis DBs and the nginx/php-fpm stack are not touched. Differences
 # from production (built-in server, debug off, rate limiter neutralised by the array cache)
-# are listed in docs/reports/perf/.
+# are listed in docs/archive/engineering-lab/reports/perf/.
 set -euo pipefail
 
 cd "$(dirname "$0")/.."

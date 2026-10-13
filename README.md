@@ -10,7 +10,7 @@ Second Memory started as a personal knowledge system. Since [ADR-0001](docs/adr/
 
 > 🇻🇳 Sản phẩm làm gì.
 
-The product is the **Skill Ledger** ([REQ-002](docs/requirements/REQ-002-skill-ledger.md), [RFC-002](docs/design/RFC-002-skill-ledger.md)): skills, their level history, learning goals and evidence (links to PRs, ADRs, incidents, notes).
+The product is the **Skill Ledger** ([REQ-002](docs/archive/engineering-lab/requirements/REQ-002-skill-ledger.md), [RFC-002](docs/archive/engineering-lab/design/RFC-002-skill-ledger.md)): skills, their level history, learning goals and evidence (links to PRs, ADRs, incidents, notes).
 
 | Part | Who uses it | What it does |
 |---|---|---|
@@ -43,7 +43,7 @@ browser ──► ml-nginx :81 ─┬─ /api/*            ─► ml-php (Larave
 
 > 🇻🇳 Mọi request đi qua nginx cổng 81. Ports trên là mặc định trong `docker/.env.example`. MinIO chỉ còn giữ dữ liệu cũ (ADR-0007), không code nào đọc/ghi.
 
-Dev runs on Docker Compose (`docker/docker-compose.yml`). Terraform builds the production-like environments from production images ([ADR-0011](docs/adr/0011-infrastructure-as-code.md), [infra/README.md](infra/README.md)). Architecture before the Engineering Lab: [docs/architecture/as-is.md](docs/architecture/as-is.md).
+Dev runs on Docker Compose (`docker/docker-compose.yml`). Terraform builds the production-like environments from production images ([ADR-0011](docs/adr/0011-infrastructure-as-code.md), [infra/README.md](infra/README.md)). Architecture before the Engineering Lab: [docs/architecture/as-is.md](docs/archive/engineering-lab/architecture/as-is.md).
 
 > 🇻🇳 Môi trường dev chạy bằng Docker Compose; Terraform dựng các môi trường giống production (ADR-0011).
 
@@ -95,7 +95,7 @@ Open <http://localhost:81> (admin) and <http://localhost:81/skills> (public site
 | [nextjs-docs/](nextjs-docs/) | public site |
 | [tools/ledger-importer/](tools/ledger-importer/) | Python Obsidian importer |
 | [e2e/](e2e/) | Playwright end-to-end test |
-| [perf/](perf/) | k6 load tests, SQL plans, request profiling ([reports](docs/reports/perf/)) |
+| [perf/](perf/) | k6 load tests, SQL plans, request profiling ([reports](docs/archive/engineering-lab/reports/perf/)) |
 | [docker/](docker/) | Compose stack, Dockerfiles, nginx / Postgres / Redis config |
 | [infra/](infra/) | Terraform modules and environments, production image build |
 | [backup/](backup/) | backup and restore scripts |
@@ -110,7 +110,7 @@ Open <http://localhost:81> (admin) and <http://localhost:81/skills> (public site
 - Kế hoạch (tiếng Việt): [mục tiêu và cách làm việc](docs/plan/01-goals-and-workflow.md), [lộ trình](docs/plan/02-roadmap.md), [danh sách việc](docs/plan/03-backlog.md). Chạy và sửa lỗi trên máy dev: [docs/dev-guide.md](docs/dev-guide.md).
 - Current state and the live task list: [.claude/lab/PROGRESS.md](.claude/lab/PROGRESS.md) and [.claude/lab/BOARD.md](.claude/lab/BOARD.md).
 - Releases: [docs/releases/](docs/releases/) (`v1.0.0` baseline → `v2.0.0` slim-down; `v2.1.0` Skill Ledger in progress, then P4 infrastructure as code).
-- Git flow: `feature/*` or `refactor/*` → PR to `developer` → PR to `main`, Conventional Commits ([handbook 04](docs/handbook/04-git.md)).
+- Git flow: `feature/*` or `refactor/*` → PR to `developer` → PR to `main`, Conventional Commits ([handbook 04](docs/archive/engineering-lab/handbook/04-git.md)).
 
 > 🇻🇳 Bắt đầu từ `docs/README.md`. Tiến độ hiện tại ở `PROGRESS.md` và `BOARD.md`. Release notes trong `docs/releases/`.
 

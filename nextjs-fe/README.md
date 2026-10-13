@@ -48,4 +48,4 @@ Production uses `output: 'standalone'`: a small Node server (`node server.js`) b
 ## More
 
 - Layout, API contract and gotchas: [CLAUDE.md](CLAUDE.md).
-- Conventions: [.claude/rules/frontend-nextjs.md](../.claude/rules/frontend-nextjs.md), [handbook 05](../docs/handbook/05-coding.md).
+- Conventions: [.claude/rules/frontend-nextjs.md](../.claude/rules/frontend-nextjs.md), [handbook 05](../docs/archive/engineering-lab/handbook/05-coding.md).

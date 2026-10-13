@@ -2,7 +2,7 @@
 
 > 🇻🇳 Trang công khai: Skill Ledger chỉ đọc tại `/skills`; các link `/docs` cũ hiển thị trang "nội dung đã chuyển".
 
-The public, read-only face of the Skill Ledger ([REQ-002](../docs/requirements/REQ-002-skill-ledger.md) US-3, [RFC-002 §4.4](../docs/design/RFC-002-skill-ledger.md#44-frontends)). Next.js 16 server components that call the public API from the server; no login, no client-side data fetching.
+The public, read-only face of the Skill Ledger ([REQ-002](../docs/archive/engineering-lab/requirements/REQ-002-skill-ledger.md) US-3, [RFC-002 §4.4](../docs/archive/engineering-lab/design/RFC-002-skill-ledger.md#44-frontends)). Next.js 16 server components that call the public API from the server; no login, no client-side data fetching.
 
 > 🇻🇳 Mặt công khai, chỉ đọc của Skill Ledger. Server components gọi API công khai từ phía server; không đăng nhập.
 

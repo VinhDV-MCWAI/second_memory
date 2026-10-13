@@ -7,7 +7,7 @@
 | Status | Accepted |
 | Date | 2026-10-08 |
 | Deciders | TL |
-| Related | [REQ-002](../requirements/REQ-002-skill-ledger.md) US-5, NFR; [RFC-002](../design/RFC-002-skill-ledger.md) §9 Q2; [spike](../reports/spikes/search-2026-10-08/README.md); research note [`docs/search.md`](../archive/learning/search-research.md); backlog P3-04, P3-08 |
+| Related | [REQ-002](../archive/engineering-lab/requirements/REQ-002-skill-ledger.md) US-5, NFR; [RFC-002](../archive/engineering-lab/design/RFC-002-skill-ledger.md) §9 Q2; [spike](../archive/engineering-lab/reports/spikes/search-2026-10-08/README.md); research note [`docs/search.md`](../archive/learning/search-research.md); backlog P3-04, P3-08 |
 
 ## Context
 
@@ -54,7 +54,7 @@ Implementation note (P3-08, 2026-10-08): `learning_goal` got **no** `search_text
 
 ### Amendment (API-03, 2026-10-08): storage of the search indexes
 
-The [DB-01 report](../reports/perf/2026-10-08-db-01-explain.md) found both search statements on `evidence` slow at the REQ-002 volume, for storage reasons, not because of the approach: `ts_rank` recomputed `to_tsvector` for every match (the expression index does not hold the vector), and the planner never chose the GIN trigram index, so the typo fallback scanned the table. Migration `2026_10_08_100005_store_ledger_search_vectors` changes the storage, nothing else:
+The [DB-01 report](../archive/engineering-lab/reports/perf/2026-10-08-db-01-explain.md) found both search statements on `evidence` slow at the REQ-002 volume, for storage reasons, not because of the approach: `ts_rank` recomputed `to_tsvector` for every match (the expression index does not hold the vector), and the planner never chose the GIN trigram index, so the typo fallback scanned the table. Migration `2026_10_08_100005_store_ledger_search_vectors` changes the storage, nothing else:
 
 - `skill` and `evidence` get a stored generated column `search_tsv = to_tsvector('simple', f_unaccent(lower(<fields>)))` with a GIN index (`*_search_tsv`), replacing the expression index `*_search_fts`. Full text matches and ranks on it. The column repeats the `search_text` expression because a generated column cannot read another one.
 - The GIN trigram index `*_search_trgm` becomes GiST (`*_search_trgm_gist`, `gist_trgm_ops`): it answers `ORDER BY <<-> LIMIT 10` by walking the index in distance order and stops after ten rows.

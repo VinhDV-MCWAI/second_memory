@@ -7,7 +7,7 @@
 | Status | Accepted |
 | Date | 2026-10-09 |
 | Deciders | TL |
-| Related | [Roadmap P4](../plan/02-roadmap.md#p4--infrastructure-as-code-34-weeks); [backlog P4](../plan/03-backlog.md#p4--infrastructure-as-code) P4-02 … P4-10; [ADR-0001](0001-engineering-lab-direction.md) (local, zero cost); [ADR-0007](0007-remove-media-api.md) (MinIO kept for data only); refactor items I1, I3 ([frozen plan](../../.claude/refactor/PLAN.md)); [backup / restore runbook](../runbooks/backup-restore.md); [request profile](../reports/perf/2026-10-08-request-profile.md) |
+| Related | [Roadmap P4](../archive/engineering-lab/02-roadmap.md#p4--infrastructure-as-code-34-weeks); [backlog P4](../archive/engineering-lab/03-backlog.md#p4--infrastructure-as-code) P4-02 … P4-10; [ADR-0001](0001-engineering-lab-direction.md) (local, zero cost); [ADR-0007](0007-remove-media-api.md) (MinIO kept for data only); refactor items I1, I3 ([frozen plan](../archive/engineering-lab/refactor-2026-10/PLAN.md)); [backup / restore runbook](../runbooks/backup-restore.md); [request profile](../archive/engineering-lab/reports/perf/2026-10-08-request-profile.md) |
 
 ## Context
 

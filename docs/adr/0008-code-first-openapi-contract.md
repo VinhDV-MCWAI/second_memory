@@ -7,7 +7,7 @@
 | Status | Accepted |
 | Date | 2026-10-08 |
 | Deciders | TL |
-| Related | [RFC-002](../design/RFC-002-skill-ledger.md) §4.3 / §9 Q1, roadmap P3 ("OpenAPI-first"), backlog P3-03, P3-09 |
+| Related | [RFC-002](../archive/engineering-lab/design/RFC-002-skill-ledger.md) §4.3 / §9 Q1, roadmap P3 ("OpenAPI-first"), backlog P3-03, P3-09 |
 
 ## Context
 
