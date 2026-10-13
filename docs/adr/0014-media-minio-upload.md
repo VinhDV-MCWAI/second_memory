@@ -59,6 +59,7 @@ Upload xong chưa phải là xong: server còn phải ghép các phần, kiểm 
 | Container mới | Chạy việc nền (`queue:work`), chạy Reverb, chạy việc hẹn giờ (`schedule:work`) |
 | Thư viện | Backend `laravel/reverb`; giao diện `laravel-echo` và `pusher-js` |
 | nginx | Thêm nhánh WebSocket cho Reverb ở cổng 81 |
+| Trạng thái việc nền | Giữ trong cache 1 ngày (không thêm bảng); việc lỗi sau mọi lần thử vào bảng `failed_jobs` (2026-10-13, khi làm) |
 
 ### Dữ liệu và quyền
 

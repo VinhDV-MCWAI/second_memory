@@ -12,6 +12,7 @@ Mỗi tính năng một file: nó làm gì, màn hình nào, API nào, bảng n�
 | Nhật ký thay đổi | [nhat-ky-thay-doi.md](nhat-ky-thay-doi.md) | Ghi lại ai đổi gì, lúc nào, và mọi lần đăng nhập |
 | Trang public | [trang-public.md](trang-public.md) | Trang `/skills` ai cũng xem được: kỹ năng và bằng chứng công khai |
 | Nhập từ Obsidian | [nhap-tu-obsidian.md](nhap-tu-obsidian.md) | Đồng bộ ghi chú Obsidian có `publish: true` thành bằng chứng |
+| Việc nền và thông báo tức thì | [viec-nen-va-thong-bao.md](viec-nen-va-thong-bao.md) | Việc chạy lâu làm ở container riêng, xong thì báo ngay lên màn hình (dùng chung cho mọi tính năng) |
 | Quản lý file | [quan-ly-file.md](quan-ly-file.md) | Thư mục, upload file lên MinIO bằng link ký tạm, tải về, đổi tên, xóa (backend file nhỏ đã chạy; file lớn và màn hình đang làm) |
 
 ## Quyền dùng chung cho mọi tính năng quản trị

@@ -1,6 +1,6 @@
 # Quản lý file
 
-> Trạng thái: **backend upload file nhỏ đã chạy** (thư mục, upload tới 100 MB, tải về, đổi tên, di chuyển, xóa). Chưa có: upload file lớn, thông báo khi xử lý xong, màn hình. Thiết kế: [ADR-0014](../adr/0014-media-minio-upload.md).
+> Trạng thái: **backend upload file nhỏ đã chạy** (thư mục, upload tới 100 MB, tải về, đổi tên, di chuyển, xóa). Chưa có: upload file lớn, màn hình. Thông báo khi xử lý xong dùng [việc nền và thông báo tức thì](viec-nen-va-thong-bao.md). Thiết kế: [ADR-0014](../adr/0014-media-minio-upload.md).
 
 ## Làm gì
 
@@ -78,6 +78,6 @@ Mọi thay đổi (tạo thư mục, upload xong, đổi tên, chuyển, xóa) g
 | Việc | Trạng thái |
 |---|---|
 | Backend: kết nối MinIO, thư mục, upload file nhỏ, tải về, xóa | Xong |
-| Việc nền và thông báo tức thì (dùng chung) | Chưa |
+| [Việc nền và thông báo tức thì](viec-nen-va-thong-bao.md) (dùng chung) | Xong |
 | Upload file lớn chia phần, xử lý nền, dọn upload treo | Chưa |
 | Giao diện quản lý file | Chưa |

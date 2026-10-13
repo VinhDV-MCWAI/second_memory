@@ -40,6 +40,7 @@ Luôn vào qua cổng **81**. nginx ở cổng này chia request cho từng ph�
 Trình duyệt → http://localhost:81 (nginx)
   ├─ /api/...           → Laravel API
   ├─ /media-official/… → MinIO (chỉ link ký tạm do API cấp; quản lý file)
+  ├─ /app/…            → Reverb (WebSocket, thông báo tức thì)
   ├─ /skills, /docs     → trang public
   └─ mọi đường dẫn khác → trang quản trị (Next.js): /login, /admin, ...
 ```
@@ -61,13 +62,14 @@ Thư mục code được gắn thẳng vào container, nên phần lớn thay đ
 | Bạn sửa | Cần làm |
 |---|---|
 | Code PHP (`laravel-api/`) | Không cần làm gì, reload trang là thấy |
+| Code PHP chạy trong việc nền, việc hẹn giờ hoặc Reverb (job, event, `routes/console.php`, `routes/channels.php`) | `make workers-restart`: ba container này giữ code cũ trong bộ nhớ, giống server thật |
 | Code giao diện (`nextjs-fe/`, `nextjs-docs/`) | Không cần làm gì, trình duyệt tự cập nhật |
 | Thêm migration | `docker exec ml-php php artisan migrate --force` |
 | Thêm hoặc xóa class PHP | `docker exec ml-php composer dump-autoload` |
 | Đổi route hoặc request/response của API | `make openapi`, để sinh lại kiểu dữ liệu cho giao diện |
 | Thêm API quản trị mới | Đặt tên route (`->name('skill.list')`), rồi `make permissions` để tạo quyền ([phân quyền động](features/phan-quyen-dong.md)) |
 | Thêm thư viện PHP | `docker exec ml-php composer require <tên gói>` |
-| Thêm thư viện JS (sửa `pnpm-lock.yaml`) | `docker compose -f docker/docker-compose.yml up -d --build ml-nextjs ml-nextjs-docs` |
+| Thêm thư viện JS (sửa `pnpm-lock.yaml`) | `make up` (dựng lại image và tạo mới thư mục `node_modules` trong container; thiếu bước tạo mới thì báo "Cannot find module") |
 | Sửa `docker/.env` hoặc Dockerfile | `make restart` |
 | Thiếu hoặc hỏng file env của Laravel / giao diện | `make setup` (chạy `scripts/setup-env.sh`: giữ bí mật đã có trong `docker/.env`, tạo lại `laravel-api/.env`, `nextjs-fe/.env`, `nextjs-docs/.env`), rồi `make restart` |
 
@@ -116,6 +118,9 @@ Test dùng một database riêng tên `testing`, không đụng dữ liệu dev.
 | Class PHP đã xóa vẫn báo lỗi `include(...)` | Bộ nạp class còn nhớ file cũ | `docker exec ml-php composer dump-autoload` |
 | Upload hoặc tải file báo 403 `SignatureDoesNotMatch` | Link ký cho một địa chỉ khác địa chỉ trình duyệt đang dùng (ví dụ mở bằng `127.0.0.1` thay vì `localhost:81`), hoặc nginx không giữ nguyên header `Host` | Mở trang bằng http://localhost:81; kiểm tra `AWS_PUBLIC_ENDPOINT` (sinh bởi `make setup`) và nhánh `/media-official/` trong `docker/nginx/default.conf` |
 | Link file mở thẳng (không có chữ ký) báo 403 | Đúng thiết kế: kho file không cho đọc công khai | Xin link tải qua API `media/download-url/{id}` |
+| Bấm "Run test job" mà không thấy thông báo | Container `ml-queue` hoặc `ml-reverb` không chạy, hoặc giao diện chưa có khóa Reverb (`NEXT_PUBLIC_REVERB_APP_KEY`) | `make ps`; xem `make logs s=ml-queue`, `make logs s=ml-reverb`; thiếu khóa thì `make setup` rồi `make restart` |
+| Việc nền lỗi, cần xem lý do | Việc lỗi sau mọi lần thử được lưu lại | `docker exec ml-php php artisan queue:failed`; chạy lại: `queue:retry <id>` |
+| Sửa code job mà việc nền vẫn chạy code cũ | Worker giữ code trong bộ nhớ | `make workers-restart` |
 | Đổi `docker/minio/create-buckets.sh` mà MinIO không đổi | Script chỉ chạy khi khởi động | `cd docker && docker compose up ml-minio-init` |
 
 ## 7. Làm lại từ đầu
