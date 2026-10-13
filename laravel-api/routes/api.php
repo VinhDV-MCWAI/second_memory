@@ -29,6 +29,7 @@ Route::prefix('admin')
                         Route::get('credential/me', [CredentialController::class, 'me'])->name('credential.me');
                         Route::group([], base_path('routes/api/master.php'));
                         Route::group([], base_path('routes/api/ledger.php'));
+                        Route::group([], base_path('routes/api/media.php'));
                         Route::get('audit-log/list', [AuditLogController::class, 'list'])->name('audit-log.list');
                     });
 

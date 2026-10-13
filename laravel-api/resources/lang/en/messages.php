@@ -42,6 +42,10 @@ return [
     'position' => 'Position',
     'action' => 'Action',
     'author_id' => 'Author ID',
+    // File management (ADR-0014)
+    'folder' => 'Folder',
+    'size' => 'Size',
+    'mime_type' => 'File type',
     // Skill Ledger (RFC-002)
     'name' => 'Name',
     'category' => 'Category',

@@ -74,6 +74,22 @@ class Messages
 
     const E0027 = 'This role is still assigned to an admin';
 
+    const E0028 = 'This folder does not exist';
+
+    const E0029 = 'An item with this name already exists in the folder';
+
+    const E0030 = 'The file has not been uploaded yet';
+
+    const E0031 = 'The uploaded file does not match the declared size';
+
+    const E0032 = 'This upload is already finished';
+
+    const E0033 = 'A folder cannot be moved into itself';
+
+    const E0034 = 'The file is not ready yet';
+
+    const E0035 = 'This file type is not allowed';
+
     /**
      * Errors http messages
      */

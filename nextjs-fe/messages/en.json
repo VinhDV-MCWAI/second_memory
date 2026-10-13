@@ -557,7 +557,11 @@
       "other": "Other",
       "import": "Import",
       "query": "Search",
-      "summary": "Summary"
+      "summary": "Summary",
+      "store-folder": "New folder",
+      "upload-url": "Upload",
+      "complete": "Finish upload",
+      "download-url": "Download"
     },
     "features": {
       "admin-mst": "Admins",
@@ -565,6 +569,7 @@
       "dashboard": "Dashboard",
       "evidence": "Evidence",
       "learning-goal": "Learning goals",
+      "media": "Files",
       "permission": "Permission list",
       "role": "Roles",
       "search": "Search",
