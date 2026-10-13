@@ -28,10 +28,12 @@ cleanup() {
     $evidence = DB::table("evidence")->where("title", "like", "E2E %")->pluck("id");
     DB::table("evidence")->whereIn("id", $evidence)->delete();
     DB::table("skill")->whereIn("id", $skills)->delete();
+    // Model deletes, so the permission package clears its cache
+    $roles = Spatie\Permission\Models\Role::where("name", "like", "E2E %")->get()->each->delete();
     $admin = DB::table("admin_mst")->where("user_name", getenv("E2E_USER"));
     $audit = DB::table("audit_log")->where("admin_mst_id", $admin->value("id"))->delete();
     $admin->update(["is_active" => false]);
-    echo "deleted skills={$skills->count()} evidence={$evidence->count()} audit_log={$audit}\n";
+    echo "deleted skills={$skills->count()} evidence={$evidence->count()} roles={$roles->count()} audit_log={$audit}\n";
   '
 }
 trap cleanup EXIT
@@ -48,9 +50,8 @@ artisan_tinker '
       "status" => 1,
       "is_active" => true,
       "is_delete" => false,
-      "role" => App\Enums\AdminRole::OWNER,
     ],
-  );
+  )->syncRoles([App\Enums\AdminRole::OWNER->value]);
   echo "ok\n";
 '
 
