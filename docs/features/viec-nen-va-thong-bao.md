@@ -19,7 +19,7 @@ Màn hình ──3. (nếu lỡ)──────▶ API trạng thái: hỏi l
 |---|---|---|
 | Hàng đợi | `ml-redis` (có sẵn) | Giữ các việc chờ làm |
 | Làm việc nền | `ml-queue` (`queue:work`) | Lấy việc ra làm; lỗi thì thử lại tối đa 3 lần (chờ 5 giây, rồi 30 giây) |
-| Việc hẹn giờ | `ml-scheduler` (`schedule:work`) | Chạy các lệnh theo lịch trong `routes/console.php` |
+| Việc hẹn giờ | `ml-scheduler` (`schedule:work`) | Chạy các lệnh theo lịch trong `routes/console.php` (hiện có: dọn upload treo mỗi giờ) |
 | Thông báo tức thì | `ml-reverb` | Máy chủ WebSocket; trình duyệt nối qua nginx `ws://localhost:81/app/…` |
 | Việc lỗi hẳn | bảng `failed_jobs` | Xem: `php artisan queue:failed`; chạy lại: `queue:retry <id>` |
 
@@ -52,7 +52,7 @@ Sự kiện `background-task.finished` có các trường: `id`, `type` (ví d�
 
 ## Thêm một việc nền mới (cho lập trình viên)
 
-1. Tạo class kế thừa `App\Jobs\BackgroundJob`, viết `type()` và `run()` (trả lời nhắn hiện trên màn hình).
+1. Tạo class kế thừa `App\Jobs\BackgroundJob`, viết `type()` và `run()` (trả lời nhắn hiện trên màn hình). Lỗi mà thử lại cũng không sửa được (dữ liệu sai): ném `App\Exceptions\BackgroundTaskFailed` với một hằng số `Messages`; việc lỗi ngay, lời nhắn đó hiện trên màn hình. Ví dụ: `app/Jobs/Media/ProcessUploadJob.php`.
 2. Bắt đầu bằng `app(BackgroundTaskTracker::class)->dispatch(new MyJob($adminId, $subjectId))`; trả `id` cho màn hình.
 3. Màn hình gọi `pendingTasks.add(id)`; `BackgroundTaskListener` (gắn sẵn trong layout quản trị) lo phần thông báo.
 4. Sửa code job xong: `make workers-restart`.

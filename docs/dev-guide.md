@@ -119,6 +119,7 @@ Test dùng một database riêng tên `testing`, không đụng dữ liệu dev.
 | Upload hoặc tải file báo 403 `SignatureDoesNotMatch` | Link ký cho một địa chỉ khác địa chỉ trình duyệt đang dùng (ví dụ mở bằng `127.0.0.1` thay vì `localhost:81`), hoặc nginx không giữ nguyên header `Host` | Mở trang bằng http://localhost:81; kiểm tra `AWS_PUBLIC_ENDPOINT` (sinh bởi `make setup`) và nhánh `/media-official/` trong `docker/nginx/default.conf` |
 | Link file mở thẳng (không có chữ ký) báo 403 | Đúng thiết kế: kho file không cho đọc công khai | Xin link tải qua API `media/download-url/{id}` |
 | Bấm "Run test job" mà không thấy thông báo | Container `ml-queue` hoặc `ml-reverb` không chạy, hoặc giao diện chưa có khóa Reverb (`NEXT_PUBLIC_REVERB_APP_KEY`) | `make ps`; xem `make logs s=ml-queue`, `make logs s=ml-reverb`; thiếu khóa thì `make setup` rồi `make restart` |
+| Upload file lớn dở dang vẫn chiếm chỗ | Đóng trình duyệt giữa chừng; lệnh dọn chạy mỗi giờ cho upload quá 24 giờ | Chờ, hoặc chạy ngay `docker exec ml-php php artisan media:clean-stuck-uploads` (chỉ dọn upload quá 24 giờ) |
 | Việc nền lỗi, cần xem lý do | Việc lỗi sau mọi lần thử được lưu lại | `docker exec ml-php php artisan queue:failed`; chạy lại: `queue:retry <id>` |
 | Sửa code job mà việc nền vẫn chạy code cũ | Worker giữ code trong bộ nhớ | `make workers-restart` |
 | Đổi `docker/minio/create-buckets.sh` mà MinIO không đổi | Script chỉ chạy khi khởi động | `cd docker && docker compose up ml-minio-init` |
