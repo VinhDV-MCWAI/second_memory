@@ -27,17 +27,17 @@ Quản lý các tài khoản được vào trang quản trị: thêm, sửa, xó
 | Mật khẩu | Có khi thêm | Lưu dạng băm, không bao giờ trả về hay ghi vào nhật ký |
 | Họ, tên | Có | Tối đa 20 ký tự mỗi ô |
 | Giới tính, trạng thái, đang hoạt động | Có | Trạng thái: chưa kích hoạt / hoạt động / chờ / tạm khóa |
-| Vai trò | Không | `owner` (chủ) hoặc `viewer` (chỉ xem). Khi lưu, tài khoản được gán đúng vai trò này trong bảng phân quyền |
+| Vai trò (`role_ids`) | Không | Danh sách id vai trò, chọn được nhiều. Khi thêm mà không chọn: tài khoản là Chỉ xem. Danh sách trả về `roles: [{ id, name }]`, lọc theo `role_id` |
 | Địa chỉ, số điện thoại, ngày sinh, ảnh đại diện | Không | |
 
 ## Quy tắc
 
 | Quy tắc | Chi tiết |
 |---|---|
-| Luôn còn ít nhất một chủ đang hoạt động | Không cho hạ vai trò, tắt hoạt động hay xóa chủ cuối cùng (lỗi 422). Nếu không, không ai sửa được dữ liệu nữa |
+| Luôn còn ít nhất một chủ đang hoạt động | Không cho bỏ vai trò Chủ, tắt hoạt động hay xóa chủ cuối cùng (lỗi 422 ở `role_ids` hoặc `ids`). Nếu không, không ai sửa được dữ liệu nữa |
 | Xóa là xóa mềm | Dòng được đánh dấu `is_delete`, không mất khỏi DB |
 | Tài khoản bị tắt không đăng nhập được | Báo cùng lỗi 401 như sai mật khẩu |
-| Mọi thay đổi có nhật ký | Chỉ ghi các ô thay đổi, không ghi mật khẩu |
+| Mọi thay đổi có nhật ký | Chỉ ghi các ô thay đổi (kể cả danh sách vai trò), không ghi mật khẩu |
 
 ## Dữ liệu
 
