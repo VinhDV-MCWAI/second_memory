@@ -113,6 +113,70 @@ services:
           memory: 512M
           cpus: "2"
 
+  # Background jobs (ADR-0014): same image and code mount as ml-php, started after it so its
+  # entrypoint (composer install, migrations) has finished; they run artisan directly.
+  ml-queue:
+    &laravel-worker
+    container_name: ml-queue
+    build:
+      context: ../laravel-api
+      dockerfile: ../docker/laravel/Dockerfile
+      target: development
+    restart: unless-stopped
+    working_dir: /var/www/laravel-api
+    entrypoint: ["php", "artisan"]
+    # --timeout below the queue's retry_after (config/queue.php); a code change needs `make workers-restart`
+    command: ["queue:work", "redis", "--sleep=1", "--timeout=900", "--max-time=3600"]
+    volumes:
+      - ../laravel-api:/var/www/laravel-api
+      - ./laravel/php.ini:/usr/local/etc/php/conf.d/custom.ini:ro
+    environment:
+      DB_CONNECTION: pgsql
+      DB_HOST: ${POSTGRES_HOST_INSIDE_ENV}
+      DB_PORT: ${POSTGRES_PORT_INSIDE_ENV}
+      DB_DATABASE: ${POSTGRES_DB}
+      DB_USERNAME: ${POSTGRES_USER}
+      DB_PASSWORD: ${POSTGRES_PASSWORD}
+      REDIS_HOST: ${REDIS_HOST_INSIDE_ENV}
+      REDIS_PORT: ${REDIS_PORT_INSIDE_ENV}
+      REDIS_PASSWORD: ${REDIS_PASSWORD}
+      APP_ENV: local
+      APP_DEBUG: "true"
+    depends_on:
+      ml-php:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "grep -q artisan /proc/1/cmdline"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+    networks:
+      - app-network
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+        reservations:
+          memory: 64M
+
+  # Runs the Laravel schedule (routes/console.php), e.g. the clean-up of stuck uploads
+  ml-scheduler:
+    <<: *laravel-worker
+    container_name: ml-scheduler
+    command: ["schedule:work"]
+
+  # WebSocket server for live notifications; browsers reach it through nginx (/app/...)
+  ml-reverb:
+    <<: *laravel-worker
+    container_name: ml-reverb
+    command: ["reverb:start", "--host=0.0.0.0", "--port=8080"]
+    healthcheck:
+      test: ["CMD", "php", "-r", "exit(@fsockopen('127.0.0.1', 8080) ? 0 : 1);"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+
   # Next.js Frontend
   ml-nextjs:
     container_name: ml-nextjs

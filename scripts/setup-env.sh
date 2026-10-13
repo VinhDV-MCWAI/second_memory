@@ -11,10 +11,14 @@ if [ ! -f "$DOCKER_ENV" ]; then
     cp "$DOCKER_ENV_EXAMPLE" "$DOCKER_ENV"
 else
     echo ">> [1/4] Master docker/.env already exists. Ensuring variables are present..."
-    # Ensure LARAVEL lines exist in the current .env if it was created from old example
-    if ! grep -q "LARAVEL_APP_KEY" "$DOCKER_ENV"; then
-        echo -e "\nLARAVEL_APP_KEY=" >> "$DOCKER_ENV"
-    fi
+    # Append variables added to the example since this .env was created (existing values stay)
+    while IFS= read -r line; do
+        key="${line%%=*}"
+        if ! grep -q "^${key}=" "$DOCKER_ENV"; then
+            echo "$line" >> "$DOCKER_ENV"
+            echo "   - Added missing $key"
+        fi
+    done < <(grep -E '^[A-Z_][A-Z0-9_]*=' "$DOCKER_ENV_EXAMPLE")
 fi
 
 # Function to generate a secure random string and update .env
@@ -42,6 +46,8 @@ generate_and_inject REDIS_PASSWORD hex
 generate_and_inject MINIO_ROOT_PASSWORD hex
 generate_and_inject MINIO_IAM_PASSWORD hex
 generate_and_inject LARAVEL_APP_KEY base64
+generate_and_inject REVERB_APP_KEY hex
+generate_and_inject REVERB_APP_SECRET hex
 
 # Now source the variables so we can inject them into sub-projects
 set -a
@@ -67,6 +73,9 @@ if [ -f "$LARAVEL_ENV_EXAMPLE" ]; then
     sed -i "s|^AWS_ACCESS_KEY_ID=.*|AWS_ACCESS_KEY_ID=${MINIO_IAM_USER}|" "$LARAVEL_ENV"
     sed -i "s|^AWS_SECRET_ACCESS_KEY=.*|AWS_SECRET_ACCESS_KEY=${MINIO_IAM_PASSWORD}|" "$LARAVEL_ENV"
     sed -i "s|^AWS_PUBLIC_ENDPOINT=.*|AWS_PUBLIC_ENDPOINT=http://localhost:${NGINX_PORT_OUTSIDE_ENV}|" "$LARAVEL_ENV"
+    sed -i "s|^REVERB_APP_ID=.*|REVERB_APP_ID=${REVERB_APP_ID}|" "$LARAVEL_ENV"
+    sed -i "s|^REVERB_APP_KEY=.*|REVERB_APP_KEY=${REVERB_APP_KEY}|" "$LARAVEL_ENV"
+    sed -i "s|^REVERB_APP_SECRET=.*|REVERB_APP_SECRET=${REVERB_APP_SECRET}|" "$LARAVEL_ENV"
     
     # Inject Laravel security variables
     sed -i "s|^APP_KEY=.*|APP_KEY=${LARAVEL_APP_KEY}|" "$LARAVEL_ENV"
@@ -82,6 +91,7 @@ if [ -f "$ROOT_DIR/nextjs-fe/.tenv.example" ]; then
     rm -f "$NEXTJS_FE_ENV"
     cp "$ROOT_DIR/nextjs-fe/.tenv.example" "$NEXTJS_FE_ENV"
     sed -i "s|^NEXT_PUBLIC_API_URL=.*|NEXT_PUBLIC_API_URL=http://localhost:${NGINX_PORT_OUTSIDE_ENV}/api|" "$NEXTJS_FE_ENV"
+    sed -i "s|^NEXT_PUBLIC_REVERB_APP_KEY=.*|NEXT_PUBLIC_REVERB_APP_KEY=${REVERB_APP_KEY}|" "$NEXTJS_FE_ENV"
     echo "   - nextjs-fe/.env updated from master configuration."
 fi
 
@@ -102,7 +112,7 @@ if [ -n "$RUNNING_CONTAINERS" ]; then
     echo ""
     echo ">> [CẢNH BÁO] Hệ thống Docker đang chạy! Các thay đổi về mật khẩu (.env) SẼ KHÔNG có hiệu lực ngay lập tức."
     echo ">> Bạn CẦN thực hiện khởi động lại container để áp dụng cấu hình mới:"
-    echo "   docker compose -f docker/docker-compose.yml up -d --force-recreate ml-php ml-redis"
+    echo "   docker compose -f docker/docker-compose.yml up -d --force-recreate ml-php ml-redis ml-queue ml-scheduler ml-reverb ml-nextjs"
     echo ""
     
     # Optional: Automatically try to sync DB password if postgres is running

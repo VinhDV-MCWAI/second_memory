@@ -29,6 +29,10 @@ down: ## Stop the stack (keeps volumes)
 restart: ## Recreate containers and rebuild images (picks up env changes)
 	$(COMPOSE) up -d --build --force-recreate
 
+.PHONY: workers-restart
+workers-restart: ## Reload PHP code in the background job, schedule and Reverb containers (they keep old code in memory)
+	docker restart ml-queue ml-scheduler ml-reverb
+
 .PHONY: ps
 ps: ## Show container status
 	$(COMPOSE) ps
