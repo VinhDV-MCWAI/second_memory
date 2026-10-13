@@ -24,6 +24,10 @@ export const API_ENDPOINTS = {
     SEARCH: '/admin/search',
     DASHBOARD: '/admin/dashboard/summary',
   },
+  MEDIA: {
+    BASE: '/admin/media',
+    MULTIPART: '/admin/media/multipart',
+  },
   SYSTEM: {
     BACKGROUND_TASK: '/admin/background-task',
     BROADCASTING_AUTH: '/broadcasting/auth',

@@ -562,6 +562,10 @@
       "upload-url": "Upload",
       "complete": "Finish upload",
       "download-url": "Download",
+      "multipart-start": "Upload large file",
+      "multipart-part-urls": "Upload parts",
+      "multipart-complete": "Finish large upload",
+      "multipart-abort": "Cancel upload",
       "test": "Run test",
       "status": "Status"
     },
