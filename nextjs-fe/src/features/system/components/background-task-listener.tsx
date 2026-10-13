@@ -9,6 +9,7 @@ import { notification } from '@/shared/utils';
 import type { BackgroundTask } from '@/shared/types/models';
 import {
   ADMIN_CHANNEL_PREFIX,
+  announceFinished,
   BACKGROUND_TASK_FINISHED_EVENT,
   fetchTaskStatus,
   isFinished,
@@ -34,6 +35,7 @@ export function BackgroundTaskListener() {
       pendingTasks.remove(task.id);
       if (announced.has(task.id)) return;
       announced.add(task.id);
+      announceFinished(task);
       if (task.status === BackgroundTaskStatus.COMPLETED) {
         notification.success(task.message ?? t('completed'));
       } else {

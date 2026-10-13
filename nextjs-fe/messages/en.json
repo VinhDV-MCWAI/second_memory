@@ -194,6 +194,7 @@
     "skillDescription": "Skill Description",
     "skillDescriptions": "Skill Descriptions",
     "file": "File",
+    "files": "Files",
     "tag": "Tag",
     "tags": "Tags",
     "evidence": "Evidence",
@@ -590,6 +591,53 @@
     "builtIn": "Built-in",
     "custom": "Custom",
     "all": "All"
+  },
+  "media": {
+    "title": "Files",
+    "description": "Your files, stored in MinIO. Large files are joined and checked in the background; you are notified when they are ready.",
+    "breadcrumb": "Folder path",
+    "root": "Files",
+    "filterPlaceholder": "Filter by name",
+    "newFolder": "New folder",
+    "upload": "Upload",
+    "dropHint": "Tip: drag files onto this page to upload them into the open folder. Files up to 10 GB.",
+    "dropNow": "Drop to upload into this folder",
+    "name": "Name",
+    "size": "Size",
+    "updated": "Updated",
+    "processing": "Processing",
+    "download": "Download",
+    "downloadFailed": "Could not start the download",
+    "rename": "Rename",
+    "move": "Move",
+    "folderName": "Folder name",
+    "newName": "New name",
+    "targetFolder": "Target folder",
+    "targetFolderHint": "A folder path such as /Docs or /Docs/2026; / is the top level.",
+    "create": "Create",
+    "deleteSelected": "Delete ({count})",
+    "deleteTitle": "Delete {count, plural, one {# item} other {# items}}?",
+    "deleteDescription": "A folder is deleted with everything inside. MinIO keeps deleted files for 30 days, so they can still be restored.",
+    "deleted": "Deleted",
+    "uploads": {
+      "title": "Uploads",
+      "clear": "Clear finished",
+      "cancel": "Cancel upload",
+      "states": {
+        "waiting": "Waiting",
+        "uploading": "Uploading",
+        "processing": "Processing in the background…",
+        "done": "Done",
+        "failed": "Failed",
+        "cancelled": "Cancelled"
+      }
+    },
+    "validation": {
+      "nameRequired": "Enter a name",
+      "nameTooLong": "At most {max} characters",
+      "nameInvalid": "A name cannot contain / or be . or ..",
+      "folderInvalid": "Start with / and do not end with / (for example /Docs)"
+    }
   },
   "backgroundTasks": {
     "title": "Background jobs",

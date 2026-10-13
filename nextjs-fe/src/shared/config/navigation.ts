@@ -3,6 +3,7 @@ import {
   Database,
   ShieldCheck,
   FileCheck,
+  FolderOpen,
   GraduationCap,
   Tags,
   Target,
@@ -17,6 +18,12 @@ export const NAVIGATION_MENU: MenuItem[] = [
     icon: LayoutDashboard,
     href: ADMIN_ROUTES.DASHBOARD,
     permission: 'dashboard.summary',
+  },
+  {
+    label: 'entities.files',
+    icon: FolderOpen,
+    href: ADMIN_ROUTES.FILES,
+    permission: 'media.list',
   },
   {
     label: 'navigation.skillLedger',

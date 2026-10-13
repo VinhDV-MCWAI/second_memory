@@ -203,5 +203,6 @@ export const ADMIN_ROUTES = {
   EVIDENCE: '/admin/evidence',
   GOALS: '/admin/goals',
   SEARCH: '/admin/search',
+  FILES: '/admin/files',
   LOGIN: '/login',
 } as const;

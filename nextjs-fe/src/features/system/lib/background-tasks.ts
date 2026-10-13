@@ -9,6 +9,21 @@ export const BACKGROUND_TASK_FINISHED_EVENT = 'background-task.finished';
 
 const BASE = API_ENDPOINTS.SYSTEM.BACKGROUND_TASK;
 
+/** Window event re-sent for screens that react to a finished task (e.g. refresh a list). */
+const WINDOW_EVENT = 'second-memory:background-task-finished';
+
+/** Called by BackgroundTaskListener once per finished task. */
+export function announceFinished(task: BackgroundTask): void {
+  window.dispatchEvent(new CustomEvent<BackgroundTask>(WINDOW_EVENT, { detail: task }));
+}
+
+/** Runs the handler for every finished task this tab hears about; returns the unsubscribe. */
+export function onBackgroundTaskFinished(handler: (task: BackgroundTask) => void): () => void {
+  const listener = (event: Event) => handler((event as CustomEvent<BackgroundTask>).detail);
+  window.addEventListener(WINDOW_EVENT, listener);
+  return () => window.removeEventListener(WINDOW_EVENT, listener);
+}
+
 export function isFinished(task: BackgroundTask): boolean {
   return (
     task.status === BackgroundTaskStatus.COMPLETED || task.status === BackgroundTaskStatus.FAILED
