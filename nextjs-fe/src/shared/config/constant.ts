@@ -151,6 +151,15 @@ export const UI_CONSTANTS = {
   ACTION_DELAY_MS: 300,
 } as const;
 
+// Shared dialog (AppDialog) defaults, used for whatever a dialog does not set
+export const DIALOG_DEFAULTS = {
+  SIZE: 'md',
+  /** Footer buttons a dialog may declare, not counting Cancel. */
+  MAX_ACTIONS: 4,
+  ACTION_VARIANT: 'default',
+  ACTION_SIZE: 'default',
+} as const;
+
 // Keyboard keys
 export const KEYBOARD_KEYS = {
   ESCAPE: 'Escape',

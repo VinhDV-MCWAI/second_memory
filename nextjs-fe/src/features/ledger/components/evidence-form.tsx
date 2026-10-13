@@ -1,9 +1,9 @@
 'use client';
 
+import { useEffect } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useTranslations } from 'next-intl';
-import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -28,8 +28,12 @@ const AUDITABLE_TYPE = 'evidence';
  * Evidence link for one or more skills (REQ-002 US-2). Rows imported from Obsidian keep
  * their vault-owned fields read-only: the importer would overwrite them (RFC-002 §4.5).
  */
-export function EvidenceForm({ initialData, onSuccess, onCancel }: ResourceFormProps<Evidence>) {
-  const tCommon = useTranslations('common');
+export function EvidenceForm({
+  initialData,
+  formId,
+  onSuccess,
+  onStateChange,
+}: ResourceFormProps<Evidence>) {
   const tLabels = useTranslations('forms.labels');
   const tValidation = useTranslations('validation');
   const tLedger = useTranslations('ledger');
@@ -41,7 +45,7 @@ export function EvidenceForm({ initialData, onSuccess, onCancel }: ResourceFormP
     handleSubmit,
     control,
     setError,
-    formState: { errors },
+    formState: { errors, isDirty },
   } = useForm<EvidenceFormData>({
     resolver: zodResolver(getEvidenceSchema(tValidation)),
     values: {
@@ -55,6 +59,11 @@ export function EvidenceForm({ initialData, onSuccess, onCancel }: ResourceFormP
       tag_ids: initialData?.tags?.map((tag) => tag.id) ?? [],
     },
   });
+
+  useEffect(
+    () => onStateChange({ pending: loading, dirty: isDirty }),
+    [loading, isDirty, onStateChange],
+  );
 
   const onSubmit = async (data: EvidenceFormData) => {
     try {
@@ -71,7 +80,7 @@ export function EvidenceForm({ initialData, onSuccess, onCancel }: ResourceFormP
 
   return (
     <>
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+      <form id={formId} onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         {imported && <p className="text-sm text-muted-foreground">{tLedger('importedHint')}</p>}
 
         <div className="grid grid-cols-3 gap-4">
@@ -168,15 +177,6 @@ export function EvidenceForm({ initialData, onSuccess, onCancel }: ResourceFormP
             </div>
           )}
         />
-
-        <div className="flex justify-end gap-2 pt-4">
-          <Button type="button" variant="outline" onClick={onCancel} disabled={loading}>
-            {tCommon('cancel')}
-          </Button>
-          <Button type="submit" disabled={loading}>
-            {initialData ? tCommon('update') : tCommon('create')}
-          </Button>
-        </div>
       </form>
       {initialData && (
         <HistoryViewer auditableType={AUDITABLE_TYPE} recordId={initialData.id} className="mt-6" />

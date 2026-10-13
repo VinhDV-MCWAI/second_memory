@@ -10,7 +10,6 @@ import { useActionLock } from '@/shared/hooks/use-action-lock';
 import { UI_CONSTANTS } from '@/shared/config';
 import { handleBindErrors } from '@/shared/utils/error-handler';
 import { formatDateForBackend, formatDateForInput } from '@/shared/utils/date-formatter';
-import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { FormField } from '@/components/common/form-field';
@@ -36,7 +35,12 @@ const STATUS_OPTIONS = [
   AdminStatus.SUSPENDED,
 ].map((value) => ({ value, label: AdminStatusLabels[value] }));
 
-export function AdminForm({ initialData, onSuccess, onCancel }: ResourceFormProps<AdminMst>) {
+export function AdminForm({
+  initialData,
+  formId,
+  onSuccess,
+  onStateChange,
+}: ResourceFormProps<AdminMst>) {
   const tCommon = useTranslations('common');
   const tForms = useTranslations('forms.placeholders');
   const tLabels = useTranslations('forms.labels');
@@ -50,7 +54,7 @@ export function AdminForm({ initialData, onSuccess, onCancel }: ResourceFormProp
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isDirty },
     setValue,
     control,
     reset,
@@ -104,6 +108,11 @@ export function AdminForm({ initialData, onSuccess, onCancel }: ResourceFormProp
     delay: UI_CONSTANTS.ACTION_DELAY_MS,
   });
 
+  useEffect(
+    () => onStateChange({ pending: loading || isActionProcessing, dirty: isDirty }),
+    [loading, isActionProcessing, isDirty, onStateChange],
+  );
+
   const onSubmit = async (data: AdminFormData) => {
     await execute(async () => {
       if (!isEdit && !data.password) {
@@ -152,7 +161,7 @@ export function AdminForm({ initialData, onSuccess, onCancel }: ResourceFormProp
 
   return (
     <>
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+      <form id={formId} onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         <div className="mb-4 flex justify-center">
           <AvatarUpload
             value={avatarPreview ?? undefined}
@@ -264,14 +273,18 @@ export function AdminForm({ initialData, onSuccess, onCancel }: ResourceFormProp
           <FormField id="gender" label={tLabels('gender')} required error={errors.gender?.message}>
             <OptionSelect
               value={genderValue}
-              onChange={(value) => setValue('gender', Number(value) as Gender)}
+              onChange={(value) =>
+                setValue('gender', Number(value) as Gender, { shouldDirty: true })
+              }
               options={enumOptions(GenderLabels)}
             />
           </FormField>
           <FormField id="status" label={tLabels('status')} required error={errors.status?.message}>
             <OptionSelect
               value={statusValue}
-              onChange={(value) => setValue('status', Number(value) as AdminStatus)}
+              onChange={(value) =>
+                setValue('status', Number(value) as AdminStatus, { shouldDirty: true })
+              }
               options={STATUS_OPTIONS}
             />
           </FormField>
@@ -282,7 +295,7 @@ export function AdminForm({ initialData, onSuccess, onCancel }: ResourceFormProp
             endpoint={ENDPOINTS.MASTER.ROLE}
             emptyMessage={tForms('noRoles')}
             value={roleIds}
-            onChange={(ids) => setValue('role_ids', ids)}
+            onChange={(ids) => setValue('role_ids', ids, { shouldDirty: true })}
           />
           {!isEdit && <p className="text-xs text-muted-foreground">{tForms('rolesDefault')}</p>}
         </FormField>
@@ -290,26 +303,6 @@ export function AdminForm({ initialData, onSuccess, onCancel }: ResourceFormProp
         <div className="mt-4 flex items-center gap-2">
           <input type="checkbox" id="is_active" {...register('is_active')} className="rounded" />
           <Label htmlFor="is_active">{tLabels('isActive')}</Label>
-        </div>
-
-        <div className="flex justify-end gap-2 pt-4">
-          <Button
-            type="button"
-            variant="outline"
-            onClick={onCancel}
-            disabled={loading || isActionProcessing}
-          >
-            {tCommon('cancel')}
-          </Button>
-          <Button type="submit" disabled={loading || isActionProcessing}>
-            {loading || isActionProcessing
-              ? isEdit
-                ? tCommon('updating')
-                : tCommon('creating')
-              : isEdit
-                ? tCommon('update')
-                : tCommon('create')}
-          </Button>
         </div>
       </form>
       {isEdit && initialData && (

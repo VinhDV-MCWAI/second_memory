@@ -78,7 +78,7 @@ export default function SkillListPage() {
       defaultSortBy="name"
       filtersKey="skill-filters"
       form={SkillForm}
-      dialogClassName="sm:max-w-3xl"
+      dialogSize="xl"
     />
   );
 }

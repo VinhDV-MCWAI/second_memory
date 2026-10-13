@@ -11,15 +11,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from '@/components/ui/dialog';
+import { AppDialog } from '@/components/common/app-dialog';
 import { Search, Plus, X } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { useTranslations } from 'next-intl';
@@ -86,24 +78,27 @@ export function AdvancedSearch({ fields, onSearch, className }: AdvancedSearchPr
   };
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <Button variant="outline" className={className}>
-          <Search className="mr-2 h-4 w-4" />
-          {t('title')}
-          {criteria.length > 0 && (
-            <Badge variant="secondary" className="ml-2">
-              {criteria.length}
-            </Badge>
-          )}
-        </Button>
-      </DialogTrigger>
-      <DialogContent className="sm:max-w-2xl">
-        <DialogHeader>
-          <DialogTitle>{t('title')}</DialogTitle>
-          <DialogDescription>{t('description')}</DialogDescription>
-        </DialogHeader>
-
+    <>
+      <Button variant="outline" className={className} onClick={() => setOpen(true)}>
+        <Search className="mr-2 h-4 w-4" />
+        {t('title')}
+        {criteria.length > 0 && (
+          <Badge variant="secondary" className="ml-2">
+            {criteria.length}
+          </Badge>
+        )}
+      </Button>
+      <AppDialog
+        open={open}
+        onOpenChange={setOpen}
+        title={t('title')}
+        description={t('description')}
+        size="lg"
+        actions={[
+          { key: 'reset', label: tCommon('reset'), variant: 'outline', onClick: handleReset },
+          { key: 'search', label: tCommon('search'), onClick: handleSearch },
+        ]}
+      >
         <div className="space-y-4">
           {criteria.map((criterion, index) => {
             const field = fields.find((f) => f.key === criterion.field);
@@ -191,14 +186,7 @@ export function AdvancedSearch({ fields, onSearch, className }: AdvancedSearchPr
             {t('addCriteria')}
           </Button>
         </div>
-
-        <DialogFooter>
-          <Button variant="outline" onClick={handleReset}>
-            {tCommon('reset')}
-          </Button>
-          <Button onClick={handleSearch}>{tCommon('search')}</Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+      </AppDialog>
+    </>
   );
 }

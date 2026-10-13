@@ -1,9 +1,9 @@
 'use client';
 
+import { useEffect } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useTranslations } from 'next-intl';
-import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -31,8 +31,12 @@ const LEVEL_FIELDS = ['level', 'changed_on', 'reason'] as const;
  * Create: the skill with its first level entry. Edit: the skill's own fields; its level
  * changes only through the timeline below, so the history stays complete (REQ-002 US-1).
  */
-export function SkillForm({ initialData, onSuccess, onCancel }: ResourceFormProps<Skill>) {
-  const tCommon = useTranslations('common');
+export function SkillForm({
+  initialData,
+  formId,
+  onSuccess,
+  onStateChange,
+}: ResourceFormProps<Skill>) {
   const tLabels = useTranslations('forms.labels');
   const tValidation = useTranslations('validation');
   const tLedger = useTranslations('ledger');
@@ -46,7 +50,7 @@ export function SkillForm({ initialData, onSuccess, onCancel }: ResourceFormProp
     handleSubmit,
     control,
     setError,
-    formState: { errors },
+    formState: { errors, isDirty },
   } = useForm<SkillFormData>({
     resolver: zodResolver(getSkillSchema(tValidation)),
     values: {
@@ -60,6 +64,11 @@ export function SkillForm({ initialData, onSuccess, onCancel }: ResourceFormProp
       reason: '',
     },
   });
+
+  useEffect(
+    () => onStateChange({ pending: loading, dirty: isDirty }),
+    [loading, isDirty, onStateChange],
+  );
 
   const onSubmit = async ({ changed_on, ...data }: SkillFormData) => {
     try {
@@ -82,7 +91,7 @@ export function SkillForm({ initialData, onSuccess, onCancel }: ResourceFormProp
 
   return (
     <>
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+      <form id={formId} onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         <div className="grid grid-cols-2 gap-4">
           <FormField id="name" label={tLabels('name')} required error={errors.name?.message}>
             <Input id="name" {...register('name')} aria-invalid={!!errors.name} />
@@ -164,15 +173,6 @@ export function SkillForm({ initialData, onSuccess, onCancel }: ResourceFormProp
             </div>
           </div>
         )}
-
-        <div className="flex justify-end gap-2 pt-4">
-          <Button type="button" variant="outline" onClick={onCancel} disabled={loading}>
-            {tCommon('cancel')}
-          </Button>
-          <Button type="submit" disabled={loading}>
-            {isEdit ? tCommon('update') : tCommon('create')}
-          </Button>
-        </div>
       </form>
       {isEdit && initialData && (
         <>

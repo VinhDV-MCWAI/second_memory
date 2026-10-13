@@ -1,9 +1,9 @@
 'use client';
 
+import { useEffect } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useTranslations } from 'next-intl';
-import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { FormField } from '@/components/common/form-field';
 import type { ResourceFormProps } from '@/components/common/resource-list-page';
@@ -20,8 +20,12 @@ import { getRoleSchema, type RoleFormData } from '@/shared/validation/validation
 /** audit_log.auditable_type of roles (RoleService::$auditableType). */
 const AUDITABLE_TYPE = 'role';
 
-export function RoleForm({ initialData, onSuccess, onCancel }: ResourceFormProps<Role>) {
-  const tCommon = useTranslations('common');
+export function RoleForm({
+  initialData,
+  formId,
+  onSuccess,
+  onStateChange,
+}: ResourceFormProps<Role>) {
   const tLabels = useTranslations('forms.labels');
   const tPermissions = useTranslations('permissions');
   const tValidation = useTranslations('validation');
@@ -38,12 +42,21 @@ export function RoleForm({ initialData, onSuccess, onCancel }: ResourceFormProps
     setError,
     setValue,
     control,
-    formState: { errors },
+    formState: { errors, isDirty },
   } = useForm<RoleFormData>({
     resolver: zodResolver(getRoleSchema(tValidation)),
-    values: { name: initialData?.name ?? '', permissions: initialData?.permissions ?? [] },
+    // Kept sorted so ticking a box off and on again is not a change
+    values: {
+      name: initialData?.name ?? '',
+      permissions: [...(initialData?.permissions ?? [])].sort(),
+    },
   });
   const permissions = useWatch({ control, name: 'permissions' });
+
+  useEffect(
+    () => onStateChange({ pending: loading, submitDisabled: isOwner, dirty: isDirty }),
+    [loading, isOwner, isDirty, onStateChange],
+  );
 
   const onSubmit = async (data: RoleFormData) => {
     try {
@@ -61,7 +74,7 @@ export function RoleForm({ initialData, onSuccess, onCancel }: ResourceFormProps
 
   return (
     <>
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+      <form id={formId} onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         <FormField id="name" label={tLabels('name')} required error={errors.name?.message}>
           <Input
             id="name"
@@ -85,19 +98,10 @@ export function RoleForm({ initialData, onSuccess, onCancel }: ResourceFormProps
             <PermissionMatrix
               groups={groups}
               value={permissions}
-              onChange={(next) => setValue('permissions', next, { shouldDirty: true })}
+              onChange={(next) => setValue('permissions', [...next].sort(), { shouldDirty: true })}
             />
           )}
         </FormField>
-
-        <div className="flex justify-end gap-2 pt-4">
-          <Button type="button" variant="outline" onClick={onCancel} disabled={loading}>
-            {tCommon('cancel')}
-          </Button>
-          <Button type="submit" disabled={loading || isOwner}>
-            {initialData ? tCommon('update') : tCommon('create')}
-          </Button>
-        </div>
       </form>
       {initialData && (
         <HistoryViewer auditableType={AUDITABLE_TYPE} recordId={initialData.id} className="mt-6" />

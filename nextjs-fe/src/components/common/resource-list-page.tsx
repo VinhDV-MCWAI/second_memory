@@ -10,16 +10,9 @@ import { FilterPanel, type FilterField } from '@/components/common/data-table/fi
 import { AdvancedSearch } from '@/components/common/advanced-search';
 import { SavedFilters } from '@/components/common/saved-filters';
 import { BulkActions, type BulkAction } from '@/components/common/bulk-actions';
+import { AppDialog, type DialogAction, type DialogSize } from '@/components/common/app-dialog';
 import { ConfirmDialog } from '@/components/ui/confirm-dialog';
 import { Button } from '@/components/ui/button';
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog';
 import { useApiData } from '@/shared/hooks/use-api-data';
 import { useCrud } from '@/shared/hooks/use-crud';
 import { useActionLock } from '@/shared/hooks/use-action-lock';
@@ -35,11 +28,31 @@ import {
 import type { FilterValue } from '@/shared/types/api';
 import type { SearchCriteria, SearchField } from '@/shared/types/data-table.types';
 
+/** What a form tells the dialog footer about itself. */
+export interface ResourceFormState {
+  /** Saving: every footer button is locked. */
+  pending: boolean;
+  /** Nothing can be saved (e.g. the owner role): the submit button is disabled. */
+  submitDisabled?: boolean;
+  /** Changed since the dialog opened: closing without saving asks first. */
+  dirty?: boolean;
+}
+
 /** Props every entity form receives inside the standard create/edit dialog. */
 export interface ResourceFormProps<T> {
   initialData?: T | null;
+  /** Id for the `<form>`: the footer's create/update button submits it. */
+  formId: string;
   onSuccess: () => void;
-  onCancel: () => void;
+  onStateChange: (state: ResourceFormState) => void;
+}
+
+/** What a page's footer buttons get: the record being edited (null on create). */
+export interface ResourceDialogContext<T> {
+  record: T | null;
+  close: () => void;
+  /** The ready-made create/update button, to place where the page wants it. */
+  submitAction: DialogAction;
 }
 
 /** A self-contained create/edit dialog (e.g. the role wizard) used instead of `form`. */
@@ -50,9 +63,23 @@ export interface ResourceEditorProps<T> {
   onSuccess: () => void;
 }
 
+/** Id of the form inside the create/edit dialog. */
+const FORM_ID = 'resource-form';
+
 type Editor<T> =
-  | { form: ComponentType<ResourceFormProps<T>>; dialogClassName: string; editor?: never }
-  | { editor: ComponentType<ResourceEditorProps<T>>; form?: never; dialogClassName?: never };
+  | {
+      form: ComponentType<ResourceFormProps<T>>;
+      dialogSize: DialogSize;
+      /** Footer buttons after Cancel; without it the footer has only create/update. */
+      dialogActions?: (context: ResourceDialogContext<T>) => DialogAction[];
+      editor?: never;
+    }
+  | {
+      editor: ComponentType<ResourceEditorProps<T>>;
+      form?: never;
+      dialogSize?: never;
+      dialogActions?: never;
+    };
 
 export type ResourceListPageProps<T extends { id: number }> = Editor<T> & {
   /** API resource, e.g. `API_ENDPOINTS.MASTER.ADMIN`. */
@@ -90,6 +117,7 @@ export function ResourceListPage<T extends { id: number }>({
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [formDialogOpen, setFormDialogOpen] = useState(false);
   const [editing, setEditing] = useState<T | null>(null);
+  const [formState, setFormState] = useState<ResourceFormState>({ pending: false });
 
   const tCommon = useTranslations('common');
   const tEntities = useTranslations('entities');
@@ -124,6 +152,7 @@ export function ResourceListPage<T extends { id: number }>({
 
   const openEditor = (record: T | null) => {
     setEditing(record);
+    setFormState({ pending: false });
     setFormDialogOpen(true);
   };
 
@@ -174,6 +203,19 @@ export function ResourceListPage<T extends { id: number }>({
     applyFilters(Object.fromEntries(criteria.map((c) => [c.field, c.value as FilterValue])));
 
   const closeEditor = () => setFormDialogOpen(false);
+
+  const submitAction: DialogAction = {
+    key: 'submit',
+    form: FORM_ID,
+    permission: permissionName(
+      feature,
+      editing ? PERMISSION_ACTIONS.UPDATE : PERMISSION_ACTIONS.STORE,
+    ),
+    disabled: formState.submitDisabled,
+    label: formState.pending
+      ? tCommon(editing ? 'updating' : 'creating')
+      : tCommon(editing ? 'update' : 'create'),
+  };
 
   return (
     <>
@@ -260,41 +302,29 @@ export function ResourceListPage<T extends { id: number }>({
           onSuccess={closeEditor}
         />
       ) : (
-        <Dialog open={formDialogOpen} onOpenChange={setFormDialogOpen}>
-          <DialogContent
-            className={`flex max-h-[90vh] flex-col gap-0 overflow-hidden p-0 ${editor.dialogClassName}`}
-          >
-            <div className="shrink-0 border-b bg-background px-6 pt-6 pb-4">
-              <DialogHeader>
-                <DialogTitle>
-                  {tCrud(editing ? 'editEntity' : 'createEntity', { entity: one })}
-                </DialogTitle>
-                <DialogDescription>
-                  {tCrud(editing ? 'editDescription' : 'createDescription', {
-                    entity: one.toLowerCase(),
-                  })}
-                </DialogDescription>
-              </DialogHeader>
-            </div>
-
-            <div className="min-h-0 flex-1 overflow-y-auto">
-              <div className="px-6 py-4">
-                <editor.form initialData={editing} onSuccess={closeEditor} onCancel={closeEditor} />
-              </div>
-            </div>
-
-            <div className="shrink-0 border-t bg-muted/20 px-6 py-4">
-              <DialogFooter>
-                <Button type="button" variant="outline" onClick={closeEditor}>
-                  {tCommon('cancel')}
-                </Button>
-                <Button type="button" onClick={closeEditor}>
-                  {tCommon('done')}
-                </Button>
-              </DialogFooter>
-            </div>
-          </DialogContent>
-        </Dialog>
+        <AppDialog
+          open={formDialogOpen}
+          onOpenChange={setFormDialogOpen}
+          title={tCrud(editing ? 'editEntity' : 'createEntity', { entity: one })}
+          description={tCrud(editing ? 'editDescription' : 'createDescription', {
+            entity: one.toLowerCase(),
+          })}
+          size={editor.dialogSize}
+          busy={formState.pending}
+          dirty={formState.dirty}
+          actions={
+            editor.dialogActions?.({ record: editing, close: closeEditor, submitAction }) ?? [
+              submitAction,
+            ]
+          }
+        >
+          <editor.form
+            initialData={editing}
+            formId={FORM_ID}
+            onSuccess={closeEditor}
+            onStateChange={setFormState}
+          />
+        </AppDialog>
       )}
 
       <ConfirmDialog

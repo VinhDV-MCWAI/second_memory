@@ -1,9 +1,9 @@
 'use client';
 
+import { useEffect } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useTranslations } from 'next-intl';
-import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { FormField } from '@/components/common/form-field';
@@ -37,10 +37,10 @@ const MANUAL_STATUSES = [GoalStatus.OPEN, GoalStatus.DROPPED].map((value) => ({
  */
 export function LearningGoalForm({
   initialData,
+  formId,
   onSuccess,
-  onCancel,
+  onStateChange,
 }: ResourceFormProps<LearningGoal>) {
-  const tCommon = useTranslations('common');
   const tLabels = useTranslations('forms.labels');
   const tValidation = useTranslations('validation');
   const tLedger = useTranslations('ledger');
@@ -57,7 +57,7 @@ export function LearningGoalForm({
     handleSubmit,
     control,
     setError,
-    formState: { errors },
+    formState: { errors, isDirty },
   } = useForm<LearningGoalFormData>({
     resolver: zodResolver(getLearningGoalSchema(tValidation)),
     values: {
@@ -68,6 +68,11 @@ export function LearningGoalForm({
       note: initialData?.note ?? '',
     },
   });
+
+  useEffect(
+    () => onStateChange({ pending: loading, dirty: isDirty }),
+    [loading, isDirty, onStateChange],
+  );
 
   const onSubmit = async ({ skill_id, status, target_date, ...data }: LearningGoalFormData) => {
     const fields = { ...data, target_date: target_date || null };
@@ -86,7 +91,7 @@ export function LearningGoalForm({
 
   return (
     <>
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+      <form id={formId} onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         {achieved && <p className="text-sm text-muted-foreground">{tLedger('achievedHint')}</p>}
 
         <FormField id="skill_id" label={tLabels('skill')} required error={errors.skill_id?.message}>
@@ -156,15 +161,6 @@ export function LearningGoalForm({
         <FormField id="note" label={tLabels('note')} error={errors.note?.message}>
           <Textarea id="note" rows={3} {...register('note')} />
         </FormField>
-
-        <div className="flex justify-end gap-2 pt-4">
-          <Button type="button" variant="outline" onClick={onCancel} disabled={loading}>
-            {tCommon('cancel')}
-          </Button>
-          <Button type="submit" disabled={loading}>
-            {isEdit ? tCommon('update') : tCommon('create')}
-          </Button>
-        </div>
       </form>
       {initialData && (
         <HistoryViewer auditableType={AUDITABLE_TYPE} recordId={initialData.id} className="mt-6" />

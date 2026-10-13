@@ -578,5 +578,11 @@
     "builtIn": "Built-in",
     "custom": "Custom",
     "all": "All"
+  },
+  "dialog": {
+    "discardTitle": "Discard changes?",
+    "discardDescription": "You have changes that are not saved. Closing now will lose them.",
+    "discard": "Discard",
+    "keepEditing": "Keep editing"
   }
 }

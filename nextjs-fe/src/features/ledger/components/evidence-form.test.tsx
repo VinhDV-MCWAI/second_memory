@@ -39,7 +39,15 @@ const renderForm = (initialData: Evidence | null, onSuccess = vi.fn()) => {
   const { Wrapper } = createQueryWrapper();
   render(
     <Wrapper>
-      <EvidenceForm initialData={initialData} onSuccess={onSuccess} onCancel={vi.fn()} />
+      <EvidenceForm
+        initialData={initialData}
+        formId="test-form"
+        onSuccess={onSuccess}
+        onStateChange={vi.fn()}
+      />
+      <button type="submit" form="test-form">
+        save
+      </button>
     </Wrapper>,
   );
   return onSuccess;
@@ -51,7 +59,7 @@ describe('EvidenceForm', () => {
 
     fireEvent.change(screen.getByLabelText(/title/), { target: { value: 'XSS' } });
     fireEvent.change(screen.getByLabelText(/url/), { target: { value: 'javascript:alert(1)' } });
-    fireEvent.click(screen.getByRole('button', { name: 'create' }));
+    fireEvent.click(screen.getByRole('button', { name: 'save' }));
 
     expect(await screen.findByText('url.invalid')).toBeTruthy();
     expect(screen.getByText('skillIds.required')).toBeTruthy();
@@ -70,7 +78,7 @@ describe('EvidenceForm', () => {
     expect(screen.getByText('importedHint')).toBeTruthy();
     expect((screen.getByLabelText(/title/) as HTMLInputElement).disabled).toBe(true);
     expect((screen.getByLabelText(/url/) as HTMLInputElement).disabled).toBe(true);
-    fireEvent.click(screen.getByRole('button', { name: 'update' }));
+    fireEvent.click(screen.getByRole('button', { name: 'save' }));
 
     await waitFor(() => expect(onSuccess).toHaveBeenCalled());
     expect(body).toMatchObject({ title: 'Vault note', url: imported.url, skill_ids: [1] });

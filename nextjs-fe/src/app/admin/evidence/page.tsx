@@ -98,7 +98,7 @@ export default function EvidenceListPage() {
       defaultSortBy="occurred_on"
       filtersKey="evidence-filters"
       form={EvidenceForm}
-      dialogClassName="sm:max-w-3xl"
+      dialogSize="xl"
     />
   );
 }

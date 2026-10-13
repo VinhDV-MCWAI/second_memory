@@ -44,7 +44,7 @@ export default function RoleListPage() {
       defaultSortBy="name"
       filtersKey="role-filters"
       form={RoleForm}
-      dialogClassName="sm:max-w-4xl"
+      dialogSize="xl"
     />
   );
 }

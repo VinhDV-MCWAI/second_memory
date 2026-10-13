@@ -35,7 +35,15 @@ const renderForm = (initialData: LearningGoal, onSuccess = vi.fn()) => {
   const { Wrapper } = createQueryWrapper();
   render(
     <Wrapper>
-      <LearningGoalForm initialData={initialData} onSuccess={onSuccess} onCancel={vi.fn()} />
+      <LearningGoalForm
+        initialData={initialData}
+        formId="test-form"
+        onSuccess={onSuccess}
+        onStateChange={vi.fn()}
+      />
+      <button type="submit" form="test-form">
+        save
+      </button>
     </Wrapper>,
   );
   return onSuccess;
@@ -55,7 +63,7 @@ describe('LearningGoalForm', () => {
     expect(screen.getByText('achievedHint')).toBeTruthy();
     expect(screen.queryByLabelText('status')).toBeNull();
     fireEvent.change(screen.getByLabelText('note'), { target: { value: 'Done early' } });
-    fireEvent.click(screen.getByRole('button', { name: 'update' }));
+    fireEvent.click(screen.getByRole('button', { name: 'save' }));
 
     await waitFor(() => expect(onSuccess).toHaveBeenCalled());
     expect(body).toEqual({ id: 5, target_level: 3, target_date: '2026-12-31', note: 'Done early' });
@@ -74,7 +82,7 @@ describe('LearningGoalForm', () => {
     );
     renderForm({ ...achievedGoal, status: 'open', achieved_on: null });
 
-    fireEvent.click(screen.getByRole('button', { name: 'update' }));
+    fireEvent.click(screen.getByRole('button', { name: 'save' }));
 
     expect(
       await screen.findByText("Target level must be above the skill's current level"),

@@ -30,7 +30,7 @@ export default function TagListPage() {
       defaultSortBy="name"
       filtersKey="tag-filters"
       form={TagForm}
-      dialogClassName="sm:max-w-md"
+      dialogSize="sm"
     />
   );
 }
