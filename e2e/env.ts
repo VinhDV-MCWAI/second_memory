@@ -1,7 +1,8 @@
 // Shared by the config and the specs.
 
-export const ADMIN_URL = 'http://localhost:81';
-export const ADMIN_UPSTREAM = 'ml-nginx:8080';
+// e2e/run.sh sets both for the target environment (dev by default, prod-like for the demo)
+export const ADMIN_URL = process.env.E2E_ADMIN_URL ?? 'http://localhost:81';
+export const ADMIN_UPSTREAM = process.env.E2E_ADMIN_UPSTREAM ?? 'ml-nginx:8080';
 // The public pages go through the same nginx as the admin app (/skills → nextjs-docs, OPS-04).
 export const PUBLIC_URL = ADMIN_URL;
 

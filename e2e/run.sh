@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
-# Critical-journey E2E (P3-15) against the running dev stack: `make e2e`.
+# Critical-journey E2E (P3-15) against a running environment.
+#   e2e/run.sh            the dev stack (`make e2e`)
+#   e2e/run.sh prod-like  the Terraform demo (`make cd` runs it after deploying, CD-01)
 #
 # The journey writes to the dev database, so the script keeps that small and reversible:
 # - it signs in as a dedicated owner `e2e_owner` with a fresh random password each run
@@ -12,12 +14,26 @@ set -euo pipefail
 
 cd "$(dirname "$0")/.."
 
+case "${1:-dev}" in
+  dev)
+    PHP=ml-php NETWORK=ml_network ADMIN_URL=http://localhost:81 UPSTREAM=ml-nginx:8080
+    ;;
+  prod-like)
+    # Names from infra/modules/stack; the proxy port from infra/live/prod-like/stack/terraform.tfvars
+    PHP=sm-prod-like-php NETWORK=sm-prod-like ADMIN_URL=http://localhost:9443 UPSTREAM=sm-prod-like-proxy:8080
+    ;;
+  *)
+    echo "usage: e2e/run.sh [dev|prod-like]" >&2
+    exit 2
+    ;;
+esac
+
 IMAGE=ml-e2e
 E2E_USER=e2e_owner
 E2E_PASSWORD="$(head -c 18 /dev/urandom | base64 | tr -d '/+=')"
 
 artisan_tinker() {
-  docker exec -e E2E_USER="$E2E_USER" -e E2E_PASSWORD="$E2E_PASSWORD" ml-php php artisan tinker --execute "$1"
+  docker exec -e E2E_USER="$E2E_USER" -e E2E_PASSWORD="$E2E_PASSWORD" "$PHP" php artisan tinker --execute "$1"
 }
 
 # shellcheck disable=SC2317  # called by the EXIT trap
@@ -66,7 +82,8 @@ docker build -q -f e2e/Dockerfile -t "$IMAGE" . >/dev/null
 
 mkdir -p e2e/artifacts
 echo "==> Running the journey"
-docker run --rm --network ml_network --user "$(id -u):$(id -g)" -e HOME=/tmp \
+docker run --rm --network "$NETWORK" --user "$(id -u):$(id -g)" -e HOME=/tmp \
   -e E2E_USER="$E2E_USER" -e E2E_PASSWORD="$E2E_PASSWORD" \
+  -e E2E_ADMIN_URL="$ADMIN_URL" -e E2E_ADMIN_UPSTREAM="$UPSTREAM" \
   -v "$PWD/e2e/artifacts:/repo/e2e/artifacts" \
   "$IMAGE"
