@@ -69,6 +69,35 @@ final class MediaApiTest extends TestCase
         $this->assertSame(2, AuditLog::query()->where('auditable_type', 'media')->count());
     }
 
+    public function test_safe_types_get_a_preview_link_served_with_a_type_chosen_by_extension(): void
+    {
+        $photo = $this->finishedUpload(MediaConst::ROOT, 'Photo.JPG', 100);
+        $notes = $this->finishedUpload(MediaConst::ROOT, 'notes.md', 100);
+        $bigLog = $this->finishedUpload(MediaConst::ROOT, 'big.log', MediaConst::PREVIEW_TEXT_MAX_BYTES + 1);
+        $page = $this->finishedUpload(MediaConst::ROOT, 'page.html', 100);
+        $drawing = $this->finishedUpload(MediaConst::ROOT, 'drawing.svg', 100);
+        $this->call('POST', self::BASE.'/store-folder', ['name' => 'Docs'], $this->owner)->assertOk();
+
+        $previews = collect($this->call('GET', self::BASE.'/list', [], $this->owner)->assertOk()->json('data.data'))->pluck('preview', 'name');
+        $this->assertSame(
+            ['Docs' => null, 'Photo.JPG' => 'image', 'big.log' => null, 'drawing.svg' => null, 'notes.md' => 'text', 'page.html' => null],
+            $previews->sortKeys()->all(),
+        );
+
+        $url = $this->call('GET', self::BASE."/download-url/{$photo}", ['inline' => 1], $this->owner)->assertOk()->json('data.url');
+        $this->assertStringContainsString('inline=image%2Fjpeg', $url);
+        $this->assertStringContainsString('X-Amz-Expires='.MediaConst::PREVIEW_URL_TTL_SECONDS, $url);
+        // Shown as plain text, whatever type the browser declared on upload
+        $this->assertStringContainsString('inline=text%2Fplain', $this->call('GET', self::BASE."/download-url/{$notes}", ['inline' => 1], $this->owner)->json('data.url'));
+
+        // HTML and SVG could run script on the admin's origin; a big text file is download only
+        foreach ([$page, $drawing, $bigLog] as $id) {
+            $this->call('GET', self::BASE."/download-url/{$id}", ['inline' => 1], $this->owner)
+                ->assertStatus(CommonVal::HTTP_UNPROCESSABLE_CONTENT)->assertJsonStructure(['error' => ['messages' => ['inline']]]);
+            $this->assertStringNotContainsString('inline=', $this->call('GET', self::BASE."/download-url/{$id}", [], $this->owner)->assertOk()->json('data.url'));
+        }
+    }
+
     public function test_a_wrong_size_is_refused_and_the_object_removed(): void
     {
         $id = $this->startUpload('photo.jpg', 100);

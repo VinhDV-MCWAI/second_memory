@@ -30,9 +30,11 @@ final class FakeObjectStorage extends ObjectStorage
         return "http://storage.test/media-test/{$key}?X-Amz-Expires={$ttlSeconds}";
     }
 
-    public function presignedGetUrl(string $key, string $downloadName, int $ttlSeconds): string
+    public function presignedGetUrl(string $key, string $downloadName, int $ttlSeconds, ?string $inlineContentType = null): string
     {
-        return "http://storage.test/media-test/{$key}?X-Amz-Expires={$ttlSeconds}&name=".rawurlencode($downloadName);
+        $inline = $inlineContentType === null ? '' : '&inline='.rawurlencode($inlineContentType);
+
+        return "http://storage.test/media-test/{$key}?X-Amz-Expires={$ttlSeconds}&name=".rawurlencode($downloadName).$inline;
     }
 
     public function head(string $key): ?array

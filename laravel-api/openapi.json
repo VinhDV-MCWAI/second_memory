@@ -2849,7 +2849,7 @@
         "/admin/media/download-url/{id}": {
             "get": {
                 "operationId": "media.download-url",
-                "summary": "Presigned download URL of a finished file",
+                "summary": "Presigned download URL of a finished file; with `inline=1` a preview URL the browser shows itself (only when the file's `preview` is set)",
                 "tags": [
                     "Media"
                 ],
@@ -2860,6 +2860,14 @@
                         "required": true,
                         "schema": {
                             "type": "string"
+                        }
+                    },
+                    {
+                        "name": "inline",
+                        "in": "query",
+                        "description": "1: a preview link (shown in the browser) instead of a download",
+                        "schema": {
+                            "type": "boolean"
                         }
                     }
                 ],
@@ -2916,6 +2924,9 @@
                     },
                     "401": {
                         "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
                     },
                     "403": {
                         "description": "Forbidden",
@@ -6398,6 +6409,13 @@
                         "type": "integer",
                         "description": "0 uploading, 1 processing, 2 completed, 3 failed"
                     },
+                    "preview": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "description": "How the file can be shown without downloading it (`download-url/{id}?inline=1`); null: download only"
+                    },
                     "created_at": {
                         "type": [
                             "string",
@@ -6420,6 +6438,7 @@
                     "mime_type",
                     "size",
                     "upload_status",
+                    "preview",
                     "created_at",
                     "updated_at"
                 ],

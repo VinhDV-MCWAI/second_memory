@@ -56,6 +56,30 @@ final class MediaConst
 
     public const DOWNLOAD_URL_TTL_SECONDS = 300;
 
+    /** A preview link outlives a download link: a video keeps fetching ranges while it plays. */
+    public const PREVIEW_URL_TTL_SECONDS = 3600;
+
+    /** Text files are previewed in full, so only small ones. */
+    public const PREVIEW_TEXT_MAX_BYTES = 2 * 1024 * 1024;
+
+    private const TEXT = 'text/plain; charset=utf-8';
+
+    /**
+     * Previewable extensions => content type served (PreviewKind). No HTML, SVG or XML: they can run
+     * script on the admin's origin. Source code and data files are shown as plain text.
+     */
+    public const PREVIEW_CONTENT_TYPES = [
+        'jpg' => 'image/jpeg', 'jpeg' => 'image/jpeg', 'png' => 'image/png', 'gif' => 'image/gif',
+        'webp' => 'image/webp', 'avif' => 'image/avif', 'bmp' => 'image/bmp',
+        'pdf' => 'application/pdf',
+        'mp4' => 'video/mp4', 'm4v' => 'video/mp4', 'webm' => 'video/webm', 'ogv' => 'video/ogg',
+        'mp3' => 'audio/mpeg', 'm4a' => 'audio/mp4', 'wav' => 'audio/wav', 'ogg' => 'audio/ogg', 'oga' => 'audio/ogg', 'flac' => 'audio/flac',
+        'txt' => self::TEXT, 'md' => self::TEXT, 'csv' => self::TEXT, 'tsv' => self::TEXT, 'log' => self::TEXT,
+        'json' => self::TEXT, 'yml' => self::TEXT, 'yaml' => self::TEXT, 'ini' => self::TEXT, 'env' => self::TEXT,
+        'sql' => self::TEXT, 'js' => self::TEXT, 'ts' => self::TEXT, 'py' => self::TEXT, 'java' => self::TEXT,
+        'go' => self::TEXT, 'rs' => self::TEXT, 'css' => self::TEXT,
+    ];
+
     /** Files a browser or server could run; refused by extension, case-insensitive. */
     public const BLOCKED_EXTENSIONS = ['exe', 'msi', 'bat', 'cmd', 'com', 'scr', 'ps1', 'sh', 'php', 'phtml', 'phar'];
 

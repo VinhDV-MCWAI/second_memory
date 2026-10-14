@@ -7,6 +7,7 @@ namespace App\Services\Media;
 use App\Constants\MediaConst;
 use App\Constants\Messages;
 use App\Enums\AuditEvent;
+use App\Enums\PreviewKind;
 use App\Enums\UploadStatus;
 use App\Models\Media\MediaMgmt;
 use App\Repositories\Media\MediaRepository;
@@ -158,16 +159,21 @@ final class MediaService
     /**
      * @return array{url: string, expires_at: string}
      */
-    public function downloadUrl(int $id): array
+    public function downloadUrl(int $id, bool $inline = false): array
     {
         $file = $this->liveFile($id);
         if ($file->upload_status !== UploadStatus::COMPLETED) {
             throw ValidationException::withMessages(['id' => Messages::E0034]);
         }
+        if ($inline && PreviewKind::forFile($file->extension, $file->size) === null) {
+            throw ValidationException::withMessages(['inline' => Messages::E0039]);
+        }
+        $ttl = $inline ? MediaConst::PREVIEW_URL_TTL_SECONDS : MediaConst::DOWNLOAD_URL_TTL_SECONDS;
+        $contentType = $inline ? PreviewKind::contentType($file->extension) : null;
 
         return [
-            'url' => $this->storage->presignedGetUrl((string) $file->minio_object_key, $file->original_name, MediaConst::DOWNLOAD_URL_TTL_SECONDS),
-            'expires_at' => now()->addSeconds(MediaConst::DOWNLOAD_URL_TTL_SECONDS)->toIso8601String(),
+            'url' => $this->storage->presignedGetUrl((string) $file->minio_object_key, $file->original_name, $ttl, $contentType),
+            'expires_at' => now()->addSeconds($ttl)->toIso8601String(),
         ];
     }
 

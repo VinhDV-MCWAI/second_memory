@@ -96,6 +96,8 @@ class Messages
 
     const E0038 = 'The uploaded parts could not be joined into one file';
 
+    const E0039 = 'This file type cannot be previewed';
+
     /**
      * Errors http messages
      */

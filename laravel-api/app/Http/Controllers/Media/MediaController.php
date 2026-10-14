@@ -7,6 +7,7 @@ namespace App\Http\Controllers\Media;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Media\CreateUploadRequest;
 use App\Http\Requests\Media\DeleteMediaRequest;
+use App\Http\Requests\Media\DownloadUrlRequest;
 use App\Http\Requests\Media\ListMediaRequest;
 use App\Http\Requests\Media\StoreFolderRequest;
 use App\Http\Requests\Media\UpdateMediaRequest;
@@ -60,13 +61,13 @@ class MediaController extends Controller
     }
 
     /**
-     * Presigned download URL of a finished file
+     * Presigned download URL of a finished file; with `inline=1` a preview URL the browser shows itself (only when the file's `preview` is set)
      *
      * @return array{url: string, expires_at: string}
      */
-    public function downloadUrl(string $id): array
+    public function downloadUrl(DownloadUrlRequest $request, string $id): array
     {
-        return $this->media->downloadUrl((int) $id);
+        return $this->media->downloadUrl((int) $id, (bool) $request->validated('inline', false));
     }
 
     /**

@@ -37,13 +37,17 @@ class ObjectStorage
         return (string) $this->publicClient()->createPresignedRequest($command, "+{$ttlSeconds} seconds")->getUri();
     }
 
-    public function presignedGetUrl(string $key, string $downloadName, int $ttlSeconds): string
+    /**
+     * A download, or with $inlineContentType a preview the browser shows itself, served with that type.
+     */
+    public function presignedGetUrl(string $key, string $downloadName, int $ttlSeconds, ?string $inlineContentType = null): string
     {
-        $command = $this->publicClient()->getCommand('GetObject', [
+        $command = $this->publicClient()->getCommand('GetObject', array_filter([
             'Bucket' => $this->bucket(),
             'Key' => $key,
-            'ResponseContentDisposition' => $this->attachment($downloadName),
-        ]);
+            'ResponseContentDisposition' => $this->disposition($inlineContentType === null ? 'attachment' : 'inline', $downloadName),
+            'ResponseContentType' => $inlineContentType,
+        ]));
 
         return (string) $this->publicClient()->createPresignedRequest($command, "+{$ttlSeconds} seconds")->getUri();
     }
@@ -181,10 +185,10 @@ class ObjectStorage
     }
 
     /** RFC 6266: an ASCII fallback plus the exact UTF-8 name. */
-    private function attachment(string $name): string
+    private function disposition(string $type, string $name): string
     {
         $fallback = str_replace(['"', '\\'], '', Str::ascii($name));
 
-        return sprintf('attachment; filename="%s"; filename*=UTF-8\'\'%s', $fallback, rawurlencode($name));
+        return sprintf('%s; filename="%s"; filename*=UTF-8\'\'%s', $type, $fallback, rawurlencode($name));
     }
 }
