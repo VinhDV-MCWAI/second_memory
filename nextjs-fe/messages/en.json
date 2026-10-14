@@ -656,6 +656,12 @@
         "cancelled": "Cancelled"
       }
     },
+    "preview": {
+      "open": "Preview",
+      "download": "Download",
+      "loading": "Loading…",
+      "failed": "The file could not be shown. Try downloading it."
+    },
     "unfinished": {
       "title": "Unfinished uploads",
       "hint": "These uploads stopped midway (page reloaded or connection lost). Choose the same file again (or upload it again into the same folder) to send only the missing part. Unfinished uploads are removed after 24 hours.",

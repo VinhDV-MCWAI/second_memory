@@ -7,6 +7,7 @@ import { z } from 'zod';
 import {
   ChevronRight,
   Download,
+  Eye,
   File as FileIcon,
   Folder,
   FolderInput,
@@ -36,6 +37,7 @@ import { useUploads, type UploadState } from '../hooks/use-uploads';
 import { discardUpload } from '../lib/uploader';
 import { crumbsOf, formatBytes, parentOf, ROOT } from '../lib/media-paths';
 import { MediaFieldDialog } from './media-field-dialog';
+import { PreviewDialog } from './preview-dialog';
 import { UnfinishedUploads } from './unfinished-uploads';
 import { UploadPanel } from './upload-panel';
 
@@ -69,6 +71,7 @@ export function MediaBrowser() {
   const [selectedIds, setSelectedIds] = useState<number[]>([]);
   const [dialog, setDialog] = useState<DialogState>(null);
   const [deleteIds, setDeleteIds] = useState<number[]>([]);
+  const [previewing, setPreviewing] = useState<MediaItem | null>(null);
   const [dragging, setDragging] = useState(false);
   const fileInput = useRef<HTMLInputElement>(null);
 
@@ -94,6 +97,7 @@ export function MediaBrowser() {
     .map((item) => item.uploadId);
   const unfinished = (unfinishedQuery.data ?? []).filter((upload) => !running.includes(upload.id));
   const canUpdate = can('media.update');
+  const canPreview = (item: MediaItem) => item.preview !== null && can('media.download-url');
   const canDelete = can('media.delete');
 
   const nameSchema = z
@@ -187,7 +191,16 @@ export function MediaBrowser() {
       label: t('name'),
       sortable: true,
       render: (item) =>
-        item.is_file ? (
+        item.is_file && canPreview(item) ? (
+          <button
+            type="button"
+            className="flex items-center gap-2 hover:underline"
+            onClick={() => setPreviewing(item)}
+          >
+            <FileIcon className="h-4 w-4 shrink-0 text-slate-400" aria-hidden />
+            <span className="truncate">{item.name}</span>
+          </button>
+        ) : item.is_file ? (
           <span className="flex items-center gap-2">
             <FileIcon className="h-4 w-4 shrink-0 text-slate-400" aria-hidden />
             <span className="truncate">{item.name}</span>
@@ -225,9 +238,16 @@ export function MediaBrowser() {
           ) : (
             item.is_file &&
             can('media.download-url') && (
-              <IconButton label={t('download')} onClick={() => download(item)}>
-                <Download className="h-4 w-4" />
-              </IconButton>
+              <>
+                {canPreview(item) && (
+                  <IconButton label={t('preview.open')} onClick={() => setPreviewing(item)}>
+                    <Eye className="h-4 w-4" />
+                  </IconButton>
+                )}
+                <IconButton label={t('download')} onClick={() => download(item)}>
+                  <Download className="h-4 w-4" />
+                </IconButton>
+              </>
             )
           )}
           {canUpdate && (
@@ -417,6 +437,11 @@ export function MediaBrowser() {
             ? actions.update.mutateAsync({ id: dialog.item.id, folder: value })
             : Promise.resolve()
         }
+      />
+      <PreviewDialog
+        item={previewing}
+        onClose={() => setPreviewing(null)}
+        onDownload={(item) => void download(item)}
       />
       <ConfirmDialog
         open={deleteIds.length > 0}

@@ -110,3 +110,54 @@ test('owner resumes a large upload after the page is reloaded', async ({ page })
   await page.getByRole('alertdialog').getByRole('button', { name: 'Delete' }).click();
   await expect(page.getByRole('button', { name: resumeFolder })).toBeHidden();
 });
+
+// Preview (MEDIA-06): an image renders in the dialog and a text file shows as text, both straight
+// from MinIO through nginx with the type the server chose.
+test('owner previews an image and a text file', async ({ page }) => {
+  const dir = mkdtempSync(join(tmpdir(), 'e2e-preview-'));
+  const image = join(dir, 'dot.png');
+  const text = join(dir, 'readme.md');
+  // 1×1 red PNG
+  writeFileSync(
+    image,
+    Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8DwHwAFBQIAX8jx0gAAAABJRU5ErkJggg==', 'base64'),
+  );
+  writeFileSync(text, '# Preview from e2e <b>not bold</b>');
+  const previewFolder = `${folder} preview`;
+
+  await page.goto('/login');
+  await page.getByLabel('Username').fill(E2E_USER);
+  await page.getByLabel('Password').fill(E2E_PASSWORD);
+  await page.getByRole('button', { name: 'Sign In' }).click();
+  await expect(page).toHaveURL(/\/admin$/);
+  await page.goto('/admin/files');
+  await page.getByRole('button', { name: 'New folder' }).click();
+  await page.getByRole('dialog').getByLabel('Folder name').fill(previewFolder);
+  await page.getByRole('dialog').getByRole('button', { name: 'Create' }).click();
+  await page.getByRole('button', { name: previewFolder }).click();
+  await expect(page).toHaveURL(/folder=/);
+
+  await page.getByTestId('media-file-input').setInputFiles([image, text]);
+  await page.getByRole('button', { name: 'dot.png' }).click();
+  const shown = page.getByRole('dialog').getByRole('img', { name: 'dot.png' });
+  await expect(shown).toBeVisible();
+  expect(await shown.evaluate((img: HTMLImageElement) => img.naturalWidth)).toBe(1);
+  // Read by the browser: the signed URL is for the host it uses (the runner's container cannot reach it)
+  const headers = await shown.evaluate(async (img: HTMLImageElement) => {
+    const response = await fetch(img.src);
+    return Object.fromEntries(response.headers.entries());
+  });
+  expect(headers['content-type']).toBe('image/png');
+  expect(headers['x-content-type-options']).toContain('nosniff'); // MinIO and nginx both send it
+  expect(headers['content-disposition']).toContain('inline');
+  await page.keyboard.press('Escape');
+
+  await page.getByRole('row').filter({ hasText: 'readme.md' }).getByRole('button', { name: 'Preview' }).click();
+  await expect(page.getByRole('dialog').locator('pre')).toHaveText('# Preview from e2e <b>not bold</b>');
+  await page.keyboard.press('Escape');
+
+  await page.getByRole('button', { name: 'Files', exact: true }).first().click();
+  await page.getByRole('row').filter({ hasText: previewFolder }).getByRole('button', { name: 'Delete' }).click();
+  await page.getByRole('alertdialog').getByRole('button', { name: 'Delete' }).click();
+  await expect(page.getByRole('button', { name: previewFolder })).toBeHidden();
+});

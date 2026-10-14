@@ -32,7 +32,13 @@ const ALL = [
   'media.update',
   'media.delete',
 ];
-const item = (id: number, name: string, isFile: boolean, path = `/${name}`) => ({
+const item = (
+  id: number,
+  name: string,
+  isFile: boolean,
+  path = `/${name}`,
+  preview: string | null = null,
+) => ({
   id,
   is_file: isFile,
   name,
@@ -41,6 +47,7 @@ const item = (id: number, name: string, isFile: boolean, path = `/${name}`) => (
   mime_type: null,
   size: isFile ? 2048 : null,
   upload_status: 2,
+  preview,
   created_at: null,
   updated_at: null,
 });
@@ -177,5 +184,43 @@ describe('MediaBrowser', () => {
     fireEvent.click(await screen.findByRole('button', { name: 'delete' }));
     await waitFor(() => expect(discardUpload).toHaveBeenCalledWith(7));
     expect(notification.success).toHaveBeenCalledWith('unfinished.discarded');
+  });
+
+  it('previews an image and a text file without downloading them', async () => {
+    const inline = vi.fn();
+    server.use(
+      http.get(apiUrl('/admin/media/list'), () =>
+        HttpResponse.json(
+          page([
+            item(4, 'photo.jpg', true, '/photo.jpg', 'image'),
+            item(5, 'notes.md', true, '/notes.md', 'text'),
+            item(6, 'setup.zip', true),
+          ]),
+        ),
+      ),
+      http.get(apiUrl('/admin/media/download-url/:id'), ({ params, request }) => {
+        inline(new URL(request.url).searchParams.get('inline'));
+        return HttpResponse.json(
+          envelope({ url: `http://storage.test/file-${String(params.id)}`, expires_at: '' }),
+        );
+      }),
+      http.get('http://storage.test/file-5', () => HttpResponse.text('# Hello <script>x</script>')),
+    );
+    renderBrowser();
+    await screen.findByText('setup.zip');
+
+    // Only files with a preview get the button
+    expect(screen.getAllByRole('button', { name: 'preview.open' })).toHaveLength(2);
+
+    fireEvent.click(screen.getByRole('button', { name: 'photo.jpg' }));
+    const image = await screen.findByRole('img', { name: 'photo.jpg' });
+    expect(image.getAttribute('src')).toBe('http://storage.test/file-4');
+    expect(inline).toHaveBeenCalledWith('1');
+    fireEvent.keyDown(document.activeElement ?? document.body, { key: 'Escape' });
+    await waitFor(() => expect(screen.queryByRole('img', { name: 'photo.jpg' })).toBeNull());
+
+    fireEvent.click(screen.getAllByRole('button', { name: 'preview.open' })[1]);
+    // Shown as text: the markup is not interpreted
+    await screen.findByText('# Hello <script>x</script>');
   });
 });

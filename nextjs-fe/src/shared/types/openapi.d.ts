@@ -434,7 +434,7 @@ export interface paths {
       path?: never;
       cookie?: never;
     };
-    /** Presigned download URL of a finished file */
+    /** Presigned download URL of a finished file; with `inline=1` a preview URL the browser shows itself (only when the file's `preview` is set) */
     get: operations['media.download-url'];
     put?: never;
     post?: never;
@@ -1106,6 +1106,8 @@ export interface components {
       size: number | null;
       /** @description 0 uploading, 1 processing, 2 completed, 3 failed */
       upload_status: number;
+      /** @description How the file can be shown without downloading it (`download-url/{id}?inline=1`); null: download only */
+      preview: string | null;
       created_at: string | null;
       updated_at: string | null;
     };
@@ -2622,7 +2624,10 @@ export interface operations {
   };
   'media.download-url': {
     parameters: {
-      query?: never;
+      query?: {
+        /** @description 1: a preview link (shown in the browser) instead of a download */
+        inline?: boolean;
+      };
       header?: never;
       path: {
         id: string;
@@ -2668,6 +2673,7 @@ export interface operations {
           'application/json': components['schemas']['ApiError'];
         };
       };
+      422: components['responses']['ValidationException'];
     };
   };
   'media.update': {

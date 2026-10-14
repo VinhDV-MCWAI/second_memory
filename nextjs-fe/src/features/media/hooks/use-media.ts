@@ -70,3 +70,22 @@ export function useUnfinishedUploads(enabled: boolean) {
     enabled,
   });
 }
+
+/** A preview link lives an hour (MediaConst::PREVIEW_URL_TTL_SECONDS); ask again a little before. */
+const PREVIEW_STALE_MS = 50 * 60 * 1000;
+
+/**
+ * Link that shows a file in the browser (`download-url/{id}?inline=1`). Keyed apart from the
+ * listing, so refreshing the folder does not reload a video that is playing.
+ */
+export function usePreviewUrl(id: number | null) {
+  const endpoint = `${BASE}/download-url/${id}`;
+  return useQuery({
+    queryKey: queryKeys.query(endpoint, { inline: 1 }),
+    queryFn: async () =>
+      (await apiClient.get<{ url: string }>(endpoint, { params: { inline: 1 } })).data.url,
+    enabled: id !== null,
+    staleTime: PREVIEW_STALE_MS,
+    gcTime: PREVIEW_STALE_MS,
+  });
+}
