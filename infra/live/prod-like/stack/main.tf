@@ -1,4 +1,4 @@
-# prod-like, layer 1 of 2 (stack; storage follows in P4-06). Apply with `make tf-apply env=prod-like`.
+# prod-like: the local demo (CD-01), deployed by `make cd` (ci/deploy.sh) or `make tf-apply env=prod-like`.
 # Local state (ADR-0011): terraform.tfstate here, git-ignored, holds secrets.
 
 terraform {
@@ -43,6 +43,8 @@ module "stack" {
   proxy_port = var.proxy_port
   app_url    = var.app_url
   config_dir = "${path.root}/../../../../docker"
+  # Local demo: log in with root / 12345678
+  seed_root = true
 }
 
 output "url" {

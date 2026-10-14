@@ -4,11 +4,14 @@ output "url" {
 }
 
 output "network" {
-  description = "Docker network of the environment (the storage layer joins it, P4-06)."
+  description = "Docker network of the environment."
   value       = docker_network.this.name
 }
 
 output "containers" {
   description = "Container names."
-  value       = [for c in [docker_container.postgres, docker_container.redis, docker_container.php, docker_container.nextjs, docker_container.docs, docker_container.proxy] : c.name]
+  value = concat(
+    [for c in [docker_container.postgres, docker_container.redis, docker_container.minio, docker_container.php, docker_container.nextjs, docker_container.docs, docker_container.proxy] : c.name],
+    [for c in docker_container.worker : c.name],
+  )
 }

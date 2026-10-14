@@ -14,7 +14,7 @@ variable "app_env" {
 }
 
 variable "image_tag" {
-  description = "Tag of the sm-api / sm-nextjs-fe / sm-nextjs-docs images built by infra/build-images.sh (short git SHA)."
+  description = "Tag of the sm-api / sm-nextjs-fe / sm-nextjs-docs / sm-minio images built by ci/build.sh (short git SHA)."
   type        = string
 }
 
@@ -33,16 +33,33 @@ variable "config_dir" {
   type        = string
 }
 
+variable "reverb_app_key" {
+  description = "Reverb app key. Public (browsers send it), baked into the admin image: keep it equal to NEXT_PUBLIC_REVERB_APP_KEY in docker/nextjs/Dockerfile."
+  type        = string
+  default     = "second-memory"
+}
+
+variable "seed_root" {
+  description = "Create the root owner (root / 12345678, RootAccountSeeder) so a local demo can log in. Never for a real production."
+  type        = bool
+  default     = false
+}
+
 variable "memory_mb" {
-  description = "Memory limit per container in MB (ADR-0011 budget: ≤ 1.5 GB per environment)."
+  description = "Memory limit per container in MB (ADR-0011 budget ≤ 1.5 GB; ~2 GB since MinIO and the workers joined, CD-01)."
   type        = map(number)
   default = {
-    postgres = 384
-    redis    = 96
-    php      = 384
-    migrate  = 256
-    nextjs   = 256
-    docs     = 192
-    proxy    = 64
+    postgres   = 384
+    redis      = 96
+    php        = 384
+    migrate    = 256
+    nextjs     = 256
+    docs       = 192
+    proxy      = 64
+    minio      = 256
+    minio_init = 64
+    queue      = 192
+    scheduler  = 128
+    reverb     = 128
   }
 }

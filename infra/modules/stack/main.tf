@@ -1,5 +1,5 @@
 # One Terraform-managed environment on the local Docker engine (ADR-0011): network, volumes and the app
-# containers. Images are built outside Terraform (infra/build-images.sh); configs are read from docker/,
+# containers. Images are built outside Terraform (ci/build.sh); configs are read from docker/,
 # the same files Compose mounts, and uploaded into the containers.
 
 locals {
@@ -15,7 +15,14 @@ locals {
     php      = "${local.name}-php"
     nextjs   = "${local.name}-nextjs"
     docs     = "${local.name}-nextjs-docs"
+    minio    = "${local.name}-minio"
+    reverb   = "${local.name}-reverb"
   }
+
+  # Buckets and the backend's MinIO user, as in docker/.env (ADR-0014)
+  bucket_official = "media-official"
+  bucket_temp     = "media-temp"
+  minio_iam_user  = "backend-user"
 
   # Same variable names as Compose / .env.example; only the values differ
   laravel_env = [
@@ -38,11 +45,47 @@ locals {
     "REDIS_PASSWORD=${random_password.redis.result}",
     "SESSION_DRIVER=redis",
     "CACHE_STORE=redis",
-    "QUEUE_CONNECTION=sync",
+    # Background jobs and live notifications (ADR-0014): queue on Redis, Reverb in its own container
+    "QUEUE_CONNECTION=redis",
+    "BROADCAST_CONNECTION=reverb",
+    "REVERB_APP_ID=second-memory",
+    "REVERB_APP_KEY=${var.reverb_app_key}",
+    "REVERB_APP_SECRET=${random_password.reverb.result}",
+    "REVERB_HOST=${local.hosts.reverb}",
+    "REVERB_PORT=8080",
+    "REVERB_SCHEME=http",
+    "REVERB_SERVER_HOST=0.0.0.0",
+    "REVERB_SERVER_PORT=8080",
+    # Files (ADR-0014): the API talks to MinIO on the network and signs browser URLs for the proxy's host
+    "AWS_ACCESS_KEY_ID=${local.minio_iam_user}",
+    "AWS_SECRET_ACCESS_KEY=${random_password.minio_iam.result}",
+    "AWS_DEFAULT_REGION=us-east-1",
+    "AWS_BUCKET=${local.bucket_official}",
+    "AWS_BUCKET_OFFICIAL=${local.bucket_official}",
+    "AWS_BUCKET_TEMP=${local.bucket_temp}",
+    "AWS_ENDPOINT=http://${local.hosts.minio}:9000",
+    "AWS_PUBLIC_ENDPOINT=${var.app_url}",
+    "AWS_USE_PATH_STYLE_ENDPOINT=true",
   ]
 
+  # queue:work, schedule:work and the Reverb server run the API image with another command (dev: ml-queue …)
+  workers = {
+    queue = {
+      command = ["php", "artisan", "queue:work", "redis", "--sleep=1", "--timeout=900", "--max-time=3600"]
+      health  = ["CMD-SHELL", "grep -q artisan /proc/1/cmdline"]
+    }
+    scheduler = {
+      command = ["php", "artisan", "schedule:work"]
+      health  = ["CMD-SHELL", "grep -q artisan /proc/1/cmdline"]
+    }
+    reverb = {
+      command = ["php", "artisan", "reverb:start", "--host=0.0.0.0", "--port=8080"]
+      health  = ["CMD", "php", "-r", "exit(@fsockopen('127.0.0.1', 8080) ? 0 : 1);"]
+    }
+  }
+
   # Compose's proxy config with the dev upstream names (ml-php:9000 …) swapped for this environment's
-  nginx_site = replace(file("${var.config_dir}/nginx/default.conf"), "/\\bml-(php|nextjs-docs|nextjs):/", "${local.name}-$1:")
+  nginx_site = replace(file("${var.config_dir}/nginx/default.conf"), "/\\bml-(php|nextjs-docs|nextjs|reverb|minio):/", "${local.name}-$1:")
 }
 
 # Secrets are generated and kept in state until SOPS + age replace them (P4-09)
@@ -52,6 +95,21 @@ resource "random_password" "db" {
 }
 
 resource "random_password" "redis" {
+  length  = 32
+  special = false
+}
+
+resource "random_password" "reverb" {
+  length  = 32
+  special = false
+}
+
+resource "random_password" "minio_root" {
+  length  = 32
+  special = false
+}
+
+resource "random_password" "minio_iam" {
   length  = 32
   special = false
 }
@@ -73,7 +131,7 @@ resource "docker_network" "this" {
 }
 
 resource "docker_volume" "data" {
-  for_each = toset(["postgres", "redis"])
+  for_each = toset(["postgres", "redis", "minio"])
   name     = "${local.name}-${each.key}"
 
   dynamic "labels" {
@@ -90,6 +148,8 @@ resource "docker_image" "upstream" {
     postgres = "postgres:16.15-alpine3.24"
     redis    = "redis:7.4.11-alpine3.21"
     proxy    = "nginxinc/nginx-unprivileged:1.25.5-alpine3.19"
+    # Ships `mc` for docker/minio/create-buckets.sh; the server runs sm-minio (same base, ci/build.sh)
+    minio = "pgsty/minio:RELEASE.2026-08-04T00-00-00Z"
   }
   name         = each.value
   keep_locally = true
@@ -198,13 +258,18 @@ resource "docker_container" "redis" {
   }
 }
 
-# Runs the migrations once per API image / config change; php starts only after it exits 0
+# Runs once per API image / config change; php starts only after it exits 0. Migrations, then a
+# permission row per admin route (ADR-0013), then (seed_root) the root owner so the environment can be
+# logged into. Every step is idempotent.
 resource "docker_container" "migrate" {
-  name     = "${local.name}-migrate"
-  image    = "sm-api:${var.image_tag}"
-  memory   = var.memory_mb.migrate
-  env      = local.laravel_env
-  command  = ["php", "artisan", "migrate", "--force", "--no-interaction"]
+  name   = "${local.name}-migrate"
+  image  = "sm-api:${var.image_tag}"
+  memory = var.memory_mb.migrate
+  env    = local.laravel_env
+  command = ["sh", "-c", join(" && ", concat(
+    ["php artisan migrate --force --no-interaction", "php artisan permission:sync-routes"],
+    var.seed_root ? ["php artisan db:seed --class=RootAccountSeeder --force --no-interaction"] : [],
+  ))]
   must_run = false
   attach   = true
   logs     = true
@@ -229,6 +294,134 @@ resource "docker_container" "migrate" {
       error_message = "php artisan migrate failed: docker logs ${local.name}-migrate"
     }
   }
+}
+
+resource "docker_container" "minio" {
+  name    = local.hosts.minio
+  image   = "sm-minio:${var.image_tag}"
+  restart = "unless-stopped"
+  memory  = var.memory_mb.minio
+
+  env = [
+    "MINIO_ROOT_USER=sm-admin",
+    "MINIO_ROOT_PASSWORD=${random_password.minio_root.result}",
+  ]
+  # No console port: the environment only publishes the proxy
+  command = ["server", "/data"]
+
+  volumes {
+    volume_name    = docker_volume.data["minio"].name
+    container_path = "/data"
+  }
+
+  networks_advanced {
+    name = docker_network.this.id
+  }
+
+  healthcheck {
+    test         = ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+    interval     = "10s"
+    timeout      = "5s"
+    retries      = 5
+    start_period = "10s"
+  }
+  wait         = true
+  wait_timeout = 120
+
+  dynamic "labels" {
+    for_each = local.labels
+    content {
+      label = labels.key
+      value = labels.value
+    }
+  }
+}
+
+# Buckets, lifecycle rules and the backend user, with Compose's script (idempotent)
+resource "docker_container" "minio_init" {
+  name       = "${local.name}-minio-init"
+  image      = docker_image.upstream["minio"].image_id
+  user       = "1000:1000"
+  memory     = var.memory_mb.minio_init
+  entrypoint = ["/bin/sh", "/minio/create-buckets.sh"]
+  must_run   = false
+  attach     = true
+  logs       = true
+
+  env = [
+    "MINIO_ENDPOINT=http://${local.hosts.minio}:9000",
+    "MINIO_ROOT_USER=sm-admin",
+    "MINIO_ROOT_PASSWORD=${random_password.minio_root.result}",
+    "MINIO_BUCKET_OFFICIAL=${local.bucket_official}",
+    "MINIO_BUCKET_TEMP=${local.bucket_temp}",
+    "MINIO_IAM_USER=${local.minio_iam_user}",
+    "MINIO_IAM_PASSWORD=${random_password.minio_iam.result}",
+    # mc keeps its config under $HOME/.mc; the unprivileged user has no home
+    "HOME=/tmp",
+  ]
+
+  dynamic "upload" {
+    for_each = toset(["create-buckets.sh", "ilm-history.json", "ilm-temp.json"])
+    content {
+      file    = "/minio/${upload.value}"
+      content = file("${var.config_dir}/minio/${upload.value}")
+    }
+  }
+
+  networks_advanced {
+    name = docker_network.this.id
+  }
+
+  dynamic "labels" {
+    for_each = local.labels
+    content {
+      label = labels.key
+      value = labels.value
+    }
+  }
+
+  depends_on = [docker_container.minio]
+
+  lifecycle {
+    postcondition {
+      condition     = self.exit_code == 0
+      error_message = "MinIO setup failed: docker logs ${local.name}-minio-init"
+    }
+  }
+}
+
+resource "docker_container" "worker" {
+  for_each = local.workers
+
+  name    = "${local.name}-${each.key}"
+  image   = "sm-api:${var.image_tag}"
+  restart = "unless-stopped"
+  memory  = var.memory_mb[each.key]
+  env     = local.laravel_env
+  command = each.value.command
+
+  networks_advanced {
+    name = docker_network.this.id
+  }
+
+  healthcheck {
+    test         = each.value.health
+    interval     = "15s"
+    timeout      = "5s"
+    retries      = 3
+    start_period = "10s"
+  }
+  wait = true
+
+  dynamic "labels" {
+    for_each = local.labels
+    content {
+      label = labels.key
+      value = labels.value
+    }
+  }
+
+  depends_on = [docker_container.migrate, docker_container.redis, docker_container.minio_init]
 }
 
 resource "docker_container" "php" {
@@ -259,7 +452,7 @@ resource "docker_container" "php" {
     }
   }
 
-  depends_on = [docker_container.migrate, docker_container.redis]
+  depends_on = [docker_container.migrate, docker_container.redis, docker_container.minio_init]
 }
 
 resource "docker_container" "nextjs" {
@@ -370,7 +563,7 @@ resource "docker_container" "proxy" {
     }
   }
 
-  depends_on = [docker_container.php, docker_container.nextjs, docker_container.docs]
+  depends_on = [docker_container.php, docker_container.nextjs, docker_container.docs, docker_container.worker, docker_container.minio]
 
   lifecycle {
     precondition {
