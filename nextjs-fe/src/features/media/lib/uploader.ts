@@ -118,6 +118,8 @@ export async function uploadInParts(
   onStarted?.(upload.id);
 
   const urls = new Map<number, string>();
+  // One part failed for good: the other workers stop too, so nothing more goes up in the background
+  let stopped = false;
   const report = () =>
     onProgress?.(
       [...loaded.values()].reduce((sum, bytes) => sum + bytes, 0),
@@ -144,6 +146,8 @@ export async function uploadInParts(
     const body = file.slice(start, start + partBytes(partNumber, upload.part_size, file.size));
     let refresh = false;
     for (let attempt = 1; ; attempt++) {
+      // Also checked after the pause before a retry
+      if (stopped) throw new UploadError('Upload stopped');
       try {
         const etag = await put(
           await urlFor(partNumber, refresh),
@@ -179,7 +183,14 @@ export async function uploadInParts(
   try {
     const queue = range(1, upload.part_count).filter((n) => !etags.has(n));
     const worker = async () => {
-      for (let next = queue.shift(); next !== undefined; next = queue.shift()) await sendPart(next);
+      try {
+        for (let next = queue.shift(); next !== undefined && !stopped; next = queue.shift()) {
+          await sendPart(next);
+        }
+      } catch (error) {
+        stopped = true;
+        throw error;
+      }
     };
     await Promise.all(
       Array.from({ length: Math.min(UPLOAD.CONCURRENCY, upload.part_count) }, worker),

@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest';
-import { http, HttpResponse } from 'msw';
+import { delay, http, HttpResponse } from 'msw';
 import { apiUrl, envelope, server } from '@/test/server';
 import { uploadInParts, uploadSmall, UploadError } from './uploader';
 
@@ -113,6 +113,30 @@ describe('uploadInParts', () => {
       UploadError,
     );
     expect(abort).not.toHaveBeenCalled();
+  });
+
+  it('starts no new part once one has failed', async () => {
+    const sent: string[] = [];
+    server.use(
+      http.post(media('/multipart/start'), () =>
+        HttpResponse.json(envelope({ id: 5, part_size: 1, part_count: 8 })),
+      ),
+      partUrls(),
+      http.put(`${STORAGE}/big`, async ({ request }) => {
+        const part = new URL(request.url).searchParams.get('partNumber') ?? '';
+        sent.push(part);
+        if (part === '1') return new HttpResponse(null, { status: 400 });
+        await delay(50);
+        return new HttpResponse(null, { headers: { ETag: `"etag-${part}"` } });
+      }),
+    );
+
+    await expect(uploadInParts(new File(['01234567'], 'big.bin'))).rejects.toBeInstanceOf(
+      UploadError,
+    );
+    await delay(200);
+    // Only the 4 parts already on their way; parts 5-8 never start
+    expect(sent.sort()).toEqual(['1', '2', '3', '4']);
   });
 
   it('drops the parts on the server when the upload is cancelled', async () => {
