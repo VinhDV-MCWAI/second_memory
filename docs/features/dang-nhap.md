@@ -39,6 +39,7 @@ Tài khoản dev: chủ `root` / `12345678` và chỉ xem `viewer` / `12345678` 
 | Khóa tạm khi sai nhiều lần | Đếm theo tên đăng nhập + IP; quá số lần thì trả 429 kèm `Retry-After`. Đăng nhập đúng thì xóa bộ đếm |
 | Đổi mã phiên sau khi đăng nhập | Chống chiếm phiên cũ |
 | Đổi mật khẩu thì đăng xuất mọi thiết bị khác | Đổi mật khẩu của chính mình: các thiết bị khác bị đăng xuất ở request kế tiếp (401), thiết bị đang dùng vẫn giữ phiên. Chủ đổi mật khẩu của người khác: mọi phiên của người đó bị đăng xuất. Lưu form mà để trống mật khẩu thì không ai bị đăng xuất. Cách làm: phiên giữ một mã của mật khẩu và so lại mỗi request (`AuthenticateSession` của Sanctum) |
+| Giao diện tự cập nhật quyền | Quyền (menu, nút) lấy lúc mở trang, rồi tự lấy lại khi quay lại tab và khi một API trả 403. Lấy lại tối đa mỗi 5 giây một lần. Chủ đổi vai trò của ai thì người đó thấy menu và nút đổi theo mà không phải tải lại trang. API luôn chặn đúng theo quyền mới ngay từ request kế tiếp |
 | Ghi nhật ký | Đăng nhập, đăng xuất, đăng nhập sai đều có một dòng trong [nhật ký thay đổi](nhat-ky-thay-doi.md). Dòng đăng nhập sai chỉ ghi tên đã gõ, không ghi mã tài khoản |
 | Chỉ đi qua cổng 81 | Cookie và CSRF chỉ đúng khi trình duyệt vào qua nginx `http://localhost:81` |
 
@@ -92,7 +93,7 @@ Ghi ngày 2026-10-13, **chưa làm**. Mục tiêu: đăng nhập chạy tốt d�
 |---|---|---|---|---|
 | 1 | **Màn hình "Phiên đăng nhập"**: xem đang đăng nhập ở thiết bị nào (trình duyệt, IP, lần dùng cuối), đăng xuất một thiết bị, đăng xuất mọi nơi khác | Hiện không xem được và không đá được phiên từ xa. Cả cách cũ lẫn cách mới đều thiếu | **A.** Giữ phiên trong Redis, thêm bảng `admin_sessions` (mã admin, mã phiên, trình duyệt, IP, lần dùng cuối). Ghi khi đăng nhập, xoá khi đăng xuất. Đá phiên thì xoá khoá Redis của phiên đó. **B.** Chuyển `SESSION_DRIVER=database`: bảng `sessions` có sẵn đủ cột, ít code nhất | A: thêm bảng và code, nhưng vẫn nhanh khi đông người dùng. B: mỗi request phải ghi DB một lần, ổn khi ít người, nặng khi nhiều. Nhắm tới nhiều người dùng thì chọn **A** |
 | 2 | ~~**Đổi mật khẩu thì đá mọi phiên khác**~~ **Đã làm 2026-10-14**, xem bảng Quy tắc ở trên | | | |
-| 3 | **Giao diện tự cập nhật quyền** | Quyền chỉ lấy một lần lúc mở trang. Đổi quyền thì API chặn đúng, nhưng nút và menu phải tải lại trang mới đổi theo | Gọi lại `credential/me` khi quay lại tab và khi gặp 403 | Thêm vài request nhỏ |
+| 3 | ~~**Giao diện tự cập nhật quyền**~~ **Đã làm 2026-10-14**, xem bảng Quy tắc ở trên | | | |
 | 4 | **Giới hạn đăng nhập theo IP** (ngoài giới hạn theo tên + IP đang có) | Một IP thử hàng loạt tên đăng nhập khác nhau thì hiện không bị chặn | Thêm một khoá `RateLimiter` chỉ theo IP, ngưỡng cao hơn | Nhiều người dùng chung một IP (văn phòng) có thể bị chặn nhầm nếu đặt ngưỡng thấp |
 | 5 | **"Ghi nhớ đăng nhập"** | Phiên hết sau 120 phút không dùng (`SESSION_LIFETIME`), có thể quá ngắn | Ô "Ghi nhớ" dùng `remember` của Laravel (cookie dài hạn riêng) | Cookie sống lâu thì lộ ra nguy hiểm hơn. Nên đi cùng mục 1 để còn đá phiên được |
 | 6 | **Cài đặt cookie khi chạy thật** | Chặn lộ phiên trên đường truyền và trong Redis | `SESSION_SECURE_COOKIE=true` (bắt buộc khi có HTTPS), cân nhắc `SESSION_ENCRYPT=true` | Mã hoá phiên tốn thêm chút CPU |

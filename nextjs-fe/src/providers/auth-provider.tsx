@@ -2,6 +2,7 @@
 
 import React, { useReducer, useEffect, useRef, useCallback, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
+import { isAxiosError } from 'axios';
 import { authService } from '@/shared/services/modules/auth.service';
 import { apiClient } from '@/shared/api/client';
 import { ADMIN_ROUTES } from '@/shared/config';
@@ -16,6 +17,9 @@ import {
   AUTH_CHANNEL_NAME,
 } from '@/shared/types';
 import { AuthContext } from './auth-context';
+
+/** Tab switches and bursts of 403s reload the permissions at most this often. */
+export const USER_REFRESH_MIN_INTERVAL_MS = 5_000;
 
 const initialState: AuthState = {
   user: null,
@@ -101,6 +105,39 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     });
     return () => apiClient.onUnauthorized(null);
   }, [handleLogoutSync, broadcast]);
+
+  // Permissions are loaded once per page; reload them when they may have changed (owner edited
+  // this admin's roles): on returning to the tab and on a 403. The API enforces them either way.
+  const lastRefreshRef = useRef(0);
+  const refreshUser = useCallback(async () => {
+    const now = Date.now();
+    if (now - lastRefreshRef.current < USER_REFRESH_MIN_INTERVAL_MS) return;
+    lastRefreshRef.current = now;
+
+    try {
+      dispatch({ type: 'SET_AUTHENTICATED', payload: await authService.getMe() });
+    } catch (error: unknown) {
+      if (isAxiosError(error) && error.response?.status === 401) {
+        handleLogoutSync();
+        broadcast({ type: 'LOGOUT', payload: { reason: 'session_expired' } });
+      }
+    }
+  }, [handleLogoutSync, broadcast]);
+
+  useEffect(() => {
+    if (!state.isAuthenticated) return;
+
+    const onVisibilityChange = () => {
+      if (document.visibilityState === 'visible') void refreshUser();
+    };
+    document.addEventListener('visibilitychange', onVisibilityChange);
+    apiClient.onForbidden(() => void refreshUser());
+
+    return () => {
+      document.removeEventListener('visibilitychange', onVisibilityChange);
+      apiClient.onForbidden(null);
+    };
+  }, [state.isAuthenticated, refreshUser]);
 
   const login = useCallback(
     async (credentials: LoginCredentials) => {

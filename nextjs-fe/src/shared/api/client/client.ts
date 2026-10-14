@@ -13,6 +13,7 @@ const AUTH_PATHS: string[] = Object.values(API_ENDPOINTS.AUTH);
 class ApiClient {
   private client: AxiosInstance;
   private unauthorizedHandler: (() => void) | null = null;
+  private forbiddenHandler: (() => void) | null = null;
 
   constructor() {
     this.client = axios.create({
@@ -63,8 +64,13 @@ class ApiClient {
       (error: AxiosError) => {
         // The session ended (logout elsewhere, expired, admin disabled): let the auth provider sign out
         const url = error.config?.url ?? '';
-        if (error.response?.status === 401 && !AUTH_PATHS.some((path) => url.includes(path))) {
+        const isAuthPath = AUTH_PATHS.some((path) => url.includes(path));
+        if (error.response?.status === 401 && !isAuthPath) {
           this.unauthorizedHandler?.();
+        }
+        // Permissions may have changed since they were loaded: let the auth provider reload them
+        if (error.response?.status === 403 && !isAuthPath) {
+          this.forbiddenHandler?.();
         }
 
         // Error toasts are shown by the caller (see getApiErrorMessage), which knows the context.
@@ -76,6 +82,11 @@ class ApiClient {
   /** Called on a 401 from any non-auth endpoint. */
   onUnauthorized(handler: (() => void) | null): void {
     this.unauthorizedHandler = handler;
+  }
+
+  /** Called on a 403 from any non-auth endpoint. */
+  onForbidden(handler: (() => void) | null): void {
+    this.forbiddenHandler = handler;
   }
 
   async get<T>(url: string, config?: AxiosRequestConfig): Promise<ApiResponse<T>> {
