@@ -147,8 +147,8 @@ class AdminMstRepository extends SoftDeleteCrudRepository
             }
         }
 
-        // Update using fill()
-        $model->fill(Arr::only($payload, $this->model->getFillable()));
+        // Update using fill(); the password is only set below, hashed, when a new one is given
+        $model->fill(Arr::except(Arr::only($payload, $this->model->getFillable()), ['password']));
 
         // Handle password hashing (only if password is provided)
         if (isset($payload['password']) && ! empty($payload['password'])) {
