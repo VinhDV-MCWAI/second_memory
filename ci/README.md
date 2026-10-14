@@ -70,6 +70,14 @@ Test Playwright (`make e2e`) không nằm trong CI vì cần cả stack chạy t
 
 **Chưa test** (chưa có project GitLab). Cần một runner kiểu shell executor trên máy có bash, git, Docker; giống máy dev. Runner kiểu Docker + `docker:dind` không chạy được, vì `check.sh` gắn một thư mục tạm vào container, mà Docker trong dind không thấy thư mục đó. Chạy tay: Build → Pipelines → Run pipeline.
 
+## Lỗ hổng thư viện đã biết
+
+Hai bước `audit` chỉ báo, không làm hỏng lần chạy. Những gì đã xem xét:
+
+| Thư viện | Mức | Kết luận (ngày xem) |
+|---|---|---|
+| `braces` 3.0.3 ([GHSA-vfj7-8cjw-p6xm](https://github.com/advisories/GHSA-vfj7-8cjw-p6xm)) | Cao | **Chưa có bản sửa** (3.0.3 là bản mới nhất). Chỉ có trong công cụ lint (`eslint-config-next` → `fast-glob` → `micromatch`), không vào image production, chỉ đọc mẫu glob của chính dự án. Chấp nhận, xem lại khi `eslint-config-next` lên bản mới (2026-10-14) |
+
 ## Bật lại trên GitHub, GitLab
 
 Những gì đang tắt và cách bật lại, mỗi chỗ là một thay đổi nhỏ:
