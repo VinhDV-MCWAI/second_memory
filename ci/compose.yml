@@ -45,6 +45,9 @@ services:
     # Real env vars win over the committed laravel-api/.env.testing
     environment:
       APP_ENV: testing
+      # Scramble writes APP_URL + /api into openapi.json; the committed spec comes from the dev
+      # stack (laravel-api/.env.example), so the drift check must use the same value
+      APP_URL: http://localhost:81
       DB_CONNECTION: pgsql
       DB_HOST: postgres
       DB_PORT: 5432
