@@ -13,7 +13,8 @@ ENV NEXT_TELEMETRY_DISABLED=1 \
   COREPACK_HOME=/usr/local/share/corepack
 WORKDIR /repo
 COPY package.json pnpm-workspace.yaml ./
-RUN corepack enable && corepack install
+# `pnpm --version` also fetches pnpm's native binary now, so a non-root user (ci/compose.yml) never has to
+RUN corepack enable && corepack install && pnpm --version
 
 # ============ Dependencies (only the selected app and its workspace deps) ============
 FROM base AS deps
