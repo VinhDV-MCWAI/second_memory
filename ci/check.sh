@@ -67,8 +67,9 @@ step "Frontend: format" node 'pnpm format:check'
 step "Frontend: API types up to date" node \
   "$(unchanged nextjs-fe/src/shared/types/openapi.d.ts 'pnpm --filter nextjs-fe gen:api >/dev/null')"
 step "Frontend: typecheck" node 'pnpm typecheck'
-# nextjs-fe enforces coverage thresholds on src/shared (vitest.config.ts)
-step "Frontend: tests" node 'pnpm test --coverage'
+# Same as `make fe-test`: only nextjs-fe has unit tests (the e2e package needs the running stack).
+# Coverage thresholds on src/shared live in nextjs-fe/vitest.config.ts
+step "Frontend: tests" node 'pnpm --filter nextjs-fe test --run --coverage'
 step "Frontend: pnpm audit (informational)" node \
   'pnpm audit --audit-level=high || echo "    findings above do not fail the run"'
 
