@@ -1,10 +1,10 @@
 # Danh sách việc
 
-Cập nhật: 2026-10-09. Lộ trình: [02-roadmap.md](02-roadmap.md).
+Cập nhật: 2026-10-14. Lộ trình: [02-roadmap.md](02-roadmap.md).
 
 Mã việc (cột đầu) chỉ để script chia việc `scripts/lane.sh` nhận diện; khi nói chuyện và viết tài liệu thì dùng tên việc. Trạng thái: `todo` → `doing` → `done`. Không sửa cột trạng thái bằng tay.
 
-Các giai đoạn 2–5 mới ghi ở mức việc lớn; khi bắt đầu giai đoạn, bước đề xuất thiết kế sẽ chia nhỏ tiếp.
+Các giai đoạn 2–6 mới ghi ở mức việc lớn; khi bắt đầu giai đoạn, bước đề xuất thiết kế sẽ chia nhỏ tiếp.
 
 ## 1. Dọn nền
 
@@ -42,8 +42,8 @@ Các giai đoạn 2–5 mới ghi ở mức việc lớn; khi bắt đầu giai 
 | Mã | Việc | Kết quả | Trạng thái |
 |---|---|---|---|
 | USER-01 | Đề xuất thiết kế dựa trên bản `v1.0.0` | Đề xuất được xác nhận | done (a9f776c2 — chủ dự án quyết để sau cả người dùng cuối, phòng ban, chính sách (ADR-0015); phạm vi hiện tại chỉ phân quyền theo vai trò) |
-| USER-02 | Quản lý người dùng cuối: API + giao diện + test | Màn hình người dùng cuối | doing |
-| USER-03 | Phòng ban, chính sách phòng ban, gán admin vào phòng ban: API + giao diện + test | Màn hình phòng ban, chính sách | todo |
+| USER-02 | Quản lý người dùng cuối: API + giao diện + test | Màn hình người dùng cuối | blocked: để sau (ADR-0015) |
+| USER-03 | Phòng ban, chính sách phòng ban, gán admin vào phòng ban: API + giao diện + test | Màn hình phòng ban, chính sách | todo (để sau, ADR-0015) |
 
 ## 5. CI/CD gộp chung, rồi tắt
 
@@ -53,3 +53,24 @@ Các giai đoạn 2–5 mới ghi ở mức việc lớn; khi bắt đầu giai 
 | CI-02 | Làm và test: `make ci` trên máy, chạy tay trên GitHub | Hai nơi cho kết quả giống nhau | done (54776ac9…0a6f319a — make ci chạy trên máy: 203 test backend, 105 test giao diện, 63 test importer, build 3 image; chạy trên GitHub để sau (chủ dự án quyết 2026-10-14)) |
 | CD-01 | CD trên máy: bản demo prod-like bằng Terraform (MinIO, việc nền, Reverb, đăng nhập), `make cd` = kiểm tra → build → deploy → test trình duyệt | `make cd` xanh, đăng nhập và dùng được bản demo ở http://localhost:9443 | done (39e7c75d…044bd903 — make cd: kiểm tra → build 4 image → Terraform prod-like (MinIO, việc nền, Reverb, root) → 4 test trình duyệt pass trên http://localhost:9443; sửa tên cookie phiên) |
 | CI-03 | Tắt chạy tự động, ghi hướng dẫn bật lại | Merge pull request không bị chặn | done (044bd903 — GitHub/GitLab không chạy gì khi push/PR (chỉ chạy tay), hướng dẫn bật lại trong ci/README.md; cleanup-branch và Dependabot giữ nguyên) |
+
+## 6. Nâng cấp trên dev
+
+Thêm ngày 2026-10-14, theo thứ tự làm. Lấy từ các mục "chưa làm" trong [đăng nhập](../features/dang-nhap.md), [nhật ký thay đổi](../features/nhat-ky-thay-doi.md) và [ADR-0014](../adr/0014-media-minio-upload.md).
+
+| Mã | Việc | Kết quả | Trạng thái |
+|---|---|---|---|
+| AUTH-01 | Đổi mật khẩu thì đăng xuất mọi thiết bị khác: viết test chứng minh, thiếu thì sửa | Lộ mật khẩu thì đổi mật khẩu là cắt được người đang dùng | todo |
+| AUTH-02 | Giao diện tự cập nhật quyền: hỏi lại quyền khi quay lại tab và khi gặp lỗi 403 | Đổi quyền thì menu và nút đổi theo, không phải tải lại trang | todo |
+| LOG-01 | Màn hình Nhật ký thay đổi: danh sách, lọc theo loại dữ liệu, người làm, thời gian; phân trang | Xem được toàn bộ nhật ký, không chỉ 10 dòng ở trang tổng quan | todo |
+| AUTH-03 | Giới hạn đăng nhập sai theo IP, ngoài giới hạn theo tên + IP đang có | Một IP thử hàng loạt tên đăng nhập bị chặn | todo |
+| AUTH-04 | **[XÁC NHẬN]** Màn hình Phiên đăng nhập: xem thiết bị đang đăng nhập, đăng xuất một thiết bị, đăng xuất mọi nơi khác (thêm bảng DB) | Đá được phiên từ xa | todo |
+| AUTH-05 | **[XÁC NHẬN]** Ghi nhớ đăng nhập | Không phải đăng nhập lại sau 120 phút không dùng | todo |
+| MEDIA-05 | Upload dở tiếp tục được sau khi tải lại trang | File lớn không phải gửi lại từ đầu | todo |
+
+## 7. Sau cùng
+
+| Mã | Việc | Kết quả | Trạng thái |
+|---|---|---|---|
+| DEMO-01 | **[XÁC NHẬN]** Dữ liệu mẫu cho bản demo prod-like (tài khoản Chỉ xem + Skill Ledger mẫu) | Bản demo mở ra có dữ liệu | blocked: để sau (chủ dự án quyết 2026-10-14: chỉ làm trên dev) |
+| DEMO-02 | **[XÁC NHẬN]** HTTPS cho bản demo prod-like | Bản demo chạy HTTPS | blocked: để sau (chủ dự án quyết 2026-10-14: chỉ làm trên dev) |

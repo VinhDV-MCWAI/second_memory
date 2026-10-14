@@ -6,7 +6,7 @@
 
 | | |
 |---|---|
-| Giai đoạn đang làm | 5. CI/CD gộp chung (chỉ chạy trên máy) |
+| Giai đoạn đang làm | 6. Nâng cấp trên dev (bản demo prod-like để sau) |
 | Branch | `feature/p3-ledger-api` (đổi branch khi chủ dự án yêu cầu) |
 | Môi trường | Dev (`make up`, http://localhost:81) + bản demo prod-like trên máy (`make cd`, http://localhost:9443). Staging, production thật, đo tải: tạm dừng |
 | CI/CD | Chỉ chạy trên máy: `make ci`, `make cd`. **Trên GitHub/GitLab đang TẮT chạy tự động** (push không chạy gì); cách bật lại: [ci/README.md](../../ci/README.md) |

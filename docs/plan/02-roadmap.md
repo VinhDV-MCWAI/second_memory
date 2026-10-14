@@ -1,10 +1,10 @@
 # Lộ trình
 
-Cập nhật: 2026-10-09. Mục tiêu và cách làm việc: [01-goals-and-workflow.md](01-goals-and-workflow.md). Danh sách việc chi tiết: [03-backlog.md](03-backlog.md).
+Cập nhật: 2026-10-14. Mục tiêu và cách làm việc: [01-goals-and-workflow.md](01-goals-and-workflow.md). Danh sách việc chi tiết: [03-backlog.md](03-backlog.md).
 
 ```
-1. Dọn nền ─► 2. Phân quyền động ─► 3. Media MinIO + upload ─► 4. Người dùng cuối, phòng ban ─► 5. CI/CD gộp chung (rồi tắt) ─► 6. Staging, production, giám sát
-   (dev)          (dev)                   (dev)                          (dev)                          (dev)                            (sau cùng)
+1. Dọn nền ─► 2. Phân quyền động ─► 3. Media MinIO + upload ─► 4. Người dùng cuối, phòng ban ─► 5. CI/CD gộp chung (rồi tắt) ─► 6. Nâng cấp trên dev ─► 7. Staging, production, giám sát
+   (dev)          (dev)                   (dev)                     (để sau)                        (dev)                           (dev)                   (sau cùng)
 ```
 
 Mỗi giai đoạn bắt đầu bằng **một đề xuất thiết kế** để chủ dự án xác nhận, rồi mới làm.
@@ -54,6 +54,14 @@ Mỗi giai đoạn bắt đầu bằng **một đề xuất thiết kế** để
 | Gồm | Gộp `ci-cd/` và logic trong `.github/workflows/` vào một thư mục `ci/`; mỗi nền tảng chỉ còn file cấu hình mỏng gọi vào `ci/`; test trên GitHub bằng chạy tay; **để tắt** tự động khi mở pull request |
 | Xong khi | `make ci` chạy giống hệt trên GitHub; có hướng dẫn bật lại bằng một thay đổi nhỏ |
 
-## 6. Sau cùng (chi tiết hóa khi tới)
+## 6. Nâng cấp trên dev
 
-Staging và production (Terraform trong `infra/`), bật lại CI/CD tự động, giám sát (log, chỉ số, cảnh báo), đo tải, rà bảo mật, sao lưu định kỳ.
+| | |
+|---|---|
+| Mục tiêu | Làm nốt các mục "chưa làm" đã ghi trong tài liệu tính năng, chỉ trên dev |
+| Gồm | Đổi mật khẩu thì đăng xuất thiết bị khác; giao diện tự cập nhật quyền; màn hình Nhật ký thay đổi; giới hạn đăng nhập sai theo IP; màn hình Phiên đăng nhập; ghi nhớ đăng nhập; upload dở tiếp tục sau khi tải lại trang |
+| Xong khi | Mỗi việc có test và mô tả trong `docs/features/` |
+
+## 7. Sau cùng (chi tiết hóa khi tới)
+
+Bản demo prod-like (dữ liệu mẫu, HTTPS; chủ dự án quyết để sau ngày 2026-10-14), staging và production (Terraform trong `infra/`), bật lại CI/CD tự động, giám sát (log, chỉ số, cảnh báo), đo tải, rà bảo mật, sao lưu định kỳ.
