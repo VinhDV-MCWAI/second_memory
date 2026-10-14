@@ -50,6 +50,7 @@ Mỗi giai đoạn bắt đầu bằng **một đề xuất thiết kế** để
 | | |
 |---|---|
 | Mục tiêu | Một bộ kiểm tra / build / deploy chạy được trên máy dev, GitHub và nền tảng khác (ví dụ GitLab) |
+| Cách làm | Theo [ADR-0016](../adr/0016-ci-shared-folder.md): kiểm tra chạy trong container riêng cho CI, `make ci` giữ song song với `make verify`, bỏ deploy blue-green đã hỏng, build image chung ở `ci/build.sh` |
 | Gồm | Gộp `ci-cd/` và logic trong `.github/workflows/` vào một thư mục `ci/`; mỗi nền tảng chỉ còn file cấu hình mỏng gọi vào `ci/`; test trên GitHub bằng chạy tay; **để tắt** tự động khi mở pull request |
 | Xong khi | `make ci` chạy giống hệt trên GitHub; có hướng dẫn bật lại bằng một thay đổi nhỏ |
 
