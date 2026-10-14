@@ -1,6 +1,6 @@
 # Quản lý file
 
-> Trạng thái: **chạy đủ** (màn hình, thư mục, upload file nhỏ và file lớn tới 10 GB, tiếp tục upload dở, tải về, đổi tên, di chuyển, xóa, dọn upload treo). Thông báo khi file lớn xử lý xong dùng [việc nền và thông báo tức thì](viec-nen-va-thong-bao.md). Thiết kế: [ADR-0014](../adr/0014-media-minio-upload.md).
+> Trạng thái: **chạy đủ** (màn hình, thư mục, upload file nhỏ và file lớn tới 10 GB, tiếp tục upload dở, xem trước, tải về, đổi tên, di chuyển, xóa, dọn upload treo). Thông báo khi file lớn xử lý xong dùng [việc nền và thông báo tức thì](viec-nen-va-thong-bao.md). Thiết kế: [ADR-0014](../adr/0014-media-minio-upload.md).
 
 ## Làm gì
 
@@ -17,6 +17,7 @@ Menu **Files** (`/admin/files`, cần quyền `media.list`).
 | Tạo thư mục | Nút **New folder** | `media.store-folder` |
 | Upload | Nút **Upload** (chọn nhiều file) hoặc **kéo-thả file vào trang**; file vào thư mục đang mở | `media.upload-url` + `media.multipart-start` (và các quyền `media.multipart-*`, `media.complete`) |
 | Theo dõi upload | Khung **Uploads**: %, đã gửi / tổng, nút X để hủy; file lớn hiện "Processing in the background…" rồi "Done" khi việc nền báo về | — |
+| Xem trước | Bấm tên file hoặc nút con mắt: ảnh, PDF, video, nhạc, file chữ hiện ngay trong hộp thoại, có nút tải về. Chi tiết ở mục [Xem trước](#xem-trước) | `media.download-url` |
 | Tải về | Nút tải ở dòng file (link tạm 5 phút, tải đúng tên file) | `media.download-url` |
 | Đổi tên / Di chuyển | Nút bút chì / nút chuyển thư mục; di chuyển bằng cách gõ đường dẫn thư mục đích (ví dụ `/Docs/2026`) | `media.update` |
 | Xóa | Nút thùng rác ở dòng, hoặc tick nhiều dòng rồi **Delete (n)**; hỏi lại trước khi xóa | `media.delete` |
@@ -24,6 +25,21 @@ Menu **Files** (`/admin/files`, cần quyền `media.list`).
 Nút nào không có quyền thì không hiện (API vẫn chặn bằng 403). Vai trò Chỉ xem: xem và tải về.
 
 Upload chạy lần lượt từng file (file lớn đã tự gửi 4 phần cùng lúc).
+
+### Xem trước
+
+Chỉ xem trước những loại file trình duyệt hiển thị mà **không chạy code**. File được phục vụ từ cùng địa chỉ với trang quản trị (cổng 81), nên một file `.html` hay `.svg` mở thẳng ra có thể chạy JavaScript như chính người đang đăng nhập. Vì vậy:
+
+| Loại | Đuôi file | Cách hiện |
+|---|---|---|
+| Ảnh | jpg, jpeg, png, gif, webp, avif, bmp | Ảnh, co vừa khung |
+| PDF | pdf | Trình xem PDF của trình duyệt |
+| Video | mp4, m4v, webm, ogv | Trình phát, tua được (link sống 1 giờ để xem video dài) |
+| Nhạc | mp3, m4a, wav, ogg, oga, flac | Trình phát |
+| Chữ (tối đa 2 MB) | txt, md, csv, tsv, log, json, yml, yaml, ini, env, sql, js, ts, py, java, go, rs, css | Đọc nội dung rồi hiện dạng chữ thuần, không hiểu thẻ HTML |
+| Còn lại (html, svg, xml, zip, docx, …) | | Không có nút xem trước, chỉ tải về |
+
+Loại nội dung trả về do server chọn theo đuôi file, không tin loại trình duyệt khai lúc upload. Đổi tên `a.html` thành `a.txt` thì file hiện dạng chữ, không chạy. MinIO và nginx đều gửi header `X-Content-Type-Options: nosniff` để trình duyệt không tự đoán lại loại file.
 
 ### Tiếp tục upload dở (file trên 100 MB)
 
@@ -73,7 +89,7 @@ Trình duyệt ◀──5. thông báo tức thì "<tên file> is ready"── R
 |---|---|
 | Mạng lỗi, MinIO trả 5xx | Thử lại tối đa 3 lần, chờ 1 giây rồi 2 giây (cộng ngẫu nhiên tới 0,1 giây để nhiều phần không thử cùng lúc) |
 | 403 (link hết hạn vì mạng chậm) | Xin link mới cho phần đó rồi thử lại |
-| Lỗi khác, hoặc hết lượt thử | Dừng, giữ các phần đã gửi để [tiếp tục sau](#tiếp-tục-upload-dở-file-trên-100-mb) |
+| Lỗi khác, hoặc hết lượt thử | Dừng hẳn: các phần khác cũng thôi gửi. Giữ các phần đã gửi để [tiếp tục sau](#tiếp-tục-upload-dở-file-trên-100-mb) |
 | Bấm hủy | Gọi API hủy: MinIO xóa các phần đã gửi |
 
 Đã thử thật với file 3 GiB qua `localhost:81`: 96 phần, gửi trong 44 giây (~70 MiB/s), việc nền ghép và kiểm tra trong khoảng 1 giây, tải về khớp mã SHA-256.
@@ -101,7 +117,7 @@ Tất cả nằm dưới `/api/admin/media/`. Mỗi API là một quyền trong 
 
 | API | Làm gì | Quyền | Chỉ xem |
 |---|---|---|---|
-| `GET list?folder=/Docs&name=…` | Con trực tiếp của thư mục (mặc định `/`), thư mục đứng trước | `media.list` | Được |
+| `GET list?folder=/Docs&name=…` | Con trực tiếp của thư mục (mặc định `/`), thư mục đứng trước. Mỗi file có ô `preview`: `image`, `pdf`, `video`, `audio`, `text` hoặc null (chỉ tải về) | `media.list` | Được |
 | `POST store-folder` `{folder, name}` | Tạo thư mục | `media.store-folder` | Không |
 | `POST upload-url` `{folder, name, size, mime_type}` | Xin link PUT cho file ≤ 100 MB; trả `{id, url, method, headers, expires_at}` | `media.upload-url` | Không |
 | `POST complete/{id}` | Báo đã gửi xong; trả thông tin file | `media.complete` | Không |
@@ -111,7 +127,7 @@ Tất cả nằm dưới `/api/admin/media/`. Mỗi API là một quyền trong 
 | `POST multipart/abort/{id}` | Hủy upload, xóa các phần đã gửi | `media.multipart-abort` | Không |
 | `GET multipart/unfinished` | Các upload file lớn của mình còn dở: `{id, name, folder, size, mime_type, uploaded_bytes, updated_at}` | `media.multipart-unfinished` | Được (luôn rỗng vì không upload được) |
 | `POST multipart/resume/{id}` | Tiếp tục: trả `{id, part_size, part_count, parts: [{part_number, etag, size}]}` là các phần MinIO đang giữ; tính lại 24 giờ trước khi bị dọn | `media.multipart-resume` | Không |
-| `GET download-url/{id}` | Xin link tải; trả `{url, expires_at}` | `media.download-url` | Được |
+| `GET download-url/{id}` | Xin link tải; trả `{url, expires_at}`. Thêm `?inline=1` để lấy link xem trước (chỉ khi ô `preview` của file khác null, nếu không 422 "This file type cannot be previewed") | `media.download-url` | Được |
 | `PUT update/{id}` `{name?, folder?}` | Đổi tên và/hoặc chuyển thư mục; thư mục mang theo mọi thứ bên trong | `media.update` | Không |
 | `POST delete` `{ids}` | Xóa file, thư mục | `media.delete` | Không |
 
