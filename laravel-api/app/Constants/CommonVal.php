@@ -124,6 +124,9 @@ class CommonVal
 
     public const LOGIN_MAX_ATTEMPTS = 5;
 
+    // Failures from one IP across every user name; high enough for an office sharing one IP
+    public const LOGIN_IP_MAX_ATTEMPTS = 30;
+
     public const LOGIN_LOCK_SECONDS = 60 * 15; // 15 min
 
     /**
