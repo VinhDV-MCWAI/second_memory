@@ -52,6 +52,9 @@ step "Build CI images" "${compose[@]}" build --quiet php node
 step "Backend: composer install" php 'composer install --no-interaction --no-progress --prefer-dist'
 step "Backend: Pint" php 'composer lint'
 step "Backend: Larastan" php 'composer analyse -- --no-progress'
+# Tests wrap each case in a transaction (DatabaseTransactions), so the schema and the route
+# permissions must exist first, as `make migrate` / `make permissions` do on the dev testing DB
+step "Backend: prepare testing DB" php 'php artisan migrate --force && php artisan permission:sync-routes'
 step "Backend: tests" php 'php artisan test'
 # After the tests, so the testing DB has the schema Scramble inspects
 step "Backend: openapi.json up to date" php "$(unchanged openapi.json 'php artisan scramble:export')"
