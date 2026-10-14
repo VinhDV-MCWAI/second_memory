@@ -121,7 +121,8 @@
     "adminDashboard": "Admin Dashboard",
     "dashboard": "Dashboard",
     "masterData": "Master Data",
-    "skillLedger": "Skill Ledger"
+    "skillLedger": "Skill Ledger",
+    "auditLog": "Audit log"
   },
   "search": {
     "placeholder": "Search...",
@@ -361,6 +362,29 @@
       "ipAddress": "IP Address",
       "settingKey": "e.g. privacy_policy",
       "settingValue": "https://example.com/privacy"
+    }
+  },
+  "auditLog": {
+    "title": "Audit log",
+    "description": "Who added, changed or deleted what, and every sign-in, newest first",
+    "time": "Time",
+    "event": "Action",
+    "record": "Record",
+    "type": "Type",
+    "actor": "By",
+    "ipAddress": "IP address",
+    "changes": "Changes",
+    "fieldCount": "{count, plural, one {# field} other {# fields}}",
+    "fromDate": "From date",
+    "toDate": "To date",
+    "types": {
+      "admin": "Admin",
+      "role": "Role",
+      "skill": "Skill",
+      "skill_level": "Skill level",
+      "learning_goal": "Goal",
+      "evidence": "Evidence",
+      "tag": "Tag"
     }
   },
   "history": {

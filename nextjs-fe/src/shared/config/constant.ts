@@ -204,5 +204,17 @@ export const ADMIN_ROUTES = {
   GOALS: '/admin/goals',
   SEARCH: '/admin/search',
   FILES: '/admin/files',
+  AUDIT_LOG: '/admin/audit-log',
   LOGIN: '/login',
 } as const;
+
+/** audit_log.auditable_type values the backend writes (each service's `$auditableType`, ADR-0006). */
+export const AUDITABLE_TYPES = [
+  'admin',
+  'role',
+  'skill',
+  'skill_level',
+  'learning_goal',
+  'evidence',
+  'tag',
+] as const;

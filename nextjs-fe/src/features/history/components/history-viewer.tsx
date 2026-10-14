@@ -22,7 +22,7 @@ const show = (value: unknown): string =>
   value === null || value === undefined || value === '' ? '—' : String(value);
 
 /** Field-level changes of one entry: `field: old → new` (only new or only old for create/delete). */
-function Changes({ entry }: { entry: AuditLogEntry }) {
+export function Changes({ entry }: { entry: AuditLogEntry }) {
   const fields = Object.keys({ ...entry.old_values, ...entry.new_values });
   if (fields.length === 0) return null;
 

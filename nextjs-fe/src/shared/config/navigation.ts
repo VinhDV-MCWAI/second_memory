@@ -4,6 +4,7 @@ import {
   ShieldCheck,
   FileCheck,
   FolderOpen,
+  History,
   GraduationCap,
   Tags,
   Target,
@@ -24,6 +25,12 @@ export const NAVIGATION_MENU: MenuItem[] = [
     icon: FolderOpen,
     href: ADMIN_ROUTES.FILES,
     permission: 'media.list',
+  },
+  {
+    label: 'navigation.auditLog',
+    icon: History,
+    href: ADMIN_ROUTES.AUDIT_LOG,
+    permission: 'audit-log.list',
   },
   {
     label: 'navigation.skillLedger',
