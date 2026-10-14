@@ -37,7 +37,7 @@ Kết quả rà cấu hình MinIO:
 | Kho nhận file | Gửi thẳng vào **kho chính** (phương án B), không qua kho tạm nên không phải chép lại file vài GB. Kho tạm giữ nguyên, để dành cho việc khác |
 | File nhỏ (dưới 100 MB) | Gửi một lần |
 | File lớn (100 MB đến 10 GB) | Chia phần 16–64 MB (theo công thức trong [ghi chú MinIO cũ](../archive/learning/minio-media-pipeline-notes.md)), gửi 4 phần cùng lúc, mỗi phần lỗi thử lại tối đa 3 lần (chờ lâu dần). Có thanh %, nút hủy. Mỗi phần là một request ngắn nên không bị timeout |
-| Tiếp tục upload dở sau khi tải lại trang | Chưa làm |
+| Tiếp tục upload dở sau khi tải lại trang | Làm ngày 2026-10-14: danh sách upload dở lấy từ server (các phần MinIO đang giữ), chọn lại đúng file thì chỉ gửi phần còn thiếu. Mất mạng không còn tự hủy upload, chỉ nút hủy mới xóa phần đã gửi. Xem [quản lý file](../features/quan-ly-file.md#tiếp-tục-upload-dở-file-trên-100-mb) |
 | Giới hạn | Tối đa 10 GB mỗi file; mọi loại file trừ file chạy được (`.exe`, `.sh`, `.php`, …) |
 | Đường tới MinIO từ trình duyệt | Qua nginx cổng 81, đường dẫn `/media-official/...`, giữ nguyên header `Host` để chữ ký khớp; không mở thêm cổng. Nhánh này cho phép request lớn hơn 50 MB |
 | Upload treo | Bản ghi ở trạng thái "đang tải lên" quá 24 giờ thì một lệnh hẹn giờ xóa bản ghi và phần đã gửi |

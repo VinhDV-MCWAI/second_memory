@@ -1,6 +1,6 @@
 # Quản lý file
 
-> Trạng thái: **chạy đủ** (màn hình, thư mục, upload file nhỏ và file lớn tới 10 GB, tải về, đổi tên, di chuyển, xóa, dọn upload treo). Thông báo khi file lớn xử lý xong dùng [việc nền và thông báo tức thì](viec-nen-va-thong-bao.md). Thiết kế: [ADR-0014](../adr/0014-media-minio-upload.md).
+> Trạng thái: **chạy đủ** (màn hình, thư mục, upload file nhỏ và file lớn tới 10 GB, tiếp tục upload dở, tải về, đổi tên, di chuyển, xóa, dọn upload treo). Thông báo khi file lớn xử lý xong dùng [việc nền và thông báo tức thì](viec-nen-va-thong-bao.md). Thiết kế: [ADR-0014](../adr/0014-media-minio-upload.md).
 
 ## Làm gì
 
@@ -23,7 +23,23 @@ Menu **Files** (`/admin/files`, cần quyền `media.list`).
 
 Nút nào không có quyền thì không hiện (API vẫn chặn bằng 403). Vai trò Chỉ xem: xem và tải về.
 
-Upload chạy lần lượt từng file (file lớn đã tự gửi 4 phần cùng lúc). Rời trang giữa chừng thì upload đang chạy dừng lại; phần đã gửi được lệnh dọn upload treo xóa sau 24 giờ.
+Upload chạy lần lượt từng file (file lớn đã tự gửi 4 phần cùng lúc).
+
+### Tiếp tục upload dở (file trên 100 MB)
+
+Tải lại trang, đóng tab hay mất mạng giữa chừng thì các phần đã gửi vẫn nằm trên MinIO. Lần sau mở màn hình Files sẽ thấy khung **Unfinished uploads**: tên file, thư mục, % đã gửi.
+
+| Thao tác | Kết quả |
+|---|---|
+| Bấm **Resume** rồi chọn lại đúng file đó | Chỉ gửi các phần còn thiếu. Phần bị cắt giữa chừng (gửi chưa đủ) thì gửi lại phần đó |
+| Upload lại đúng file đó (cùng tên, cùng dung lượng) vào đúng thư mục cũ | Tự tiếp tục, không phải bấm Resume |
+| Chọn file khác tên hoặc khác dung lượng | Báo lỗi "Choose the same file: …", không gửi gì |
+| Chọn file cùng tên, cùng dung lượng nhưng là file khác (trên cùng trình duyệt đã bắt đầu upload) | Báo lỗi "This is not the file the upload was started with", vì trộn phần của hai file sẽ ra file hỏng. Trình duyệt nhớ thời điểm sửa file lúc bắt đầu; tiếp tục từ máy khác thì không kiểm tra được điều này |
+| Bấm nút thùng rác của dòng | Hỏi lại, rồi xóa các phần đã gửi |
+| Bấm X (hủy) khi đang upload | Xóa các phần đã gửi ngay, không vào danh sách dở |
+| Để đó | Quá 24 giờ không động tới thì lệnh dọn upload treo xóa. Mỗi lần bấm tiếp tục tính lại 24 giờ |
+
+Trình duyệt không tự mở lại được file của máy, nên phải chọn lại file. File dưới 100 MB gửi một lần, không tiếp tục được: upload lại từ đầu.
 
 ## Cách chạy (giống môi trường thật)
 
@@ -57,7 +73,8 @@ Trình duyệt ◀──5. thông báo tức thì "<tên file> is ready"── R
 |---|---|
 | Mạng lỗi, MinIO trả 5xx | Thử lại tối đa 3 lần, chờ 1 giây rồi 2 giây (cộng ngẫu nhiên tới 0,1 giây để nhiều phần không thử cùng lúc) |
 | 403 (link hết hạn vì mạng chậm) | Xin link mới cho phần đó rồi thử lại |
-| Lỗi khác, hoặc hết lượt thử, hoặc bấm hủy | Gọi API hủy: MinIO xóa các phần đã gửi, tên file được trả lại |
+| Lỗi khác, hoặc hết lượt thử | Dừng, giữ các phần đã gửi để [tiếp tục sau](#tiếp-tục-upload-dở-file-trên-100-mb) |
+| Bấm hủy | Gọi API hủy: MinIO xóa các phần đã gửi |
 
 Đã thử thật với file 3 GiB qua `localhost:81`: 96 phần, gửi trong 44 giây (~70 MiB/s), việc nền ghép và kiểm tra trong khoảng 1 giây, tải về khớp mã SHA-256.
 
@@ -71,10 +88,11 @@ Trình duyệt ◀──5. thông báo tức thì "<tên file> is ready"── R
 | File gửi lên khác dung lượng đã khai | 422, file bị xóa khỏi MinIO, phải upload lại |
 | Trùng tên trong cùng thư mục (không phân biệt hoa thường) | 422; tên của mục đã xóa thì dùng lại được |
 | File chạy được (`.exe`, `.sh`, `.php`, `.bat`, `.ps1`, …) | 422, kể cả khi đổi tên thành loại đó |
-| Bỏ dở sau khi xin link (đóng trình duyệt, mất mạng) | Bản ghi "đang tải lên" không hiện trong danh sách, không giữ tên. Lệnh `media:clean-stuck-uploads` chạy mỗi giờ (container `ml-scheduler`) hủy các upload không động tới quá 24 giờ, xóa phần đã gửi |
+| Bỏ dở sau khi xin link (đóng trình duyệt, mất mạng) | Bản ghi "đang tải lên" không hiện trong danh sách, không giữ tên. File lớn thì hiện ở khung Unfinished uploads để tiếp tục. Lệnh `media:clean-stuck-uploads` chạy mỗi giờ (container `ml-scheduler`) hủy các upload không động tới quá 24 giờ, xóa phần đã gửi |
 | Báo xong file lớn khi thiếu phần | 422 "Some parts of the file are missing" |
 | MinIO không ghép được (ETag sai) | Việc nền lỗi ngay, không thử lại; thông báo đỏ "The uploaded parts could not be joined into one file"; bản ghi bị ẩn, tên được trả lại |
-| Người khác gọi xin link / hủy upload của mình | 404: chỉ người bắt đầu upload mới tiếp tục hoặc hủy được |
+| Người khác gọi xin link / tiếp tục / hủy upload của mình | 404: chỉ người bắt đầu upload mới thấy, tiếp tục hoặc hủy được |
+| Tiếp tục một upload mà MinIO đã xóa phần (hết hạn, bị dọn) | 404; dòng đó bị ẩn khỏi danh sách dở ở lần tải sau |
 | Xóa | Thư mục xóa kèm mọi thứ bên trong; file trong MinIO bị xóa sau khi DB lưu xong; MinIO còn giữ bản cũ 30 ngày để khôi phục |
 
 ## API
@@ -91,6 +109,8 @@ Tất cả nằm dưới `/api/admin/media/`. Mỗi API là một quyền trong 
 | `POST multipart/part-urls/{id}` `{part_numbers}` | Link PUT cho tối đa 100 phần | `media.multipart-part-urls` | Không |
 | `POST multipart/complete/{id}` `{parts: [{part_number, etag}]}` | Báo đã gửi đủ; trả trạng thái việc nền (`type = media.process`, `subject_id` = id file) | `media.multipart-complete` | Không |
 | `POST multipart/abort/{id}` | Hủy upload, xóa các phần đã gửi | `media.multipart-abort` | Không |
+| `GET multipart/unfinished` | Các upload file lớn của mình còn dở: `{id, name, folder, size, mime_type, uploaded_bytes, updated_at}` | `media.multipart-unfinished` | Được (luôn rỗng vì không upload được) |
+| `POST multipart/resume/{id}` | Tiếp tục: trả `{id, part_size, part_count, parts: [{part_number, etag, size}]}` là các phần MinIO đang giữ; tính lại 24 giờ trước khi bị dọn | `media.multipart-resume` | Không |
 | `GET download-url/{id}` | Xin link tải; trả `{url, expires_at}` | `media.download-url` | Được |
 | `PUT update/{id}` `{name?, folder?}` | Đổi tên và/hoặc chuyển thư mục; thư mục mang theo mọi thứ bên trong | `media.update` | Không |
 | `POST delete` `{ids}` | Xóa file, thư mục | `media.delete` | Không |
