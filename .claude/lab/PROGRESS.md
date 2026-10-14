@@ -6,9 +6,10 @@
 
 | | |
 |---|---|
-| Giai đoạn đang làm | 1. Dọn nền |
+| Giai đoạn đang làm | 5. CI/CD gộp chung (chỉ chạy trên máy) |
 | Branch | `feature/p3-ledger-api` (đổi branch khi chủ dự án yêu cầu) |
-| Môi trường | Chỉ dev. Staging, production, Terraform, đo tải, CI/CD tự động: tạm dừng |
+| Môi trường | Dev (`make up`, http://localhost:81) + bản demo prod-like trên máy (`make cd`, http://localhost:9443). Staging, production thật, đo tải: tạm dừng |
+| CI/CD | Chỉ chạy trên máy: `make ci`, `make cd`. **Trên GitHub/GitLab đang TẮT chạy tự động** (push không chạy gì); cách bật lại: [ci/README.md](../../ci/README.md) |
 | Việc tiếp theo | `scripts/lane.sh status` → nhận việc đầu tiên trong danh sách "Claimable now" |
 
 ## Việc chủ dự án phải tự làm

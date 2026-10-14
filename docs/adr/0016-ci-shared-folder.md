@@ -27,8 +27,16 @@
 6. **Kiểm tra lỗ hổng thư viện** (`composer audit`, `pnpm audit`) chạy trong `make ci` nhưng chỉ để báo, không làm hỏng lần chạy.
 7. File riêng của GitHub (`cleanup-branch.yml`, `dependabot.yml`, mẫu PR, mẫu issue) giữ nguyên: đó không phải logic kiểm tra.
 
+## Bổ sung 2026-10-14: CD trên máy, tắt trên GitHub
+
+Chủ dự án muốn có bản demo trước, nên CI/CD **chạy và test trên máy**; chạy trên GitHub để làm sau.
+
+1. `make cd` (`ci/deploy.sh`): `ci/check.sh` → `ci/build.sh` → Terraform dựng môi trường `prod-like` (phương án Terraform, không dùng Compose riêng cho demo, để giai đoạn "Staging, production" dùng lại) → test trình duyệt Playwright trên bản demo.
+2. Môi trường `prod-like` thêm MinIO, việc nền, hẹn giờ, Reverb, đăng ký quyền và tài khoản `root` (chỉ demo).
+3. GitHub, GitLab: không chạy gì khi push hay mở pull request; chỉ chạy tay. `cleanup-branch.yml` và Dependabot giữ nguyên. Cách bật lại: [ci/README.md](../../ci/README.md).
+
 ## Hệ quả
 
 - Thêm thư mục `ci/`; bỏ thư mục `ci-cd/`.
 - `make ci` lần đầu chậm hơn `make verify` (dựng container sạch, cài thư viện); các lần sau dùng bộ nhớ đệm.
-- Tự động chạy khi mở pull request vẫn tắt; hướng dẫn bật lại viết ở bước cuối của giai đoạn 5.
+- Tự động chạy khi mở pull request vẫn tắt; hướng dẫn bật lại ở [ci/README.md](../../ci/README.md).

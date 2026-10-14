@@ -24,6 +24,7 @@ make test        # backend tests (make test f=AdminMst); make test-ci runs them 
 make lint        # Pint + ESLint + Prettier checks, backend and both FE apps
 make verify      # every gate, in the dev containers (includes uncommitted work)
 make ci          # the same gates exactly as GitHub runs them: committed code, throwaway containers
+make cd          # local CD: make ci → production images → Terraform prod-like demo (:9443) → Playwright
 make fresh       # DEV ONLY: wipe, re-migrate and seed the dev DB (asks first)
 ```
 

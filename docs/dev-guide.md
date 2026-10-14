@@ -87,6 +87,7 @@ Chỉ chạy phần liên quan tới thứ vừa sửa. Bộ đầy đủ chỉ 
 | Luồng chính trên trình duyệt thật (Playwright) | `make e2e` | khoảng 30 giây |
 | Mọi thứ, gồm cả file chưa commit | `make verify` | vài phút |
 | Giống hệt GitHub: code đã commit, container sạch ([ci/README.md](../ci/README.md)) | `scripts/lane.sh run make ci` | khoảng 4–5 phút |
+| Deploy bản demo chạy image production trên máy rồi test trình duyệt ([ci/README.md](../ci/README.md)) | `make cd`, mở http://localhost:9443 | khoảng 10–15 phút |
 
 Test dùng một database riêng tên `testing`, không đụng dữ liệu dev.
 
