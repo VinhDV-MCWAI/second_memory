@@ -36,7 +36,7 @@ Tài khoản dev: chủ `root` / `12345678` và chỉ xem `viewer` / `12345678` 
 | Quy tắc | Chi tiết |
 |---|---|
 | Không lộ tài khoản có tồn tại hay không | Sai tên, sai mật khẩu, tài khoản bị khóa: cùng một lỗi 401 |
-| Khóa tạm khi sai nhiều lần | Đếm theo tên đăng nhập + IP; quá số lần thì trả 429 kèm `Retry-After`. Đăng nhập đúng thì xóa bộ đếm |
+| Khóa tạm khi sai nhiều lần | Hai bộ đếm, mỗi bộ khóa 15 phút. **Theo tên đăng nhập + IP**: sai 5 lần thì khóa tên đó trên IP đó; đăng nhập đúng thì xóa bộ đếm này. **Chỉ theo IP**: một IP sai tổng cộng 30 lần (với bất kỳ tên nào) thì cả IP bị khóa, chặn kiểu thử hàng loạt tên đăng nhập; đăng nhập đúng **không** xóa bộ đếm này, để kẻ tấn công không dùng tài khoản của chính mình để được thử tiếp. Bị khóa thì trả 429 kèm `Retry-After`. Ngưỡng 30 đặt cao để cả văn phòng dùng chung một IP ít khi bị chặn nhầm |
 | Đổi mã phiên sau khi đăng nhập | Chống chiếm phiên cũ |
 | Đổi mật khẩu thì đăng xuất mọi thiết bị khác | Đổi mật khẩu của chính mình: các thiết bị khác bị đăng xuất ở request kế tiếp (401), thiết bị đang dùng vẫn giữ phiên. Chủ đổi mật khẩu của người khác: mọi phiên của người đó bị đăng xuất. Lưu form mà để trống mật khẩu thì không ai bị đăng xuất. Cách làm: phiên giữ một mã của mật khẩu và so lại mỗi request (`AuthenticateSession` của Sanctum) |
 | Giao diện tự cập nhật quyền | Quyền (menu, nút) lấy lúc mở trang, rồi tự lấy lại khi quay lại tab và khi một API trả 403. Lấy lại tối đa mỗi 5 giây một lần. Chủ đổi vai trò của ai thì người đó thấy menu và nút đổi theo mà không phải tải lại trang. API luôn chặn đúng theo quyền mới ngay từ request kế tiếp |
@@ -74,7 +74,7 @@ Trước ngày 2026-10-07, đăng nhập dùng cặp JWT tự viết: token truy
 | Phần mã hoá | Tự viết bộ ký và giải mã, kiểm tra sai thứ tự | Phần có sẵn của Laravel: cookie mã hoá bằng `APP_KEY` |
 | Lộ dữ liệu Redis | Token thô làm tên khoá, đọc được Redis là có token dùng ngay | Redis chỉ có mã phiên, muốn tạo cookie hợp lệ còn phải có `APP_KEY` |
 | Chống giả mạo request (CSRF) | Không có | Có, thiếu header `X-XSRF-TOKEN` thì trả 419 |
-| Sai mật khẩu nhiều lần | Khoá vĩnh viễn, thông báo lỗi để lộ tên đăng nhập có tồn tại | Khoá 15 phút theo tên + IP, mọi lỗi dùng chung một thông báo |
+| Sai mật khẩu nhiều lần | Khoá vĩnh viễn, thông báo lỗi để lộ tên đăng nhập có tồn tại | Khoá 15 phút theo tên + IP và theo IP, mọi lỗi dùng chung một thông báo |
 | Khoá hoặc xoá admin | Vẫn lấy được token mới tới 3 ngày | Bị chặn ngay request kế tiếp |
 | Đổi quyền | Phải đăng nhập lại mới có hiệu lực | API áp ngay request kế tiếp |
 | Thiếu quyền | Trả 401, giao diện đi làm mới token vô ích | Trả 403 |
@@ -94,7 +94,7 @@ Ghi ngày 2026-10-13, **chưa làm**. Mục tiêu: đăng nhập chạy tốt d�
 | 1 | **Màn hình "Phiên đăng nhập"**: xem đang đăng nhập ở thiết bị nào (trình duyệt, IP, lần dùng cuối), đăng xuất một thiết bị, đăng xuất mọi nơi khác | Hiện không xem được và không đá được phiên từ xa. Cả cách cũ lẫn cách mới đều thiếu | **A.** Giữ phiên trong Redis, thêm bảng `admin_sessions` (mã admin, mã phiên, trình duyệt, IP, lần dùng cuối). Ghi khi đăng nhập, xoá khi đăng xuất. Đá phiên thì xoá khoá Redis của phiên đó. **B.** Chuyển `SESSION_DRIVER=database`: bảng `sessions` có sẵn đủ cột, ít code nhất | A: thêm bảng và code, nhưng vẫn nhanh khi đông người dùng. B: mỗi request phải ghi DB một lần, ổn khi ít người, nặng khi nhiều. Nhắm tới nhiều người dùng thì chọn **A** |
 | 2 | ~~**Đổi mật khẩu thì đá mọi phiên khác**~~ **Đã làm 2026-10-14**, xem bảng Quy tắc ở trên | | | |
 | 3 | ~~**Giao diện tự cập nhật quyền**~~ **Đã làm 2026-10-14**, xem bảng Quy tắc ở trên | | | |
-| 4 | **Giới hạn đăng nhập theo IP** (ngoài giới hạn theo tên + IP đang có) | Một IP thử hàng loạt tên đăng nhập khác nhau thì hiện không bị chặn | Thêm một khoá `RateLimiter` chỉ theo IP, ngưỡng cao hơn | Nhiều người dùng chung một IP (văn phòng) có thể bị chặn nhầm nếu đặt ngưỡng thấp |
+| 4 | ~~**Giới hạn đăng nhập theo IP**~~ **Đã làm 2026-10-14**, xem bảng Quy tắc ở trên | | | |
 | 5 | **"Ghi nhớ đăng nhập"** | Phiên hết sau 120 phút không dùng (`SESSION_LIFETIME`), có thể quá ngắn | Ô "Ghi nhớ" dùng `remember` của Laravel (cookie dài hạn riêng) | Cookie sống lâu thì lộ ra nguy hiểm hơn. Nên đi cùng mục 1 để còn đá phiên được |
 | 6 | **Cài đặt cookie khi chạy thật** | Chặn lộ phiên trên đường truyền và trong Redis | `SESSION_SECURE_COOKIE=true` (bắt buộc khi có HTTPS), cân nhắc `SESSION_ENCRYPT=true` | Mã hoá phiên tốn thêm chút CPU |
 | 7 | **Cache thông tin admin mỗi request** — chỉ làm khi tải DB thật sự cao | Mỗi request hiện đọc admin và vai trò từ DB để thu hồi được ngay | Cache vài giây theo mã admin, xoá cache khi admin bị sửa, khoá hoặc xoá | Thêm một chỗ phải nhớ xoá cache. Làm sai thì admin bị khoá vẫn dùng được trong vài giây |
