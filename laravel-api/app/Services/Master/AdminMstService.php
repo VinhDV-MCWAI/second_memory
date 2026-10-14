@@ -4,12 +4,14 @@ declare(strict_types=1);
 
 namespace App\Services\Master;
 
+use App\Constants\CommonVal;
 use App\Constants\Messages;
 use App\Enums\IsActive;
 use App\Http\Resources\Master\AdminMstResource;
 use App\Repositories\Master\AdminMstRepository;
 use App\Services\AuditedCrudService;
 use App\Services\AuditLogger;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
 
 class AdminMstService extends AuditedCrudService
@@ -37,7 +39,15 @@ class AdminMstService extends AuditedCrudService
             $this->ensureAnOwnerRemains([(int) $payload['id']], 'role_ids');
         }
 
-        return parent::update($payload);
+        $id = parent::update($payload);
+
+        // The session keeps a hash of the password (Sanctum AuthenticateSession) and other sessions
+        // with the old hash are logged out. Refresh the current admin so this session keeps working.
+        if (! empty($payload['password']) && (int) $payload['id'] === (int) Auth::id()) {
+            Auth::guard(CommonVal::ADMIN_GUARD)->user()?->refresh();
+        }
+
+        return $id;
     }
 
     /**
