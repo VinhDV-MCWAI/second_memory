@@ -37,6 +37,8 @@ Mỗi giai đoạn bắt đầu bằng **một đề xuất thiết kế** để
 
 ## 4. Người dùng cuối, phòng ban, chính sách
 
+> **Để sau** (2026-10-14, [ADR-0015](../adr/0015-defer-end-users-departments.md)): phạm vi hiện tại chỉ cần phân quyền theo vai trò. ADR ghi lại những gì đã tìm hiểu về bản `v1.0.0` và các câu hỏi còn mở, để làm lại sau.
+
 | | |
 |---|---|
 | Mục tiêu | Lấy lại quản lý người dùng cuối, phòng ban, chính sách phòng ban |
