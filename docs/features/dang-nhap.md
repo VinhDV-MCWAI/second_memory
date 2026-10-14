@@ -87,6 +87,8 @@ Trước ngày 2026-10-07, đăng nhập dùng cặp JWT tự viết: token truy
 
 ## Nâng cấp để dành
 
+> **Tạm dừng (chủ dự án quyết 2026-10-14):** mọi mục còn lại dưới đây chỉ làm khi chủ dự án yêu cầu. Không tự đề xuất, kể cả việc mới về đăng nhập phát sinh sau này.
+
 Ghi ngày 2026-10-13, **chưa làm**. Mục tiêu: đăng nhập chạy tốt dù ít hay nhiều người dùng. Khi bắt đầu, mỗi mục đi qua bước đề xuất và chờ chủ dự án xác nhận như mọi việc khác. Mục nào thêm bảng, đổi DB hoặc đổi cách đăng nhập thì bắt buộc phải xác nhận.
 
 | # | Việc | Vì sao | Cách làm gợi ý | Đánh đổi |

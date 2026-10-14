@@ -56,6 +56,8 @@ Các giai đoạn 2–6 mới ghi ở mức việc lớn; khi bắt đầu giai 
 
 ## 6. Nâng cấp trên dev
 
+**Tạm dừng mọi việc liên quan đến đăng nhập** (chủ dự án quyết 2026-10-14): AUTH-04, AUTH-05 và các mục "Nâng cấp để dành" trong [đăng nhập](../features/dang-nhap.md) chỉ làm khi chủ dự án yêu cầu. Không tự đề xuất, kể cả khi phát hiện việc mới về đăng nhập.
+
 Thêm ngày 2026-10-14, theo thứ tự làm. Lấy từ các mục "chưa làm" trong [đăng nhập](../features/dang-nhap.md), [nhật ký thay đổi](../features/nhat-ky-thay-doi.md) và [ADR-0014](../adr/0014-media-minio-upload.md).
 
 | Mã | Việc | Kết quả | Trạng thái |
@@ -64,8 +66,8 @@ Thêm ngày 2026-10-14, theo thứ tự làm. Lấy từ các mục "chưa làm"
 | AUTH-02 | Giao diện tự cập nhật quyền: hỏi lại quyền khi quay lại tab và khi gặp lỗi 403 | Đổi quyền thì menu và nút đổi theo, không phải tải lại trang | done (52599bf8 — quyền trên giao diện tự lấy lại khi quay lại tab và khi gặp 403 (tối đa 5 giây/lần); 109 test giao diện, lint, typecheck pass) |
 | LOG-01 | Màn hình Nhật ký thay đổi: danh sách, lọc theo loại dữ liệu, người làm, thời gian; phân trang | Xem được toàn bộ nhật ký, không chỉ 10 dòng ở trang tổng quan | done (7a2f444f, c68bf280 — màn hình Nhật ký thay đổi (lọc loại, việc, người làm, ngày; phân trang; xem ô cũ → mới); sửa lọc ngày đọc nhầm tháng/ngày (500 hoặc lọc sai); 207 test backend, 112 test giao diện) |
 | AUTH-03 | Giới hạn đăng nhập sai theo IP, ngoài giới hạn theo tên + IP đang có | Một IP thử hàng loạt tên đăng nhập bị chặn | done (26990056, 5a1df46a — một IP sai 30 lần (mọi tên) bị khóa 15 phút, đăng nhập đúng không xóa bộ đếm IP; 209 test backend, Pint, Larastan pass) |
-| AUTH-04 | **[XÁC NHẬN]** Màn hình Phiên đăng nhập: xem thiết bị đang đăng nhập, đăng xuất một thiết bị, đăng xuất mọi nơi khác (thêm bảng DB) | Đá được phiên từ xa | todo |
-| AUTH-05 | **[XÁC NHẬN]** Ghi nhớ đăng nhập | Không phải đăng nhập lại sau 120 phút không dùng | todo |
+| AUTH-04 | **[XÁC NHẬN]** Màn hình Phiên đăng nhập: xem thiết bị đang đăng nhập, đăng xuất một thiết bị, đăng xuất mọi nơi khác (thêm bảng DB) | Đá được phiên từ xa | blocked: tạm dừng (chủ dự án quyết 2026-10-14) |
+| AUTH-05 | **[XÁC NHẬN]** Ghi nhớ đăng nhập | Không phải đăng nhập lại sau 120 phút không dùng | blocked: tạm dừng (chủ dự án quyết 2026-10-14) |
 | MEDIA-05 | Upload dở tiếp tục được sau khi tải lại trang | File lớn không phải gửi lại từ đầu | todo |
 
 ## 7. Sau cùng
