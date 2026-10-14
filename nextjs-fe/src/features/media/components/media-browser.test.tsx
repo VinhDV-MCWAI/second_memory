@@ -13,20 +13,21 @@ let granted: string[] = [];
 vi.mock('@/shared/hooks/use-permissions', () => ({
   usePermissions: () => ({ can: (permission: string) => granted.includes(permission) }),
 }));
-vi.mock('@/shared/utils/notification', () => ({
-  notification: { success: vi.fn(), error: vi.fn() },
-}));
+const notification = vi.hoisted(() => ({ success: vi.fn(), error: vi.fn() }));
+vi.mock('@/shared/utils/notification', () => ({ notification }));
 const push = vi.fn();
 let search = new URLSearchParams();
 vi.mock('next/navigation', () => ({ useRouter: () => ({ push }), useSearchParams: () => search }));
 const uploadFile = vi.hoisted(() => vi.fn());
-vi.mock('../lib/uploader', () => ({ uploadFile }));
+const discardUpload = vi.hoisted(() => vi.fn());
+vi.mock('../lib/uploader', () => ({ uploadFile, discardUpload }));
 
 const ALL = [
   'media.list',
   'media.store-folder',
   'media.upload-url',
   'media.multipart-start',
+  'media.multipart-unfinished',
   'media.download-url',
   'media.update',
   'media.delete',
@@ -62,14 +63,29 @@ function renderBrowser() {
   return render(<MediaBrowser />, { wrapper: Wrapper });
 }
 
+const unfinishedMovie = {
+  id: 7,
+  name: 'movie.mkv',
+  folder: '/',
+  size: 300,
+  mime_type: 'video/x-matroska',
+  uploaded_bytes: 150,
+  updated_at: '',
+};
+
 describe('MediaBrowser', () => {
   const listed = vi.fn();
+  let unfinished: unknown[] = [];
 
   beforeEach(() => {
     granted = ALL;
     search = new URLSearchParams();
+    unfinished = [];
     vi.clearAllMocks();
     server.use(
+      http.get(apiUrl('/admin/media/multipart/unfinished'), () =>
+        HttpResponse.json(envelope(unfinished)),
+      ),
       http.get(apiUrl('/admin/media/list'), ({ request }) => {
         listed(new URL(request.url).searchParams.get('folder'));
         return HttpResponse.json(page([item(1, 'Docs', false), item(2, 'notes.txt', true)]));
@@ -129,5 +145,37 @@ describe('MediaBrowser', () => {
     fireEvent.click(await screen.findByRole('button', { name: 'delete' }));
 
     await waitFor(() => expect(deleted).toHaveBeenCalledWith({ ids: [2] }));
+  });
+
+  it('resumes an unfinished upload when the same file is uploaded into the same folder', async () => {
+    unfinished = [unfinishedMovie];
+    uploadFile.mockReturnValue(new Promise(() => undefined));
+    renderBrowser();
+    await screen.findByText('50% · 150 B / 300 B');
+
+    const file = new File(['x'.repeat(300)], 'movie.mkv');
+    fireEvent.change(screen.getByTestId('media-file-input'), { target: { files: [file] } });
+
+    await waitFor(() =>
+      expect(uploadFile).toHaveBeenCalledWith(file, expect.objectContaining({ resumeId: 7 })),
+    );
+  });
+
+  it('asks for the same file to resume and can discard an unfinished upload', async () => {
+    unfinished = [unfinishedMovie];
+    discardUpload.mockResolvedValue(undefined);
+    renderBrowser();
+    await screen.findByText('movie.mkv');
+
+    fireEvent.click(screen.getByRole('button', { name: 'resume' }));
+    const other = new File(['short'], 'movie.mkv');
+    fireEvent.change(screen.getByTestId('media-resume-input'), { target: { files: [other] } });
+    expect(notification.error).toHaveBeenCalledWith('unfinished.wrongFile');
+    expect(uploadFile).not.toHaveBeenCalled();
+
+    fireEvent.click(screen.getByRole('button', { name: 'discard' }));
+    fireEvent.click(await screen.findByRole('button', { name: 'delete' }));
+    await waitFor(() => expect(discardUpload).toHaveBeenCalledWith(7));
+    expect(notification.success).toHaveBeenCalledWith('unfinished.discarded');
   });
 });

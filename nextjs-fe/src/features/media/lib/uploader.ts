@@ -4,6 +4,7 @@ import type {
   MediaItem,
   MultipartUpload,
   PartUrls,
+  ResumedUpload,
   SmallUpload,
 } from '@/shared/types/models';
 
@@ -11,6 +12,8 @@ import type {
  * Browser side of the file upload (ADR-0014). Bytes go straight to MinIO through presigned URLs:
  * a small file in one PUT, a large one in parts, 4 at a time, each retried with a growing pause.
  * The server decides the part size; part URLs are fetched in batches as the workers get to them.
+ * A large upload cut off midway (reload, network) keeps its parts on the server and can be resumed
+ * with the same file: only the missing parts are sent. Only the cancel button drops them.
  */
 export const UPLOAD = {
   /** Mirrors MediaConst::SINGLE_UPLOAD_MAX_BYTES. */
@@ -21,6 +24,8 @@ export const UPLOAD = {
   RETRY_BASE_MS: 1000,
   /** Mirrors MediaConst::PART_URLS_PER_REQUEST. */
   URL_BATCH: 100,
+  /** localStorage key: upload id → lastModified of the file it was started with. */
+  FILES_KEY: 'media.multipart.files',
 } as const;
 
 const HTTP_FORBIDDEN = 403;
@@ -36,6 +41,10 @@ export interface UploadOptions {
   /** Bytes sent so far out of the file size. */
   onProgress?: (loaded: number, total: number) => void;
   signal?: AbortSignal;
+  /** Continue this unfinished multipart upload (`media/multipart/unfinished`) instead of starting one. */
+  resumeId?: number;
+  /** Id of the multipart upload, once started or resumed. */
+  onStarted?: (id: number) => void;
 }
 
 export class UploadError extends Error {
@@ -49,7 +58,7 @@ export class UploadError extends Error {
 }
 
 export async function uploadFile(file: File, options: UploadOptions = {}): Promise<UploadResult> {
-  return file.size <= UPLOAD.SINGLE_MAX_BYTES
+  return file.size <= UPLOAD.SINGLE_MAX_BYTES && options.resumeId === undefined
     ? uploadSmall(file, options)
     : uploadInParts(file, options);
 }
@@ -76,19 +85,39 @@ export async function uploadSmall(
 
 export async function uploadInParts(
   file: File,
-  { folder, onProgress, signal }: UploadOptions = {},
+  { folder, onProgress, signal, resumeId, onStarted }: UploadOptions = {},
 ): Promise<UploadResult> {
   const base = API_ENDPOINTS.MEDIA.MULTIPART;
-  const { data: upload } = await apiClient.post<MultipartUpload>(`${base}/start`, {
-    folder,
-    name: file.name,
-    size: file.size,
-    mime_type: mimeTypeOf(file),
-  });
-
-  const urls = new Map<number, string>();
   const loaded = new Map<number, number>();
   const etags = new Map<number, string>();
+  let upload: MultipartUpload;
+
+  if (resumeId === undefined) {
+    ({ data: upload } = await apiClient.post<MultipartUpload>(`${base}/start`, {
+      folder,
+      name: file.name,
+      size: file.size,
+      mime_type: mimeTypeOf(file),
+    }));
+    rememberFile(upload.id, file);
+  } else {
+    if (!isSameFile(resumeId, file)) {
+      throw new UploadError('This is not the file the upload was started with');
+    }
+    const { data: resumed } = await apiClient.post<ResumedUpload>(`${base}/resume/${resumeId}`);
+    upload = resumed;
+    // A part shorter than it should be (cut off mid-PUT) is sent again
+    for (const part of resumed.parts ?? []) {
+      const size = partBytes(part.part_number, resumed.part_size, file.size);
+      if (part.size === size) {
+        etags.set(part.part_number, part.etag);
+        loaded.set(part.part_number, size);
+      }
+    }
+  }
+  onStarted?.(upload.id);
+
+  const urls = new Map<number, string>();
   const report = () =>
     onProgress?.(
       [...loaded.values()].reduce((sum, bytes) => sum + bytes, 0),
@@ -112,7 +141,7 @@ export async function uploadInParts(
 
   const sendPart = async (partNumber: number): Promise<void> => {
     const start = (partNumber - 1) * upload.part_size;
-    const body = file.slice(start, Math.min(start + upload.part_size, file.size));
+    const body = file.slice(start, start + partBytes(partNumber, upload.part_size, file.size));
     let refresh = false;
     for (let attempt = 1; ; attempt++) {
       try {
@@ -146,8 +175,9 @@ export async function uploadInParts(
     }
   };
 
+  report();
   try {
-    const queue = range(1, upload.part_count);
+    const queue = range(1, upload.part_count).filter((n) => !etags.has(n));
     const worker = async () => {
       for (let next = queue.shift(); next !== undefined; next = queue.shift()) await sendPart(next);
     };
@@ -155,8 +185,11 @@ export async function uploadInParts(
       Array.from({ length: Math.min(UPLOAD.CONCURRENCY, upload.part_count) }, worker),
     );
   } catch (error) {
-    // Free the name and the space now instead of waiting for the hourly clean-up
-    await apiClient.post(`${base}/abort/${upload.id}`).catch(() => undefined);
+    // Cancelled: free the space now. Otherwise keep the parts so the upload can be resumed
+    if (signal?.aborted) {
+      await apiClient.post(`${base}/abort/${upload.id}`).catch(() => undefined);
+      forgetFile(upload.id);
+    }
     throw error;
   }
 
@@ -164,7 +197,54 @@ export async function uploadInParts(
   const { data } = await apiClient.post<{ data: BackgroundTask }>(`${base}/complete/${upload.id}`, {
     parts,
   });
+  forgetFile(upload.id);
   return { kind: 'processing', task: data.data };
+}
+
+/** Cancel an unfinished upload from an earlier visit: the server drops its parts. */
+export async function discardUpload(id: number): Promise<void> {
+  await apiClient.post(`${API_ENDPOINTS.MEDIA.MULTIPART}/abort/${id}`);
+  forgetFile(id);
+}
+
+/** Bytes of one part: part_size, except the last one. */
+function partBytes(partNumber: number, partSize: number, fileSize: number): number {
+  return Math.max(0, Math.min(partSize, fileSize - (partNumber - 1) * partSize));
+}
+
+/**
+ * Name and size are matched by the caller; the modification time (kept in this browser only) catches a
+ * different file with the same name and size, whose parts would mix into a broken file.
+ */
+function isSameFile(id: number, file: File): boolean {
+  const lastModified = readFiles()[id];
+  return lastModified === undefined || lastModified === file.lastModified;
+}
+
+function rememberFile(id: number, file: File): void {
+  writeFiles({ ...readFiles(), [id]: file.lastModified });
+}
+
+function forgetFile(id: number): void {
+  const files = readFiles();
+  delete files[id];
+  writeFiles(files);
+}
+
+function readFiles(): Record<number, number> {
+  try {
+    return JSON.parse(localStorage.getItem(UPLOAD.FILES_KEY) ?? '{}') as Record<number, number>;
+  } catch {
+    return {};
+  }
+}
+
+function writeFiles(files: Record<number, number>): void {
+  try {
+    localStorage.setItem(UPLOAD.FILES_KEY, JSON.stringify(files));
+  } catch {
+    // Storage blocked or full: resuming still works, without the modification-time check
+  }
 }
 
 /** PUT with upload progress (fetch has none); resolves with the ETag MinIO returns. */

@@ -25,16 +25,24 @@ import { ADMIN_ROUTES, SORT_ORDER, type SortOrder } from '@/shared/config';
 import { usePermissions } from '@/shared/hooks/use-permissions';
 import { getApiErrorMessage, notification } from '@/shared/utils';
 import { formatTimestamp } from '@/shared/utils/date-formatter';
-import type { MediaItem } from '@/shared/types/models';
-import { MEDIA_PER_PAGE, useMediaActions, useMediaList } from '../hooks/use-media';
-import { useUploads } from '../hooks/use-uploads';
+import type { MediaItem, UnfinishedUpload } from '@/shared/types/models';
+import {
+  MEDIA_PER_PAGE,
+  useMediaActions,
+  useMediaList,
+  useUnfinishedUploads,
+} from '../hooks/use-media';
+import { useUploads, type UploadState } from '../hooks/use-uploads';
+import { discardUpload } from '../lib/uploader';
 import { crumbsOf, formatBytes, parentOf, ROOT } from '../lib/media-paths';
 import { MediaFieldDialog } from './media-field-dialog';
+import { UnfinishedUploads } from './unfinished-uploads';
 import { UploadPanel } from './upload-panel';
 
 /** laravel-api MediaConst::NAME_MAX / UploadStatus::PROCESSING. */
 const NAME_MAX = 255;
 const STATUS_PROCESSING = 1;
+const ACTIVE: UploadState[] = ['waiting', 'uploading', 'processing'];
 
 type DialogState =
   | { kind: 'folder' }
@@ -73,9 +81,18 @@ export function MediaBrowser() {
     sortOrder,
   });
   const actions = useMediaActions();
-  const uploads = useUploads(() => void actions.refresh());
-
   const canUpload = can('media.upload-url') && can('media.multipart-start');
+  const canResume = canUpload && can('media.multipart-unfinished');
+  const unfinishedQuery = useUnfinishedUploads(canResume);
+  const refreshUnfinished = () => {
+    if (canResume) void unfinishedQuery.refetch();
+  };
+  const uploads = useUploads(() => void actions.refresh(), refreshUnfinished);
+  // Uploads running in this tab are shown by the upload panel, not as unfinished
+  const running = uploads.items
+    .filter((item) => ACTIVE.includes(item.state))
+    .map((item) => item.uploadId);
+  const unfinished = (unfinishedQuery.data ?? []).filter((upload) => !running.includes(upload.id));
   const canUpdate = can('media.update');
   const canDelete = can('media.delete');
 
@@ -105,7 +122,38 @@ export function MediaBrowser() {
 
   const startUpload = (files: FileList | null) => {
     if (!files || files.length === 0) return;
-    uploads.add(Array.from(files), folder);
+    uploads.add(
+      Array.from(files).map((file) => ({
+        file,
+        // The same file into the same folder continues its unfinished upload
+        resumeId: unfinished.find(
+          (upload) =>
+            upload.name === file.name && upload.size === file.size && upload.folder === folder,
+        )?.id,
+      })),
+      folder,
+    );
+  };
+
+  const resumeUpload = (upload: UnfinishedUpload, file: File) => {
+    if (file.name !== upload.name || file.size !== upload.size) {
+      notification.error(
+        t('unfinished.wrongFile', { name: upload.name, size: formatBytes(upload.size) }),
+      );
+      return;
+    }
+    uploads.add([{ file, resumeId: upload.id }], upload.folder);
+  };
+
+  const discard = async (upload: UnfinishedUpload) => {
+    try {
+      await discardUpload(upload.id);
+      notification.success(t('unfinished.discarded'));
+    } catch (error) {
+      notification.error(getApiErrorMessage(error) ?? t('unfinished.discardFailed'));
+    } finally {
+      refreshUnfinished();
+    }
   };
 
   const onDrop = (event: DragEvent) => {
@@ -283,6 +331,10 @@ export function MediaBrowser() {
       </div>
 
       {canUpload && <p className="text-xs text-muted-foreground">{t('dropHint')}</p>}
+
+      {canUpload && (
+        <UnfinishedUploads uploads={unfinished} onResume={resumeUpload} onDiscard={discard} />
+      )}
 
       <UploadPanel
         items={uploads.items}

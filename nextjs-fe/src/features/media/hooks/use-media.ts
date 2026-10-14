@@ -1,12 +1,14 @@
 'use client';
 
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { apiClient, API_ENDPOINTS, queryKeys } from '@/shared/api';
 import { useApiData } from '@/shared/hooks/use-api-data';
 import type { SortOrder } from '@/shared/config';
-import type { MediaItem } from '@/shared/types/models';
+import type { MediaItem, UnfinishedUpload } from '@/shared/types/models';
 
 const BASE = API_ENDPOINTS.MEDIA.BASE;
+
+const UNFINISHED = `${API_ENDPOINTS.MEDIA.MULTIPART}/unfinished`;
 
 /** Default items per page of a folder (laravel-api MediaConst::PER_PAGE). */
 export const MEDIA_PER_PAGE = 50;
@@ -58,4 +60,13 @@ export function useMediaActions() {
   };
 
   return { createFolder, update, remove, download, refresh };
+}
+
+/** Your large uploads that stopped before the end (reload, network), to resume or discard. */
+export function useUnfinishedUploads(enabled: boolean) {
+  return useQuery({
+    queryKey: queryKeys.resource(UNFINISHED),
+    queryFn: async () => (await apiClient.get<UnfinishedUpload[]>(UNFINISHED)).data,
+    enabled,
+  });
 }

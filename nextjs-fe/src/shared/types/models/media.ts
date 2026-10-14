@@ -14,3 +14,9 @@ export type MultipartUpload = OkData<operations['media.multipart-start']>;
 
 /** `media/multipart/part-urls/{id}`: presigned PUTs for some parts. */
 export type PartUrls = OkData<operations['media.multipart-part-urls']>;
+
+/** `media/multipart/unfinished`: a large upload that stopped before the end. */
+export type UnfinishedUpload = OkData<operations['media.multipart-unfinished']>[number];
+
+/** `media/multipart/resume/{id}`: how the file is cut and the parts already on the server. */
+export type ResumedUpload = OkData<operations['media.multipart-resume']>;

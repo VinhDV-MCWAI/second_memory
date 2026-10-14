@@ -21,22 +21,33 @@ export interface UploadItem {
   state: UploadState;
   message?: string;
   taskId?: string;
+  /** Multipart upload id: set when resuming, or once a large upload has started. */
+  uploadId?: number;
+}
+
+export interface UploadRequest {
+  file: File;
+  /** An unfinished upload of this same file (`media/multipart/unfinished`) to continue. */
+  resumeId?: number;
 }
 
 const FINISHED: UploadState[] = ['done', 'failed', 'cancelled'];
 
 /**
  * Upload queue of the file screen: one file at a time (a large file already sends 4 parts at once).
- * A large file ends "processing" until its background task reports back.
+ * A large file ends "processing" until its background task reports back. `onSettled` runs whenever
+ * an upload stops (done, failed, cancelled), so the list of unfinished uploads can refresh.
  */
-export function useUploads(onFileReady: () => void) {
+export function useUploads(onFileReady: () => void, onSettled: () => void = () => undefined) {
   const [items, setItems] = useState<UploadItem[]>([]);
   const controllers = useRef(new Map<string, AbortController>());
   const queue = useRef<Promise<void>>(Promise.resolve());
   const onReady = useRef(onFileReady);
+  const onStop = useRef(onSettled);
 
   useEffect(() => {
     onReady.current = onFileReady;
+    onStop.current = onSettled;
   });
 
   const patch = (key: string, changes: Partial<UploadItem>) =>
@@ -72,6 +83,8 @@ export function useUploads(onFileReady: () => void) {
       const result = await uploadFile(file, {
         folder: item.folder,
         signal: controller.signal,
+        resumeId: item.uploadId,
+        onStarted: (uploadId) => patch(item.key, { uploadId }),
         onProgress: (loaded) => patch(item.key, { loaded }),
       });
       if (result.kind === 'completed') {
@@ -94,11 +107,12 @@ export function useUploads(onFileReady: () => void) {
       );
     } finally {
       controllers.current.delete(item.key);
+      onStop.current();
     }
   };
 
-  const add = (files: File[], folder: string) => {
-    const added = files.map((file) => {
+  const add = (requests: UploadRequest[], folder: string) => {
+    const added = requests.map(({ file, resumeId }) => {
       const item: UploadItem = {
         key: crypto.randomUUID(),
         name: file.name,
@@ -106,6 +120,7 @@ export function useUploads(onFileReady: () => void) {
         size: file.size,
         loaded: 0,
         state: 'waiting',
+        uploadId: resumeId,
       };
       controllers.current.set(item.key, new AbortController());
       queue.current = queue.current.then(() => run(item, file));

@@ -529,6 +529,40 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/admin/media/multipart/unfinished': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Your large-file uploads that stopped before the end, with the bytes already sent */
+    get: operations['media.multipart-unfinished'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/admin/media/multipart/resume/{id}': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** Resume your unfinished upload: the part size, the number of parts and the parts already sent (send only the others) */
+    post: operations['media.multipart-resume'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/admin/media/multipart/abort/{id}': {
     parameters: {
       query?: never;
@@ -2885,6 +2919,108 @@ export interface operations {
         };
       };
       422: components['responses']['ValidationException'];
+    };
+  };
+  'media.multipart-unfinished': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            data: {
+              id: number;
+              name: string;
+              folder: string;
+              size: number;
+              mime_type: string | null;
+              uploaded_bytes: number;
+              updated_at: string;
+            }[];
+            error: {
+              status: boolean;
+              code: number;
+              messages: null;
+            };
+          };
+        };
+      };
+      401: components['responses']['AuthenticationException'];
+      /** @description Forbidden */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ApiError'];
+        };
+      };
+    };
+  };
+  'media.multipart-resume': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            data: {
+              id: number;
+              part_size: number;
+              part_count: number;
+              parts:
+                | {
+                    part_number: number;
+                    etag: string;
+                    size: number;
+                  }[]
+                | null;
+            };
+            error: {
+              status: boolean;
+              code: number;
+              messages: null;
+            };
+          };
+        };
+      };
+      401: components['responses']['AuthenticationException'];
+      /** @description Forbidden */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ApiError'];
+        };
+      };
+      /** @description Not Found */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ApiError'];
+        };
+      };
     };
   };
   'media.multipart-abort': {

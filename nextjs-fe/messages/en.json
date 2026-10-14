@@ -656,6 +656,17 @@
         "cancelled": "Cancelled"
       }
     },
+    "unfinished": {
+      "title": "Unfinished uploads",
+      "hint": "These uploads stopped midway (page reloaded or connection lost). Choose the same file again (or upload it again into the same folder) to send only the missing part. Unfinished uploads are removed after 24 hours.",
+      "resume": "Resume",
+      "discard": "Discard upload",
+      "discardTitle": "Discard the upload of {name}?",
+      "discardDescription": "The part already sent is deleted. To upload the file later you start from the beginning.",
+      "wrongFile": "Choose the same file: {name}, {size}",
+      "discarded": "Upload discarded",
+      "discardFailed": "Could not discard the upload"
+    },
     "validation": {
       "nameRequired": "Enter a name",
       "nameTooLong": "At most {max} characters",
