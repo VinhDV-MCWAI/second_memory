@@ -110,8 +110,8 @@ fe-test: ## Run admin FE unit tests
 	$(FE) pnpm test --run --coverage
 
 .PHONY: e2e
-e2e: ## Critical-journey E2E (Playwright) against the running stack; see e2e/run.sh
-	bash e2e/run.sh
+e2e: ## Critical-journey E2E (Playwright) against the running stack; see e2e/run.sh (make e2e [env=prod-like])
+	bash e2e/run.sh $(or $(env),dev)
 
 .PHONY: fe-format
 fe-format: ## Format both Next.js apps (Prettier)
@@ -141,6 +141,10 @@ verify: lint analyse openapi-check fe-typecheck test-ci fe-test importer-test ##
 .PHONY: ci
 ci: ## Exactly what GitHub / GitLab CI run: committed code, throwaway containers (make ci [ref=<git ref>])
 	ci/check.sh $(or $(ref),HEAD)
+
+.PHONY: cd
+cd: ## Local CD: make ci → images → deploy the prod-like demo (Terraform) → browser test (make cd [ref=…] [SKIP_CHECK=1])
+	scripts/lane.sh run ci/deploy.sh $(or $(ref),HEAD)
 
 ##@ Ledger importer (tools/ledger-importer, ADR-0010)
 
