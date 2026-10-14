@@ -71,6 +71,8 @@ Mỗi dòng do `scripts/lane.sh done` tự thêm. Không sửa tay.
 
 - 2026-10-14 — [lane main] AUTH-01 done: bdff0fd3, 4eed314b — đổi mật khẩu thì thiết bị khác bị đăng xuất, thiết bị đang dùng giữ phiên (sửa lỗi tự đăng xuất chính mình + lỗi 500 khi mật khẩu null); 86 test + chạy thật trên dev
 
+- 2026-10-14 — [lane main] AUTH-02 done: 52599bf8 — quyền trên giao diện tự lấy lại khi quay lại tab và khi gặp 403 (tối đa 5 giây/lần); 109 test giao diện, lint, typecheck pass
+
 ## Next step
 
 Nhận việc tiếp theo bằng `scripts/lane.sh status`. Làm theo luồng trong [01-goals-and-workflow.md](../../docs/plan/01-goals-and-workflow.md).

@@ -61,7 +61,7 @@ Thêm ngày 2026-10-14, theo thứ tự làm. Lấy từ các mục "chưa làm"
 | Mã | Việc | Kết quả | Trạng thái |
 |---|---|---|---|
 | AUTH-01 | Đổi mật khẩu thì đăng xuất mọi thiết bị khác: viết test chứng minh, thiếu thì sửa | Lộ mật khẩu thì đổi mật khẩu là cắt được người đang dùng | done (bdff0fd3, 4eed314b — đổi mật khẩu thì thiết bị khác bị đăng xuất, thiết bị đang dùng giữ phiên (sửa lỗi tự đăng xuất chính mình + lỗi 500 khi mật khẩu null); 86 test + chạy thật trên dev) |
-| AUTH-02 | Giao diện tự cập nhật quyền: hỏi lại quyền khi quay lại tab và khi gặp lỗi 403 | Đổi quyền thì menu và nút đổi theo, không phải tải lại trang | todo |
+| AUTH-02 | Giao diện tự cập nhật quyền: hỏi lại quyền khi quay lại tab và khi gặp lỗi 403 | Đổi quyền thì menu và nút đổi theo, không phải tải lại trang | done (52599bf8 — quyền trên giao diện tự lấy lại khi quay lại tab và khi gặp 403 (tối đa 5 giây/lần); 109 test giao diện, lint, typecheck pass) |
 | LOG-01 | Màn hình Nhật ký thay đổi: danh sách, lọc theo loại dữ liệu, người làm, thời gian; phân trang | Xem được toàn bộ nhật ký, không chỉ 10 dòng ở trang tổng quan | todo |
 | AUTH-03 | Giới hạn đăng nhập sai theo IP, ngoài giới hạn theo tên + IP đang có | Một IP thử hàng loạt tên đăng nhập bị chặn | todo |
 | AUTH-04 | **[XÁC NHẬN]** Màn hình Phiên đăng nhập: xem thiết bị đang đăng nhập, đăng xuất một thiết bị, đăng xuất mọi nơi khác (thêm bảng DB) | Đá được phiên từ xa | todo |
