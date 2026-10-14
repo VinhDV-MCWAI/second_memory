@@ -77,6 +77,8 @@ Mỗi dòng do `scripts/lane.sh done` tự thêm. Không sửa tay.
 
 - 2026-10-14 — [lane main] AUTH-03 done: 26990056, 5a1df46a — một IP sai 30 lần (mọi tên) bị khóa 15 phút, đăng nhập đúng không xóa bộ đếm IP; 209 test backend, Pint, Larastan pass
 
+- 2026-10-14 — [lane main] MEDIA-05 done: ae7756ce, 2498e113, 8592643e — file lớn bỏ dở (tải lại trang, mất mạng) hiện ở khung Unfinished uploads, chọn lại đúng file thì chỉ gửi phần thiếu; 212 test backend, 117 test giao diện, 5 e2e pass (thử thật trên MinIO)
+
 ## Next step
 
 Nhận việc tiếp theo bằng `scripts/lane.sh status`. Làm theo luồng trong [01-goals-and-workflow.md](../../docs/plan/01-goals-and-workflow.md).

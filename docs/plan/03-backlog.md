@@ -68,7 +68,7 @@ Thêm ngày 2026-10-14, theo thứ tự làm. MEDIA-06, MEDIA-07, LEDGER-01 thê
 | AUTH-03 | Giới hạn đăng nhập sai theo IP, ngoài giới hạn theo tên + IP đang có | Một IP thử hàng loạt tên đăng nhập bị chặn | done (26990056, 5a1df46a — một IP sai 30 lần (mọi tên) bị khóa 15 phút, đăng nhập đúng không xóa bộ đếm IP; 209 test backend, Pint, Larastan pass) |
 | AUTH-04 | **[XÁC NHẬN]** Màn hình Phiên đăng nhập: xem thiết bị đang đăng nhập, đăng xuất một thiết bị, đăng xuất mọi nơi khác (thêm bảng DB) | Đá được phiên từ xa | blocked: tạm dừng (chủ dự án quyết 2026-10-14) |
 | AUTH-05 | **[XÁC NHẬN]** Ghi nhớ đăng nhập | Không phải đăng nhập lại sau 120 phút không dùng | blocked: tạm dừng (chủ dự án quyết 2026-10-14) |
-| MEDIA-05 | Upload dở tiếp tục được sau khi tải lại trang | File lớn không phải gửi lại từ đầu | todo |
+| MEDIA-05 | Upload dở tiếp tục được sau khi tải lại trang | File lớn không phải gửi lại từ đầu | done (ae7756ce, 2498e113, 8592643e — file lớn bỏ dở (tải lại trang, mất mạng) hiện ở khung Unfinished uploads, chọn lại đúng file thì chỉ gửi phần thiếu; 212 test backend, 117 test giao diện, 5 e2e pass (thử thật trên MinIO)) |
 | MEDIA-06 | Xem trước file (ảnh, PDF, video, file chữ) trong màn hình Files | Xem ngay trên trang, không phải tải về | todo |
 | MEDIA-07 | **[XÁC NHẬN]** Thùng rác file: xem file đã xóa, khôi phục trong 30 ngày | Xóa nhầm thì lấy lại được trên giao diện | todo |
 | LEDGER-01 | **[XÁC NHẬN]** Đính kèm file vào bằng chứng (Skill Ledger); trang public hiện file khi bằng chứng công khai | Bằng chứng có ảnh chứng chỉ, PDF… thay vì chỉ có link | todo |
