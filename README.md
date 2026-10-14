@@ -76,7 +76,8 @@ Open <http://localhost:81> (admin) and <http://localhost:81/skills> (public site
 | `make setup` | (re)generate the env files with `scripts/setup-env.sh`; keeps the secrets already in `docker/.env` |
 | `make test` / `make test f=Skill` | backend tests (PHPUnit, on the separate `testing` database) |
 | `make lint` · `make format` | Pint + ESLint + Prettier checks · fix formatting |
-| `make verify` | everything CI would run: lint, Larastan, OpenAPI drift check, type checks, backend + FE + importer tests |
+| `make verify` | lint, Larastan, OpenAPI drift check, type checks, backend + FE + importer tests, in the dev containers |
+| `make ci` | the same gates exactly as GitHub / GitLab run them: committed code, throwaway containers ([ci/README.md](ci/README.md)) |
 | `make openapi` | regenerate `laravel-api/openapi.json` and the admin FE types |
 | `make e2e` | Playwright journey through nginx (login → skill → evidence → search → public page) |
 | `make import vault=<path> [dry=1]` | import published Obsidian notes ([runbook](docs/runbooks/ledger-import.md)) |

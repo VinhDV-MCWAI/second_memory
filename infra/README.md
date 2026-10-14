@@ -25,7 +25,6 @@ Open `http://localhost:9443` (prod-like). Nothing is installed on the host: Terr
 | Path | Content |
 |---|---|
 | `Dockerfile` | Tools image (Terraform; SOPS + age join in P4-09) |
-| `build-images.sh` | Builds the production images from `git archive <ref>`: another lane's uncommitted files never reach an image |
 | `tf.sh` | Runs Terraform for one environment in the tools image; state files get mode 600 |
 | `modules/stack/` | Docker provider: network, volumes, postgres, redis, migrate (one-shot), php-fpm, nextjs, docs, proxy |
 | `live/<env>/stack/` | Root module of an environment: `terraform.tfvars` (no secrets), committed `.terraform.lock.hcl`, local state (git-ignored) |
@@ -39,7 +38,7 @@ Open `http://localhost:9443` (prod-like). Nothing is installed on the host: Terr
 
 ## Production images
 
-Built by `build-images.sh` from the `production` targets of `docker/laravel/Dockerfile` and `docker/nextjs/Dockerfile` (P4-03):
+Built by `ci/build.sh` (`make tf-images`, shared with CI since ADR-0016) from the `production` targets of `docker/laravel/Dockerfile` and `docker/nextjs/Dockerfile` (P4-03):
 
 - **API:** PHP extensions are compiled and their headers / compilers removed in one layer; Composer installs in a separate `vendor` stage and never reaches the final image; files are owned by `laravel` at copy time (the old `chown -R` layer duplicated 291 MB). The entrypoint runs `php artisan optimize` (config, events, routes, views) **at start**, from the container's own environment, then `exec`s the command — so caches always match the environment, and the `migrate` container builds them too. Dev keeps no caches.
 - **Admin and docs:** the build bakes `NEXT_PUBLIC_API_URL=/api` (same origin): the browser calls `/api` on whatever host serves the page, so one tag runs in every environment. The docs app calls the API server-side through `API_INTERNAL_URL` (`http://sm-<env>-proxy:8080/api`).

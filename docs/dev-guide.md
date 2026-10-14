@@ -85,7 +85,8 @@ Chỉ chạy phần liên quan tới thứ vừa sửa. Bộ đầy đủ chỉ 
 | Lỗi kiểu TypeScript | `make fe-typecheck` | khoảng 30 giây |
 | Tự sửa định dạng code | `make format` | vài giây |
 | Luồng chính trên trình duyệt thật (Playwright) | `make e2e` | khoảng 30 giây |
-| Mọi thứ (trước khi merge) | `make verify` | vài phút |
+| Mọi thứ, gồm cả file chưa commit | `make verify` | vài phút |
+| Giống hệt GitHub: code đã commit, container sạch ([ci/README.md](../ci/README.md)) | `scripts/lane.sh run make ci` | khoảng 4–5 phút |
 
 Test dùng một database riêng tên `testing`, không đụng dữ liệu dev.
 

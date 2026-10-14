@@ -75,7 +75,7 @@ Những phần dưới đây giữ nguyên code, không phát triển tiếp cho
 |---|---|---|
 | Dựng staging / production bằng Terraform | `infra/` | Chỉ cần khi sản phẩm hoàn thiện |
 | Đo tải, đo hiệu năng | `perf/` | Đo sau khi có đủ tính năng |
-| CI/CD tự động trên GitHub | `.github/workflows/`, `ci-cd/` | Chạy tự động thì làm chậm việc merge khi làm một mình; giai đoạn 5 sẽ gộp lại, test rồi để tắt |
+| CI/CD tự động trên GitHub, GitLab | `ci/`, `.github/workflows/`, `.gitlab-ci.yml` | Chạy tự động thì làm chậm việc merge khi làm một mình. Đã gộp vào `ci/` ([ADR-0016](../adr/0016-ci-shared-folder.md)), chỉ chạy tay; trên máy dùng `make ci` |
 | Giám sát, mô phỏng sự cố | (chưa có) | Làm sau production |
 
 ## Quy ước viết tài liệu
