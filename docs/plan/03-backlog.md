@@ -42,7 +42,7 @@ Các giai đoạn 2–5 mới ghi ở mức việc lớn; khi bắt đầu giai 
 | Mã | Việc | Kết quả | Trạng thái |
 |---|---|---|---|
 | USER-01 | Đề xuất thiết kế dựa trên bản `v1.0.0` | Đề xuất được xác nhận | done (a9f776c2 — chủ dự án quyết để sau cả người dùng cuối, phòng ban, chính sách (ADR-0015); phạm vi hiện tại chỉ phân quyền theo vai trò) |
-| USER-02 | Quản lý người dùng cuối: API + giao diện + test | Màn hình người dùng cuối | todo |
+| USER-02 | Quản lý người dùng cuối: API + giao diện + test | Màn hình người dùng cuối | doing |
 | USER-03 | Phòng ban, chính sách phòng ban, gán admin vào phòng ban: API + giao diện + test | Màn hình phòng ban, chính sách | todo |
 
 ## 5. CI/CD gộp chung, rồi tắt
