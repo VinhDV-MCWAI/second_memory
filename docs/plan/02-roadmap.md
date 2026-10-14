@@ -59,7 +59,7 @@ Mỗi giai đoạn bắt đầu bằng **một đề xuất thiết kế** để
 | | |
 |---|---|
 | Mục tiêu | Làm nốt các mục "chưa làm" đã ghi trong tài liệu tính năng, chỉ trên dev |
-| Gồm | Đổi mật khẩu thì đăng xuất thiết bị khác; giao diện tự cập nhật quyền; màn hình Nhật ký thay đổi; giới hạn đăng nhập sai theo IP; màn hình Phiên đăng nhập; ghi nhớ đăng nhập; upload dở tiếp tục sau khi tải lại trang |
+| Gồm | Đổi mật khẩu thì đăng xuất thiết bị khác; giao diện tự cập nhật quyền; màn hình Nhật ký thay đổi; giới hạn đăng nhập sai theo IP; màn hình Phiên đăng nhập; ghi nhớ đăng nhập (hai việc đăng nhập này tạm dừng từ 2026-10-14); upload dở tiếp tục sau khi tải lại trang; xem trước file; thùng rác file; đính kèm file vào bằng chứng |
 | Xong khi | Mỗi việc có test và mô tả trong `docs/features/` |
 
 ## 7. Sau cùng (chi tiết hóa khi tới)

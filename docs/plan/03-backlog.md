@@ -58,7 +58,7 @@ Các giai đoạn 2–6 mới ghi ở mức việc lớn; khi bắt đầu giai 
 
 **Tạm dừng mọi việc liên quan đến đăng nhập** (chủ dự án quyết 2026-10-14): AUTH-04, AUTH-05 và các mục "Nâng cấp để dành" trong [đăng nhập](../features/dang-nhap.md) chỉ làm khi chủ dự án yêu cầu. Không tự đề xuất, kể cả khi phát hiện việc mới về đăng nhập.
 
-Thêm ngày 2026-10-14, theo thứ tự làm. Lấy từ các mục "chưa làm" trong [đăng nhập](../features/dang-nhap.md), [nhật ký thay đổi](../features/nhat-ky-thay-doi.md) và [ADR-0014](../adr/0014-media-minio-upload.md).
+Thêm ngày 2026-10-14, theo thứ tự làm. MEDIA-06, MEDIA-07, LEDGER-01 thêm theo chủ dự án chọn ngày 2026-10-14. Lấy từ các mục "chưa làm" trong [đăng nhập](../features/dang-nhap.md), [nhật ký thay đổi](../features/nhat-ky-thay-doi.md) và [ADR-0014](../adr/0014-media-minio-upload.md).
 
 | Mã | Việc | Kết quả | Trạng thái |
 |---|---|---|---|
@@ -69,6 +69,9 @@ Thêm ngày 2026-10-14, theo thứ tự làm. Lấy từ các mục "chưa làm"
 | AUTH-04 | **[XÁC NHẬN]** Màn hình Phiên đăng nhập: xem thiết bị đang đăng nhập, đăng xuất một thiết bị, đăng xuất mọi nơi khác (thêm bảng DB) | Đá được phiên từ xa | blocked: tạm dừng (chủ dự án quyết 2026-10-14) |
 | AUTH-05 | **[XÁC NHẬN]** Ghi nhớ đăng nhập | Không phải đăng nhập lại sau 120 phút không dùng | blocked: tạm dừng (chủ dự án quyết 2026-10-14) |
 | MEDIA-05 | Upload dở tiếp tục được sau khi tải lại trang | File lớn không phải gửi lại từ đầu | todo |
+| MEDIA-06 | Xem trước file (ảnh, PDF, video, file chữ) trong màn hình Files | Xem ngay trên trang, không phải tải về | todo |
+| MEDIA-07 | **[XÁC NHẬN]** Thùng rác file: xem file đã xóa, khôi phục trong 30 ngày | Xóa nhầm thì lấy lại được trên giao diện | todo |
+| LEDGER-01 | **[XÁC NHẬN]** Đính kèm file vào bằng chứng (Skill Ledger); trang public hiện file khi bằng chứng công khai | Bằng chứng có ảnh chứng chỉ, PDF… thay vì chỉ có link | todo |
 
 ## 7. Sau cùng
 

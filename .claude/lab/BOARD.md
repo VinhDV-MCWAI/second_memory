@@ -52,3 +52,6 @@ Phạm vi: cả repo. Mỗi lúc chỉ làm một việc.
 | AUTH-04 | **[XÁC NHẬN]** Màn hình Phiên đăng nhập: xem thiết bị, đăng xuất từ xa (thêm bảng DB) | [dang-nhap.md mục 1](../../docs/features/dang-nhap.md) | AUTH-03 | blocked: tạm dừng mọi việc đăng nhập theo yêu cầu chủ dự án 2026-10-14, chỉ làm khi chủ dự án yêu cầu |
 | AUTH-05 | **[XÁC NHẬN]** Ghi nhớ đăng nhập (tạm dừng 2026-10-14, chỉ làm khi chủ dự án yêu cầu) | [dang-nhap.md mục 5](../../docs/features/dang-nhap.md) | AUTH-04 | todo |
 | MEDIA-05 | Upload dở tiếp tục được sau khi tải lại trang | [ADR-0014](../../docs/adr/0014-media-minio-upload.md) | AUTH-03 | todo |
+| MEDIA-06 | Xem trước file (ảnh, PDF, video, file chữ) trong màn hình Files | [quan-ly-file.md](../../docs/features/quan-ly-file.md) | MEDIA-05 | todo |
+| MEDIA-07 | **[XÁC NHẬN]** Thùng rác file: xem file đã xóa, khôi phục trong 30 ngày | [quan-ly-file.md](../../docs/features/quan-ly-file.md) | MEDIA-06 | todo |
+| LEDGER-01 | **[XÁC NHẬN]** Đính kèm file vào bằng chứng (Skill Ledger), hiện trên trang public khi bằng chứng công khai | [skill-ledger.md](../../docs/features/skill-ledger.md) | MEDIA-07 | todo |
