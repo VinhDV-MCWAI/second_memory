@@ -8,6 +8,7 @@ use App\Enums\UploadStatus;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Carbon;
 
 /**
  * A file or a folder of the file manager (ADR-0014). Folders exist only here; a file's bytes live in
@@ -28,6 +29,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property bool $is_delete
  * @property int|null $created_by
  * @property int|null $updated_by
+ * @property Carbon|null $updated_at
  */
 class MediaMgmt extends Model
 {

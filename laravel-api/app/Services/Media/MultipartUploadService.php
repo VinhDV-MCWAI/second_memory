@@ -93,6 +93,56 @@ final class MultipartUploadService
     }
 
     /**
+     * Your large-file uploads that stopped before the end (page reloaded, network lost), to resume.
+     * One whose parts MinIO no longer holds is failed and left out.
+     *
+     * @return list<array{id: int, name: string, folder: string, size: int, mime_type: string|null, uploaded_bytes: int, updated_at: string}>
+     */
+    public function unfinished(): array
+    {
+        $uploads = [];
+        foreach ($this->media->unfinishedUploadsOf((int) Auth::id()) as $file) {
+            $parts = $this->storage->listParts((string) $file->minio_object_key, (string) $file->upload_id);
+            if ($parts === null) {
+                $this->fail($file);
+
+                continue;
+            }
+            $uploads[] = [
+                'id' => $file->id,
+                'name' => $file->original_name,
+                'folder' => $this->mediaService->parentOf($file->virtual_path),
+                'size' => (int) $file->size,
+                'mime_type' => $file->mime_type,
+                'uploaded_bytes' => array_sum(array_column($parts, 'size')),
+                'updated_at' => $file->updated_at?->toIso8601String() ?? '',
+            ];
+        }
+
+        return $uploads;
+    }
+
+    /**
+     * Pick an unfinished upload up again: how the file is cut and the parts MinIO already holds, so the
+     * browser sends only the rest. Resets the clock of `media:clean-stuck-uploads`.
+     *
+     * @return array{id: int, part_size: int, part_count: int, parts: list<array{part_number: int, etag: string, size: int}>}
+     */
+    public function resume(int $id): array
+    {
+        $file = $this->ownUpload($id);
+        $parts = $this->storage->listParts((string) $file->minio_object_key, (string) $file->upload_id);
+        if ($parts === null) {
+            // Gone from MinIO; the row is failed by unfinished() or the hourly clean-up (this write would roll back)
+            throw (new ModelNotFoundException)->setModel(MediaMgmt::class, [$id]);
+        }
+        $file->touch();
+        $size = (int) $file->size;
+
+        return ['id' => $file->id, 'part_size' => self::partSize($size), 'part_count' => self::partCount($size), 'parts' => $parts];
+    }
+
+    /**
      * Every part is up: the file takes its name ("processing") and a background job joins and checks it.
      *
      * @param  list<array{part_number: int, etag: string}>  $parts

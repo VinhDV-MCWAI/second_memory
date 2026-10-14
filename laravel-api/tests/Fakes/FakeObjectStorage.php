@@ -77,6 +77,19 @@ final class FakeObjectStorage extends ObjectStorage
         $this->put($key, array_sum($upload['parts']));
     }
 
+    public function listParts(string $key, string $uploadId): ?array
+    {
+        if (! isset($this->multipart[$uploadId])) {
+            return null;
+        }
+        $parts = [];
+        foreach ($this->multipart[$uploadId]['parts'] as $number => $size) {
+            $parts[] = ['part_number' => $number, 'etag' => "etag-{$number}", 'size' => $size];
+        }
+
+        return $parts;
+    }
+
     public function abortMultipartUpload(string $key, string $uploadId): void
     {
         unset($this->multipart[$uploadId]);

@@ -3425,6 +3425,230 @@
                 }
             }
         },
+        "/admin/media/multipart/unfinished": {
+            "get": {
+                "operationId": "media.multipart-unfinished",
+                "summary": "Your large-file uploads that stopped before the end, with the bytes already sent",
+                "tags": [
+                    "MultipartUpload"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "integer"
+                                                    },
+                                                    "name": {
+                                                        "type": "string"
+                                                    },
+                                                    "folder": {
+                                                        "type": "string"
+                                                    },
+                                                    "size": {
+                                                        "type": "integer"
+                                                    },
+                                                    "mime_type": {
+                                                        "type": [
+                                                            "string",
+                                                            "null"
+                                                        ]
+                                                    },
+                                                    "uploaded_bytes": {
+                                                        "type": "integer"
+                                                    },
+                                                    "updated_at": {
+                                                        "type": "string"
+                                                    }
+                                                },
+                                                "required": [
+                                                    "id",
+                                                    "name",
+                                                    "folder",
+                                                    "size",
+                                                    "mime_type",
+                                                    "uploaded_bytes",
+                                                    "updated_at"
+                                                ]
+                                            }
+                                        },
+                                        "error": {
+                                            "type": "object",
+                                            "properties": {
+                                                "status": {
+                                                    "type": "boolean"
+                                                },
+                                                "code": {
+                                                    "type": "integer"
+                                                },
+                                                "messages": {
+                                                    "type": "null"
+                                                }
+                                            },
+                                            "required": [
+                                                "status",
+                                                "code",
+                                                "messages"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data",
+                                        "error"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/admin/media/multipart/resume/{id}": {
+            "post": {
+                "operationId": "media.multipart-resume",
+                "summary": "Resume your unfinished upload: the part size, the number of parts and the parts already sent (send only the others)",
+                "tags": [
+                    "MultipartUpload"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer"
+                                                },
+                                                "part_size": {
+                                                    "type": "integer"
+                                                },
+                                                "part_count": {
+                                                    "type": "integer"
+                                                },
+                                                "parts": {
+                                                    "type": [
+                                                        "array",
+                                                        "null"
+                                                    ],
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "part_number": {
+                                                                "type": "integer"
+                                                            },
+                                                            "etag": {
+                                                                "type": "string"
+                                                            },
+                                                            "size": {
+                                                                "type": "integer"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "part_number",
+                                                            "etag",
+                                                            "size"
+                                                        ]
+                                                    }
+                                                }
+                                            },
+                                            "required": [
+                                                "id",
+                                                "part_size",
+                                                "part_count",
+                                                "parts"
+                                            ]
+                                        },
+                                        "error": {
+                                            "type": "object",
+                                            "properties": {
+                                                "status": {
+                                                    "type": "boolean"
+                                                },
+                                                "code": {
+                                                    "type": "integer"
+                                                },
+                                                "messages": {
+                                                    "type": "null"
+                                                }
+                                            },
+                                            "required": [
+                                                "status",
+                                                "code",
+                                                "messages"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data",
+                                        "error"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiError"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/admin/media/multipart/abort/{id}": {
             "post": {
                 "operationId": "media.multipart-abort",

@@ -14,6 +14,7 @@ use App\Services\Media\MultipartUploadService;
 /**
  * Large-file upload in parts (ADR-0014): start → part URLs (in batches) → PUT each part to MinIO →
  * complete (a background job joins and checks the file, the result arrives live) or abort.
+ * An upload cut off midway (reload, network) is listed by unfinished and picked up again with resume.
  */
 class MultipartUploadController extends Controller
 {
@@ -37,6 +38,26 @@ class MultipartUploadController extends Controller
     public function partUrls(PartUrlsRequest $request, string $id): array
     {
         return $this->uploads->partUrls((int) $id, $request->validated('part_numbers'));
+    }
+
+    /**
+     * Your large-file uploads that stopped before the end, with the bytes already sent
+     *
+     * @return list<array{id: int, name: string, folder: string, size: int, mime_type: string|null, uploaded_bytes: int, updated_at: string}>
+     */
+    public function unfinished(): array
+    {
+        return $this->uploads->unfinished();
+    }
+
+    /**
+     * Resume your unfinished upload: the part size, the number of parts and the parts already sent (send only the others)
+     *
+     * @return array{id: int, part_size: int, part_count: int, parts: list<array{part_number: int, etag: string, size: int}>}
+     */
+    public function resume(string $id): array
+    {
+        return $this->uploads->resume((int) $id);
     }
 
     /**

@@ -91,6 +91,33 @@ class ObjectStorage
         ]);
     }
 
+    /**
+     * Parts MinIO already holds for an unfinished upload, or null when the upload is gone.
+     *
+     * @return list<array{part_number: int, etag: string, size: int}>|null
+     */
+    public function listParts(string $key, string $uploadId): ?array
+    {
+        $parts = [];
+        $marker = 0;
+        do {
+            try {
+                $result = $this->internalClient()->listParts(['Bucket' => $this->bucket(), 'Key' => $key, 'UploadId' => $uploadId, 'PartNumberMarker' => $marker]);
+            } catch (S3Exception $e) {
+                if ($e->getStatusCode() === self::HTTP_NOT_FOUND) {
+                    return null;
+                }
+                throw $e;
+            }
+            foreach ($result['Parts'] ?? [] as $part) {
+                $parts[] = ['part_number' => (int) $part['PartNumber'], 'etag' => trim((string) $part['ETag'], '"'), 'size' => (int) $part['Size']];
+            }
+            $marker = (int) ($result['NextPartNumberMarker'] ?? 0);
+        } while ((bool) ($result['IsTruncated'] ?? false));
+
+        return $parts;
+    }
+
     /** Drops the uploaded parts; an upload that is already gone (finished, aborted, expired) is fine. */
     public function abortMultipartUpload(string $key, string $uploadId): void
     {

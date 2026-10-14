@@ -277,7 +277,7 @@ final class MediaService
         return $path;
     }
 
-    private function parentOf(string $path): string
+    public function parentOf(string $path): string
     {
         $parent = substr($path, 0, (int) strrpos($path, MediaConst::PATH_SEPARATOR));
 

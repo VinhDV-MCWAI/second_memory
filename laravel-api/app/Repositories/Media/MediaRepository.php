@@ -123,6 +123,21 @@ class MediaRepository extends BaseRepository
     }
 
     /**
+     * Multipart uploads an admin started and has not finished, newest first.
+     *
+     * @return Collection<int, MediaMgmt>
+     */
+    public function unfinishedUploadsOf(int $adminId): Collection
+    {
+        return $this->query()->live()
+            ->where('upload_status', UploadStatus::UPLOADING->value)
+            ->whereNotNull('upload_id')
+            ->where('created_by', $adminId)
+            ->orderByDesc('updated_at')
+            ->get();
+    }
+
+    /**
      * @param  list<int>  $ids
      */
     public function markDeleted(array $ids, ?int $actorId): void

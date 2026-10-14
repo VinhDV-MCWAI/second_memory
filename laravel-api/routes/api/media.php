@@ -20,4 +20,6 @@ Route::post('media/delete', [MediaController::class, 'delete'])->name('media.del
 Route::post('media/multipart/start', [MultipartUploadController::class, 'start'])->name('media.multipart-start');
 Route::post('media/multipart/part-urls/{id}', [MultipartUploadController::class, 'partUrls'])->name('media.multipart-part-urls');
 Route::post('media/multipart/complete/{id}', [MultipartUploadController::class, 'complete'])->name('media.multipart-complete');
+Route::get('media/multipart/unfinished', [MultipartUploadController::class, 'unfinished'])->name('media.multipart-unfinished');
+Route::post('media/multipart/resume/{id}', [MultipartUploadController::class, 'resume'])->name('media.multipart-resume');
 Route::post('media/multipart/abort/{id}', [MultipartUploadController::class, 'abort'])->name('media.multipart-abort');

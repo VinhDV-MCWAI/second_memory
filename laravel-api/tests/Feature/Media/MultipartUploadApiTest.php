@@ -112,6 +112,69 @@ final class MultipartUploadApiTest extends TestCase
         $this->call('POST', self::BASE."/abort/{$id}", [], $this->owner)->assertStatus(CommonVal::HTTP_NOT_FOUND);
     }
 
+    public function test_an_unfinished_upload_is_listed_and_resumed_with_only_the_missing_parts(): void
+    {
+        $id = $this->start('movie.mkv');
+        // The page was reloaded after two parts
+        $uploadId = (string) MediaMgmt::query()->findOrFail($id)->upload_id;
+        $sent = [
+            ['part_number' => 1, 'etag' => $this->storage->uploadPart($uploadId, 1, 16 * self::MB)],
+            ['part_number' => 2, 'etag' => $this->storage->uploadPart($uploadId, 2, 16 * self::MB)],
+        ];
+
+        $this->call('GET', self::BASE.'/unfinished', [], $this->owner)->assertOk()
+            ->assertJsonCount(1, 'data')
+            ->assertJsonPath('data.0.id', $id)
+            ->assertJsonPath('data.0.name', 'movie.mkv')
+            ->assertJsonPath('data.0.folder', MediaConst::ROOT)
+            ->assertJsonPath('data.0.size', self::SIZE)
+            ->assertJsonPath('data.0.uploaded_bytes', 32 * self::MB);
+
+        // Resuming late in the day restarts the clean-up clock
+        $this->travel(MediaConst::STUCK_UPLOAD_HOURS - 1)->hours();
+        $resume = $this->call('POST', self::BASE."/resume/{$id}", [], $this->owner)->assertOk()
+            ->assertJsonPath('data.part_size', 16 * self::MB)->assertJsonPath('data.part_count', 4)->json('data');
+        $this->assertSame([1, 2], array_column($resume['parts'], 'part_number'));
+        $this->travel(2)->hours();
+        $this->artisan('media:clean-stuck-uploads')->expectsOutput('Cleaned 0 stuck upload(s).')->assertSuccessful();
+
+        $parts = [
+            ...array_map(fn (array $part): array => ['part_number' => $part['part_number'], 'etag' => $part['etag']], $resume['parts']),
+            ['part_number' => 3, 'etag' => $this->storage->uploadPart($uploadId, 3, 16 * self::MB)],
+            ['part_number' => 4, 'etag' => $this->storage->uploadPart($uploadId, 4, 2 * self::MB)],
+        ];
+        $this->assertSame($sent, array_slice($parts, 0, 2));
+
+        $this->call('POST', self::BASE."/complete/{$id}", ['parts' => $parts], $this->owner)->assertOk();
+        $this->assertSame(UploadStatus::COMPLETED, MediaMgmt::query()->findOrFail($id)->upload_status);
+        $this->call('GET', self::BASE.'/unfinished', [], $this->owner)->assertOk()->assertJsonCount(0, 'data');
+    }
+
+    public function test_only_your_own_unfinished_uploads_can_be_resumed(): void
+    {
+        $id = $this->start('mine.bin');
+
+        $other = $this->loginAsOwner(AdminMst::factory()->create());
+        $this->call('GET', self::BASE.'/unfinished', [], $other)->assertOk()->assertJsonCount(0, 'data');
+        $this->call('POST', self::BASE."/resume/{$id}", [], $other)->assertStatus(CommonVal::HTTP_NOT_FOUND);
+
+        $viewer = $this->loginAs(AdminMst::factory()->create());
+        $this->call('POST', self::BASE."/resume/{$id}", [], $viewer)->assertStatus(CommonVal::HTTP_FORBIDDEN);
+    }
+
+    public function test_an_upload_minio_no_longer_holds_is_failed_instead_of_resumed(): void
+    {
+        $gone = $this->start('gone.bin');
+        $kept = $this->start('kept.bin');
+        unset($this->storage->multipart['upload-1']);
+
+        $this->call('GET', self::BASE.'/unfinished', [], $this->owner)->assertOk()->assertJsonCount(1, 'data')->assertJsonPath('data.0.id', $kept);
+        $this->assertTrue(MediaMgmt::query()->findOrFail($gone)->is_delete);
+
+        unset($this->storage->multipart['upload-2']);
+        $this->call('POST', self::BASE."/resume/{$kept}", [], $this->owner)->assertStatus(CommonVal::HTTP_NOT_FOUND);
+    }
+
     public function test_validation_and_viewer(): void
     {
         $this->call('POST', self::BASE.'/start', ['name' => 'huge.bin', 'size' => MediaConst::MAX_FILE_BYTES + 1, 'mime_type' => 'application/octet-stream'], $this->owner)
