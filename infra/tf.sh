@@ -2,7 +2,7 @@
 # Run Terraform for one environment in the pinned tools image (infra/Dockerfile); nothing on the host.
 #
 # Usage: infra/tf.sh <env> <plan|apply|destroy|output|validate|fmt|init> [terraform args...]
-#   TAG=<image tag>   images to run (default: short SHA of HEAD; build them with infra/build-images.sh)
+#   TAG=<image tag>   images to run (default: short SHA of HEAD; build them with ci/build.sh)
 # Wrapped by `make tf-plan|tf-apply|tf-destroy env=…`, which also goes through scripts/lane.sh run.
 # Idempotent: init runs every time (no-op when providers are installed), apply converges.
 set -euo pipefail

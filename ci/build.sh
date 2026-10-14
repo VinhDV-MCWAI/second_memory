@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
-# Build the production images the Terraform environments run (ADR-0011: Terraform never builds).
+# Build the production images (ADR-0011: Terraform never builds; ADR-0016: CI and `make tf-images` share this script).
 # The build context is `git archive <ref>`, so only committed code goes in: another lane's
 # uncommitted work in the shared tree never ends up in an image.
 #
-# Usage: infra/build-images.sh [ref] [app...]   (default: HEAD, all three apps)
-#   e.g. infra/build-images.sh HEAD api
+# Usage: ci/build.sh [ref] [app...]   (default: HEAD, all three apps)
+#   e.g. ci/build.sh HEAD api
 # Tags: sm-<app>:<short sha of ref>. Idempotent: rebuilding a tag reuses the layer cache.
 set -euo pipefail
 

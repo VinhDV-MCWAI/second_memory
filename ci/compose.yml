@@ -1,0 +1,81 @@
+# Throwaway environment for ci/check.sh (ADR-0016): its own Postgres + Redis, no ports, no shared
+# volumes with the dev stack. ci/check.sh sets the variables below and removes everything afterwards.
+#   CI_SRC    `git archive` copy of the commit under test
+#   CI_CACHE  host folder for Composer and pnpm downloads, kept between runs
+#   CI_UID / CI_GID  the caller's user, so files in CI_SRC and CI_CACHE stay removable
+name: sm-ci
+
+services:
+  postgres:
+    image: postgres:16.15-alpine3.24
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      # phpunit.xml forces DB_DATABASE=testing
+      POSTGRES_DB: testing
+    tmpfs:
+      - /var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d testing"]
+      interval: 2s
+      timeout: 5s
+      retries: 30
+
+  redis:
+    image: redis:7.4.11-alpine3.21
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 2s
+      timeout: 3s
+      retries: 30
+
+  php:
+    build:
+      context: ${CI_SRC}/laravel-api
+      dockerfile: ${CI_SRC}/docker/laravel/Dockerfile
+      target: development
+      args:
+        UID: ${CI_UID}
+        GID: ${CI_GID}
+    entrypoint: []
+    working_dir: /var/www/laravel-api
+    volumes:
+      - ${CI_SRC}/laravel-api:/var/www/laravel-api
+      - ${CI_CACHE}/composer:/cache/composer
+    # Real env vars win over the committed laravel-api/.env.testing
+    environment:
+      APP_ENV: testing
+      DB_CONNECTION: pgsql
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_DATABASE: testing
+      DB_USERNAME: postgres
+      DB_PASSWORD: postgres
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      # Laravel's env() turns the string "null" into null (no AUTH)
+      REDIS_PASSWORD: "null"
+      COMPOSER_CACHE_DIR: /cache/composer
+      XDEBUG_MODE: "off"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  node:
+    build:
+      context: ${CI_SRC}
+      dockerfile: ${CI_SRC}/docker/nextjs/Dockerfile
+      # pnpm pinned by the root package.json, nothing installed yet: the whole workspace is installed at run time
+      target: base
+    user: "${CI_UID}:${CI_GID}"
+    working_dir: /repo
+    volumes:
+      - ${CI_SRC}:/repo
+      - ${CI_CACHE}/pnpm:/cache/pnpm
+    environment:
+      HOME: /tmp
+      CI: "true"
+      COREPACK_ENABLE_DOWNLOAD_PROMPT: "0"
+      npm_config_store_dir: /cache/pnpm

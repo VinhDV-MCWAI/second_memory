@@ -132,11 +132,15 @@ lint: ## All linters/format checks (backend + frontend)
 	$(MAKE) importer-lint
 
 .PHONY: openapi-check
-openapi-check: openapi ## Fail if openapi.json or the FE types were stale (CI is paused, so make verify runs this)
+openapi-check: openapi ## Fail if openapi.json or the FE types were stale (make ci runs the same check)
 	git diff --exit-code -- laravel-api/openapi.json nextjs-fe/src/shared/types/openapi.d.ts || { echo "OpenAPI spec or FE types were stale: review and commit the regenerated files"; exit 1; }
 
 .PHONY: verify
-verify: lint analyse openapi-check fe-typecheck test-ci fe-test importer-test ## Everything CI runs, plus the OpenAPI drift check
+verify: lint analyse openapi-check fe-typecheck test-ci fe-test importer-test ## Quick gate in the dev containers (includes uncommitted changes)
+
+.PHONY: ci
+ci: ## Exactly what GitHub / GitLab CI run: committed code, throwaway containers (make ci [ref=<git ref>])
+	ci/check.sh $(or $(ref),HEAD)
 
 ##@ Ledger importer (tools/ledger-importer, ADR-0010)
 
@@ -176,7 +180,7 @@ TF_ENV := $(or $(env),prod-like)
 
 .PHONY: tf-images
 tf-images: ## Build the production images from committed code (make tf-images [ref=<git ref>])
-	infra/build-images.sh $(or $(ref),HEAD)
+	ci/build.sh $(or $(ref),HEAD)
 
 .PHONY: tf-plan
 tf-plan: ## Terraform plan (make tf-plan [env=prod-like] [tag=<image tag>])
