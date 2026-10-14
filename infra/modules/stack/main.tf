@@ -44,6 +44,9 @@ locals {
     "REDIS_PORT=6379",
     "REDIS_PASSWORD=${random_password.redis.result}",
     "SESSION_DRIVER=redis",
+    # The admin app treats a request as signed in when this cookie exists (SESSION_COOKIE_NAME in
+    # nextjs-fe/src/shared/config/constant.ts); without it Laravel derives the name from APP_NAME
+    "SESSION_COOKIE=laravel_session",
     "CACHE_STORE=redis",
     # Background jobs and live notifications (ADR-0014): queue on Redis, Reverb in its own container
     "QUEUE_CONNECTION=redis",
