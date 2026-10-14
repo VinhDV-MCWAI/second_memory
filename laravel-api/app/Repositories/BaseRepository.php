@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Repositories;
 
+use App\Constants\CommonVal;
 use App\Enums\IsDelete;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
@@ -50,13 +51,14 @@ abstract class BaseRepository
      */
     protected function applyDateRange($query, array $payload, string $dateField = 'updated_at'): void
     {
+        // The requests validate CommonVal::DATE_FORMAT (d/m/Y); Carbon::parse would read it as m/d/Y
         if (isset($payload['from_date'])) {
-            $fromDate = Carbon::parse($payload['from_date']);
+            $fromDate = Carbon::createFromFormat(CommonVal::DATE_FORMAT, $payload['from_date'])->startOfDay();
             $query->whereDate($dateField, '>=', $fromDate);
         }
 
         if (isset($payload['to_date'])) {
-            $toDate = Carbon::parse($payload['to_date']);
+            $toDate = Carbon::createFromFormat(CommonVal::DATE_FORMAT, $payload['to_date'])->startOfDay();
             $query->whereDate($dateField, '<=', $toDate);
         }
     }

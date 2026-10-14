@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Tests\Feature\Audit;
 
 use App\Constants\CommonVal;
+use App\Enums\AuditEvent;
+use App\Models\Audit\AuditLog;
 use App\Models\Master\AdminMst;
 use Tests\Concerns\AuthenticatesAdmins;
 use Tests\TestCase;
@@ -56,5 +58,24 @@ final class AuditLogListTest extends TestCase
 
         $this->call('GET', self::URL, ['event' => 'hacked'], $cookies)
             ->assertStatus(CommonVal::HTTP_UNPROCESSABLE_CONTENT);
+    }
+
+    public function test_filters_by_day_month_year_dates(): void
+    {
+        $cookies = $this->loginAs(AdminMst::factory()->create());
+        foreach (['2026-01-02 09:00:00', '2026-02-01 09:00:00', '2026-10-14 23:30:00'] as $at) {
+            AuditLog::query()->create(['auditable_type' => 'tag', 'event' => AuditEvent::CREATED, 'created_at' => $at]);
+        }
+
+        // 02/01/2026 is 2 January, not 1 February
+        $this->call('GET', self::URL, ['auditable_type' => 'tag', 'from_date' => '02/01/2026', 'to_date' => '02/01/2026'], $cookies)
+            ->assertOk()
+            ->assertJsonCount(1, 'data.data')
+            ->assertJsonPath('data.data.0.created_at', '2026-01-02T09:00:00+00:00');
+
+        // A day above 12 used to fail with 500; the whole last day is included
+        $this->call('GET', self::URL, ['auditable_type' => 'tag', 'from_date' => '14/10/2026', 'to_date' => '14/10/2026'], $cookies)
+            ->assertOk()
+            ->assertJsonCount(1, 'data.data');
     }
 }
