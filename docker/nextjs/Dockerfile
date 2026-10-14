@@ -31,8 +31,12 @@ COPY ${APP} ./${APP}
 # Same-origin API path: the browser calls /api on whatever host serves the page (the proxy routes
 # it to php-fpm), so one image tag runs in every environment (ADR-0011). Only nextjs-fe reads it.
 ARG NEXT_PUBLIC_API_URL=/api
+# Reverb app key: public (every browser sees it), so one value is baked for every environment;
+# the Terraform stack gives Reverb the same key (infra/modules/stack, variable reverb_app_key)
+ARG NEXT_PUBLIC_REVERB_APP_KEY=second-memory
 ENV NODE_ENV=production \
-  NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}
+  NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL} \
+  NEXT_PUBLIC_REVERB_APP_KEY=${NEXT_PUBLIC_REVERB_APP_KEY}
 RUN pnpm --filter "./${APP}" build
 
 # ============ Production runner (Next.js standalone output) ============

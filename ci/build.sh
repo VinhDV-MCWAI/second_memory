@@ -3,7 +3,7 @@
 # The build context is `git archive <ref>`, so only committed code goes in: another lane's
 # uncommitted work in the shared tree never ends up in an image.
 #
-# Usage: ci/build.sh [ref] [app...]   (default: HEAD, all three apps)
+# Usage: ci/build.sh [ref] [app...]   (default: HEAD, every app: api nextjs-fe nextjs-docs minio)
 #   e.g. ci/build.sh HEAD api
 # Tags: sm-<app>:<short sha of ref>. Idempotent: rebuilding a tag reuses the layer cache.
 set -euo pipefail
@@ -13,7 +13,7 @@ cd "$(dirname "$0")/.."
 ref=${1:-HEAD}
 shift || true
 apps=("$@")
-[ ${#apps[@]} -gt 0 ] || apps=(api nextjs-fe nextjs-docs)
+[ ${#apps[@]} -gt 0 ] || apps=(api nextjs-fe nextjs-docs minio)
 tag=$(git rev-parse --short "$ref")
 
 src=$(mktemp -d)
@@ -32,8 +32,12 @@ for app in "${apps[@]}"; do
       docker build -q -t "sm-$app:$tag" --target production --build-arg "APP=$app" \
         -f "$src/docker/nextjs/Dockerfile" "$src"
       ;;
+    minio)
+      # Pinned community MinIO running as an unprivileged user (docker/minio/Dockerfile)
+      docker build -q -t "sm-minio:$tag" "$src/docker/minio"
+      ;;
     *)
-      echo "unknown app '$app' (api, nextjs-fe, nextjs-docs)" >&2
+      echo "unknown app '$app' (api, nextjs-fe, nextjs-docs, minio)" >&2
       exit 1
       ;;
   esac
