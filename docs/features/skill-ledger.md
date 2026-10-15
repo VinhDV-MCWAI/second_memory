@@ -47,7 +47,7 @@ Kỹ năng, nhãn, bằng chứng, mục tiêu học dùng chung một kiểu b�
 | Kỹ năng | Tạo kỹ năng là ghi luôn cấp độ đầu tiên. Đường dẫn công khai (`slug`) tự sinh từ tên, không trùng. Chỉ kỹ năng bật "công khai" mới hiện ở [trang public](trang-public.md) |
 | Lịch sử cấp độ | Chỉ thêm, không sửa, không xóa. Mỗi lần thêm: cập nhật cấp độ hiện tại của kỹ năng theo dòng mới nhất, và tự đánh dấu **đã đạt** các mục tiêu đang mở có cấp độ đích ≤ cấp độ mới |
 | Mục tiêu học | Trạng thái: đang mở / đã đạt / bỏ. Cấp độ đích phải cao hơn cấp độ hiện tại. Chỉ ghi cấp độ mới mới làm mục tiêu thành "đã đạt"; mục tiêu đã đạt không đổi được đích hay trạng thái |
-| Bằng chứng | Loại: pull request, quyết định kỹ thuật, sự cố, ghi chú, khác. Có nguồn: gõ tay hoặc nhập từ Obsidian. Bằng chứng nhập từ Obsidian không cho sửa tiêu đề, đường dẫn, ngày, tóm tắt, kỹ năng, nhãn (lỗi 422), vì lần nhập sau sẽ ghi đè; vẫn đổi được công khai / riêng tư |
+| Bằng chứng | Cần **link hoặc ít nhất một file** (cả hai cũng được; từ 2026-10-15). Không có cả hai: 422 "Give a link or attach at least one file", kể cả khi sửa mà gỡ hết file của bằng chứng không có link. Bằng chứng không có link hiện tiêu đề dạng chữ thường (không bấm được) ở trang quản trị và trang public. Loại: pull request, quyết định kỹ thuật, sự cố, ghi chú, khác. Có nguồn: gõ tay hoặc nhập từ Obsidian. Bằng chứng nhập từ Obsidian không cho sửa tiêu đề, đường dẫn, ngày, tóm tắt, kỹ năng, nhãn (lỗi 422), vì lần nhập sau sẽ ghi đè; vẫn đổi được công khai / riêng tư |
 | Xóa | Xóa thật. Xóa kỹ năng thì mất luôn lịch sử cấp độ, mục tiêu và liên kết với bằng chứng, nhãn |
 | Nhật ký | Mọi thêm, sửa, xóa đều có dòng trong [nhật ký thay đổi](nhat-ky-thay-doi.md); form sửa có phần lịch sử |
 

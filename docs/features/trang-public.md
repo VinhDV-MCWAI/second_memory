@@ -17,7 +17,7 @@ Trang ai cũng xem được, không cần đăng nhập: danh sách kỹ năng c
 | API | Làm gì |
 |---|---|
 | `GET /api/public/skills` | Danh sách kỹ năng công khai, xếp theo tên |
-| `GET /api/public/skills/{slug}` | Chi tiết một kỹ năng công khai; mỗi bằng chứng có `files: [{key, name, size, mime_type}]` |
+| `GET /api/public/skills/{slug}` | Chi tiết một kỹ năng công khai; mỗi bằng chứng có `files: [{key, name, size, mime_type}]`; `url` là null khi bằng chứng chỉ có file |
 | `GET /api/public/files/{key}` | Link tạm `{url, expires_at}` của một file đính kèm (5 phút để tải, 1 giờ để xem trong trình duyệt); `key` lấy từ `files[].key` |
 
 Không cần đăng nhập, chỉ có GET, giới hạn 60 request / phút / IP.
