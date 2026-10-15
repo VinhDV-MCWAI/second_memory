@@ -107,6 +107,7 @@ Test dùng một database riêng tên `testing`, không đụng dữ liệu dev.
 |---|---|---|
 | Đăng nhập báo 401 dù mật khẩu đúng | Nhập email thay vì tên đăng nhập | Nhập `root` |
 | Đăng nhập báo 429 | Sai quá nhiều lần, bị khóa tạm 15 phút (5 lần sai cùng một tên, hoặc 30 lần sai từ cùng một IP với mọi tên) | Đợi theo số giây trong header `Retry-After`. Trên dev muốn mở ngay: `docker exec ml-php php artisan cache:clear` |
+| Trang báo lỗi kết nối, `docker ps -a` thấy `ml-php`, `ml-postgres`, `ml-redis`, `ml-nginx`… `Exited (127)` | Máy hoặc WSL khởi động lại, các container không tự chạy lại (gặp ngày 2026-10-15) | `docker compose -f docker/docker-compose.yml up -d` (hoặc `make up`). Migration chạy lại tự động khi `ml-php` khởi động |
 | `GET /api/admin/credential/me` trả 401 trong console | Bình thường khi chưa đăng nhập: trang dùng nó để kiểm tra rồi chuyển tới `/login` | Không cần sửa |
 | Cảnh báo "Encountered a script tag" trong console | Script chống nháy màu của thư viện chọn giao diện sáng/tối bị render trên trình duyệt (đã sửa trong `nextjs-fe/src/app/providers.tsx`) | Nếu còn thấy: tải lại trang không dùng cache (Ctrl+Shift+R) |
 | 419 "CSRF token mismatch" khi gọi API bằng curl | Thiếu cookie CSRF | Gọi `GET /api/sanctum/csrf-cookie` trước, gửi kèm header `Referer: http://localhost:81/...`, rồi gửi giá trị cookie `XSRF-TOKEN` trong header `X-XSRF-TOKEN` |

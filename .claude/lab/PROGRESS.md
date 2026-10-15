@@ -10,7 +10,8 @@
 | Branch | `feature/p3-ledger-api` (đổi branch khi chủ dự án yêu cầu) |
 | Môi trường | Dev (`make up`, http://localhost:81) + bản demo prod-like trên máy (`make cd`, http://localhost:9443). Staging, production thật, đo tải: tạm dừng |
 | CI/CD | Chỉ chạy trên máy: `make ci`, `make cd`. **Trên GitHub/GitLab đang TẮT chạy tự động** (push không chạy gì); cách bật lại: [ci/README.md](../../ci/README.md) |
-| Việc tiếp theo | `scripts/lane.sh status` → nhận việc đầu tiên trong danh sách "Claimable now" |
+| Việc tiếp theo | **LEDGER-01 — Đính kèm file vào bằng chứng** (có dấu [XÁC NHẬN], thêm bảng): viết đề xuất rồi dừng chờ chủ dự án. Xem mục "Next step" ở cuối file |
+| Tạm dừng | Mọi việc về **đăng nhập** (AUTH-04, AUTH-05 và các mục "Nâng cấp để dành" trong [dang-nhap.md](../../docs/features/dang-nhap.md)): không đề xuất, không nhận, kể cả việc mới, cho tới khi chủ dự án yêu cầu (quyết ngày 2026-10-14) |
 
 ## Việc chủ dự án phải tự làm
 
@@ -19,6 +20,21 @@ Claude không có quyền làm những việc này:
 1. Push branch và tag lên GitHub, tạo pull request.
 2. Chạy `make tf-apply` lần đầu (Terraform), nhưng việc này đang tạm dừng.
 3. Cài rclone và lên lịch sao lưu định kỳ, xem [backup-restore.md](../../docs/runbooks/backup-restore.md).
+
+## Việc tồn đọng
+
+Cập nhật 2026-10-15. Mỗi dòng là thứ còn mở, chưa thành việc trên bảng.
+
+| # | Việc | Chi tiết | Ai làm |
+|---|---|---|---|
+| 1 | Push code | Branch `feature/p3-ledger-api` đang đi trước `origin` khoảng 110 commit (từ AUTH-03 tới MEDIA-07) | Chủ dự án |
+| 2 | `.claude/settings.json` có thay đổi chưa commit | Thêm quyền `Write/Edit(.claude/**)`, `Edit(CLAUDE.md)`, `Bash(git rm:*)`. Không phải do các phiên Claude gần đây làm; Claude không động vào. Chủ dự án quyết commit hay bỏ | Chủ dự án |
+| 3 | Chưa chạy `make verify` / `make ci` trọn bộ sau 4 việc gần nhất | Đã chạy riêng từng phần: test backend + Pint + Larastan (219 test), test giao diện + lint + typecheck + format (123 test), 7 test trình duyệt. Nên chạy `make verify` một lần trước khi mở pull request | Phiên sau |
+| 4 | Bản demo prod-like chưa cập nhật | Luật MinIO 30 ngày và quyền phiên bản mới (`docker/minio/`) chỉ mới áp dụng cho dev. Terraform dùng chung file đó, nên lần `make cd` tới sẽ áp dụng; chưa thử | Khi chạy `make cd` |
+| 5 | Dòng file đã xóa quá 30 ngày vẫn nằm trong bảng `media_mgmt` | MinIO đã xóa dữ liệu nhưng dòng trong DB còn (`is_delete = true`), không hiện ở đâu. Chưa có lệnh dọn. Nhỏ, có thể thêm vào lệnh hẹn giờ sau | Để sau |
+| 6 | Tiếp tục upload dở từ máy khác không kiểm tra được "đúng file" | Trình duyệt chỉ nhớ thời điểm sửa file trên máy đã bắt đầu upload; máy khác chỉ so tên + dung lượng | Chấp nhận, ghi trong [quan-ly-file.md](../../docs/features/quan-ly-file.md) |
+| 7 | Kiểu sinh tự động hơi lệch | `media/multipart/resume` khai `parts` có thể null (Scramble đoán sai); giao diện coi null là danh sách rỗng | Để sau |
+| 8 | Việc để sau theo quyết định chủ dự án | Người dùng cuối, phòng ban (USER-02, USER-03, ADR-0015); dữ liệu mẫu + HTTPS cho bản demo (DEMO-01, DEMO-02) | Chờ chủ dự án |
 
 ## Lưu ý môi trường
 
@@ -85,4 +101,9 @@ Mỗi dòng do `scripts/lane.sh done` tự thêm. Không sửa tay.
 
 ## Next step
 
-Nhận việc tiếp theo bằng `scripts/lane.sh status`. Làm theo luồng trong [01-goals-and-workflow.md](../../docs/plan/01-goals-and-workflow.md).
+Cập nhật 2026-10-15.
+
+1. Chạy `scripts/lane.sh status`: việc nhận được là **LEDGER-01** (lane đang rảnh).
+2. `scripts/lane.sh claim LEDGER-01` rồi viết đề xuất theo mẫu trong [01-goals-and-workflow.md](../../docs/plan/01-goals-and-workflow.md). Việc có thêm bảng nên **dừng chờ chủ dự án xác nhận**. Điểm cần hỏi: một bằng chứng gắn nhiều file hay một; file gắn vào bằng chứng bị xóa / vào thùng rác thì sao; trang public (`nextjs-docs`) hiện file thế nào (link tải ký tạm hay xem trước); chọn file từ màn hình Files hay upload thẳng trong form bằng chứng.
+3. Code liên quan: [quan-ly-file.md](../../docs/features/quan-ly-file.md) (upload, xem trước, thùng rác), [skill-ledger.md](../../docs/features/skill-ledger.md), [trang-public.md](../../docs/features/trang-public.md).
+4. Sau LEDGER-01 bảng việc hết việc nhận được: hỏi chủ dự án việc tiếp theo, đề xuất từ "Việc tồn đọng" ở trên. Không đề xuất việc đăng nhập.
