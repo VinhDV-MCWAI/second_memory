@@ -71,6 +71,57 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/admin/admin-session/list': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Devices I am signed in on, most recently used first */
+    get: operations['admin-session.list'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/admin/admin-session/delete': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** Sign out other devices; returns how many sessions ended. The session in use ends with log out (422) */
+    post: operations['admin-session.delete'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/admin/admin-session/delete-others': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** Sign out every device except this one; returns how many sessions ended */
+    post: operations['admin-session.delete-others'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/admin/audit-log/list': {
     parameters: {
       query?: never;
@@ -988,6 +1039,18 @@ export interface components {
       is_delete: boolean;
       updated_at: string;
     };
+    /** AdminSessionResource */
+    AdminSessionResource: {
+      id: number;
+      ip_address: string | null;
+      /** @description Raw User-Agent header; the screen turns it into a browser and system name */
+      user_agent: string | null;
+      signed_in_at: string;
+      /** @description Refreshed at most every 5 minutes */
+      last_used_at: string;
+      /** @description The session making this request */
+      is_current: boolean;
+    };
     /**
      * AdminStatus
      * @enum {integer}
@@ -1094,6 +1157,10 @@ export interface components {
     };
     /** DeleteTagRequest */
     DeleteTagRequest: {
+      ids: number[];
+    };
+    /** EndAdminSessionRequest */
+    EndAdminSessionRequest: {
       ids: number[];
     };
     /** EvidenceFileResource */
@@ -1814,6 +1881,122 @@ export interface operations {
         };
       };
       422: components['responses']['ValidationException'];
+    };
+  };
+  'admin-session.list': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Array of `AdminSessionResource` */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            data: {
+              data: components['schemas']['AdminSessionResource'][];
+            };
+            error: {
+              status: boolean;
+              code: number;
+              messages: null;
+            };
+          };
+        };
+      };
+      401: components['responses']['AuthenticationException'];
+      /** @description Forbidden */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ApiError'];
+        };
+      };
+    };
+  };
+  'admin-session.delete': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['EndAdminSessionRequest'];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            data: number;
+            error: {
+              status: boolean;
+              code: number;
+              messages: null;
+            };
+          };
+        };
+      };
+      401: components['responses']['AuthenticationException'];
+      /** @description Forbidden */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ApiError'];
+        };
+      };
+      422: components['responses']['ValidationException'];
+    };
+  };
+  'admin-session.delete-others': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            data: number;
+            error: {
+              status: boolean;
+              code: number;
+              messages: null;
+            };
+          };
+        };
+      };
+      401: components['responses']['AuthenticationException'];
+      /** @description Forbidden */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ApiError'];
+        };
+      };
     };
   };
   'audit-log.list': {

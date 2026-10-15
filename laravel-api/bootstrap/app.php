@@ -6,6 +6,7 @@ use App\Constants\CommonVal;
 use App\Constants\Messages;
 use App\Http\Middleware\AdminMiddleware;
 use App\Http\Middleware\GenerateResponseMiddleware;
+use App\Http\Middleware\TrackAdminSession;
 use App\Http\Middleware\TransactionMiddleware;
 use App\Traits\ApiResponse;
 use Illuminate\Auth\Access\AuthorizationException;
@@ -42,6 +43,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'api.response' => GenerateResponseMiddleware::class,
             'db.transaction' => TransactionMiddleware::class,
             'auth.admin' => AdminMiddleware::class,
+            'admin.session' => TrackAdminSession::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {

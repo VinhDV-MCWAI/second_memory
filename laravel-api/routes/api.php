@@ -25,7 +25,7 @@ Route::prefix('admin')
     ->group(function () {
         Route::middleware('auth:sanctum')
             ->group(function () {
-                Route::middleware('auth.admin')
+                Route::middleware(['admin.session', 'auth.admin'])
                     ->group(function () {
                         Route::get('credential/me', [CredentialController::class, 'me'])->name('credential.me');
                         Route::group([], base_path('routes/api/master.php'));

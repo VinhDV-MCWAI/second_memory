@@ -9,6 +9,7 @@ use App\Constants\Messages;
 use App\Enums\AuditEvent;
 use App\Models\Master\AdminMst;
 use App\Services\AuditLogger;
+use App\Services\Master\AdminSessionService;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Contracts\Auth\StatefulGuard;
 use Illuminate\Http\Exceptions\ThrottleRequestsException;
@@ -25,7 +26,10 @@ final class CredentialService
     /** audit_log.auditable_type of admins (AdminMstService::$auditableType). */
     private const AUDITABLE_TYPE = 'admin';
 
-    public function __construct(private readonly AuditLogger $auditLogger) {}
+    public function __construct(
+        private readonly AuditLogger $auditLogger,
+        private readonly AdminSessionService $adminSessions,
+    ) {}
 
     /**
      * @param  array{user_name: string, password: string}  $credentials
@@ -63,6 +67,7 @@ final class CredentialService
 
         /** @var AdminMst $admin */
         $admin = $this->guard()->user();
+        $this->adminSessions->start($admin->id, $request);
         $this->auditLogger->record(self::AUDITABLE_TYPE, $admin->id, AuditEvent::LOGGED_IN, actorId: $admin->id);
 
         return $admin;
@@ -77,6 +82,9 @@ final class CredentialService
             $adminId = (int) $this->guard()->id();
             $this->auditLogger->record(self::AUDITABLE_TYPE, $adminId, AuditEvent::LOGGED_OUT, actorId: $adminId);
             $this->guard()->logout();
+            if ($request->hasSession()) {
+                $this->adminSessions->forget($request->session()->getId());
+            }
         }
 
         if ($request->hasSession()) {

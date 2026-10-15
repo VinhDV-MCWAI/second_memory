@@ -129,6 +129,14 @@ class CommonVal
 
     public const LOGIN_LOCK_SECONDS = 60 * 15; // 15 min
 
+    // Sessions screen (AUTH-04): "last used" of a session is written at most this often, not on every request
+    public const SESSION_TOUCH_SECONDS = 60 * 5;
+
+    // Session key holding which admin_session row this session belongs to and when it was last written
+    public const SESSION_TRACKING_KEY = 'admin_session';
+
+    public const USER_AGENT_MAX = 512;
+
     /**
      * Admin master
      */

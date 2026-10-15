@@ -12,6 +12,7 @@ use App\Repositories\Master\AdminMstRepository;
 use App\Services\AuditedCrudService;
 use App\Services\AuditLogger;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Session;
 use Illuminate\Validation\ValidationException;
 
 class AdminMstService extends AuditedCrudService
@@ -23,6 +24,7 @@ class AdminMstService extends AuditedCrudService
     public function __construct(
         private readonly AdminMstRepository $adminMst,
         AuditLogger $auditLogger,
+        private readonly AdminSessionService $adminSessions,
     ) {
         parent::__construct($adminMst, $auditLogger);
     }
@@ -40,11 +42,20 @@ class AdminMstService extends AuditedCrudService
         }
 
         $id = parent::update($payload);
+        $isSelf = (int) $payload['id'] === (int) Auth::id();
 
         // The session keeps a hash of the password (Sanctum AuthenticateSession) and other sessions
         // with the old hash are logged out. Refresh the current admin so this session keeps working.
-        if (! empty($payload['password']) && (int) $payload['id'] === (int) Auth::id()) {
+        if (! empty($payload['password']) && $isSelf) {
             Auth::guard(CommonVal::ADMIN_GUARD)->user()?->refresh();
+        }
+
+        // Ended sessions also leave the sessions screen (AUTH-04): a new password ends the admin's other
+        // devices, deactivating ends every device
+        if (isset($payload['is_active']) && (int) $payload['is_active'] !== IsActive::TRUE->value) {
+            $this->adminSessions->endAll((int) $payload['id']);
+        } elseif (! empty($payload['password'])) {
+            $this->adminSessions->endAll((int) $payload['id'], $isSelf ? Session::getId() : null);
         }
 
         return $id;
@@ -58,6 +69,10 @@ class AdminMstService extends AuditedCrudService
         $this->ensureAnOwnerRemains($payload['ids'] ?? [], 'ids');
 
         parent::delete($payload);
+
+        foreach ($payload['ids'] ?? [] as $id) {
+            $this->adminSessions->endAll((int) $id);
+        }
     }
 
     /**

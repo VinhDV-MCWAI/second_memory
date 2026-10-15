@@ -578,6 +578,216 @@
                 }
             }
         },
+        "/admin/admin-session/list": {
+            "get": {
+                "operationId": "admin-session.list",
+                "summary": "Devices I am signed in on, most recently used first",
+                "tags": [
+                    "AdminSession"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Array of `AdminSessionResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "data": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "$ref": "#/components/schemas/AdminSessionResource"
+                                                    }
+                                                }
+                                            },
+                                            "required": [
+                                                "data"
+                                            ]
+                                        },
+                                        "error": {
+                                            "type": "object",
+                                            "properties": {
+                                                "status": {
+                                                    "type": "boolean"
+                                                },
+                                                "code": {
+                                                    "type": "integer"
+                                                },
+                                                "messages": {
+                                                    "type": "null"
+                                                }
+                                            },
+                                            "required": [
+                                                "status",
+                                                "code",
+                                                "messages"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data",
+                                        "error"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/admin/admin-session/delete": {
+            "post": {
+                "operationId": "admin-session.delete",
+                "summary": "Sign out other devices; returns how many sessions ended. The session in use ends with log out (422)",
+                "tags": [
+                    "AdminSession"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/EndAdminSessionRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "integer"
+                                        },
+                                        "error": {
+                                            "type": "object",
+                                            "properties": {
+                                                "status": {
+                                                    "type": "boolean"
+                                                },
+                                                "code": {
+                                                    "type": "integer"
+                                                },
+                                                "messages": {
+                                                    "type": "null"
+                                                }
+                                            },
+                                            "required": [
+                                                "status",
+                                                "code",
+                                                "messages"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data",
+                                        "error"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/admin/admin-session/delete-others": {
+            "post": {
+                "operationId": "admin-session.delete-others",
+                "summary": "Sign out every device except this one; returns how many sessions ended",
+                "tags": [
+                    "AdminSession"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "integer"
+                                        },
+                                        "error": {
+                                            "type": "object",
+                                            "properties": {
+                                                "status": {
+                                                    "type": "boolean"
+                                                },
+                                                "code": {
+                                                    "type": "integer"
+                                                },
+                                                "messages": {
+                                                    "type": "null"
+                                                }
+                                            },
+                                            "required": [
+                                                "status",
+                                                "code",
+                                                "messages"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data",
+                                        "error"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/admin/audit-log/list": {
             "get": {
                 "operationId": "audit-log.list",
@@ -6176,6 +6386,47 @@
                 ],
                 "title": "AdminMstResource"
             },
+            "AdminSessionResource": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "ip_address": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "user_agent": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "description": "Raw User-Agent header; the screen turns it into a browser and system name"
+                    },
+                    "signed_in_at": {
+                        "type": "string"
+                    },
+                    "last_used_at": {
+                        "type": "string",
+                        "description": "Refreshed at most every 5 minutes"
+                    },
+                    "is_current": {
+                        "type": "boolean",
+                        "description": "The session making this request"
+                    }
+                },
+                "required": [
+                    "id",
+                    "ip_address",
+                    "user_agent",
+                    "signed_in_at",
+                    "last_used_at",
+                    "is_current"
+                ],
+                "title": "AdminSessionResource"
+            },
             "AdminStatus": {
                 "type": "integer",
                 "enum": [
@@ -6537,6 +6788,23 @@
                     "ids"
                 ],
                 "title": "DeleteTagRequest"
+            },
+            "EndAdminSessionRequest": {
+                "type": "object",
+                "properties": {
+                    "ids": {
+                        "type": "array",
+                        "items": {
+                            "type": "integer"
+                        },
+                        "minItems": 1,
+                        "uniqueItems": true
+                    }
+                },
+                "required": [
+                    "ids"
+                ],
+                "title": "EndAdminSessionRequest"
             },
             "EvidenceFileResource": {
                 "type": "object",

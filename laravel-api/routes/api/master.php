@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use App\Http\Controllers\Master\AdminMstController;
+use App\Http\Controllers\Master\AdminSessionController;
 use App\Http\Controllers\Master\PermissionController;
 use App\Http\Controllers\Master\RoleController;
 use Illuminate\Support\Facades\Route;
@@ -20,3 +21,8 @@ foreach ([
 
 // Dynamic permissions (ADR-0013): every permission, grouped by feature, for the permission matrix
 Route::get('permission/list', [PermissionController::class, 'list'])->name('permission.list');
+
+// Sessions screen (AUTH-04): the signed-in admin's own devices; in PermissionConst::ALWAYS_ALLOWED
+Route::get('admin-session/list', [AdminSessionController::class, 'list'])->name('admin-session.list');
+Route::post('admin-session/delete', [AdminSessionController::class, 'delete'])->name('admin-session.delete');
+Route::post('admin-session/delete-others', [AdminSessionController::class, 'deleteOthers'])->name('admin-session.delete-others');

@@ -104,6 +104,8 @@ class Messages
 
     const E0042 = 'Give a link or attach at least one file';
 
+    const E0043 = 'Log out to end the session you are using';
+
     /**
      * Errors http messages
      */
