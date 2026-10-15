@@ -10,7 +10,7 @@
 | Branch | `feature/p3-ledger-api` (đổi branch khi chủ dự án yêu cầu) |
 | Môi trường | Chỉ dev (`make up`, http://localhost:81). Bản demo prod-like đã tắt container ngày 2026-10-15 (không việc nào dùng); staging, production thật, đo tải: tạm dừng |
 | CI/CD | Chỉ chạy trên máy: `make ci`, `make cd`. **Trên GitHub/GitLab đang TẮT chạy tự động** (push không chạy gì); cách bật lại: [ci/README.md](../../ci/README.md) |
-| Việc tiếp theo | Bảng việc không còn việc nhận được (LEDGER-01, MEDIA-08 xong 2026-10-15). Hỏi chủ dự án, gợi ý ở mục "Next step" cuối file |
+| Việc tiếp theo | Bảng việc không còn việc nhận được (LEDGER-01, MEDIA-08, MEDIA-09, API-01, LEDGER-02 xong 2026-10-15). Hỏi chủ dự án, gợi ý ở mục "Next step" cuối file |
 | Tạm dừng | Mọi việc về **đăng nhập và phân quyền** (AUTH-04, AUTH-05, các mục "Nâng cấp để dành" trong [dang-nhap.md](../../docs/features/dang-nhap.md), loại quyền mới, người dùng cuối, phòng ban, chính sách): không đề xuất, không nhận, kể cả việc mới, **chỉ làm khi chủ dự án yêu cầu** (quyết 2026-10-14, thêm phân quyền 2026-10-15) |
 | Dọn dẹp | Mỗi việc xong phải dọn theo mục "Dọn dẹp khi xong việc" trong [01-goals-and-workflow.md](../../docs/plan/01-goals-and-workflow.md) (`make clean` + xóa code chết, dữ liệu thử) |
 
@@ -24,17 +24,16 @@ Claude không có quyền làm những việc này:
 
 ## Việc tồn đọng
 
-Cập nhật 2026-10-15 (sau MEDIA-08). Mỗi dòng là thứ còn mở, chưa thành việc trên bảng.
+Cập nhật 2026-10-15 (sau LEDGER-02). Mỗi dòng là thứ còn mở, chưa thành việc trên bảng.
 
 | # | Việc | Chi tiết | Ai làm |
 |---|---|---|---|
-| 1 | Push code | Branch `feature/p3-ledger-api` đang đi trước `origin` khoảng 125 commit (từ AUTH-03 tới MEDIA-08) | Chủ dự án |
+| 1 | Push code | Branch `feature/p3-ledger-api` đang đi trước `origin` khoảng 145 commit (từ AUTH-03 tới LEDGER-02) | Chủ dự án |
 | 2 | `.claude/settings.json` có thay đổi chưa commit | Thêm quyền `Write/Edit(.claude/**)`, `Edit(CLAUDE.md)`, `Bash(git rm:*)`. Không phải do các phiên Claude gần đây làm; Claude không động vào. Chủ dự án quyết commit hay bỏ | Chủ dự án |
 | 3 | Thư mục `.claude/sim/` còn sót (16 KB, ngoài git) | Của các vai giả lập đã bỏ ở NEN-06. Claude bị chặn xóa thư mục ngoài git; chủ dự án xóa tay: `rm -rf .claude/sim` | Chủ dự án |
-| 4 | Bản demo prod-like đã tắt (2026-10-15) | Container `sm-prod-like-*` dừng, dữ liệu demo còn. Luật MinIO 30 ngày chưa áp dụng ở đó; lần `make cd` tới sẽ áp dụng. Muốn xóa hẳn: `make tf-destroy` (Claude không được chạy) | Chủ dự án |
-| 5 | Ý tưởng mở rộng file đính kèm (chưa làm) | (a) Bằng chứng chỉ có file, không bắt buộc link (đổi luật `url` bắt buộc, ảnh hưởng nhập Obsidian và trang public). (b) Màn hình Files cho biết file đang gắn vào bằng chứng nào, cảnh báo khi xóa | Chờ chủ dự án |
+| 4 | Bản demo prod-like chưa xóa hẳn | Chủ dự án chạy `make tf-destroy` 2026-10-15 nhưng 12 container `sm-prod-like-*` và 3 ổ `sm-prod-like-*` vẫn còn (đang tắt): có lẽ lệnh bị hủy. Chạy lại `make tf-destroy` và gõ `yes` | Chủ dự án |
+| 5 | Ý tưởng tiếp (chưa làm) | Lọc danh sách bằng chứng theo file (bấm số ở cột Evidence của Files để mở các bằng chứng dùng file đó); test trình duyệt (e2e) cho đính kèm file | Chờ chủ dự án |
 | 6 | Tiếp tục upload dở từ máy khác không kiểm tra được "đúng file" | Trình duyệt chỉ nhớ thời điểm sửa file trên máy đã bắt đầu upload; máy khác chỉ so tên + dung lượng | Chấp nhận, ghi trong [quan-ly-file.md](../../docs/features/quan-ly-file.md) |
-| 7 | Kiểu sinh tự động hơi lệch | `media/multipart/resume` khai `parts` có thể null (Scramble đoán sai); giao diện coi null là danh sách rỗng | Để sau |
 | 8 | Việc để sau theo quyết định chủ dự án | Người dùng cuối, phòng ban (USER-02, USER-03, ADR-0015); dữ liệu mẫu + HTTPS cho bản demo (DEMO-01, DEMO-02) | Chờ chủ dự án |
 
 ## Lưu ý môi trường
@@ -112,9 +111,9 @@ Mỗi dòng do `scripts/lane.sh done` tự thêm. Không sửa tay.
 
 ## Next step
 
-Cập nhật 2026-10-15.
+Cập nhật 2026-10-15 (sau LEDGER-02).
 
-1. `scripts/lane.sh status`: không còn việc nhận được. Đăng nhập, phân quyền, người dùng cuối, phòng ban: **tạm dừng, chỉ làm khi chủ dự án yêu cầu** (không đề xuất). Bản demo prod-like đã tắt, không làm.
-2. Hỏi chủ dự án việc tiếp theo; gợi ý từ "Việc tồn đọng" mục 5 (bằng chứng chỉ có file; Files cho biết file đang gắn vào đâu) hoặc mục 7 (kiểu sinh tự động lệch).
+1. `scripts/lane.sh status`: không còn việc nhận được. Đăng nhập, phân quyền, người dùng cuối, phòng ban: **tạm dừng, chỉ làm khi chủ dự án yêu cầu** (không đề xuất). Bản demo prod-like: không làm.
+2. Hỏi chủ dự án việc tiếp theo; gợi ý ở "Việc tồn đọng" mục 5.
 3. Mỗi việc xong: dọn dẹp theo "Dọn dẹp khi xong việc" trong [01-goals-and-workflow.md](../../docs/plan/01-goals-and-workflow.md) (`make clean`).
-4. Lần chạy `make verify` gần nhất: 2026-10-15 sau LEDGER-01, pass (227 test backend, 126 giao diện, 63 importer). Sau đó thêm MEDIA-08 (test riêng pass) và dọn `en.json` (126 test giao diện pass).
+4. `make verify` gần nhất: 2026-10-15 sau LEDGER-02, pass (231 test backend, 128 giao diện, 63 importer).
