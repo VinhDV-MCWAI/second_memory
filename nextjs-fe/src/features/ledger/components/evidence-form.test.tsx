@@ -7,6 +7,9 @@ import { createQueryWrapper } from '@/test/query-wrapper';
 import type { Evidence } from '@/shared/types/models';
 
 vi.mock('next-intl', () => ({ useTranslations: () => (key: string) => key }));
+vi.mock('@/shared/hooks/use-permissions', () => ({
+  usePermissions: () => ({ can: () => true }),
+}));
 vi.mock('@/shared/utils/notification', () => ({
   notification: { success: vi.fn(), error: vi.fn(), info: vi.fn(), warning: vi.fn() },
 }));
@@ -26,6 +29,22 @@ const imported: Evidence = {
   unpublished_at: null,
   skills: [{ id: 1, name: 'Laravel' }],
   tags: [],
+  files: [
+    {
+      id: 3,
+      is_file: true,
+      name: 'slides.pdf',
+      path: '/slides.pdf',
+      extension: 'pdf',
+      mime_type: 'application/pdf',
+      size: 1024,
+      upload_status: 2,
+      preview: 'pdf',
+      created_at: null,
+      updated_at: null,
+      available: true,
+    },
+  ],
   created_at: null,
   updated_at: null,
 };
@@ -81,6 +100,13 @@ describe('EvidenceForm', () => {
     fireEvent.click(screen.getByRole('button', { name: 'save' }));
 
     await waitFor(() => expect(onSuccess).toHaveBeenCalled());
-    expect(body).toMatchObject({ title: 'Vault note', url: imported.url, skill_ids: [1] });
+    expect(body).toMatchObject({
+      title: 'Vault note',
+      url: imported.url,
+      skill_ids: [1],
+      media_ids: [3],
+    });
+    // Attachments are not vault-owned: they stay editable
+    expect(screen.getByRole('button', { name: 'remove' })).toBeTruthy();
   });
 });

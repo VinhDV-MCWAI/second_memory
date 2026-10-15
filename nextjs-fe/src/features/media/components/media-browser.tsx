@@ -38,6 +38,7 @@ import {
 import { useUploads, type UploadState } from '../hooks/use-uploads';
 import { discardUpload } from '../lib/uploader';
 import { crumbsOf, formatBytes, parentOf, ROOT } from '../lib/media-paths';
+import { IconButton } from './icon-button';
 import { MediaFieldDialog } from './media-field-dialog';
 import { PreviewDialog } from './preview-dialog';
 import { UnfinishedUploads } from './unfinished-uploads';
@@ -464,28 +465,5 @@ export function MediaBrowser() {
         isLoading={actions.remove.isPending}
       />
     </div>
-  );
-}
-
-function IconButton({
-  label,
-  onClick,
-  children,
-}: {
-  label: string;
-  onClick: () => void;
-  children: React.ReactNode;
-}) {
-  return (
-    <Button
-      variant="ghost"
-      size="icon"
-      className="h-8 w-8"
-      aria-label={label}
-      title={label}
-      onClick={onClick}
-    >
-      {children}
-    </Button>
   );
 }

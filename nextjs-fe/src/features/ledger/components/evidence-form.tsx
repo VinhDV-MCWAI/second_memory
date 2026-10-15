@@ -12,6 +12,7 @@ import { FormField } from '@/components/common/form-field';
 import { OptionSelect } from '@/components/common/option-select';
 import type { ResourceFormProps } from '@/components/common/resource-list-page';
 import { HistoryViewer } from '@/features/history/components/history-viewer';
+import { EvidenceFilesField } from '@/features/ledger/components/evidence-files-field';
 import { IdPicker } from '@/features/ledger/components/id-picker';
 import { useCrud } from '@/shared/hooks/use-crud';
 import { API_ENDPOINTS } from '@/shared/api';
@@ -25,8 +26,9 @@ import type { Evidence } from '@/shared/types/models';
 const AUDITABLE_TYPE = 'evidence';
 
 /**
- * Evidence link for one or more skills (REQ-002 US-2). Rows imported from Obsidian keep
- * their vault-owned fields read-only: the importer would overwrite them (RFC-002 §4.5).
+ * Evidence link for one or more skills (REQ-002 US-2) with attached files (LEDGER-01). Rows
+ * imported from Obsidian keep their vault-owned fields read-only: the importer would overwrite them
+ * (RFC-002 §4.5); files and visibility are not vault-owned.
  */
 export function EvidenceForm({
   initialData,
@@ -57,6 +59,7 @@ export function EvidenceForm({
       is_public: initialData?.is_public ?? false,
       skill_ids: initialData?.skills?.map((skill) => skill.id) ?? [],
       tag_ids: initialData?.tags?.map((tag) => tag.id) ?? [],
+      media_ids: initialData?.files?.map((file) => file.id) ?? [],
     },
   });
 
@@ -161,6 +164,20 @@ export function EvidenceForm({
               )}
             />
           </fieldset>
+        </FormField>
+
+        <FormField id="media_ids" label={tLabels('files')} error={errors.media_ids?.message}>
+          <Controller
+            control={control}
+            name="media_ids"
+            render={({ field }) => (
+              <EvidenceFilesField
+                value={field.value}
+                onChange={field.onChange}
+                initialFiles={initialData?.files ?? []}
+              />
+            )}
+          />
         </FormField>
 
         <Controller

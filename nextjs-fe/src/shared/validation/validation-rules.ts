@@ -48,5 +48,7 @@ export const ValidationRules = {
   EVIDENCE_TITLE_MAX: 200,
   EVIDENCE_URL_MAX: 2048,
   EVIDENCE_SUMMARY_MAX: 1000,
+  /** LedgerConst::EVIDENCE_FILES_MAX */
+  EVIDENCE_FILES_MAX: 10,
   GOAL_NOTE_MAX: 1000,
 } as const;

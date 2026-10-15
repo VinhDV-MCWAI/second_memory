@@ -11,6 +11,8 @@ export type Skill = Schemas['SkillResource'];
 export type Tag = Schemas['TagResource'];
 export type SkillLevelEntry = Schemas['SkillLevelResource'];
 export type Evidence = Schemas['EvidenceResource'];
+/** A file attached to an evidence (LEDGER-01): a file-manager item plus `available`. */
+export type EvidenceFile = Schemas['EvidenceFileResource'];
 export type LearningGoal = Schemas['LearningGoalResource'];
 
 export type DashboardSummary = OkData<operations['dashboard.summary']>;

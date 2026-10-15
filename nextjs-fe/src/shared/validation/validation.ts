@@ -214,6 +214,12 @@ export const getEvidenceSchema = (t: Translator) =>
     is_public: z.boolean(),
     skill_ids: z.array(z.number()).min(1, t('skillIds.required')),
     tag_ids: z.array(z.number()),
+    media_ids: z
+      .array(z.number())
+      .max(
+        ValidationRules.EVIDENCE_FILES_MAX,
+        t('mediaIds.maxLength', { max: ValidationRules.EVIDENCE_FILES_MAX }),
+      ),
   });
 
 export type EvidenceFormData = z.infer<ReturnType<typeof getEvidenceSchema>>;

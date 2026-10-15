@@ -1,6 +1,7 @@
 'use client';
 
 import { useTranslations } from 'next-intl';
+import { Paperclip } from 'lucide-react';
 import { ResourceListPage } from '@/components/common/resource-list-page';
 import { StatusBadge } from '@/components/common/data-table/cells';
 import type { Column } from '@/components/common/data-table/data-table';
@@ -28,9 +29,20 @@ export default function EvidenceListPage() {
       label: tFields('title'),
       sortable: true,
       render: (item) => (
-        <a href={item.url} target="_blank" rel="noopener noreferrer" className="underline">
-          {item.title}
-        </a>
+        <span className="flex items-center gap-2">
+          <a href={item.url} target="_blank" rel="noopener noreferrer" className="underline">
+            {item.title}
+          </a>
+          {item.files && item.files.length > 0 && (
+            <span
+              className="flex items-center gap-0.5 text-xs text-muted-foreground"
+              title={tLedger('files.count', { count: item.files.length })}
+            >
+              <Paperclip className="h-3 w-3" aria-hidden />
+              {item.files.length}
+            </span>
+          )}
+        </span>
       ),
     },
     {

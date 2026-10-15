@@ -338,6 +338,7 @@
       "reason": "Reason",
       "isPublic": "Show on the public page",
       "tags": "Tags",
+      "files": "Files",
       "type": "Type",
       "url": "Link (http or https)",
       "occurredOn": "Date",
@@ -497,6 +498,9 @@
     "summary": {
       "maxLength": "Summary cannot exceed {max} characters"
     },
+    "mediaIds": {
+      "maxLength": "At most {max} files"
+    },
     "skillIds": {
       "required": "Pick at least one skill"
     },
@@ -550,6 +554,16 @@
     },
     "noSkills": "Create a skill first",
     "importedHint": "Imported from Obsidian: edit the title, link, date, summary, skills and tags in the vault.",
+    "files": {
+      "empty": "No files attached",
+      "attach": "Attach files",
+      "deleted": "Deleted",
+      "deletedHint": "Deleted in Files. It stays attached; restore it from the Files trash to show it again.",
+      "moveUp": "Move up",
+      "moveDown": "Move down",
+      "remove": "Remove {name}",
+      "count": "{count, plural, one {# file} other {# files}} attached"
+    },
     "achievedHint": "Achieved goals keep their target; only the date and note can change.",
     "search": {
       "title": "Search",
@@ -657,6 +671,13 @@
         "failed": "Failed",
         "cancelled": "Cancelled"
       }
+    },
+    "picker": {
+      "title": "Attach files",
+      "description": "Pick files from Files, or upload new ones into the open folder. Up to {count} more.",
+      "attach": "Attach ({count})",
+      "loading": "Loading…",
+      "empty": "This folder is empty"
     },
     "preview": {
       "open": "Preview",
