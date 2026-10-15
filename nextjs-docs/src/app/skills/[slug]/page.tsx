@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
+import { EvidenceFiles } from '@/components/skills/evidence-files';
 import { SkillLevel } from '@/components/skills/skill-level';
 import { getPublicSkill } from '@/lib/ledger-api';
 
@@ -76,6 +77,7 @@ export default async function SkillPage({ params }: SkillPageProps) {
                   </time>
                 </div>
                 {item.summary && <p className="mt-1 text-sm">{item.summary}</p>}
+                <EvidenceFiles files={item.files} />
               </li>
             ))}
           </ul>

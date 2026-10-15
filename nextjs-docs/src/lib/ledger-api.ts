@@ -27,6 +27,14 @@ export interface PublicSkill {
   tags: string[];
 }
 
+/** A file attached to public evidence; `key` opens it through `/skills/files/{key}`. */
+export interface PublicFile {
+  key: string;
+  name: string;
+  size: number | null;
+  mime_type: string | null;
+}
+
 export interface PublicSkillDetail extends PublicSkill {
   description: string | null;
   history: { level: number; level_label: string; changed_on: string }[];
@@ -36,12 +44,13 @@ export interface PublicSkillDetail extends PublicSkill {
     url: string;
     occurred_on: string;
     summary: string | null;
+    files: PublicFile[];
   }[];
 }
 
-// Backend envelope: { data, error }; resources are wrapped once more in `data`.
+// Backend envelope: { data, error }. Resources are wrapped once more in `data`, plain arrays are not.
 interface Envelope<T> {
-  data: { data: T };
+  data: T;
 }
 
 async function getPublic<T>(path: string): Promise<T | null> {
@@ -56,14 +65,23 @@ async function getPublic<T>(path: string): Promise<T | null> {
     throw new Error(`Public API ${path} answered ${response.status}`);
   }
   const body = (await response.json()) as Envelope<T>;
-  return body.data.data;
+  return body.data;
 }
 
 export async function getPublicSkills(): Promise<PublicSkill[]> {
-  return (await getPublic<PublicSkill[]>('skills')) ?? [];
+  return (await getPublic<{ data: PublicSkill[] }>('skills'))?.data ?? [];
 }
 
 // null when the skill is private or does not exist (the API answers 404 for both).
-export function getPublicSkill(slug: string): Promise<PublicSkillDetail | null> {
-  return getPublic<PublicSkillDetail>(`skills/${encodeURIComponent(slug)}`);
+export async function getPublicSkill(slug: string): Promise<PublicSkillDetail | null> {
+  return (
+    (await getPublic<{ data: PublicSkillDetail }>(`skills/${encodeURIComponent(slug)}`))?.data ??
+    null
+  );
+}
+
+// Short-lived MinIO link of an attached file; null when the file is not on the public ledger.
+// Cached for less time than the link lives (5 minutes for a download, 1 hour for a preview).
+export async function getPublicFileUrl(key: string): Promise<string | null> {
+  return (await getPublic<{ url: string }>(`files/${encodeURIComponent(key)}`))?.url ?? null;
 }
