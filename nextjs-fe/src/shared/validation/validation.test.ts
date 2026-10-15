@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
-import { getAdminSchema } from './validation';
+import { getAdminSchema, getSkillLevelSchema, getSkillSchema, getTagSchema } from './validation';
 import { ValidationRules } from './validation-rules';
-import { AdminRole, AdminStatus, Gender } from '@/shared/enums';
+import { AdminStatus, Gender, SkillLevel } from '@/shared/enums';
 
 // Echo the key and params so assertions can check which message was chosen.
 const t = (key: string, params?: Record<string, string | number>) =>
@@ -16,7 +16,7 @@ const person = {
   first_name: 'Ada',
   last_name: 'Lovelace',
   gender: Gender.MALE,
-  role: AdminRole.VIEWER,
+  role_ids: [],
   is_active: true,
 };
 
@@ -42,13 +42,60 @@ describe('admin schema', () => {
     ]);
   });
 
-  it('accept the two roles only', () => {
+  it('accept a list of role ids only', () => {
     const valid = { ...person, status: AdminStatus.ACTIVE, password: '' };
-    expect(getAdminSchema(t).safeParse({ ...valid, role: AdminRole.OWNER }).success).toBe(true);
-    expect(getAdminSchema(t).safeParse({ ...valid, role: 'admin' }).success).toBe(false);
+    expect(getAdminSchema(t).safeParse({ ...valid, role_ids: [1, 2] }).success).toBe(true);
+    expect(getAdminSchema(t).safeParse({ ...valid, role_ids: ['admin'] }).success).toBe(false);
   });
 
   it('reject an unknown status', () => {
     expect(getAdminSchema(t).safeParse({ ...person, status: 99 }).success).toBe(false);
+  });
+});
+
+describe('skill ledger schemas', () => {
+  const skill = {
+    name: 'PostgreSQL',
+    category: 'database',
+    description: '',
+    is_public: false,
+    tag_ids: [],
+    level: SkillLevel.LEARNING,
+    changed_on: '',
+    reason: '',
+  };
+
+  it('accept a skill whose first level date is left to the server', () => {
+    expect(getSkillSchema(t).safeParse(skill).success).toBe(true);
+  });
+
+  it('report blank names, the backend limits and future dates', () => {
+    expect(
+      messagesOf(
+        getSkillSchema(t).safeParse({
+          ...skill,
+          name: '  ',
+          category: 'x'.repeat(ValidationRules.SKILL_CATEGORY_MAX + 1),
+          changed_on: '2999-01-01',
+        }),
+      ).sort(),
+    ).toEqual(
+      [
+        'changedOn.future',
+        `category.maxLength:{"max":${ValidationRules.SKILL_CATEGORY_MAX}}`,
+        'skillName.required',
+      ].sort(),
+    );
+  });
+
+  it('reject a level outside the scale', () => {
+    expect(messagesOf(getSkillLevelSchema(t).safeParse({ ...skill, level: 5 }))).toEqual([
+      'level.required',
+    ]);
+  });
+
+  it('trim tag names', () => {
+    expect(getTagSchema(t).safeParse({ name: ' php ' })).toMatchObject({ data: { name: 'php' } });
+    expect(messagesOf(getTagSchema(t).safeParse({ name: '' }))).toEqual(['tagName.required']);
   });
 });

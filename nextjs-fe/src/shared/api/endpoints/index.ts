@@ -9,9 +9,28 @@ export const API_ENDPOINTS = {
   },
   MASTER: {
     ADMIN: '/admin/admin-mst',
+    ROLE: '/admin/role',
+    PERMISSION: '/admin/permission/list',
   },
   AUDIT: {
     LOG: '/admin/audit-log',
+  },
+  LEDGER: {
+    SKILL: '/admin/skill',
+    SKILL_LEVEL: '/admin/skill-level',
+    TAG: '/admin/tag',
+    EVIDENCE: '/admin/evidence',
+    LEARNING_GOAL: '/admin/learning-goal',
+    SEARCH: '/admin/search',
+    DASHBOARD: '/admin/dashboard/summary',
+  },
+  MEDIA: {
+    BASE: '/admin/media',
+    MULTIPART: '/admin/media/multipart',
+  },
+  SYSTEM: {
+    BACKGROUND_TASK: '/admin/background-task',
+    BROADCASTING_AUTH: '/broadcasting/auth',
   },
 } as const;
 

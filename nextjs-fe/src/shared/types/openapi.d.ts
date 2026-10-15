@@ -11,7 +11,7 @@ export interface paths {
       path?: never;
       cookie?: never;
     };
-    get: operations['adminMst.list'];
+    get: operations['admin-mst.list'];
     put?: never;
     post?: never;
     delete?: never;
@@ -30,7 +30,7 @@ export interface paths {
     get?: never;
     put?: never;
     /** Store admin mst */
-    post: operations['adminMst.store'];
+    post: operations['admin-mst.store'];
     delete?: never;
     options?: never;
     head?: never;
@@ -46,7 +46,7 @@ export interface paths {
     };
     get?: never;
     /** Update admin mst */
-    put: operations['adminMst.update'];
+    put: operations['admin-mst.update'];
     post?: never;
     delete?: never;
     options?: never;
@@ -64,7 +64,7 @@ export interface paths {
     get?: never;
     put?: never;
     /** Delete admin mst */
-    post: operations['adminMst.delete'];
+    post: operations['admin-mst.delete'];
     delete?: never;
     options?: never;
     head?: never;
@@ -79,7 +79,41 @@ export interface paths {
       cookie?: never;
     };
     /** Audit log, newest first by default (read-only, ADR-0006) */
-    get: operations['auditLog.list'];
+    get: operations['audit-log.list'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/admin/background-task/test': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** Queue a test job that finishes (or fails, with `fail`) after `seconds`; the result arrives as a live event */
+    post: operations['background-task.test'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/admin/background-task/status/{id}': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Status of one of your background tasks (kept one day), for a screen that missed the live event */
+    get: operations['background-task.status'];
     put?: never;
     post?: never;
     delete?: never;
@@ -148,6 +182,616 @@ export interface paths {
     };
     /** Return an empty response simply to trigger the storage of the CSRF cookie in the browser */
     get: operations['sanctum.csrf-cookie'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/admin/dashboard/summary': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Skill Ledger counts for the dashboard */
+    get: operations['dashboard.summary'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/admin/evidence/list': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations['evidence.list'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/admin/evidence/store': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** Create an evidence link for one or more skills */
+    post: operations['evidence.store'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/admin/evidence/update/{id}': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    /** Update an evidence link (imported rows: only type and is_public) */
+    put: operations['evidence.update'];
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/admin/evidence/delete': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations['evidence.delete'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/admin/evidence/import': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /**
+     * Sync the complete list of published Obsidian notes (idempotent; `dry_run` only counts)
+     * @description Called by the importer CLI with an API token that has the `evidence:import` ability, or by the owner's session.
+     */
+    post: operations['evidence.import'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/admin/learning-goal/list': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations['learning-goal.list'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/admin/learning-goal/store': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** Create an open goal; the target must be above the current level */
+    post: operations['learning-goal.store'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/admin/learning-goal/update/{id}': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    /** Update a goal (status open or dropped; achieved goals: date and note only) */
+    put: operations['learning-goal.update'];
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/admin/learning-goal/delete': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations['learning-goal.delete'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/admin/media/list': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Direct children of a folder (default `/`), folders first */
+    get: operations['media.list'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/admin/media/store-folder': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** Create a folder */
+    post: operations['media.store-folder'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/admin/media/upload-url': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** Start a small-file upload: returns a presigned URL the browser PUTs the file to */
+    post: operations['media.upload-url'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/admin/media/complete/{id}': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** Finish an upload after the PUT succeeded; the file must be in MinIO with the declared size */
+    post: operations['media.complete'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/admin/media/download-url/{id}': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Presigned download URL of a finished file; with `inline=1` a preview URL the browser shows itself (only when the file's `preview` is set) */
+    get: operations['media.download-url'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/admin/media/update/{id}': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    /** Rename and/or move a file or folder */
+    put: operations['media.update'];
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/admin/media/delete': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** Delete files and folders (a folder with everything inside) */
+    post: operations['media.delete'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/admin/media/trash/list': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Deleted files still kept, most recently deleted first */
+    get: operations['media.trash-list'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/admin/media/trash/restore/{id}': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** Restore a deleted file to its folder (recreated if needed); a taken name becomes `name (restored).ext` */
+    post: operations['media.trash-restore'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/admin/media/trash/delete': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** Delete files in the trash for good; returns how many */
+    post: operations['media.trash-delete'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/admin/media/trash/empty': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** Delete everything in the trash for good; returns how many files */
+    post: operations['media.trash-empty'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/admin/media/multipart/start': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** Start a large-file upload (up to 10 GB); returns the part size and number of parts to send */
+    post: operations['media.multipart-start'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/admin/media/multipart/part-urls/{id}': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** Presigned PUT URLs for some parts of your upload (at most 100 per call); read each part's ETag response header */
+    post: operations['media.multipart-part-urls'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/admin/media/multipart/complete/{id}': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** Report every part with its ETag; joining and checking the file runs in the background */
+    post: operations['media.multipart-complete'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/admin/media/multipart/unfinished': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Your large-file uploads that stopped before the end, with the bytes already sent */
+    get: operations['media.multipart-unfinished'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/admin/media/multipart/resume/{id}': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** Resume your unfinished upload: the part size, the number of parts and the parts already sent (send only the others) */
+    post: operations['media.multipart-resume'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/admin/media/multipart/abort/{id}': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** Cancel your unfinished upload and drop the parts already sent */
+    post: operations['media.multipart-abort'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/admin/permission/list': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Every permission (one per admin API), grouped by feature */
+    get: operations['permission.list'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/public/files/{key}': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * Short-lived link to a file attached to public evidence of a public skill (`files[].key` of the skill); anything else → 404
+     * @description Images, PDF, video, audio and text open in the browser, other types download.
+     */
+    get: operations['publicFile.url'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/public/skills': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Public skills, by name */
+    get: operations['publicSkill.list'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/public/skills/{slug}': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** One public skill with its level history dates and public evidence; private or missing → 404 */
+    get: operations['publicSkill.show'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/admin/role/list': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations['role.list'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/admin/role/store': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations['role.store'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/admin/role/update/{id}': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put: operations['role.update'];
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/admin/role/delete': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations['role.delete'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/admin/search': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Search skills, goals and evidence (accents and case ignored; typo fallback when nothing matches) */
+    get: operations['search.query'];
     put?: never;
     post?: never;
     delete?: never;
@@ -229,7 +873,7 @@ export interface paths {
       path?: never;
       cookie?: never;
     };
-    get: operations['skillLevel.list'];
+    get: operations['skill-level.list'];
     put?: never;
     post?: never;
     delete?: never;
@@ -248,7 +892,7 @@ export interface paths {
     get?: never;
     put?: never;
     /** Record a level change; open goals reached by it become achieved */
-    post: operations['skillLevel.store'];
+    post: operations['skill-level.store'];
     delete?: never;
     options?: never;
     head?: never;
@@ -336,28 +980,46 @@ export interface components {
       gender: number;
       status: number;
       is_active: boolean;
-      role: string;
+      roles: {
+        id: number;
+        name: string;
+      }[];
       avatar: string;
       is_delete: boolean;
       updated_at: string;
     };
     /**
-     * AdminRole
-     * @description The two admin roles (ADR-0005): an owner may change data, a viewer may only read it.
-     * @enum {string}
-     */
-    AdminRole: 'owner' | 'viewer';
-    /**
      * AdminStatus
      * @enum {integer}
      */
     AdminStatus: 0 | 1 | 2 | 3;
+    /** ApiError */
+    ApiError: {
+      data: null;
+      error: {
+        status: boolean;
+        code: number;
+        messages:
+          | string
+          | {
+              [key: string]: string[];
+            };
+      };
+    };
     /**
      * AuditEvent
      * @description What an audit_log row records (ADR-0006).
      * @enum {string}
      */
-    AuditEvent: 'created' | 'updated' | 'deleted' | 'logged_in' | 'logged_out' | 'login_failed';
+    AuditEvent:
+      | 'created'
+      | 'updated'
+      | 'deleted'
+      | 'logged_in'
+      | 'logged_out'
+      | 'login_failed'
+      | 'restored'
+      | 'purged';
     /** AuditLogResource */
     AuditLogResource: {
       id: number;
@@ -376,8 +1038,54 @@ export interface components {
       /** @description Full timestamp (ISO 8601): the time of day matters in an audit trail */
       created_at: string;
     };
+    /** BackgroundTaskResource */
+    BackgroundTaskResource: {
+      id: string;
+      type: string;
+      subject_id: number | null;
+      /** @description queued | running | completed | failed */
+      status: string;
+      message: string | null;
+      updated_at: string;
+    };
+    /**
+     * CompleteMultipartUploadRequest
+     * @description Every part with the ETag MinIO returned for it.
+     */
+    CompleteMultipartUploadRequest: {
+      parts: {
+        part_number: number;
+        etag: string;
+      }[];
+    };
+    /**
+     * CreateUploadRequest
+     * @description One-PUT upload of a small file (ADR-0014); bigger files use multipart upload.
+     */
+    CreateUploadRequest: {
+      folder?: string | null;
+      name: string;
+      size: number;
+      mime_type: string;
+    };
     /** DeleteAdminMstRequest */
     DeleteAdminMstRequest: {
+      ids: number[];
+    };
+    /** DeleteEvidenceRequest */
+    DeleteEvidenceRequest: {
+      ids: number[];
+    };
+    /** DeleteLearningGoalRequest */
+    DeleteLearningGoalRequest: {
+      ids: number[];
+    };
+    /** DeleteMediaRequest */
+    DeleteMediaRequest: {
+      ids: number[];
+    };
+    /** DeleteRoleRequest */
+    DeleteRoleRequest: {
       ids: number[];
     };
     /** DeleteSkillRequest */
@@ -388,11 +1096,96 @@ export interface components {
     DeleteTagRequest: {
       ids: number[];
     };
+    /** EvidenceFileResource */
+    EvidenceFileResource: {
+      id: number;
+      is_file: boolean;
+      name: string;
+      path: string;
+      extension: string | null;
+      mime_type: string | null;
+      size: number | null;
+      /** @description 0 uploading, 1 processing, 2 completed, 3 failed */
+      upload_status: number;
+      /** @description How the file can be shown without downloading it; null: download only, or not available */
+      preview: string | null;
+      /** @description Links to evidence: of the file, or of the files inside the folder (MEDIA-09; Files listing only) */
+      attached_count?: number;
+      /** @description Evidence this file is attached to (Files listing only) */
+      used_by?: {
+        id: number;
+        title: string;
+      }[];
+      created_at: string | null;
+      updated_at: string | null;
+      /** @description false: deleted in the file manager (in the trash, or gone for good) */
+      available: boolean;
+    };
+    /** EvidenceResource */
+    EvidenceResource: {
+      id: number;
+      type: components['schemas']['EvidenceType'];
+      title: string;
+      /** @description null: files only (LEDGER-02) */
+      url: string | null;
+      occurred_on: string;
+      summary: string | null;
+      is_public: boolean;
+      source: components['schemas']['EvidenceSource'];
+      unpublished_at: string | null;
+      skills?: {
+        id: number;
+        name: string;
+      }[];
+      tags?: components['schemas']['TagResource'][];
+      /** @description Attached files in display order (LEDGER-01) */
+      files?: components['schemas']['EvidenceFileResource'][];
+      created_at: string | null;
+      updated_at: string | null;
+    };
+    /**
+     * EvidenceSource
+     * @description Who owns an evidence row: typed in the admin, or synced from the Obsidian vault (RFC-002 §4.5).
+     * @enum {string}
+     */
+    EvidenceSource: 'manual' | 'obsidian';
+    /**
+     * EvidenceType
+     * @description What a piece of evidence links to (REQ-002 Q3).
+     * @enum {string}
+     */
+    EvidenceType: 'pr' | 'adr' | 'incident' | 'note' | 'other';
     /**
      * Gender
      * @enum {integer}
      */
     Gender: 1 | 2 | 3;
+    /**
+     * GoalStatus
+     * @description Learning goal lifecycle (REQ-002 Q2): open goals become achieved when the skill reaches the target level.
+     * @enum {string}
+     */
+    GoalStatus: 'open' | 'achieved' | 'dropped';
+    /**
+     * ImportEvidenceRequest
+     * @description The complete list of published Obsidian notes (RFC-002 §4.5, ADR-0010 importer contract).
+     *     Skills and tags are names, not ids: unknown skills are reported, missing tags are created.
+     */
+    ImportEvidenceRequest: {
+      /** @description An empty list is valid: the vault has no published note left, so every imported row is hidden */
+      notes: {
+        external_key: string;
+        title: string;
+        /** Format: uri */
+        url: string;
+        /** Format: date */
+        occurred_on: string;
+        summary?: string | null;
+        tags?: string[];
+        skills?: string[];
+      }[];
+      dry_run?: boolean;
+    };
     /**
      * IsActive
      * @enum {integer}
@@ -403,11 +1196,134 @@ export interface components {
      * @enum {integer}
      */
     IsDelete: 0 | 1;
+    /** LearningGoalResource */
+    LearningGoalResource: {
+      id: number;
+      skill: {
+        id: number;
+        name: string;
+        current_level: number;
+      };
+      target_level: components['schemas']['SkillLevel'];
+      /** @enum {string} */
+      target_level_label: 'Learning' | 'Can use with help' | 'Independent' | 'Can teach others';
+      target_date: string | null;
+      status: components['schemas']['GoalStatus'];
+      achieved_on: string | null;
+      note: string | null;
+      created_at: string | null;
+      updated_at: string | null;
+    };
     /** LoginRequest */
     LoginRequest: {
       user_name: string;
       password: string;
     };
+    /** MediaResource */
+    MediaResource: {
+      id: number;
+      is_file: boolean;
+      name: string;
+      path: string;
+      extension: string | null;
+      mime_type: string | null;
+      size: number | null;
+      /** @description 0 uploading, 1 processing, 2 completed, 3 failed */
+      upload_status: number;
+      /** @description How the file can be shown without downloading it (`download-url/{id}?inline=1`); null: download only */
+      preview: string | null;
+      /** @description Links to evidence: of the file, or of the files inside the folder (MEDIA-09; Files listing only) */
+      attached_count?: number;
+      /** @description Evidence this file is attached to (Files listing only) */
+      used_by?: {
+        id: number;
+        title: string;
+      }[];
+      created_at: string | null;
+      updated_at: string | null;
+    };
+    /** PaginationLinks */
+    PaginationLinks: {
+      first: string | null;
+      last: string | null;
+      prev: string | null;
+      next: string | null;
+    };
+    /** PaginationMeta */
+    PaginationMeta: {
+      current_page: number;
+      from: number | null;
+      last_page: number;
+      links: {
+        url: string | null;
+        label: string;
+        page: number | null;
+        active: boolean;
+      }[];
+      path: string;
+      per_page: number;
+      to: number | null;
+      total: number;
+    };
+    /** PartUrlsRequest */
+    PartUrlsRequest: {
+      part_numbers: number[];
+    };
+    /** PublicSkillDetailResource */
+    PublicSkillDetailResource: {
+      name: string;
+      slug: string;
+      category: string;
+      current_level: number;
+      /** @enum {string} */
+      current_level_label: 'Learning' | 'Can use with help' | 'Independent' | 'Can teach others';
+      tags: string[];
+      description: string | null;
+      history: {
+        level: number;
+        /** @enum {string} */
+        level_label: 'Learning' | 'Can use with help' | 'Independent' | 'Can teach others';
+        changed_on: string;
+      }[];
+      evidence: {
+        type: components['schemas']['EvidenceType'];
+        title: string;
+        url: string | null;
+        occurred_on: string;
+        summary: string | null;
+        files: {
+          key: string;
+          name: string;
+          size: number | null;
+          mime_type: string | null;
+        }[];
+      }[];
+    };
+    /** PublicSkillResource */
+    PublicSkillResource: {
+      name: string;
+      slug: string;
+      category: string;
+      current_level: number;
+      /** @enum {string} */
+      current_level_label: 'Learning' | 'Can use with help' | 'Independent' | 'Can teach others';
+      tags: string[];
+    };
+    /** RoleResource */
+    RoleResource: {
+      id: number;
+      name: string;
+      /** @description Built-in roles (`owner`, `viewer`) cannot be renamed or deleted. */
+      is_built_in: boolean;
+      permissions: string[];
+      admin_count: number;
+    };
+    /**
+     * SearchMatch
+     * @description Which search mode answered (ADR-0009): the UI shows "did you mean" wording for fuzzy results.
+     * @enum {string}
+     */
+    SearchMatch: 'exact' | 'fuzzy';
     /**
      * SkillLevel
      * @description The fixed four-step skill scale (REQ-002 Q1).
@@ -442,6 +1358,16 @@ export interface components {
       updated_at: string | null;
     };
     /**
+     * StartMultipartUploadRequest
+     * @description Multipart upload of a large file (ADR-0014): same fields as a small upload, up to MAX_FILE_BYTES.
+     */
+    StartMultipartUploadRequest: {
+      folder?: string | null;
+      name: string;
+      size: number;
+      mime_type: string;
+    };
+    /**
      * StatusEnum
      * @enum {integer}
      */
@@ -460,9 +1386,52 @@ export interface components {
       gender: components['schemas']['Gender'];
       status: components['schemas']['AdminStatus'];
       is_active: components['schemas']['IsActive'];
-      role?: components['schemas']['AdminRole'];
+      role_ids?: number[];
       avatar?: string | null;
       is_delete: components['schemas']['IsDelete'];
+    };
+    /**
+     * StoreEvidenceRequest
+     * @description Evidence is a link (ADR-0007) and/or files of the file manager (LEDGER-01, `media_ids` in display
+     *     order). EvidenceService checks the files are uploaded and that a link or a file is left (LEDGER-02). `source`, `external_key` and
+     *     `unpublished_at` belong to the importer (RFC-002 §4.5) and are not accepted here.
+     */
+    StoreEvidenceRequest: {
+      type: components['schemas']['EvidenceType'];
+      title: string;
+      /**
+       * Format: uri
+       * @description http(s) only: blocks javascript: and data: links on the public page (REQ-002 US-2)
+       */
+      url?: string | null;
+      /** Format: date */
+      occurred_on: string;
+      summary?: string | null;
+      is_public?: boolean;
+      skill_ids: number[];
+      tag_ids?: number[];
+      media_ids?: number[];
+    };
+    /** StoreFolderRequest */
+    StoreFolderRequest: {
+      folder?: string | null;
+      name: string;
+    };
+    /**
+     * StoreLearningGoalRequest
+     * @description A new goal is always open; the target must be above the skill's current level (LearningGoalService).
+     */
+    StoreLearningGoalRequest: {
+      skill_id: number;
+      target_level: components['schemas']['SkillLevel'];
+      /** Format: date */
+      target_date?: string | null;
+      note?: string | null;
+    };
+    /** StoreRoleRequest */
+    StoreRoleRequest: {
+      name: string;
+      permissions?: string[];
     };
     /** StoreSkillLevelRequest */
     StoreSkillLevelRequest: {
@@ -496,6 +1465,24 @@ export interface components {
       id: number;
       name: string;
     };
+    /** TestBackgroundTaskRequest */
+    TestBackgroundTaskRequest: {
+      seconds?: number | null;
+      fail?: boolean | null;
+    };
+    /** TrashItemResource */
+    TrashItemResource: {
+      id: number;
+      name: string;
+      /** @description Where it was before it was deleted */
+      path: string;
+      size: number | null;
+      mime_type: string | null;
+      deleted_at: string | null;
+      deleted_by: string | null;
+      /** @description When MinIO drops it for good */
+      expires_at: string | null;
+    };
     /** UpdateAdminMstRequest */
     UpdateAdminMstRequest: {
       id: number;
@@ -511,9 +1498,59 @@ export interface components {
       gender: components['schemas']['Gender'];
       status: components['schemas']['AdminStatus'];
       is_active: components['schemas']['IsActive'];
-      role?: components['schemas']['AdminRole'];
+      role_ids?: number[];
       avatar?: string | null;
       is_delete?: components['schemas']['IsDelete'] | null;
+    };
+    /**
+     * UpdateEvidenceRequest
+     * @description Same fields as store, each optional. Imported rows accept only `type` and `is_public`
+     *     (EvidenceService::update).
+     */
+    UpdateEvidenceRequest: {
+      type?: components['schemas']['EvidenceType'];
+      title?: string;
+      /**
+       * Format: uri
+       * @description http(s) only: blocks javascript: and data: links on the public page (REQ-002 US-2)
+       */
+      url?: string | null;
+      /** Format: date */
+      occurred_on?: string;
+      summary?: string | null;
+      is_public?: boolean;
+      skill_ids?: number[];
+      tag_ids?: number[];
+      media_ids?: number[];
+    };
+    /**
+     * UpdateLearningGoalRequest
+     * @description The skill of a goal is fixed. `achieved` is set only by a level change (REQ-002 US-6),
+     *     so the status can be switched between open and dropped only.
+     */
+    UpdateLearningGoalRequest: {
+      target_level?: components['schemas']['SkillLevel'];
+      /** Format: date */
+      target_date?: string | null;
+      /**
+       * @description Learning goal lifecycle (REQ-002 Q2): open goals become achieved when the skill reaches the target level.
+       * @enum {string}
+       */
+      status?: 'open' | 'dropped';
+      note?: string | null;
+    };
+    /**
+     * UpdateMediaRequest
+     * @description Rename (`name`) and/or move (`folder`) a file or a folder.
+     */
+    UpdateMediaRequest: {
+      folder?: string | null;
+      name?: string | null;
+    };
+    /** UpdateRoleRequest */
+    UpdateRoleRequest: {
+      name: string;
+      permissions?: string[];
     };
     /**
      * UpdateSkillRequest
@@ -539,10 +1576,7 @@ export interface components {
         [name: string]: unknown;
       };
       content: {
-        'application/json': {
-          /** @description Error overview. */
-          message: string;
-        };
+        'application/json': components['schemas']['ApiError'];
       };
     };
     /** @description Validation error */
@@ -551,14 +1585,16 @@ export interface components {
         [name: string]: unknown;
       };
       content: {
-        'application/json': {
-          /** @description Errors overview. */
-          message: string;
-          /** @description A detailed description of each field that failed validation. */
-          errors: {
-            [key: string]: string[];
-          };
-        };
+        'application/json': components['schemas']['ApiError'];
+      };
+    };
+    /** @description Not found */
+    NotFoundHttpException: {
+      headers: {
+        [name: string]: unknown;
+      };
+      content: {
+        'application/json': components['schemas']['ApiError'];
       };
     };
   };
@@ -569,7 +1605,7 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
-  'adminMst.list': {
+  'admin-mst.list': {
     parameters: {
       query?: {
         id?: number | null;
@@ -587,7 +1623,7 @@ export interface operations {
         gender?: components['schemas']['Gender'] | null;
         status?: components['schemas']['StatusEnum'] | null;
         is_active?: components['schemas']['IsActive'] | null;
-        role?: components['schemas']['AdminRole'] | null;
+        role_id?: number | null;
         avatar?: string | null;
         is_delete?: components['schemas']['IsDelete'] | null;
         from_date?: string | null;
@@ -606,15 +1642,33 @@ export interface operations {
         };
         content: {
           'application/json': {
-            data: components['schemas']['AdminMstResource'][];
+            data: {
+              data: components['schemas']['AdminMstResource'][];
+              links: components['schemas']['PaginationLinks'];
+              meta: components['schemas']['PaginationMeta'];
+            };
+            error: {
+              status: boolean;
+              code: number;
+              messages: null;
+            };
           };
         };
       };
       401: components['responses']['AuthenticationException'];
+      /** @description Forbidden */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ApiError'];
+        };
+      };
       422: components['responses']['ValidationException'];
     };
   };
-  'adminMst.store': {
+  'admin-mst.store': {
     parameters: {
       query?: never;
       header?: never;
@@ -632,14 +1686,30 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          'application/json': number;
+          'application/json': {
+            data: number;
+            error: {
+              status: boolean;
+              code: number;
+              messages: null;
+            };
+          };
         };
       };
       401: components['responses']['AuthenticationException'];
+      /** @description Forbidden */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ApiError'];
+        };
+      };
       422: components['responses']['ValidationException'];
     };
   };
-  'adminMst.update': {
+  'admin-mst.update': {
     parameters: {
       query?: never;
       header?: never;
@@ -659,14 +1729,39 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          'application/json': number;
+          'application/json': {
+            data: number;
+            error: {
+              status: boolean;
+              code: number;
+              messages: null;
+            };
+          };
         };
       };
       401: components['responses']['AuthenticationException'];
+      /** @description Forbidden */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ApiError'];
+        };
+      };
+      /** @description Not Found */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ApiError'];
+        };
+      };
       422: components['responses']['ValidationException'];
     };
   };
-  'adminMst.delete': {
+  'admin-mst.delete': {
     parameters: {
       query?: never;
       header?: never;
@@ -684,14 +1779,30 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          'application/json': Record<string, never>;
+          'application/json': {
+            data: null;
+            error: {
+              status: boolean;
+              code: number;
+              messages: null;
+            };
+          };
         };
       };
       401: components['responses']['AuthenticationException'];
+      /** @description Forbidden */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ApiError'];
+        };
+      };
       422: components['responses']['ValidationException'];
     };
   };
-  'auditLog.list': {
+  'audit-log.list': {
     parameters: {
       query?: {
         id?: number | null;
@@ -719,12 +1830,116 @@ export interface operations {
         };
         content: {
           'application/json': {
-            data: components['schemas']['AuditLogResource'][];
+            data: {
+              data: components['schemas']['AuditLogResource'][];
+              links: components['schemas']['PaginationLinks'];
+              meta: components['schemas']['PaginationMeta'];
+            };
+            error: {
+              status: boolean;
+              code: number;
+              messages: null;
+            };
           };
         };
       };
       401: components['responses']['AuthenticationException'];
+      /** @description Forbidden */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ApiError'];
+        };
+      };
       422: components['responses']['ValidationException'];
+    };
+  };
+  'background-task.test': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: {
+      content: {
+        'application/json': components['schemas']['TestBackgroundTaskRequest'];
+      };
+    };
+    responses: {
+      /** @description `BackgroundTaskResource` */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            data: {
+              data: components['schemas']['BackgroundTaskResource'];
+            };
+            error: {
+              status: boolean;
+              code: number;
+              messages: null;
+            };
+          };
+        };
+      };
+      401: components['responses']['AuthenticationException'];
+      /** @description Forbidden */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ApiError'];
+        };
+      };
+      422: components['responses']['ValidationException'];
+    };
+  };
+  'background-task.status': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description `BackgroundTaskResource` */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            data: {
+              data: components['schemas']['BackgroundTaskResource'];
+            };
+            error: {
+              status: boolean;
+              code: number;
+              messages: null;
+            };
+          };
+        };
+      };
+      401: components['responses']['AuthenticationException'];
+      /** @description Forbidden */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ApiError'];
+        };
+      };
+      404: components['responses']['NotFoundHttpException'];
     };
   };
   'credential.login': {
@@ -745,7 +1960,34 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          'application/json': unknown[];
+          'application/json': {
+            data: {
+              id: number;
+              email: string;
+              user_name: string;
+              first_name: string;
+              last_name: string;
+              address: string;
+              phone_number: string;
+              birth: string | null;
+              gender: number;
+              status: number;
+              is_active: boolean;
+              roles: {
+                id: number;
+                name: string;
+              }[];
+              avatar: string;
+              is_delete: boolean;
+              updated_at: string;
+              permissions: string[];
+            };
+            error: {
+              status: boolean;
+              code: number;
+              messages: null;
+            };
+          };
         };
       };
       401: components['responses']['AuthenticationException'];
@@ -756,10 +1998,7 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          'application/json': {
-            /** @description Error overview. */
-            message: string;
-          };
+          'application/json': components['schemas']['ApiError'];
         };
       };
     };
@@ -778,7 +2017,14 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          'application/json': Record<string, never>;
+          'application/json': {
+            data: null;
+            error: {
+              status: boolean;
+              code: number;
+              messages: null;
+            };
+          };
         };
       };
     };
@@ -797,10 +2043,46 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          'application/json': unknown[];
+          'application/json': {
+            data: {
+              id: number;
+              email: string;
+              user_name: string;
+              first_name: string;
+              last_name: string;
+              address: string;
+              phone_number: string;
+              birth: string | null;
+              gender: number;
+              status: number;
+              is_active: boolean;
+              roles: {
+                id: number;
+                name: string;
+              }[];
+              avatar: string;
+              is_delete: boolean;
+              updated_at: string;
+              permissions: string[];
+            };
+            error: {
+              status: boolean;
+              code: number;
+              messages: null;
+            };
+          };
         };
       };
       401: components['responses']['AuthenticationException'];
+      /** @description Forbidden */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ApiError'];
+        };
+      };
     };
   };
   'sanctum.csrf-cookie': {
@@ -825,6 +2107,1719 @@ export interface operations {
           'application/json': unknown[];
         };
       };
+    };
+  };
+  'dashboard.summary': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            data: {
+              skills: number;
+              public_skills: number;
+              evidence: number;
+              public_evidence: number;
+              open_goals: number;
+              levels: {
+                level: number;
+                level_label: string;
+                count: number;
+              }[];
+            };
+            error: {
+              status: boolean;
+              code: number;
+              messages: null;
+            };
+          };
+        };
+      };
+      401: components['responses']['AuthenticationException'];
+      /** @description Forbidden */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ApiError'];
+        };
+      };
+    };
+  };
+  'evidence.list': {
+    parameters: {
+      query?: {
+        id?: number | null;
+        page?: number | null;
+        per_page?: number | null;
+        sort_by?: string | null;
+        sort_order?: string | null;
+        title?: string | null;
+        type?: components['schemas']['EvidenceType'] | null;
+        source?: components['schemas']['EvidenceSource'] | null;
+        is_public?: boolean | null;
+        skill_id?: number | null;
+        tag_id?: number | null;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Array of `EvidenceResource` */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            data: {
+              data: components['schemas']['EvidenceResource'][];
+              links: components['schemas']['PaginationLinks'];
+              meta: components['schemas']['PaginationMeta'];
+            };
+            error: {
+              status: boolean;
+              code: number;
+              messages: null;
+            };
+          };
+        };
+      };
+      401: components['responses']['AuthenticationException'];
+      /** @description Forbidden */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ApiError'];
+        };
+      };
+      422: components['responses']['ValidationException'];
+    };
+  };
+  'evidence.store': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['StoreEvidenceRequest'];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            data: number;
+            error: {
+              status: boolean;
+              code: number;
+              messages: null;
+            };
+          };
+        };
+      };
+      401: components['responses']['AuthenticationException'];
+      /** @description Forbidden */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ApiError'];
+        };
+      };
+      422: components['responses']['ValidationException'];
+    };
+  };
+  'evidence.update': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: {
+      content: {
+        'application/json': components['schemas']['UpdateEvidenceRequest'];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            data: number;
+            error: {
+              status: boolean;
+              code: number;
+              messages: null;
+            };
+          };
+        };
+      };
+      401: components['responses']['AuthenticationException'];
+      /** @description Forbidden */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ApiError'];
+        };
+      };
+      /** @description Not Found */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ApiError'];
+        };
+      };
+      422: components['responses']['ValidationException'];
+    };
+  };
+  'evidence.delete': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['DeleteEvidenceRequest'];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            data: null;
+            error: {
+              status: boolean;
+              code: number;
+              messages: null;
+            };
+          };
+        };
+      };
+      401: components['responses']['AuthenticationException'];
+      /** @description Forbidden */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ApiError'];
+        };
+      };
+      422: components['responses']['ValidationException'];
+    };
+  };
+  'evidence.import': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['ImportEvidenceRequest'];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            data: {
+              created: number;
+              updated: number;
+              unchanged: number;
+              hidden: number;
+              unknown_skills: string[];
+            };
+            error: {
+              status: boolean;
+              code: number;
+              messages: null;
+            };
+          };
+        };
+      };
+      401: components['responses']['AuthenticationException'];
+      /** @description Forbidden */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ApiError'];
+        };
+      };
+      422: components['responses']['ValidationException'];
+      /** @description Too Many Requests */
+      429: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ApiError'];
+        };
+      };
+    };
+  };
+  'learning-goal.list': {
+    parameters: {
+      query?: {
+        id?: number | null;
+        page?: number | null;
+        per_page?: number | null;
+        sort_by?: string | null;
+        sort_order?: string | null;
+        skill_id?: number | null;
+        status?: components['schemas']['GoalStatus'] | null;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Array of `LearningGoalResource` */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            data: {
+              data: components['schemas']['LearningGoalResource'][];
+              links: components['schemas']['PaginationLinks'];
+              meta: components['schemas']['PaginationMeta'];
+            };
+            error: {
+              status: boolean;
+              code: number;
+              messages: null;
+            };
+          };
+        };
+      };
+      401: components['responses']['AuthenticationException'];
+      /** @description Forbidden */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ApiError'];
+        };
+      };
+      422: components['responses']['ValidationException'];
+    };
+  };
+  'learning-goal.store': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['StoreLearningGoalRequest'];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            data: number;
+            error: {
+              status: boolean;
+              code: number;
+              messages: null;
+            };
+          };
+        };
+      };
+      401: components['responses']['AuthenticationException'];
+      /** @description Forbidden */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ApiError'];
+        };
+      };
+      422: components['responses']['ValidationException'];
+    };
+  };
+  'learning-goal.update': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: {
+      content: {
+        'application/json': components['schemas']['UpdateLearningGoalRequest'];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            data: number;
+            error: {
+              status: boolean;
+              code: number;
+              messages: null;
+            };
+          };
+        };
+      };
+      401: components['responses']['AuthenticationException'];
+      /** @description Forbidden */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ApiError'];
+        };
+      };
+      /** @description Not Found */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ApiError'];
+        };
+      };
+      422: components['responses']['ValidationException'];
+    };
+  };
+  'learning-goal.delete': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['DeleteLearningGoalRequest'];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            data: null;
+            error: {
+              status: boolean;
+              code: number;
+              messages: null;
+            };
+          };
+        };
+      };
+      401: components['responses']['AuthenticationException'];
+      /** @description Forbidden */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ApiError'];
+        };
+      };
+      422: components['responses']['ValidationException'];
+    };
+  };
+  'media.list': {
+    parameters: {
+      query?: {
+        id?: number | null;
+        page?: number | null;
+        per_page?: number | null;
+        sort_by?: string | null;
+        sort_order?: string | null;
+        folder?: string | null;
+        name?: string | null;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Array of `MediaResource` */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            data: {
+              data: components['schemas']['MediaResource'][];
+              links: components['schemas']['PaginationLinks'];
+              meta: components['schemas']['PaginationMeta'];
+            };
+            error: {
+              status: boolean;
+              code: number;
+              messages: null;
+            };
+          };
+        };
+      };
+      401: components['responses']['AuthenticationException'];
+      /** @description Forbidden */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ApiError'];
+        };
+      };
+      422: components['responses']['ValidationException'];
+    };
+  };
+  'media.store-folder': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['StoreFolderRequest'];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            data: number;
+            error: {
+              status: boolean;
+              code: number;
+              messages: null;
+            };
+          };
+        };
+      };
+      401: components['responses']['AuthenticationException'];
+      /** @description Forbidden */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ApiError'];
+        };
+      };
+      422: components['responses']['ValidationException'];
+    };
+  };
+  'media.upload-url': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['CreateUploadRequest'];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            data: {
+              id: number;
+              url: string;
+              method: string;
+              headers: {
+                'Content-Type': string;
+              };
+              expires_at: string;
+            };
+            error: {
+              status: boolean;
+              code: number;
+              messages: null;
+            };
+          };
+        };
+      };
+      401: components['responses']['AuthenticationException'];
+      /** @description Forbidden */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ApiError'];
+        };
+      };
+      422: components['responses']['ValidationException'];
+    };
+  };
+  'media.complete': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description `MediaResource` */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            data: {
+              data: components['schemas']['MediaResource'];
+            };
+            error: {
+              status: boolean;
+              code: number;
+              messages: null;
+            };
+          };
+        };
+      };
+      401: components['responses']['AuthenticationException'];
+      /** @description Forbidden */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ApiError'];
+        };
+      };
+      /** @description Not Found */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ApiError'];
+        };
+      };
+      422: components['responses']['ValidationException'];
+    };
+  };
+  'media.download-url': {
+    parameters: {
+      query?: {
+        /** @description 1: a preview link (shown in the browser) instead of a download */
+        inline?: boolean;
+      };
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            data: {
+              url: string;
+              expires_at: string;
+            };
+            error: {
+              status: boolean;
+              code: number;
+              messages: null;
+            };
+          };
+        };
+      };
+      401: components['responses']['AuthenticationException'];
+      /** @description Forbidden */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ApiError'];
+        };
+      };
+      /** @description Not Found */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ApiError'];
+        };
+      };
+      422: components['responses']['ValidationException'];
+    };
+  };
+  'media.update': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: {
+      content: {
+        'application/json': components['schemas']['UpdateMediaRequest'];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            data: number;
+            error: {
+              status: boolean;
+              code: number;
+              messages: null;
+            };
+          };
+        };
+      };
+      401: components['responses']['AuthenticationException'];
+      /** @description Forbidden */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ApiError'];
+        };
+      };
+      /** @description Not Found */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ApiError'];
+        };
+      };
+      422: components['responses']['ValidationException'];
+    };
+  };
+  'media.delete': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['DeleteMediaRequest'];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            data: null;
+            error: {
+              status: boolean;
+              code: number;
+              messages: null;
+            };
+          };
+        };
+      };
+      401: components['responses']['AuthenticationException'];
+      /** @description Forbidden */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ApiError'];
+        };
+      };
+      422: components['responses']['ValidationException'];
+    };
+  };
+  'media.trash-list': {
+    parameters: {
+      query?: {
+        id?: number | null;
+        page?: number | null;
+        per_page?: number | null;
+        sort_by?: string | null;
+        sort_order?: string | null;
+        name?: string | null;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Array of `TrashItemResource` */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            data: {
+              data: components['schemas']['TrashItemResource'][];
+              links: components['schemas']['PaginationLinks'];
+              meta: components['schemas']['PaginationMeta'];
+            };
+            error: {
+              status: boolean;
+              code: number;
+              messages: null;
+            };
+          };
+        };
+      };
+      401: components['responses']['AuthenticationException'];
+      /** @description Forbidden */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ApiError'];
+        };
+      };
+      422: components['responses']['ValidationException'];
+    };
+  };
+  'media.trash-restore': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description `MediaResource` */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            data: {
+              data: components['schemas']['MediaResource'];
+            };
+            error: {
+              status: boolean;
+              code: number;
+              messages: null;
+            };
+          };
+        };
+      };
+      401: components['responses']['AuthenticationException'];
+      /** @description Forbidden */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ApiError'];
+        };
+      };
+      /** @description Not Found */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ApiError'];
+        };
+      };
+      422: components['responses']['ValidationException'];
+    };
+  };
+  'media.trash-delete': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['DeleteMediaRequest'];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            data: number;
+            error: {
+              status: boolean;
+              code: number;
+              messages: null;
+            };
+          };
+        };
+      };
+      401: components['responses']['AuthenticationException'];
+      /** @description Forbidden */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ApiError'];
+        };
+      };
+      422: components['responses']['ValidationException'];
+    };
+  };
+  'media.trash-empty': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            data: number;
+            error: {
+              status: boolean;
+              code: number;
+              messages: null;
+            };
+          };
+        };
+      };
+      401: components['responses']['AuthenticationException'];
+      /** @description Forbidden */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ApiError'];
+        };
+      };
+    };
+  };
+  'media.multipart-start': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['StartMultipartUploadRequest'];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            data: {
+              id: number;
+              part_size: number;
+              part_count: number;
+            };
+            error: {
+              status: boolean;
+              code: number;
+              messages: null;
+            };
+          };
+        };
+      };
+      401: components['responses']['AuthenticationException'];
+      /** @description Forbidden */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ApiError'];
+        };
+      };
+      422: components['responses']['ValidationException'];
+    };
+  };
+  'media.multipart-part-urls': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['PartUrlsRequest'];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            data: {
+              parts: {
+                part_number: number;
+                url: string;
+              }[];
+              expires_at: string;
+            };
+            error: {
+              status: boolean;
+              code: number;
+              messages: null;
+            };
+          };
+        };
+      };
+      401: components['responses']['AuthenticationException'];
+      /** @description Forbidden */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ApiError'];
+        };
+      };
+      /** @description Not Found */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ApiError'];
+        };
+      };
+      422: components['responses']['ValidationException'];
+    };
+  };
+  'media.multipart-complete': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['CompleteMultipartUploadRequest'];
+      };
+    };
+    responses: {
+      /** @description `BackgroundTaskResource` */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            data: {
+              data: components['schemas']['BackgroundTaskResource'];
+            };
+            error: {
+              status: boolean;
+              code: number;
+              messages: null;
+            };
+          };
+        };
+      };
+      401: components['responses']['AuthenticationException'];
+      /** @description Forbidden */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ApiError'];
+        };
+      };
+      /** @description Not Found */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ApiError'];
+        };
+      };
+      422: components['responses']['ValidationException'];
+    };
+  };
+  'media.multipart-unfinished': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            data: {
+              id: number;
+              name: string;
+              folder: string;
+              size: number;
+              mime_type: string | null;
+              uploaded_bytes: number;
+              updated_at: string;
+            }[];
+            error: {
+              status: boolean;
+              code: number;
+              messages: null;
+            };
+          };
+        };
+      };
+      401: components['responses']['AuthenticationException'];
+      /** @description Forbidden */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ApiError'];
+        };
+      };
+    };
+  };
+  'media.multipart-resume': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            data: {
+              id: number;
+              part_size: number;
+              part_count: number;
+              parts: {
+                part_number: number;
+                etag: string;
+                size: number;
+              }[];
+            };
+            error: {
+              status: boolean;
+              code: number;
+              messages: null;
+            };
+          };
+        };
+      };
+      401: components['responses']['AuthenticationException'];
+      /** @description Forbidden */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ApiError'];
+        };
+      };
+      /** @description Not Found */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ApiError'];
+        };
+      };
+    };
+  };
+  'media.multipart-abort': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            data: null;
+            error: {
+              status: boolean;
+              code: number;
+              messages: null;
+            };
+          };
+        };
+      };
+      401: components['responses']['AuthenticationException'];
+      /** @description Forbidden */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ApiError'];
+        };
+      };
+      /** @description Not Found */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ApiError'];
+        };
+      };
+    };
+  };
+  'permission.list': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            data: {
+              feature: string;
+              permissions: {
+                name: string;
+                action: string;
+                method: string | null;
+              }[];
+            }[];
+            error: {
+              status: boolean;
+              code: number;
+              messages: null;
+            };
+          };
+        };
+      };
+      401: components['responses']['AuthenticationException'];
+      /** @description Forbidden */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ApiError'];
+        };
+      };
+    };
+  };
+  'publicFile.url': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        key: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            data: {
+              url: string;
+              expires_at: string;
+            };
+            error: {
+              status: boolean;
+              code: number;
+              messages: null;
+            };
+          };
+        };
+      };
+      /** @description Not Found */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ApiError'];
+        };
+      };
+      /** @description Too Many Requests */
+      429: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ApiError'];
+        };
+      };
+    };
+  };
+  'publicSkill.list': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Array of `PublicSkillResource` */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            data: {
+              data: components['schemas']['PublicSkillResource'][];
+            };
+            error: {
+              status: boolean;
+              code: number;
+              messages: null;
+            };
+          };
+        };
+      };
+      /** @description Too Many Requests */
+      429: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ApiError'];
+        };
+      };
+    };
+  };
+  'publicSkill.show': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        slug: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description `PublicSkillDetailResource` */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            data: {
+              data: components['schemas']['PublicSkillDetailResource'];
+            };
+            error: {
+              status: boolean;
+              code: number;
+              messages: null;
+            };
+          };
+        };
+      };
+      /** @description Not Found */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ApiError'];
+        };
+      };
+      /** @description Too Many Requests */
+      429: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ApiError'];
+        };
+      };
+    };
+  };
+  'role.list': {
+    parameters: {
+      query?: {
+        id?: number | null;
+        page?: number | null;
+        per_page?: number | null;
+        sort_by?: string | null;
+        sort_order?: string | null;
+        name?: string | null;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Array of `RoleResource` */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            data: {
+              data: components['schemas']['RoleResource'][];
+              links: components['schemas']['PaginationLinks'];
+              meta: components['schemas']['PaginationMeta'];
+            };
+            error: {
+              status: boolean;
+              code: number;
+              messages: null;
+            };
+          };
+        };
+      };
+      401: components['responses']['AuthenticationException'];
+      /** @description Forbidden */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ApiError'];
+        };
+      };
+      422: components['responses']['ValidationException'];
+    };
+  };
+  'role.store': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['StoreRoleRequest'];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            data: number;
+            error: {
+              status: boolean;
+              code: number;
+              messages: null;
+            };
+          };
+        };
+      };
+      401: components['responses']['AuthenticationException'];
+      /** @description Forbidden */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ApiError'];
+        };
+      };
+      422: components['responses']['ValidationException'];
+    };
+  };
+  'role.update': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['UpdateRoleRequest'];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            data: number;
+            error: {
+              status: boolean;
+              code: number;
+              messages: null;
+            };
+          };
+        };
+      };
+      401: components['responses']['AuthenticationException'];
+      /** @description Forbidden */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ApiError'];
+        };
+      };
+      /** @description Not Found */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ApiError'];
+        };
+      };
+      422: components['responses']['ValidationException'];
+    };
+  };
+  'role.delete': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['DeleteRoleRequest'];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            data: null;
+            error: {
+              status: boolean;
+              code: number;
+              messages: null;
+            };
+          };
+        };
+      };
+      401: components['responses']['AuthenticationException'];
+      /** @description Forbidden */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ApiError'];
+        };
+      };
+      422: components['responses']['ValidationException'];
+    };
+  };
+  'search.query': {
+    parameters: {
+      query: {
+        q: string;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            data: {
+              match: components['schemas']['SearchMatch'];
+              skills: {
+                id: number;
+                title: string;
+                snippet: string | null;
+              }[];
+              goals: {
+                id: number;
+                title: string;
+                snippet: string | null;
+              }[];
+              evidence: {
+                id: number;
+                title: string;
+                snippet: string | null;
+              }[];
+            };
+            error: {
+              status: boolean;
+              code: number;
+              messages: null;
+            };
+          };
+        };
+      };
+      401: components['responses']['AuthenticationException'];
+      /** @description Forbidden */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ApiError'];
+        };
+      };
+      422: components['responses']['ValidationException'];
     };
   };
   'skill.list': {
@@ -854,11 +3849,29 @@ export interface operations {
         };
         content: {
           'application/json': {
-            data: components['schemas']['SkillResource'][];
+            data: {
+              data: components['schemas']['SkillResource'][];
+              links: components['schemas']['PaginationLinks'];
+              meta: components['schemas']['PaginationMeta'];
+            };
+            error: {
+              status: boolean;
+              code: number;
+              messages: null;
+            };
           };
         };
       };
       401: components['responses']['AuthenticationException'];
+      /** @description Forbidden */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ApiError'];
+        };
+      };
       422: components['responses']['ValidationException'];
     };
   };
@@ -880,10 +3893,26 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          'application/json': number;
+          'application/json': {
+            data: number;
+            error: {
+              status: boolean;
+              code: number;
+              messages: null;
+            };
+          };
         };
       };
       401: components['responses']['AuthenticationException'];
+      /** @description Forbidden */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ApiError'];
+        };
+      };
       422: components['responses']['ValidationException'];
     };
   };
@@ -907,10 +3936,35 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          'application/json': number;
+          'application/json': {
+            data: number;
+            error: {
+              status: boolean;
+              code: number;
+              messages: null;
+            };
+          };
         };
       };
       401: components['responses']['AuthenticationException'];
+      /** @description Forbidden */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ApiError'];
+        };
+      };
+      /** @description Not Found */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ApiError'];
+        };
+      };
       422: components['responses']['ValidationException'];
     };
   };
@@ -932,14 +3986,30 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          'application/json': Record<string, never>;
+          'application/json': {
+            data: null;
+            error: {
+              status: boolean;
+              code: number;
+              messages: null;
+            };
+          };
         };
       };
       401: components['responses']['AuthenticationException'];
+      /** @description Forbidden */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ApiError'];
+        };
+      };
       422: components['responses']['ValidationException'];
     };
   };
-  'skillLevel.list': {
+  'skill-level.list': {
     parameters: {
       query: {
         id?: number | null;
@@ -962,15 +4032,33 @@ export interface operations {
         };
         content: {
           'application/json': {
-            data: components['schemas']['SkillLevelResource'][];
+            data: {
+              data: components['schemas']['SkillLevelResource'][];
+              links: components['schemas']['PaginationLinks'];
+              meta: components['schemas']['PaginationMeta'];
+            };
+            error: {
+              status: boolean;
+              code: number;
+              messages: null;
+            };
           };
         };
       };
       401: components['responses']['AuthenticationException'];
+      /** @description Forbidden */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ApiError'];
+        };
+      };
       422: components['responses']['ValidationException'];
     };
   };
-  'skillLevel.store': {
+  'skill-level.store': {
     parameters: {
       query?: never;
       header?: never;
@@ -988,10 +4076,26 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          'application/json': number;
+          'application/json': {
+            data: number;
+            error: {
+              status: boolean;
+              code: number;
+              messages: null;
+            };
+          };
         };
       };
       401: components['responses']['AuthenticationException'];
+      /** @description Forbidden */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ApiError'];
+        };
+      };
       422: components['responses']['ValidationException'];
     };
   };
@@ -1018,11 +4122,29 @@ export interface operations {
         };
         content: {
           'application/json': {
-            data: components['schemas']['TagResource'][];
+            data: {
+              data: components['schemas']['TagResource'][];
+              links: components['schemas']['PaginationLinks'];
+              meta: components['schemas']['PaginationMeta'];
+            };
+            error: {
+              status: boolean;
+              code: number;
+              messages: null;
+            };
           };
         };
       };
       401: components['responses']['AuthenticationException'];
+      /** @description Forbidden */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ApiError'];
+        };
+      };
       422: components['responses']['ValidationException'];
     };
   };
@@ -1044,10 +4166,26 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          'application/json': number;
+          'application/json': {
+            data: number;
+            error: {
+              status: boolean;
+              code: number;
+              messages: null;
+            };
+          };
         };
       };
       401: components['responses']['AuthenticationException'];
+      /** @description Forbidden */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ApiError'];
+        };
+      };
       422: components['responses']['ValidationException'];
     };
   };
@@ -1071,10 +4209,35 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          'application/json': number;
+          'application/json': {
+            data: number;
+            error: {
+              status: boolean;
+              code: number;
+              messages: null;
+            };
+          };
         };
       };
       401: components['responses']['AuthenticationException'];
+      /** @description Forbidden */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ApiError'];
+        };
+      };
+      /** @description Not Found */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ApiError'];
+        };
+      };
       422: components['responses']['ValidationException'];
     };
   };
@@ -1096,10 +4259,26 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          'application/json': Record<string, never>;
+          'application/json': {
+            data: null;
+            error: {
+              status: boolean;
+              code: number;
+              messages: null;
+            };
+          };
         };
       };
       401: components['responses']['AuthenticationException'];
+      /** @description Forbidden */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ApiError'];
+        };
+      };
       422: components['responses']['ValidationException'];
     };
   };

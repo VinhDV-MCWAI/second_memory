@@ -5,14 +5,17 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/shared/utils';
 import { Button } from '@/components/ui/button';
-import { useAuth } from '@/shared/hooks';
+import { useAuth, usePermissions } from '@/shared/hooks';
 import { LogOut, Menu, X, ChevronDown } from 'lucide-react';
 import { NAVIGATION_MENU, isRouteActive } from '@/shared/config/navigation';
+import { filterMenu } from '@/shared/utils/permissions';
 import { useTranslations } from 'next-intl';
 
 export function Sidebar() {
   const pathname = usePathname();
   const { logout } = useAuth();
+  const { can } = usePermissions();
+  const menu = filterMenu(NAVIGATION_MENU, can);
   const [isOpen, setIsOpen] = useState(false);
   const [expandedMenu, setExpandedMenu] = useState<string | null>(null);
   const tCommon = useTranslations('common');
@@ -31,7 +34,7 @@ export function Sidebar() {
 
   const menuContent = useMemo(
     () =>
-      NAVIGATION_MENU.map((item) => (
+      menu.map((item) => (
         <div key={item.label}>
           {item.children ? (
             <>
@@ -110,7 +113,7 @@ export function Sidebar() {
           )}
         </div>
       )),
-    [pathname, expandedMenu, toggleMenu, tNav, tEntities],
+    [menu, pathname, expandedMenu, toggleMenu, tNav, tEntities],
   );
 
   return (

@@ -1,105 +1,81 @@
-# 03 — Backlog
+# Danh sách việc
 
-> 🇻🇳 Danh sách công việc.
+Cập nhật: 2026-10-14. Lộ trình: [02-roadmap.md](02-roadmap.md).
 
-Rolling-wave planning: the current and next phase are broken into tasks of 1–3 sessions; later phases stay coarse and are refined when their turn comes (that refinement is itself task `Px-00`).
+Mã việc (cột đầu) chỉ để script chia việc `scripts/lane.sh` nhận diện; khi nói chuyện và viết tài liệu thì dùng tên việc. Trạng thái: `todo` → `doing` → `done`. Không sửa cột trạng thái bằng tay.
 
-> 🇻🇳 Lập kế hoạch cuốn chiếu: giai đoạn hiện tại và kế tiếp được chia thành task 1–3 buổi; các giai đoạn sau để ở mức thô và được chi tiết hoá khi tới lượt (việc đó là task `Px-00`).
+Các giai đoạn 2–6 mới ghi ở mức việc lớn; khi bắt đầu giai đoạn, bước đề xuất thiết kế sẽ chia nhỏ tiếp.
 
-Status: `todo` → `doing` → `done` | `cut` (with reason). When GitHub Projects is set up (P0-06), each task becomes an issue and this file links to it.
+## 1. Dọn nền
 
-> 🇻🇳 Khi đã có GitHub Projects, mỗi task thành một issue và file này link tới issue.
-
-## P0 — Baseline & close-out
-
-| ID | Task | Output | Status |
+| Mã | Việc | Kết quả | Trạng thái |
 |---|---|---|---|
-| P0-01 | Close the old refactor: gather `fix/security-deps` + `refactor/fe6-features` into `chore/p0-baseline`, check the FE6 WIP, split no more files of features listed for removal | Branch `chore/p0-baseline`; tsc ✓, lint 0 errors, Vitest 106 ✓ | done |
-| P0-02 | Verify (`make verify`), PR `chore/p0-baseline` → `developer` → `main` (owner pushes) | Merged PRs | doing: `make verify` ✓ (598 BE, 106 FE); now part of `refactor/p2-slim-down` (stacked branch deleted, boundary = tag `v1.0.0`); push + PRs by owner |
-| P0-03 | Tag `v1.0.0` on `main` with release notes "legacy CMS baseline" | GitHub release | done locally (tag `v1.0.0`, notes in `docs/releases/v1.0.0.md`); owner pushes tag + creates release |
-| P0-04 | Write `docs/architecture/as-is.md`: containers, data model summary, request flow, auth flow (one diagram each) | As-is doc | done |
-| P0-05 | Move root `01–10-*.md` to `docs/archive/legacy-architecture/`, add a note on top of each, fix links in CLAUDE.md files | Archive | done |
-| P0-06 | GitHub Issues + Projects board (columns: Backlog, Ready, Doing, Review, Done), labels (`type:req/bug/task/spike/incident/docs`, `prio:p1–p4`, `phase:Px`) | Board | owner: steps in `docs/plan/github-setup.md` |
-| P0-07 | Mark `.claude/refactor/PLAN.md` frozen, map open items per [analysis §7](01-analysis.md#7-impact-on-the-running-refactor-clauderefactorplanmd) | Frozen plan | done |
-| P0-08 | ADR-0002 documentation conventions (bilingual marker, IDs, folders) | ADR | done |
-| P0-09 | Remote branch cleanup (old `feature/*`, `staging`) per PROGRESS.md | Clean remote | owner: approved 2026-10-07, command in `.claude/lab/PROGRESS.md` → "Needs the owner" item 4 (no credentials in Claude's environment); local branches already cleaned |
+| NEN-01 | Tài liệu môi trường dev: chạy lần đầu, các địa chỉ, sửa code thì làm gì, test nhanh, xem lỗi ở đâu, lỗi hay gặp | `docs/dev-guide.md` | done (2026-10-09) |
+| NEN-02 | Kế hoạch mới, quy ước tài liệu tiếng Việt, quyết định đổi hướng; chuyển kế hoạch cũ vào archive | `docs/plan/`, ADR-0012 | done (2026-10-09) |
+| NEN-03 | Dọn thư mục gốc: xóa `start.sh` (chỉ gọi `make up`), chuyển `setup-env.sh` vào `scripts/`; sửa Makefile và README | Thư mục gốc chỉ còn file cấu hình | done (42ce9580, 774c59da — setup-env.sh chuyển vào scripts/, xóa start.sh, sửa mọi chỗ nhắc tới) |
+| NEN-04 | Rút gọn `docs/`: giữ hướng dẫn dev, kế hoạch, quyết định, ghi chú phát hành, hướng dẫn vận hành; chuyển sổ tay quy trình, mẫu tài liệu, báo cáo, hồ sơ yêu cầu và thiết kế của giai đoạn cũ vào archive; viết lại `docs/README.md` | `docs/` gọn, có mục lục tiếng Việt | done (78462665, e4743898 — docs/ còn plan, adr, releases, runbooks, architecture; tài liệu Engineering Lab vào archive; mục lục tiếng Việt) |
+| NEN-05 | Mỗi tính năng hiện có một file mô tả trong `docs/features/`: đăng nhập, quản trị viên, Skill Ledger, tìm kiếm, nhật ký thay đổi, trang public, nhập từ Obsidian | `docs/features/*.md` | done (982773ee — docs/features/: 7 file mô tả tính năng + mục lục; docs/README.md trỏ tới) |
+| NEN-06 | Dọn `.claude/`: bỏ các vai giả lập (PO, QA, Ops), thay skill làm việc theo luồng mới (đề xuất → xác nhận → làm → test), cập nhật quy tắc tài liệu trong các file rules và CLAUDE.md | `.claude/` chỉ còn thứ đang dùng | done (d0e0895f — bỏ 3 vai giả lập và skill lane (gộp vào lab-task), rules + CLAUDE.md theo cách làm một branch) |
+| NEN-07 | Seeder dữ liệu mẫu cho dev: vài skill, bằng chứng, mục tiêu, nhãn, một tài khoản chỉ xem | Mở trang quản trị là có dữ liệu để thử | done (31dfab61, bb6fe637, 300cd787 — make seed: tài khoản chỉ xem viewer + 5 skill, 6 bằng chứng, 4 mục tiêu, 5 nhãn; chạy lại không trùng) |
 
-## P1 — Handbook
+## 2. Phân quyền động
 
-| ID | Task | Output | Status |
+| Mã | Việc | Kết quả | Trạng thái |
 |---|---|---|---|
-| P1-01 | Team model + RACI matrix | `handbook/01-team.md` | done |
-| P1-02 | Work intake: request flow, clarification question bank, Definition of Ready, estimation, prioritisation (MoSCoW / RICE) | `handbook/02-intake.md` | done |
-| P1-03 | Design: when to write RFC/ADR, how to present and get approval, diagram types (C4, ERD, sequence) | `handbook/03-design.md` | done |
-| P1-04 | Git & review: branch model and protection, Conventional Commits, PR size, review checklist, conflict resolution, branch deletion | `handbook/04-git.md` | done |
-| P1-05 | Coding standards PHP / TS (+ placeholders for Go / Python), naming, errors, logging, "no magic values" | `handbook/05-coding.md` | done |
-| P1-06 | Testing & QA: test pyramid by risk, Definition of Done, QA flow, bug template, severity vs priority | `handbook/06-testing-qa.md` | done |
-| P1-07 | Release & deploy, environments, rollback, migration safety | `handbook/07-release.md` | done |
-| P1-08 | Operations: severity matrix, incident roles, communication, postmortem rules | `handbook/08-operations.md` | done |
-| P1-09 | Reporting: daily / weekly / time log, escalation path | `handbook/09-reporting.md` | done |
-| P1-10 | Documentation map (REQ / RFC / ADR / PRB / INC / runbook) + data rules | `handbook/10-docs-and-data.md` | done |
-| P1-11 | Templates: requirement, design doc, ADR ✓, problem record ✓, incident, postmortem, runbook, daily, weekly, retro | `docs/templates/` | done |
-| P1-12 | GitHub templates: issue forms (REQ, BUG, TASK, SPIKE, INC), PR template, CODEOWNERS | `.github/` | done |
-| P1-13 | AI stakeholder skills: `simulate-po`, `simulate-qa`, `simulate-ops` (role, tone, what they ask, what they never reveal) | `.claude/skills/` | done |
-| P1-14 | Dry run: one simulated request through intake to "Ready"; first daily + weekly report; P1 retro | REQ-001 Ready, reports, retro, `v1.1.0` notes | done |
+| QUYEN-01 | Đề xuất thiết kế: vai trò, quyền, chức năng, cách tự đăng ký API thành quyền, chuyển vai trò owner/viewer hiện tại sang | Đề xuất được xác nhận | done (4dc16a4b — ADR-0013: phân quyền động bằng spatie, chọn phương án A (gom theo tên quyền, Chủ toàn quyền, nhiều vai trò)) |
+| QUYEN-02 | Backend: cài thư viện, bảng, kiểm tra quyền mỗi request, lệnh đồng bộ API → quyền, vai trò mặc định, test | API bị chặn đúng theo quyền | done (82e2290a, df35bb8a, b8df0fda, bed9905a — mỗi API quản trị là một quyền, kiểm tra mỗi request, vai trò Chủ/Chỉ xem chuyển vào DB, make permissions; 176 test pass) |
+| QUYEN-03 | API quản lý vai trò, quyền, gán vai trò cho admin | Các API mới trong OpenAPI | done (8e6bb0fd — API vai trò (thêm/sửa/xóa, quyền), danh sách quyền theo chức năng, admin nhận role_ids, bỏ cột role, me trả permissions; make verify pass) |
+| QUYEN-04 | Giao diện: màn hình vai trò, ma trận quyền theo chức năng, gán vai trò; ẩn menu và nút theo quyền | Cấu hình quyền không cần sửa code | done (83e45637, 8dc53eb3 — màn hình Vai trò + ma trận quyền, menu và nút ẩn theo quyền; 79 test FE, 2 e2e, make verify pass) |
 
-## P2 — Slim down
+## 3. Media MinIO + upload
 
-| ID | Task | Output | Status |
+| Mã | Việc | Kết quả | Trạng thái |
 |---|---|---|---|
-| P2-01 | `REQ-001` from simulated PO: "the CMS is replaced by Obsidian; remove what is no longer needed" + clarification log | [REQ-001](../requirements/REQ-001-slim-down.md) | done (in P1-14 dry run) |
-| P2-02 | Impact analysis: per module → tables, routes, FE pages, jobs, tests, data to keep | Impact doc | done (RFC-001) |
-| P2-03 | ERD as-is / to-be (generated from the schema, then edited) | Diagrams | done (RFC-001) |
-| P2-04 | Design doc + ADR-0003 (what is removed, order, rollback plan) | RFC + ADR | done (RFC-001) |
-| P2-05 | Before-metrics snapshot (LOC, tables, endpoints, tests, test time, image size, startup time) | Metrics table | done (RFC-001) |
-| P2-05b | Artisan command exporting categories/entries/descriptions to Markdown (frontmatter, idempotent), tested with factories; run on deployed data before the drop (REQ-001 US-2) | Command + test | done (RFC-001) |
-| P2-06 | Remove FE: sliders, banners, setting links, socials, users, departments, content CMS, file-manager tree | PRs | done (RFC-001 slices 2–6) |
-| P2-07 | Remove API + tests for the same modules | PRs | done (RFC-001 slices 2–5; media API kept, see RFC-001 §3 correction) |
-| P2-08 | Expand/contract: create `audit_log`, dual-write, backfill, switch reads, drop `*_hist` tables | Migrations + [ADR-0006](../adr/0006-audit-log.md) | done (RFC-001 slice 9: expand, dual-write, backfill, switch reads, contract, login events) |
-| P2-09 | Drop removed tables, triggers and views (after backup; down-migration tested) | Migrations | done (RFC-001 slices 2–5; slice 6 drops nothing) |
-| P2-10 | PRB-001 + ADR-0004: replace custom JWT with Sanctum SPA cookies; archive AUTH-GUIDE as learning record | [PRB-001](../problems/PRB-001-custom-jwt-auth.md), [ADR-0004](../adr/0004-sanctum-spa-cookie-auth.md), [learning record](../archive/learning/AUTH-GUIDE.md) | done |
-| P2-11 | Implement Sanctum, migrate FE auth provider, delete custom auth code; unblock old FE3 (route guard) | PRs | done (RFC-001 slice 7; [PRB-001 §7](../problems/PRB-001-custom-jwt-auth.md#7-implementation-and-verification); side finding [PRB-002](../problems/PRB-002-tests-used-dev-database.md)) |
-| P2-12 | RBAC → Gates/Policies with `owner` / `viewer` | PR | done (RFC-001 slice 8, [ADR-0005](../adr/0005-owner-viewer-roles.md)) |
-| P2-13 | Regression run, after-metrics, release `v2.0.0` with notes, retro | Release | done ([v2.0.0](../releases/v2.0.0.md), [v1.2.0](../releases/v1.2.0.md), [retro](../reports/retro/P2.md); local tag `v2.0.0`) |
+| MEDIA-01 | Đề xuất thiết kế: thư mục, upload nhỏ, upload lớn chia phần, file tạm, xử lý nền, cách hiện tiến trình; rà lại cấu hình MinIO | Đề xuất được xác nhận | done (ee2a34b6, 072dbf3f — ADR-0014: upload thẳng trình duyệt → kho chính MinIO, việc nền + Reverb báo kết quả (dùng chung), tắt đọc công khai; thêm việc NEN-08) |
+| MEDIA-02 | Backend: kết nối MinIO, thư mục, upload file nhỏ, tải về, xóa, test | Upload file nhỏ chạy được | done (e511b8b9, 0c0a42a7, 5a247218 — API quản lý file: thư mục, upload ≤100 MB bằng link ký tạm qua nginx, tải về, đổi tên/di chuyển, xóa; tắt đọc công khai MinIO; make verify pass, chạy thật qua localhost:81) |
+| NEN-08 | Việc nền và thông báo tức thì, dùng chung cho mọi tính năng: hàng đợi Redis, container việc nền, Reverb, việc hẹn giờ, kênh riêng mỗi người, sự kiện "việc nền đã xong", test | Một việc nền thử báo kết quả lên màn hình | done (b306b727, 028c0b64, fe24c599, 14fc3604 — hàng đợi Redis + 3 container (việc nền, hẹn giờ, Reverb), kênh riêng mỗi người, sự kiện dùng chung, chống lỡ thông báo, nút thử ở Dashboard; make verify + 3 e2e pass) |
+| MEDIA-03 | Upload file lớn chia phần, xử lý sau upload bằng việc nền, dọn upload treo | Upload file vài GB chạy được | done (63219762, b724bd5f, 8e548c11 — upload file lớn chia phần (tới 10 GB, 4 phần song song, thử lại), việc nền ghép + kiểm tra, báo kết quả tức thì, dọn upload treo mỗi giờ; thử thật file 3 GiB khớp SHA-256; make verify pass) |
+| MEDIA-04 | Giao diện quản lý file | Màn hình quản lý file | done (6db22c3b, 7e261a3a, 73213bd9 — màn hình Files: thư mục, kéo-thả upload có %, hủy, tải về, đổi tên, di chuyển, xóa, tự làm mới khi việc nền báo xong; make verify + 4 e2e pass (file 120 MB)) |
 
-## P3 — Skill Ledger
+## 4. Người dùng cuối, phòng ban, chính sách
 
-Refined in P3-00 (2026-10-08). Same lifecycle as P2: requirement → design → small vertical slices → QA / PO acceptance → release. Inputs carried over from P2: the open media API decision (RFC-001 §3), the unused framework tables `users` / `password_reset_tokens` and the fake dashboard numbers ([v2.0.0 known issues](../releases/v2.0.0.md#known-issues)), and the research note [docs/search.md](../search.md).
-
-> 🇻🇳 Đã chi tiết hoá ở P3-00. Cùng vòng đời với P2: yêu cầu → thiết kế → các lát dọc nhỏ → QA / PO nghiệm thu → release. Việc tồn từ P2: quyết định media API, bảng mặc định không dùng, số liệu giả trên dashboard, ghi chú nghiên cứu search.
-
-| ID | Task | Output | Status |
+| Mã | Việc | Kết quả | Trạng thái |
 |---|---|---|---|
-| P3-00 | Refine this phase into tasks of 1–3 sessions | This table | done |
-| P3-01 | `REQ-002` from the simulated PO (`/simulate-po`): stories, Given/When/Then acceptance criteria, clarification log, Definition of Ready. Ask about evidence files (→ media API decision), what is public, what the importer may overwrite | [REQ-002](../requirements/REQ-002-skill-ledger.md) Ready | done (11 questions; evidence = links only → RFC-002 proposes removing the media API) |
-| P3-02 | RFC-002 design: domain model, to-be ERD, endpoint list, public vs admin access, audit, slices, test strategy per layer, risks. Decide the media API (reuse for evidence files or remove — ADR if kept) and drop `users` / `password_reset_tokens` | [RFC-002](../design/RFC-002-skill-ledger.md), [ADR-0007](../adr/0007-remove-media-api.md) | done (media API removed in P3-05b, files kept; one idempotent import endpoint; `sessions` table stays) |
-| P3-03 | ADR: OpenAPI-first vs today's code-first Scramble export (CI only checks drift). Write the contract for the Skill Ledger endpoints and review it before code | [ADR-0008](../adr/0008-code-first-openapi-contract.md) (contract table inside) | done (code-first spec + reviewed contract + response validation in P3-09; `make verify` now runs the drift check) |
-| P3-04 | Search spike + ADR: Postgres full-text (`tsvector`, `unaccent` for Vietnamese, `ts_rank`) vs `pg_trgm` for typos, measured on seeded data; answer the open questions in `docs/search.md` that matter here | [Spike](../reports/spikes/search-2026-10-08/README.md) + [ADR-0009](../adr/0009-postgres-search.md) | done (full-text p95 0.64 ms, trigram 20 ms at REQ volume; FTS first, trigram fallback) |
-| P3-05 | Schema slice: migrations, models, enums, factories for `Skill`, `SkillLevel` history, `LearningGoal`, `Evidence`, `Tag` (RFC-002 §4.2, slice 2); unit tests | Migrations + tests | done (`752af6a`; 8 tables, 1–4 CHECKs, case-insensitive unique names; search columns follow in P3-08) |
-| P3-05b | RFC-002 slice 1: remove the media API code per ADR-0007 (keep `media_mgmt` rows and MinIO objects); drop `users` / `password_reset_tokens` | PR | done (`02af8d4`, `8bb6012`, `c61cd63`; OpenAPI 17 → 9 paths) |
-| P3-06 | API slice: skills + tags CRUD, level changes as append-only history, audit log entries, owner / viewer rules; integration tests | PR | done (`e546b65`; 10 routes, 19 feature tests, goal auto-achieve rule included) |
-| P3-07 | API slice: learning goals + evidence (links to PR / ADR / INC / note, no files — ADR-0007); integration tests | PR | todo |
-| P3-08 | API slice: search endpoint (per P3-04 ADR) + public read-only endpoints (published items only, no auth, rate-limited) | PR | todo |
-| P3-09 | Contract tests: backend responses validated against the spec; FE types generated from it, the check fails on drift. Runs in `make verify` while CI is paused (since 2026-10-08); CI job added when CI is re-enabled | Tests + `make` target | todo |
-| P3-10 | Admin UI: skills list / detail / form, level history timeline, tags | PR | todo |
-| P3-11 | Admin UI: goals, evidence, search box; dashboard shows real counts instead of the hard-coded sample numbers | PR | todo |
-| P3-12 | Public read-only view in `nextjs-docs` (first piece of the portfolio): skill list + detail; `/docs` "content moved" page stays | PR | todo |
-| P3-13 | ADR for Python tooling (version, packaging, runs in Docker — no Python on the host) + importer contract: frontmatter schema, stable external key, how the CLI authenticates (ADR-0004 has session auth only) | ADR | todo |
-| P3-14 | Python Obsidian importer: only `publish: true` notes, upsert by external key, `--dry-run`, pytest; idempotency test (second run changes nothing) | CLI + tests | todo |
-| P3-15 | E2E (Playwright), critical journey only: login → create skill → add evidence → find it by search → see it on the public page; a `make` target (CI job when CI is re-enabled) | E2E + `make` target | todo |
-| P3-16 | First k6 baseline: smoke + load on read / search / public endpoints; p50 / p95 / p99, RPS, error rate recorded | `docs/reports/perf/` baseline | todo |
-| P3-17 | QA sign-off (`/simulate-qa`) and PO acceptance (`/simulate-po`) against REQ-002; bugs filed and fixed | Sign-off | todo |
-| P3-18 | Release `v2.1.0` with notes, before/after numbers, retro | Release + retro | todo |
+| USER-01 | Đề xuất thiết kế dựa trên bản `v1.0.0` | Đề xuất được xác nhận | done (a9f776c2 — chủ dự án quyết để sau cả người dùng cuối, phòng ban, chính sách (ADR-0015); phạm vi hiện tại chỉ phân quyền theo vai trò) |
+| USER-02 | Quản lý người dùng cuối: API + giao diện + test | Màn hình người dùng cuối | blocked: để sau (ADR-0015) |
+| USER-03 | Phòng ban, chính sách phòng ban, gán admin vào phòng ban: API + giao diện + test | Màn hình phòng ban, chính sách | todo (để sau, ADR-0015) |
 
-## P4–P11 (coarse)
+## 5. CI/CD gộp chung, rồi tắt
 
-| ID | Phase | Key tasks |
-|---|---|---|
-| P4-xx | IaC | Terraform Docker/MinIO modules, 3 environments, local TLS, SOPS+age, Docker hardening, destroy/apply drill |
-| P5-xx | CI/CD | Re-enable `ci.yml` (PR trigger) and `cd.yml` (push to `developer`), paused on 2026-10-08 — manual runs only until then; rulesets, commitlint, release-please, SBOM/Trivy/gitleaks, SHA images, staged deploys, auto rollback, Pennant flags, DORA report |
-| P6-xx | Observability | otel-lgtm, OTel instrumentation, JSON logs, RED/USE dashboards, SLOs, alerts, runbooks |
-| P7-xx | Reliability | `chaos-master` skill, Toxiproxy, 8+ incidents + postmortems, DR drill |
-| P8-xx | Perf & security | k6 suites, bottleneck fixes with numbers, STRIDE, ASVS L1, ZAP |
-| P9-xx | Dev tools | 9a extension, 9b Go replay CLI, 9c Go media worker |
-| P10-xx | Portfolio | Site, case studies, README story, demo account, CV bullets |
-| P11-xx | Kubernetes | Only with an ADR |
+| Mã | Việc | Kết quả | Trạng thái |
+|---|---|---|---|
+| CI-01 | Đề xuất: thư mục `ci/` chung, các script kiểm tra / build / deploy, file cấu hình mỏng cho GitHub và GitLab | Đề xuất được xác nhận | done (031c489f — ADR-0016: CI gộp vào ci/, container riêng, make ci song song make verify, bỏ deploy blue-green hỏng, build image ở ci/build.sh) |
+| CI-02 | Làm và test: `make ci` trên máy, chạy tay trên GitHub | Hai nơi cho kết quả giống nhau | done (54776ac9…0a6f319a — make ci chạy trên máy: 203 test backend, 105 test giao diện, 63 test importer, build 3 image; chạy trên GitHub để sau (chủ dự án quyết 2026-10-14)) |
+| CD-01 | CD trên máy: bản demo prod-like bằng Terraform (MinIO, việc nền, Reverb, đăng nhập), `make cd` = kiểm tra → build → deploy → test trình duyệt | `make cd` xanh, đăng nhập và dùng được bản demo ở http://localhost:9443 | done (39e7c75d…044bd903 — make cd: kiểm tra → build 4 image → Terraform prod-like (MinIO, việc nền, Reverb, root) → 4 test trình duyệt pass trên http://localhost:9443; sửa tên cookie phiên) |
+| CI-03 | Tắt chạy tự động, ghi hướng dẫn bật lại | Merge pull request không bị chặn | done (044bd903 — GitHub/GitLab không chạy gì khi push/PR (chỉ chạy tay), hướng dẫn bật lại trong ci/README.md; cleanup-branch và Dependabot giữ nguyên) |
+
+## 6. Nâng cấp trên dev
+
+**Tạm dừng mọi việc liên quan đến đăng nhập** (chủ dự án quyết 2026-10-14): AUTH-04, AUTH-05 và các mục "Nâng cấp để dành" trong [đăng nhập](../features/dang-nhap.md) chỉ làm khi chủ dự án yêu cầu. Không tự đề xuất, kể cả khi phát hiện việc mới về đăng nhập.
+
+Thêm ngày 2026-10-14, theo thứ tự làm. MEDIA-06, MEDIA-07, LEDGER-01 thêm theo chủ dự án chọn ngày 2026-10-14. Lấy từ các mục "chưa làm" trong [đăng nhập](../features/dang-nhap.md), [nhật ký thay đổi](../features/nhat-ky-thay-doi.md) và [ADR-0014](../adr/0014-media-minio-upload.md).
+
+| Mã | Việc | Kết quả | Trạng thái |
+|---|---|---|---|
+| AUTH-01 | Đổi mật khẩu thì đăng xuất mọi thiết bị khác: viết test chứng minh, thiếu thì sửa | Lộ mật khẩu thì đổi mật khẩu là cắt được người đang dùng | done (bdff0fd3, 4eed314b — đổi mật khẩu thì thiết bị khác bị đăng xuất, thiết bị đang dùng giữ phiên (sửa lỗi tự đăng xuất chính mình + lỗi 500 khi mật khẩu null); 86 test + chạy thật trên dev) |
+| AUTH-02 | Giao diện tự cập nhật quyền: hỏi lại quyền khi quay lại tab và khi gặp lỗi 403 | Đổi quyền thì menu và nút đổi theo, không phải tải lại trang | done (52599bf8 — quyền trên giao diện tự lấy lại khi quay lại tab và khi gặp 403 (tối đa 5 giây/lần); 109 test giao diện, lint, typecheck pass) |
+| LOG-01 | Màn hình Nhật ký thay đổi: danh sách, lọc theo loại dữ liệu, người làm, thời gian; phân trang | Xem được toàn bộ nhật ký, không chỉ 10 dòng ở trang tổng quan | done (7a2f444f, c68bf280 — màn hình Nhật ký thay đổi (lọc loại, việc, người làm, ngày; phân trang; xem ô cũ → mới); sửa lọc ngày đọc nhầm tháng/ngày (500 hoặc lọc sai); 207 test backend, 112 test giao diện) |
+| AUTH-03 | Giới hạn đăng nhập sai theo IP, ngoài giới hạn theo tên + IP đang có | Một IP thử hàng loạt tên đăng nhập bị chặn | done (26990056, 5a1df46a — một IP sai 30 lần (mọi tên) bị khóa 15 phút, đăng nhập đúng không xóa bộ đếm IP; 209 test backend, Pint, Larastan pass) |
+| AUTH-04 | **[XÁC NHẬN]** Màn hình Phiên đăng nhập: xem thiết bị đang đăng nhập, đăng xuất một thiết bị, đăng xuất mọi nơi khác (thêm bảng DB) | Đá được phiên từ xa | blocked: tạm dừng (chủ dự án quyết 2026-10-14) |
+| AUTH-05 | **[XÁC NHẬN]** Ghi nhớ đăng nhập | Không phải đăng nhập lại sau 120 phút không dùng | blocked: tạm dừng (chủ dự án quyết 2026-10-14) |
+| MEDIA-05 | Upload dở tiếp tục được sau khi tải lại trang | File lớn không phải gửi lại từ đầu | done (ae7756ce, 2498e113, 8592643e — file lớn bỏ dở (tải lại trang, mất mạng) hiện ở khung Unfinished uploads, chọn lại đúng file thì chỉ gửi phần thiếu; 212 test backend, 117 test giao diện, 5 e2e pass (thử thật trên MinIO)) |
+| MEDIA-06 | Xem trước file (ảnh, PDF, video, file chữ) trong màn hình Files | Xem ngay trên trang, không phải tải về | done (c1576e84, 7223bbf9, d04cc1c3, db7901a7 — xem trước ảnh, PDF, video, nhạc, file chữ (không xem trước html/svg vì chạy được code); sửa lỗi upload hỏng một phần vẫn gửi tiếp phần khác; 213 test backend, 119 test giao diện, 6 e2e pass) |
+| MEDIA-07 | **[XÁC NHẬN]** Thùng rác file: xem file đã xóa, khôi phục trong 30 ngày | Xóa nhầm thì lấy lại được trên giao diện | done (4477b392, 6f33250f, a8358b0e, 74c7e76f, 3a40cd79 — thùng rác file 30 ngày: khôi phục (tự tạo lại thư mục, trùng tên thì thêm (restored)), xóa vĩnh viễn, dọn thùng rác; sửa luật MinIO giữ file đã xóa mãi mãi; 219 test backend, 123 test giao diện, 7 e2e pass) |
+| LEDGER-01 | **[XÁC NHẬN]** Đính kèm file vào bằng chứng (Skill Ledger); trang public hiện file khi bằng chứng công khai | Bằng chứng có ảnh chứng chỉ, PDF… thay vì chỉ có link | done (6b0b4517, ae3c23df, 6fd32a3d, 48991162 — bằng chứng gắn tới 10 file từ Files (chọn hoặc upload trong hộp thoại, đổi thứ tự, file đã xóa vẫn giữ và đánh dấu); trang public hiện file, link mã ngẫu nhiên xin link tạm mỗi lần bấm; make verify pass (227 backend, 126 giao diện, 63 importer), thử thật trên dev) |
+
+## 7. Sau cùng
+
+| Mã | Việc | Kết quả | Trạng thái |
+|---|---|---|---|
+| DEMO-01 | **[XÁC NHẬN]** Dữ liệu mẫu cho bản demo prod-like (tài khoản Chỉ xem + Skill Ledger mẫu) | Bản demo mở ra có dữ liệu | blocked: để sau (chủ dự án quyết 2026-10-14: chỉ làm trên dev) |
+| DEMO-02 | **[XÁC NHẬN]** HTTPS cho bản demo prod-like | Bản demo chạy HTTPS | blocked: để sau (chủ dự án quyết 2026-10-14: chỉ làm trên dev) |

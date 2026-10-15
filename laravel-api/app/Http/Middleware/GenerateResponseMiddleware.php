@@ -66,6 +66,8 @@ class GenerateResponseMiddleware
         } elseif ($response instanceof JsonResponse) { // Handle existing JsonResponse objects
             // We only extract the data, not cookies or headers
             $response = $response->getData(true);
+        } elseif (method_exists($response, 'getContent') && $response->getContent() === '') { // A void action: no data
+            $response = null;
         } elseif (method_exists($response, 'getContent')) { // Handle responses with getContent method (like regular Response objects)
             // Try to decode content as JSON
             $decoded = json_decode($response->getContent(), true);

@@ -1,87 +1,97 @@
-#!/bin/bash
-# ============================================
-# TỰ ĐỘNG HÓA SAO LƯU HỆ THỐNG (PHIÊN BẢN TỐI ƯU)
-# ============================================
+#!/usr/bin/env bash
+# Full backup: PostgreSQL dump (custom format) + MinIO media bucket + docker/.env, packed into
+# system_backup_<timestamp>.tar.gz and copied to every rclone remote in RCLONE_REMOTES.
+#
+# Usage: bash backup/backup.sh [--local-only]
+#   --local-only   keep the archive in backups/history/ and skip the cloud upload
+# Env overrides: RCLONE_REMOTES (space or comma separated), BACKUP_DB_NAME (default POSTGRES_DB)
+#
+# The local archive is deleted only after every remote received it; any failure keeps it and
+# exits non-zero. Runbook: docs/runbooks/backup-restore.md
+set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-
-# Nạp file .env từ thư mục docker
-if [ -f "$SCRIPT_DIR/../docker/.env" ]; then
-    set -a
-    source "$SCRIPT_DIR/../docker/.env"
-    set +a
-fi
-
-# Hàm dọn dẹp khi kết thúc hoặc lỗi (Zero-Local Footprint)
-cleanup() {
-    echo ">> [Cleanup] Đang dọn dẹp TOÀN BỘ tài nguyên cục bộ..."
-    if [ -d "$BACKUP_DIR" ]; then
-        rm -rf "$BACKUP_DIR"
-    fi
-}
-trap cleanup EXIT
-
-DOCKER_DIR=${DOCKER_DIR:-"$SCRIPT_DIR"}
 PROJECT_DIR=${PROJECT_DIR:-"$(dirname "$SCRIPT_DIR")"}
+ENV_FILE="$PROJECT_DIR/docker/.env"
+
+LOCAL_ONLY=false
+case "${1:-}" in
+  "") ;;
+  --local-only) LOCAL_ONLY=true ;;
+  *) echo "usage: $0 [--local-only]" >&2; exit 2 ;;
+esac
+
+[ -f "$ENV_FILE" ] || { echo "error: $ENV_FILE not found (make setup)" >&2; exit 2; }
+set -a
+# shellcheck source=/dev/null
+source "$ENV_FILE"
+set +a
+
 BACKUP_DIR="$PROJECT_DIR/backups"
 TIMESTAMP=$(date +"%Y%m%d_%H%M%S")
-SYSTEM_TMP="$BACKUP_DIR/tmp_system_$TIMESTAMP"
-SYSTEM_TAR="system_backup_$TIMESTAMP.tar.gz"
-
-# Thư mục chứa các bản nén DB/Config
-mkdir -p "$BACKUP_DIR/history"
-
-# Cấu hình Rclone Remotes
-RCLONE_REMOTES=${RCLONE_REMOTES:-"ggdrive:second-memory-backups onedrive:second-memory-backups"}
-REMOTES_LIST=$(echo $RCLONE_REMOTES | tr ',' ' ')
-
-echo "=== BẮT ĐẦU BACKUP TỐI ƯU ($TIMESTAMP) ==="
-
-# -----------------------------------------------------------------------------
-# PHẦN 1: CHUẨN BỊ THƯ MỤC & DỮ LIỆU LOCAL
-# -----------------------------------------------------------------------------
-mkdir -p "$SYSTEM_TMP/core"
-mkdir -p "$SYSTEM_TMP/media"
-
-# Xuất Database (Sử dụng định dạng Custom Format -Fc để tối ưu)
-echo "[1/3] Đang xuất Database (PostgreSQL - Custom Format)..."
-docker exec -e PGPASSWORD="${POSTGRES_PASSWORD}" "${POSTGRES_HOST_INSIDE_ENV:-ml-postgres}" pg_dump -U "${POSTGRES_USER}" -d "${POSTGRES_DB}" -Fc > "$SYSTEM_TMP/core/db_backup.dump"
-# Copy Config
-cp "$SCRIPT_DIR/../docker/.env" "$SYSTEM_TMP/core/docker.env"
-
-# Mirror từ MinIO
-echo "[2/3] Đang sao chép toàn bộ MEDIA (MinIO)..."
+WORK_NAME="tmp_system_$TIMESTAMP"
+WORK_DIR="$BACKUP_DIR/$WORK_NAME"
+ARCHIVE="$BACKUP_DIR/history/system_backup_$TIMESTAMP.tar.gz"
+PG_CONTAINER="${POSTGRES_HOST_INSIDE_ENV:-ml-postgres}"
+DB_NAME="${BACKUP_DB_NAME:-$POSTGRES_DB}"
 MINIO_CONTAINER="${MINIO_HOST_INSIDE_ENV:-ml-minio}"
 MINIO_PORT="${MINIO_PORT_INSIDE_ENV:-9000}"
 MINIO_BUCKET="${MINIO_BUCKET_OFFICIAL:-media-official}"
+RCLONE_REMOTES=${RCLONE_REMOTES:-"ggdrive:second-memory-backups onedrive:second-memory-backups"}
+read -ra REMOTES <<<"${RCLONE_REMOTES//,/ }"
 
-docker exec "$MINIO_CONTAINER" sh -c "mc alias set myminio http://127.0.0.1:$MINIO_PORT ${MINIO_ROOT_USER} ${MINIO_ROOT_PASSWORD} && mc mirror --overwrite myminio/$MINIO_BUCKET /tmp/media-backup"
-docker cp "$MINIO_CONTAINER":/tmp/media-backup/. "$SYSTEM_TMP/media/"
-docker exec "$MINIO_CONTAINER" rm -rf /tmp/media-backup
+# The work folder always goes; the archive stays unless every upload succeeded (see the end)
+cleanup() {
+  rm -rf "$WORK_DIR"
+  docker exec "$MINIO_CONTAINER" rm -rf /tmp/media-backup >/dev/null 2>&1 || true
+}
+trap cleanup EXIT
 
-# Nén Tất cả thành 1 file duy nhất
-tar -czf "$BACKUP_DIR/history/$SYSTEM_TAR" -C "$BACKUP_DIR" "tmp_system_$TIMESTAMP"
-# rm -rf "$SYSTEM_TMP"  # Sẽ được cleanup bởi trap
+# Fail before doing any work if the upload cannot happen
+if ! $LOCAL_ONLY && ! command -v rclone >/dev/null; then
+  echo "error: rclone is not installed; install it or run with --local-only" >&2
+  exit 2
+fi
 
-# -----------------------------------------------------------------------------
-# ĐẨY LÊN CLOUD
-# -----------------------------------------------------------------------------
-for REMOTE in $REMOTES_LIST; do
-    echo "=========================================================="
-    echo ">> (RCLONE) Đang xử lý nền tảng: $REMOTE"
-    
-    # Đảm bảo remote thư mục tồn tại
-    rclone mkdir "$REMOTE/history"
+echo "=== Backup $TIMESTAMP (database $DB_NAME, bucket $MINIO_BUCKET) ==="
+mkdir -p "$WORK_DIR/core" "$WORK_DIR/media" "$BACKUP_DIR/history"
 
-    # 1. Upload Full System Backup
-    echo ">> Uploading SYSTEM FULL BACKUP..."
-    rclone copy "$BACKUP_DIR/history/$SYSTEM_TAR" "$REMOTE/history" --progress
-    
-    # 2. Dọn dẹp bản backup cũ trên Cloud (Mặc định 3 ngày như yêu cầu)
-    echo ">> Cleaning old full backups on Cloud (> 3 ngày)..."
-    rclone delete "$REMOTE/history" --min-age 3d
-    echo ">> Đã xử lý xong nền tảng: $REMOTE"
+echo "[1/4] PostgreSQL dump (custom format)"
+docker exec -e PGPASSWORD="$POSTGRES_PASSWORD" "$PG_CONTAINER" \
+  pg_dump -U "$POSTGRES_USER" -d "$DB_NAME" -Fc >"$WORK_DIR/core/db_backup.dump"
+# A truncated or empty dump fails here instead of at restore time
+docker exec -i "$PG_CONTAINER" pg_restore --list <"$WORK_DIR/core/db_backup.dump" >/dev/null
+cp "$ENV_FILE" "$WORK_DIR/core/docker.env"
+
+echo "[2/4] MinIO bucket $MINIO_BUCKET"
+docker exec "$MINIO_CONTAINER" sh -c "mc alias set myminio http://127.0.0.1:$MINIO_PORT \"\$MINIO_ROOT_USER\" \"\$MINIO_ROOT_PASSWORD\" >/dev/null && mc mirror --overwrite --quiet myminio/$MINIO_BUCKET /tmp/media-backup >/dev/null && mkdir -p /tmp/media-backup"
+docker cp "$MINIO_CONTAINER":/tmp/media-backup/. "$WORK_DIR/media/"
+
+echo "[3/4] Archive"
+tar -czf "$ARCHIVE" -C "$BACKUP_DIR" "$WORK_NAME"
+echo "    $ARCHIVE ($(du -h "$ARCHIVE" | cut -f1))"
+
+if $LOCAL_ONLY; then
+  echo "[4/4] Upload skipped (--local-only); the archive stays in $BACKUP_DIR/history"
+  exit 0
+fi
+
+echo "[4/4] Upload to: ${REMOTES[*]}"
+failed=0
+for remote in "${REMOTES[@]}"; do
+  if rclone mkdir "$remote/history" && rclone copy "$ARCHIVE" "$remote/history"; then
+    # Retention: 3 days on each remote
+    rclone delete "$remote/history" --min-age 3d || echo "warning: retention cleanup failed on $remote" >&2
+    echo "    $remote: ok"
+  else
+    echo "error: upload to $remote failed" >&2
+    failed=1
+  fi
 done
 
-echo "=========================================================="
-echo "Hoàn thành quy trình sao lưu tối ưu! (Thời gian: $(date))"
+if [ "$failed" -ne 0 ]; then
+  echo "error: not every remote has the backup; keeping $ARCHIVE" >&2
+  exit 1
+fi
+rm -f "$ARCHIVE"
+echo "Done: backup uploaded to every remote, local archive removed."

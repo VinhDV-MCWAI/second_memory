@@ -2,7 +2,7 @@
 
 | | |
 |---|---|
-| Status | Accepted |
+| Status | Superseded by [ADR-0012](0012-restore-features-dev-first.md) (2026-10-09); was: Accepted |
 | Date | 2026-10-07 |
 | Deciders | Owner |
 | Related | [ADR-0001](0001-engineering-lab-direction.md), [docs/README.md](../README.md) |

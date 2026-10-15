@@ -12,6 +12,7 @@ use Carbon\Carbon;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Hash;
+use Spatie\Permission\Models\Role;
 
 class AdminMstRepository extends SoftDeleteCrudRepository
 {
@@ -38,10 +39,10 @@ class AdminMstRepository extends SoftDeleteCrudRepository
                 'gender',
                 'status',
                 'is_active',
-                'role',
                 'avatar',
                 'updated_at',
             ])
+            ->with('roles:id,name')
             ->notDeleted(); // Use scope from HasSoftDelete trait
 
         // Apply exact match filters
@@ -53,7 +54,6 @@ class AdminMstRepository extends SoftDeleteCrudRepository
             'gender',
             'status',
             'is_active',
-            'role',
             'avatar',
         ], [
             // Apply LIKE filters
@@ -63,11 +63,15 @@ class AdminMstRepository extends SoftDeleteCrudRepository
             'address',
         ]);
 
+        if (isset($payload['role_id'])) {
+            $query->whereHas('roles', fn ($roles) => $roles->where('roles.id', $payload['role_id']));
+        }
+
         // Apply date range filter
         $this->applyDateRange($query, $payload);
 
         // Apply sorting
-        $this->applySorting($query, $payload);
+        $this->applySorting($query, $payload, ['id', 'user_name', 'first_name', 'last_name', 'email', 'status', 'is_active', 'created_at', 'updated_at']);
 
         // Pagination
         $perPage = $payload['per_page'] ?? 15;
@@ -86,7 +90,7 @@ class AdminMstRepository extends SoftDeleteCrudRepository
         return $this->model->query()
             ->where('is_delete', false)
             ->where('is_active', true)
-            ->where('role', AdminRole::OWNER)
+            ->whereHas('roles', fn ($roles) => $roles->where('name', AdminRole::OWNER->value))
             ->whereNotIn('id', $exceptIds)
             ->count();
     }
@@ -105,6 +109,7 @@ class AdminMstRepository extends SoftDeleteCrudRepository
         }
 
         // Use fill() with only fillable fields
+        /** @var AdminMst $model */
         $model = $this->model->newInstance()->fill(
             Arr::only($payload, $this->model->getFillable())
         );
@@ -115,6 +120,8 @@ class AdminMstRepository extends SoftDeleteCrudRepository
         }
 
         $model->save();
+        // A new admin without a choice gets the read-only role, as before ADR-0013
+        $model->syncRoles(array_map('intval', $payload['role_ids'] ?? [$this->viewerRoleId()]));
 
         return $model->id;
     }
@@ -124,6 +131,7 @@ class AdminMstRepository extends SoftDeleteCrudRepository
      */
     public function executeUpdate(array $payload): int
     {
+        /** @var AdminMst $model */
         $model = $this->model->findOrFail($payload['id']);
 
         // Check not soft deleted
@@ -139,8 +147,8 @@ class AdminMstRepository extends SoftDeleteCrudRepository
             }
         }
 
-        // Update using fill()
-        $model->fill(Arr::only($payload, $this->model->getFillable()));
+        // Update using fill(); the password is only set below, hashed, when a new one is given
+        $model->fill(Arr::except(Arr::only($payload, $this->model->getFillable()), ['password']));
 
         // Handle password hashing (only if password is provided)
         if (isset($payload['password']) && ! empty($payload['password'])) {
@@ -148,7 +156,25 @@ class AdminMstRepository extends SoftDeleteCrudRepository
         }
 
         $model->save();
+        if (array_key_exists('role_ids', $payload)) {
+            $model->syncRoles(array_map('intval', $payload['role_ids']));
+        }
 
         return $model->id;
+    }
+
+    /**
+     * Whether the given roles include the owner role.
+     *
+     * @param  array<int, int|string>  $roleIds
+     */
+    public function includesOwnerRole(array $roleIds): bool
+    {
+        return Role::query()->whereIn('id', $roleIds)->where('name', AdminRole::OWNER->value)->exists();
+    }
+
+    private function viewerRoleId(): int
+    {
+        return (int) Role::findByName(AdminRole::VIEWER->value, CommonVal::ADMIN_GUARD)->getKey();
     }
 }

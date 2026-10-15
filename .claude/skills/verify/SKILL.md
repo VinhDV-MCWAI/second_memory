@@ -1,14 +1,14 @@
 ---
 name: verify
-description: Run the project's quality gates (backend style, static analysis, tests; frontend lint, typecheck, tests) inside the Docker containers and report real results. Use before declaring any change done, after a refactor item, or when the user asks to check/verify/test.
+description: Run the project's quality gates (backend style, static analysis, tests; frontend lint, typecheck, tests) inside the Docker containers and report real results. Use before declaring any change done, or when the user asks to check/verify/test.
 ---
 
 # Verify
 
 All tooling runs inside containers; the host has no PHP/Node.
 
-1. Check the stack is up: `docker ps --format '{{.Names}}'`. Need `ml-php`, `ml-postgres`, `ml-redis`, and for FE `ml-nextjs` / `ml-nextjs-docs`. If missing, tell the user (suggest `make up`) and stop — don't report "passed".
-2. Full run: `make verify` (the CI steps plus `openapi-check`, which regenerates the spec and FE types and fails on a diff; CI is paused since 2026-10-08, so this is the only gate). Otherwise scope to what changed (`git diff --name-only developer...HEAD` plus working tree). Run only the relevant blocks unless asked for everything.
+1. Check the stack is up: `docker ps --format '{{.Names}}'`. Need `ml-php`, `ml-postgres`, `ml-redis`, and for FE `ml-nextjs` / `ml-nextjs-docs`. If missing, run `make up` and tell the owner; never report "passed" for a check that did not run.
+2. Full run: `scripts/lane.sh run make verify` (lint, Larastan, `openapi-check`, which regenerates the spec and FE types and fails on a diff, type checks and all unit tests, in the dev containers). `scripts/lane.sh run make ci` runs the same gates exactly as GitHub does: committed code only, throwaway containers (`ci/README.md`); use it before the owner pushes. Otherwise scope to what changed (`git status` and the task's commits), wrapping each command in `scripts/lane.sh run`. Run only the relevant blocks unless asked for everything.
 
 ## Backend (`laravel-api/` changed)
 ```bash
@@ -33,4 +33,4 @@ docker exec ml-nextjs-docs pnpm format:check
 ```
 
 ## Report
-A short table: check → pass/fail/skipped (+ reason). For failures, quote the first relevant error lines and say whether it pre-existed on `developer` (check with `git stash` only if the user agrees) or was introduced by the change.
+A short table: check → pass/fail/skipped (+ reason). For failures, quote the first relevant error lines and say whether they come from your change or from files you did not touch (never `git stash` to find out).

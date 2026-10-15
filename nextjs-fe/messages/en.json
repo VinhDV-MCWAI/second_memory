@@ -4,8 +4,6 @@
     "dashboard": "Dashboard",
     "search": "Search...",
     "logout": "Logout",
-    "settings": "Settings",
-    "profile": "Profile",
     "backToDashboard": "Back to Dashboard",
     "goBack": "Go Back",
     "tryAgain": "Try Again",
@@ -115,17 +113,16 @@
     "support": "Support"
   },
   "header": {
-    "notifications": "Notifications",
-    "markAllAsRead": "Mark all as read",
-    "noNotifications": "No notifications",
-    "myAccount": "My Account",
-    "searchPlaceholder": "Search... (⌘K)"
+    "searchPlaceholder": "Search... (⌘K)",
+    "userMenu": "User menu"
   },
   "navigation": {
     "navigateTo": "Navigate to...",
     "adminDashboard": "Admin Dashboard",
     "dashboard": "Dashboard",
-    "masterData": "Master Data"
+    "masterData": "Master Data",
+    "skillLedger": "Skill Ledger",
+    "auditLog": "Audit log"
   },
   "search": {
     "placeholder": "Search...",
@@ -197,7 +194,16 @@
     "skills": "Skills",
     "skillDescription": "Skill Description",
     "skillDescriptions": "Skill Descriptions",
-    "file": "File"
+    "file": "File",
+    "files": "Files",
+    "tag": "Tag",
+    "tags": "Tags",
+    "evidence": "Evidence",
+    "evidenceMany": "Evidence",
+    "goal": "Goal",
+    "goals": "Goals",
+    "role": "Role",
+    "roles": "Roles"
   },
   "fields": {
     "id": "ID",
@@ -208,6 +214,7 @@
     "lastName": "Last Name",
     "status": "Status",
     "role": "Role",
+    "roles": "Roles",
     "gender": "Gender",
     "createdAt": "Created",
     "updatedAt": "Updated",
@@ -225,43 +232,24 @@
     "accountId": "Account ID",
     "deviceName": "Device Name",
     "ipAddress": "IP Address",
-    "expiredAt": "Expired At"
+    "expiredAt": "Expired At",
+    "category": "Category",
+    "currentLevel": "Level",
+    "visibility": "Visibility",
+    "tags": "Tags",
+    "source": "Source",
+    "occurredOn": "Date",
+    "skill": "Skill",
+    "targetLevel": "Target level",
+    "targetDate": "Target date",
+    "achievedOn": "Achieved on",
+    "skills": "Skills",
+    "permissions": "Permissions",
+    "adminCount": "Admins"
   },
   "management": {
     "title": "{entity} Management",
     "description": "Manage all {entity} in your system"
-  },
-  "media": {
-    "manager": "Media Manager",
-    "uploadFile": "Upload File",
-    "hideUpload": "Hide Upload",
-    "searchFiles": "Search files...",
-    "deleteFiles": "Delete files",
-    "deleteFileConfirm": "Are you sure you want to delete this file?",
-    "deleteFilesConfirm": "Delete {count} file(s)?",
-    "deleteSelected": "Delete Selected ({count})",
-    "failedToLoadFiles": "Failed to load files",
-    "failedToDeleteFile": "Failed to delete file",
-    "failedToDeleteFiles": "Failed to delete files",
-    "failedToUploadFile": "Failed to upload file",
-    "fileUploadedSuccessfully": "File uploaded successfully",
-    "all": "All",
-    "clickToUpload": "Click to upload",
-    "orDragAndDrop": "or drag and drop",
-    "avatarPreview": "Avatar preview",
-    "invalidFileType": "Invalid file type. Accepted: {accept}",
-    "selectImageFile": "Please select an image file",
-    "fileSizeExceeded": "File size must be less than {maxSize}MB",
-    "fileSizeExceeds": "File size exceeds {maxSize}",
-    "dragDropHere": "Drag and drop your file here, or click to browse",
-    "maxSize": "Max size",
-    "cancel": "Cancel",
-    "upload": "Upload",
-    "view": "View",
-    "delete": "Delete",
-    "previous": "Previous",
-    "next": "Next",
-    "pageOf": "Page {page} of {totalPages}"
   },
   "savedFilters": {
     "filterName": "Filter name",
@@ -295,6 +283,7 @@
       "gender": "Gender",
       "status": "Status",
       "role": "Role",
+      "roles": "Roles",
       "isActive": "Is Active",
       "details": "Details",
       "history": "History",
@@ -310,7 +299,24 @@
       "description": "Description",
       "title": "Title",
       "linkUrl": "Link URL",
-      "position": "Position"
+      "position": "Position",
+      "category": "Category",
+      "level": "Level",
+      "changedOn": "Changed on",
+      "reason": "Reason",
+      "isPublic": "Show on the public page",
+      "tags": "Tags",
+      "files": "Files",
+      "type": "Type",
+      "url": "Link (http or https; optional when files are attached)",
+      "occurredOn": "Date",
+      "summary": "Summary",
+      "skills": "Skills",
+      "skill": "Skill",
+      "targetLevel": "Target level",
+      "targetDate": "Target date",
+      "note": "Note",
+      "permissions": "Permissions"
     },
     "placeholders": {
       "urlExample": "https://example.com",
@@ -318,11 +324,36 @@
       "termsOfService": "e.g. Terms of Service",
       "passwordHidden": "••••••••",
       "leaveBlankToKeepCurrent": "Leave Blank To Keep Current",
+      "noRoles": "No roles yet",
+      "rolesDefault": "Leave empty to make a read-only viewer",
       "selectAccount": "Select Account",
       "deviceName": "Device Name",
       "ipAddress": "IP Address",
       "settingKey": "e.g. privacy_policy",
       "settingValue": "https://example.com/privacy"
+    }
+  },
+  "auditLog": {
+    "title": "Audit log",
+    "description": "Who added, changed or deleted what, and every sign-in, newest first",
+    "time": "Time",
+    "event": "Action",
+    "record": "Record",
+    "type": "Type",
+    "actor": "By",
+    "ipAddress": "IP address",
+    "changes": "Changes",
+    "fieldCount": "{count, plural, one {# field} other {# fields}}",
+    "fromDate": "From date",
+    "toDate": "To date",
+    "types": {
+      "admin": "Admin",
+      "role": "Role",
+      "skill": "Skill",
+      "skill_level": "Skill level",
+      "learning_goal": "Goal",
+      "evidence": "Evidence",
+      "tag": "Tag"
     }
   },
   "history": {
@@ -337,7 +368,9 @@
       "deleted": "Deleted",
       "logged_in": "Logged in",
       "logged_out": "Logged out",
-      "login_failed": "Login failed"
+      "login_failed": "Login failed",
+      "restored": "Restored",
+      "purged": "Deleted forever"
     }
   },
   "validation": {
@@ -380,7 +413,8 @@
       "required": "Content is required"
     },
     "description": {
-      "required": "Description is required"
+      "required": "Description is required",
+      "maxLength": "Description cannot exceed {max} characters"
     },
     "link": {
       "required": "Link is required"
@@ -396,6 +430,58 @@
     "value": {
       "required": "Value is required",
       "maxLength": "Value cannot exceed {max} characters"
+    },
+    "skillName": {
+      "required": "Name is required",
+      "maxLength": "Name cannot exceed {max} characters"
+    },
+    "category": {
+      "required": "Category is required",
+      "maxLength": "Category cannot exceed {max} characters"
+    },
+    "tagName": {
+      "required": "Name is required",
+      "maxLength": "Name cannot exceed {max} characters"
+    },
+    "level": {
+      "required": "Level is required"
+    },
+    "reason": {
+      "maxLength": "Reason cannot exceed {max} characters"
+    },
+    "changedOn": {
+      "future": "The date cannot be in the future"
+    },
+    "evidenceTitle": {
+      "required": "Title is required",
+      "maxLength": "Title cannot exceed {max} characters"
+    },
+    "url": {
+      "invalid": "Enter an http or https link",
+      "linkOrFile": "Give a link or attach at least one file",
+      "maxLength": "The link cannot exceed {max} characters"
+    },
+    "occurredOn": {
+      "required": "Date is required"
+    },
+    "summary": {
+      "maxLength": "Summary cannot exceed {max} characters"
+    },
+    "mediaIds": {
+      "maxLength": "At most {max} files"
+    },
+    "skillIds": {
+      "required": "Pick at least one skill"
+    },
+    "skill": {
+      "required": "Skill is required"
+    },
+    "note": {
+      "maxLength": "Note cannot exceed {max} characters"
+    },
+    "roleName": {
+      "required": "Name is required",
+      "maxLength": "Name cannot exceed {max} characters"
     }
   },
   "advancedSearch": {
@@ -421,5 +507,214 @@
   "download": "Download",
   "delete": "Delete",
   "previous": "Previous",
-  "next": "Next"
+  "next": "Next",
+  "ledger": {
+    "public": "Public",
+    "private": "Private",
+    "noTags": "No tags yet",
+    "levels": {
+      "title": "Level history",
+      "description": "Every level change, newest first. Entries cannot be edited.",
+      "empty": "No level changes yet",
+      "record": "Record level change",
+      "recording": "Recording",
+      "recorded": "Level recorded",
+      "by": "by {name}"
+    },
+    "noSkills": "Create a skill first",
+    "importedHint": "Imported from Obsidian: edit the title, link, date, summary, skills and tags in the vault.",
+    "files": {
+      "empty": "No files attached",
+      "attach": "Attach files",
+      "deleted": "Deleted",
+      "deletedHint": "Deleted in Files. It stays attached; restore it from the Files trash to show it again.",
+      "moveUp": "Move up",
+      "moveDown": "Move down",
+      "remove": "Remove {name}",
+      "count": "{count, plural, one {# file} other {# files}} attached"
+    },
+    "achievedHint": "Achieved goals keep their target; only the date and note can change.",
+    "search": {
+      "title": "Search",
+      "description": "Skills, goals and evidence. Accents and case are ignored.",
+      "fuzzy": "No exact match — showing similar results",
+      "empty": "Nothing found for “{q}”",
+      "hint": "Type at least {min} characters",
+      "skills": "Skills",
+      "goals": "Goals",
+      "evidence": "Evidence",
+      "openList": "Open list"
+    },
+    "dashboard": {
+      "skills": "Skills",
+      "publicSkills": "Public skills",
+      "evidence": "Evidence",
+      "publicEvidence": "Public evidence",
+      "openGoals": "Open goals",
+      "levels": "Skills per level",
+      "recentActivity": "Recent changes",
+      "noActivity": "No changes yet"
+    }
+  },
+  "permissions": {
+    "feature": "Feature",
+    "wholeFeature": "All of {feature}",
+    "actions": {
+      "list": "View",
+      "store": "Add",
+      "update": "Edit",
+      "delete": "Delete",
+      "other": "Other",
+      "import": "Import",
+      "query": "Search",
+      "summary": "Summary",
+      "store-folder": "New folder",
+      "upload-url": "Upload",
+      "complete": "Finish upload",
+      "download-url": "Download",
+      "multipart-start": "Upload large file",
+      "multipart-part-urls": "Upload parts",
+      "multipart-complete": "Finish large upload",
+      "multipart-abort": "Cancel upload",
+      "test": "Run test",
+      "status": "Status"
+    },
+    "features": {
+      "admin-mst": "Admins",
+      "audit-log": "Change log",
+      "background-task": "Background jobs",
+      "dashboard": "Dashboard",
+      "evidence": "Evidence",
+      "learning-goal": "Learning goals",
+      "media": "Files",
+      "permission": "Permission list",
+      "role": "Roles",
+      "search": "Search",
+      "skill": "Skills",
+      "skill-level": "Skill levels",
+      "tag": "Tags"
+    },
+    "builtInName": "Built-in role: the name cannot change.",
+    "ownerHasAll": "The owner role always has every permission.",
+    "kind": "Kind",
+    "builtIn": "Built-in",
+    "custom": "Custom",
+    "all": "All"
+  },
+  "media": {
+    "title": "Files",
+    "description": "Your files, stored in MinIO. Large files are joined and checked in the background; you are notified when they are ready.",
+    "breadcrumb": "Folder path",
+    "root": "Files",
+    "filterPlaceholder": "Filter by name",
+    "newFolder": "New folder",
+    "upload": "Upload",
+    "dropHint": "Tip: drag files onto this page to upload them into the open folder. Files up to 10 GB.",
+    "dropNow": "Drop to upload into this folder",
+    "name": "Name",
+    "size": "Size",
+    "updated": "Updated",
+    "processing": "Processing",
+    "download": "Download",
+    "downloadFailed": "Could not start the download",
+    "rename": "Rename",
+    "move": "Move",
+    "folderName": "Folder name",
+    "newName": "New name",
+    "targetFolder": "Target folder",
+    "targetFolderHint": "A folder path such as /Docs or /Docs/2026; / is the top level.",
+    "create": "Create",
+    "deleteSelected": "Delete ({count})",
+    "deleteTitle": "Delete {count, plural, one {# item} other {# items}}?",
+    "deleteDescription": "A folder is deleted with everything inside. MinIO keeps deleted files for 30 days, so they can still be restored.",
+    "usedBy": {
+      "column": "Evidence",
+      "file": "Attached to {count, plural, one {# evidence} other {# evidence}}: {titles}",
+      "folder": "Files inside are attached to evidence {count, plural, one {# time} other {# times}}",
+      "deleteWarning": "{count, plural, one {# attachment} other {# attachments}} to evidence will show as Deleted until the files are restored."
+    },
+    "deleted": "Deleted",
+    "uploads": {
+      "title": "Uploads",
+      "clear": "Clear finished",
+      "cancel": "Cancel upload",
+      "states": {
+        "waiting": "Waiting",
+        "uploading": "Uploading",
+        "processing": "Processing in the background…",
+        "done": "Done",
+        "failed": "Failed",
+        "cancelled": "Cancelled"
+      }
+    },
+    "picker": {
+      "title": "Attach files",
+      "description": "Pick files from Files, or upload new ones into the open folder. Up to {count} more.",
+      "attach": "Attach ({count})",
+      "loading": "Loading…",
+      "empty": "This folder is empty"
+    },
+    "preview": {
+      "open": "Preview",
+      "download": "Download",
+      "loading": "Loading…",
+      "failed": "The file could not be shown. Try downloading it."
+    },
+    "trash": {
+      "open": "Trash",
+      "title": "Trash",
+      "description": "Deleted files are kept {days} days, then removed for good",
+      "back": "Back to files",
+      "originalPath": "Deleted from",
+      "deletedAt": "Deleted",
+      "deletedBy": "By",
+      "expires": "Removed in",
+      "daysLeft": "{count, plural, one {# day} other {# days}}",
+      "restore": "Restore",
+      "restored": "Restored to {path}",
+      "restoreFailed": "Could not restore the file",
+      "deleteForever": "Delete forever",
+      "deleteTitle": "Delete {count, plural, one {this file} other {# files}} forever?",
+      "deleteDescription": "The file cannot be restored afterwards.",
+      "deleted": "Deleted forever",
+      "empty": "Empty trash",
+      "emptyTitle": "Empty the trash?",
+      "emptyDescription": "Every file in the trash is deleted for good and cannot be restored.",
+      "emptied": "Trash emptied",
+      "failed": "Could not delete the files",
+      "nothing": "The trash is empty"
+    },
+    "unfinished": {
+      "title": "Unfinished uploads",
+      "hint": "These uploads stopped midway (page reloaded or connection lost). Choose the same file again (or upload it again into the same folder) to send only the missing part. Unfinished uploads are removed after 24 hours.",
+      "resume": "Resume",
+      "discard": "Discard upload",
+      "discardTitle": "Discard the upload of {name}?",
+      "discardDescription": "The part already sent is deleted. To upload the file later you start from the beginning.",
+      "wrongFile": "Choose the same file: {name}, {size}",
+      "discarded": "Upload discarded",
+      "discardFailed": "Could not discard the upload"
+    },
+    "validation": {
+      "nameRequired": "Enter a name",
+      "nameTooLong": "At most {max} characters",
+      "nameInvalid": "A name cannot contain / or be . or ..",
+      "folderInvalid": "Start with / and do not end with / (for example /Docs)"
+    }
+  },
+  "backgroundTasks": {
+    "title": "Background jobs",
+    "description": "Runs a test job on the queue worker. Its result comes back here as a live notification, even if you switch pages.",
+    "runTest": "Run test job",
+    "runFailing": "Run failing job",
+    "queued": "Test job queued. You will be notified when it finishes.",
+    "completed": "Background job finished",
+    "failed": "Background job failed"
+  },
+  "dialog": {
+    "discardTitle": "Discard changes?",
+    "discardDescription": "You have changes that are not saved. Closing now will lose them.",
+    "discard": "Discard",
+    "keepEditing": "Keep editing"
+  }
 }

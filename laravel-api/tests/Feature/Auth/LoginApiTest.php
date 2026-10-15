@@ -126,6 +126,45 @@ final class LoginApiTest extends TestCase
         $this->postJson(self::LOGIN_URL, $wrong)->assertStatus(CommonVal::HTTP_UNAUTHORIZED);
     }
 
+    public function test_one_ip_guessing_many_user_names_is_locked(): void
+    {
+        $admin = AdminMst::factory()->create();
+
+        // A new name each time, so the per-name counter never trips
+        for ($i = 0; $i < CommonVal::LOGIN_IP_MAX_ATTEMPTS; $i++) {
+            $this->postJson(self::LOGIN_URL, ['user_name' => "guess-{$i}", 'password' => 'wrong-password'])
+                ->assertStatus(CommonVal::HTTP_UNAUTHORIZED);
+        }
+
+        $this->postJson(self::LOGIN_URL, ['user_name' => $admin->user_name, 'password' => 'password'])
+            ->assertStatus(CommonVal::HTTP_TOO_MANY_REQUESTS)
+            ->assertHeader('Retry-After');
+
+        // Another IP is not affected
+        $this->withServerVariables(['HTTP_REFERER' => config('app.url'), 'REMOTE_ADDR' => '10.0.0.2']);
+        $this->postJson(self::LOGIN_URL, ['user_name' => $admin->user_name, 'password' => 'password'])->assertOk();
+
+        $this->withServerVariables(['HTTP_REFERER' => config('app.url')]);
+        $this->travel(CommonVal::LOGIN_LOCK_SECONDS + 1)->seconds();
+        $this->postJson(self::LOGIN_URL, ['user_name' => $admin->user_name, 'password' => 'password'])->assertOk();
+    }
+
+    public function test_a_successful_login_does_not_reset_the_ip_counter(): void
+    {
+        $admin = AdminMst::factory()->create();
+
+        for ($i = 0; $i < CommonVal::LOGIN_IP_MAX_ATTEMPTS - 1; $i++) {
+            $this->postJson(self::LOGIN_URL, ['user_name' => "guess-{$i}", 'password' => 'wrong-password']);
+        }
+        // Logging in with an account the attacker owns must not buy more guesses
+        $this->loginAs($admin);
+        $this->postJson(self::LOGIN_URL, ['user_name' => 'guess-last', 'password' => 'wrong-password'])
+            ->assertStatus(CommonVal::HTTP_UNAUTHORIZED);
+
+        $this->postJson(self::LOGIN_URL, ['user_name' => 'guess-next', 'password' => 'wrong-password'])
+            ->assertStatus(CommonVal::HTTP_TOO_MANY_REQUESTS);
+    }
+
     public function test_login_from_outside_the_spa_is_refused(): void
     {
         $admin = AdminMst::factory()->create();

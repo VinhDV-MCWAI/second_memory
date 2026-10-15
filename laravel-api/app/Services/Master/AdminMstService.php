@@ -4,13 +4,14 @@ declare(strict_types=1);
 
 namespace App\Services\Master;
 
+use App\Constants\CommonVal;
 use App\Constants\Messages;
-use App\Enums\AdminRole;
 use App\Enums\IsActive;
 use App\Http\Resources\Master\AdminMstResource;
 use App\Repositories\Master\AdminMstRepository;
 use App\Services\AuditedCrudService;
 use App\Services\AuditLogger;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
 
 class AdminMstService extends AuditedCrudService
@@ -31,14 +32,22 @@ class AdminMstService extends AuditedCrudService
      */
     public function update(array $payload): int
     {
-        $losesOwnerRights = (isset($payload['role']) && $payload['role'] !== AdminRole::OWNER->value)
+        $losesOwnerRights = (isset($payload['role_ids']) && ! $this->adminMst->includesOwnerRole($payload['role_ids']))
             || (isset($payload['is_active']) && (int) $payload['is_active'] !== IsActive::TRUE->value);
 
         if ($losesOwnerRights) {
-            $this->ensureAnOwnerRemains([(int) $payload['id']], 'role');
+            $this->ensureAnOwnerRemains([(int) $payload['id']], 'role_ids');
         }
 
-        return parent::update($payload);
+        $id = parent::update($payload);
+
+        // The session keeps a hash of the password (Sanctum AuthenticateSession) and other sessions
+        // with the old hash are logged out. Refresh the current admin so this session keeps working.
+        if (! empty($payload['password']) && (int) $payload['id'] === (int) Auth::id()) {
+            Auth::guard(CommonVal::ADMIN_GUARD)->user()?->refresh();
+        }
+
+        return $id;
     }
 
     /**
@@ -52,7 +61,7 @@ class AdminMstService extends AuditedCrudService
     }
 
     /**
-     * ADR-0005: the system must always keep one active owner, or nobody could change data again.
+     * ADR-0013: the system must always keep one active owner, or nobody could change data again.
      *
      * @param  array<int, int|string>  $changedIds
      *

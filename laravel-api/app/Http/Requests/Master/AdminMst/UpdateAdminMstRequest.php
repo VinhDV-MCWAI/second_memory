@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Http\Requests\Master\AdminMst;
 
 use App\Constants\CommonVal;
-use App\Enums\AdminRole;
 use App\Enums\AdminStatus;
 use App\Enums\Gender;
 use App\Enums\IsActive;
@@ -14,6 +13,7 @@ use App\Models\Master\AdminMst;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
+use Spatie\Permission\Models\Role;
 
 class UpdateAdminMstRequest extends FormRequest
 {
@@ -55,7 +55,8 @@ class UpdateAdminMstRequest extends FormRequest
             'gender' => ['required', Rule::enum(Gender::class)],
             'status' => ['required', Rule::enum(AdminStatus::class)],
             'is_active' => ['required', Rule::enum(IsActive::class)],
-            'role' => ['sometimes', Rule::enum(AdminRole::class)],
+            'role_ids' => ['sometimes', 'array'],
+            'role_ids.*' => ['integer', 'distinct', Rule::exists(Role::class, 'id')],
             'avatar' => ['nullable', 'string', 'min:'.CommonVal::MIN_VARCHAR, 'max:30'],
             // 'is_delete' => ['required', Rule::enum(IsDelete::class),], // Removed required check for update
             'is_delete' => ['nullable', Rule::enum(IsDelete::class)],
@@ -76,7 +77,7 @@ class UpdateAdminMstRequest extends FormRequest
             'gender' => __('messages.gender'),
             'status' => __('messages.status'),
             'is_active' => __('messages.is_active'),
-            'role' => __('messages.role'),
+            'role_ids' => __('messages.role'),
             'avatar' => __('messages.avatar'),
             'is_delete' => __('messages.is_delete'),
         ];

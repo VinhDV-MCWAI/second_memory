@@ -7,8 +7,7 @@
                 "Prefix": ""
             },
             "NoncurrentVersionExpiration": {
-                "NoncurrentDays": 30,
-                "NewerNoncurrentVersions": 5
+                "NoncurrentDays": 30
             }
         },
         {

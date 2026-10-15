@@ -7,7 +7,7 @@
 | Status | Accepted |
 | Date | 2026-10-07 |
 | Deciders | TL (owner) |
-| Related | [PRB-001](../problems/PRB-001-custom-jwt-auth.md), [RFC-001](../design/RFC-001-slim-down.md) slice 7, [REQ-001](../requirements/REQ-001-slim-down.md), backlog P2-10 / P2-11 |
+| Related | [PRB-001](../archive/engineering-lab/problems/PRB-001-custom-jwt-auth.md), [RFC-001](../archive/engineering-lab/design/RFC-001-slim-down.md) slice 7, [REQ-001](../archive/engineering-lab/requirements/REQ-001-slim-down.md), backlog P2-10 / P2-11 |
 
 ## Context
 

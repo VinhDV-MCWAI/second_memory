@@ -42,7 +42,6 @@ class AdminMstFactory extends Factory
             'gender' => fake()->randomElement([Gender::MALE->value, Gender::FEMALE->value]),
             'status' => 1,
             'is_active' => true,
-            'role' => AdminRole::VIEWER,
             'avatar' => null,
             'email_verified_at' => now(),
             'is_delete' => false,
@@ -51,10 +50,18 @@ class AdminMstFactory extends Factory
     }
 
     /**
-     * An admin who may change data (ADR-0005).
+     * New admins are viewers (read-only), as the admin API makes them (ADR-0013).
+     */
+    public function configure(): static
+    {
+        return $this->afterCreating(fn (AdminMst $admin) => $admin->assignRole(AdminRole::VIEWER->value));
+    }
+
+    /**
+     * An admin who may change data: the owner role passes every permission check.
      */
     public function owner(): static
     {
-        return $this->state(fn (): array => ['role' => AdminRole::OWNER]);
+        return $this->afterCreating(fn (AdminMst $admin) => $admin->syncRoles([AdminRole::OWNER->value]));
     }
 }

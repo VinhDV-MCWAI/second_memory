@@ -7,7 +7,7 @@
 | Status | Accepted |
 | Date | 2026-10-07 |
 | Deciders | TL |
-| Related | [RFC-001](../design/RFC-001-slim-down.md) slice 9 (§4 to-be ERD), [PRB-001](../problems/PRB-001-custom-jwt-auth.md) §9 (login audit), [ADR-0005](0005-owner-viewer-roles.md), backlog P2-08 |
+| Related | [RFC-001](../archive/engineering-lab/design/RFC-001-slim-down.md) slice 9 (§4 to-be ERD), [PRB-001](../archive/engineering-lab/problems/PRB-001-custom-jwt-auth.md) §9 (login audit), [ADR-0005](0005-owner-viewer-roles.md), backlog P2-08 |
 
 ## Context
 

@@ -5,7 +5,10 @@ import { API_ENDPOINTS } from '@/shared/api/endpoints';
 import { apiUrl, envelope, errorEnvelope, server } from '@/test/server';
 
 describe('apiClient', () => {
-  afterEach(() => apiClient.onUnauthorized(null));
+  afterEach(() => {
+    apiClient.onUnauthorized(null);
+    apiClient.onForbidden(null);
+  });
 
   it('returns the response envelope and sends query params', async () => {
     let seenPage: string | null = null;
@@ -92,5 +95,22 @@ describe('apiClient', () => {
       response: { status: 403 },
     });
     expect(signedOut).toBe(0);
+  });
+
+  it('calls the forbidden handler on a 403 so the permissions can be reloaded', async () => {
+    let forbidden = 0;
+    apiClient.onForbidden(() => {
+      forbidden += 1;
+    });
+    server.use(
+      http.post(apiUrl('/admin/role-mst/delete'), () =>
+        HttpResponse.json(errorEnvelope(403, 'Access is forbidden'), { status: 403 }),
+      ),
+    );
+
+    await expect(apiClient.post('/admin/role-mst/delete', { ids: [1] })).rejects.toMatchObject({
+      response: { status: 403 },
+    });
+    expect(forbidden).toBe(1);
   });
 });

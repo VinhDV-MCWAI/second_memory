@@ -25,9 +25,13 @@ class RootAccountSeeder extends Seeder
                 'last_name' => 'last',
                 'status' => 1,
                 'is_active' => true,
-                'role' => AdminRole::OWNER,
             ]
         );
+
+        // Root always keeps the owner role, so the dev stack can never be locked
+        if (! $admin->hasRole(AdminRole::OWNER->value)) {
+            $admin->assignRole(AdminRole::OWNER->value);
+        }
 
         $this->command->info("Root owner account created/found: {$admin->email}");
     }

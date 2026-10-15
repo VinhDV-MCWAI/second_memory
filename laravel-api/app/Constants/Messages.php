@@ -62,6 +62,48 @@ class Messages
 
     const E0021 = 'At least one active owner must remain';
 
+    const E0022 = 'Target level must be above the skill\'s current level';
+
+    const E0023 = 'An achieved goal can only change its target date and note';
+
+    const E0024 = 'Imported evidence: change this field in the vault';
+
+    const E0025 = 'A built-in role cannot be renamed or deleted';
+
+    const E0026 = 'The owner role always holds every permission';
+
+    const E0027 = 'This role is still assigned to an admin';
+
+    const E0028 = 'This folder does not exist';
+
+    const E0029 = 'An item with this name already exists in the folder';
+
+    const E0030 = 'The file has not been uploaded yet';
+
+    const E0031 = 'The uploaded file does not match the declared size';
+
+    const E0032 = 'This upload is already finished';
+
+    const E0033 = 'A folder cannot be moved into itself';
+
+    const E0034 = 'The file is not ready yet';
+
+    const E0035 = 'This file type is not allowed';
+
+    const E0036 = 'The background task failed';
+
+    const E0037 = 'Some parts of the file are missing';
+
+    const E0038 = 'The uploaded parts could not be joined into one file';
+
+    const E0039 = 'This file type cannot be previewed';
+
+    const E0040 = 'This file is no longer kept and cannot be restored';
+
+    const E0041 = 'Only uploaded files of the file manager can be attached';
+
+    const E0042 = 'Give a link or attach at least one file';
+
     /**
      * Errors http messages
      */

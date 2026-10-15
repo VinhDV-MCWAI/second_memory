@@ -28,9 +28,11 @@ return Application::configure(basePath: dirname(__DIR__))
         web: __DIR__.'/../routes/web.php',
         api: __DIR__.'/../routes/api.php',
         commands: __DIR__.'/../routes/console.php',
-        channels: __DIR__.'/../routes/channels.php',
         health: '/up',
     )
+    // Live notifications (ADR-0014): POST /api/broadcasting/auth signs private channel subscriptions
+    // for the admin of the Sanctum session; the 'api' group starts that session (statefulApi below).
+    ->withBroadcasting(__DIR__.'/../routes/channels.php', ['prefix' => 'api', 'middleware' => ['api', 'auth:sanctum']])
     ->withMiddleware(function (Middleware $middleware) {
         // Session + CSRF for requests from the admin SPA (Sanctum stateful domains)
         $middleware->statefulApi();

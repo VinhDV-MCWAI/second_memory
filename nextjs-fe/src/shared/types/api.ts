@@ -3,6 +3,7 @@
  */
 
 import { SORT_ORDER } from '@/shared/config';
+import type { components } from '@/shared/types/openapi';
 
 export interface ApiResponse<T> {
   data: T;
@@ -20,46 +21,19 @@ export interface ApiErrorResponse {
   status_code: number;
 }
 
+type Schemas = components['schemas'];
+
+export type PaginationMeta = Schemas['PaginationMeta'];
+export type PaginationLinks = Schemas['PaginationLinks'];
+
+/**
+ * `data` of every paginated `{resource}/list` response: a Laravel resource collection.
+ * `links` and `meta` come from the generated spec (ADR-0008, API-01).
+ */
 export interface PaginatedResponse<T> {
-  current_page: number;
   data: T[];
-  first_page_url: string;
-  from: number;
-  last_page: number;
-  last_page_url: string;
-  links: PaginationLink[];
-  next_page_url: string | null;
-  path: string;
-  per_page: number;
-  prev_page_url: string | null;
-  to: number;
-  total: number;
-}
-
-export interface PaginationSource {
-  meta?: {
-    current_page?: number;
-    last_page?: number;
-    total?: number;
-    per_page?: number;
-    from?: number;
-    to?: number;
-  };
-  current_page?: number;
-  currentPage?: number;
-  last_page?: number;
-  lastPage?: number;
-  total?: number;
-  per_page?: number;
-  perPage?: number;
-  from?: number;
-  to?: number;
-}
-
-export interface PaginationLink {
-  url: string | null;
-  label: string;
-  active: boolean;
+  links: PaginationLinks;
+  meta: PaginationMeta;
 }
 
 /**

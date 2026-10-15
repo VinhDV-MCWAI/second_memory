@@ -6,7 +6,7 @@ namespace App\Http\Controllers\Custom;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Custom\Credential\LoginRequest;
-use App\Http\Resources\Master\AdminMstResource;
+use App\Http\Resources\Master\CurrentAdminResource;
 use App\Services\Custom\CredentialService;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Http\Exceptions\ThrottleRequestsException;
@@ -31,7 +31,7 @@ final class CredentialController extends Controller
         /** @var array{user_name: string, password: string} $credentials */
         $credentials = $request->validated();
 
-        return (new AdminMstResource($this->credentialService->login($credentials, $request)))->resolve($request);
+        return (new CurrentAdminResource($this->credentialService->login($credentials, $request)))->toArray($request);
     }
 
     /**
@@ -49,6 +49,6 @@ final class CredentialController extends Controller
      */
     public function me(Request $request): array
     {
-        return (new AdminMstResource($request->user()))->resolve($request);
+        return (new CurrentAdminResource($request->user()))->toArray($request);
     }
 }

@@ -25,9 +25,6 @@ const queryClient = new QueryClient({
 import { AuthProvider } from '@/providers/auth-provider';
 import { GlobalLoadingProvider } from '@/shared/providers/global-loading-provider';
 
-// WebSocketNotification removed - WebSocket connections are now handled
-// per upload session in HeavyUploadNotification component
-
 export function Providers({
   children,
   locale = 'en',
@@ -85,6 +82,9 @@ export function Providers({
             defaultTheme="system"
             enableSystem
             disableTransitionOnChange={false}
+            // RootLayout renders the providers on the client only, so next-themes' anti-flash script
+            // never runs; as a data block it stops React's "Encountered a script tag" warning
+            scriptProps={{ type: 'application/json' }}
           >
             <GlobalLoadingProvider>{children}</GlobalLoadingProvider>
             <Toaster

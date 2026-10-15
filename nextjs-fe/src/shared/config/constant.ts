@@ -151,6 +151,15 @@ export const UI_CONSTANTS = {
   ACTION_DELAY_MS: 300,
 } as const;
 
+// Shared dialog (AppDialog) defaults, used for whatever a dialog does not set
+export const DIALOG_DEFAULTS = {
+  SIZE: 'md',
+  /** Footer buttons a dialog may declare, not counting Cancel. */
+  MAX_ACTIONS: 4,
+  ACTION_VARIANT: 'default',
+  ACTION_SIZE: 'default',
+} as const;
+
 // Keyboard keys
 export const KEYBOARD_KEYS = {
   ESCAPE: 'Escape',
@@ -179,8 +188,34 @@ export const THEME = {
 export const SESSION_COOKIE_NAME = 'laravel_session';
 
 // Admin Routes
+/** Shortest text the admin search accepts (laravel-api LedgerConst::SEARCH_QUERY_MIN). */
+export const SEARCH_QUERY_MIN = 2;
+
+/** Query-string parameter of the search page. */
+export const SEARCH_PARAM = 'q';
+
 export const ADMIN_ROUTES = {
   DASHBOARD: '/admin',
   ADMINS: '/admin/admins',
+  ROLES: '/admin/roles',
+  SKILLS: '/admin/skills',
+  TAGS: '/admin/tags',
+  EVIDENCE: '/admin/evidence',
+  GOALS: '/admin/goals',
+  SEARCH: '/admin/search',
+  FILES: '/admin/files',
+  FILES_TRASH: '/admin/files/trash',
+  AUDIT_LOG: '/admin/audit-log',
   LOGIN: '/login',
 } as const;
+
+/** audit_log.auditable_type values the backend writes (each service's `$auditableType`, ADR-0006). */
+export const AUDITABLE_TYPES = [
+  'admin',
+  'role',
+  'skill',
+  'skill_level',
+  'learning_goal',
+  'evidence',
+  'tag',
+] as const;

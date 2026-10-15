@@ -7,7 +7,7 @@
 | Status | Accepted |
 | Date | 2026-10-08 |
 | Deciders | TL |
-| Related | [RFC-002](../design/RFC-002-skill-ledger.md) §4.3 / §9 Q1, roadmap P3 ("OpenAPI-first"), backlog P3-03, P3-09 |
+| Related | [RFC-002](../archive/engineering-lab/design/RFC-002-skill-ledger.md) §4.3 / §9 Q1, roadmap P3 ("OpenAPI-first"), backlog P3-03, P3-09 |
 
 ## Context
 
@@ -44,9 +44,9 @@ We choose **option 3**. "OpenAPI-first" in this project means *contract-first re
 | `skill-level` | `skill_id` required, `level` 1–4 required, `changed_on` date ≤ today, `reason` ≤ 500 | `id`, `skill_id`, `level`, `level_label`, `reason`, `changed_on`, `recorded_by_user_name`, `created_at` |
 | `tag` | `name` string 1–50 required, unique ignoring case | `id`, `name` |
 | `evidence` | `type` enum required, `title` 1–200 required, `url` http(s) ≤ 2048 required, `occurred_on` date required, `summary` ≤ 1000, `is_public` bool, `skill_ids` int[] min 1, `tag_ids` int[] | `id`, `type`, `title`, `url`, `occurred_on`, `summary`, `is_public`, `source`, `unpublished_at`, `skills[]{id,name}`, `tags[]{id,name}`, `created_at`, `updated_at` |
-| `learning-goal` | `skill_id` required, `target_level` 1–4 required, `target_date` date, `status` enum (update only), `note` ≤ 1000 | `id`, `skill{id,name,current_level}`, `target_level`, `target_date`, `status`, `achieved_on`, `note`, `created_at`, `updated_at` |
+| `learning-goal` | `skill_id` required, `target_level` 1–4 required, `target_date` date, `status` enum (update only), `note` ≤ 1000 | `id`, `skill{id,name,current_level}`, `target_level`, `target_level_label`, `target_date`, `status`, `achieved_on`, `note`, `created_at`, `updated_at` |
 | `search?q=` | `q` string 2–100 required | `match` (`exact` \| `fuzzy`, ADR-0009), `skills[]`, `goals[]`, `evidence[]` (≤ 10 each, best first; item = `id`, `title`, `snippet`) |
-| `dashboard/summary` | – | `skills`, `public_skills`, `evidence`, `public_evidence`, `open_goals`, `levels{1..4: count}` |
+| `dashboard/summary` | – | `skills`, `public_skills`, `evidence`, `public_evidence` (public and not unpublished), `open_goals`, `levels[]{level, level_label, count}` (all four levels, also when 0; a list instead of the planned `{1..4: count}` map so the type is exact — P3-11) |
 | `evidence/import` | `notes[]{external_key, title, url, occurred_on, summary, tags[], skills[]}` (≤ 2000), `dry_run` bool | `created`, `updated`, `unchanged`, `hidden`, `unknown_skills[]` |
 | public `skills` | – | `[]{name, slug, category, current_level, current_level_label, tags[]}` |
 | public `skills/{slug}` | – | `name`, `slug`, `category`, `description`, `current_level`, `current_level_label`, `tags[]`, `history[]{level, level_label, changed_on}`, `evidence[]{type, title, url, occurred_on, summary}` |
@@ -54,6 +54,14 @@ We choose **option 3**. "OpenAPI-first" in this project means *contract-first re
 Lists use the existing `ListRequest` paging (`page`, `per_page`, `sort_by`, `sort_order`) and envelope. Delete uses `{ ids: [] }`.
 
 > 🇻🇳 Bảng trên là hợp đồng chi tiết của Skill Ledger (trường request với giới hạn, trường response). Danh sách dùng phân trang `ListRequest` hiện có; xoá dùng `{ ids: [] }`.
+
+Update (P3-09, 2026-10-08): the proposed tool was **not** used. `league/openapi-psr7-validator` (under `osteel/…`) reads OpenAPI 3.0 through `cebe/php-openapi`, while Scramble emits 3.1 (`type: ["string", "null"]`). OpenAPI 3.1 schemas are JSON Schema 2020-12, so `tests/Support/OpenApiContract.php` loads `openapi.json` into `opis/json-schema` (dev dependency) and validates by JSON pointer. It runs inside `TestCase::call()`, so **every** response of every feature test is checked, not only the Skill Ledger ones; an undocumented status code fails too. To make that possible the spec had to describe the real body: `App\OpenApi\ResponseEnvelope` (Scramble document transformer) wraps 2xx schemas in `{data, error}`, points every 4xx at a shared `ApiError` schema, writes `data: null` for `void` actions and adds the 403 / 404 / 429 responses Scramble cannot infer, using each route's middleware and parameters. Known gap: paginated lists are documented as `{data: [...]}` without the paginator fields (`links`, `meta`); extra fields pass validation, so it does not fail — fix when the admin UI needs typed paging (P3-10).
+
+> 🇻🇳 Cập nhật (P3-09): **không** dùng công cụ đề xuất vì `league/openapi-psr7-validator` chỉ đọc OpenAPI 3.0, còn Scramble xuất 3.1. Schema của OpenAPI 3.1 chính là JSON Schema 2020-12, nên test dùng `opis/json-schema` (chỉ dev) kiểm tra theo JSON pointer, chạy trong `TestCase::call()` cho **mọi** response của mọi feature test; mã trạng thái chưa khai báo cũng làm test fail. Để spec mô tả đúng body thật, transformer `ResponseEnvelope` bọc `{data, error}`, dùng chung schema `ApiError` cho lỗi 4xx, `data: null` cho action `void`, và thêm 403/404/429 dựa theo middleware và tham số route. Còn thiếu: danh sách phân trang chưa mô tả `links`, `meta` (trường thừa không làm fail) — sửa khi UI admin cần (P3-10).
+
+Update (API-01, 2026-10-08): the gap is closed. Scramble infers a list's type from the code, not from the `@return AnonymousResourceCollection<LengthAwarePaginator<…>>` docblock, so `ResponseEnvelope` adds the paginator fields itself for every action whose `@return` names `LengthAwarePaginator`: `data.links` (`PaginationLinks`: `first`, `last`, `prev`, `next`) and `data.meta` (`PaginationMeta`: `current_page`, `from`, `last_page`, `links[]`, `path`, `per_page`, `to`, `total`), both required. The 7 admin `*/list` routes are paginated; `public/skills` is not. Every list response in the feature tests is now checked against them, and `OpenApiContractTest` proves a list without `meta` fails. The FE types gain `components["schemas"]["PaginationMeta"]`; switching `shared/types/api.ts` to them is FE work.
+
+> 🇻🇳 Cập nhật (API-01): đã bổ sung phần còn thiếu. Scramble suy kiểu từ code chứ không đọc docblock, nên `ResponseEnvelope` tự thêm `data.links` (`PaginationLinks`) và `data.meta` (`PaginationMeta`) cho mọi action có `@return` nhắc tới `LengthAwarePaginator` (7 route `*/list` của admin; `public/skills` không phân trang). Mọi response list trong test giờ được kiểm tra với schema này; `OpenApiContractTest` chứng minh thiếu `meta` thì fail. FE có thêm type `PaginationMeta`; chuyển `shared/types/api.ts` sang dùng nó là việc của lane FE.
 
 ## Consequences
 

@@ -1,7 +1,11 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import { http, HttpResponse } from 'msw';
-import { ResourceListPage, type ResourceFormProps } from './resource-list-page';
+import {
+  ResourceListPage,
+  type ResourceFormProps,
+  type ResourceListPageProps,
+} from './resource-list-page';
 import type { Column } from '@/components/common/data-table/data-table';
 import { apiUrl, envelope, server } from '@/test/server';
 import { createQueryWrapper } from '@/test/query-wrapper';
@@ -11,6 +15,11 @@ vi.mock('next-intl', () => {
   const t = (key: string) => key;
   return { useTranslations: () => t };
 });
+// Permissions of the signed-in admin (ADR-0013); each test sets them
+let granted: string[] = [];
+vi.mock('@/shared/hooks/use-permissions', () => ({
+  usePermissions: () => ({ can: (permission: string) => granted.includes(permission) }),
+}));
 vi.mock('@/shared/utils/notification', () => ({
   notification: { success: vi.fn(), error: vi.fn() },
 }));
@@ -27,11 +36,24 @@ const columns: Column<Row>[] = [
   { key: 'title', label: 'title' },
 ];
 
-function TestForm({ initialData }: ResourceFormProps<Row>) {
-  return <p>form for {initialData?.title ?? 'new'}</p>;
+const submitted = vi.fn();
+
+function TestForm({ initialData, formId, onSuccess }: ResourceFormProps<Row>) {
+  return (
+    <form
+      id={formId}
+      onSubmit={(event) => {
+        event.preventDefault();
+        submitted(initialData?.id ?? null);
+        onSuccess();
+      }}
+    >
+      form for {initialData?.title ?? 'new'}
+    </form>
+  );
 }
 
-const renderPage = () => {
+const renderPage = (dialogActions?: ResourceListPageProps<Row>['dialogActions']) => {
   const { Wrapper } = createQueryWrapper();
   return render(
     <Wrapper>
@@ -44,7 +66,8 @@ const renderPage = () => {
         defaultSortBy="rank_order"
         filtersKey="test-filters"
         form={TestForm}
-        dialogClassName="max-w-xl"
+        dialogSize="lg"
+        dialogActions={dialogActions}
       />
     </Wrapper>,
   );
@@ -54,7 +77,9 @@ describe('ResourceListPage', () => {
   let listParams: URLSearchParams[];
 
   beforeEach(() => {
+    granted = ['admin-mst.list', 'admin-mst.store', 'admin-mst.update', 'admin-mst.delete'];
     listParams = [];
+    submitted.mockClear();
     server.use(
       http.get(apiUrl(`${ENDPOINT}/list`), ({ request }) => {
         listParams.push(new URL(request.url).searchParams);
@@ -88,9 +113,7 @@ describe('ResourceListPage', () => {
 
     fireEvent.click(screen.getByRole('button', { name: /createEntity/ }));
     await screen.findByText('form for new');
-    fireEvent.click(
-      within(screen.getByRole('dialog')).getAllByRole('button', { name: 'cancel' })[0],
-    );
+    fireEvent.click(within(screen.getByRole('dialog')).getByRole('button', { name: 'cancel' }));
 
     fireEvent.click(screen.getAllByRole('button', { name: 'edit' })[0]);
     await screen.findByText('form for Spring sale');
@@ -112,5 +135,58 @@ describe('ResourceListPage', () => {
     fireEvent.click(within(dialog).getByRole('button', { name: 'delete' }));
 
     await waitFor(() => expect(deleted).toEqual({ ids: [2] }));
+  });
+
+  it('hides create, edit and delete without their permissions', async () => {
+    granted = ['admin-mst.list'];
+    renderPage();
+    await screen.findByText('Spring sale');
+
+    expect(screen.queryByRole('button', { name: /createEntity/ })).toBeNull();
+    expect(screen.queryByRole('button', { name: 'edit' })).toBeNull();
+    expect(screen.queryByRole('button', { name: 'delete' })).toBeNull();
+    expect(screen.queryByRole('checkbox')).toBeNull();
+  });
+
+  it('submits the form from the footer: create on new, update on edit', async () => {
+    renderPage();
+    await screen.findByText('Spring sale');
+
+    fireEvent.click(screen.getByRole('button', { name: /createEntity/ }));
+    fireEvent.click(
+      within(await screen.findByRole('dialog')).getByRole('button', { name: 'create' }),
+    );
+    await waitFor(() => expect(submitted).toHaveBeenLastCalledWith(null));
+    await waitFor(() => expect(screen.queryByRole('dialog')).toBeNull());
+
+    fireEvent.click(screen.getAllByRole('button', { name: 'edit' })[0]);
+    fireEvent.click(
+      within(await screen.findByRole('dialog')).getByRole('button', { name: 'update' }),
+    );
+    await waitFor(() => expect(submitted).toHaveBeenLastCalledWith(1));
+  });
+
+  it('renders the page own footer buttons and hides those without permission', async () => {
+    const archive = vi.fn();
+    renderPage(({ record, submitAction }) => [
+      { key: 'archive', label: 'archive', onClick: () => archive(record?.id) },
+      { key: 'export', label: 'export', permission: 'admin-mst.export', onClick: vi.fn() },
+      submitAction,
+    ]);
+    await screen.findByText('Spring sale');
+
+    fireEvent.click(screen.getAllByRole('button', { name: 'edit' })[0]);
+    const dialog = await screen.findByRole('dialog');
+    expect(within(dialog).queryByRole('button', { name: 'export' })).toBeNull();
+    // Buttons render left to right in the declared order, after Cancel
+    expect(
+      within(dialog)
+        .getAllByRole('button')
+        .map((b) => b.textContent)
+        .filter((name) => name !== 'close'),
+    ).toEqual(['cancel', 'archive', 'update']);
+    fireEvent.click(within(dialog).getByRole('button', { name: 'archive' }));
+
+    await waitFor(() => expect(archive).toHaveBeenCalledWith(1));
   });
 });
