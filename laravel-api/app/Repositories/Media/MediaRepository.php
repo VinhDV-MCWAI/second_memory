@@ -146,6 +146,41 @@ class MediaRepository extends BaseRepository
     }
 
     /**
+     * Deleted files MinIO still keeps (deleted after $since), most recently deleted first. A deleted
+     * row is never changed again, so `updated_at` is the deletion time and `updated_by` who deleted it.
+     *
+     * @param  array<string, mixed>  $payload
+     * @return LengthAwarePaginator<int, MediaMgmt>
+     */
+    public function trash(CarbonInterface $since, array $payload): LengthAwarePaginator
+    {
+        $query = $this->trashQuery($since)->with('updater:id,user_name');
+        if (isset($payload['name'])) {
+            $query->whereRaw('lower(original_name) like lower(?)', ['%'.$this->escapeLike($payload['name']).'%']);
+        }
+
+        return $query->orderByDesc('updated_at')->orderByDesc('id')
+            ->paginate($payload['per_page'] ?? MediaConst::PER_PAGE, ['*'], 'page', $payload['page'] ?? 1);
+    }
+
+    /**
+     * Trash rows among $ids, or every trash row when $ids is null.
+     *
+     * @param  list<int>|null  $ids
+     * @return Collection<int, MediaMgmt>
+     */
+    public function inTrash(CarbonInterface $since, ?array $ids = null): Collection
+    {
+        return $this->trashQuery($since)->when($ids !== null, fn (Builder $q) => $q->whereKey($ids))->get();
+    }
+
+    /** Rows of files deleted for good: their history stays in audit_log. */
+    public function forceDelete(Collection $rows): void
+    {
+        $this->query()->whereKey($rows->modelKeys())->delete();
+    }
+
+    /**
      * Two requests can pass pathTaken() together; the partial unique index decides, the loser gets a 422.
      *
      * @template T
@@ -160,6 +195,18 @@ class MediaRepository extends BaseRepository
         } catch (UniqueConstraintViolationException) {
             throw ValidationException::withMessages(['name' => Messages::E0029]);
         }
+    }
+
+    /**
+     * @return Builder<MediaMgmt>
+     */
+    private function trashQuery(CarbonInterface $since): Builder
+    {
+        return $this->query()
+            ->where('is_delete', true)
+            ->where('is_file', true)
+            ->where('upload_status', UploadStatus::COMPLETED->value)
+            ->where('updated_at', '>=', $since);
     }
 
     /**

@@ -98,6 +98,8 @@ class Messages
 
     const E0039 = 'This file type cannot be previewed';
 
+    const E0040 = 'This file is no longer kept and cannot be restored';
+
     /**
      * Errors http messages
      */

@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use App\Http\Controllers\Media\MediaController;
+use App\Http\Controllers\Media\MediaTrashController;
 use App\Http\Controllers\Media\MultipartUploadController;
 use Illuminate\Support\Facades\Route;
 
@@ -23,3 +24,9 @@ Route::post('media/multipart/complete/{id}', [MultipartUploadController::class, 
 Route::get('media/multipart/unfinished', [MultipartUploadController::class, 'unfinished'])->name('media.multipart-unfinished');
 Route::post('media/multipart/resume/{id}', [MultipartUploadController::class, 'resume'])->name('media.multipart-resume');
 Route::post('media/multipart/abort/{id}', [MultipartUploadController::class, 'abort'])->name('media.multipart-abort');
+
+// Trash: deleted files are kept 30 days (MinIO versioning), restorable until then
+Route::get('media/trash/list', [MediaTrashController::class, 'list'])->name('media.trash-list');
+Route::post('media/trash/restore/{id}', [MediaTrashController::class, 'restore'])->name('media.trash-restore');
+Route::post('media/trash/delete', [MediaTrashController::class, 'delete'])->name('media.trash-delete');
+Route::post('media/trash/empty', [MediaTrashController::class, 'empty'])->name('media.trash-empty');

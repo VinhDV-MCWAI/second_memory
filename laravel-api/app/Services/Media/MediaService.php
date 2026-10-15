@@ -25,7 +25,7 @@ use Illuminate\Validation\ValidationException;
  */
 final class MediaService
 {
-    private const AUDIT_TYPE = 'media';
+    public const AUDIT_TYPE = 'media';
 
     public function __construct(
         private readonly MediaRepository $media,
@@ -61,6 +61,22 @@ final class MediaService
         $this->auditLogger->record(self::AUDIT_TYPE, $folder->id, AuditEvent::CREATED, null, $this->auditValues($folder));
 
         return $folder->id;
+    }
+
+    /** Creates the folder and any missing parent, like `mkdir -p`; each new folder is audited. */
+    public function ensureFolder(string $path): void
+    {
+        if ($path === MediaConst::ROOT || $this->media->folderExists($path)) {
+            return;
+        }
+        $parent = $this->parentOf($path);
+        $this->ensureFolder($parent);
+        $this->storeFolder(['folder' => $parent, 'name' => substr($path, strrpos($path, MediaConst::PATH_SEPARATOR) + 1)]);
+    }
+
+    public function pathTaken(string $path): bool
+    {
+        return $this->media->pathTaken($path);
     }
 
     /**
@@ -293,7 +309,7 @@ final class MediaService
     /**
      * @return array<string, mixed>
      */
-    private function auditValues(MediaMgmt $item): array
+    public function auditValues(MediaMgmt $item): array
     {
         return array_filter([
             'path' => $item->virtual_path,

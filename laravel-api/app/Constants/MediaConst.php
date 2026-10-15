@@ -51,6 +51,12 @@ final class MediaConst
     /** Background task type of the post-upload processing (BackgroundTaskFinished.type). */
     public const TASK_PROCESS = 'media.process';
 
+    /** Deleted files stay in the trash this long; docker/minio/ilm-history.json expires old versions after the same days. */
+    public const TRASH_DAYS = 30;
+
+    /** A restored file whose name is taken meanwhile becomes `name (restored).ext`, then `name (restored 2).ext`, … */
+    public const RESTORED_SUFFIX = 'restored';
+
     /** Lifetime of a presigned upload or download URL. */
     public const UPLOAD_URL_TTL_SECONDS = 300;
 

@@ -5,9 +5,11 @@ declare(strict_types=1);
 namespace App\Models\Media;
 
 use App\Enums\UploadStatus;
+use App\Models\Master\AdminMst;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Carbon;
 
 /**
@@ -30,6 +32,7 @@ use Illuminate\Support\Carbon;
  * @property int|null $created_by
  * @property int|null $updated_by
  * @property Carbon|null $updated_at
+ * @property-read AdminMst|null $updater
  */
 class MediaMgmt extends Model
 {
@@ -53,6 +56,16 @@ class MediaMgmt extends Model
         'created_by',
         'updated_by',
     ];
+
+    /**
+     * Last admin who changed the row; for a deleted row, who deleted it.
+     *
+     * @return BelongsTo<AdminMst, $this>
+     */
+    public function updater(): BelongsTo
+    {
+        return $this->belongsTo(AdminMst::class, 'updated_by');
+    }
 
     /**
      * @param  Builder<MediaMgmt>  $query

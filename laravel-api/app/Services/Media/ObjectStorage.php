@@ -163,6 +163,54 @@ class ObjectStorage
         $this->internalClient()->deleteObject(['Bucket' => $this->bucket(), 'Key' => $key]);
     }
 
+    /** A deleted object can come back: some version of it is still kept (not yet expired or purged). */
+    public function restorable(string $key): bool
+    {
+        return $this->versionsOf($key)['versions'] !== [];
+    }
+
+    /** Undoes a delete on the versioned bucket: drops the delete marker, so the last version is current again. */
+    public function restore(string $key): void
+    {
+        foreach ($this->versionsOf($key)['markers'] as $versionId) {
+            $this->internalClient()->deleteObject(['Bucket' => $this->bucket(), 'Key' => $key, 'VersionId' => $versionId]);
+        }
+    }
+
+    /** Deletes every version and delete marker: nothing of the object is left to restore. */
+    public function purge(string $key): void
+    {
+        $versions = $this->versionsOf($key);
+        foreach ([...$versions['versions'], ...$versions['markers']] as $versionId) {
+            $this->internalClient()->deleteObject(['Bucket' => $this->bucket(), 'Key' => $key, 'VersionId' => $versionId]);
+        }
+    }
+
+    /**
+     * Version ids of one key: stored versions and delete markers.
+     *
+     * @return array{versions: list<string>, markers: list<string>}
+     */
+    private function versionsOf(string $key): array
+    {
+        $found = ['versions' => [], 'markers' => []];
+        $params = ['Bucket' => $this->bucket(), 'Prefix' => $key];
+        do {
+            $result = $this->internalClient()->listObjectVersions($params);
+            foreach (['Versions' => 'versions', 'DeleteMarkers' => 'markers'] as $field => $kind) {
+                foreach ($result[$field] ?? [] as $entry) {
+                    if ($entry['Key'] === $key) {
+                        $found[$kind][] = (string) $entry['VersionId'];
+                    }
+                }
+            }
+            $params['KeyMarker'] = $result['NextKeyMarker'] ?? null;
+            $params['VersionIdMarker'] = $result['NextVersionIdMarker'] ?? null;
+        } while ((bool) ($result['IsTruncated'] ?? false));
+
+        return $found;
+    }
+
     private function internalClient(): S3Client
     {
         return $this->internalClient ??= $this->client((string) config('media.endpoint'));

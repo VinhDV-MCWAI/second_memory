@@ -42,10 +42,36 @@ final class FakeObjectStorage extends ObjectStorage
         return $this->objects[$key] ?? null;
     }
 
+    /** @var array<string, array{size: int, etag: string, mime_type: string|null}> deleted objects the versioned bucket still keeps */
+    public array $kept = [];
+
+    /** @var list<string> */
+    public array $purged = [];
+
     public function delete(string $key): void
     {
+        if (isset($this->objects[$key])) {
+            $this->kept[$key] = $this->objects[$key];
+        }
         unset($this->objects[$key]);
         $this->deleted[] = $key;
+    }
+
+    public function restorable(string $key): bool
+    {
+        return isset($this->kept[$key]);
+    }
+
+    public function restore(string $key): void
+    {
+        $this->objects[$key] = $this->kept[$key];
+        unset($this->kept[$key]);
+    }
+
+    public function purge(string $key): void
+    {
+        unset($this->kept[$key], $this->objects[$key]);
+        $this->purged[] = $key;
     }
 
     /** @var array<string, array{key: string, parts: array<int, int>}> uploadId => uploaded part sizes */
