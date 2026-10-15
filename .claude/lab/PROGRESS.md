@@ -24,14 +24,13 @@ Claude không có quyền làm những việc này:
 
 ## Việc tồn đọng
 
-Cập nhật 2026-10-15 (sau LEDGER-02). Mỗi dòng là thứ còn mở, chưa thành việc trên bảng.
+Cập nhật 2026-10-15 cuối ngày (kiểm tra lại sau khi chủ dự án dọn tay). Mỗi dòng là thứ còn mở, chưa thành việc trên bảng.
 
 | # | Việc | Chi tiết | Ai làm |
 |---|---|---|---|
-| 1 | Push code | Branch `feature/p3-ledger-api` đang đi trước `origin` khoảng 145 commit (từ AUTH-03 tới LEDGER-02) | Chủ dự án |
+| 1 | Push code | Branch `feature/p3-ledger-api` đang đi trước `origin` 129 commit (từ AUTH-03 tới LEDGER-02; đếm bằng `git log origin/feature/p3-ledger-api..HEAD`) | Chủ dự án |
 | 2 | `.claude/settings.json` có thay đổi chưa commit | Thêm quyền `Write/Edit(.claude/**)`, `Edit(CLAUDE.md)`, `Bash(git rm:*)`. Không phải do các phiên Claude gần đây làm; Claude không động vào. Chủ dự án quyết commit hay bỏ | Chủ dự án |
-| 3 | Thư mục `.claude/sim/` còn sót (16 KB, ngoài git) | Của các vai giả lập đã bỏ ở NEN-06. Claude bị chặn xóa thư mục ngoài git; chủ dự án xóa tay: `rm -rf .claude/sim` | Chủ dự án |
-| 4 | Bản demo prod-like chưa xóa hẳn | Chủ dự án chạy `make tf-destroy` 2026-10-15 nhưng 12 container `sm-prod-like-*` và 3 ổ `sm-prod-like-*` vẫn còn (đang tắt): có lẽ lệnh bị hủy. Chạy lại `make tf-destroy` và gõ `yes` | Chủ dự án |
+| 4 | Bản demo prod-like chưa xóa hẳn | Kiểm tra cuối ngày 2026-10-15: vẫn còn 12 container và 3 ổ `sm-prod-like-*` (đang tắt), dù chủ dự án đã chạy xóa. Xóa hẳn: `make tf-destroy` rồi gõ `yes`; hoặc tay: `docker rm $(docker ps -aq -f name=sm-prod-like)` và `docker volume rm sm-prod-like-postgres sm-prod-like-redis sm-prod-like-minio`. Kiểm tra: `docker ps -a | grep sm-prod-like` | Chủ dự án |
 | 5 | Ý tưởng tiếp (chưa làm) | Lọc danh sách bằng chứng theo file (bấm số ở cột Evidence của Files để mở các bằng chứng dùng file đó); test trình duyệt (e2e) cho đính kèm file | Chờ chủ dự án |
 | 6 | Tiếp tục upload dở từ máy khác không kiểm tra được "đúng file" | Trình duyệt chỉ nhớ thời điểm sửa file trên máy đã bắt đầu upload; máy khác chỉ so tên + dung lượng | Chấp nhận, ghi trong [quan-ly-file.md](../../docs/features/quan-ly-file.md) |
 | 8 | Việc để sau theo quyết định chủ dự án | Người dùng cuối, phòng ban (USER-02, USER-03, ADR-0015); dữ liệu mẫu + HTTPS cho bản demo (DEMO-01, DEMO-02) | Chờ chủ dự án |
@@ -111,9 +110,10 @@ Mỗi dòng do `scripts/lane.sh done` tự thêm. Không sửa tay.
 
 ## Next step
 
-Cập nhật 2026-10-15 (sau LEDGER-02).
+Cập nhật 2026-10-15 cuối ngày.
 
-1. `scripts/lane.sh status`: không còn việc nhận được. Đăng nhập, phân quyền, người dùng cuối, phòng ban: **tạm dừng, chỉ làm khi chủ dự án yêu cầu** (không đề xuất). Bản demo prod-like: không làm.
-2. Hỏi chủ dự án việc tiếp theo; gợi ý ở "Việc tồn đọng" mục 5.
-3. Mỗi việc xong: dọn dẹp theo "Dọn dẹp khi xong việc" trong [01-goals-and-workflow.md](../../docs/plan/01-goals-and-workflow.md) (`make clean`).
-4. `make verify` gần nhất: 2026-10-15 sau LEDGER-02, pass (231 test backend, 128 giao diện, 63 importer).
+1. Đầu phiên: `scripts/lane.sh status` (không còn việc nhận được) và xem "Việc tồn đọng" ở trên: mục 1 (push), 2 (`.claude/settings.json`), 4 (bản demo còn sót) là việc của chủ dự án; nhắc nếu vẫn còn.
+2. Đăng nhập, phân quyền, người dùng cuối, phòng ban: **tạm dừng, chỉ làm khi chủ dự án yêu cầu** (không đề xuất). Bản demo prod-like: không làm.
+3. Hỏi chủ dự án việc tiếp theo; gợi ý ở "Việc tồn đọng" mục 5 (lọc bằng chứng theo file từ màn hình Files; test trình duyệt cho đính kèm file).
+4. Việc mới: thêm bằng `scripts/lane.sh add main <mã> …`, nhận bằng `claim`, xong thì dọn dẹp (`make clean`, xóa dữ liệu thử) rồi `done`.
+5. `make verify` gần nhất: 2026-10-15 sau LEDGER-02, pass (231 test backend, 128 giao diện, 63 importer). Cây làm việc sạch trừ `.claude/settings.json`.
