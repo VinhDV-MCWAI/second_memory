@@ -36,9 +36,15 @@ tf() {
 case "$command" in
   fmt) tf fmt -recursive "$@" /work/infra ;;
   init) tf init -input=false "$@" ;;
-  plan | apply | destroy)
+  plan)
     tf init -input=false >/dev/null
-    tf "$command" -input=false "$@"
+    tf plan -input=false "$@"
+    ;;
+  apply | destroy)
+    # No -input=false: it also disables the yes/no approval, so Terraform cancels.
+    # Scripts pass -auto-approve (ci/deploy.sh).
+    tf init -input=false >/dev/null
+    tf "$command" "$@"
     ;;
   *)
     tf init -input=false >/dev/null
