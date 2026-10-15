@@ -25,6 +25,8 @@ Nhật ký hiện ở ba chỗ:
 | Thêm | `created` | Giá trị mới |
 | Sửa | `updated` | Chỉ các ô thay đổi: giá trị cũ và mới |
 | Xóa | `deleted` | Ảnh chụp bản ghi trước khi xóa |
+| Khôi phục từ thùng rác (file) | `restored` | Đường dẫn file sau khi khôi phục |
+| Xóa vĩnh viễn (file) | `purged` | Ảnh chụp file trước khi xóa |
 | Đăng nhập / đăng xuất | `logged_in` / `logged_out` | |
 | Đăng nhập sai | `login_failed` | Chỉ tên đã gõ, không có mã tài khoản (để không lộ tài khoản có tồn tại) |
 

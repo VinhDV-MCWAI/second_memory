@@ -1,6 +1,6 @@
 # Quản lý file
 
-> Trạng thái: **chạy đủ** (màn hình, thư mục, upload file nhỏ và file lớn tới 10 GB, tiếp tục upload dở, xem trước, tải về, đổi tên, di chuyển, xóa, dọn upload treo). Thông báo khi file lớn xử lý xong dùng [việc nền và thông báo tức thì](viec-nen-va-thong-bao.md). Thiết kế: [ADR-0014](../adr/0014-media-minio-upload.md).
+> Trạng thái: **chạy đủ** (màn hình, thư mục, upload file nhỏ và file lớn tới 10 GB, tiếp tục upload dở, xem trước, tải về, đổi tên, di chuyển, xóa, thùng rác, dọn upload treo). Thông báo khi file lớn xử lý xong dùng [việc nền và thông báo tức thì](viec-nen-va-thong-bao.md). Thiết kế: [ADR-0014](../adr/0014-media-minio-upload.md).
 
 ## Làm gì
 
@@ -20,11 +20,31 @@ Menu **Files** (`/admin/files`, cần quyền `media.list`).
 | Xem trước | Bấm tên file hoặc nút con mắt: ảnh, PDF, video, nhạc, file chữ hiện ngay trong hộp thoại, có nút tải về. Chi tiết ở mục [Xem trước](#xem-trước) | `media.download-url` |
 | Tải về | Nút tải ở dòng file (link tạm 5 phút, tải đúng tên file) | `media.download-url` |
 | Đổi tên / Di chuyển | Nút bút chì / nút chuyển thư mục; di chuyển bằng cách gõ đường dẫn thư mục đích (ví dụ `/Docs/2026`) | `media.update` |
-| Xóa | Nút thùng rác ở dòng, hoặc tick nhiều dòng rồi **Delete (n)**; hỏi lại trước khi xóa | `media.delete` |
+| Xóa | Nút thùng rác ở dòng, hoặc tick nhiều dòng rồi **Delete (n)**; hỏi lại trước khi xóa. File vào [thùng rác](#thùng-rác) 30 ngày | `media.delete` |
+| Thùng rác | Nút **Trash** (`/admin/files/trash`) | `media.trash-list` |
 
 Nút nào không có quyền thì không hiện (API vẫn chặn bằng 403). Vai trò Chỉ xem: xem và tải về.
 
 Upload chạy lần lượt từng file (file lớn đã tự gửi 4 phần cùng lúc).
+
+### Thùng rác
+
+File đã xóa nằm trong thùng rác **30 ngày**, sau đó MinIO tự xóa hẳn và dòng đó biến khỏi thùng rác.
+
+| Thao tác | Kết quả | Quyền |
+|---|---|---|
+| Xem | Tên, thư mục cũ, dung lượng, ngày xóa, ai xóa, còn mấy ngày. Lọc theo tên | `media.trash-list` (vai trò Chỉ xem cũng có) |
+| **Restore** | File về đúng thư mục cũ. Thư mục cũ đã bị xóa thì tự tạo lại (cả các thư mục cha). Tên đã có file khác dùng thì đặt thành `tên (restored).đuôi`, rồi `tên (restored 2).đuôi`, … | `media.trash-restore` |
+| **Delete forever** (từng file hoặc tick nhiều) | Hỏi lại, rồi xóa hẳn: không khôi phục được nữa | `media.trash-delete` |
+| **Empty trash** | Hỏi lại, rồi xóa hẳn mọi file trong thùng rác | `media.trash-empty` |
+
+| Ghi chú | |
+|---|---|
+| Chỉ liệt kê file | Thư mục đã xóa không hiện; khôi phục file bên trong là thư mục được tạo lại |
+| Ngày xóa | Lấy từ cột "cập nhật lúc" của file (dòng đã xóa không bị sửa nữa), không thêm cột mới |
+| Cách MinIO giữ file | Kho chính bật lưu phiên bản. Xóa chỉ đặt một "dấu đã xóa", dữ liệu vẫn còn. Khôi phục là gỡ dấu đó. Xóa vĩnh viễn là xóa mọi phiên bản. Luật trong `docker/minio/ilm-history.json`: phiên bản cũ mất sau 30 ngày |
+| Trước ngày 2026-10-15 | Luật cũ giữ 5 phiên bản cũ gần nhất **mãi mãi**, nên file đã xóa không bao giờ được giải phóng dung lượng. Đã sửa |
+| Nhật ký thay đổi | Khôi phục ghi `restored`, xóa vĩnh viễn ghi `purged` |
 
 ### Xem trước
 
@@ -109,7 +129,9 @@ Trình duyệt ◀──5. thông báo tức thì "<tên file> is ready"── R
 | MinIO không ghép được (ETag sai) | Việc nền lỗi ngay, không thử lại; thông báo đỏ "The uploaded parts could not be joined into one file"; bản ghi bị ẩn, tên được trả lại |
 | Người khác gọi xin link / tiếp tục / hủy upload của mình | 404: chỉ người bắt đầu upload mới thấy, tiếp tục hoặc hủy được |
 | Tiếp tục một upload mà MinIO đã xóa phần (hết hạn, bị dọn) | 404; dòng đó bị ẩn khỏi danh sách dở ở lần tải sau |
-| Xóa | Thư mục xóa kèm mọi thứ bên trong; file trong MinIO bị xóa sau khi DB lưu xong; MinIO còn giữ bản cũ 30 ngày để khôi phục |
+| Xóa | Thư mục xóa kèm mọi thứ bên trong; file trong MinIO bị xóa sau khi DB lưu xong; file vào thùng rác 30 ngày |
+| Khôi phục file mà MinIO đã xóa hẳn | 422 "This file is no longer kept and cannot be restored" |
+| Khôi phục file đã quá 30 ngày | 404 |
 
 ## API
 
@@ -129,7 +151,11 @@ Tất cả nằm dưới `/api/admin/media/`. Mỗi API là một quyền trong 
 | `POST multipart/resume/{id}` | Tiếp tục: trả `{id, part_size, part_count, parts: [{part_number, etag, size}]}` là các phần MinIO đang giữ; tính lại 24 giờ trước khi bị dọn | `media.multipart-resume` | Không |
 | `GET download-url/{id}` | Xin link tải; trả `{url, expires_at}`. Thêm `?inline=1` để lấy link xem trước (chỉ khi ô `preview` của file khác null, nếu không 422 "This file type cannot be previewed") | `media.download-url` | Được |
 | `PUT update/{id}` `{name?, folder?}` | Đổi tên và/hoặc chuyển thư mục; thư mục mang theo mọi thứ bên trong | `media.update` | Không |
-| `POST delete` `{ids}` | Xóa file, thư mục | `media.delete` | Không |
+| `POST delete` `{ids}` | Xóa file, thư mục (file vào thùng rác) | `media.delete` | Không |
+| `GET trash/list?name=…` | File trong thùng rác, mới xóa đứng trước: `{id, name, path, size, mime_type, deleted_at, deleted_by, expires_at}` | `media.trash-list` | Được |
+| `POST trash/restore/{id}` | Khôi phục; trả thông tin file (đường dẫn mới nếu phải đổi tên) | `media.trash-restore` | Không |
+| `POST trash/delete` `{ids}` | Xóa vĩnh viễn các file trong thùng rác; trả số file đã xóa | `media.trash-delete` | Không |
+| `POST trash/empty` | Dọn sạch thùng rác; trả số file đã xóa | `media.trash-empty` | Không |
 
 Mọi thay đổi (tạo thư mục, upload xong, đổi tên, chuyển, xóa) ghi vào [nhật ký thay đổi](nhat-ky-thay-doi.md) với loại `media`.
 
@@ -137,7 +163,7 @@ Mọi thay đổi (tạo thư mục, upload xong, đổi tên, chuyển, xóa) g
 
 | Nơi | Dùng cho |
 |---|---|
-| Kho `media-official` | File chính thức, tên trong kho là `năm/tháng/uuid.đuôi`; giữ bản cũ 30 ngày |
+| Kho `media-official` | File chính thức, tên trong kho là `năm/tháng/uuid.đuôi`; bật lưu phiên bản, phiên bản cũ (file đã xóa) mất sau 30 ngày |
 | Kho `media-temp` | Chưa dùng; tự xóa sau 1 ngày |
 | Bảng `media_mgmt` | Tên, đường dẫn ảo (`/Docs/a.pdf`), dung lượng, loại file, trạng thái (0 đang tải lên, 1 đang xử lý, 2 hoàn tất, 3 lỗi), mã upload chia phần (`upload_id`, xóa khi ghép xong), đã xóa hay chưa |
 
