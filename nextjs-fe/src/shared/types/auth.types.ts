@@ -6,6 +6,8 @@ export type User = CurrentAdmin;
 export interface LoginCredentials {
   user_name: string;
   password: string;
+  /** Keep this device signed in for 30 days (AUTH-05). */
+  remember?: boolean;
 }
 
 export interface AuthState {

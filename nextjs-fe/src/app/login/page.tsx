@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card } from '@/components/ui/card';
+import { Checkbox } from '@/components/ui/checkbox';
 import { useAuth } from '@/providers/use-auth';
 import { useTranslations } from 'next-intl';
 import { ADMIN_ROUTES } from '@/shared/config';
@@ -16,6 +17,7 @@ export default function LoginPage() {
   const { login, isAuthenticated } = useAuth();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [remember, setRemember] = useState(false);
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const t = useTranslations('auth');
@@ -40,6 +42,7 @@ export default function LoginPage() {
       await login({
         user_name: username,
         password: password,
+        remember,
       });
       // Redirect handled by useEffect
     } catch (error: unknown) {
@@ -89,6 +92,19 @@ export default function LoginPage() {
               disabled={isLoading}
               className="w-full"
             />
+          </div>
+
+          {/* Remember me (AUTH-05) */}
+          <div className="flex items-center gap-2">
+            <Checkbox
+              id="remember"
+              checked={remember}
+              onCheckedChange={(checked) => setRemember(checked === true)}
+              disabled={isLoading}
+            />
+            <Label htmlFor="remember" className="font-normal">
+              {t('remember')}
+            </Label>
           </div>
 
           {/* Error Message */}

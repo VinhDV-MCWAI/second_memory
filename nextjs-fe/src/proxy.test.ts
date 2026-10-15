@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { NextRequest } from 'next/server';
 import { proxy } from './proxy';
-import { SESSION_COOKIE_NAME } from '@/shared/config/constant';
+import { REMEMBER_COOKIE_NAME, SESSION_COOKIE_NAME } from '@/shared/config/constant';
 
 describe('proxy (admin route guard)', () => {
   it('redirects to the login page with the requested path when there is no session cookie', () => {
@@ -22,5 +22,13 @@ describe('proxy (admin route guard)', () => {
 
     expect(response.headers.get('location')).toBeNull();
     expect(response.headers.get('x-middleware-next')).toBe('1');
+  });
+
+  it('lets a remembered device through after its session cookie expired', () => {
+    const request = new NextRequest('http://localhost/admin', {
+      headers: { cookie: `${REMEMBER_COOKIE_NAME}=abc` },
+    });
+
+    expect(proxy(request).headers.get('location')).toBeNull();
   });
 });

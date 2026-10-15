@@ -113,4 +113,43 @@ describe('apiClient', () => {
     });
     expect(forbidden).toBe(1);
   });
+
+  it('fetches a fresh CSRF cookie and retries once on a 419', async () => {
+    let attempts = 0;
+    let csrfFetched = 0;
+    server.use(
+      http.get(apiUrl(API_ENDPOINTS.AUTH.CSRF_COOKIE), () => {
+        csrfFetched += 1;
+        return new HttpResponse(null, { status: 204 });
+      }),
+      http.post(apiUrl('/admin/role-mst/delete'), () => {
+        attempts += 1;
+        return attempts === 1
+          ? HttpResponse.json(errorEnvelope(419, 'CSRF token mismatch'), { status: 419 })
+          : HttpResponse.json(envelope(1));
+      }),
+    );
+
+    const response = await apiClient.post<number>('/admin/role-mst/delete', { ids: [1] });
+
+    expect(response.data).toBe(1);
+    expect(attempts).toBe(2);
+    expect(csrfFetched).toBe(1);
+  });
+
+  it('gives up after one retry when the CSRF token still does not match', async () => {
+    server.use(
+      http.get(
+        apiUrl(API_ENDPOINTS.AUTH.CSRF_COOKIE),
+        () => new HttpResponse(null, { status: 204 }),
+      ),
+      http.post(apiUrl('/admin/role-mst/delete'), () =>
+        HttpResponse.json(errorEnvelope(419, 'CSRF token mismatch'), { status: 419 }),
+      ),
+    );
+
+    await expect(apiClient.post('/admin/role-mst/delete', { ids: [1] })).rejects.toMatchObject({
+      response: { status: 419 },
+    });
+  });
 });

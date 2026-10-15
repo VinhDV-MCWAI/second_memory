@@ -59,6 +59,12 @@ export function SessionList() {
       render: (session) => formatTimestamp(session.signed_in_at),
     },
     {
+      key: 'remembered_until',
+      label: t('remembered'),
+      // "in 29 days": when this device has to sign in again
+      render: (session) => formatTimestamp(session.remembered_until),
+    },
+    {
       key: 'last_used_at',
       label: t('lastActive'),
       render: (session) => formatTimestamp(session.last_used_at),

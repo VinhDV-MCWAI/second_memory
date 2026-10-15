@@ -80,7 +80,8 @@
     "signIn": "Sign In",
     "signingIn": "Signing in...",
     "forgotPassword": "Forgot your password? Contact your administrator.",
-    "invalidCredentials": "Invalid username or password"
+    "invalidCredentials": "Invalid username or password",
+    "remember": "Keep me signed in on this device for 30 days"
   },
   "errors": {
     "pageNotFound": "Page Not Found",
@@ -739,6 +740,7 @@
     "signOutOthersDescription": "Every device except this one will have to sign in again.",
     "signedOut": "{count, plural, =0 {No device was signed out} one {Signed out one device} other {Signed out # devices}}",
     "failed": "Could not sign out. Try again.",
-    "onlyThisDevice": "You are signed in on this device only."
+    "onlyThisDevice": "You are signed in on this device only.",
+    "remembered": "Kept signed in until"
   }
 }

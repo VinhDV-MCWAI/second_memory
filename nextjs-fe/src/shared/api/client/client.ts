@@ -10,6 +10,9 @@ import { API_ENDPOINTS, API_BASE_URL } from '@/shared/api/endpoints';
 // Auth calls handle their own 401 (wrong password, no session yet)
 const AUTH_PATHS: string[] = Object.values(API_ENDPOINTS.AUTH);
 
+/** Laravel's status for a missing or stale CSRF token. */
+const CSRF_MISMATCH = 419;
+
 class ApiClient {
   private client: AxiosInstance;
   private unauthorizedHandler: (() => void) | null = null;
@@ -61,7 +64,18 @@ class ApiClient {
         }
         return response;
       },
-      (error: AxiosError) => {
+      async (error: AxiosError) => {
+        // A new session started under this page (a remembered device signed in again, AUTH-05), so the
+        // page's CSRF token is stale: fetch the new XSRF cookie and send the request once more
+        const retry = error.config as
+          | (InternalAxiosRequestConfig & { csrfRetried?: boolean })
+          | undefined;
+        if (error.response?.status === CSRF_MISMATCH && retry && !retry.csrfRetried) {
+          retry.csrfRetried = true;
+          await this.client.get(API_ENDPOINTS.AUTH.CSRF_COOKIE);
+          return this.client.request(retry);
+        }
+
         // The session ended (logout elsewhere, expired, admin disabled): let the auth provider sign out
         const url = error.config?.url ?? '';
         const isAuthPath = AUTH_PATHS.some((path) => url.includes(path));

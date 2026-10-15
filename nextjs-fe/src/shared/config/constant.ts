@@ -186,6 +186,8 @@ export const THEME = {
 
 // Laravel session cookie (config('session.cookie') in laravel-api); only its presence is checked here
 export const SESSION_COOKIE_NAME = 'laravel_session';
+// Cookie of a device kept signed in (CommonVal::REMEMBER_COOKIE, AUTH-05): it signs in again once the session expired
+export const REMEMBER_COOKIE_NAME = 'remember_device';
 
 // Admin Routes
 /** Shortest text the admin search accepts (laravel-api LedgerConst::SEARCH_QUERY_MIN). */
