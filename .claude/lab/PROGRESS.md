@@ -100,6 +100,8 @@ Mỗi dòng do `scripts/lane.sh done` tự thêm. Không sửa tay.
 
 - 2026-10-15 — [lane main] MEDIA-07 done: 4477b392, 6f33250f, a8358b0e, 74c7e76f, 3a40cd79 — thùng rác file 30 ngày: khôi phục (tự tạo lại thư mục, trùng tên thì thêm (restored)), xóa vĩnh viễn, dọn thùng rác; sửa luật MinIO giữ file đã xóa mãi mãi; 219 test backend, 123 test giao diện, 7 e2e pass
 
+- 2026-10-15 — [lane main] LEDGER-01 done: 6b0b4517, ae3c23df, 6fd32a3d, 48991162 — bằng chứng gắn tới 10 file từ Files (chọn hoặc upload trong hộp thoại, đổi thứ tự, file đã xóa vẫn giữ và đánh dấu); trang public hiện file, link mã ngẫu nhiên xin link tạm mỗi lần bấm; make verify pass (227 backend, 126 giao diện, 63 importer), thử thật trên dev
+
 ## Next step
 
 Cập nhật 2026-10-15.
