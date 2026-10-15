@@ -9,6 +9,7 @@ Quản trị viên đăng nhập bằng **tên đăng nhập** và mật khẩu.
 | http://localhost:81/login | Form đăng nhập. Đăng nhập xong quay lại trang đang mở dở (nếu có), không thì tới trang tổng quan `/admin` |
 | Nút đăng xuất ở góc trên | Kết thúc phiên, quay về `/login` |
 | Mọi trang `/admin/...` | Chưa đăng nhập thì tự chuyển tới `/login` |
+| http://localhost:81/admin/sessions (menu tài khoản ở góc trên → **Signed-in devices**) | Xem tài khoản đang đăng nhập ở những thiết bị nào, đăng xuất một thiết bị hoặc mọi thiết bị khác. Xem mục "Thiết bị đang đăng nhập" bên dưới |
 
 Tài khoản dev: chủ `root` / `12345678` và chỉ xem `viewer` / `12345678` (tạo bằng `make seed`, xem [dev-guide.md](../dev-guide.md)).
 
@@ -30,6 +31,11 @@ Tài khoản dev: chủ `root` / `12345678` và chỉ xem `viewer` / `12345678` 
 | `POST /api/admin/credential/login` | Đăng nhập, trả thông tin tài khoản | Không |
 | `POST /api/admin/credential/logout` | Đăng xuất. Gọi khi không có phiên cũng thành công | Không |
 | `GET /api/admin/credential/me` | Tài khoản đang đăng nhập. Giao diện dùng để kiểm tra còn phiên không | Có |
+| `GET /api/admin/admin-session/list` | Các thiết bị của chính mình đang đăng nhập, dùng gần nhất trước. Không trả mã phiên | Có |
+| `POST /api/admin/admin-session/delete` | Đăng xuất các thiết bị đã chọn (`ids`), trả số thiết bị đã đăng xuất. Thiết bị đang dùng thì báo lỗi 422, muốn thoát thì bấm đăng xuất | Có |
+| `POST /api/admin/admin-session/delete-others` | Đăng xuất mọi thiết bị khác, giữ thiết bị đang dùng | Có |
+
+Ba API thiết bị ai đăng nhập cũng dùng được (không phải quyền trong ma trận quyền), và chỉ đụng tới phiên của chính mình.
 
 ## Quy tắc
 
@@ -43,6 +49,23 @@ Tài khoản dev: chủ `root` / `12345678` và chỉ xem `viewer` / `12345678` 
 | Ghi nhật ký | Đăng nhập, đăng xuất, đăng nhập sai đều có một dòng trong [nhật ký thay đổi](nhat-ky-thay-doi.md). Dòng đăng nhập sai chỉ ghi tên đã gõ, không ghi mã tài khoản |
 | Chỉ đi qua cổng 81 | Cookie và CSRF chỉ đúng khi trình duyệt vào qua nginx `http://localhost:81` |
 
+## Thiết bị đang đăng nhập
+
+Làm ngày 2026-10-15. Phiên vẫn giữ trong Redis như trước (nhanh khi đông người dùng). Mỗi phiên có thêm một dòng trong bảng `admin_session` để liệt kê ra màn hình.
+
+| Việc | Cách chạy |
+|---|---|
+| Đăng nhập | Thêm một dòng: IP, trình duyệt (chuỗi User-Agent), giờ đăng nhập |
+| Dùng tiếp | Cập nhật "lần dùng cuối" và IP, **tối đa 5 phút một lần**, không ghi DB ở mọi request |
+| Đăng xuất | Xóa dòng của phiên đó |
+| Đăng xuất một thiết bị từ máy khác | Xóa phiên trong Redis và xóa dòng. Thiết bị kia bị 401 ngay ở request kế tiếp. Nếu thiết bị đó đang có một request chạy dở và ghi phiên lại vào Redis, thì lần cập nhật 5 phút tiếp theo thấy dòng đã mất và đăng xuất nó |
+| Đổi mật khẩu | Như trước, các thiết bị khác bị đăng xuất; giờ chúng cũng biến khỏi danh sách ngay |
+| Khóa hoặc xóa tài khoản | Mọi thiết bị của tài khoản đó bị đăng xuất và biến khỏi danh sách |
+| Phiên hết hạn (120 phút không dùng) | Redis tự xóa phiên. Dòng còn lại bị bỏ khi mở màn hình, và lệnh `auth:prune-sessions` chạy 0 giờ mỗi ngày dọn hết |
+| Nhật ký | Đăng xuất thiết bị khác ghi một dòng "logged out" kèm số thiết bị đã đăng xuất |
+
+Tên trình duyệt và hệ điều hành (ví dụ "Chrome on Windows") do giao diện đọc từ chuỗi User-Agent; chuỗi đầy đủ hiện khi rê chuột vào tên. Đăng nhập bằng token API (công cụ nhập từ Obsidian) không có phiên nên không hiện ở đây.
+
 Token API (dùng cho [nhập từ Obsidian](nhap-tu-obsidian.md)) là cách đăng nhập thứ hai, chỉ mở được đúng một API import.
 
 ## Dữ liệu
@@ -51,6 +74,7 @@ Token API (dùng cho [nhập từ Obsidian](nhap-tu-obsidian.md)) là cách đă
 |---|---|
 | `admin_mst` | Tài khoản, mật khẩu đã băm, vai trò, trạng thái |
 | Redis | Phiên đăng nhập |
+| `admin_session` | Danh sách thiết bị đang đăng nhập: tài khoản, mã phiên, IP, trình duyệt, giờ đăng nhập, lần dùng cuối |
 | `audit_log` | Lịch sử đăng nhập |
 
 ## Code
@@ -60,8 +84,9 @@ Token API (dùng cho [nhập từ Obsidian](nhap-tu-obsidian.md)) là cách đă
 | Route | `laravel-api/routes/api.php` |
 | Xử lý | `laravel-api/app/Services/Custom/CredentialService.php` |
 | Kiểm tra vai trò mỗi request | `laravel-api/app/Http/Middleware/AdminMiddleware.php` |
+| Thiết bị đang đăng nhập | `laravel-api/app/Services/Master/AdminSessionService.php`, `laravel-api/app/Http/Middleware/TrackAdminSession.php`, `nextjs-fe/src/features/master/components/session-list.tsx` |
 | Trang đăng nhập | `nextjs-fe/src/app/login/page.tsx` |
-| Test | `make test f=LoginApi`, `make test f=LogoutApi`, `make test f=MeApi`, `make test f=PasswordChangeSession` |
+| Test | `make test f=LoginApi`, `make test f=LogoutApi`, `make test f=MeApi`, `make test f=PasswordChangeSession`, `make test f=AdminSessionTest` |
 
 Lỗi hay gặp (401 khi nhập email, 429, 419 CSRF): [dev-guide.md mục 6](../dev-guide.md#6-các-lỗi-hay-gặp).
 
@@ -81,7 +106,7 @@ Trước ngày 2026-10-07, đăng nhập dùng cặp JWT tự viết: token truy
 | Đăng xuất | Hỏng khi token truy cập đã hết hạn | Luôn thành công |
 | Làm mới đăng nhập | Giao diện hẹn giờ làm mới mỗi 5 phút | Không cần, phiên tự gia hạn khi dùng |
 | Nhiều tab | Các tab tranh nhau làm mới token, phải có khoá | Các tab dùng chung cookie, đăng nhập / đăng xuất đồng bộ qua `BroadcastChannel` |
-| Nhiều thiết bị | Mỗi máy một cặp token, bảng `token_mst` có lưu thiết bị và IP nhưng không có màn hình xem | Mỗi máy một phiên riêng, đăng xuất máy này không ảnh hưởng máy khác. Chưa có màn hình xem |
+| Nhiều thiết bị | Mỗi máy một cặp token, bảng `token_mst` có lưu thiết bị và IP nhưng không có màn hình xem | Mỗi máy một phiên riêng, đăng xuất máy này không ảnh hưởng máy khác. Màn hình **Signed-in devices** xem và đăng xuất từ xa |
 | Mỗi request tốn gì | Kiểm tra chữ ký + 2 lần đọc Redis | 1 lần đọc Redis + 1–2 truy vấn DB theo khoá chính. Chậm hơn chút, đổi lại thu hồi được ngay |
 | `config:cache` | Hỏng (khoá bí mật đọc bằng `env()`) | Chạy bình thường |
 
@@ -93,7 +118,7 @@ Ghi ngày 2026-10-13, **chưa làm**. Mục tiêu: đăng nhập chạy tốt d�
 
 | # | Việc | Vì sao | Cách làm gợi ý | Đánh đổi |
 |---|---|---|---|---|
-| 1 | **Màn hình "Phiên đăng nhập"**: xem đang đăng nhập ở thiết bị nào (trình duyệt, IP, lần dùng cuối), đăng xuất một thiết bị, đăng xuất mọi nơi khác | Hiện không xem được và không đá được phiên từ xa. Cả cách cũ lẫn cách mới đều thiếu | **A.** Giữ phiên trong Redis, thêm bảng `admin_sessions` (mã admin, mã phiên, trình duyệt, IP, lần dùng cuối). Ghi khi đăng nhập, xoá khi đăng xuất. Đá phiên thì xoá khoá Redis của phiên đó. **B.** Chuyển `SESSION_DRIVER=database`: bảng `sessions` có sẵn đủ cột, ít code nhất | A: thêm bảng và code, nhưng vẫn nhanh khi đông người dùng. B: mỗi request phải ghi DB một lần, ổn khi ít người, nặng khi nhiều. Nhắm tới nhiều người dùng thì chọn **A** |
+| 1 | ~~**Màn hình "Phiên đăng nhập"**~~ **Đã làm 2026-10-15** theo cách A (phiên giữ trong Redis + bảng `admin_session`), xem mục "Thiết bị đang đăng nhập" ở trên | | | |
 | 2 | ~~**Đổi mật khẩu thì đá mọi phiên khác**~~ **Đã làm 2026-10-14**, xem bảng Quy tắc ở trên | | | |
 | 3 | ~~**Giao diện tự cập nhật quyền**~~ **Đã làm 2026-10-14**, xem bảng Quy tắc ở trên | | | |
 | 4 | ~~**Giới hạn đăng nhập theo IP**~~ **Đã làm 2026-10-14**, xem bảng Quy tắc ở trên | | | |
