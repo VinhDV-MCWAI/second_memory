@@ -35,6 +35,7 @@ class EvidenceService extends AuditedCrudService
     public function store(array $payload): int
     {
         $this->ensureAttachable($payload, []);
+        $this->ensureLinkOrFile($payload['url'] ?? null, $payload['media_ids'] ?? []);
 
         return parent::store($payload);
     }
@@ -51,9 +52,28 @@ class EvidenceService extends AuditedCrudService
         if ($evidence->source === EvidenceSource::OBSIDIAN) {
             $this->ensureVaultFieldsUnchanged($evidence, $payload);
         }
-        $this->ensureAttachable($payload, $this->evidence->attachedFileIds($evidence->id));
+        $attached = $this->evidence->attachedFileIds($evidence->id);
+        $this->ensureAttachable($payload, $attached);
+        $this->ensureLinkOrFile(
+            array_key_exists('url', $payload) ? $payload['url'] : $evidence->url,
+            array_key_exists('media_ids', $payload) ? (array) $payload['media_ids'] : $attached,
+        );
 
         return parent::update($payload);
+    }
+
+    /**
+     * What an evidence proves must be reachable: a link, a file, or both (LEDGER-02).
+     *
+     * @param  array<mixed>  $mediaIds
+     *
+     * @throws ValidationException
+     */
+    private function ensureLinkOrFile(?string $url, array $mediaIds): void
+    {
+        if (($url === null || $url === '') && $mediaIds === []) {
+            throw ValidationException::withMessages(['url' => Messages::E0042]);
+        }
     }
 
     /**

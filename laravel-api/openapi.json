@@ -6641,7 +6641,11 @@
                         "type": "string"
                     },
                     "url": {
-                        "type": "string"
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "description": "null: files only (LEDGER-02)"
                     },
                     "occurred_on": {
                         "type": "string"
@@ -7254,7 +7258,10 @@
                                     "type": "string"
                                 },
                                 "url": {
-                                    "type": "string"
+                                    "type": [
+                                        "string",
+                                        "null"
+                                    ]
                                 },
                                 "occurred_on": {
                                     "type": "string"
@@ -7674,7 +7681,7 @@
             },
             "StoreEvidenceRequest": {
                 "type": "object",
-                "description": "Evidence is a link (ADR-0007) with optional files of the file manager (LEDGER-01, `media_ids` in\ndisplay order; EvidenceService checks they are uploaded files). `source`, `external_key` and\n`unpublished_at` belong to the importer (RFC-002 \u00a74.5) and are not accepted here.",
+                "description": "Evidence is a link (ADR-0007) and/or files of the file manager (LEDGER-01, `media_ids` in display\norder). EvidenceService checks the files are uploaded and that a link or a file is left (LEDGER-02). `source`, `external_key` and\n`unpublished_at` belong to the importer (RFC-002 \u00a74.5) and are not accepted here.",
                 "properties": {
                     "type": {
                         "$ref": "#/components/schemas/EvidenceType"
@@ -7684,7 +7691,10 @@
                         "maxLength": 200
                     },
                     "url": {
-                        "type": "string",
+                        "type": [
+                            "string",
+                            "null"
+                        ],
                         "format": "uri",
                         "description": "http(s) only: blocks javascript: and data: links on the public page (REQ-002 US-2)",
                         "maxLength": 2048
@@ -7730,7 +7740,6 @@
                 "required": [
                     "type",
                     "title",
-                    "url",
                     "occurred_on",
                     "skill_ids"
                 ],
@@ -8112,7 +8121,10 @@
                         "maxLength": 200
                     },
                     "url": {
-                        "type": "string",
+                        "type": [
+                            "string",
+                            "null"
+                        ],
                         "format": "uri",
                         "description": "http(s) only: blocks javascript: and data: links on the public page (REQ-002 US-2)",
                         "maxLength": 2048

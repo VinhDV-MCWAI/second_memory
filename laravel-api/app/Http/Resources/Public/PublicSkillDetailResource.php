@@ -36,6 +36,7 @@ class PublicSkillDetailResource extends PublicSkillResource
             'evidence' => $this->evidence->map(fn (Evidence $evidence): array => [
                 'type' => $evidence->type,
                 'title' => $evidence->title,
+                /** @var string|null */
                 'url' => $evidence->url,
                 'occurred_on' => $evidence->occurred_on->format(LedgerConst::DATE_FORMAT),
                 'summary' => $evidence->summary,

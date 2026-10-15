@@ -1126,7 +1126,8 @@ export interface components {
       id: number;
       type: components['schemas']['EvidenceType'];
       title: string;
-      url: string;
+      /** @description null: files only (LEDGER-02) */
+      url: string | null;
       occurred_on: string;
       summary: string | null;
       is_public: boolean;
@@ -1287,7 +1288,7 @@ export interface components {
       evidence: {
         type: components['schemas']['EvidenceType'];
         title: string;
-        url: string;
+        url: string | null;
         occurred_on: string;
         summary: string | null;
         files: {
@@ -1391,8 +1392,8 @@ export interface components {
     };
     /**
      * StoreEvidenceRequest
-     * @description Evidence is a link (ADR-0007) with optional files of the file manager (LEDGER-01, `media_ids` in
-     *     display order; EvidenceService checks they are uploaded files). `source`, `external_key` and
+     * @description Evidence is a link (ADR-0007) and/or files of the file manager (LEDGER-01, `media_ids` in display
+     *     order). EvidenceService checks the files are uploaded and that a link or a file is left (LEDGER-02). `source`, `external_key` and
      *     `unpublished_at` belong to the importer (RFC-002 §4.5) and are not accepted here.
      */
     StoreEvidenceRequest: {
@@ -1402,7 +1403,7 @@ export interface components {
        * Format: uri
        * @description http(s) only: blocks javascript: and data: links on the public page (REQ-002 US-2)
        */
-      url: string;
+      url?: string | null;
       /** Format: date */
       occurred_on: string;
       summary?: string | null;
@@ -1513,7 +1514,7 @@ export interface components {
        * Format: uri
        * @description http(s) only: blocks javascript: and data: links on the public page (REQ-002 US-2)
        */
-      url?: string;
+      url?: string | null;
       /** Format: date */
       occurred_on?: string;
       summary?: string | null;

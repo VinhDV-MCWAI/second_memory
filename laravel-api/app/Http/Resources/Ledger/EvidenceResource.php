@@ -26,7 +26,8 @@ class EvidenceResource extends JsonResource
             'id' => (int) $this->id,
             'type' => $this->type,
             'title' => (string) $this->title,
-            'url' => (string) $this->url,
+            /** null: files only (LEDGER-02) */
+            'url' => $this->url,
             'occurred_on' => $this->occurred_on->format(LedgerConst::DATE_FORMAT),
             'summary' => $this->summary,
             'is_public' => (bool) $this->is_public,

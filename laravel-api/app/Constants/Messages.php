@@ -102,6 +102,8 @@ class Messages
 
     const E0041 = 'Only uploaded files of the file manager can be attached';
 
+    const E0042 = 'Give a link or attach at least one file';
+
     /**
      * Errors http messages
      */

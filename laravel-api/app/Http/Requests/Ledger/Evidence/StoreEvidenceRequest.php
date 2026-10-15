@@ -12,8 +12,8 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
 /**
- * Evidence is a link (ADR-0007) with optional files of the file manager (LEDGER-01, `media_ids` in
- * display order; EvidenceService checks they are uploaded files). `source`, `external_key` and
+ * Evidence is a link (ADR-0007) and/or files of the file manager (LEDGER-01, `media_ids` in display
+ * order). EvidenceService checks the files are uploaded and that a link or a file is left (LEDGER-02). `source`, `external_key` and
  * `unpublished_at` belong to the importer (RFC-002 §4.5) and are not accepted here.
  */
 class StoreEvidenceRequest extends FormRequest
@@ -32,7 +32,7 @@ class StoreEvidenceRequest extends FormRequest
             'type' => [$this->presence, Rule::enum(EvidenceType::class)],
             'title' => [$this->presence, 'string', 'max:'.LedgerConst::EVIDENCE_TITLE_MAX],
             // http(s) only: blocks javascript: and data: links on the public page (REQ-002 US-2)
-            'url' => [$this->presence, 'string', 'url:http,https', 'max:'.LedgerConst::EVIDENCE_URL_MAX],
+            'url' => ['nullable', 'string', 'url:http,https', 'max:'.LedgerConst::EVIDENCE_URL_MAX],
             'occurred_on' => [$this->presence, 'date_format:'.LedgerConst::DATE_FORMAT],
             'summary' => ['nullable', 'string', 'max:'.LedgerConst::EVIDENCE_SUMMARY_MAX],
             'is_public' => ['sometimes', 'boolean'],

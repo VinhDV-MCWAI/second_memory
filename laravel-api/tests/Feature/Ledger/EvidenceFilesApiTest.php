@@ -140,6 +140,30 @@ final class EvidenceFilesApiTest extends TestCase
         $this->assertSame([$file], $evidence->files()->pluck('media_mgmt.id')->all());
     }
 
+    public function test_evidence_needs_a_link_or_a_file(): void
+    {
+        $file = $this->uploadFile($this->owner, 'certificate.pdf');
+
+        // Files only (LEDGER-02)
+        $id = (int) $this->call('POST', self::BASE.'/store', [...$this->payload([$file]), 'url' => null], $this->owner)->assertOk()->json('data');
+        $this->call('GET', self::BASE.'/list', ['id' => $id], $this->owner)->assertOk()->assertJsonPath('data.data.0.url', null);
+
+        // Neither a link nor a file
+        foreach ([[...$this->payload([]), 'url' => null], [...$this->payload([]), 'url' => '']] as $payload) {
+            $this->call('POST', self::BASE.'/store', $payload, $this->owner)
+                ->assertStatus(CommonVal::HTTP_UNPROCESSABLE_CONTENT)
+                ->assertJsonPath('error.messages.url.0', Messages::E0042);
+        }
+
+        // Removing the last file of a link-less evidence is refused; adding a link first is fine
+        $this->call('PUT', self::BASE."/update/{$id}", ['media_ids' => []], $this->owner)
+            ->assertStatus(CommonVal::HTTP_UNPROCESSABLE_CONTENT)
+            ->assertJsonPath('error.messages.url.0', Messages::E0042);
+        $this->call('PUT', self::BASE."/update/{$id}", ['media_ids' => [], 'url' => 'https://example.com/cert'], $this->owner)->assertOk();
+        // ...and dropping the link again needs a file
+        $this->call('PUT', self::BASE."/update/{$id}", ['url' => null], $this->owner)->assertStatus(CommonVal::HTTP_UNPROCESSABLE_CONTENT);
+    }
+
     public function test_the_files_screen_shows_where_files_are_attached(): void
     {
         foreach (['a_b', 'aXb'] as $name) {

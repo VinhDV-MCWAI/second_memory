@@ -55,6 +55,16 @@ final class PublicFileApiTest extends TestCase
             ]]);
     }
 
+    public function test_evidence_without_a_link_is_shown_with_its_files(): void
+    {
+        $this->evidence->update(['url' => null]);
+        $this->evidence->files()->attach($this->uploadFile($this->owner, 'certificate.pdf'));
+
+        $this->getJson('/api/public/skills/laravel')->assertOk()
+            ->assertJsonPath('data.data.evidence.0.url', null)
+            ->assertJsonPath('data.data.evidence.0.files.0.name', 'certificate.pdf');
+    }
+
     public function test_a_file_of_public_evidence_gets_a_short_lived_link(): void
     {
         $pdf = $this->uploadFile($this->owner, 'certificate.pdf');

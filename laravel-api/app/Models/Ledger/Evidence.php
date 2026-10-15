@@ -14,12 +14,12 @@ use Illuminate\Database\Eloquent\Relations\Pivot;
 use Illuminate\Support\Carbon;
 
 /**
- * A link that proves one or more skills (REQ-002 US-2), with files of the file manager attached (LEDGER-01).
+ * A link and/or files of the file manager (LEDGER-01, LEDGER-02) that prove one or more skills (REQ-002 US-2).
  *
  * @property int $id
  * @property EvidenceType $type
  * @property string $title
- * @property string $url
+ * @property string|null $url
  * @property Carbon $occurred_on
  * @property string|null $summary
  * @property EvidenceSource $source
