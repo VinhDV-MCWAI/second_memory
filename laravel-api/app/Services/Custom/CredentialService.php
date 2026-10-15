@@ -40,24 +40,25 @@ final class CredentialService
             throw new AuthenticationException(Messages::E0401);
         }
 
-        $throttleKey = Str::lower($credentials['user_name']).'|'.$request->ip();
-        if (RateLimiter::tooManyAttempts($throttleKey, CommonVal::LOGIN_MAX_ATTEMPTS)) {
-            throw new ThrottleRequestsException(
-                Messages::E0429,
-                headers: ['Retry-After' => RateLimiter::availableIn($throttleKey)]
-            );
-        }
+        $userKey = Str::lower($credentials['user_name']).'|'.$request->ip();
+        $ipKey = 'login-ip:'.$request->ip(); // no '|', so no user name key can match it
+        $this->ensureNotThrottled([
+            $userKey => CommonVal::LOGIN_MAX_ATTEMPTS,
+            $ipKey => CommonVal::LOGIN_IP_MAX_ATTEMPTS,
+        ]);
 
         // Same message for an unknown user, a wrong password and a disabled admin (no user enumeration)
         if (! $this->guard()->attempt($credentials)) {
-            RateLimiter::hit($throttleKey, CommonVal::LOGIN_LOCK_SECONDS);
+            RateLimiter::hit($userKey, CommonVal::LOGIN_LOCK_SECONDS);
+            RateLimiter::hit($ipKey, CommonVal::LOGIN_LOCK_SECONDS);
             // No admin id: looking it up would make unknown and known user names distinguishable
             $this->auditLogger->record(self::AUDITABLE_TYPE, null, AuditEvent::LOGIN_FAILED, null, ['user_name' => $credentials['user_name']]);
 
             throw new AuthenticationException(Messages::E0401);
         }
 
-        RateLimiter::clear($throttleKey);
+        // The IP counter is kept: one valid account must not reset a guessing run over other names
+        RateLimiter::clear($userKey);
         $request->session()->regenerate();
 
         /** @var AdminMst $admin */
@@ -81,6 +82,23 @@ final class CredentialService
         if ($request->hasSession()) {
             $request->session()->invalidate();
             $request->session()->regenerateToken();
+        }
+    }
+
+    /**
+     * @param  array<string, int>  $limits  throttle key => max failures
+     *
+     * @throws ThrottleRequestsException
+     */
+    private function ensureNotThrottled(array $limits): void
+    {
+        foreach ($limits as $key => $maxAttempts) {
+            if (RateLimiter::tooManyAttempts($key, $maxAttempts)) {
+                throw new ThrottleRequestsException(
+                    Messages::E0429,
+                    headers: ['Retry-After' => RateLimiter::availableIn($key)]
+                );
+            }
         }
     }
 

@@ -25,7 +25,7 @@ class TagRepository extends CrudRepository
             $query->whereRaw('lower(name) like lower(?)', ['%'.$payload['name'].'%']);
         }
 
-        $this->applySorting($query, $this->allowedSort($payload, ['id', 'name']), 'name');
+        $this->applySorting($query, $payload, ['id', 'name'], 'name');
 
         return $query->paginate($payload['per_page'] ?? LedgerConst::PER_PAGE, ['*'], 'page', $payload['page'] ?? 1);
     }

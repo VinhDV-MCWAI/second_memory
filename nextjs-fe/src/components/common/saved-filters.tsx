@@ -3,14 +3,7 @@
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog';
+import { AppDialog } from '@/components/common/app-dialog';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -169,26 +162,20 @@ export function SavedFilters({
         </DropdownMenuContent>
       </DropdownMenu>
 
-      <Dialog open={saveDialogOpen} onOpenChange={setSaveDialogOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>{t('savedFilters.saveFilterTitle')}</DialogTitle>
-            <DialogDescription>{t('savedFilters.saveFilterDescription')}</DialogDescription>
-          </DialogHeader>
-          <Input
-            placeholder={t('savedFilters.filterName')}
-            value={filterName}
-            onChange={(e) => setFilterName(e.target.value)}
-            onKeyDown={(e) => e.key === 'Enter' && handleSaveFilter()}
-          />
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setSaveDialogOpen(false)}>
-              {tCommon('cancel')}
-            </Button>
-            <Button onClick={handleSaveFilter}>{tCommon('save')}</Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+      <AppDialog
+        open={saveDialogOpen}
+        onOpenChange={setSaveDialogOpen}
+        title={t('savedFilters.saveFilterTitle')}
+        description={t('savedFilters.saveFilterDescription')}
+        actions={[{ key: 'save', label: tCommon('save'), onClick: handleSaveFilter }]}
+      >
+        <Input
+          placeholder={t('savedFilters.filterName')}
+          value={filterName}
+          onChange={(e) => setFilterName(e.target.value)}
+          onKeyDown={(e) => e.key === 'Enter' && handleSaveFilter()}
+        />
+      </AppDialog>
     </div>
   );
 }

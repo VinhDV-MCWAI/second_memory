@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/shared/hooks';
+import { BackgroundTaskListener } from '@/features/system/components/background-task-listener';
 import { Sidebar } from './sidebar';
 import { Header } from './header';
 import { Content } from './content';
@@ -53,6 +54,9 @@ export function AdminLayout({ children, className }: AdminLayoutProps) {
 
   return (
     <div className="flex h-screen bg-white dark:bg-slate-950">
+      {/* Live notifications of background jobs (ADR-0014) */}
+      <BackgroundTaskListener />
+
       {/* Sidebar */}
       <Sidebar />
 

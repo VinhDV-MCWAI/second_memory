@@ -20,7 +20,7 @@ trait AuthenticatesAdmins
      */
     protected function loginAsOwner(AdminMst $admin): array
     {
-        $admin->update(['role' => AdminRole::OWNER]);
+        $admin->syncRoles([AdminRole::OWNER->value]);
 
         return $this->loginAs($admin);
     }

@@ -15,6 +15,8 @@ enum AuditEvent: string
     case LOGGED_IN = 'logged_in';
     case LOGGED_OUT = 'logged_out';
     case LOGIN_FAILED = 'login_failed';
+    case RESTORED = 'restored';
+    case PURGED = 'purged';
 
     public function label(): string
     {
@@ -25,6 +27,8 @@ enum AuditEvent: string
             self::LOGGED_IN => 'logged in',
             self::LOGGED_OUT => 'logged out',
             self::LOGIN_FAILED => 'login failed',
+            self::RESTORED => 'restored',
+            self::PURGED => 'deleted forever',
         };
     }
 }

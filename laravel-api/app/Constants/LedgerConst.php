@@ -22,5 +22,56 @@ final class LedgerConst
 
     public const TAG_NAME_MAX = 50;
 
+    public const EVIDENCE_TITLE_MAX = 200;
+
+    public const EVIDENCE_URL_MAX = 2048;
+
+    public const EVIDENCE_SUMMARY_MAX = 1000;
+
+    /** Files attached to one evidence (LEDGER-01) */
+    public const EVIDENCE_FILES_MAX = 10;
+
+    public const GOAL_NOTE_MAX = 1000;
+
     public const PER_PAGE = 15;
+
+    public const SEARCH_QUERY_MIN = 2;
+
+    public const SEARCH_QUERY_MAX = 100;
+
+    /** Results per group (skills, goals, evidence) of the admin search (ADR-0008). */
+    public const SEARCH_LIMIT = 10;
+
+    public const SEARCH_SNIPPET_LENGTH = 160;
+
+    /** `pg_trgm.word_similarity_threshold` of the typo fallback (ADR-0009: transpositions score ~0.47). */
+    public const SEARCH_FUZZY_THRESHOLD = '0.4';
+
+    /**
+     * ts_rank weights for the {D, C, B, A} labels of `search_tsv` (A title / name, B summary / category,
+     * C description). Steeper than the default {0.1, 0.2, 0.4, 1.0}, whose ranks saturate near 1 so a
+     * summary repeating the words almost ties with a title match (BUG-04).
+     */
+    public const SEARCH_RANK_WEIGHTS = '{0.05, 0.1, 0.2, 1.0}';
+
+    /** Requests per minute and IP on /api/public (RFC-002 §4.3). */
+    public const PUBLIC_RATE_PER_MINUTE = 60;
+
+    /** Sanctum ability of the importer's token and the token name (ADR-0010). */
+    public const IMPORT_ABILITY = 'evidence:import';
+
+    public const IMPORT_TOKEN_NAME = 'ledger-importer';
+
+    public const IMPORT_TOKEN_DAYS = 90;
+
+    /** Notes per import run (ADR-0008 contract row). */
+    public const IMPORT_NOTES_MAX = 2000;
+
+    public const IMPORT_EXTERNAL_KEY_MAX = 500;
+
+    /** Import runs per minute and admin: one per manual invocation is the expected rate. */
+    public const IMPORT_RATE_PER_MINUTE = 10;
+
+    /** Marks audit rows written by the importer: `new_values.via` (ADR-0010). */
+    public const IMPORT_AUDIT_VIA = 'importer';
 }

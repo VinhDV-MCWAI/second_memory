@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace Tests\Feature\Requests;
 
 use App\Models\Master\AdminMst;
+use Illuminate\Database\Events\QueryExecuted;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\DB;
 use Tests\Concerns\AuthenticatesAdmins;
 use Tests\TestCase;
 
@@ -44,5 +46,26 @@ final class ListPagingTest extends TestCase
         $cookies = $this->loginAs($admin);
 
         $this->call('GET', self::LIST_URI, ['page' => 0], $cookies)->assertStatus(422);
+    }
+
+    public function test_only_allowed_columns_sort_and_no_schema_lookup_runs(): void
+    {
+        $admin = AdminMst::factory()->create(['email' => 'm@example.com']);
+        AdminMst::factory()->create(['email' => 'a@example.com']);
+        AdminMst::factory()->create(['email' => 'z@example.com']);
+        $cookies = $this->loginAs($admin);
+        $sql = [];
+        DB::listen(function (QueryExecuted $query) use (&$sql): void {
+            $sql[] = $query->sql;
+        });
+
+        $byEmail = $this->call('GET', self::LIST_URI, ['sort_by' => 'email'], $cookies)->assertOk();
+        $this->assertSame(['a@example.com', 'm@example.com', 'z@example.com'], array_column($byEmail->json('data.data'), 'email'));
+
+        // A column outside the allow-list (here a secret) falls back to the default order, id ascending
+        $byPassword = $this->call('GET', self::LIST_URI, ['sort_by' => 'password', 'sort_order' => 'desc'], $cookies)->assertOk();
+        $ids = array_column($byPassword->json('data.data'), 'id');
+        $this->assertSame(array_reverse(AdminMst::query()->orderBy('id')->pluck('id')->all()), $ids);
+        $this->assertSame([], array_filter($sql, fn (string $query): bool => str_contains($query, 'information_schema') || str_contains($query, 'pg_attribute')));
     }
 }

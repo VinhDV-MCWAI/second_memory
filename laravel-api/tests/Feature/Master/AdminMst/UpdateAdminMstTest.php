@@ -7,10 +7,12 @@ namespace Tests\Feature\Master\AdminMst;
 use App\Constants\CommonVal;
 use App\Enums\AdminRole;
 use App\Enums\AuditEvent;
+use App\Models\Audit\AuditLog;
 use App\Models\Master\AdminMst;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Redis;
+use Spatie\Permission\Models\Role;
 use Tests\Concerns\AuthenticatesAdmins;
 use Tests\TestCase;
 
@@ -166,13 +168,13 @@ class UpdateAdminMstTest extends TestCase
         $owner = AdminMst::factory()->create();
         $cookies = $this->getAuthCookies($owner);
 
-        $demote = [...$this->getValidPayload($owner), 'role' => AdminRole::VIEWER->value];
-        $this->assertCustomValidationErrors($this->call('PUT', $this->getUpdateUrl($owner->id), $demote, $cookies), 'role');
+        $demote = [...$this->getValidPayload($owner), 'role_ids' => [$this->roleId(AdminRole::VIEWER)]];
+        $this->assertCustomValidationErrors($this->call('PUT', $this->getUpdateUrl($owner->id), $demote, $cookies), 'role_ids');
 
         $deactivate = [...$this->getValidPayload($owner), 'is_active' => 0];
-        $this->assertCustomValidationErrors($this->call('PUT', $this->getUpdateUrl($owner->id), $deactivate, $cookies), 'role');
+        $this->assertCustomValidationErrors($this->call('PUT', $this->getUpdateUrl($owner->id), $deactivate, $cookies), 'role_ids');
 
-        $this->assertSame(AdminRole::OWNER, $owner->fresh()->role);
+        $this->assertTrue($owner->fresh()->hasRole(AdminRole::OWNER->value));
     }
 
     public function test_an_owner_can_change_another_admins_role()
@@ -181,11 +183,29 @@ class UpdateAdminMstTest extends TestCase
         $cookies = $this->getAuthCookies($owner);
         $viewer = AdminMst::factory()->create();
 
-        $promote = [...$this->getValidPayload($viewer), 'role' => AdminRole::OWNER->value];
+        $promote = [...$this->getValidPayload($viewer), 'role_ids' => [$this->roleId(AdminRole::OWNER), $this->roleId(AdminRole::VIEWER)]];
         $this->call('PUT', $this->getUpdateUrl($viewer->id), $promote, $cookies)->assertStatus(CommonVal::HTTP_OK);
 
-        $this->assertSame(AdminRole::OWNER, $viewer->fresh()->role);
-        $this->assertDatabaseHas('audit_log', ['auditable_id' => $viewer->id, 'new_values->role' => AdminRole::OWNER->value]);
+        $this->assertEqualsCanonicalizing([AdminRole::OWNER->value, AdminRole::VIEWER->value], $viewer->fresh()->getRoleNames()->all());
+        $audit = AuditLog::query()->where(['auditable_type' => 'admin', 'auditable_id' => $viewer->id])->latest('id')->firstOrFail();
+        $this->assertSame([AdminRole::VIEWER->value], array_column($audit->old_values['roles'], 'name'));
+        $this->assertEqualsCanonicalizing([AdminRole::OWNER->value, AdminRole::VIEWER->value], array_column($audit->new_values['roles'], 'name'));
+    }
+
+    public function test_an_admin_can_be_left_without_roles_but_unknown_roles_are_rejected()
+    {
+        $cookies = $this->getAuthCookies(AdminMst::factory()->create());
+        $viewer = AdminMst::factory()->create();
+
+        $this->assertCustomValidationErrors($this->call('PUT', $this->getUpdateUrl($viewer->id), [...$this->getValidPayload($viewer), 'role_ids' => [999999]], $cookies), 'role_ids.0');
+
+        $this->call('PUT', $this->getUpdateUrl($viewer->id), [...$this->getValidPayload($viewer), 'role_ids' => []], $cookies)->assertStatus(CommonVal::HTTP_OK);
+        $this->assertSame([], $viewer->fresh()->getRoleNames()->all());
+    }
+
+    private function roleId(AdminRole $role): int
+    {
+        return (int) Role::findByName($role->value, CommonVal::ADMIN_GUARD)->id;
     }
 
     private function getValidPayload($admin): array

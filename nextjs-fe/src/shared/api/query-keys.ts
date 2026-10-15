@@ -5,4 +5,7 @@
 export const queryKeys = {
   resource: (endpoint: string) => [endpoint] as const,
   list: (endpoint: string, params: Record<string, unknown>) => [endpoint, 'list', params] as const,
+  /** A non-list GET such as the dashboard summary or a search. */
+  query: (endpoint: string, params: Record<string, unknown> = {}) =>
+    [endpoint, 'query', params] as const,
 };

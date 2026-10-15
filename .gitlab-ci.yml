@@ -1,0 +1,21 @@
+# Thin wrapper (ADR-0016): every check lives in ci/, the same scripts `make ci` runs locally.
+# NOT TESTED on GitLab yet (no GitLab project). See ci/README.md.
+#
+# Runner: a shell executor on a machine with bash, git and Docker (like the dev machine).
+# ci/check.sh bind-mounts a temp folder into its containers, and a docker:dind service cannot
+# see the job container's files, so the Docker executor with dind does not work.
+#
+# Paused (ADR-0012): runs only when started by hand (Build → Pipelines → Run pipeline).
+workflow:
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "web"
+
+check:
+  script:
+    - ci/check.sh
+  timeout: 30 minutes
+
+build:
+  script:
+    - ci/build.sh
+  timeout: 30 minutes

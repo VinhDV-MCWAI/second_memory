@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { Gender, AdminStatus, AdminRole } from '@/shared/enums';
+import { Gender, AdminStatus, EvidenceType, GoalStatus, SkillLevel } from '@/shared/enums';
 import { ValidationRules } from './validation-rules';
 
 type Translator = (key: string, params?: Record<string, string | number>) => string;
@@ -83,9 +83,168 @@ export const getAdminSchema = (t: Translator) =>
     birth: z.string().optional(),
     gender: genderValidation,
     status: adminStatusValidation,
-    role: z.nativeEnum(AdminRole),
+    role_ids: z.array(z.number()),
     is_active: z.boolean(),
     avatar: getAvatarValidation(t),
   });
 
 export type AdminFormData = z.infer<ReturnType<typeof getAdminSchema>>;
+
+/** Today as `YYYY-MM-DD` in the browser's time zone (level changes cannot be in the future). */
+const today = () => {
+  const now = new Date();
+  return new Date(now.getTime() - now.getTimezoneOffset() * 60_000).toISOString().slice(0, 10);
+};
+
+// Tag schema matching StoreTagRequest
+export const getTagSchema = (t: Translator) =>
+  z.object({
+    name: z
+      .string()
+      .trim()
+      .min(1, t('tagName.required'))
+      .max(
+        ValidationRules.TAG_NAME_MAX,
+        t('tagName.maxLength', { max: ValidationRules.TAG_NAME_MAX }),
+      ),
+  });
+
+export type TagFormData = z.infer<ReturnType<typeof getTagSchema>>;
+
+// Role schema matching StoreRoleRequest (ADR-0013)
+export const getRoleSchema = (t: Translator) =>
+  z.object({
+    name: z
+      .string()
+      .trim()
+      .min(1, t('roleName.required'))
+      .max(
+        ValidationRules.ROLE_NAME_MAX,
+        t('roleName.maxLength', { max: ValidationRules.ROLE_NAME_MAX }),
+      ),
+    permissions: z.array(z.string()),
+  });
+
+export type RoleFormData = z.infer<ReturnType<typeof getRoleSchema>>;
+
+// Level entry matching StoreSkillLevelRequest (without skill_id)
+export const getSkillLevelSchema = (t: Translator) =>
+  z.object({
+    level: z.nativeEnum(SkillLevel, { message: t('level.required') }),
+    changed_on: z.string().refine((value) => value === '' || value <= today(), {
+      message: t('changedOn.future'),
+    }),
+    reason: z
+      .string()
+      .max(
+        ValidationRules.LEVEL_REASON_MAX,
+        t('reason.maxLength', { max: ValidationRules.LEVEL_REASON_MAX }),
+      ),
+  });
+
+export type SkillLevelFormData = z.infer<ReturnType<typeof getSkillLevelSchema>>;
+
+// Skill schema matching StoreSkillRequest; the level fields are sent on create only (UpdateSkillRequest has none)
+export const getSkillSchema = (t: Translator) =>
+  getSkillLevelSchema(t).extend({
+    name: z
+      .string()
+      .trim()
+      .min(1, t('skillName.required'))
+      .max(
+        ValidationRules.SKILL_NAME_MAX,
+        t('skillName.maxLength', { max: ValidationRules.SKILL_NAME_MAX }),
+      ),
+    category: z
+      .string()
+      .trim()
+      .min(1, t('category.required'))
+      .max(
+        ValidationRules.SKILL_CATEGORY_MAX,
+        t('category.maxLength', { max: ValidationRules.SKILL_CATEGORY_MAX }),
+      ),
+    description: z
+      .string()
+      .max(
+        ValidationRules.SKILL_DESCRIPTION_MAX,
+        t('description.maxLength', { max: ValidationRules.SKILL_DESCRIPTION_MAX }),
+      ),
+    is_public: z.boolean(),
+    tag_ids: z.array(z.number()),
+  });
+
+export type SkillFormData = z.infer<ReturnType<typeof getSkillSchema>>;
+
+/** http(s) only, like the API's `url:http,https` rule: no javascript: or data: links (REQ-002 US-2). */
+const isHttpUrl = (value: string) => {
+  try {
+    return ['http:', 'https:'].includes(new URL(value).protocol);
+  } catch {
+    return false;
+  }
+};
+
+// Evidence schema matching StoreEvidenceRequest: a link, files, or both (LEDGER-02)
+export const getEvidenceSchema = (t: Translator) =>
+  z
+    .object({
+      type: z.nativeEnum(EvidenceType),
+      title: z
+        .string()
+        .trim()
+        .min(1, t('evidenceTitle.required'))
+        .max(
+          ValidationRules.EVIDENCE_TITLE_MAX,
+          t('evidenceTitle.maxLength', { max: ValidationRules.EVIDENCE_TITLE_MAX }),
+        ),
+      url: z
+        .string()
+        .trim()
+        .max(
+          ValidationRules.EVIDENCE_URL_MAX,
+          t('url.maxLength', { max: ValidationRules.EVIDENCE_URL_MAX }),
+        )
+        .refine((value) => value === '' || isHttpUrl(value), { message: t('url.invalid') }),
+      occurred_on: z.string().min(1, t('occurredOn.required')),
+      summary: z
+        .string()
+        .max(
+          ValidationRules.EVIDENCE_SUMMARY_MAX,
+          t('summary.maxLength', { max: ValidationRules.EVIDENCE_SUMMARY_MAX }),
+        ),
+      is_public: z.boolean(),
+      skill_ids: z.array(z.number()).min(1, t('skillIds.required')),
+      tag_ids: z.array(z.number()),
+      media_ids: z
+        .array(z.number())
+        .max(
+          ValidationRules.EVIDENCE_FILES_MAX,
+          t('mediaIds.maxLength', { max: ValidationRules.EVIDENCE_FILES_MAX }),
+        ),
+    })
+    .refine((data) => data.url !== '' || data.media_ids.length > 0, {
+      message: t('url.linkOrFile'),
+      path: ['url'],
+    });
+
+export type EvidenceFormData = z.infer<ReturnType<typeof getEvidenceSchema>>;
+
+// Learning goal schema matching StoreLearningGoalRequest / UpdateLearningGoalRequest
+export const getLearningGoalSchema = (t: Translator) =>
+  z.object({
+    skill_id: z
+      .number({ message: t('skill.required') })
+      .int()
+      .positive(t('skill.required')),
+    target_level: z.nativeEnum(SkillLevel, { message: t('level.required') }),
+    target_date: z.string(),
+    status: z.nativeEnum(GoalStatus),
+    note: z
+      .string()
+      .max(
+        ValidationRules.GOAL_NOTE_MAX,
+        t('note.maxLength', { max: ValidationRules.GOAL_NOTE_MAX }),
+      ),
+  });
+
+export type LearningGoalFormData = z.infer<ReturnType<typeof getLearningGoalSchema>>;

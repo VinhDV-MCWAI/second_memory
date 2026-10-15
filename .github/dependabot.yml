@@ -1,4 +1,5 @@
 # Weekly grouped dependency PRs into developer (see Git flow in CLAUDE.md).
+# Every update type is grouped: at most one PR per group and ecosystem.
 version: 2
 updates:
   - package-ecosystem: npm
@@ -15,6 +16,11 @@ updates:
         applies-to: version-updates
         update-types: [minor, patch]
         patterns: ["*"]
+      # Majors in one PR too, otherwise Dependabot opens one PR per package.
+      npm-major:
+        applies-to: version-updates
+        update-types: [major]
+        patterns: ["*"]
 
   - package-ecosystem: composer
     directory: /laravel-api
@@ -29,6 +35,11 @@ updates:
       composer-minor-patch:
         applies-to: version-updates
         update-types: [minor, patch]
+        patterns: ["*"]
+      # Majors in one PR too, otherwise Dependabot opens one PR per package.
+      composer-major:
+        applies-to: version-updates
+        update-types: [major]
         patterns: ["*"]
 
   - package-ecosystem: github-actions

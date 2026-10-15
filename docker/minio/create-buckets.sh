@@ -27,8 +27,9 @@ mc mb --ignore-existing "$ALIAS/$BUCKET_TEMP"
 mc version enable "$ALIAS/$BUCKET_OFFICIAL"
 mc version suspend "$ALIAS/$BUCKET_TEMP"
 
-# Anonymous read on the official bucket (current behavior; see .claude/refactor/PROGRESS.md findings)
-mc anonymous set download "$ALIAS/$BUCKET_OFFICIAL"
+# No anonymous access (ADR-0014): files are read through presigned URLs the API hands out after a permission check
+mc anonymous set none "$ALIAS/$BUCKET_OFFICIAL"
+mc anonymous set none "$ALIAS/$BUCKET_TEMP"
 
 # 3. Lifecycle rules (S3 lifecycle JSON)
 mc ilm import "$ALIAS/$BUCKET_OFFICIAL" < /minio/ilm-history.json
@@ -46,8 +47,11 @@ cat > "$POLICY_FILE" <<EOF
         "s3:GetObject",
         "s3:PutObject",
         "s3:DeleteObject",
+        "s3:DeleteObjectVersion",
         "s3:ListBucket",
+        "s3:ListBucketVersions",
         "s3:ListBucketMultipartUploads",
+        "s3:ListMultipartUploadParts",
         "s3:AbortMultipartUpload"
       ],
       "Resource": [

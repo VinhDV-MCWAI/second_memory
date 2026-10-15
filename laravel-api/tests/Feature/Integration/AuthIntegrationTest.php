@@ -11,7 +11,7 @@ use Tests\Concerns\AuthenticatesAdmins;
 use Tests\TestCase;
 
 /**
- * Roles end to end (ADR-0005): an owner creates an admin, who starts as a read-only viewer.
+ * Roles end to end (ADR-0013): an owner creates an admin, who starts as a read-only viewer.
  */
 class AuthIntegrationTest extends TestCase
 {
@@ -35,7 +35,7 @@ class AuthIntegrationTest extends TestCase
         ], $ownerCookies)->assertStatus(200);
 
         $viewer = AdminMst::where('user_name', 'new_viewer')->firstOrFail();
-        $this->assertSame(AdminRole::VIEWER, $viewer->role);
+        $this->assertSame([AdminRole::VIEWER->value], $viewer->getRoleNames()->all());
 
         $viewerCookies = $this->loginAs($viewer);
         $this->call('GET', 'api/admin/admin-mst/list', [], $viewerCookies)->assertStatus(200);

@@ -38,18 +38,12 @@ export const AdminStatusLabels: Record<AdminStatus, string> = {
 };
 
 // ==========================================
-// AdminRole (app/Enums/AdminRole.php, ADR-0005)
-// An owner may change data, a viewer may only read it
+// Built-in roles (app/Enums/AdminRole.php, ADR-0013): found by name, cannot be renamed or deleted
 // ==========================================
 export enum AdminRole {
   OWNER = 'owner',
   VIEWER = 'viewer',
 }
-
-export const AdminRoleLabels: Record<AdminRole, string> = {
-  [AdminRole.OWNER]: 'Owner',
-  [AdminRole.VIEWER]: 'Viewer',
-};
 
 // ==========================================
 // Gender (app/Enums/Gender.php)
@@ -110,6 +104,8 @@ export enum AuditEvent {
   LOGGED_IN = 'logged_in',
   LOGGED_OUT = 'logged_out',
   LOGIN_FAILED = 'login_failed',
+  RESTORED = 'restored',
+  PURGED = 'purged',
 }
 
 // ==========================================
@@ -120,3 +116,75 @@ export enum AuditEvent {
 export const Status = IsActive;
 /** @deprecated Use IsActiveLabels or specific status labels */
 export const StatusLabels = IsActiveLabels;
+
+// ==========================================
+// SkillLevel (app/Enums/SkillLevel.php, REQ-002)
+// ==========================================
+export enum SkillLevel {
+  LEARNING = 1,
+  WITH_HELP = 2,
+  INDEPENDENT = 3,
+  CAN_TEACH = 4,
+}
+
+export const SkillLevelLabels: Record<SkillLevel, string> = {
+  [SkillLevel.LEARNING]: 'Learning',
+  [SkillLevel.WITH_HELP]: 'Can use with help',
+  [SkillLevel.INDEPENDENT]: 'Independent',
+  [SkillLevel.CAN_TEACH]: 'Can teach others',
+};
+
+// ==========================================
+// EvidenceType, EvidenceSource (app/Enums, REQ-002 US-2 / US-4)
+// ==========================================
+export enum EvidenceType {
+  PR = 'pr',
+  ADR = 'adr',
+  INCIDENT = 'incident',
+  NOTE = 'note',
+  OTHER = 'other',
+}
+
+export const EvidenceTypeLabels: Record<EvidenceType, string> = {
+  [EvidenceType.PR]: 'Pull request',
+  [EvidenceType.ADR]: 'Decision record',
+  [EvidenceType.INCIDENT]: 'Incident',
+  [EvidenceType.NOTE]: 'Note',
+  [EvidenceType.OTHER]: 'Other',
+};
+
+export enum EvidenceSource {
+  MANUAL = 'manual',
+  OBSIDIAN = 'obsidian',
+}
+
+export const EvidenceSourceLabels: Record<EvidenceSource, string> = {
+  [EvidenceSource.MANUAL]: 'Manual',
+  [EvidenceSource.OBSIDIAN]: 'Obsidian',
+};
+
+// ==========================================
+// GoalStatus (app/Enums/GoalStatus.php, REQ-002 US-6)
+// `achieved` is set by a level change only
+// ==========================================
+export enum GoalStatus {
+  OPEN = 'open',
+  ACHIEVED = 'achieved',
+  DROPPED = 'dropped',
+}
+
+export const GoalStatusLabels: Record<GoalStatus, string> = {
+  [GoalStatus.OPEN]: 'Open',
+  [GoalStatus.ACHIEVED]: 'Achieved',
+  [GoalStatus.DROPPED]: 'Dropped',
+};
+
+// ==========================================
+// BackgroundTaskStatus (app/Enums, ADR-0014)
+// ==========================================
+export enum BackgroundTaskStatus {
+  QUEUED = 'queued',
+  RUNNING = 'running',
+  COMPLETED = 'completed',
+  FAILED = 'failed',
+}

@@ -8,12 +8,13 @@ COMPOSE := docker compose -f docker/docker-compose.yml
 PHP     := docker exec ml-php
 FE      := docker exec ml-nextjs
 DOCS    := docker exec ml-nextjs-docs
+IMPORTER_DIR := tools/ledger-importer
 
 ##@ Environment
 
 .PHONY: setup
 setup: ## Generate docker/.env and app env files (idempotent)
-	bash setup-env.sh
+	bash scripts/setup-env.sh
 
 .PHONY: up
 up: ## Start the whole stack (generates env on first run)
@@ -28,6 +29,10 @@ down: ## Stop the stack (keeps volumes)
 restart: ## Recreate containers and rebuild images (picks up env changes)
 	$(COMPOSE) up -d --build --force-recreate
 
+.PHONY: workers-restart
+workers-restart: ## Reload PHP code in the background job, schedule and Reverb containers (they keep old code in memory)
+	docker restart ml-queue ml-scheduler ml-reverb
+
 .PHONY: ps
 ps: ## Show container status
 	$(COMPOSE) ps
@@ -39,6 +44,10 @@ logs: ## Follow logs (make logs s=ml-php)
 .PHONY: sh
 sh: ## Shell into a container (make sh s=ml-php)
 	docker exec -it $(or $(s),ml-php) sh
+
+.PHONY: clean
+clean: ## Remove leftovers after a task: Docker garbage, old production images, test output (keeps dev data)
+	bash scripts/clean.sh
 
 ##@ Backend (laravel-api)
 
@@ -74,6 +83,15 @@ rector: ## Preview automated refactors (dry run)
 migrate: ## Run pending migrations on the dev database
 	$(PHP) php artisan migrate
 
+.PHONY: permissions
+permissions: ## Register new admin API routes as permissions, in the dev and testing databases
+	$(PHP) php artisan permission:sync-routes
+	docker exec -e DB_DATABASE=testing ml-php php artisan permission:sync-routes
+
+.PHONY: seed
+seed: ## Add the root owner, the viewer account and sample Skill Ledger data (idempotent, keeps existing rows)
+	$(PHP) php artisan db:seed
+
 .PHONY: fresh
 fresh: ## DROP all dev tables, re-migrate and seed (asks first)
 	@read -r -p "This wipes the dev database. Type 'yes' to continue: " ans; [ "$$ans" = yes ]
@@ -95,6 +113,10 @@ fe-typecheck: ## Type-check both Next.js apps
 fe-test: ## Run admin FE unit tests
 	$(FE) pnpm test --run --coverage
 
+.PHONY: e2e
+e2e: ## Critical-journey E2E (Playwright) against the running stack; see e2e/run.sh (make e2e [env=prod-like])
+	bash e2e/run.sh $(or $(env),dev)
+
 .PHONY: fe-format
 fe-format: ## Format both Next.js apps (Prettier)
 	$(FE) pnpm format
@@ -111,13 +133,44 @@ lint: ## All linters/format checks (backend + frontend)
 	$(MAKE) fe-lint
 	$(FE) pnpm format:check
 	$(DOCS) pnpm format:check
+	$(MAKE) importer-lint
 
 .PHONY: openapi-check
-openapi-check: openapi ## Fail if openapi.json or the FE types were stale (CI is paused, so make verify runs this)
+openapi-check: openapi ## Fail if openapi.json or the FE types were stale (make ci runs the same check)
 	git diff --exit-code -- laravel-api/openapi.json nextjs-fe/src/shared/types/openapi.d.ts || { echo "OpenAPI spec or FE types were stale: review and commit the regenerated files"; exit 1; }
 
 .PHONY: verify
-verify: lint analyse openapi-check fe-typecheck test-ci fe-test ## Everything CI runs, plus the OpenAPI drift check
+verify: lint analyse openapi-check fe-typecheck test-ci fe-test importer-test ## Quick gate in the dev containers (includes uncommitted changes)
+
+.PHONY: ci
+ci: ## Exactly what GitHub / GitLab CI run: committed code, throwaway containers (make ci [ref=<git ref>])
+	ci/check.sh $(or $(ref),HEAD)
+
+.PHONY: cd
+cd: ## Local CD: make ci → images → deploy the prod-like demo (Terraform) → browser test (make cd [ref=…] [SKIP_CHECK=1])
+	scripts/lane.sh run ci/deploy.sh $(or $(ref),HEAD)
+
+##@ Ledger importer (tools/ledger-importer, ADR-0010)
+
+.PHONY: importer-dev-image
+importer-dev-image:
+	docker build -q --target dev -t ledger-importer-dev $(IMPORTER_DIR) >/dev/null
+
+.PHONY: importer-lint
+importer-lint: importer-dev-image ## Importer: ruff + mypy --strict
+	docker run --rm ledger-importer-dev sh -c 'ruff check && ruff format --check && mypy'
+
+.PHONY: importer-test
+importer-test: importer-dev-image ## Importer: pytest (API mocked)
+	docker run --rm ledger-importer-dev pytest -p no:cacheprovider
+
+.PHONY: import
+import: ## Import published Obsidian notes (make import vault=<path> [dry=1]; needs LEDGER_API_TOKEN)
+	@test -d "$(vault)" || { echo "usage: make import vault=<path to the vault> [dry=1]"; exit 2; }
+	docker build -q -t ledger-importer $(IMPORTER_DIR) >/dev/null
+	docker run --rm --network ml_network -v "$(abspath $(vault)):/vault:ro" \
+		-e LEDGER_API_TOKEN -e LEDGER_API_URL -e LEDGER_NOTE_BASE_URL \
+		ledger-importer $(if $(dry),--dry-run)
 
 ##@ Data
 
@@ -126,8 +179,28 @@ backup: ## Back up PostgreSQL + MinIO
 	bash backup/backup.sh
 
 .PHONY: restore
-restore: ## Restore from a backup (see backup/README.md)
+restore: ## Restore from a backup (docs/runbooks/backup-restore.md)
 	bash backup/restore.sh
+
+##@ Terraform environments (ADR-0011: staging / prod-like; dev stays on Compose)
+
+TF_ENV := $(or $(env),prod-like)
+
+.PHONY: tf-images
+tf-images: ## Build the production images from committed code (make tf-images [ref=<git ref>])
+	ci/build.sh $(or $(ref),HEAD)
+
+.PHONY: tf-plan
+tf-plan: ## Terraform plan (make tf-plan [env=prod-like] [tag=<image tag>])
+	TAG=$(tag) scripts/lane.sh run infra/tf.sh $(TF_ENV) plan
+
+.PHONY: tf-apply
+tf-apply: ## Create / update an environment; shows the plan and asks (make tf-apply [env=…] [tag=…])
+	TAG=$(tag) scripts/lane.sh run infra/tf.sh $(TF_ENV) apply
+
+.PHONY: tf-destroy
+tf-destroy: ## Remove an environment and its volumes; asks first (make tf-destroy [env=…])
+	TAG=$(tag) scripts/lane.sh run infra/tf.sh $(TF_ENV) destroy
 
 ##@ Help
 

@@ -114,3 +114,18 @@ pnpm-debug.log*
 
 # Simulated stakeholder sealed briefs (local only, revealed at review time)
 .claude/sim/sealed/
+
+# k6 summary exports (scripts/perf-baseline.sh); the numbers go into docs/reports/perf/
+/perf/results/
+
+# Backup archives (they contain docker/.env) and restore work folder (backup/backup.sh, restore.sh)
+/backups/
+/restore_tmp/
+
+# Terraform (infra/, ADR-0011): local state holds secrets; provider lock files are committed
+.terraform/
+*.tfstate
+*.tfstate.*
+*.tfplan
+crash.log
+.claude/settings.local.json

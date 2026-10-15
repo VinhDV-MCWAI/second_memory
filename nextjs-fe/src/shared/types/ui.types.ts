@@ -66,6 +66,8 @@ export interface MenuItem {
   icon: LucideIcon;
   href?: string;
   children?: MenuItem[];
+  /** Permission needed to see the entry (ADR-0013); groups show when one child is allowed. */
+  permission?: string;
   badge?: string | number;
   disabled?: boolean;
 }
@@ -135,17 +137,6 @@ export interface SearchFilterProps {
   showFilter?: boolean;
   debounceMs?: number;
   className?: string;
-}
-
-/**
- * Notification Type for Header
- */
-export interface Notification {
-  id: string;
-  title: string;
-  message: string;
-  read: boolean;
-  timestamp: Date;
 }
 
 /**

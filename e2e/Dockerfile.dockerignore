@@ -1,0 +1,9 @@
+# Build context for e2e/Dockerfile is the repo root: send only the workspace manifest and e2e/.
+**
+!package.json
+!pnpm-lock.yaml
+!pnpm-workspace.yaml
+!e2e/
+
+**/node_modules
+e2e/artifacts

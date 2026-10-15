@@ -8,6 +8,9 @@ export default defineConfig({
     environment: 'jsdom',
     globals: true,
     setupFiles: ['src/test/setup.ts'],
+    // Form tests type through user-event in jsdom; under load (make cd runs CI next to the dev stack)
+    // one took over the 5 s default, so a slow machine no longer fails a correct test
+    testTimeout: 15_000,
     coverage: {
       provider: 'v8',
       reporter: ['text-summary', 'html'],

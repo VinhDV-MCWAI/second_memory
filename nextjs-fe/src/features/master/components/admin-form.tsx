@@ -10,7 +10,6 @@ import { useActionLock } from '@/shared/hooks/use-action-lock';
 import { UI_CONSTANTS } from '@/shared/config';
 import { handleBindErrors } from '@/shared/utils/error-handler';
 import { formatDateForBackend, formatDateForInput } from '@/shared/utils/date-formatter';
-import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { FormField } from '@/components/common/form-field';
@@ -19,18 +18,12 @@ import { enumOptions } from '@/shared/utils/enum-options';
 import { AvatarUpload } from '@/components/common/avatar-upload';
 import type { AdminMst } from '@/shared/types/api';
 import { ENDPOINTS } from '@/shared/api';
-import {
-  AdminRole,
-  AdminRoleLabels,
-  AdminStatus,
-  Gender,
-  GenderLabels,
-  AdminStatusLabels,
-} from '@/shared/enums';
+import { AdminStatus, Gender, GenderLabels, AdminStatusLabels } from '@/shared/enums';
 import { UPLOAD_CONFIG } from '@/shared/config';
 import { getAdminSchema, type AdminFormData } from '@/shared/validation/validation';
 import type { ResourceFormProps } from '@/components/common/resource-list-page';
 import { HistoryViewer } from '@/features/history/components/history-viewer';
+import { IdPicker } from '@/features/ledger/components/id-picker';
 
 /** audit_log.auditable_type of admins (AdminMstService::$auditableType). */
 const AUDITABLE_TYPE = 'admin';
@@ -42,7 +35,12 @@ const STATUS_OPTIONS = [
   AdminStatus.SUSPENDED,
 ].map((value) => ({ value, label: AdminStatusLabels[value] }));
 
-export function AdminForm({ initialData, onSuccess, onCancel }: ResourceFormProps<AdminMst>) {
+export function AdminForm({
+  initialData,
+  formId,
+  onSuccess,
+  onStateChange,
+}: ResourceFormProps<AdminMst>) {
   const tCommon = useTranslations('common');
   const tForms = useTranslations('forms.placeholders');
   const tLabels = useTranslations('forms.labels');
@@ -56,7 +54,7 @@ export function AdminForm({ initialData, onSuccess, onCancel }: ResourceFormProp
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isDirty },
     setValue,
     control,
     reset,
@@ -66,7 +64,7 @@ export function AdminForm({ initialData, onSuccess, onCancel }: ResourceFormProp
     defaultValues: {
       gender: Gender.MALE,
       status: AdminStatus.ACTIVE,
-      role: AdminRole.VIEWER,
+      role_ids: [],
       is_active: true,
     },
   });
@@ -83,7 +81,7 @@ export function AdminForm({ initialData, onSuccess, onCancel }: ResourceFormProp
         birth: formatDateForInput(initialData.birth),
         gender: initialData.gender ? Number(initialData.gender) : Gender.MALE,
         status: initialData.status !== undefined ? Number(initialData.status) : AdminStatus.ACTIVE,
-        role: initialData.role as AdminRole,
+        role_ids: initialData.roles.map((role) => role.id),
         is_active: initialData.is_active,
         avatar: initialData.avatar,
       });
@@ -99,7 +97,7 @@ export function AdminForm({ initialData, onSuccess, onCancel }: ResourceFormProp
         birth: '',
         gender: Gender.MALE,
         status: AdminStatus.ACTIVE,
-        role: AdminRole.VIEWER,
+        role_ids: [],
         is_active: true,
         avatar: '',
       });
@@ -109,6 +107,11 @@ export function AdminForm({ initialData, onSuccess, onCancel }: ResourceFormProp
   const { execute, isLoading: isActionProcessing } = useActionLock({
     delay: UI_CONSTANTS.ACTION_DELAY_MS,
   });
+
+  useEffect(
+    () => onStateChange({ pending: loading || isActionProcessing, dirty: isDirty }),
+    [loading, isActionProcessing, isDirty, onStateChange],
+  );
 
   const onSubmit = async (data: AdminFormData) => {
     await execute(async () => {
@@ -134,8 +137,11 @@ export function AdminForm({ initialData, onSuccess, onCancel }: ResourceFormProp
           }
           await update(initialData.id, payload);
         } else {
+          // No role picked: the API makes the new admin a viewer (read-only)
+          const { role_ids, ...rest } = payload;
           await create({
-            ...payload,
+            ...rest,
+            ...(role_ids.length > 0 ? { role_ids } : {}),
             is_delete: false,
           });
         }
@@ -151,11 +157,11 @@ export function AdminForm({ initialData, onSuccess, onCancel }: ResourceFormProp
   // Use useWatch hook instead of watch() to avoid React Compiler issues
   const genderValue = useWatch({ control, name: 'gender' });
   const statusValue = useWatch({ control, name: 'status' });
-  const roleValue = useWatch({ control, name: 'role' });
+  const roleIds = useWatch({ control, name: 'role_ids' });
 
   return (
     <>
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+      <form id={formId} onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         <div className="mb-4 flex justify-center">
           <AvatarUpload
             value={avatarPreview ?? undefined}
@@ -267,50 +273,36 @@ export function AdminForm({ initialData, onSuccess, onCancel }: ResourceFormProp
           <FormField id="gender" label={tLabels('gender')} required error={errors.gender?.message}>
             <OptionSelect
               value={genderValue}
-              onChange={(value) => setValue('gender', Number(value) as Gender)}
+              onChange={(value) =>
+                setValue('gender', Number(value) as Gender, { shouldDirty: true })
+              }
               options={enumOptions(GenderLabels)}
             />
           </FormField>
           <FormField id="status" label={tLabels('status')} required error={errors.status?.message}>
             <OptionSelect
               value={statusValue}
-              onChange={(value) => setValue('status', Number(value) as AdminStatus)}
+              onChange={(value) =>
+                setValue('status', Number(value) as AdminStatus, { shouldDirty: true })
+              }
               options={STATUS_OPTIONS}
             />
           </FormField>
         </div>
 
-        <FormField id="role" label={tLabels('role')} required error={errors.role?.message}>
-          <OptionSelect
-            value={roleValue}
-            onChange={(value) => setValue('role', value as AdminRole)}
-            options={enumOptions(AdminRoleLabels)}
+        <FormField id="role_ids" label={tLabels('roles')} error={errors.role_ids?.message}>
+          <IdPicker
+            endpoint={ENDPOINTS.MASTER.ROLE}
+            emptyMessage={tForms('noRoles')}
+            value={roleIds}
+            onChange={(ids) => setValue('role_ids', ids, { shouldDirty: true })}
           />
+          {!isEdit && <p className="text-xs text-muted-foreground">{tForms('rolesDefault')}</p>}
         </FormField>
 
         <div className="mt-4 flex items-center gap-2">
           <input type="checkbox" id="is_active" {...register('is_active')} className="rounded" />
           <Label htmlFor="is_active">{tLabels('isActive')}</Label>
-        </div>
-
-        <div className="flex justify-end gap-2 pt-4">
-          <Button
-            type="button"
-            variant="outline"
-            onClick={onCancel}
-            disabled={loading || isActionProcessing}
-          >
-            {tCommon('cancel')}
-          </Button>
-          <Button type="submit" disabled={loading || isActionProcessing}>
-            {loading || isActionProcessing
-              ? isEdit
-                ? tCommon('updating')
-                : tCommon('creating')
-              : isEdit
-                ? tCommon('update')
-                : tCommon('create')}
-          </Button>
         </div>
       </form>
       {isEdit && initialData && (

@@ -1,7 +1,8 @@
 ---
 paths:
   - "docker/**"
-  - "ci-cd/**"
+  - "ci/**"
+  - ".gitlab-ci.yml"
   - ".github/**"
   - "backup/**"
   - "*.sh"
