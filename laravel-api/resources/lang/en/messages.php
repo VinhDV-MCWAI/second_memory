@@ -51,6 +51,7 @@ return [
     'category' => 'Category',
     'is_public' => 'Public',
     'tag_ids' => 'Tags',
+    'media_ids' => 'Files',
     'level' => 'Level',
     'changed_on' => 'Changed on',
     'reason' => 'Reason',

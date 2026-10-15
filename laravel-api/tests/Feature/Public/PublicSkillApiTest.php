@@ -73,6 +73,7 @@ final class PublicSkillApiTest extends TestCase
                 'url' => $this->publicEvidence->url,
                 'occurred_on' => '2026-10-07',
                 'summary' => $this->publicEvidence->summary,
+                'files' => [],
             ]]);
 
         $body = $response->getContent() ?: '';

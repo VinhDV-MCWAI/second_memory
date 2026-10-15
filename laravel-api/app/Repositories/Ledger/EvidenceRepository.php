@@ -18,7 +18,7 @@ class EvidenceRepository extends CrudRepository
 
     public function list(array $payload): LengthAwarePaginator
     {
-        $query = $this->model->query()->with(['skills:id,name', 'tags:id,name']);
+        $query = $this->model->query()->with(['skills:id,name', 'tags:id,name', 'files']);
 
         $this->applyFilters($query, $payload, ['id', 'type', 'source', 'is_public']);
         if (isset($payload['title'])) {
@@ -40,6 +40,14 @@ class EvidenceRepository extends CrudRepository
     {
         /** @var Evidence */
         return $this->model->newQuery()->findOrFail($id);
+    }
+
+    /**
+     * @return list<int>
+     */
+    public function attachedFileIds(int $evidenceId): array
+    {
+        return $this->find($evidenceId)->files()->pluck('media_mgmt.id')->map(intval(...))->all();
     }
 
     public function executeStore(array $payload): int
@@ -69,6 +77,13 @@ class EvidenceRepository extends CrudRepository
         }
         if (array_key_exists('tag_ids', $payload)) {
             $evidence->tags()->sync($payload['tag_ids'] ?? []);
+        }
+        if (array_key_exists('media_ids', $payload)) {
+            $files = [];
+            foreach (array_values($payload['media_ids'] ?? []) as $position => $mediaId) {
+                $files[(int) $mediaId] = ['position' => $position];
+            }
+            $evidence->files()->sync($files);
         }
     }
 }

@@ -6,6 +6,7 @@ use App\Constants\LedgerConst;
 use App\Http\Controllers\Audit\AuditLogController;
 use App\Http\Controllers\Custom\CredentialController;
 use App\Http\Controllers\Ledger\EvidenceImportController;
+use App\Http\Controllers\Public\PublicFileController;
 use App\Http\Controllers\Public\PublicSkillController;
 use Illuminate\Support\Facades\Route;
 
@@ -47,4 +48,6 @@ Route::prefix('public')
     ->group(function () {
         Route::get('skills', [PublicSkillController::class, 'list']);
         Route::get('skills/{slug}', [PublicSkillController::class, 'show']);
+        // Files attached to public evidence (LEDGER-01)
+        Route::get('files/{key}', [PublicFileController::class, 'url'])->whereUuid('key');
     });

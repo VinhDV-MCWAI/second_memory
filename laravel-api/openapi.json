@@ -1706,11 +1706,11 @@
                             }
                         }
                     },
-                    "401": {
-                        "$ref": "#/components/responses/AuthenticationException"
-                    },
                     "422": {
                         "$ref": "#/components/responses/ValidationException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
                     },
                     "403": {
                         "description": "Forbidden",
@@ -4222,6 +4222,99 @@
                 }
             }
         },
+        "/public/files/{key}": {
+            "get": {
+                "operationId": "publicFile.url",
+                "description": "Images, PDF, video, audio and text open in the browser, other types download.",
+                "summary": "Short-lived link to a file attached to public evidence of a public skill (`files[].key` of the skill); anything else \u2192 404",
+                "tags": [
+                    "PublicFile"
+                ],
+                "parameters": [
+                    {
+                        "name": "key",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "url": {
+                                                    "type": "string"
+                                                },
+                                                "expires_at": {
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "required": [
+                                                "url",
+                                                "expires_at"
+                                            ]
+                                        },
+                                        "error": {
+                                            "type": "object",
+                                            "properties": {
+                                                "status": {
+                                                    "type": "boolean"
+                                                },
+                                                "code": {
+                                                    "type": "integer"
+                                                },
+                                                "messages": {
+                                                    "type": "null"
+                                                }
+                                            },
+                                            "required": [
+                                                "status",
+                                                "code",
+                                                "messages"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data",
+                                        "error"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiError"
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too Many Requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiError"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": []
+            }
+        },
         "/public/skills": {
             "get": {
                 "operationId": "publicSkill.list",
@@ -6438,6 +6531,83 @@
                 ],
                 "title": "DeleteTagRequest"
             },
+            "EvidenceFileResource": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "is_file": {
+                        "type": "boolean"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "path": {
+                        "type": "string"
+                    },
+                    "extension": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "mime_type": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "size": {
+                        "type": [
+                            "integer",
+                            "null"
+                        ]
+                    },
+                    "upload_status": {
+                        "type": "integer",
+                        "description": "0 uploading, 1 processing, 2 completed, 3 failed"
+                    },
+                    "preview": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "description": "How the file can be shown without downloading it; null: download only, or not available"
+                    },
+                    "created_at": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "updated_at": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "available": {
+                        "type": "boolean",
+                        "description": "false: deleted in the file manager (in the trash, or gone for good)"
+                    }
+                },
+                "required": [
+                    "id",
+                    "is_file",
+                    "name",
+                    "path",
+                    "extension",
+                    "mime_type",
+                    "size",
+                    "upload_status",
+                    "preview",
+                    "created_at",
+                    "updated_at",
+                    "available"
+                ],
+                "title": "EvidenceFileResource"
+            },
             "EvidenceResource": {
                 "type": "object",
                 "properties": {
@@ -6496,6 +6666,13 @@
                         "type": "array",
                         "items": {
                             "$ref": "#/components/schemas/TagResource"
+                        }
+                    },
+                    "files": {
+                        "type": "array",
+                        "description": "Attached files in display order (LEDGER-01)",
+                        "items": {
+                            "$ref": "#/components/schemas/EvidenceFileResource"
                         }
                     },
                     "created_at": {
@@ -7044,6 +7221,38 @@
                                         "string",
                                         "null"
                                     ]
+                                },
+                                "files": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object",
+                                        "properties": {
+                                            "key": {
+                                                "type": "string"
+                                            },
+                                            "name": {
+                                                "type": "string"
+                                            },
+                                            "size": {
+                                                "type": [
+                                                    "integer",
+                                                    "null"
+                                                ]
+                                            },
+                                            "mime_type": {
+                                                "type": [
+                                                    "string",
+                                                    "null"
+                                                ]
+                                            }
+                                        },
+                                        "required": [
+                                            "key",
+                                            "name",
+                                            "size",
+                                            "mime_type"
+                                        ]
+                                    }
                                 }
                             },
                             "required": [
@@ -7051,7 +7260,8 @@
                                 "title",
                                 "url",
                                 "occurred_on",
-                                "summary"
+                                "summary",
+                                "files"
                             ]
                         }
                     }
@@ -7421,7 +7631,7 @@
             },
             "StoreEvidenceRequest": {
                 "type": "object",
-                "description": "Evidence is a link only (ADR-0007). `source`, `external_key` and `unpublished_at` belong\nto the importer (RFC-002 \u00a74.5) and are not accepted here.",
+                "description": "Evidence is a link (ADR-0007) with optional files of the file manager (LEDGER-01, `media_ids` in\ndisplay order; EvidenceService checks they are uploaded files). `source`, `external_key` and\n`unpublished_at` belong to the importer (RFC-002 \u00a74.5) and are not accepted here.",
                 "properties": {
                     "type": {
                         "$ref": "#/components/schemas/EvidenceType"
@@ -7463,6 +7673,14 @@
                         "items": {
                             "type": "integer"
                         },
+                        "uniqueItems": true
+                    },
+                    "media_ids": {
+                        "type": "array",
+                        "items": {
+                            "type": "integer"
+                        },
+                        "maxItems": 10,
                         "uniqueItems": true
                     }
                 },
@@ -7883,6 +8101,14 @@
                         "items": {
                             "type": "integer"
                         },
+                        "uniqueItems": true
+                    },
+                    "media_ids": {
+                        "type": "array",
+                        "items": {
+                            "type": "integer"
+                        },
+                        "maxItems": 10,
                         "uniqueItems": true
                     }
                 },

@@ -109,6 +109,32 @@ class MediaRepository extends BaseRepository
     }
 
     /**
+     * The ids among $ids that are available files (LEDGER-01: what an evidence may attach).
+     *
+     * @param  list<int>  $ids
+     * @return list<int>
+     */
+    public function availableIds(array $ids): array
+    {
+        return $this->query()->available()->whereKey($ids)->pluck('id')->map(intval(...))->all();
+    }
+
+    /**
+     * The available file of an attachment (`evidence_media.public_id`) to public evidence of a public
+     * skill, the only files the public Skill Ledger serves (LEDGER-01); null otherwise.
+     */
+    public function publicFile(string $key): ?MediaMgmt
+    {
+        return $this->query()->available()
+            ->whereHas('evidence', fn ($evidence) => $evidence
+                ->where('evidence_media.public_id', $key)
+                ->where('evidence.is_public', true)
+                ->whereNull('evidence.unpublished_at')
+                ->whereHas('skills', fn ($skills) => $skills->where('skill.is_public', true)))
+            ->first();
+    }
+
+    /**
      * Unfinished uploads (still uploading or processing) last touched before $before.
      *
      * @return Collection<int, MediaMgmt>

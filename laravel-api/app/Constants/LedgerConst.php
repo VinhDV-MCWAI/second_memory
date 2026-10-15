@@ -28,6 +28,9 @@ final class LedgerConst
 
     public const EVIDENCE_SUMMARY_MAX = 1000;
 
+    /** Files attached to one evidence (LEDGER-01) */
+    public const EVIDENCE_FILES_MAX = 10;
+
     public const GOAL_NOTE_MAX = 1000;
 
     public const PER_PAGE = 15;

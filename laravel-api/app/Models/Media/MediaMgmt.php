@@ -5,11 +5,14 @@ declare(strict_types=1);
 namespace App\Models\Media;
 
 use App\Enums\UploadStatus;
+use App\Models\Ledger\Evidence;
 use App\Models\Master\AdminMst;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\Pivot;
 use Illuminate\Support\Carbon;
 
 /**
@@ -33,6 +36,7 @@ use Illuminate\Support\Carbon;
  * @property int|null $updated_by
  * @property Carbon|null $updated_at
  * @property-read AdminMst|null $updater
+ * @property-read Pivot|null $pivot set when loaded through Evidence::files() (`public_id`, LEDGER-01)
  */
 class MediaMgmt extends Model
 {
@@ -68,11 +72,36 @@ class MediaMgmt extends Model
     }
 
     /**
+     * Evidence this file is attached to (LEDGER-01).
+     *
+     * @return BelongsToMany<Evidence, $this>
+     */
+    public function evidence(): BelongsToMany
+    {
+        return $this->belongsToMany(Evidence::class, 'evidence_media', 'media_id', 'evidence_id');
+    }
+
+    /**
      * @param  Builder<MediaMgmt>  $query
      */
     public function scopeLive(Builder $query): void
     {
         $query->where('media_mgmt.is_delete', false);
+    }
+
+    /**
+     * Files that can be shown or downloaded: not deleted and fully uploaded.
+     *
+     * @param  Builder<MediaMgmt>  $query
+     */
+    public function scopeAvailable(Builder $query): void
+    {
+        $query->live()->where('media_mgmt.is_file', true)->where('media_mgmt.upload_status', UploadStatus::COMPLETED->value);
+    }
+
+    public function isAvailable(): bool
+    {
+        return ! $this->is_delete && $this->is_file && $this->upload_status === UploadStatus::COMPLETED;
     }
 
     protected function casts(): array

@@ -12,8 +12,9 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
 /**
- * Evidence is a link only (ADR-0007). `source`, `external_key` and `unpublished_at` belong
- * to the importer (RFC-002 §4.5) and are not accepted here.
+ * Evidence is a link (ADR-0007) with optional files of the file manager (LEDGER-01, `media_ids` in
+ * display order; EvidenceService checks they are uploaded files). `source`, `external_key` and
+ * `unpublished_at` belong to the importer (RFC-002 §4.5) and are not accepted here.
  */
 class StoreEvidenceRequest extends FormRequest
 {
@@ -39,6 +40,8 @@ class StoreEvidenceRequest extends FormRequest
             'skill_ids.*' => ['integer', 'distinct', Rule::exists(Skill::class, 'id')],
             'tag_ids' => ['sometimes', 'array'],
             'tag_ids.*' => ['integer', 'distinct', Rule::exists(Tag::class, 'id')],
+            'media_ids' => ['sometimes', 'array', 'max:'.LedgerConst::EVIDENCE_FILES_MAX],
+            'media_ids.*' => ['integer', 'distinct'],
         ];
     }
 
@@ -53,6 +56,7 @@ class StoreEvidenceRequest extends FormRequest
             'is_public' => __('messages.is_public'),
             'skill_ids' => __('messages.skill_ids'),
             'tag_ids' => __('messages.tag_ids'),
+            'media_ids' => __('messages.media_ids'),
         ];
     }
 }

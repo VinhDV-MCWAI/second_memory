@@ -10,6 +10,7 @@ use App\Enums\EvidenceSource;
 use App\Http\Resources\Ledger\EvidenceResource;
 use App\Models\Ledger\Evidence;
 use App\Repositories\Ledger\EvidenceRepository;
+use App\Repositories\Media\MediaRepository;
 use App\Services\AuditedCrudService;
 use App\Services\AuditLogger;
 use Illuminate\Validation\ValidationException;
@@ -20,13 +21,29 @@ class EvidenceService extends AuditedCrudService
 
     protected string $auditableType = 'evidence';
 
-    public function __construct(private readonly EvidenceRepository $evidence, AuditLogger $auditLogger)
-    {
+    public function __construct(
+        private readonly EvidenceRepository $evidence,
+        private readonly MediaRepository $media,
+        AuditLogger $auditLogger,
+    ) {
         parent::__construct($evidence, $auditLogger);
     }
 
     /**
-     * @throws ValidationException when an imported row would get a vault-owned field changed
+     * @throws ValidationException when a file to attach is not an uploaded file
+     */
+    public function store(array $payload): int
+    {
+        $this->ensureAttachable($payload, []);
+
+        return parent::store($payload);
+    }
+
+    /**
+     * Attachments are not vault-owned: an imported row may change them like `is_public`.
+     *
+     * @throws ValidationException when an imported row would get a vault-owned field changed, or
+     *                             a file to attach is not an uploaded file
      */
     public function update(array $payload): int
     {
@@ -34,8 +51,26 @@ class EvidenceService extends AuditedCrudService
         if ($evidence->source === EvidenceSource::OBSIDIAN) {
             $this->ensureVaultFieldsUnchanged($evidence, $payload);
         }
+        $this->ensureAttachable($payload, $this->evidence->attachedFileIds($evidence->id));
 
         return parent::update($payload);
+    }
+
+    /**
+     * Newly attached files must be uploaded and not deleted. Files already attached stay even while
+     * they are in the trash, so a form can post its whole list and a restore brings them back.
+     *
+     * @param  array<string, mixed>  $payload
+     * @param  list<int>  $attached
+     *
+     * @throws ValidationException
+     */
+    private function ensureAttachable(array $payload, array $attached): void
+    {
+        $new = array_values(array_diff(array_map(intval(...), $payload['media_ids'] ?? []), $attached));
+        if ($new !== [] && count($this->media->availableIds($new)) !== count($new)) {
+            throw ValidationException::withMessages(['media_ids' => Messages::E0041]);
+        }
     }
 
     /**

@@ -100,6 +100,8 @@ class Messages
 
     const E0040 = 'This file is no longer kept and cannot be restored';
 
+    const E0041 = 'Only uploaded files of the file manager can be attached';
+
     /**
      * Errors http messages
      */

@@ -36,6 +36,8 @@ class EvidenceResource extends JsonResource
                 ->map(fn (Skill $skill): array => ['id' => (int) $skill->id, 'name' => (string) $skill->name])
                 ->all()),
             'tags' => TagResource::collection($this->whenLoaded('tags')),
+            /** Attached files in display order (LEDGER-01) */
+            'files' => EvidenceFileResource::collection($this->whenLoaded('files')),
             'created_at' => $this->created_at?->toIso8601String(),
             'updated_at' => $this->updated_at?->toIso8601String(),
         ];

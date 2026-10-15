@@ -80,6 +80,7 @@ class SkillRepository extends CrudRepository
                 'levels' => fn ($levels) => $levels->orderByDesc('changed_on')->orderByDesc('id'),
                 // Hidden imported notes keep is_public but carry unpublished_at (RFC-002 §4.5)
                 'evidence' => fn ($evidence) => $evidence->where('is_public', true)->whereNull('unpublished_at')->orderByDesc('occurred_on'),
+                'evidence.availableFiles',
             ])
             ->firstOrFail();
     }

@@ -665,6 +665,26 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/public/files/{key}': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * Short-lived link to a file attached to public evidence of a public skill (`files[].key` of the skill); anything else → 404
+     * @description Images, PDF, video, audio and text open in the browser, other types download.
+     */
+    get: operations['publicFile.url'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/public/skills': {
     parameters: {
       query?: never;
@@ -1076,6 +1096,24 @@ export interface components {
     DeleteTagRequest: {
       ids: number[];
     };
+    /** EvidenceFileResource */
+    EvidenceFileResource: {
+      id: number;
+      is_file: boolean;
+      name: string;
+      path: string;
+      extension: string | null;
+      mime_type: string | null;
+      size: number | null;
+      /** @description 0 uploading, 1 processing, 2 completed, 3 failed */
+      upload_status: number;
+      /** @description How the file can be shown without downloading it; null: download only, or not available */
+      preview: string | null;
+      created_at: string | null;
+      updated_at: string | null;
+      /** @description false: deleted in the file manager (in the trash, or gone for good) */
+      available: boolean;
+    };
     /** EvidenceResource */
     EvidenceResource: {
       id: number;
@@ -1092,6 +1130,8 @@ export interface components {
         name: string;
       }[];
       tags?: components['schemas']['TagResource'][];
+      /** @description Attached files in display order (LEDGER-01) */
+      files?: components['schemas']['EvidenceFileResource'][];
       created_at: string | null;
       updated_at: string | null;
     };
@@ -1236,6 +1276,12 @@ export interface components {
         url: string;
         occurred_on: string;
         summary: string | null;
+        files: {
+          key: string;
+          name: string;
+          size: number | null;
+          mime_type: string | null;
+        }[];
       }[];
     };
     /** PublicSkillResource */
@@ -1331,8 +1377,9 @@ export interface components {
     };
     /**
      * StoreEvidenceRequest
-     * @description Evidence is a link only (ADR-0007). `source`, `external_key` and `unpublished_at` belong
-     *     to the importer (RFC-002 §4.5) and are not accepted here.
+     * @description Evidence is a link (ADR-0007) with optional files of the file manager (LEDGER-01, `media_ids` in
+     *     display order; EvidenceService checks they are uploaded files). `source`, `external_key` and
+     *     `unpublished_at` belong to the importer (RFC-002 §4.5) and are not accepted here.
      */
     StoreEvidenceRequest: {
       type: components['schemas']['EvidenceType'];
@@ -1348,6 +1395,7 @@ export interface components {
       is_public?: boolean;
       skill_ids: number[];
       tag_ids?: number[];
+      media_ids?: number[];
     };
     /** StoreFolderRequest */
     StoreFolderRequest: {
@@ -1458,6 +1506,7 @@ export interface components {
       is_public?: boolean;
       skill_ids?: number[];
       tag_ids?: number[];
+      media_ids?: number[];
     };
     /**
      * UpdateLearningGoalRequest
@@ -3376,6 +3425,55 @@ export interface operations {
       401: components['responses']['AuthenticationException'];
       /** @description Forbidden */
       403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ApiError'];
+        };
+      };
+    };
+  };
+  'publicFile.url': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        key: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            data: {
+              url: string;
+              expires_at: string;
+            };
+            error: {
+              status: boolean;
+              code: number;
+              messages: null;
+            };
+          };
+        };
+      };
+      /** @description Not Found */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ApiError'];
+        };
+      };
+      /** @description Too Many Requests */
+      429: {
         headers: {
           [name: string]: unknown;
         };
