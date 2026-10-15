@@ -193,6 +193,24 @@ final class EvidenceFilesApiTest extends TestCase
         $this->assertNotNull($loose);
     }
 
+    public function test_evidence_can_be_listed_by_attached_file(): void
+    {
+        $file = $this->uploadFile($this->owner, 'cert.pdf');
+        $other = $this->uploadFile($this->owner, 'other.pdf');
+        $first = $this->store([$file]);
+        $second = $this->store([$other, $file]);
+        $this->store([$other]);
+
+        $ids = fn (): array => array_column($this->call('GET', self::BASE.'/list', ['media_id' => $file], $this->owner)->assertOk()->json('data.data'), 'id');
+        $this->assertEqualsCanonicalizing([$first, $second], $ids());
+
+        // A file in the trash is still attached, so it still finds its evidence
+        $this->call('POST', '/api/admin/media/delete', ['ids' => [$file]], $this->owner)->assertOk();
+        $this->assertEqualsCanonicalizing([$first, $second], $ids());
+
+        $this->call('GET', self::BASE.'/list', ['media_id' => 'x'], $this->owner)->assertStatus(CommonVal::HTTP_UNPROCESSABLE_CONTENT);
+    }
+
     /**
      * @param  list<int>  $mediaIds
      * @return array<string, mixed>

@@ -30,6 +30,10 @@ class EvidenceRepository extends CrudRepository
         if (isset($payload['tag_id'])) {
             $query->whereHas('tags', fn ($tags) => $tags->where('tag.id', $payload['tag_id']));
         }
+        // Opened from the Evidence column of the file screen (LEDGER-03); a trashed file still counts
+        if (isset($payload['media_id'])) {
+            $query->whereHas('files', fn ($files) => $files->where('media_mgmt.id', $payload['media_id']));
+        }
 
         $this->applySorting($query, $payload, ['id', 'title', 'type', 'occurred_on', 'updated_at'], 'occurred_on', 'desc');
 

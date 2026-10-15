@@ -2170,6 +2170,7 @@ export interface operations {
         is_public?: boolean | null;
         skill_id?: number | null;
         tag_id?: number | null;
+        media_id?: number | null;
       };
       header?: never;
       path?: never;

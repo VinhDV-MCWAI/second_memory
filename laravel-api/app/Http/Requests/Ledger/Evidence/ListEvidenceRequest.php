@@ -21,6 +21,7 @@ class ListEvidenceRequest extends ListRequest
             'is_public' => ['nullable', 'boolean'],
             'skill_id' => ['nullable', 'integer'],
             'tag_id' => ['nullable', 'integer'],
+            'media_id' => ['nullable', 'integer'],
         ];
     }
 }

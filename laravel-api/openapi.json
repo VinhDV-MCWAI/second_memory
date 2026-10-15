@@ -1571,6 +1571,16 @@
                                 "null"
                             ]
                         }
+                    },
+                    {
+                        "name": "media_id",
+                        "in": "query",
+                        "schema": {
+                            "type": [
+                                "integer",
+                                "null"
+                            ]
+                        }
                     }
                 ],
                 "responses": {
