@@ -97,6 +97,8 @@ final class MediaTrashApiTest extends TestCase
         $old = $this->file(MediaConst::ROOT, 'old.txt');
         $this->deleteItems([$old]);
         $this->travel(MediaConst::TRASH_DAYS + 1)->days();
+        // The session has expired by now (SESSION_LIFETIME): sign in again
+        $this->owner = $this->loginAs($this->ownerAdmin);
 
         $this->call('GET', self::BASE.'/trash/list', [], $this->owner)->assertOk()->assertJsonCount(0, 'data.data');
         $this->call('POST', self::BASE."/trash/restore/{$old}", [], $this->owner)->assertStatus(CommonVal::HTTP_NOT_FOUND);

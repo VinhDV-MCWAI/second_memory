@@ -25,7 +25,8 @@ final class PruneTrashCommandTest extends TestCase
     public function test_rows_past_the_trash_are_removed_and_recent_ones_kept(): void
     {
         $this->useFakeStorage();
-        $owner = $this->loginAsOwner(AdminMst::factory()->create());
+        $admin = AdminMst::factory()->create();
+        $owner = $this->loginAsOwner($admin);
         $old = $this->uploadFile($owner, 'old.pdf');
         $recent = $this->uploadFile($owner, 'recent.pdf');
         $live = $this->uploadFile($owner, 'live.pdf');
@@ -38,6 +39,8 @@ final class PruneTrashCommandTest extends TestCase
         $this->call('POST', '/api/admin/media/delete', ['ids' => [$old, $folder]], $owner)->assertOk();
         $this->travel(MediaConst::TRASH_DAYS)->days();
         $this->travel(1)->hours();
+        // The session has expired by now (SESSION_LIFETIME): sign in again
+        $owner = $this->loginAs($admin);
         $this->call('POST', '/api/admin/media/delete', ['ids' => [$recent]], $owner)->assertOk();
 
         $this->artisan('media:prune-trash')->expectsOutput('Removed 2 expired row(s).')->assertSuccessful();

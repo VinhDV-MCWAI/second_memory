@@ -25,8 +25,9 @@ abstract class TestCase extends BaseTestCase
     }
 
     /**
-     * Each request starts without a resolved user, as it does under PHP-FPM; otherwise the
-     * guards keep the user of the previous request and a revoked session still looks valid.
+     * Each request starts without a resolved user and without the previous request's session data,
+     * as it does under PHP-FPM; otherwise the guards (and the shared session store, which merges what
+     * it reads into what it holds) keep the previous request's admin and a revoked session still looks valid.
      * Every response is also checked against openapi.json (contract test, P3-09).
      *
      * {@inheritDoc}
@@ -34,6 +35,7 @@ abstract class TestCase extends BaseTestCase
     public function call($method, $uri, $parameters = [], $cookies = [], $files = [], $server = [], $content = null)
     {
         $this->app['auth']->forgetGuards();
+        $this->app['session']->driver()->flush();
 
         $response = parent::call($method, $uri, $parameters, $cookies, $files, $server, $content);
         OpenApiContract::instance()->assertMatches($response, $method);

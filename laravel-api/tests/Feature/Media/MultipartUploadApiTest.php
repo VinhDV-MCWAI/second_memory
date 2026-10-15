@@ -36,6 +36,8 @@ final class MultipartUploadApiTest extends TestCase
     /** @var array<string, string> */
     private array $owner;
 
+    private AdminMst $ownerAdmin;
+
     private FakeObjectStorage $storage;
 
     protected function setUp(): void
@@ -43,7 +45,8 @@ final class MultipartUploadApiTest extends TestCase
         parent::setUp();
         $this->storage = new FakeObjectStorage;
         $this->app->instance(ObjectStorage::class, $this->storage);
-        $this->owner = $this->loginAsOwner(AdminMst::factory()->create());
+        $this->ownerAdmin = AdminMst::factory()->create();
+        $this->owner = $this->loginAsOwner($this->ownerAdmin);
         Event::fake([BackgroundTaskFinished::class]);
     }
 
@@ -132,6 +135,8 @@ final class MultipartUploadApiTest extends TestCase
 
         // Resuming late in the day restarts the clean-up clock
         $this->travel(MediaConst::STUCK_UPLOAD_HOURS - 1)->hours();
+        // The session has expired by now (SESSION_LIFETIME): sign in again
+        $this->owner = $this->loginAs($this->ownerAdmin);
         $resume = $this->call('POST', self::BASE."/resume/{$id}", [], $this->owner)->assertOk()
             ->assertJsonPath('data.part_size', 16 * self::MB)->assertJsonPath('data.part_count', 4)->json('data');
         $this->assertSame([1, 2], array_column($resume['parts'], 'part_number'));
@@ -189,6 +194,8 @@ final class MultipartUploadApiTest extends TestCase
     {
         $stuck = $this->start('stuck.bin');
         $this->travel(MediaConst::STUCK_UPLOAD_HOURS + 1)->hours();
+        // The session has expired by now (SESSION_LIFETIME): sign in again
+        $this->owner = $this->loginAs($this->ownerAdmin);
         $fresh = $this->start('fresh.bin');
 
         $this->artisan('media:clean-stuck-uploads')->expectsOutput('Cleaned 1 stuck upload(s).')->assertSuccessful();
