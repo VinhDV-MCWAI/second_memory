@@ -1,6 +1,6 @@
 # Lộ trình
 
-Cập nhật: 2026-10-14. Mục tiêu và cách làm việc: [01-goals-and-workflow.md](01-goals-and-workflow.md). Danh sách việc chi tiết: [03-backlog.md](03-backlog.md).
+Cập nhật: 2026-10-15. Mục tiêu và cách làm việc: [01-goals-and-workflow.md](01-goals-and-workflow.md). Danh sách việc chi tiết: [03-backlog.md](03-backlog.md).
 
 ```
 1. Dọn nền ─► 2. Phân quyền động ─► 3. Media MinIO + upload ─► 4. Người dùng cuối, phòng ban ─► 5. CI/CD gộp chung (rồi tắt) ─► 6. Nâng cấp trên dev ─► 7. Staging, production, giám sát
@@ -59,7 +59,8 @@ Mỗi giai đoạn bắt đầu bằng **một đề xuất thiết kế** để
 | | |
 |---|---|
 | Mục tiêu | Làm nốt các mục "chưa làm" đã ghi trong tài liệu tính năng, chỉ trên dev |
-| Gồm | Đổi mật khẩu thì đăng xuất thiết bị khác; giao diện tự cập nhật quyền; màn hình Nhật ký thay đổi; giới hạn đăng nhập sai theo IP; màn hình Phiên đăng nhập; ghi nhớ đăng nhập (hai việc đăng nhập này tạm dừng từ 2026-10-14); upload dở tiếp tục sau khi tải lại trang; xem trước file; thùng rác file; đính kèm file vào bằng chứng |
+| Gồm | Đổi mật khẩu thì đăng xuất thiết bị khác; giao diện tự cập nhật quyền; màn hình Nhật ký thay đổi; giới hạn đăng nhập sai theo IP; màn hình Phiên đăng nhập; ghi nhớ đăng nhập (hai việc đăng nhập này tạm dừng từ 2026-10-14); upload dở tiếp tục sau khi tải lại trang; xem trước file; thùng rác file; đính kèm file vào bằng chứng. Thêm 2026-10-15: tự xóa hẳn file quá 30 ngày trong thùng rác; Files cho biết file gắn vào bằng chứng nào và lọc bằng chứng theo file; bằng chứng chỉ có file; kích thước ảnh, thời lượng video và nhạc, ảnh nhỏ |
+| Tình trạng | 2026-10-15: xong mọi việc nhận được. Còn Màn hình Phiên đăng nhập và Ghi nhớ đăng nhập, chờ chủ dự án yêu cầu |
 | Xong khi | Mỗi việc có test và mô tả trong `docs/features/` |
 
 ## 7. Sau cùng (chi tiết hóa khi tới)

@@ -1,6 +1,6 @@
 # Danh sách việc
 
-Cập nhật: 2026-10-14. Lộ trình: [02-roadmap.md](02-roadmap.md).
+Cập nhật: 2026-10-15. Lộ trình: [02-roadmap.md](02-roadmap.md).
 
 Mã việc (cột đầu) chỉ để script chia việc `scripts/lane.sh` nhận diện; khi nói chuyện và viết tài liệu thì dùng tên việc. Trạng thái: `todo` → `doing` → `done`. Không sửa cột trạng thái bằng tay.
 
@@ -58,7 +58,7 @@ Các giai đoạn 2–6 mới ghi ở mức việc lớn; khi bắt đầu giai 
 
 **Tạm dừng mọi việc liên quan đến đăng nhập** (chủ dự án quyết 2026-10-14): AUTH-04, AUTH-05 và các mục "Nâng cấp để dành" trong [đăng nhập](../features/dang-nhap.md) chỉ làm khi chủ dự án yêu cầu. Không tự đề xuất, kể cả khi phát hiện việc mới về đăng nhập.
 
-Thêm ngày 2026-10-14, theo thứ tự làm. MEDIA-06, MEDIA-07, LEDGER-01 thêm theo chủ dự án chọn ngày 2026-10-14. Lấy từ các mục "chưa làm" trong [đăng nhập](../features/dang-nhap.md), [nhật ký thay đổi](../features/nhat-ky-thay-doi.md) và [ADR-0014](../adr/0014-media-minio-upload.md).
+Thêm ngày 2026-10-14, theo thứ tự làm. MEDIA-06, MEDIA-07, LEDGER-01 thêm theo chủ dự án chọn ngày 2026-10-14; từ MEDIA-08 tới MEDIA-11 thêm ngày 2026-10-15 (việc nối tiếp file đính kèm và Files). Lấy từ các mục "chưa làm" trong [đăng nhập](../features/dang-nhap.md), [nhật ký thay đổi](../features/nhat-ky-thay-doi.md) và [ADR-0014](../adr/0014-media-minio-upload.md).
 
 | Mã | Việc | Kết quả | Trạng thái |
 |---|---|---|---|
@@ -72,6 +72,15 @@ Thêm ngày 2026-10-14, theo thứ tự làm. MEDIA-06, MEDIA-07, LEDGER-01 thê
 | MEDIA-06 | Xem trước file (ảnh, PDF, video, file chữ) trong màn hình Files | Xem ngay trên trang, không phải tải về | done (c1576e84, 7223bbf9, d04cc1c3, db7901a7 — xem trước ảnh, PDF, video, nhạc, file chữ (không xem trước html/svg vì chạy được code); sửa lỗi upload hỏng một phần vẫn gửi tiếp phần khác; 213 test backend, 119 test giao diện, 6 e2e pass) |
 | MEDIA-07 | **[XÁC NHẬN]** Thùng rác file: xem file đã xóa, khôi phục trong 30 ngày | Xóa nhầm thì lấy lại được trên giao diện | done (4477b392, 6f33250f, a8358b0e, 74c7e76f, 3a40cd79 — thùng rác file 30 ngày: khôi phục (tự tạo lại thư mục, trùng tên thì thêm (restored)), xóa vĩnh viễn, dọn thùng rác; sửa luật MinIO giữ file đã xóa mãi mãi; 219 test backend, 123 test giao diện, 7 e2e pass) |
 | LEDGER-01 | **[XÁC NHẬN]** Đính kèm file vào bằng chứng (Skill Ledger); trang public hiện file khi bằng chứng công khai | Bằng chứng có ảnh chứng chỉ, PDF… thay vì chỉ có link | done (6b0b4517, ae3c23df, 6fd32a3d, 48991162 — bằng chứng gắn tới 10 file từ Files (chọn hoặc upload trong hộp thoại, đổi thứ tự, file đã xóa vẫn giữ và đánh dấu); trang public hiện file, link mã ngẫu nhiên xin link tạm mỗi lần bấm; make verify pass (227 backend, 126 giao diện, 63 importer), thử thật trên dev) |
+| MEDIA-08 | Lệnh hẹn giờ xóa hẳn dòng file đã xóa quá 30 ngày (MinIO đã bỏ dữ liệu), tự gỡ khỏi bằng chứng | File trong thùng rác quá 30 ngày tự biến mất hẳn, bằng chứng không còn trỏ tới file không tồn tại | done (aa3d7fea, 35048bd0 — media:prune-trash chạy 0 giờ mỗi ngày, xóa hẳn dòng đã xóa quá 30 ngày (file, thư mục, upload hỏng) và liên kết với bằng chứng, ghi purged; 12 test pass, Larastan sạch) |
+| MEDIA-09 | Màn hình Files cho biết file đang gắn vào bằng chứng nào, cảnh báo khi xóa | Biết file đang được bằng chứng nào dùng trước khi xóa | done (ca08a0c0, 17718479 — cột Evidence ở Files (số liên kết, tên bằng chứng; thư mục đếm file bên trong), cảnh báo khi xóa; 36 test backend, 127 test giao diện pass) |
+| API-01 | Sửa kiểu sinh tự động: parts của media/multipart/resume không null | Kiểu dữ liệu ở giao diện khớp API, bỏ được đoạn vá tạm | done (cb058a5c — parts của media/multipart/resume giờ là danh sách không null trong openapi.json, bỏ đoạn vá ?? [] ở bộ upload; 9 test backend, 22 test giao diện pass) |
+| LEDGER-02 | Bằng chứng chỉ có file, không bắt buộc link (cần link hoặc ít nhất một file) | Bằng chứng chỉ cần file (ảnh chứng chỉ, PDF) là đủ | done (8abe344c, 01b15e55, 71bdeb7b — bằng chứng cần link hoặc ít nhất một file; không link thì tiêu đề là chữ thường ở quản trị và trang public; nhập Obsidian không đổi; make verify pass (231 backend, 128 giao diện, 63 importer), thử thật trên dev) |
+| DOCS-01 | Cập nhật bảng Các bước làm trong tài liệu Quản lý file (thiếu upload dở, xem trước, thùng rác, gắn vào bằng chứng) | Tài liệu Quản lý file đúng với những gì đã làm | done (95f65960 — bảng Các bước làm của Quản lý file thêm upload dở, xem trước, thùng rác, gắn vào bằng chứng) |
+| E2E-01 | Test trình duyệt cho đính kèm file vào bằng chứng: gắn, đổi thứ tự, file bị xóa hiện Deleted, file hiện trên trang public | Đính kèm file vào bằng chứng có test trình duyệt | done (6412d943, b5272edd — test trình duyệt gắn file vào bằng chứng (upload trong form, đổi thứ tự, không link, mở từ trang public, xóa thì hiện Deleted); sửa test luồng chính hỏng sau LEDGER-02 (nhãn ô Link đổi); make e2e 8/8 pass) |
+| LEDGER-03 | **[XÁC NHẬN]** Lọc danh sách bằng chứng theo file: bấm số ở cột Evidence của Files mở các bằng chứng dùng file đó | Từ một file mở thẳng các bằng chứng dùng nó | done (db9b76a0, 5d1347b5, 99199f24 — bấm số ở cột Evidence của Files mở danh sách bằng chứng chỉ gồm các bằng chứng dùng file đó (API lọc media_id, nút Show all evidence); make verify pass (232 backend, 130 giao diện, 63 importer), make e2e 8/8) |
+| MEDIA-10 | Đọc kích thước ảnh (rộng × cao) sau khi upload, hiện ở Files và hộp xem trước; lệnh chạy bù cho ảnh cũ | Biết kích thước ảnh mà không phải mở file | done (60c5de4c, a7dcce58 — ảnh (jpg, png, gif, webp, avif, bmp) có rộng × cao sau khi upload, hiện ở Files và xem trước; lệnh media:read-image-sizes chạy bù; sửa test e2e upload dở chập chờn; make verify pass (234 backend, 130 giao diện, 63 importer), make e2e 8/8) |
+| MEDIA-11 | **[XÁC NHẬN]** Thời lượng video, nhạc và ảnh thu nhỏ trong Files (thêm ffmpeg vào container PHP) | Biết thời lượng video, nhạc và thấy ảnh nhỏ ngay trong danh sách | done (e2a66080, d2fb118a — ffmpeg trong image PHP; ảnh nhỏ 320 px cho ảnh và video, thời lượng video và nhạc, tạo ngầm sau upload, hiện ở Files, hộp chọn file, form bằng chứng; chặn file độc (giới hạn 60 giây, chỉ định dạng thông thường); lệnh media:read-media-info; make verify pass (238 backend, 133 giao diện, 63 importer), make e2e 8/8, thử 13 loại file trên MinIO thật) |
 
 ## 7. Sau cùng
 
