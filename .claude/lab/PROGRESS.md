@@ -10,7 +10,7 @@
 | Branch | `feature/p3-ledger-api` (đổi branch khi chủ dự án yêu cầu) |
 | Môi trường | Chỉ dev (`make up`, http://localhost:81). Bản demo prod-like đã tắt container ngày 2026-10-15 (không việc nào dùng); staging, production thật, đo tải: tạm dừng |
 | CI/CD | Chỉ chạy trên máy: `make ci`, `make cd`. **Trên GitHub/GitLab đang TẮT chạy tự động** (push không chạy gì); cách bật lại: [ci/README.md](../../ci/README.md) |
-| Việc tiếp theo | Bảng việc không còn việc nhận được (MEDIA-11 xong 2026-10-15). Chủ dự án yêu cầu (2026-10-15) lên kế hoạch cho việc đăng nhập và phòng ban, chính sách: chỉ đề xuất, chờ chủ dự án duyệt rồi mới thêm việc lên bảng |
+| Việc tiếp theo | Bảng việc không còn việc nhận được (MEDIA-11 xong 2026-10-15). Chủ dự án duyệt kế hoạch 2026-10-15: Màn hình Phiên đăng nhập → Ghi nhớ đăng nhập (30 ngày) → đề xuất phòng ban (chính sách chặn theo thư mục Files) → DEPT-01…05 |
 | Tạm dừng | Mọi việc về **đăng nhập và phân quyền** (AUTH-04, AUTH-05, các mục "Nâng cấp để dành" trong [dang-nhap.md](../../docs/features/dang-nhap.md), loại quyền mới, người dùng cuối, phòng ban, chính sách): không đề xuất, không nhận, kể cả việc mới, **chỉ làm khi chủ dự án yêu cầu** (quyết 2026-10-14, thêm phân quyền 2026-10-15) |
 | Dọn dẹp | Mỗi việc xong phải dọn theo mục "Dọn dẹp khi xong việc" trong [01-goals-and-workflow.md](../../docs/plan/01-goals-and-workflow.md) (`make clean` + xóa code chết, dữ liệu thử) |
 
@@ -120,7 +120,7 @@ Mỗi dòng do `scripts/lane.sh done` tự thêm. Không sửa tay.
 Cập nhật 2026-10-15, sau khi rà tài liệu tiến độ.
 
 1. Đầu phiên: `scripts/lane.sh status` và xem "Việc tồn đọng" ở trên: mục 1 (push) là việc của chủ dự án; nhắc nếu vẫn còn.
-2. Đăng nhập, phân quyền, người dùng cuối, phòng ban: chủ dự án yêu cầu lên kế hoạch ngày 2026-10-15 (chỉ đề xuất). Chỉ làm những việc chủ dự án đã duyệt trong kế hoạch đó. Bản demo prod-like: không làm.
+2. Đăng nhập, phòng ban: chủ dự án duyệt ngày 2026-10-15 các việc AUTH-04, AUTH-05, USER-03, DEPT-01…05 trên bảng (giữ phiên trong Redis + bảng `admin_sessions`; ghi nhớ 30 ngày; không làm đá phiên tức thì; chính sách chặn theo thư mục Files; người dùng cuối để sau). Các việc đăng nhập, phân quyền khác vẫn tạm dừng. Bản demo prod-like: không làm.
 3. Hỏi chủ dự án việc tiếp theo. Gợi ý nhỏ còn lại: hiện ảnh nhỏ trên trang public và trong thùng rác (chưa làm, chưa đề xuất). Sau khi đổi Dockerfile PHP: `make up` hoặc `docker compose -f docker/docker-compose.yml up -d --build ml-php ml-queue ml-scheduler ml-reverb` (tải ffmpeg lần đầu mất khoảng 20 phút trên mạng chậm).
 4. Việc mới: thêm bằng `scripts/lane.sh add main <mã> …`, nhận bằng `claim`, xong thì dọn dẹp (`make clean`, xóa dữ liệu thử) rồi `done`.
 5. `make verify` gần nhất: 2026-10-15 sau MEDIA-11, pass (238 test backend, 133 giao diện, 63 importer). `make e2e` cùng ngày: 8/8 pass. Cây làm việc sạch.

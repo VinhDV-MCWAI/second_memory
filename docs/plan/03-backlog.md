@@ -43,7 +43,12 @@ Các giai đoạn 2–6 mới ghi ở mức việc lớn; khi bắt đầu giai 
 |---|---|---|---|
 | USER-01 | Đề xuất thiết kế dựa trên bản `v1.0.0` | Đề xuất được xác nhận | done (a9f776c2 — chủ dự án quyết để sau cả người dùng cuối, phòng ban, chính sách (ADR-0015); phạm vi hiện tại chỉ phân quyền theo vai trò) |
 | USER-02 | Quản lý người dùng cuối: API + giao diện + test | Màn hình người dùng cuối | blocked: để sau (ADR-0015) |
-| USER-03 | Phòng ban, chính sách phòng ban, gán admin vào phòng ban: API + giao diện + test | Màn hình phòng ban, chính sách | todo (để sau, ADR-0015) |
+| USER-03 | **[XÁC NHẬN]** Phòng ban và chính sách: đề xuất thiết kế (ADR-0017). Chủ dự án chọn 2026-10-15: chính sách chặn thật theo thư mục Files, không cần người dùng cuối | Thiết kế được duyệt, chia việc DEPT-01…05 | todo |
+| DEPT-01 | Phòng ban, phần máy chủ: thêm/sửa/xóa/tìm phòng ban, gán admin vào phòng ban, quyền, test | API phòng ban | todo |
+| DEPT-02 | Phòng ban, giao diện: màn hình Phòng ban, chọn phòng ban trong màn hình Quản trị viên | Màn hình phòng ban | todo |
+| DEPT-03 | Chính sách, phần máy chủ: admin chỉ thấy và làm việc với thư mục Files phòng ban mình được cấp | Chính sách chặn thật | todo |
+| DEPT-04 | Chính sách, giao diện: cấp thư mục cho phòng ban, Files ẩn thư mục không được cấp | Cấp thư mục trên giao diện | todo |
+| DEPT-05 | Phòng ban và chính sách: test trình duyệt, file tài liệu tính năng | Có test và tài liệu | todo |
 
 ## 5. CI/CD gộp chung, rồi tắt
 
@@ -56,7 +61,7 @@ Các giai đoạn 2–6 mới ghi ở mức việc lớn; khi bắt đầu giai 
 
 ## 6. Nâng cấp trên dev
 
-**Tạm dừng mọi việc liên quan đến đăng nhập** (chủ dự án quyết 2026-10-14): AUTH-04, AUTH-05 và các mục "Nâng cấp để dành" trong [đăng nhập](../features/dang-nhap.md) chỉ làm khi chủ dự án yêu cầu. Không tự đề xuất, kể cả khi phát hiện việc mới về đăng nhập.
+**Đăng nhập** (chủ dự án quyết 2026-10-15): làm Màn hình Phiên đăng nhập (giữ phiên trong Redis, thêm bảng `admin_sessions`) rồi Ghi nhớ đăng nhập (30 ngày). Các mục còn lại trong "Nâng cấp để dành" của [đăng nhập](../features/dang-nhap.md) vẫn tạm dừng, chỉ làm khi chủ dự án yêu cầu.
 
 Thêm ngày 2026-10-14, theo thứ tự làm. MEDIA-06, MEDIA-07, LEDGER-01 thêm theo chủ dự án chọn ngày 2026-10-14; từ MEDIA-08 tới MEDIA-11 thêm ngày 2026-10-15 (việc nối tiếp file đính kèm và Files). Lấy từ các mục "chưa làm" trong [đăng nhập](../features/dang-nhap.md), [nhật ký thay đổi](../features/nhat-ky-thay-doi.md) và [ADR-0014](../adr/0014-media-minio-upload.md).
 
@@ -66,8 +71,8 @@ Thêm ngày 2026-10-14, theo thứ tự làm. MEDIA-06, MEDIA-07, LEDGER-01 thê
 | AUTH-02 | Giao diện tự cập nhật quyền: hỏi lại quyền khi quay lại tab và khi gặp lỗi 403 | Đổi quyền thì menu và nút đổi theo, không phải tải lại trang | done (52599bf8 — quyền trên giao diện tự lấy lại khi quay lại tab và khi gặp 403 (tối đa 5 giây/lần); 109 test giao diện, lint, typecheck pass) |
 | LOG-01 | Màn hình Nhật ký thay đổi: danh sách, lọc theo loại dữ liệu, người làm, thời gian; phân trang | Xem được toàn bộ nhật ký, không chỉ 10 dòng ở trang tổng quan | done (7a2f444f, c68bf280 — màn hình Nhật ký thay đổi (lọc loại, việc, người làm, ngày; phân trang; xem ô cũ → mới); sửa lọc ngày đọc nhầm tháng/ngày (500 hoặc lọc sai); 207 test backend, 112 test giao diện) |
 | AUTH-03 | Giới hạn đăng nhập sai theo IP, ngoài giới hạn theo tên + IP đang có | Một IP thử hàng loạt tên đăng nhập bị chặn | done (26990056, 5a1df46a — một IP sai 30 lần (mọi tên) bị khóa 15 phút, đăng nhập đúng không xóa bộ đếm IP; 209 test backend, Pint, Larastan pass) |
-| AUTH-04 | **[XÁC NHẬN]** Màn hình Phiên đăng nhập: xem thiết bị đang đăng nhập, đăng xuất một thiết bị, đăng xuất mọi nơi khác (thêm bảng DB) | Đá được phiên từ xa | blocked: tạm dừng (chủ dự án quyết 2026-10-14) |
-| AUTH-05 | **[XÁC NHẬN]** Ghi nhớ đăng nhập | Không phải đăng nhập lại sau 120 phút không dùng | blocked: tạm dừng (chủ dự án quyết 2026-10-14) |
+| AUTH-04 | **[XÁC NHẬN]** Màn hình Phiên đăng nhập: xem thiết bị đang đăng nhập, đăng xuất một thiết bị, đăng xuất mọi nơi khác (thêm bảng DB) | Đá được phiên từ xa | todo |
+| AUTH-05 | **[XÁC NHẬN]** Ghi nhớ đăng nhập | Không phải đăng nhập lại sau 120 phút không dùng | todo |
 | MEDIA-05 | Upload dở tiếp tục được sau khi tải lại trang | File lớn không phải gửi lại từ đầu | done (ae7756ce, 2498e113, 8592643e — file lớn bỏ dở (tải lại trang, mất mạng) hiện ở khung Unfinished uploads, chọn lại đúng file thì chỉ gửi phần thiếu; 212 test backend, 117 test giao diện, 5 e2e pass (thử thật trên MinIO)) |
 | MEDIA-06 | Xem trước file (ảnh, PDF, video, file chữ) trong màn hình Files | Xem ngay trên trang, không phải tải về | done (c1576e84, 7223bbf9, d04cc1c3, db7901a7 — xem trước ảnh, PDF, video, nhạc, file chữ (không xem trước html/svg vì chạy được code); sửa lỗi upload hỏng một phần vẫn gửi tiếp phần khác; 213 test backend, 119 test giao diện, 6 e2e pass) |
 | MEDIA-07 | **[XÁC NHẬN]** Thùng rác file: xem file đã xóa, khôi phục trong 30 ngày | Xóa nhầm thì lấy lại được trên giao diện | done (4477b392, 6f33250f, a8358b0e, 74c7e76f, 3a40cd79 — thùng rác file 30 ngày: khôi phục (tự tạo lại thư mục, trùng tên thì thêm (restored)), xóa vĩnh viễn, dọn thùng rác; sửa luật MinIO giữ file đã xóa mãi mãi; 219 test backend, 123 test giao diện, 7 e2e pass) |

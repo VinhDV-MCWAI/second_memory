@@ -89,7 +89,7 @@ Những phần dưới đây giữ nguyên code, không phát triển tiếp cho
 
 | Phần | Thư mục | Lý do dừng |
 |---|---|---|
-| Đăng nhập và phân quyền: mọi việc mới hoặc nâng cấp (màn hình phiên đăng nhập, ghi nhớ đăng nhập, các mục "Nâng cấp để dành" trong [dang-nhap.md](../features/dang-nhap.md), thêm loại quyền, quyền theo dữ liệu, người dùng cuối, phòng ban, chính sách) | `laravel-api` (auth, permission), màn hình Vai trò | Chủ dự án tập trung vào tính năng khác (quyết 2026-10-14, mở rộng sang phân quyền 2026-10-15). **Chỉ làm khi chủ dự án yêu cầu**, không tự đề xuất. Tính năng mới vẫn khai quyền như cũ (đặt tên route, `make permissions`) |
+| Đăng nhập và phân quyền: mọi việc mới hoặc nâng cấp **trừ** những việc chủ dự án đã yêu cầu ngày 2026-10-15 (Màn hình Phiên đăng nhập, Ghi nhớ đăng nhập, phòng ban và chính sách theo thư mục Files). Vẫn dừng: các mục còn lại của "Nâng cấp để dành" trong [dang-nhap.md](../features/dang-nhap.md), thêm loại quyền khác, người dùng cuối | `laravel-api` (auth, permission), màn hình Vai trò | Chủ dự án tập trung vào tính năng khác (quyết 2026-10-14, mở rộng sang phân quyền 2026-10-15). **Chỉ làm khi chủ dự án yêu cầu**, không tự đề xuất. Tính năng mới vẫn khai quyền như cũ (đặt tên route, `make permissions`) |
 | Bản demo prod-like | `infra/`, `make cd` | Chỉ làm dev trên máy. Container `sm-prod-like-*` đã tắt ngày 2026-10-15 (dữ liệu demo còn); xóa hẳn: `make tf-destroy` |
 | Dựng staging / production bằng Terraform | `infra/` | Chỉ cần khi sản phẩm hoàn thiện |
 | Đo tải, đo hiệu năng | `perf/` | Đo sau khi có đủ tính năng |

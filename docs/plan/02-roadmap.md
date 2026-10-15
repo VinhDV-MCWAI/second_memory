@@ -38,6 +38,8 @@ Mỗi giai đoạn bắt đầu bằng **một đề xuất thiết kế** để
 ## 4. Người dùng cuối, phòng ban, chính sách
 
 > **Để sau** (2026-10-14, [ADR-0015](../adr/0015-defer-end-users-departments.md)): phạm vi hiện tại chỉ cần phân quyền theo vai trò. ADR ghi lại những gì đã tìm hiểu về bản `v1.0.0` và các câu hỏi còn mở, để làm lại sau.
+>
+> **Làm lại phòng ban và chính sách** (chủ dự án quyết 2026-10-15): chính sách chặn thật, bắt đầu từ thư mục trong Files; làm sau Phiên đăng nhập và Ghi nhớ đăng nhập. Người dùng cuối vẫn để sau, phòng ban không cần nó.
 
 | | |
 |---|---|
@@ -60,7 +62,7 @@ Mỗi giai đoạn bắt đầu bằng **một đề xuất thiết kế** để
 |---|---|
 | Mục tiêu | Làm nốt các mục "chưa làm" đã ghi trong tài liệu tính năng, chỉ trên dev |
 | Gồm | Đổi mật khẩu thì đăng xuất thiết bị khác; giao diện tự cập nhật quyền; màn hình Nhật ký thay đổi; giới hạn đăng nhập sai theo IP; màn hình Phiên đăng nhập; ghi nhớ đăng nhập (hai việc đăng nhập này tạm dừng từ 2026-10-14); upload dở tiếp tục sau khi tải lại trang; xem trước file; thùng rác file; đính kèm file vào bằng chứng. Thêm 2026-10-15: tự xóa hẳn file quá 30 ngày trong thùng rác; Files cho biết file gắn vào bằng chứng nào và lọc bằng chứng theo file; bằng chứng chỉ có file; kích thước ảnh, thời lượng video và nhạc, ảnh nhỏ |
-| Tình trạng | 2026-10-15: xong mọi việc nhận được. Còn Màn hình Phiên đăng nhập và Ghi nhớ đăng nhập, chờ chủ dự án yêu cầu |
+| Tình trạng | 2026-10-15: xong mọi việc đã nhận. Chủ dự án yêu cầu làm tiếp Màn hình Phiên đăng nhập và Ghi nhớ đăng nhập |
 | Xong khi | Mỗi việc có test và mô tả trong `docs/features/` |
 
 ## 7. Sau cùng (chi tiết hóa khi tới)
