@@ -106,6 +106,8 @@ Mỗi dòng do `scripts/lane.sh done` tự thêm. Không sửa tay.
 
 - 2026-10-15 — [lane main] MEDIA-09 done: ca08a0c0, 17718479 — cột Evidence ở Files (số liên kết, tên bằng chứng; thư mục đếm file bên trong), cảnh báo khi xóa; 36 test backend, 127 test giao diện pass
 
+- 2026-10-15 — [lane main] API-01 done: cb058a5c — parts của media/multipart/resume giờ là danh sách không null trong openapi.json, bỏ đoạn vá ?? [] ở bộ upload; 9 test backend, 22 test giao diện pass
+
 ## Next step
 
 Cập nhật 2026-10-15.
