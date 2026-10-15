@@ -6,7 +6,7 @@ Quản trị viên đăng nhập bằng **tên đăng nhập** và mật khẩu.
 
 | Địa chỉ | Làm gì |
 |---|---|
-| http://localhost:81/login | Form đăng nhập. Đăng nhập xong quay lại trang đang mở dở (nếu có), không thì tới trang tổng quan `/admin` |
+| http://localhost:81/login | Form đăng nhập. Đăng nhập xong quay lại trang đang mở dở (nếu có), không thì tới trang tổng quan `/admin`. Ô **Keep me signed in on this device for 30 days** để ghi nhớ đăng nhập, xem mục "Ghi nhớ đăng nhập" |
 | Nút đăng xuất ở góc trên | Kết thúc phiên, quay về `/login` |
 | Mọi trang `/admin/...` | Chưa đăng nhập thì tự chuyển tới `/login` |
 | http://localhost:81/admin/sessions (menu tài khoản ở góc trên → **Signed-in devices**) | Xem tài khoản đang đăng nhập ở những thiết bị nào, đăng xuất một thiết bị hoặc mọi thiết bị khác. Xem mục "Thiết bị đang đăng nhập" bên dưới |
@@ -28,7 +28,7 @@ Tài khoản dev: chủ `root` / `12345678` và chỉ xem `viewer` / `12345678` 
 | API | Làm gì | Cần đăng nhập |
 |---|---|---|
 | `GET /api/sanctum/csrf-cookie` | Lấy cookie chống giả mạo request | Không |
-| `POST /api/admin/credential/login` | Đăng nhập, trả thông tin tài khoản | Không |
+| `POST /api/admin/credential/login` | Đăng nhập, trả thông tin tài khoản. Gửi thêm `remember: true` để ghi nhớ thiết bị 30 ngày | Không |
 | `POST /api/admin/credential/logout` | Đăng xuất. Gọi khi không có phiên cũng thành công | Không |
 | `GET /api/admin/credential/me` | Tài khoản đang đăng nhập. Giao diện dùng để kiểm tra còn phiên không | Có |
 | `GET /api/admin/admin-session/list` | Các thiết bị của chính mình đang đăng nhập, dùng gần nhất trước. Không trả mã phiên | Có |
@@ -66,6 +66,21 @@ Làm ngày 2026-10-15. Phiên vẫn giữ trong Redis như trước (nhanh khi �
 
 Tên trình duyệt và hệ điều hành (ví dụ "Chrome on Windows") do giao diện đọc từ chuỗi User-Agent; chuỗi đầy đủ hiện khi rê chuột vào tên. Đăng nhập bằng token API (công cụ nhập từ Obsidian) không có phiên nên không hiện ở đây.
 
+## Ghi nhớ đăng nhập
+
+Làm ngày 2026-10-15. Bình thường phiên hết sau 120 phút không dùng. Tick ô ghi nhớ khi đăng nhập thì thiết bị đó tự đăng nhập lại trong **30 ngày** kể từ lúc đăng nhập (hết 30 ngày phải đăng nhập lại, dùng nhiều cũng không kéo dài thêm).
+
+| Việc | Cách chạy |
+|---|---|
+| Đăng nhập có tick ô | Thiết bị nhận cookie `remember_device` sống 30 ngày, chứa mã dòng trong `admin_session` và một mã ngẫu nhiên. Bảng chỉ giữ bản băm (sha256) của mã, đọc được DB cũng không dùng được |
+| Phiên hết hạn, thiết bị gọi API | Trước khi kiểm tra đăng nhập, máy chủ thấy cookie còn đúng thì đăng nhập lại thiết bị đó, tạo phiên mới, giữ nguyên dòng (màn hình thiết bị vẫn hiện giờ đăng nhập đầu tiên). Nhật ký ghi "logged in" kèm `via: remembered_device` |
+| Đăng xuất một thiết bị từ máy khác, đổi mật khẩu, khóa hoặc xóa tài khoản | Dòng bị xóa nên cookie của thiết bị đó hết tác dụng. Mỗi thiết bị ghi nhớ riêng: đăng xuất máy này không làm máy khác quên |
+| Bấm đăng xuất | Xóa dòng và cookie |
+| Màn hình thiết bị | Cột "Kept signed in until" cho biết còn bao lâu thiết bị phải đăng nhập lại. Thiết bị được ghi nhớ vẫn hiện dù phiên đã hết, lệnh dọn hằng ngày không xóa nó |
+| Trang `/admin/...` mở lại sau nhiều giờ | Giao diện cho vào nếu còn cookie phiên hoặc cookie ghi nhớ. Nếu một thao tác ghi bị lỗi 419 (mã chống giả mạo cũ sau khi đổi phiên), giao diện tự lấy mã mới và gửi lại một lần |
+
+Không dùng "remember me" có sẵn của Laravel vì nó dùng chung một mã cho mọi thiết bị của tài khoản: đá một máy là mọi máy cùng bị quên.
+
 Token API (dùng cho [nhập từ Obsidian](nhap-tu-obsidian.md)) là cách đăng nhập thứ hai, chỉ mở được đúng một API import.
 
 ## Dữ liệu
@@ -74,7 +89,7 @@ Token API (dùng cho [nhập từ Obsidian](nhap-tu-obsidian.md)) là cách đă
 |---|---|
 | `admin_mst` | Tài khoản, mật khẩu đã băm, vai trò, trạng thái |
 | Redis | Phiên đăng nhập |
-| `admin_session` | Danh sách thiết bị đang đăng nhập: tài khoản, mã phiên, IP, trình duyệt, giờ đăng nhập, lần dùng cuối |
+| `admin_session` | Danh sách thiết bị đang đăng nhập: tài khoản, mã phiên, IP, trình duyệt, giờ đăng nhập, lần dùng cuối; thiết bị ghi nhớ có thêm bản băm của mã ghi nhớ và hạn ghi nhớ |
 | `audit_log` | Lịch sử đăng nhập |
 
 ## Code
@@ -84,9 +99,9 @@ Token API (dùng cho [nhập từ Obsidian](nhap-tu-obsidian.md)) là cách đă
 | Route | `laravel-api/routes/api.php` |
 | Xử lý | `laravel-api/app/Services/Custom/CredentialService.php` |
 | Kiểm tra vai trò mỗi request | `laravel-api/app/Http/Middleware/AdminMiddleware.php` |
-| Thiết bị đang đăng nhập | `laravel-api/app/Services/Master/AdminSessionService.php`, `laravel-api/app/Http/Middleware/TrackAdminSession.php`, `nextjs-fe/src/features/master/components/session-list.tsx` |
+| Thiết bị đang đăng nhập, ghi nhớ đăng nhập | `laravel-api/app/Services/Master/AdminSessionService.php`, `laravel-api/app/Http/Middleware/TrackAdminSession.php`, `laravel-api/app/Http/Middleware/RestoreRememberedSession.php`, `nextjs-fe/src/features/master/components/session-list.tsx` |
 | Trang đăng nhập | `nextjs-fe/src/app/login/page.tsx` |
-| Test | `make test f=LoginApi`, `make test f=LogoutApi`, `make test f=MeApi`, `make test f=PasswordChangeSession`, `make test f=AdminSessionTest` |
+| Test | `make test f=LoginApi`, `make test f=LogoutApi`, `make test f=MeApi`, `make test f=PasswordChangeSession`, `make test f=AdminSessionTest`, `make test f=RememberMeTest` |
 
 Lỗi hay gặp (401 khi nhập email, 429, 419 CSRF): [dev-guide.md mục 6](../dev-guide.md#6-các-lỗi-hay-gặp).
 
@@ -122,7 +137,7 @@ Ghi ngày 2026-10-13, **chưa làm**. Mục tiêu: đăng nhập chạy tốt d�
 | 2 | ~~**Đổi mật khẩu thì đá mọi phiên khác**~~ **Đã làm 2026-10-14**, xem bảng Quy tắc ở trên | | | |
 | 3 | ~~**Giao diện tự cập nhật quyền**~~ **Đã làm 2026-10-14**, xem bảng Quy tắc ở trên | | | |
 | 4 | ~~**Giới hạn đăng nhập theo IP**~~ **Đã làm 2026-10-14**, xem bảng Quy tắc ở trên | | | |
-| 5 | **"Ghi nhớ đăng nhập"** | Phiên hết sau 120 phút không dùng (`SESSION_LIFETIME`), có thể quá ngắn | Ô "Ghi nhớ" dùng `remember` của Laravel (cookie dài hạn riêng) | Cookie sống lâu thì lộ ra nguy hiểm hơn. Nên đi cùng mục 1 để còn đá phiên được |
+| 5 | ~~**"Ghi nhớ đăng nhập"**~~ **Đã làm 2026-10-15**: ghi nhớ riêng từng thiết bị 30 ngày, đá được từ màn hình thiết bị, xem mục "Ghi nhớ đăng nhập" ở trên | | | |
 | 6 | **Cài đặt cookie khi chạy thật** | Chặn lộ phiên trên đường truyền và trong Redis | `SESSION_SECURE_COOKIE=true` (bắt buộc khi có HTTPS), cân nhắc `SESSION_ENCRYPT=true` | Mã hoá phiên tốn thêm chút CPU |
 | 7 | **Cache thông tin admin mỗi request** — chỉ làm khi tải DB thật sự cao | Mỗi request hiện đọc admin và vai trò từ DB để thu hồi được ngay | Cache vài giây theo mã admin, xoá cache khi admin bị sửa, khoá hoặc xoá | Thêm một chỗ phải nhớ xoá cache. Làm sai thì admin bị khoá vẫn dùng được trong vài giây |
 | 8 | **Đá phiên theo thời gian thực** — tuỳ chọn | Hiện trình duyệt chỉ biết bị đá ở request kế tiếp | Đẩy sự kiện qua WebSocket (Reverb) tới các tab của admin bị đá | Nhiều việc. Chặn ở request kế tiếp đã đủ an toàn |
