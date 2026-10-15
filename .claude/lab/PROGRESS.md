@@ -102,6 +102,8 @@ Mỗi dòng do `scripts/lane.sh done` tự thêm. Không sửa tay.
 
 - 2026-10-15 — [lane main] LEDGER-01 done: 6b0b4517, ae3c23df, 6fd32a3d, 48991162 — bằng chứng gắn tới 10 file từ Files (chọn hoặc upload trong hộp thoại, đổi thứ tự, file đã xóa vẫn giữ và đánh dấu); trang public hiện file, link mã ngẫu nhiên xin link tạm mỗi lần bấm; make verify pass (227 backend, 126 giao diện, 63 importer), thử thật trên dev
 
+- 2026-10-15 — [lane main] MEDIA-08 done: aa3d7fea, 35048bd0 — media:prune-trash chạy 0 giờ mỗi ngày, xóa hẳn dòng đã xóa quá 30 ngày (file, thư mục, upload hỏng) và liên kết với bằng chứng, ghi purged; 12 test pass, Larastan sạch
+
 ## Next step
 
 Cập nhật 2026-10-15.
