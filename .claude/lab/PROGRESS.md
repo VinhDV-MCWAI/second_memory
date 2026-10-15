@@ -112,6 +112,8 @@ Mỗi dòng do `scripts/lane.sh done` tự thêm. Không sửa tay.
 
 - 2026-10-15 — [lane main] LEDGER-03 done: db9b76a0, 5d1347b5, 99199f24 — bấm số ở cột Evidence của Files mở danh sách bằng chứng chỉ gồm các bằng chứng dùng file đó (API lọc media_id, nút Show all evidence); make verify pass (232 backend, 130 giao diện, 63 importer), make e2e 8/8
 
+- 2026-10-15 — [lane main] MEDIA-10 done: 60c5de4c, a7dcce58 — ảnh (jpg, png, gif, webp, avif, bmp) có rộng × cao sau khi upload, hiện ở Files và xem trước; lệnh media:read-image-sizes chạy bù; sửa test e2e upload dở chập chờn; make verify pass (234 backend, 130 giao diện, 63 importer), make e2e 8/8
+
 ## Next step
 
 Cập nhật 2026-10-15 cuối ngày.
