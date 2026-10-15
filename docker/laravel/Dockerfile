@@ -3,8 +3,10 @@ FROM ${PHP_IMAGE} AS base
 
 # PHP extensions: runtime libraries stay, headers and compilers are removed in the same layer
 # (they were ~500 MB of the production image). OPcache and mbstring are built into PHP 8.5.
+# ffmpeg: duration and thumbnails of uploaded videos, audio and images (MEDIA-11, ~126 MB)
 RUN apk add --no-cache \
   bash \
+  ffmpeg \
   libpq \
   libzip \
   libpng \

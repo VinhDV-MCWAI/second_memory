@@ -1,5 +1,6 @@
 # docker / ops
 
+- The PHP image carries `ffmpeg` (MEDIA-11: durations and thumbnails, run by the queue worker; +~180 MB, dev image 433 MB).
 - `docker-compose.yml` services: `ml-postgres`, `ml-redis`, `ml-php` (php-fpm), `ml-queue` / `ml-scheduler` / `ml-reverb` (ADR-0014: same image and mount as ml-php, `entrypoint: php artisan`, start after ml-php is healthy so its entrypoint's composer install and migrations are done; `make workers-restart` reloads their code), `ml-nextjs`, `ml-nextjs-docs`, `ml-nginx` (reverse proxy, host :81 → 8080 inside), `ml-minio` + `ml-minio-init` (bucket + lifecycle setup).
 - Env: `../scripts/setup-env.sh` (`make setup`) generates `docker/.env`, `laravel-api/.env`, FE env. Never hand-edit generated secrets into tracked files.
 - CI lives in `../ci/` (ADR-0016): `ci/check.sh` runs every gate on committed code in a throwaway Compose project `sm-ci` (`ci/compose.yml`: own Postgres + Redis, no ports, runs as the caller's UID); `ci/build.sh` builds the production images (`make tf-images` too). `.github/workflows/ci.yml` and `.gitlab-ci.yml` only call these scripts. `ci/deploy.sh` (`make cd`) is the local CD: check → build → `infra/tf.sh prod-like apply` → `e2e/run.sh prod-like`; nothing deploys from GitHub (the old blue-green `ci-cd/` was removed).
