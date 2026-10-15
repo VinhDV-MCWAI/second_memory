@@ -110,6 +110,8 @@ Mỗi dòng do `scripts/lane.sh done` tự thêm. Không sửa tay.
 
 - 2026-10-15 — [lane main] DOCS-01 done: 95f65960 — bảng Các bước làm của Quản lý file thêm upload dở, xem trước, thùng rác, gắn vào bằng chứng
 
+- 2026-10-15 — [lane main] E2E-01 done: 6412d943, b5272edd — test trình duyệt gắn file vào bằng chứng (upload trong form, đổi thứ tự, không link, mở từ trang public, xóa thì hiện Deleted); sửa test luồng chính hỏng sau LEDGER-02 (nhãn ô Link đổi); make e2e 8/8 pass
+
 ## Next step
 
 Cập nhật 2026-10-15 cuối ngày.
