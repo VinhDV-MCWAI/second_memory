@@ -12,3 +12,4 @@ Artisan::command('inspire', function () {
 
 // Run by the ml-scheduler container (`schedule:work`); `make workers-restart` after changing it.
 Schedule::command('media:clean-stuck-uploads')->hourly()->withoutOverlapping();
+Schedule::command('media:prune-trash')->daily()->withoutOverlapping();

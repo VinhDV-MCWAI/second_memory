@@ -7,6 +7,7 @@ namespace App\Services\Media;
 use App\Constants\MediaConst;
 use App\Constants\Messages;
 use App\Enums\AuditEvent;
+use App\Enums\UploadStatus;
 use App\Models\Media\MediaMgmt;
 use App\Repositories\Media\MediaRepository;
 use App\Services\AuditLogger;
@@ -89,6 +90,28 @@ final class MediaTrashService
         DB::afterCommit(fn () => $this->purgeObjects($rows));
 
         return $rows->count();
+    }
+
+    /**
+     * Removes the rows of everything deleted more than TRASH_DAYS ago (MEDIA-08): files that left the
+     * trash, folders, failed uploads. Their links to evidence go with them. Run daily by
+     * `media:prune-trash`; MinIO has dropped the old versions already, purging again is a safety net.
+     *
+     * @return int rows removed
+     */
+    public function pruneExpired(): int
+    {
+        return DB::transaction(function (): int {
+            $rows = $this->media->deletedBefore(self::keptSince());
+            $files = $rows->filter(fn (MediaMgmt $row): bool => $row->is_file && $row->upload_status === UploadStatus::COMPLETED);
+            foreach ($files as $file) {
+                $this->auditLogger->record(MediaService::AUDIT_TYPE, $file->id, AuditEvent::PURGED, $this->mediaService->auditValues($file));
+            }
+            $this->media->forceDelete($rows);
+            DB::afterCommit(fn () => $this->purgeObjects($files));
+
+            return $rows->count();
+        });
     }
 
     public static function keptSince(): CarbonInterface

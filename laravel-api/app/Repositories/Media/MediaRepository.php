@@ -200,6 +200,17 @@ class MediaRepository extends BaseRepository
         return $this->trashQuery($since)->when($ids !== null, fn (Builder $q) => $q->whereKey($ids))->get();
     }
 
+    /**
+     * Every deleted row (file, folder, failed upload) deleted before $before: past the trash, MinIO no
+     * longer keeps their bytes (MEDIA-08).
+     *
+     * @return Collection<int, MediaMgmt>
+     */
+    public function deletedBefore(CarbonInterface $before): Collection
+    {
+        return $this->query()->where('is_delete', true)->where('updated_at', '<', $before)->get();
+    }
+
     /** Rows of files deleted for good: their history stays in audit_log. */
     public function forceDelete(Collection $rows): void
     {
