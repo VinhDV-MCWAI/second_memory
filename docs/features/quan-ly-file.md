@@ -22,6 +22,7 @@ Menu **Files** (`/admin/files`, cần quyền `media.list`).
 | Đổi tên / Di chuyển | Nút bút chì / nút chuyển thư mục; di chuyển bằng cách gõ đường dẫn thư mục đích (ví dụ `/Docs/2026`) | `media.update` |
 | Xóa | Nút thùng rác ở dòng, hoặc tick nhiều dòng rồi **Delete (n)**; hỏi lại trước khi xóa. File vào [thùng rác](#thùng-rác) 30 ngày | `media.delete` |
 | Thùng rác | Nút **Trash** (`/admin/files/trash`) | `media.trash-list` |
+| Xem file đang gắn vào bằng chứng nào | Cột **Evidence**: kẹp giấy + số lần gắn. Rê chuột vào file thấy tên các bằng chứng; thư mục đếm các file bên trong (không tính file đã xóa). Xóa file / thư mục đang được gắn thì hộp thoại xóa cảnh báo thêm số liên kết sẽ hiện "Deleted" | `media.list` |
 
 Nút nào không có quyền thì không hiện (API vẫn chặn bằng 403). Vai trò Chỉ xem: xem và tải về.
 
@@ -139,7 +140,7 @@ Tất cả nằm dưới `/api/admin/media/`. Mỗi API là một quyền trong 
 
 | API | Làm gì | Quyền | Chỉ xem |
 |---|---|---|---|
-| `GET list?folder=/Docs&name=…` | Con trực tiếp của thư mục (mặc định `/`), thư mục đứng trước. Mỗi file có ô `preview`: `image`, `pdf`, `video`, `audio`, `text` hoặc null (chỉ tải về) | `media.list` | Được |
+| `GET list?folder=/Docs&name=…` | Con trực tiếp của thư mục (mặc định `/`), thư mục đứng trước. Mỗi file có ô `preview`: `image`, `pdf`, `video`, `audio`, `text` hoặc null (chỉ tải về); `attached_count` (số liên kết với bằng chứng, thư mục đếm file bên trong), `used_by` (`[{id, title}]` các bằng chứng dùng file) | `media.list` | Được |
 | `POST store-folder` `{folder, name}` | Tạo thư mục | `media.store-folder` | Không |
 | `POST upload-url` `{folder, name, size, mime_type}` | Xin link PUT cho file ≤ 100 MB; trả `{id, url, method, headers, expires_at}` | `media.upload-url` | Không |
 | `POST complete/{id}` | Báo đã gửi xong; trả thông tin file | `media.complete` | Không |
