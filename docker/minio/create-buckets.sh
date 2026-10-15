@@ -47,7 +47,9 @@ cat > "$POLICY_FILE" <<EOF
         "s3:GetObject",
         "s3:PutObject",
         "s3:DeleteObject",
+        "s3:DeleteObjectVersion",
         "s3:ListBucket",
+        "s3:ListBucketVersions",
         "s3:ListBucketMultipartUploads",
         "s3:ListMultipartUploadParts",
         "s3:AbortMultipartUpload"
