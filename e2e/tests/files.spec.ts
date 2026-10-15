@@ -84,9 +84,10 @@ test('owner resumes a large upload after the page is reloaded', async ({ page })
     partOf(route.request().url()) >= 4 ? route.abort('internetdisconnected') : route.continue(),
   );
   await page.getByTestId('media-file-input').setInputFiles(large);
-  await expect(page.getByRole('listitem').filter({ hasText: 'resume.bin' })).toContainText('Failed', {
-    timeout: 60_000,
-  });
+  // The Unfinished uploads card may already list it too, so look for the failed row of the queue
+  await expect(
+    page.getByRole('listitem').filter({ hasText: 'resume.bin' }).filter({ hasText: 'Failed' }),
+  ).toBeVisible({ timeout: 60_000 });
 
   await page.unroute(/partNumber=/);
   await page.reload();
