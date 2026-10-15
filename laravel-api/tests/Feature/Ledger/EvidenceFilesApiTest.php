@@ -140,6 +140,35 @@ final class EvidenceFilesApiTest extends TestCase
         $this->assertSame([$file], $evidence->files()->pluck('media_mgmt.id')->all());
     }
 
+    public function test_the_files_screen_shows_where_files_are_attached(): void
+    {
+        foreach (['a_b', 'aXb'] as $name) {
+            $this->call('POST', '/api/admin/media/store-folder', ['folder' => '/', 'name' => $name], $this->owner)->assertOk();
+        }
+        $inside = $this->call('POST', '/api/admin/media/upload-url', ['folder' => '/aXb', 'name' => 'in.txt', 'size' => 10, 'mime_type' => 'text/plain'], $this->owner)->json('data.id');
+        $this->storage->put((string) MediaMgmt::query()->findOrFail($inside)->minio_object_key, 10);
+        $this->call('POST', "/api/admin/media/complete/{$inside}", [], $this->owner)->assertOk();
+        $file = $this->uploadFile($this->owner, 'cert.pdf');
+        $loose = $this->uploadFile($this->owner, 'loose.txt');
+        $first = $this->store([$file, $inside]);
+        $second = $this->store([$file]);
+
+        $rows = collect($this->call('GET', '/api/admin/media/list', ['folder' => '/'], $this->owner)->assertOk()->json('data.data'))->keyBy('name');
+
+        $this->assertSame(2, $rows['cert.pdf']['attached_count']);
+        $this->assertEqualsCanonicalizing([$first, $second], array_column($rows['cert.pdf']['used_by'], 'id'));
+        $this->assertSame(0, $rows['loose.txt']['attached_count']);
+        $this->assertSame([], $rows['loose.txt']['used_by']);
+        // A folder counts the files inside it; `_` in a name is not a wildcard
+        $this->assertSame(1, $rows['aXb']['attached_count']);
+        $this->assertSame(0, $rows['a_b']['attached_count']);
+
+        // A deleted file inside no longer counts
+        $this->call('POST', '/api/admin/media/delete', ['ids' => [$inside]], $this->owner)->assertOk();
+        $this->assertSame(0, collect($this->call('GET', '/api/admin/media/list', ['folder' => '/'], $this->owner)->json('data.data'))->keyBy('name')['aXb']['attached_count']);
+        $this->assertNotNull($loose);
+    }
+
     /**
      * @param  list<int>  $mediaIds
      * @return array<string, mixed>

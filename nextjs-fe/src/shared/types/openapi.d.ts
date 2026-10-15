@@ -1109,6 +1109,13 @@ export interface components {
       upload_status: number;
       /** @description How the file can be shown without downloading it; null: download only, or not available */
       preview: string | null;
+      /** @description Links to evidence: of the file, or of the files inside the folder (MEDIA-09; Files listing only) */
+      attached_count?: number;
+      /** @description Evidence this file is attached to (Files listing only) */
+      used_by?: {
+        id: number;
+        title: string;
+      }[];
       created_at: string | null;
       updated_at: string | null;
       /** @description false: deleted in the file manager (in the trash, or gone for good) */
@@ -1224,6 +1231,13 @@ export interface components {
       upload_status: number;
       /** @description How the file can be shown without downloading it (`download-url/{id}?inline=1`); null: download only */
       preview: string | null;
+      /** @description Links to evidence: of the file, or of the files inside the folder (MEDIA-09; Files listing only) */
+      attached_count?: number;
+      /** @description Evidence this file is attached to (Files listing only) */
+      used_by?: {
+        id: number;
+        title: string;
+      }[];
       created_at: string | null;
       updated_at: string | null;
     };

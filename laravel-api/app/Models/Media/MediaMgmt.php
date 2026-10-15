@@ -8,6 +8,7 @@ use App\Enums\UploadStatus;
 use App\Models\Ledger\Evidence;
 use App\Models\Master\AdminMst;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -36,6 +37,7 @@ use Illuminate\Support\Carbon;
  * @property int|null $updated_by
  * @property Carbon|null $updated_at
  * @property-read AdminMst|null $updater
+ * @property-read Collection<int, Evidence> $evidence
  * @property-read Pivot|null $pivot set when loaded through Evidence::files() (`public_id`, LEDGER-01)
  */
 class MediaMgmt extends Model

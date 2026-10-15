@@ -626,6 +626,12 @@
     "deleteSelected": "Delete ({count})",
     "deleteTitle": "Delete {count, plural, one {# item} other {# items}}?",
     "deleteDescription": "A folder is deleted with everything inside. MinIO keeps deleted files for 30 days, so they can still be restored.",
+    "usedBy": {
+      "column": "Evidence",
+      "file": "Attached to {count, plural, one {# evidence} other {# evidence}}: {titles}",
+      "folder": "Files inside are attached to evidence {count, plural, one {# time} other {# times}}",
+      "deleteWarning": "{count, plural, one {# attachment} other {# attachments}} to evidence will show as Deleted until the files are restored."
+    },
     "deleted": "Deleted",
     "uploads": {
       "title": "Uploads",

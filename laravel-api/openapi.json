@@ -6575,6 +6575,29 @@
                         ],
                         "description": "How the file can be shown without downloading it; null: download only, or not available"
                     },
+                    "attached_count": {
+                        "type": "integer",
+                        "description": "Links to evidence: of the file, or of the files inside the folder (MEDIA-09; Files listing only)"
+                    },
+                    "used_by": {
+                        "type": "array",
+                        "description": "Evidence this file is attached to (Files listing only)",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "id": {
+                                    "type": "integer"
+                                },
+                                "title": {
+                                    "type": "string"
+                                }
+                            },
+                            "required": [
+                                "id",
+                                "title"
+                            ]
+                        }
+                    },
                     "created_at": {
                         "type": [
                             "string",
@@ -6975,6 +6998,29 @@
                             "null"
                         ],
                         "description": "How the file can be shown without downloading it (`download-url/{id}?inline=1`); null: download only"
+                    },
+                    "attached_count": {
+                        "type": "integer",
+                        "description": "Links to evidence: of the file, or of the files inside the folder (MEDIA-09; Files listing only)"
+                    },
+                    "used_by": {
+                        "type": "array",
+                        "description": "Evidence this file is attached to (Files listing only)",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "id": {
+                                    "type": "integer"
+                                },
+                                "title": {
+                                    "type": "string"
+                                }
+                            },
+                            "required": [
+                                "id",
+                                "title"
+                            ]
+                        }
                     },
                     "created_at": {
                         "type": [

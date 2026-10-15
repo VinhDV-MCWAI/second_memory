@@ -13,6 +13,7 @@ use Carbon\CarbonInterface;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Query\Builder as QueryBuilder;
 use Illuminate\Database\UniqueConstraintViolationException;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
@@ -37,7 +38,10 @@ class MediaRepository extends BaseRepository
      */
     public function list(string $folder, array $payload): LengthAwarePaginator
     {
-        $query = $this->query()->live()->where('upload_status', '<>', UploadStatus::UPLOADING->value);
+        $query = $this->query()->live()->where('upload_status', '<>', UploadStatus::UPLOADING->value)
+            ->select('media_mgmt.*')
+            ->with('evidence:id,title')
+            ->selectSub($this->attachedCount(), 'attached_count');
         $this->whereChildOf($query, $folder);
 
         if (isset($payload['name'])) {
@@ -48,6 +52,21 @@ class MediaRepository extends BaseRepository
         $this->applySorting($query, $payload, self::SORTABLE, 'original_name');
 
         return $query->paginate($payload['per_page'] ?? MediaConst::PER_PAGE, ['*'], 'page', $payload['page'] ?? 1);
+    }
+
+    /**
+     * Links to evidence of the row: of the file itself, or of the live files inside the folder
+     * (MEDIA-09). `\` escapes LIKE wildcards in the stored path, as escapeLike() does.
+     */
+    private function attachedCount(): QueryBuilder
+    {
+        return DB::table('evidence_media')
+            ->join('media_mgmt as attached', 'attached.id', '=', 'evidence_media.media_id')
+            ->where('attached.is_delete', false)
+            ->where(fn (QueryBuilder $match) => $match
+                ->whereColumn('attached.id', 'media_mgmt.id')
+                ->orWhereRaw("attached.virtual_path like replace(replace(replace(media_mgmt.virtual_path, '\\', '\\\\'), '%', '\\%'), '_', '\\_') || '/%'"))
+            ->selectRaw('count(*)');
     }
 
     public function findLive(int $id): ?MediaMgmt

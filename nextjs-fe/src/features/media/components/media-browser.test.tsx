@@ -154,6 +154,28 @@ describe('MediaBrowser', () => {
     await waitFor(() => expect(deleted).toHaveBeenCalledWith({ ids: [2] }));
   });
 
+  it('shows where a file is attached and warns before deleting it', async () => {
+    server.use(
+      http.get(apiUrl('/admin/media/list'), () =>
+        HttpResponse.json(
+          page([
+            { ...item(1, 'Docs', false), attached_count: 0, used_by: [] },
+            {
+              ...item(2, 'cert.pdf', true),
+              attached_count: 1,
+              used_by: [{ id: 9, title: 'AWS exam' }],
+            },
+          ]),
+        ),
+      ),
+    );
+    renderBrowser();
+
+    expect(await screen.findByLabelText('file')).toBeTruthy();
+    fireEvent.click(screen.getAllByRole('button', { name: 'delete' })[1]);
+    expect(await screen.findByText(/usedBy.deleteWarning/)).toBeTruthy();
+  });
+
   it('resumes an unfinished upload when the same file is uploaded into the same folder', async () => {
     unfinished = [unfinishedMovie];
     uploadFile.mockReturnValue(new Promise(() => undefined));
