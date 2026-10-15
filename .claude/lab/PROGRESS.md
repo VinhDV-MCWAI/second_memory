@@ -8,10 +8,11 @@
 |---|---|
 | Giai đoạn đang làm | 6. Nâng cấp trên dev (bản demo prod-like để sau) |
 | Branch | `feature/p3-ledger-api` (đổi branch khi chủ dự án yêu cầu) |
-| Môi trường | Dev (`make up`, http://localhost:81) + bản demo prod-like trên máy (`make cd`, http://localhost:9443). Staging, production thật, đo tải: tạm dừng |
+| Môi trường | Chỉ dev (`make up`, http://localhost:81). Bản demo prod-like đã tắt container ngày 2026-10-15 (không việc nào dùng); staging, production thật, đo tải: tạm dừng |
 | CI/CD | Chỉ chạy trên máy: `make ci`, `make cd`. **Trên GitHub/GitLab đang TẮT chạy tự động** (push không chạy gì); cách bật lại: [ci/README.md](../../ci/README.md) |
 | Việc tiếp theo | **LEDGER-01 — Đính kèm file vào bằng chứng** (có dấu [XÁC NHẬN], thêm bảng): viết đề xuất rồi dừng chờ chủ dự án. Xem mục "Next step" ở cuối file |
-| Tạm dừng | Mọi việc về **đăng nhập** (AUTH-04, AUTH-05 và các mục "Nâng cấp để dành" trong [dang-nhap.md](../../docs/features/dang-nhap.md)): không đề xuất, không nhận, kể cả việc mới, cho tới khi chủ dự án yêu cầu (quyết ngày 2026-10-14) |
+| Tạm dừng | Mọi việc về **đăng nhập và phân quyền** (AUTH-04, AUTH-05, các mục "Nâng cấp để dành" trong [dang-nhap.md](../../docs/features/dang-nhap.md), loại quyền mới, người dùng cuối, phòng ban, chính sách): không đề xuất, không nhận, kể cả việc mới, **chỉ làm khi chủ dự án yêu cầu** (quyết 2026-10-14, thêm phân quyền 2026-10-15) |
+| Dọn dẹp | Mỗi việc xong phải dọn theo mục "Dọn dẹp khi xong việc" trong [01-goals-and-workflow.md](../../docs/plan/01-goals-and-workflow.md) (`make clean` + xóa code chết, dữ liệu thử) |
 
 ## Việc chủ dự án phải tự làm
 
@@ -30,7 +31,7 @@ Cập nhật 2026-10-15. Mỗi dòng là thứ còn mở, chưa thành việc tr
 | 1 | Push code | Branch `feature/p3-ledger-api` đang đi trước `origin` khoảng 110 commit (từ AUTH-03 tới MEDIA-07) | Chủ dự án |
 | 2 | `.claude/settings.json` có thay đổi chưa commit | Thêm quyền `Write/Edit(.claude/**)`, `Edit(CLAUDE.md)`, `Bash(git rm:*)`. Không phải do các phiên Claude gần đây làm; Claude không động vào. Chủ dự án quyết commit hay bỏ | Chủ dự án |
 | 3 | Chưa chạy `make verify` / `make ci` trọn bộ sau 4 việc gần nhất | Đã chạy riêng từng phần: test backend + Pint + Larastan (219 test), test giao diện + lint + typecheck + format (123 test), 7 test trình duyệt. Nên chạy `make verify` một lần trước khi mở pull request | Phiên sau |
-| 4 | Bản demo prod-like chưa cập nhật | Luật MinIO 30 ngày và quyền phiên bản mới (`docker/minio/`) chỉ mới áp dụng cho dev. Terraform dùng chung file đó, nên lần `make cd` tới sẽ áp dụng; chưa thử | Khi chạy `make cd` |
+| 4 | Bản demo prod-like đã tắt (2026-10-15) | Container `sm-prod-like-*` dừng, dữ liệu demo còn. Luật MinIO 30 ngày chưa áp dụng ở đó; lần `make cd` tới sẽ áp dụng. Muốn xóa hẳn: `make tf-destroy` (Claude không được chạy) | Chủ dự án |
 | 5 | Dòng file đã xóa quá 30 ngày vẫn nằm trong bảng `media_mgmt` | MinIO đã xóa dữ liệu nhưng dòng trong DB còn (`is_delete = true`), không hiện ở đâu. Chưa có lệnh dọn. Nhỏ, có thể thêm vào lệnh hẹn giờ sau | Để sau |
 | 6 | Tiếp tục upload dở từ máy khác không kiểm tra được "đúng file" | Trình duyệt chỉ nhớ thời điểm sửa file trên máy đã bắt đầu upload; máy khác chỉ so tên + dung lượng | Chấp nhận, ghi trong [quan-ly-file.md](../../docs/features/quan-ly-file.md) |
 | 7 | Kiểu sinh tự động hơi lệch | `media/multipart/resume` khai `parts` có thể null (Scramble đoán sai); giao diện coi null là danh sách rỗng | Để sau |

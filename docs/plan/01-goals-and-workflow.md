@@ -24,6 +24,8 @@ Second Memory là hệ thống quản lý kiến thức cá nhân, tự host. T�
       ↓
 ⑤ Test nhanh    Test tự động của phần vừa sửa + chủ dự án thử trên trình duyệt
       ↓
+⑥ Dọn dẹp       Theo mục "Dọn dẹp khi xong việc" bên dưới
+      ↓
    Xong         Ghi một dòng vào nhật ký, cập nhật tài liệu của tính năng
 ```
 
@@ -67,12 +69,28 @@ Không dùng câu trả lời của vai giả lập (PO, QA, Ops do AI đóng) �
 
 Lệnh chi tiết và cách xử lý lỗi: [dev-guide.md](../dev-guide.md).
 
+## Dọn dẹp khi xong việc
+
+Làm trước khi đánh dấu xong mỗi việc (từ 2026-10-15):
+
+| Dọn gì | Cách làm |
+|---|---|
+| Rác Docker: ảnh không tên, ảnh production cũ, ổ đĩa tạm không dùng, bộ nhớ đệm build quá 7 ngày, kết quả test cũ | `make clean`. Không đụng dữ liệu dev, container đang chạy, ảnh còn container dùng |
+| Code chết, đoạn code comment lại, file `.bak`, file thử | Xóa hẳn, không comment lại |
+| File, thư mục, dữ liệu thử tạo ra trong lúc làm (file upload thử, tài khoản thử, script tạm) | Xóa, trừ khi là dữ liệu mẫu của `make seed` |
+| Container hoặc môi trường dựng tạm để thử | Tắt và xóa khi không còn việc nào dùng |
+| Tài liệu nhắc tới thứ đã xóa | Sửa theo |
+
+Xóa thư mục có trong git, hoặc dữ liệu không tạo lại được (DB dev, file trong MinIO dev): hỏi chủ dự án trước.
+
 ## Việc tạm dừng
 
 Những phần dưới đây giữ nguyên code, không phát triển tiếp cho tới giai đoạn cuối:
 
 | Phần | Thư mục | Lý do dừng |
 |---|---|---|
+| Đăng nhập và phân quyền: mọi việc mới hoặc nâng cấp (màn hình phiên đăng nhập, ghi nhớ đăng nhập, các mục "Nâng cấp để dành" trong [dang-nhap.md](../features/dang-nhap.md), thêm loại quyền, quyền theo dữ liệu, người dùng cuối, phòng ban, chính sách) | `laravel-api` (auth, permission), màn hình Vai trò | Chủ dự án tập trung vào tính năng khác (quyết 2026-10-14, mở rộng sang phân quyền 2026-10-15). **Chỉ làm khi chủ dự án yêu cầu**, không tự đề xuất. Tính năng mới vẫn khai quyền như cũ (đặt tên route, `make permissions`) |
+| Bản demo prod-like | `infra/`, `make cd` | Chỉ làm dev trên máy. Container `sm-prod-like-*` đã tắt ngày 2026-10-15 (dữ liệu demo còn); xóa hẳn: `make tf-destroy` |
 | Dựng staging / production bằng Terraform | `infra/` | Chỉ cần khi sản phẩm hoàn thiện |
 | Đo tải, đo hiệu năng | `perf/` | Đo sau khi có đủ tính năng |
 | CI/CD tự động trên GitHub, GitLab | `ci/`, `.github/workflows/`, `.gitlab-ci.yml` | Chạy tự động thì làm chậm việc merge khi làm một mình. Đã gộp vào `ci/` ([ADR-0016](../adr/0016-ci-shared-folder.md)), chỉ chạy tay; trên máy dùng `make ci` |
