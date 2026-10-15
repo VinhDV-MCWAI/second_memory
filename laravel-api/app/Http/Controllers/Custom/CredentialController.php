@@ -19,7 +19,7 @@ final class CredentialController extends Controller
     ) {}
 
     /**
-     * Log in: starts the session. Call `GET /api/sanctum/csrf-cookie` first.
+     * Log in: starts the session. Call `GET /api/sanctum/csrf-cookie` first. `remember` keeps this device signed in for 30 days.
      *
      * @return array<string, mixed>
      *
@@ -29,9 +29,10 @@ final class CredentialController extends Controller
     public function login(LoginRequest $request): array
     {
         /** @var array{user_name: string, password: string} $credentials */
-        $credentials = $request->validated();
+        $credentials = $request->safe()->only(['user_name', 'password']);
+        $admin = $this->credentialService->login($credentials, $request->boolean('remember'), $request);
 
-        return (new CurrentAdminResource($this->credentialService->login($credentials, $request)))->toArray($request);
+        return (new CurrentAdminResource($admin))->toArray($request);
     }
 
     /**

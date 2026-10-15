@@ -6,11 +6,13 @@ use App\Constants\CommonVal;
 use App\Constants\Messages;
 use App\Http\Middleware\AdminMiddleware;
 use App\Http\Middleware\GenerateResponseMiddleware;
+use App\Http\Middleware\RestoreRememberedSession;
 use App\Http\Middleware\TrackAdminSession;
 use App\Http\Middleware\TransactionMiddleware;
 use App\Traits\ApiResponse;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Auth\AuthenticationException;
+use Illuminate\Contracts\Auth\Middleware\AuthenticatesRequests;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
@@ -44,7 +46,11 @@ return Application::configure(basePath: dirname(__DIR__))
             'db.transaction' => TransactionMiddleware::class,
             'auth.admin' => AdminMiddleware::class,
             'admin.session' => TrackAdminSession::class,
+            'admin.remember' => RestoreRememberedSession::class,
         ]);
+        // Laravel moves auth middleware ahead of other route middleware (priority list): a remembered
+        // device (AUTH-05) must be signed in again before auth:sanctum checks the session
+        $middleware->prependToPriorityList(AuthenticatesRequests::class, RestoreRememberedSession::class);
     })
     ->withExceptions(function (Exceptions $exceptions) {
         $exceptions->shouldRenderJsonWhen(fn (Request $request): bool => $request->is('api/*') || $request->expectsJson());

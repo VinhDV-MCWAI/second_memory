@@ -137,6 +137,12 @@ class CommonVal
 
     public const USER_AGENT_MAX = 512;
 
+    // "Remember me" (AUTH-05): a device stays signed in this long after the login, then asks again
+    public const REMEMBER_DAYS = 30;
+
+    // Cookie of a remembered device: "<admin_session id>|<token>", encrypted like every cookie
+    public const REMEMBER_COOKIE = 'remember_device';
+
     /**
      * Admin master
      */

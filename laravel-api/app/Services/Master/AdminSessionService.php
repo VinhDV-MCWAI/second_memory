@@ -14,6 +14,8 @@ use Illuminate\Contracts\Session\Session;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session as SessionStore;
 use Illuminate\Support\Str;
@@ -26,11 +28,19 @@ use Illuminate\Validation\ValidationException;
  * and refreshed by TrackAdminSession at most every SESSION_TOUCH_SECONDS. Ending a session deletes its
  * Redis key (the next request is a guest, 401) and its row; a request already running on that device
  * could write the session back, so a session whose row is gone is also logged out at its next refresh.
+ *
+ * "Remember me" (AUTH-05) is per device: the device's cookie carries a token whose hash is on its row.
+ * When the session has expired, RestoreRememberedSession signs the device in again on the same row;
+ * ending the session (deleting the row) therefore also forgets the device, and no other device.
  */
 final class AdminSessionService
 {
     /** audit_log.auditable_type of admins (AdminMstService::$auditableType). */
     private const AUDITABLE_TYPE = 'admin';
+
+    private const REMEMBER_TOKEN_LENGTH = 60;
+
+    private const REMEMBER_SEPARATOR = '|';
 
     public function __construct(
         private readonly AdminSessionRepository $sessions,
@@ -38,14 +48,66 @@ final class AdminSessionService
     ) {}
 
     /**
-     * Called right after a login: list this session.
+     * Called right after a login: list this session, and remember the device when asked.
      */
-    public function start(int $adminId, Request $request): void
+    public function start(int $adminId, Request $request, bool $remember): void
     {
         $session = $request->session();
         $now = Carbon::now();
-        $this->sessions->create($adminId, $session->getId(), $request->ip(), $this->userAgent($request), $now);
+        $row = $this->sessions->create($adminId, $session->getId(), $request->ip(), $this->userAgent($request), $now);
         $this->mark($session, $now);
+
+        if ($remember) {
+            $token = Str::random(self::REMEMBER_TOKEN_LENGTH);
+            $this->sessions->remember($row, hash('sha256', $token), $now->copy()->addDays(CommonVal::REMEMBER_DAYS));
+            Cookie::queue(Cookie::make(
+                CommonVal::REMEMBER_COOKIE,
+                $row->id.self::REMEMBER_SEPARATOR.$token,
+                CommonVal::REMEMBER_DAYS * 24 * 60,
+                secure: config('session.secure'),
+                sameSite: 'lax',
+            ));
+        }
+    }
+
+    /**
+     * A request without a signed-in admin that carries a remember-me cookie: sign that device in again.
+     *
+     * @return bool false when the cookie no longer counts (signed out, expired, admin disabled); it is dropped
+     */
+    public function restore(Request $request): bool
+    {
+        [$id, $token] = array_pad(explode(self::REMEMBER_SEPARATOR, (string) $request->cookie(CommonVal::REMEMBER_COOKIE), 2), 2, '');
+        $now = Carbon::now();
+        $row = ctype_digit($id) ? $this->sessions->findRemembered((int) $id, $now) : null;
+        $guard = Auth::guard(CommonVal::ADMIN_GUARD);
+        // The provider only returns active, not deleted admins
+        $admin = $row !== null && hash_equals((string) $row->remember_token_hash, hash('sha256', $token))
+            ? $guard->getProvider()->retrieveById($row->admin_id)
+            : null;
+        if ($row === null || $admin === null) {
+            $this->forgetDevice();
+
+            return false;
+        }
+
+        $guard->login($admin);
+        $session = $request->session();
+        $session->regenerate();
+        SessionStore::getHandler()->destroy($row->session_id);
+        $this->sessions->attachSession($row, $session->getId(), $request->ip(), $now);
+        $this->mark($session, $now);
+        $this->auditLogger->record(self::AUDITABLE_TYPE, $row->admin_id, AuditEvent::LOGGED_IN, new: ['via' => 'remembered_device'], actorId: $row->admin_id);
+
+        return true;
+    }
+
+    /**
+     * Log out: the device is no longer remembered.
+     */
+    public function forgetDevice(): void
+    {
+        Cookie::queue(Cookie::forget(CommonVal::REMEMBER_COOKIE));
     }
 
     /**
@@ -83,14 +145,17 @@ final class AdminSessionService
     }
 
     /**
-     * This admin's sessions, newest first. Rows whose Redis session expired are removed on the way.
+     * This admin's sessions, newest first. Rows whose Redis session expired are removed on the way,
+     * unless the device is remembered (it signs in again on its next request).
      *
      * @return Collection<int, AdminSession>
      */
     public function list(int $adminId): Collection
     {
         $rows = $this->sessions->ofAdmin($adminId);
-        $expired = $rows->filter(fn (AdminSession $row): bool => SessionStore::getHandler()->read($row->session_id) === '');
+        $now = Carbon::now();
+        $expired = $rows->filter(fn (AdminSession $row): bool => ! $row->remembered_until?->isAfter($now)
+            && SessionStore::getHandler()->read($row->session_id) === '');
         $this->sessions->deleteBySessionIds($expired->pluck('session_id')->all());
 
         return $rows->diff($expired)->values();
@@ -133,13 +198,14 @@ final class AdminSessionService
     }
 
     /**
-     * Rows of sessions unused for longer than a session lives (Redis has dropped them).
+     * Rows of sessions unused for longer than a session lives (Redis has dropped them) and not remembered.
      */
     public function pruneExpired(): int
     {
         $lifetimeSeconds = (int) config('session.lifetime') * 60 + CommonVal::SESSION_TOUCH_SECONDS;
+        $now = Carbon::now();
 
-        return $this->sessions->deleteUnusedSince(Carbon::now()->subSeconds($lifetimeSeconds));
+        return $this->sessions->deleteUnusedSince($now->copy()->subSeconds($lifetimeSeconds), $now);
     }
 
     /**

@@ -182,7 +182,7 @@ export interface paths {
     };
     get?: never;
     put?: never;
-    /** Log in: starts the session. Call `GET /api/sanctum/csrf-cookie` first */
+    /** Log in: starts the session. Call `GET /api/sanctum/csrf-cookie` first. `remember` keeps this device signed in for 30 days */
     post: operations['credential.login'];
     delete?: never;
     options?: never;
@@ -1048,6 +1048,8 @@ export interface components {
       signed_in_at: string;
       /** @description Refreshed at most every 5 minutes */
       last_used_at: string;
+      /** @description Until when this device stays signed in (remember me); null when it is not remembered */
+      remembered_until: string | null;
       /** @description The session making this request */
       is_current: boolean;
     };
@@ -1292,6 +1294,8 @@ export interface components {
     LoginRequest: {
       user_name: string;
       password: string;
+      /** @description AUTH-05: keep this device signed in for CommonVal::REMEMBER_DAYS */
+      remember?: boolean;
     };
     /** MediaResource */
     MediaResource: {

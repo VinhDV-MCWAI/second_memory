@@ -1162,7 +1162,7 @@
         "/admin/credential/login": {
             "post": {
                 "operationId": "credential.login",
-                "summary": "Log in: starts the session. Call `GET /api/sanctum/csrf-cookie` first",
+                "summary": "Log in: starts the session. Call `GET /api/sanctum/csrf-cookie` first. `remember` keeps this device signed in for 30 days",
                 "tags": [
                     "Credential"
                 ],
@@ -6412,6 +6412,13 @@
                         "type": "string",
                         "description": "Refreshed at most every 5 minutes"
                     },
+                    "remembered_until": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "description": "Until when this device stays signed in (remember me); null when it is not remembered"
+                    },
                     "is_current": {
                         "type": "boolean",
                         "description": "The session making this request"
@@ -6423,6 +6430,7 @@
                     "user_agent",
                     "signed_in_at",
                     "last_used_at",
+                    "remembered_until",
                     "is_current"
                 ],
                 "title": "AdminSessionResource"
@@ -7257,6 +7265,10 @@
                         "type": "string",
                         "minLength": 0,
                         "maxLength": 100
+                    },
+                    "remember": {
+                        "type": "boolean",
+                        "description": "AUTH-05: keep this device signed in for CommonVal::REMEMBER_DAYS"
                     }
                 },
                 "required": [

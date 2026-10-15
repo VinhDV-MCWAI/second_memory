@@ -29,6 +29,12 @@ class AdminSessionResource extends JsonResource
             /** Refreshed at most every 5 minutes */
             'last_used_at' => $this->last_used_at->toIso8601String(),
             /**
+             * Until when this device stays signed in (remember me); null when it is not remembered
+             *
+             * @var string|null
+             */
+            'remembered_until' => $this->remembered_until?->toIso8601String(),
+            /**
              * The session making this request
              *
              * @var bool

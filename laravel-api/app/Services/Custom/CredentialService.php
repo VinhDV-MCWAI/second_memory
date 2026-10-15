@@ -33,11 +33,12 @@ final class CredentialService
 
     /**
      * @param  array{user_name: string, password: string}  $credentials
+     * @param  bool  $remember  keep this device signed in for CommonVal::REMEMBER_DAYS (AUTH-05)
      *
      * @throws AuthenticationException
      * @throws ThrottleRequestsException
      */
-    public function login(array $credentials, Request $request): AdminMst
+    public function login(array $credentials, bool $remember, Request $request): AdminMst
     {
         // Sanctum only starts a session for requests coming from the SPA (stateful domains)
         if (! $request->hasSession()) {
@@ -67,7 +68,7 @@ final class CredentialService
 
         /** @var AdminMst $admin */
         $admin = $this->guard()->user();
-        $this->adminSessions->start($admin->id, $request);
+        $this->adminSessions->start($admin->id, $request, $remember);
         $this->auditLogger->record(self::AUDITABLE_TYPE, $admin->id, AuditEvent::LOGGED_IN, actorId: $admin->id);
 
         return $admin;
@@ -86,6 +87,8 @@ final class CredentialService
                 $this->adminSessions->forget($request->session()->getId());
             }
         }
+
+        $this->adminSessions->forgetDevice();
 
         if ($request->hasSession()) {
             $request->session()->invalidate();

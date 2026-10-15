@@ -28,6 +28,8 @@ class LoginRequest extends FormRequest
         return [
             'user_name' => ['required', 'string', 'min:'.CommonVal::MIN_VARCHAR, 'max:50'],
             'password' => ['required', 'string', 'min:'.CommonVal::MIN_VARCHAR, 'max:100'],
+            // AUTH-05: keep this device signed in for CommonVal::REMEMBER_DAYS
+            'remember' => ['sometimes', 'boolean'],
         ];
     }
 

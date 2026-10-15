@@ -44,6 +44,31 @@ final class AdminSessionRepository
         );
     }
 
+    public function remember(AdminSession $row, string $tokenHash, Carbon $until): void
+    {
+        $row->update(['remember_token_hash' => $tokenHash, 'remembered_until' => $until]);
+    }
+
+    /**
+     * A row whose remember-me has not run out yet.
+     */
+    public function findRemembered(int $id, Carbon $now): ?AdminSession
+    {
+        return AdminSession::query()
+            ->whereKey($id)
+            ->whereNotNull('remember_token_hash')
+            ->where('remembered_until', '>', $now)
+            ->first();
+    }
+
+    /**
+     * A remembered device signed in again with a new session: same row, so "signed in" keeps the first login.
+     */
+    public function attachSession(AdminSession $row, string $sessionId, ?string $ip, Carbon $now): void
+    {
+        $row->update(['session_id' => $sessionId, 'ip_address' => $ip, 'last_used_at' => $now]);
+    }
+
     /**
      * @return int 0 when the row is gone, i.e. the session was ended from another device
      */
@@ -74,8 +99,14 @@ final class AdminSessionRepository
             ->all();
     }
 
-    public function deleteUnusedSince(Carbon $before): int
+    /**
+     * Rows unused since $before, unless their remember-me still runs.
+     */
+    public function deleteUnusedSince(Carbon $before, Carbon $now): int
     {
-        return AdminSession::query()->where('last_used_at', '<', $before)->delete();
+        return AdminSession::query()
+            ->where('last_used_at', '<', $before)
+            ->where(fn ($query) => $query->whereNull('remembered_until')->orWhere('remembered_until', '<=', $now))
+            ->delete();
     }
 }

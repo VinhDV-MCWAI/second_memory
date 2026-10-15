@@ -23,7 +23,8 @@ Route::prefix('admin/credential')
 Route::prefix('admin')
     ->middleware(['api.response', 'db.transaction'])
     ->group(function () {
-        Route::middleware('auth:sanctum')
+        // A remembered device (AUTH-05) whose session expired is signed in again first
+        Route::middleware(['admin.remember', 'auth:sanctum'])
             ->group(function () {
                 Route::middleware(['admin.session', 'auth.admin'])
                     ->group(function () {

@@ -17,6 +17,8 @@ use Illuminate\Support\Carbon;
  * @property string|null $user_agent
  * @property Carbon $created_at
  * @property Carbon $last_used_at
+ * @property string|null $remember_token_hash
+ * @property Carbon|null $remembered_until
  */
 class AdminSession extends Model
 {
@@ -30,7 +32,11 @@ class AdminSession extends Model
         'ip_address',
         'user_agent',
         'last_used_at',
+        'remember_token_hash',
+        'remembered_until',
     ];
+
+    protected $hidden = ['session_id', 'remember_token_hash'];
 
     protected function casts(): array
     {
@@ -39,6 +45,7 @@ class AdminSession extends Model
             'admin_id' => 'integer',
             'created_at' => 'datetime',
             'last_used_at' => 'datetime',
+            'remembered_until' => 'datetime',
         ];
     }
 }
