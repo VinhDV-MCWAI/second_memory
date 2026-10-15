@@ -69,7 +69,7 @@ Từ 2026-10-15. Mỗi bằng chứng gắn được **tối đa 10 file** lấy
 | Gắn file không tồn tại, thư mục, file đang upload, file đã xóa | 422 "Only uploaded files of the file manager can be attached" |
 | Gắn quá 10 file | 422 |
 | File đã gắn bị xóa trong Files | Vẫn gắn, hiện gạch ngang + nhãn **Deleted**, không xem / tải được, trang public không hiện. Khôi phục từ thùng rác là hiện lại như cũ. Lưu lại form vẫn được (file đã gắn từ trước được giữ) |
-| File bị xóa vĩnh viễn (tự động sau 30 ngày, hoặc **Delete forever**) | Tự gỡ khỏi bằng chứng |
+| File bị xóa vĩnh viễn (**Delete forever**, hoặc lệnh dọn hằng ngày khi đã xóa quá 30 ngày) | Tự gỡ khỏi bằng chứng |
 | Xóa bằng chứng | Chỉ mất liên kết, file vẫn trong Files |
 | Bằng chứng nhập từ Obsidian | Vẫn gắn / gỡ file được (file không do Obsidian quản lý) |
 | Sửa bằng chứng mà không gửi `media_ids` | File đính kèm giữ nguyên |

@@ -29,7 +29,7 @@ Upload chạy lần lượt từng file (file lớn đã tự gửi 4 phần cù
 
 ### Thùng rác
 
-File đã xóa nằm trong thùng rác **30 ngày**, sau đó MinIO tự xóa hẳn và dòng đó biến khỏi thùng rác.
+File đã xóa nằm trong thùng rác **30 ngày**, sau đó MinIO tự xóa hẳn và dòng đó biến khỏi thùng rác. Mỗi ngày lúc 0 giờ, lệnh `media:prune-trash` (container `ml-scheduler`) xóa hẳn khỏi bảng `media_mgmt` mọi dòng đã xóa quá 30 ngày (file, thư mục, upload hỏng), kèm liên kết của file đó với bằng chứng, và ghi `purged` vào nhật ký. Chạy tay: `docker exec ml-php php artisan media:prune-trash`.
 
 | Thao tác | Kết quả | Quyền |
 |---|---|---|
@@ -186,6 +186,7 @@ Mọi thay đổi (tạo thư mục, upload xong, đổi tên, chuyển, xóa) g
 | Nghiệp vụ | `app/Services/Media/MediaService.php` |
 | Nói chuyện với MinIO | `app/Services/Media/ObjectStorage.php` (thư viện `aws/aws-sdk-php`) |
 | Upload chia phần, dọn upload treo | `app/Services/Media/MultipartUploadService.php`, `app/Jobs/Media/ProcessUploadJob.php`, `app/Console/Commands/CleanStuckUploadsCommand.php` (lịch trong `routes/console.php`) |
+| Dọn dòng đã xóa quá 30 ngày | `app/Console/Commands/PruneTrashCommand.php`, `MediaTrashService::pruneExpired()`; test `tests/Feature/Media/PruneTrashCommandTest.php` |
 | Truy vấn | `app/Repositories/Media/MediaRepository.php` |
 | Test | `tests/Feature/Media/{MediaApiTest,MultipartUploadApiTest}.php` (MinIO giả trong bộ nhớ: `tests/Fakes/FakeObjectStorage.php`) |
 | Bộ upload phía trình duyệt | `nextjs-fe/src/features/media/lib/uploader.ts` (`uploadFile(file, {folder, onProgress, signal})`) |
