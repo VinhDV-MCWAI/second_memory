@@ -37,7 +37,7 @@ import {
 } from '../hooks/use-media';
 import { useUploads, type UploadState } from '../hooks/use-uploads';
 import { discardUpload } from '../lib/uploader';
-import { crumbsOf, formatBytes, parentOf, ROOT } from '../lib/media-paths';
+import { crumbsOf, formatBytes, formatFileSize, parentOf, ROOT } from '../lib/media-paths';
 import { IconButton } from './icon-button';
 import { UsedBy } from './used-by';
 import { MediaFieldDialog } from './media-field-dialog';
@@ -234,7 +234,7 @@ export function MediaBrowser() {
       key: 'size',
       label: t('size'),
       sortable: true,
-      render: (item) => (item.is_file ? formatBytes(item.size) : ''),
+      render: (item) => (item.is_file ? formatFileSize(item) : ''),
     },
     {
       key: 'updated_at',

@@ -12,12 +12,15 @@ use App\Enums\UploadStatus;
 use App\Models\Media\MediaMgmt;
 use App\Repositories\Media\MediaRepository;
 use App\Services\AuditLogger;
+use Aws\S3\Exception\S3Exception;
+use ErrorException;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
+use ValueError;
 
 /**
  * File manager (ADR-0014): the browser sends bytes straight to MinIO through presigned URLs;
@@ -161,7 +164,10 @@ final class MediaService
      */
     public function markCompleted(MediaMgmt $file, array $object, ?int $actorId): void
     {
+        $dimensions = $this->imageSize($file);
         $file->fill([
+            'width' => $dimensions['width'] ?? null,
+            'height' => $dimensions['height'] ?? null,
             'minio_etag' => $object['etag'],
             'mime_type' => $object['mime_type'] ?? $file->mime_type,
             'upload_id' => null,
@@ -309,6 +315,52 @@ final class MediaService
     /**
      * @return array<string, mixed>
      */
+    /**
+     * Width and height of an image file, read from the start of its object (MEDIA-10). Null for other
+     * files and for an image whose header cannot be read: the upload itself still succeeds.
+     *
+     * @return array{width: int, height: int}|null
+     */
+    public function imageSize(MediaMgmt $file): ?array
+    {
+        if (PreviewKind::forFile($file->extension, $file->size) !== PreviewKind::IMAGE || $file->minio_object_key === null) {
+            return null;
+        }
+        try {
+            $info = getimagesizefromstring($this->storage->readStart($file->minio_object_key, MediaConst::IMAGE_PROBE_BYTES));
+        } catch (S3Exception|ErrorException|ValueError) {
+            return null;
+        }
+
+        return $info === false || $info[0] < 1 || $info[1] < 1 ? null : ['width' => $info[0], 'height' => $info[1]];
+    }
+
+    /**
+     * Reads the size of completed images that have none yet (uploaded before MEDIA-10). The rows keep
+     * their updated_at: nobody changed the file.
+     *
+     * @return array{read: int, unreadable: int}
+     */
+    public function fillMissingImageSizes(): array
+    {
+        $counts = ['read' => 0, 'unreadable' => 0];
+        foreach ($this->media->imagesWithoutSize(array_keys(array_filter(
+            MediaConst::PREVIEW_CONTENT_TYPES,
+            fn (string $type): bool => str_starts_with($type, 'image/'),
+        ))) as $file) {
+            $dimensions = $this->imageSize($file);
+            if ($dimensions === null) {
+                $counts['unreadable']++;
+
+                continue;
+            }
+            $this->media->setImageSize($file->id, $dimensions['width'], $dimensions['height']);
+            $counts['read']++;
+        }
+
+        return $counts;
+    }
+
     public function auditValues(MediaMgmt $item): array
     {
         return array_filter([

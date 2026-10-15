@@ -16,6 +16,7 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use Illuminate\Database\UniqueConstraintViolationException;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\LazyCollection;
 use Illuminate\Validation\ValidationException;
 
 /**
@@ -125,6 +126,28 @@ class MediaRepository extends BaseRepository
     public function save(MediaMgmt $item): void
     {
         $this->unique(fn (): bool => $item->save());
+    }
+
+    /**
+     * Live completed files with one of $extensions and no width yet.
+     *
+     * @param  list<string>  $extensions
+     * @return LazyCollection<int, MediaMgmt>
+     */
+    public function imagesWithoutSize(array $extensions): LazyCollection
+    {
+        return $this->query()->live()
+            ->where('is_file', true)
+            ->where('upload_status', UploadStatus::COMPLETED)
+            ->whereNull('width')
+            ->whereIn(DB::raw('lower(extension)'), $extensions)
+            ->lazyById();
+    }
+
+    /** Sets the size without touching updated_at (it is when the file last changed, or was deleted). */
+    public function setImageSize(int $id, int $width, int $height): void
+    {
+        $this->query()->whereKey($id)->toBase()->update(['width' => $width, 'height' => $height]);
     }
 
     /**

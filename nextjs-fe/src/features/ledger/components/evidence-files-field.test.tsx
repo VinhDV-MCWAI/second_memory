@@ -28,6 +28,8 @@ const file = (id: number, name: string, available = true): EvidenceFile => ({
   extension: null,
   mime_type: null,
   size: 2048,
+  width: null,
+  height: null,
   upload_status: 2,
   preview: null,
   created_at: null,

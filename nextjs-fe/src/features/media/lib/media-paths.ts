@@ -28,3 +28,13 @@ export function formatBytes(bytes: number | null | undefined): string {
   }
   return `${unit === 0 ? value : value.toFixed(value < 10 ? 1 : 0)} ${UNITS[unit]}`;
 }
+
+/** Size of a file for the Files screen: bytes, plus width × height for an image (MEDIA-10). */
+export function formatFileSize(item: {
+  size?: number | null;
+  width?: number | null;
+  height?: number | null;
+}): string {
+  const bytes = formatBytes(item.size);
+  return item.width && item.height ? `${bytes} · ${item.width} × ${item.height}` : bytes;
+}

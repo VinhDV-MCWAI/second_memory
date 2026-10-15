@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { crumbsOf, formatBytes, joinPath, parentOf, ROOT } from './media-paths';
+import { crumbsOf, formatBytes, formatFileSize, joinPath, parentOf, ROOT } from './media-paths';
 
 describe('media paths', () => {
   it('joins and splits virtual paths', () => {
@@ -22,6 +22,8 @@ describe('media paths', () => {
     expect(formatBytes(1536)).toBe('1.5 KB');
     expect(formatBytes(3 * 1024 ** 3)).toBe('3.0 GB');
     expect(formatBytes(250 * 1024 ** 2)).toBe('250 MB');
+    expect(formatFileSize({ size: 2048, width: 1920, height: 1080 })).toBe('2.0 KB · 1920 × 1080');
+    expect(formatFileSize({ size: 2048, width: null, height: null })).toBe('2.0 KB');
     expect(formatBytes(null)).toBe('');
   });
 });

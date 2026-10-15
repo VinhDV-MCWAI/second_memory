@@ -30,6 +30,9 @@ class MediaResource extends JsonResource
             'mime_type' => $this->mime_type,
             /** @var int|null */
             'size' => $this->size,
+            /** Image width and height in pixels (MEDIA-10); null for other files or an unreadable image */
+            'width' => $this->width,
+            'height' => $this->height,
             /** 0 uploading, 1 processing, 2 completed, 3 failed */
             'upload_status' => $this->upload_status->value,
             /** How the file can be shown without downloading it (`download-url/{id}?inline=1`); null: download only */

@@ -157,6 +157,14 @@ class ObjectStorage
         ];
     }
 
+    /** The first $bytes of an object (a Range GET), or all of it when it is smaller. */
+    public function readStart(string $key, int $bytes): string
+    {
+        $result = $this->internalClient()->getObject(['Bucket' => $this->bucket(), 'Key' => $key, 'Range' => 'bytes=0-'.($bytes - 1)]);
+
+        return (string) $result['Body'];
+    }
+
     /** Deleting a missing object succeeds; on the versioned bucket it leaves a delete marker (30 days to restore). */
     public function delete(string $key): void
     {

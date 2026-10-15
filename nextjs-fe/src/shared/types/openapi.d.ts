@@ -1105,6 +1105,9 @@ export interface components {
       extension: string | null;
       mime_type: string | null;
       size: number | null;
+      /** @description Image width and height in pixels (MEDIA-10); null for other files or an unreadable image */
+      width: number | null;
+      height: number | null;
       /** @description 0 uploading, 1 processing, 2 completed, 3 failed */
       upload_status: number;
       /** @description How the file can be shown without downloading it; null: download only, or not available */
@@ -1228,6 +1231,9 @@ export interface components {
       extension: string | null;
       mime_type: string | null;
       size: number | null;
+      /** @description Image width and height in pixels (MEDIA-10); null for other files or an unreadable image */
+      width: number | null;
+      height: number | null;
       /** @description 0 uploading, 1 processing, 2 completed, 3 failed */
       upload_status: number;
       /** @description How the file can be shown without downloading it (`download-url/{id}?inline=1`); null: download only */

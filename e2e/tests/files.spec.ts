@@ -138,6 +138,8 @@ test('owner previews an image and a text file', async ({ page }) => {
   await expect(page).toHaveURL(/folder=/);
 
   await page.getByTestId('media-file-input').setInputFiles([image, text]);
+  // Width × height read from the start of the object in MinIO (MEDIA-10)
+  await expect(page.getByRole('row').filter({ hasText: 'dot.png' })).toContainText('1 × 1');
   await page.getByRole('button', { name: 'dot.png' }).click();
   const shown = page.getByRole('dialog').getByRole('img', { name: 'dot.png' });
   await expect(shown).toBeVisible();

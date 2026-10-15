@@ -42,6 +42,20 @@ final class FakeObjectStorage extends ObjectStorage
         return $this->objects[$key] ?? null;
     }
 
+    /** @var array<string, string> contents given with putBody(); other objects read as zero bytes */
+    public array $bodies = [];
+
+    public function readStart(string $key, int $bytes): string
+    {
+        return substr($this->bodies[$key] ?? str_repeat("\0", $this->objects[$key]['size'] ?? 0), 0, $bytes);
+    }
+
+    public function putBody(string $key, string $body): void
+    {
+        $this->put($key, strlen($body));
+        $this->bodies[$key] = $body;
+    }
+
     /** @var array<string, array{size: int, etag: string, mime_type: string|null}> deleted objects the versioned bucket still keeps */
     public array $kept = [];
 

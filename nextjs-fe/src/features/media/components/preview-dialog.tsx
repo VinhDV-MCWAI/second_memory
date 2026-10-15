@@ -7,7 +7,7 @@ import { AppDialog } from '@/components/common/app-dialog';
 import { queryKeys } from '@/shared/api';
 import type { MediaItem } from '@/shared/types/models';
 import { usePreviewUrl } from '../hooks/use-media';
-import { formatBytes } from '../lib/media-paths';
+import { formatFileSize } from '../lib/media-paths';
 
 /** laravel-api App\Enums\PreviewKind. */
 export const PREVIEW_KIND = {
@@ -37,7 +37,7 @@ export function PreviewDialog({ item, onClose, onDownload }: PreviewDialogProps)
       open={item !== null}
       onOpenChange={(open) => !open && onClose()}
       title={item?.name ?? ''}
-      description={item ? `${item.path} · ${formatBytes(item.size)}` : undefined}
+      description={item ? `${item.path} · ${formatFileSize(item)}` : undefined}
       size="xl"
       actions={
         item && onDownload

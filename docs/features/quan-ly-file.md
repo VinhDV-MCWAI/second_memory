@@ -22,6 +22,7 @@ Menu **Files** (`/admin/files`, cần quyền `media.list`).
 | Đổi tên / Di chuyển | Nút bút chì / nút chuyển thư mục; di chuyển bằng cách gõ đường dẫn thư mục đích (ví dụ `/Docs/2026`) | `media.update` |
 | Xóa | Nút thùng rác ở dòng, hoặc tick nhiều dòng rồi **Delete (n)**; hỏi lại trước khi xóa. File vào [thùng rác](#thùng-rác) 30 ngày | `media.delete` |
 | Thùng rác | Nút **Trash** (`/admin/files/trash`) | `media.trash-list` |
+| Xem kích thước ảnh | Cột dung lượng và dòng dưới tên trong hộp xem trước hiện thêm rộng × cao (ví dụ `2.0 MB · 1920 × 1080`) với ảnh jpg, png, gif, webp, avif, bmp. Đọc từ 1 MB đầu của file ngay khi upload xong; ảnh hỏng không đọc được thì chỉ hiện dung lượng, upload vẫn thành công. Ảnh upload trước ngày 2026-10-15: chạy `docker exec ml-php php artisan media:read-image-sizes` (chạy lại bao nhiêu lần cũng được) | `media.list` |
 | Xem file đang gắn vào bằng chứng nào | Cột **Evidence**: kẹp giấy + số lần gắn. Rê chuột vào file thấy tên các bằng chứng; bấm vào số của một file thì mở màn hình Evidence chỉ hiện các bằng chứng dùng file đó (cần quyền `evidence.list`); thư mục đếm các file bên trong (không tính file đã xóa). Xóa file / thư mục đang được gắn thì hộp thoại xóa cảnh báo thêm số liên kết sẽ hiện "Deleted" | `media.list` |
 
 Nút nào không có quyền thì không hiện (API vẫn chặn bằng 403). Vai trò Chỉ xem: xem và tải về.
@@ -210,3 +211,5 @@ Mọi thay đổi (tạo thư mục, upload xong, đổi tên, chuyển, xóa) g
 | Gắn file vào bằng chứng của [Skill Ledger](skill-ledger.md), cột Evidence ở màn hình Files | Xong |
 | Bằng chứng chỉ có file, không cần link | Xong |
 | Bấm số ở cột Evidence để mở các bằng chứng dùng file | Xong |
+| Kích thước ảnh (rộng × cao) | Xong |
+| Thời lượng video, nhạc; ảnh thu nhỏ | Chưa làm: cần thêm công cụ (ffmpeg, thư viện xử lý ảnh) vào container, chờ chủ dự án quyết |

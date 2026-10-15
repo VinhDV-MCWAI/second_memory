@@ -38,6 +38,8 @@ const imported: Evidence = {
       extension: 'pdf',
       mime_type: 'application/pdf',
       size: 1024,
+      width: null,
+      height: null,
       upload_status: 2,
       preview: 'pdf',
       created_at: null,

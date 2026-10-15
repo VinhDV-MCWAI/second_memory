@@ -27,6 +27,8 @@ use Illuminate\Support\Carbon;
  * @property string|null $extension
  * @property string|null $mime_type
  * @property int|null $size
+ * @property int|null $width
+ * @property int|null $height
  * @property string|null $minio_bucket
  * @property string|null $minio_object_key
  * @property string|null $minio_etag
@@ -53,6 +55,8 @@ class MediaMgmt extends Model
         'extension',
         'mime_type',
         'size',
+        'width',
+        'height',
         'minio_bucket',
         'minio_object_key',
         'minio_etag',
@@ -112,6 +116,8 @@ class MediaMgmt extends Model
             'id' => 'integer',
             'is_file' => 'boolean',
             'size' => 'integer',
+            'width' => 'integer',
+            'height' => 'integer',
             'upload_status' => UploadStatus::class,
             'is_delete' => 'boolean',
             'created_by' => 'integer',

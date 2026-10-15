@@ -65,6 +65,9 @@ final class MediaConst
     /** A preview link outlives a download link: a video keeps fetching ranges while it plays. */
     public const PREVIEW_URL_TTL_SECONDS = 3600;
 
+    /** Bytes read from the start of an image to find its width and height (MEDIA-10); the header is near the start. */
+    public const IMAGE_PROBE_BYTES = 1024 * 1024;
+
     /** Text files are previewed in full, so only small ones. */
     public const PREVIEW_TEXT_MAX_BYTES = 2 * 1024 * 1024;
 
