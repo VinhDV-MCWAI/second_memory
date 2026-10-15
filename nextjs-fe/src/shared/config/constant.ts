@@ -194,6 +194,9 @@ export const SEARCH_QUERY_MIN = 2;
 /** Query-string parameter of the search page. */
 export const SEARCH_PARAM = 'q';
 
+/** Query-string parameters of the evidence page opened from a file (LEDGER-03). */
+export const EVIDENCE_FILE_PARAMS = { ID: 'media_id', NAME: 'file' } as const;
+
 export const ADMIN_ROUTES = {
   DASHBOARD: '/admin',
   ADMINS: '/admin/admins',

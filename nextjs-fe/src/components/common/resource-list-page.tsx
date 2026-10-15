@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, type ComponentType } from 'react';
+import { useState, type ComponentType, type ReactNode } from 'react';
 import { useTranslations } from 'next-intl';
 import { Plus, Trash2 } from 'lucide-react';
 import { PageHeader } from '@/components/layout/page-header';
@@ -93,6 +93,10 @@ export type ResourceListPageProps<T extends { id: number }> = Editor<T> & {
   /** localStorage key of the saved filters. */
   filtersKey: string;
   staleTime?: number;
+  /** Filters set by the page (e.g. from the URL), sent on top of the user's filters. */
+  fixedFilters?: Record<string, FilterValue>;
+  /** Shown above the search and filters, e.g. what the fixed filters mean. */
+  toolbar?: ReactNode;
 };
 
 /** Admin list page: header, search/filters, bulk delete, table, pagination, create/edit/delete dialogs. */
@@ -105,6 +109,8 @@ export function ResourceListPage<T extends { id: number }>({
   defaultSortBy,
   filtersKey,
   staleTime,
+  fixedFilters,
+  toolbar,
   ...editor
 }: ResourceListPageProps<T>) {
   const [page, setPage] = useState<number>(PAGINATION.DEFAULT_PAGE);
@@ -135,7 +141,7 @@ export function ResourceListPage<T extends { id: number }>({
   const { data, loading, pagination } = useApiData<T>(endpoint, {
     page,
     per_page: perPage,
-    filters,
+    filters: { ...filters, ...fixedFilters },
     sort_by: sortBy,
     sort_order: sortOrder,
     staleTime,
@@ -236,6 +242,7 @@ export function ResourceListPage<T extends { id: number }>({
       />
 
       <div className="mt-6 space-y-4">
+        {toolbar}
         <div className="flex gap-2">
           <AdvancedSearch fields={searchFields} onSearch={handleAdvancedSearch} />
           <SavedFilters

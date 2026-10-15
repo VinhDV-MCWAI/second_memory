@@ -531,7 +531,9 @@
       "moveUp": "Move up",
       "moveDown": "Move down",
       "remove": "Remove {name}",
-      "count": "{count, plural, one {# file} other {# files}} attached"
+      "count": "{count, plural, one {# file} other {# files}} attached",
+      "filtered": "Evidence using the file {name}",
+      "showAll": "Show all evidence"
     },
     "achievedHint": "Achieved goals keep their target; only the date and note can change.",
     "search": {
@@ -631,7 +633,8 @@
       "column": "Evidence",
       "file": "Attached to {count, plural, one {# evidence} other {# evidence}}: {titles}",
       "folder": "Files inside are attached to evidence {count, plural, one {# time} other {# times}}",
-      "deleteWarning": "{count, plural, one {# attachment} other {# attachments}} to evidence will show as Deleted until the files are restored."
+      "deleteWarning": "{count, plural, one {# attachment} other {# attachments}} to evidence will show as Deleted until the files are restored.",
+      "open": "Open the evidence using {name}"
     },
     "deleted": "Deleted",
     "uploads": {

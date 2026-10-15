@@ -53,7 +53,10 @@ function TestForm({ initialData, formId, onSuccess }: ResourceFormProps<Row>) {
   );
 }
 
-const renderPage = (dialogActions?: ResourceListPageProps<Row>['dialogActions']) => {
+const renderPage = (
+  dialogActions?: ResourceListPageProps<Row>['dialogActions'],
+  extra: Pick<ResourceListPageProps<Row>, 'fixedFilters' | 'toolbar'> = {},
+) => {
   const { Wrapper } = createQueryWrapper();
   return render(
     <Wrapper>
@@ -68,6 +71,7 @@ const renderPage = (dialogActions?: ResourceListPageProps<Row>['dialogActions'])
         form={TestForm}
         dialogSize="lg"
         dialogActions={dialogActions}
+        {...extra}
       />
     </Wrapper>,
   );
@@ -105,6 +109,14 @@ describe('ResourceListPage', () => {
     screen.getByText('Launch');
     expect(listParams[0].get('sort_by')).toBe('rank_order');
     expect(listParams[0].get('sort_order')).toBe('asc');
+  });
+
+  it('sends the page fixed filters and shows its toolbar', async () => {
+    renderPage(undefined, { fixedFilters: { media_id: 7 }, toolbar: <p>only file 7</p> });
+
+    await screen.findByText('Spring sale');
+    screen.getByText('only file 7');
+    expect(listParams[0].get('media_id')).toBe('7');
   });
 
   it('opens the form empty for create and filled for edit', async () => {
