@@ -22,7 +22,7 @@ Menu **Files** (`/admin/files`, cần quyền `media.list`).
 | Đổi tên / Di chuyển | Nút bút chì / nút chuyển thư mục; di chuyển bằng cách gõ đường dẫn thư mục đích (ví dụ `/Docs/2026`) | `media.update` |
 | Xóa | Nút thùng rác ở dòng, hoặc tick nhiều dòng rồi **Delete (n)**; hỏi lại trước khi xóa. File vào [thùng rác](#thùng-rác) 30 ngày | `media.delete` |
 | Thùng rác | Nút **Trash** (`/admin/files/trash`) | `media.trash-list` |
-| Xem file đang gắn vào bằng chứng nào | Cột **Evidence**: kẹp giấy + số lần gắn. Rê chuột vào file thấy tên các bằng chứng; thư mục đếm các file bên trong (không tính file đã xóa). Xóa file / thư mục đang được gắn thì hộp thoại xóa cảnh báo thêm số liên kết sẽ hiện "Deleted" | `media.list` |
+| Xem file đang gắn vào bằng chứng nào | Cột **Evidence**: kẹp giấy + số lần gắn. Rê chuột vào file thấy tên các bằng chứng; bấm vào số của một file thì mở màn hình Evidence chỉ hiện các bằng chứng dùng file đó (cần quyền `evidence.list`); thư mục đếm các file bên trong (không tính file đã xóa). Xóa file / thư mục đang được gắn thì hộp thoại xóa cảnh báo thêm số liên kết sẽ hiện "Deleted" | `media.list` |
 
 Nút nào không có quyền thì không hiện (API vẫn chặn bằng 403). Vai trò Chỉ xem: xem và tải về.
 
@@ -209,3 +209,4 @@ Mọi thay đổi (tạo thư mục, upload xong, đổi tên, chuyển, xóa) g
 | Thùng rác 30 ngày, khôi phục, xóa vĩnh viễn, dọn hằng ngày | Xong |
 | Gắn file vào bằng chứng của [Skill Ledger](skill-ledger.md), cột Evidence ở màn hình Files | Xong |
 | Bằng chứng chỉ có file, không cần link | Xong |
+| Bấm số ở cột Evidence để mở các bằng chứng dùng file | Xong |

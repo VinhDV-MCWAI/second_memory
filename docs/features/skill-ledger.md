@@ -17,7 +17,7 @@ Sổ ghi kỹ năng: mỗi kỹ năng có cấp độ hiện tại, lịch sử 
 |---|---|
 | http://localhost:81/admin | Trang tổng quan: số kỹ năng, số kỹ năng công khai, số bằng chứng, số bằng chứng công khai, số mục tiêu đang mở; biểu đồ số kỹ năng theo cấp độ; 10 thay đổi gần nhất |
 | `/admin/skills` | Kỹ năng: thêm, sửa, xóa; ghi cấp độ mới; xem dòng thời gian cấp độ và lịch sử thay đổi |
-| `/admin/evidence` | Bằng chứng: thêm, sửa, xóa, gắn kỹ năng, nhãn và [file đính kèm](#file-đính-kèm-bằng-chứng); bằng chứng có file hiện biểu tượng kẹp giấy + số file cạnh tiêu đề |
+| `/admin/evidence` | Bằng chứng: thêm, sửa, xóa, gắn kỹ năng, nhãn và [file đính kèm](#file-đính-kèm-bằng-chứng); bằng chứng có file hiện biểu tượng kẹp giấy + số file cạnh tiêu đề. Mở từ cột Evidence của màn hình Files (`/admin/evidence?media_id=…`) thì chỉ hiện các bằng chứng đang gắn file đó, có dòng "Evidence using the file …" và nút **Show all evidence** để bỏ lọc |
 | `/admin/goals` | Mục tiêu học: kỹ năng nào, cấp độ muốn đạt, hạn |
 | `/admin/tags` | Nhãn dùng chung cho kỹ năng và bằng chứng |
 
@@ -32,7 +32,7 @@ Kỹ năng, nhãn, bằng chứng, mục tiêu học dùng chung một kiểu b�
 | `PUT /api/admin/{loại}/update/{id}` | Sửa | Chủ |
 | `POST /api/admin/{loại}/delete` | Xóa nhiều dòng (`ids`) | Chủ |
 
-`{loại}` là `skill`, `tag`, `evidence` hoặc `learning-goal`. Thêm:
+`{loại}` là `skill`, `tag`, `evidence` hoặc `learning-goal`. Danh sách bằng chứng lọc được theo tiêu đề, loại, nguồn, công khai, kỹ năng (`skill_id`), nhãn (`tag_id`) và file đính kèm (`media_id`, từ 2026-10-15; file đang ở thùng rác vẫn tính). Thêm:
 
 | API | Làm gì | Ai dùng |
 |---|---|---|
@@ -110,4 +110,4 @@ Ngày luôn ở dạng `YYYY-MM-DD`.
 | Xử lý | `laravel-api/app/Services/Ledger/` |
 | Hằng số, giới hạn | `laravel-api/app/Constants/LedgerConst.php`, `laravel-api/app/Enums/` |
 | Giao diện | `nextjs-fe/src/app/admin/{skills,evidence,goals,tags}/page.tsx`, `nextjs-fe/src/features/ledger/` (ô file: `evidence-files-field.tsx`; hộp thoại chọn file: `nextjs-fe/src/features/media/components/file-picker-dialog.tsx`) |
-| Test | `make test f=SkillApi`, `f=SkillLevelApi`, `f=EvidenceApi`, `f=EvidenceFilesApi`, `f=LearningGoalApi`, `f=TagApi`, `f=DashboardApi`; giao diện `evidence-files-field.test.tsx`; trình duyệt (`make e2e`) `e2e/tests/critical-journey.spec.ts` (tạo kỹ năng, bằng chứng, tìm kiếm, trang public) và `e2e/tests/evidence-files.spec.ts` (upload và gắn file trong form, đổi thứ tự, bằng chứng không link, mở file từ trang public, xóa file trong Files thì hiện Deleted) |
+| Test | `make test f=SkillApi`, `f=SkillLevelApi`, `f=EvidenceApi`, `f=EvidenceFilesApi`, `f=LearningGoalApi`, `f=TagApi`, `f=DashboardApi`; giao diện `evidence-files-field.test.tsx`; trình duyệt (`make e2e`) `e2e/tests/critical-journey.spec.ts` (tạo kỹ năng, bằng chứng, tìm kiếm, trang public) và `e2e/tests/evidence-files.spec.ts` (upload và gắn file trong form, đổi thứ tự, bằng chứng không link, mở file từ trang public, mở bằng chứng từ cột Evidence của Files, xóa file trong Files thì hiện Deleted) |
