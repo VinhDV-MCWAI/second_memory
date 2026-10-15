@@ -81,6 +81,8 @@ Mỗi dòng do `scripts/lane.sh done` tự thêm. Không sửa tay.
 
 - 2026-10-14 — [lane main] MEDIA-06 done: c1576e84, 7223bbf9, d04cc1c3, db7901a7 — xem trước ảnh, PDF, video, nhạc, file chữ (không xem trước html/svg vì chạy được code); sửa lỗi upload hỏng một phần vẫn gửi tiếp phần khác; 213 test backend, 119 test giao diện, 6 e2e pass
 
+- 2026-10-15 — [lane main] MEDIA-07 done: 4477b392, 6f33250f, a8358b0e, 74c7e76f, 3a40cd79 — thùng rác file 30 ngày: khôi phục (tự tạo lại thư mục, trùng tên thì thêm (restored)), xóa vĩnh viễn, dọn thùng rác; sửa luật MinIO giữ file đã xóa mãi mãi; 219 test backend, 123 test giao diện, 7 e2e pass
+
 ## Next step
 
 Nhận việc tiếp theo bằng `scripts/lane.sh status`. Làm theo luồng trong [01-goals-and-workflow.md](../../docs/plan/01-goals-and-workflow.md).

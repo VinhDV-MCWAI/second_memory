@@ -70,7 +70,7 @@ Thêm ngày 2026-10-14, theo thứ tự làm. MEDIA-06, MEDIA-07, LEDGER-01 thê
 | AUTH-05 | **[XÁC NHẬN]** Ghi nhớ đăng nhập | Không phải đăng nhập lại sau 120 phút không dùng | blocked: tạm dừng (chủ dự án quyết 2026-10-14) |
 | MEDIA-05 | Upload dở tiếp tục được sau khi tải lại trang | File lớn không phải gửi lại từ đầu | done (ae7756ce, 2498e113, 8592643e — file lớn bỏ dở (tải lại trang, mất mạng) hiện ở khung Unfinished uploads, chọn lại đúng file thì chỉ gửi phần thiếu; 212 test backend, 117 test giao diện, 5 e2e pass (thử thật trên MinIO)) |
 | MEDIA-06 | Xem trước file (ảnh, PDF, video, file chữ) trong màn hình Files | Xem ngay trên trang, không phải tải về | done (c1576e84, 7223bbf9, d04cc1c3, db7901a7 — xem trước ảnh, PDF, video, nhạc, file chữ (không xem trước html/svg vì chạy được code); sửa lỗi upload hỏng một phần vẫn gửi tiếp phần khác; 213 test backend, 119 test giao diện, 6 e2e pass) |
-| MEDIA-07 | **[XÁC NHẬN]** Thùng rác file: xem file đã xóa, khôi phục trong 30 ngày | Xóa nhầm thì lấy lại được trên giao diện | todo |
+| MEDIA-07 | **[XÁC NHẬN]** Thùng rác file: xem file đã xóa, khôi phục trong 30 ngày | Xóa nhầm thì lấy lại được trên giao diện | done (4477b392, 6f33250f, a8358b0e, 74c7e76f, 3a40cd79 — thùng rác file 30 ngày: khôi phục (tự tạo lại thư mục, trùng tên thì thêm (restored)), xóa vĩnh viễn, dọn thùng rác; sửa luật MinIO giữ file đã xóa mãi mãi; 219 test backend, 123 test giao diện, 7 e2e pass) |
 | LEDGER-01 | **[XÁC NHẬN]** Đính kèm file vào bằng chứng (Skill Ledger); trang public hiện file khi bằng chứng công khai | Bằng chứng có ảnh chứng chỉ, PDF… thay vì chỉ có link | todo |
 
 ## 7. Sau cùng
