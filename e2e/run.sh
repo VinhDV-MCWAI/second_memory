@@ -52,10 +52,14 @@ cleanup() {
     $media = App\Models\Media\MediaMgmt::query()->live()->where("virtual_path", "like", "/E2E %")->get();
     $media->each(fn ($row) => app(App\Services\Media\MediaService::class)->discardObject($row));
     App\Models\Media\MediaMgmt::query()->whereKey($media->modelKeys())->update(["is_delete" => true]);
+    // ...and nothing of them stays in the trash: every version goes, then the rows
+    $trash = App\Models\Media\MediaMgmt::query()->where("is_delete", true)->where("virtual_path", "like", "/E2E %")->get();
+    $trash->filter(fn ($row) => $row->minio_object_key !== null)->each(fn ($row) => app(App\Services\Media\ObjectStorage::class)->purge($row->minio_object_key));
+    App\Models\Media\MediaMgmt::query()->whereKey($trash->modelKeys())->delete();
     // The failing test background job (background-jobs.spec.ts) is kept as a failed job
     $failed = DB::table("failed_jobs")->where("payload", "like", "%TestBackgroundJob%")->delete();
     $admin->update(["is_active" => false]);
-    echo "deleted skills={$skills->count()} evidence={$evidence->count()} roles={$roles->count()} audit_log={$audit} failed_jobs={$failed} media={$media->count()}\n";
+    echo "deleted skills={$skills->count()} evidence={$evidence->count()} roles={$roles->count()} audit_log={$audit} failed_jobs={$failed} media={$media->count()} trash={$trash->count()}\n";
   '
 }
 trap cleanup EXIT

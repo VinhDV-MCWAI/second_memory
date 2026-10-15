@@ -1,6 +1,7 @@
 'use client';
 
 import { useRef, useState, type DragEvent } from 'react';
+import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { z } from 'zod';
@@ -13,6 +14,7 @@ import {
   FolderInput,
   FolderPlus,
   Pencil,
+  Trash,
   Trash2,
   Upload,
 } from 'lucide-react';
@@ -320,6 +322,14 @@ export function MediaBrowser() {
             <Button variant="destructive" onClick={() => setDeleteIds(selectedIds)}>
               <Trash2 className="mr-2 h-4 w-4" />
               {t('deleteSelected', { count: selectedIds.length })}
+            </Button>
+          )}
+          {can('media.trash-list') && (
+            <Button variant="outline" asChild>
+              <Link href={ADMIN_ROUTES.FILES_TRASH}>
+                <Trash className="mr-2 h-4 w-4" />
+                {t('trash.open')}
+              </Link>
             </Button>
           )}
           {can('media.store-folder') && (

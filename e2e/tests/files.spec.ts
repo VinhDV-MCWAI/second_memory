@@ -161,3 +161,60 @@ test('owner previews an image and a text file', async ({ page }) => {
   await page.getByRole('alertdialog').getByRole('button', { name: 'Delete' }).click();
   await expect(page.getByRole('button', { name: previewFolder })).toBeHidden();
 });
+
+// Trash (MEDIA-07): a deleted file is restored into its folder, recreated because it was deleted too;
+// deleting it again and then for good leaves nothing in the trash.
+test('owner restores a deleted file from the trash, then deletes it for good', async ({ page }) => {
+  const dir = mkdtempSync(join(tmpdir(), 'e2e-trash-'));
+  const note = join(dir, 'kept.txt');
+  writeFileSync(note, 'restore me');
+  const trashFolder = `${folder} trash`;
+
+  await page.goto('/login');
+  await page.getByLabel('Username').fill(E2E_USER);
+  await page.getByLabel('Password').fill(E2E_PASSWORD);
+  await page.getByRole('button', { name: 'Sign In' }).click();
+  await expect(page).toHaveURL(/\/admin$/);
+  await page.goto('/admin/files');
+  await page.getByRole('button', { name: 'New folder' }).click();
+  await page.getByRole('dialog').getByLabel('Folder name').fill(trashFolder);
+  await page.getByRole('dialog').getByRole('button', { name: 'Create' }).click();
+  await page.getByRole('button', { name: trashFolder }).click();
+  await expect(page).toHaveURL(/folder=/);
+  await page.getByTestId('media-file-input').setInputFiles(note);
+  await expect(page.getByRole('cell', { name: 'kept.txt' })).toBeVisible();
+
+  // Delete the whole folder
+  await page.getByRole('button', { name: 'Files', exact: true }).first().click();
+  await page.getByRole('row').filter({ hasText: trashFolder }).getByRole('button', { name: 'Delete' }).click();
+  await page.getByRole('alertdialog').getByRole('button', { name: 'Delete' }).click();
+  await expect(page.getByRole('button', { name: trashFolder })).toBeHidden();
+
+  await page.getByRole('link', { name: 'Trash' }).click();
+  await expect(page).toHaveURL(/\/admin\/files\/trash$/);
+  const row = page.getByRole('row').filter({ hasText: `/${trashFolder}/kept.txt` });
+  await row.getByRole('button', { name: 'Restore' }).click();
+  await expect(page.getByText(`Restored to /${trashFolder}/kept.txt`)).toBeVisible();
+
+  // Back in its recreated folder, and the bytes came back in MinIO
+  await page.getByRole('link', { name: 'Back to files' }).click();
+  await expect(page).toHaveURL(/\/admin\/files$/);
+  await page.goto(`/admin/files?folder=${encodeURIComponent(`/${trashFolder}`)}`);
+  const restored = page.getByRole('row').filter({ hasText: 'kept.txt' });
+  const download = page.waitForEvent('download');
+  await restored.getByRole('button', { name: 'Download' }).click();
+  expect((await download).suggestedFilename()).toBe('kept.txt');
+
+  await restored.getByRole('button', { name: 'Delete' }).click();
+  await page.getByRole('alertdialog').getByRole('button', { name: 'Delete' }).click();
+  await page.goto('/admin/files/trash');
+  await page.getByRole('row').filter({ hasText: `/${trashFolder}/kept.txt` }).getByRole('button', { name: 'Delete forever' }).click();
+  await page.getByRole('alertdialog').getByRole('button', { name: 'Delete forever' }).click();
+  await expect(page.getByText('Deleted forever')).toBeVisible();
+  await expect(page.getByRole('row').filter({ hasText: `/${trashFolder}/kept.txt` })).toBeHidden();
+
+  await page.goto('/admin/files');
+  await page.getByRole('row').filter({ hasText: trashFolder }).getByRole('button', { name: 'Delete' }).click();
+  await page.getByRole('alertdialog').getByRole('button', { name: 'Delete' }).click();
+  await expect(page.getByRole('button', { name: trashFolder })).toBeHidden();
+});

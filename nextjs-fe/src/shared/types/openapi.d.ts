@@ -478,6 +478,74 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/admin/media/trash/list': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Deleted files still kept, most recently deleted first */
+    get: operations['media.trash-list'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/admin/media/trash/restore/{id}': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** Restore a deleted file to its folder (recreated if needed); a taken name becomes `name (restored).ext` */
+    post: operations['media.trash-restore'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/admin/media/trash/delete': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** Delete files in the trash for good; returns how many */
+    post: operations['media.trash-delete'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/admin/media/trash/empty': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** Delete everything in the trash for good; returns how many files */
+    post: operations['media.trash-empty'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/admin/media/multipart/start': {
     parameters: {
       query?: never;
@@ -923,7 +991,15 @@ export interface components {
      * @description What an audit_log row records (ADR-0006).
      * @enum {string}
      */
-    AuditEvent: 'created' | 'updated' | 'deleted' | 'logged_in' | 'logged_out' | 'login_failed';
+    AuditEvent:
+      | 'created'
+      | 'updated'
+      | 'deleted'
+      | 'logged_in'
+      | 'logged_out'
+      | 'login_failed'
+      | 'restored'
+      | 'purged';
     /** AuditLogResource */
     AuditLogResource: {
       id: number;
@@ -1330,6 +1406,19 @@ export interface components {
     TestBackgroundTaskRequest: {
       seconds?: number | null;
       fail?: boolean | null;
+    };
+    /** TrashItemResource */
+    TrashItemResource: {
+      id: number;
+      name: string;
+      /** @description Where it was before it was deleted */
+      path: string;
+      size: number | null;
+      mime_type: string | null;
+      deleted_at: string | null;
+      deleted_by: string | null;
+      /** @description When MinIO drops it for good */
+      expires_at: string | null;
     };
     /** UpdateAdminMstRequest */
     UpdateAdminMstRequest: {
@@ -2767,6 +2856,183 @@ export interface operations {
         };
       };
       422: components['responses']['ValidationException'];
+    };
+  };
+  'media.trash-list': {
+    parameters: {
+      query?: {
+        id?: number | null;
+        page?: number | null;
+        per_page?: number | null;
+        sort_by?: string | null;
+        sort_order?: string | null;
+        name?: string | null;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Array of `TrashItemResource` */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            data: {
+              data: components['schemas']['TrashItemResource'][];
+              links: components['schemas']['PaginationLinks'];
+              meta: components['schemas']['PaginationMeta'];
+            };
+            error: {
+              status: boolean;
+              code: number;
+              messages: null;
+            };
+          };
+        };
+      };
+      401: components['responses']['AuthenticationException'];
+      /** @description Forbidden */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ApiError'];
+        };
+      };
+      422: components['responses']['ValidationException'];
+    };
+  };
+  'media.trash-restore': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description `MediaResource` */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            data: {
+              data: components['schemas']['MediaResource'];
+            };
+            error: {
+              status: boolean;
+              code: number;
+              messages: null;
+            };
+          };
+        };
+      };
+      401: components['responses']['AuthenticationException'];
+      /** @description Forbidden */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ApiError'];
+        };
+      };
+      /** @description Not Found */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ApiError'];
+        };
+      };
+      422: components['responses']['ValidationException'];
+    };
+  };
+  'media.trash-delete': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['DeleteMediaRequest'];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            data: number;
+            error: {
+              status: boolean;
+              code: number;
+              messages: null;
+            };
+          };
+        };
+      };
+      401: components['responses']['AuthenticationException'];
+      /** @description Forbidden */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ApiError'];
+        };
+      };
+      422: components['responses']['ValidationException'];
+    };
+  };
+  'media.trash-empty': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            data: number;
+            error: {
+              status: boolean;
+              code: number;
+              messages: null;
+            };
+          };
+        };
+      };
+      401: components['responses']['AuthenticationException'];
+      /** @description Forbidden */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ApiError'];
+        };
+      };
     };
   };
   'media.multipart-start': {

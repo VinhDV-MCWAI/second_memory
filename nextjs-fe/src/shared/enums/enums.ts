@@ -104,6 +104,8 @@ export enum AuditEvent {
   LOGGED_IN = 'logged_in',
   LOGGED_OUT = 'logged_out',
   LOGIN_FAILED = 'login_failed',
+  RESTORED = 'restored',
+  PURGED = 'purged',
 }
 
 // ==========================================

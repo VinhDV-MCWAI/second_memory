@@ -399,7 +399,9 @@
       "deleted": "Deleted",
       "logged_in": "Logged in",
       "logged_out": "Logged out",
-      "login_failed": "Login failed"
+      "login_failed": "Login failed",
+      "restored": "Restored",
+      "purged": "Deleted forever"
     }
   },
   "validation": {
@@ -661,6 +663,30 @@
       "download": "Download",
       "loading": "Loading…",
       "failed": "The file could not be shown. Try downloading it."
+    },
+    "trash": {
+      "open": "Trash",
+      "title": "Trash",
+      "description": "Deleted files are kept {days} days, then removed for good",
+      "back": "Back to files",
+      "originalPath": "Deleted from",
+      "deletedAt": "Deleted",
+      "deletedBy": "By",
+      "expires": "Removed in",
+      "daysLeft": "{count, plural, one {# day} other {# days}}",
+      "restore": "Restore",
+      "restored": "Restored to {path}",
+      "restoreFailed": "Could not restore the file",
+      "deleteForever": "Delete forever",
+      "deleteTitle": "Delete {count, plural, one {this file} other {# files}} forever?",
+      "deleteDescription": "The file cannot be restored afterwards.",
+      "deleted": "Deleted forever",
+      "empty": "Empty trash",
+      "emptyTitle": "Empty the trash?",
+      "emptyDescription": "Every file in the trash is deleted for good and cannot be restored.",
+      "emptied": "Trash emptied",
+      "failed": "Could not delete the files",
+      "nothing": "The trash is empty"
     },
     "unfinished": {
       "title": "Unfinished uploads",

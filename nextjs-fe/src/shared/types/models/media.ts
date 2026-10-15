@@ -6,6 +6,9 @@ import type { OkData } from './ok-data';
 
 export type MediaItem = components['schemas']['MediaResource'];
 
+/** `media/trash/list`: a deleted file still kept (30 days). */
+export type TrashItem = components['schemas']['TrashItemResource'];
+
 /** `media/upload-url`: one presigned PUT for a small file. */
 export type SmallUpload = OkData<operations['media.upload-url']>;
 
