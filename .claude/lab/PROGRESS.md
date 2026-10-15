@@ -114,6 +114,8 @@ Mỗi dòng do `scripts/lane.sh done` tự thêm. Không sửa tay.
 
 - 2026-10-15 — [lane main] MEDIA-10 done: 60c5de4c, a7dcce58 — ảnh (jpg, png, gif, webp, avif, bmp) có rộng × cao sau khi upload, hiện ở Files và xem trước; lệnh media:read-image-sizes chạy bù; sửa test e2e upload dở chập chờn; make verify pass (234 backend, 130 giao diện, 63 importer), make e2e 8/8
 
+- 2026-10-15 — [lane main] MEDIA-11 done: e2a66080, d2fb118a — ffmpeg trong image PHP; ảnh nhỏ 320 px cho ảnh và video, thời lượng video và nhạc, tạo ngầm sau upload, hiện ở Files, hộp chọn file, form bằng chứng; chặn file độc (giới hạn 60 giây, chỉ định dạng thông thường); lệnh media:read-media-info; make verify pass (238 backend, 133 giao diện, 63 importer), make e2e 8/8, thử 13 loại file trên MinIO thật
+
 ## Next step
 
 Cập nhật 2026-10-15 cuối ngày.
