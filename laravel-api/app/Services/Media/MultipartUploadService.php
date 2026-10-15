@@ -131,11 +131,10 @@ final class MultipartUploadService
     public function resume(int $id): array
     {
         $file = $this->ownUpload($id);
-        $parts = $this->storage->listParts((string) $file->minio_object_key, (string) $file->upload_id);
-        if ($parts === null) {
-            // Gone from MinIO; the row is failed by unfinished() or the hourly clean-up (this write would roll back)
-            throw (new ModelNotFoundException)->setModel(MediaMgmt::class, [$id]);
-        }
+        // Gone from MinIO → 404; the row is failed by unfinished() or the hourly clean-up (this write would roll back).
+        // `?? throw` rather than an if: the OpenAPI generator then knows `parts` is never null.
+        $parts = $this->storage->listParts((string) $file->minio_object_key, (string) $file->upload_id)
+            ?? throw (new ModelNotFoundException)->setModel(MediaMgmt::class, [$id]);
         $file->touch();
         $size = (int) $file->size;
 

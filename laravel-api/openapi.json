@@ -3955,10 +3955,7 @@
                                                     "type": "integer"
                                                 },
                                                 "parts": {
-                                                    "type": [
-                                                        "array",
-                                                        "null"
-                                                    ],
+                                                    "type": "array",
                                                     "items": {
                                                         "type": "object",
                                                         "properties": {

@@ -3321,13 +3321,11 @@ export interface operations {
               id: number;
               part_size: number;
               part_count: number;
-              parts:
-                | {
-                    part_number: number;
-                    etag: string;
-                    size: number;
-                  }[]
-                | null;
+              parts: {
+                part_number: number;
+                etag: string;
+                size: number;
+              }[];
             };
             error: {
               status: boolean;

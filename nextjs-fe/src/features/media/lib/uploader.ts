@@ -107,7 +107,7 @@ export async function uploadInParts(
     const { data: resumed } = await apiClient.post<ResumedUpload>(`${base}/resume/${resumeId}`);
     upload = resumed;
     // A part shorter than it should be (cut off mid-PUT) is sent again
-    for (const part of resumed.parts ?? []) {
+    for (const part of resumed.parts) {
       const size = partBytes(part.part_number, resumed.part_size, file.size);
       if (part.size === size) {
         etags.set(part.part_number, part.etag);
