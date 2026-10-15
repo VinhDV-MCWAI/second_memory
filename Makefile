@@ -45,6 +45,10 @@ logs: ## Follow logs (make logs s=ml-php)
 sh: ## Shell into a container (make sh s=ml-php)
 	docker exec -it $(or $(s),ml-php) sh
 
+.PHONY: clean
+clean: ## Remove leftovers after a task: Docker garbage, old production images, test output (keeps dev data)
+	bash scripts/clean.sh
+
 ##@ Backend (laravel-api)
 
 .PHONY: test
