@@ -157,6 +157,8 @@ Tất cả nằm dưới `/api/admin/media/`. Mỗi API là một quyền trong 
 | `POST trash/delete` `{ids}` | Xóa vĩnh viễn các file trong thùng rác; trả số file đã xóa | `media.trash-delete` | Không |
 | `POST trash/empty` | Dọn sạch thùng rác; trả số file đã xóa | `media.trash-empty` | Không |
 
+File có thể được [đính kèm vào bằng chứng](skill-ledger.md#file-đính-kèm-bằng-chứng) của Skill Ledger. Xóa file đang đính kèm thì bằng chứng vẫn giữ và đánh dấu "Deleted"; khôi phục từ thùng rác là hiện lại; xóa vĩnh viễn thì tự gỡ khỏi bằng chứng.
+
 Mọi thay đổi (tạo thư mục, upload xong, đổi tên, chuyển, xóa) ghi vào [nhật ký thay đổi](nhat-ky-thay-doi.md) với loại `media`.
 
 ## Nơi lưu
