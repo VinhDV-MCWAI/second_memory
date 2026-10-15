@@ -125,6 +125,7 @@ Test dùng một database riêng tên `testing`, không đụng dữ liệu dev.
 | Upload file lớn dở dang vẫn chiếm chỗ | Đóng trình duyệt giữa chừng; lệnh dọn chạy mỗi giờ cho upload quá 24 giờ | Chờ, hoặc chạy ngay `docker exec ml-php php artisan media:clean-stuck-uploads` (chỉ dọn upload quá 24 giờ) |
 | Việc nền lỗi, cần xem lý do | Việc lỗi sau mọi lần thử được lưu lại | `docker exec ml-php php artisan queue:failed`; chạy lại: `queue:retry <id>` |
 | Sửa code job mà việc nền vẫn chạy code cũ | Worker giữ code trong bộ nhớ | `make workers-restart` |
+| `make tf-destroy` / `make tf-apply`: gõ `yes` mà vẫn báo "Destroy cancelled" / "Apply cancelled" | Bộ gõ tiếng Việt (Unikey, EVKey, kiểu Telex) coi `s` là dấu sắc, tự xóa rồi gõ lại chữ. Màn hình hiện `yes` nhưng Terraform nhận thêm ký tự xóa (`yes\bs`) | Tắt bộ gõ (chuyển sang E) trước khi gõ `yes` |
 | Đổi `docker/minio/create-buckets.sh` mà MinIO không đổi | Script chỉ chạy khi khởi động | `cd docker && docker compose up ml-minio-init` |
 
 ## 7. Làm lại từ đầu

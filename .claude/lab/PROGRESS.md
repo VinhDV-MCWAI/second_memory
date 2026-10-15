@@ -29,7 +29,7 @@ Cập nhật 2026-10-15 cuối ngày (kiểm tra lại sau khi chủ dự án d�
 | # | Việc | Chi tiết | Ai làm |
 |---|---|---|---|
 | 1 | Push code | Chủ dự án đã push và merge tới LEDGER-02 (2026-10-15). Các commit từ `a6c9b363` (sửa tf-destroy) tới LEDGER-03 chưa push | Chủ dự án |
-| 4 | Bản demo prod-like chưa xóa hẳn | Nguyên nhân `make tf-destroy` không xóa được: `infra/tf.sh` gọi destroy kèm `-input=false`, cờ này tắt luôn câu hỏi yes nên Terraform tự hủy. Đã sửa (`a6c9b363`). Chạy lại `make tf-destroy` rồi gõ `yes`; kiểm tra: `docker ps -a \| grep sm-prod-like` | Chủ dự án |
+| 4 | Bản demo prod-like chưa xóa hẳn | Lần chạy 2026-10-15 sau khi sửa script: hiện câu hỏi nhưng gõ `yes` vẫn "Destroy cancelled". Thử lại trong container: Terraform đọc `yes` đúng; nếu bộ gõ tiếng Việt chen ký tự xóa thì nhận `yes\bs` và tự hủy. Tắt bộ gõ (chuyển sang E) rồi chạy lại `make tf-destroy`. Kiểm tra: `docker ps -a \| grep sm-prod-like` | Chủ dự án |
 | 6 | Tiếp tục upload dở từ máy khác không kiểm tra được "đúng file" | Trình duyệt chỉ nhớ thời điểm sửa file trên máy đã bắt đầu upload; máy khác chỉ so tên + dung lượng | Chấp nhận, ghi trong [quan-ly-file.md](../../docs/features/quan-ly-file.md) |
 | 8 | Việc để sau theo quyết định chủ dự án | Người dùng cuối, phòng ban (USER-02, USER-03, ADR-0015); dữ liệu mẫu + HTTPS cho bản demo (DEMO-01, DEMO-02) | Chờ chủ dự án |
 
