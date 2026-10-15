@@ -108,6 +108,8 @@ Mỗi dòng do `scripts/lane.sh done` tự thêm. Không sửa tay.
 
 - 2026-10-15 — [lane main] LEDGER-02 done: 8abe344c, 01b15e55, 71bdeb7b — bằng chứng cần link hoặc ít nhất một file; không link thì tiêu đề là chữ thường ở quản trị và trang public; nhập Obsidian không đổi; make verify pass (231 backend, 128 giao diện, 63 importer), thử thật trên dev
 
+- 2026-10-15 — [lane main] DOCS-01 done: 95f65960 — bảng Các bước làm của Quản lý file thêm upload dở, xem trước, thùng rác, gắn vào bằng chứng
+
 ## Next step
 
 Cập nhật 2026-10-15 cuối ngày.
