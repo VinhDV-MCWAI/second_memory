@@ -308,7 +308,7 @@
       "tags": "Tags",
       "files": "Files",
       "type": "Type",
-      "url": "Link (http or https)",
+      "url": "Link (http or https; optional when files are attached)",
       "occurredOn": "Date",
       "summary": "Summary",
       "skills": "Skills",
@@ -458,6 +458,7 @@
     },
     "url": {
       "invalid": "Enter an http or https link",
+      "linkOrFile": "Give a link or attach at least one file",
       "maxLength": "The link cannot exceed {max} characters"
     },
     "occurredOn": {

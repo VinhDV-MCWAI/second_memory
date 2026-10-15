@@ -109,4 +109,25 @@ describe('EvidenceForm', () => {
     // Attachments are not vault-owned: they stay editable
     expect(screen.getByRole('button', { name: 'remove' })).toBeTruthy();
   });
+
+  it('needs a link or a file, and sends an empty link as null when files are attached', async () => {
+    let body: Record<string, unknown> | undefined;
+    server.use(
+      http.put(apiUrl('/admin/evidence/update/9'), async ({ request }) => {
+        body = (await request.json()) as Record<string, unknown>;
+        return HttpResponse.json(envelope(9));
+      }),
+    );
+    const manual: Evidence = { ...imported, source: 'manual' };
+    const onSuccess = renderForm(manual);
+
+    fireEvent.change(screen.getByLabelText(/url/), { target: { value: '' } });
+    fireEvent.click(screen.getByRole('button', { name: 'save' }));
+    await waitFor(() => expect(onSuccess).toHaveBeenCalled());
+    expect(body).toMatchObject({ url: null, media_ids: [3] });
+
+    fireEvent.click(screen.getByRole('button', { name: 'remove' }));
+    fireEvent.click(screen.getByRole('button', { name: 'save' }));
+    expect(await screen.findByText('url.linkOrFile')).toBeTruthy();
+  });
 });

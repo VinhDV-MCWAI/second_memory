@@ -30,9 +30,13 @@ export default function EvidenceListPage() {
       sortable: true,
       render: (item) => (
         <span className="flex items-center gap-2">
-          <a href={item.url} target="_blank" rel="noopener noreferrer" className="underline">
-            {item.title}
-          </a>
+          {item.url ? (
+            <a href={item.url} target="_blank" rel="noopener noreferrer" className="underline">
+              {item.title}
+            </a>
+          ) : (
+            <span>{item.title}</span>
+          )}
           {item.files && item.files.length > 0 && (
             <span
               className="flex items-center gap-0.5 text-xs text-muted-foreground"

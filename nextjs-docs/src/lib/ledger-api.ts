@@ -41,7 +41,8 @@ export interface PublicSkillDetail extends PublicSkill {
   evidence: {
     type: EvidenceType;
     title: string;
-    url: string;
+    // null: files only
+    url: string | null;
     occurred_on: string;
     summary: string | null;
     files: PublicFile[];

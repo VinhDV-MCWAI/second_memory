@@ -184,43 +184,48 @@ const isHttpUrl = (value: string) => {
   }
 };
 
-// Evidence schema matching StoreEvidenceRequest
+// Evidence schema matching StoreEvidenceRequest: a link, files, or both (LEDGER-02)
 export const getEvidenceSchema = (t: Translator) =>
-  z.object({
-    type: z.nativeEnum(EvidenceType),
-    title: z
-      .string()
-      .trim()
-      .min(1, t('evidenceTitle.required'))
-      .max(
-        ValidationRules.EVIDENCE_TITLE_MAX,
-        t('evidenceTitle.maxLength', { max: ValidationRules.EVIDENCE_TITLE_MAX }),
-      ),
-    url: z
-      .string()
-      .trim()
-      .max(
-        ValidationRules.EVIDENCE_URL_MAX,
-        t('url.maxLength', { max: ValidationRules.EVIDENCE_URL_MAX }),
-      )
-      .refine(isHttpUrl, { message: t('url.invalid') }),
-    occurred_on: z.string().min(1, t('occurredOn.required')),
-    summary: z
-      .string()
-      .max(
-        ValidationRules.EVIDENCE_SUMMARY_MAX,
-        t('summary.maxLength', { max: ValidationRules.EVIDENCE_SUMMARY_MAX }),
-      ),
-    is_public: z.boolean(),
-    skill_ids: z.array(z.number()).min(1, t('skillIds.required')),
-    tag_ids: z.array(z.number()),
-    media_ids: z
-      .array(z.number())
-      .max(
-        ValidationRules.EVIDENCE_FILES_MAX,
-        t('mediaIds.maxLength', { max: ValidationRules.EVIDENCE_FILES_MAX }),
-      ),
-  });
+  z
+    .object({
+      type: z.nativeEnum(EvidenceType),
+      title: z
+        .string()
+        .trim()
+        .min(1, t('evidenceTitle.required'))
+        .max(
+          ValidationRules.EVIDENCE_TITLE_MAX,
+          t('evidenceTitle.maxLength', { max: ValidationRules.EVIDENCE_TITLE_MAX }),
+        ),
+      url: z
+        .string()
+        .trim()
+        .max(
+          ValidationRules.EVIDENCE_URL_MAX,
+          t('url.maxLength', { max: ValidationRules.EVIDENCE_URL_MAX }),
+        )
+        .refine((value) => value === '' || isHttpUrl(value), { message: t('url.invalid') }),
+      occurred_on: z.string().min(1, t('occurredOn.required')),
+      summary: z
+        .string()
+        .max(
+          ValidationRules.EVIDENCE_SUMMARY_MAX,
+          t('summary.maxLength', { max: ValidationRules.EVIDENCE_SUMMARY_MAX }),
+        ),
+      is_public: z.boolean(),
+      skill_ids: z.array(z.number()).min(1, t('skillIds.required')),
+      tag_ids: z.array(z.number()),
+      media_ids: z
+        .array(z.number())
+        .max(
+          ValidationRules.EVIDENCE_FILES_MAX,
+          t('mediaIds.maxLength', { max: ValidationRules.EVIDENCE_FILES_MAX }),
+        ),
+    })
+    .refine((data) => data.url !== '' || data.media_ids.length > 0, {
+      message: t('url.linkOrFile'),
+      path: ['url'],
+    });
 
 export type EvidenceFormData = z.infer<ReturnType<typeof getEvidenceSchema>>;
 

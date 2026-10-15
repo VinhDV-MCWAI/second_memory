@@ -59,19 +59,23 @@ export default async function SkillPage({ params }: SkillPageProps) {
         ) : (
           <ul className="mt-4 space-y-4">
             {skill.evidence.map((item) => (
-              <li key={`${item.url}-${item.occurred_on}`}>
+              <li key={`${item.title}-${item.occurred_on}`}>
                 <div className="flex flex-wrap items-baseline gap-x-3">
                   <span className="rounded bg-[hsl(var(--color-muted))] px-1.5 py-0.5 font-mono text-xs uppercase">
                     {item.type}
                   </span>
-                  <a
-                    href={item.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="font-medium hover:underline"
-                  >
-                    {item.title}
-                  </a>
+                  {item.url ? (
+                    <a
+                      href={item.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="font-medium hover:underline"
+                    >
+                      {item.title}
+                    </a>
+                  ) : (
+                    <span className="font-medium">{item.title}</span>
+                  )}
                   <time dateTime={item.occurred_on} className="font-mono text-sm">
                     {item.occurred_on}
                   </time>

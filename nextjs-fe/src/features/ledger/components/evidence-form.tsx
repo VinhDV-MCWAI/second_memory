@@ -68,7 +68,9 @@ export function EvidenceForm({
     [loading, isDirty, onStateChange],
   );
 
-  const onSubmit = async (data: EvidenceFormData) => {
+  const onSubmit = async (form: EvidenceFormData) => {
+    // An empty link is sent as null: the evidence is files only (LEDGER-02)
+    const data = { ...form, url: form.url === '' ? null : form.url };
     try {
       if (initialData) {
         await update(initialData.id, data);
@@ -109,7 +111,7 @@ export function EvidenceForm({
 
         <div className="grid grid-cols-3 gap-4">
           <div className="col-span-2">
-            <FormField id="url" label={tLabels('url')} required error={errors.url?.message}>
+            <FormField id="url" label={tLabels('url')} error={errors.url?.message}>
               <Input id="url" type="url" disabled={imported} {...register('url')} />
             </FormField>
           </div>
