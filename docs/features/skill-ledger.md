@@ -110,4 +110,4 @@ Ngày luôn ở dạng `YYYY-MM-DD`.
 | Xử lý | `laravel-api/app/Services/Ledger/` |
 | Hằng số, giới hạn | `laravel-api/app/Constants/LedgerConst.php`, `laravel-api/app/Enums/` |
 | Giao diện | `nextjs-fe/src/app/admin/{skills,evidence,goals,tags}/page.tsx`, `nextjs-fe/src/features/ledger/` (ô file: `evidence-files-field.tsx`; hộp thoại chọn file: `nextjs-fe/src/features/media/components/file-picker-dialog.tsx`) |
-| Test | `make test f=SkillApi`, `f=SkillLevelApi`, `f=EvidenceApi`, `f=EvidenceFilesApi`, `f=LearningGoalApi`, `f=TagApi`, `f=DashboardApi`; giao diện `evidence-files-field.test.tsx` |
+| Test | `make test f=SkillApi`, `f=SkillLevelApi`, `f=EvidenceApi`, `f=EvidenceFilesApi`, `f=LearningGoalApi`, `f=TagApi`, `f=DashboardApi`; giao diện `evidence-files-field.test.tsx`; trình duyệt (`make e2e`) `e2e/tests/critical-journey.spec.ts` (tạo kỹ năng, bằng chứng, tìm kiếm, trang public) và `e2e/tests/evidence-files.spec.ts` (upload và gắn file trong form, đổi thứ tự, bằng chứng không link, mở file từ trang public, xóa file trong Files thì hiện Deleted) |
