@@ -10,7 +10,7 @@
 | Branch | `feature/p3-ledger-api` (đổi branch khi chủ dự án yêu cầu) |
 | Môi trường | Chỉ dev (`make up`, http://localhost:81). Bản demo prod-like đã tắt container ngày 2026-10-15 (không việc nào dùng); staging, production thật, đo tải: tạm dừng |
 | CI/CD | Chỉ chạy trên máy: `make ci`, `make cd`. **Trên GitHub/GitLab đang TẮT chạy tự động** (push không chạy gì); cách bật lại: [ci/README.md](../../ci/README.md) |
-| Việc tiếp theo | LEDGER-03 (lọc bằng chứng theo file) đang chờ chủ dự án duyệt đề xuất (gửi 2026-10-15). DOCS-01, E2E-01 xong 2026-10-15 |
+| Việc tiếp theo | Bảng việc không còn việc nhận được (DOCS-01, E2E-01, LEDGER-03 xong 2026-10-15). Hỏi chủ dự án |
 | Tạm dừng | Mọi việc về **đăng nhập và phân quyền** (AUTH-04, AUTH-05, các mục "Nâng cấp để dành" trong [dang-nhap.md](../../docs/features/dang-nhap.md), loại quyền mới, người dùng cuối, phòng ban, chính sách): không đề xuất, không nhận, kể cả việc mới, **chỉ làm khi chủ dự án yêu cầu** (quyết 2026-10-14, thêm phân quyền 2026-10-15) |
 | Dọn dẹp | Mỗi việc xong phải dọn theo mục "Dọn dẹp khi xong việc" trong [01-goals-and-workflow.md](../../docs/plan/01-goals-and-workflow.md) (`make clean` + xóa code chết, dữ liệu thử) |
 
@@ -28,10 +28,8 @@ Cập nhật 2026-10-15 cuối ngày (kiểm tra lại sau khi chủ dự án d�
 
 | # | Việc | Chi tiết | Ai làm |
 |---|---|---|---|
-| 1 | Push code | Chủ dự án đã push và merge tới LEDGER-02 (2026-10-15); branch trên GitHub đã tự xóa sau merge. Các commit từ `a6c9b363` trở đi chưa push | Chủ dự án |
-| 2 | `.claude/settings.json` có thay đổi chưa commit | Chủ dự án bảo commit (2026-10-15) nhưng bộ chặn an toàn không cho Claude commit file cấp quyền cho chính mình. Chủ dự án tự chạy: `git commit -m "chore(claude): allow editing .claude/ and CLAUDE.md, and git rm" .claude/settings.json` | Chủ dự án |
+| 1 | Push code | Chủ dự án đã push và merge tới LEDGER-02 (2026-10-15). Các commit từ `a6c9b363` (sửa tf-destroy) tới LEDGER-03 chưa push | Chủ dự án |
 | 4 | Bản demo prod-like chưa xóa hẳn | Nguyên nhân `make tf-destroy` không xóa được: `infra/tf.sh` gọi destroy kèm `-input=false`, cờ này tắt luôn câu hỏi yes nên Terraform tự hủy. Đã sửa (`a6c9b363`). Chạy lại `make tf-destroy` rồi gõ `yes`; kiểm tra: `docker ps -a \| grep sm-prod-like` | Chủ dự án |
-| 5 | Ý tưởng tiếp | Lọc bằng chứng theo file thành LEDGER-03 (chờ duyệt); test trình duyệt cho đính kèm file xong (E2E-01) | — |
 | 6 | Tiếp tục upload dở từ máy khác không kiểm tra được "đúng file" | Trình duyệt chỉ nhớ thời điểm sửa file trên máy đã bắt đầu upload; máy khác chỉ so tên + dung lượng | Chấp nhận, ghi trong [quan-ly-file.md](../../docs/features/quan-ly-file.md) |
 | 8 | Việc để sau theo quyết định chủ dự án | Người dùng cuối, phòng ban (USER-02, USER-03, ADR-0015); dữ liệu mẫu + HTTPS cho bản demo (DEMO-01, DEMO-02) | Chờ chủ dự án |
 
@@ -118,8 +116,8 @@ Mỗi dòng do `scripts/lane.sh done` tự thêm. Không sửa tay.
 
 Cập nhật 2026-10-15 cuối ngày.
 
-1. Đầu phiên: `scripts/lane.sh status` và xem "Việc tồn đọng" ở trên: mục 1 (push), 2 (`.claude/settings.json`), 4 (chạy lại `make tf-destroy`) là việc của chủ dự án; nhắc nếu vẫn còn.
+1. Đầu phiên: `scripts/lane.sh status` và xem "Việc tồn đọng" ở trên: mục 1 (push), 4 (chạy lại `make tf-destroy`) là việc của chủ dự án; nhắc nếu vẫn còn.
 2. Đăng nhập, phân quyền, người dùng cuối, phòng ban: **tạm dừng, chỉ làm khi chủ dự án yêu cầu** (không đề xuất). Bản demo prod-like: không làm.
-3. LEDGER-03 đang ở trạng thái doing, chờ chủ dự án duyệt đề xuất: thêm bộ lọc `media_id` vào API danh sách bằng chứng (không đổi DB, không thêm quyền); số ở cột Evidence của file thành link tới `/admin/evidence?media_id=…`. Được duyệt thì làm, không thì `scripts/lane.sh release LEDGER-03`.
+3. Hỏi chủ dự án việc tiếp theo. Chưa có ý tưởng nào đang chờ.
 4. Việc mới: thêm bằng `scripts/lane.sh add main <mã> …`, nhận bằng `claim`, xong thì dọn dẹp (`make clean`, xóa dữ liệu thử) rồi `done`.
-5. `make verify` gần nhất: 2026-10-15 sau LEDGER-02, pass (231 test backend, 128 giao diện, 63 importer). `make e2e` 2026-10-15 sau E2E-01: 8/8 pass. Cây làm việc sạch trừ `.claude/settings.json`.
+5. `make verify` gần nhất: 2026-10-15 sau LEDGER-03, pass (232 test backend, 130 giao diện, 63 importer). `make e2e` cùng ngày: 8/8 pass. Cây làm việc sạch.
