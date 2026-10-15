@@ -2,14 +2,15 @@
 
 import { useState } from 'react';
 import { useTranslations } from 'next-intl';
-import { ArrowDown, ArrowUp, Download, Eye, File as FileIcon, Paperclip, X } from 'lucide-react';
+import { ArrowDown, ArrowUp, Download, Eye, Paperclip, X } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { FilePickerDialog } from '@/features/media/components/file-picker-dialog';
+import { FileThumb } from '@/features/media/components/file-thumb';
 import { IconButton } from '@/features/media/components/icon-button';
 import { PreviewDialog } from '@/features/media/components/preview-dialog';
 import { useMediaActions } from '@/features/media/hooks/use-media';
-import { formatBytes } from '@/features/media/lib/media-paths';
+import { formatFileSize } from '@/features/media/lib/media-paths';
 import { usePermissions } from '@/shared/hooks/use-permissions';
 import { getApiErrorMessage, notification } from '@/shared/utils';
 import { ValidationRules } from '@/shared/validation/validation-rules';
@@ -78,7 +79,7 @@ export function EvidenceFilesField({
         <ul className="divide-y rounded-md border">
           {files.map((file, index) => (
             <li key={file.id} className="flex items-center gap-2 px-3 py-1.5 text-sm">
-              <FileIcon className="h-4 w-4 shrink-0 text-slate-400" aria-hidden />
+              <FileThumb item={file} />
               <span
                 className={
                   file.available ? 'truncate' : 'truncate text-muted-foreground line-through'
@@ -86,7 +87,7 @@ export function EvidenceFilesField({
               >
                 {file.name}
               </span>
-              <span className="shrink-0 text-muted-foreground">{formatBytes(file.size)}</span>
+              <span className="shrink-0 text-muted-foreground">{formatFileSize(file)}</span>
               {!file.available && (
                 <Badge variant="secondary" title={t('deletedHint')}>
                   {t('deleted')}

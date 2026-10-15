@@ -68,6 +68,34 @@ final class MediaConst
     /** Bytes read from the start of an image to find its width and height (MEDIA-10); the header is near the start. */
     public const IMAGE_PROBE_BYTES = 1024 * 1024;
 
+    /** Thumbnails (MEDIA-11): JPEG at most this wide, stored next to the file under THUMBNAIL_PREFIX. */
+    public const THUMBNAIL_WIDTH = 320;
+
+    public const THUMBNAIL_PREFIX = 'thumbnails/';
+
+    public const THUMBNAIL_CONTENT_TYPE = 'image/jpeg';
+
+    /** Larger images get no thumbnail: decoding them could exhaust the queue worker's memory. */
+    public const THUMBNAIL_MAX_PIXELS = 50_000_000;
+
+    /** A video's thumbnail is the frame at this second (the first frame is often black), if it is that long. */
+    public const THUMBNAIL_VIDEO_SECOND = 1;
+
+    /** Each ffprobe / ffmpeg run is stopped after this; a crafted file must not hold the worker. */
+    public const FFMPEG_TIMEOUT_SECONDS = 60;
+
+    /**
+     * Demuxers ffmpeg may use on an uploaded file. Playlists (hls, concat) are left out: they would
+     * make ffmpeg open other URLs or local files named inside the upload.
+     */
+    public const FFMPEG_FORMATS = 'mov,matroska,webm,ogg,mp3,wav,flac,gif,jpeg_pipe,png_pipe,webp_pipe,bmp_pipe';
+
+    /** Keys inside `media_mgmt.metadata`. */
+    public const META_THUMBNAIL = 'thumbnail';
+
+    /** Set once the duration and thumbnail were looked for, found or not; the backfill skips the file. */
+    public const META_INFO_READ = 'info_read';
+
     /** Text files are previewed in full, so only small ones. */
     public const PREVIEW_TEXT_MAX_BYTES = 2 * 1024 * 1024;
 

@@ -176,6 +176,31 @@ describe('MediaBrowser', () => {
     expect(await screen.findByText(/usedBy.deleteWarning/)).toBeTruthy();
   });
 
+  it('shows the thumbnail and the length of a video', async () => {
+    server.use(
+      http.get(apiUrl('/admin/media/list'), () =>
+        HttpResponse.json(
+          page([
+            {
+              ...item(1, 'clip.mp4', true),
+              width: 1280,
+              height: 720,
+              duration: 75,
+              thumbnail_url: 'http://storage.test/thumb.jpg',
+            },
+            item(2, 'notes.txt', true),
+          ]),
+        ),
+      ),
+    );
+    const { container } = renderBrowser();
+
+    expect(await screen.findByText('2.0 KB · 1280 × 720 · 1:15')).toBeTruthy();
+    const thumbnails = container.querySelectorAll('img');
+    expect(thumbnails).toHaveLength(1);
+    expect(thumbnails[0].getAttribute('src')).toBe('http://storage.test/thumb.jpg');
+  });
+
   it('links an attached file to its evidence when evidence can be listed', async () => {
     granted = [...ALL, 'evidence.list'];
     server.use(

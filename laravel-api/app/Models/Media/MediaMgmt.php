@@ -29,6 +29,8 @@ use Illuminate\Support\Carbon;
  * @property int|null $size
  * @property int|null $width
  * @property int|null $height
+ * @property int|null $duration seconds, for video and audio (MEDIA-11)
+ * @property array<string, mixed>|null $metadata MediaConst::META_* keys
  * @property string|null $minio_bucket
  * @property string|null $minio_object_key
  * @property string|null $minio_etag
@@ -57,6 +59,8 @@ class MediaMgmt extends Model
         'size',
         'width',
         'height',
+        'duration',
+        'metadata',
         'minio_bucket',
         'minio_object_key',
         'minio_etag',
@@ -118,6 +122,8 @@ class MediaMgmt extends Model
             'size' => 'integer',
             'width' => 'integer',
             'height' => 'integer',
+            'duration' => 'integer',
+            'metadata' => 'array',
             'upload_status' => UploadStatus::class,
             'is_delete' => 'boolean',
             'created_by' => 'integer',

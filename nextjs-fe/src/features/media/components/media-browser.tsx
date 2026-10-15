@@ -9,7 +9,6 @@ import {
   ChevronRight,
   Download,
   Eye,
-  File as FileIcon,
   Folder,
   FolderInput,
   FolderPlus,
@@ -39,6 +38,7 @@ import { useUploads, type UploadState } from '../hooks/use-uploads';
 import { discardUpload } from '../lib/uploader';
 import { crumbsOf, formatBytes, formatFileSize, parentOf, ROOT } from '../lib/media-paths';
 import { IconButton } from './icon-button';
+import { FileThumb } from './file-thumb';
 import { UsedBy } from './used-by';
 import { MediaFieldDialog } from './media-field-dialog';
 import { PreviewDialog } from './preview-dialog';
@@ -206,12 +206,12 @@ export function MediaBrowser() {
             className="flex items-center gap-2 hover:underline"
             onClick={() => setPreviewing(item)}
           >
-            <FileIcon className="h-4 w-4 shrink-0 text-slate-400" aria-hidden />
+            <FileThumb item={item} />
             <span className="truncate">{item.name}</span>
           </button>
         ) : item.is_file ? (
           <span className="flex items-center gap-2">
-            <FileIcon className="h-4 w-4 shrink-0 text-slate-400" aria-hidden />
+            <FileThumb item={item} />
             <span className="truncate">{item.name}</span>
           </span>
         ) : (

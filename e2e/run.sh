@@ -55,6 +55,8 @@ cleanup() {
     // ...and nothing of them stays in the trash: every version goes, then the rows
     $trash = App\Models\Media\MediaMgmt::query()->where("is_delete", true)->where("virtual_path", "like", "/E2E %")->get();
     $trash->filter(fn ($row) => $row->minio_object_key !== null)->each(fn ($row) => app(App\Services\Media\ObjectStorage::class)->purge($row->minio_object_key));
+    // Thumbnails made by ffmpeg (MEDIA-11)
+    $trash->map(fn ($row) => App\Services\Media\MediaInfoService::thumbnailKey($row))->filter()->each(fn ($key) => app(App\Services\Media\ObjectStorage::class)->purge($key));
     App\Models\Media\MediaMgmt::query()->whereKey($trash->modelKeys())->delete();
     // The failing test background job (background-jobs.spec.ts) is kept as a failed job
     $failed = DB::table("failed_jobs")->where("payload", "like", "%TestBackgroundJob%")->delete();

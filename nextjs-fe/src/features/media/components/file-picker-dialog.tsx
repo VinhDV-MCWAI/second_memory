@@ -2,7 +2,7 @@
 
 import { useRef, useState } from 'react';
 import { useTranslations } from 'next-intl';
-import { ChevronRight, File as FileIcon, Folder, Paperclip, Upload } from 'lucide-react';
+import { ChevronRight, Folder, Paperclip, Upload } from 'lucide-react';
 import { AppDialog } from '@/components/common/app-dialog';
 import { Pagination } from '@/components/common/data-table/pagination';
 import { Button } from '@/components/ui/button';
@@ -13,7 +13,8 @@ import { usePermissions } from '@/shared/hooks/use-permissions';
 import type { MediaItem } from '@/shared/types/models';
 import { MEDIA_PER_PAGE, useMediaActions, useMediaList } from '../hooks/use-media';
 import { useUploads } from '../hooks/use-uploads';
-import { crumbsOf, formatBytes, ROOT } from '../lib/media-paths';
+import { crumbsOf, formatFileSize, ROOT } from '../lib/media-paths';
+import { FileThumb } from './file-thumb';
 import { UploadPanel } from './upload-panel';
 
 /** laravel-api UploadStatus::COMPLETED: only finished uploads can be picked. */
@@ -207,12 +208,12 @@ export function FilePickerDialog({
                     onCheckedChange={(value) => toggle(item, value === true)}
                   />
                   <label htmlFor={id} className="flex min-w-0 flex-1 items-center gap-2">
-                    <FileIcon className="h-4 w-4 shrink-0 text-slate-400" aria-hidden />
+                    <FileThumb item={item} />
                     <span className="truncate">{item.name}</span>
                   </label>
                   <span className="shrink-0 text-muted-foreground">
                     {item.upload_status === STATUS_COMPLETED
-                      ? formatBytes(item.size)
+                      ? formatFileSize(item)
                       : t('processing')}
                   </span>
                 </li>

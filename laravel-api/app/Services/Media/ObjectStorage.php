@@ -157,6 +157,20 @@ class ObjectStorage
         ];
     }
 
+    /** A presigned GET for the Docker network: what ffmpeg in the queue worker reads (MEDIA-11). */
+    public function internalGetUrl(string $key, int $ttlSeconds): string
+    {
+        $client = $this->internalClient();
+        $command = $client->getCommand('GetObject', ['Bucket' => $this->bucket(), 'Key' => $key]);
+
+        return (string) $client->createPresignedRequest($command, "+{$ttlSeconds} seconds")->getUri();
+    }
+
+    public function putObject(string $key, string $body, string $contentType): void
+    {
+        $this->internalClient()->putObject(['Bucket' => $this->bucket(), 'Key' => $key, 'Body' => $body, 'ContentType' => $contentType]);
+    }
+
     /** The first $bytes of an object (a Range GET), or all of it when it is smaller. */
     public function readStart(string $key, int $bytes): string
     {

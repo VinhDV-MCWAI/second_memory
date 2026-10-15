@@ -9,6 +9,7 @@ use App\Constants\Messages;
 use App\Enums\AuditEvent;
 use App\Enums\PreviewKind;
 use App\Enums\UploadStatus;
+use App\Jobs\Media\ReadMediaInfoJob;
 use App\Models\Media\MediaMgmt;
 use App\Repositories\Media\MediaRepository;
 use App\Services\AuditLogger;
@@ -176,6 +177,9 @@ final class MediaService
         ]);
         $this->media->save($file);
         $this->auditLogger->record(self::AUDIT_TYPE, $file->id, AuditEvent::CREATED, null, $this->auditValues($file), $actorId);
+        if (MediaInfoService::wanted($file)) {
+            ReadMediaInfoJob::dispatch($file->id)->afterCommit();
+        }
     }
 
     /**

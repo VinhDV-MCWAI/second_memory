@@ -45,6 +45,17 @@ final class FakeObjectStorage extends ObjectStorage
     /** @var array<string, string> contents given with putBody(); other objects read as zero bytes */
     public array $bodies = [];
 
+    public function internalGetUrl(string $key, int $ttlSeconds): string
+    {
+        return "http://minio.test/media-test/{$key}?X-Amz-Expires={$ttlSeconds}";
+    }
+
+    public function putObject(string $key, string $body, string $contentType): void
+    {
+        $this->putBody($key, $body);
+        $this->objects[$key]['mime_type'] = $contentType;
+    }
+
     public function readStart(string $key, int $bytes): string
     {
         return substr($this->bodies[$key] ?? str_repeat("\0", $this->objects[$key]['size'] ?? 0), 0, $bytes);

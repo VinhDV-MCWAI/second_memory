@@ -40,6 +40,8 @@ const imported: Evidence = {
       size: 1024,
       width: null,
       height: null,
+      duration: null,
+      thumbnail_url: null,
       upload_status: 2,
       preview: 'pdf',
       created_at: null,

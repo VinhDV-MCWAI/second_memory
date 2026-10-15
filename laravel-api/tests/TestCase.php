@@ -6,6 +6,7 @@ namespace Tests;
 
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
+use Illuminate\Support\Facades\Process;
 use Illuminate\Support\Facades\Redis;
 use Tests\Support\OpenApiContract;
 
@@ -19,6 +20,8 @@ abstract class TestCase extends BaseTestCase
 
         // Requests look like they come from the admin SPA, so Sanctum starts a session (ADR-0004)
         $this->withServerVariables(['HTTP_REFERER' => config('app.url')]);
+        // ffprobe / ffmpeg (MEDIA-11) never run in tests: they print nothing unless a test fakes an output
+        Process::fake();
     }
 
     /**

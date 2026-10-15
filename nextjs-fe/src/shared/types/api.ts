@@ -56,7 +56,7 @@ export interface ListQueryParams {
  * useApiData Hook Types
  */
 
-export interface UseApiDataOptions {
+export interface UseApiDataOptions<T = unknown> {
   page?: number;
   per_page?: number;
   sort_by?: string;
@@ -67,6 +67,8 @@ export interface UseApiDataOptions {
   enabled?: boolean; // If false, don't fetch automatically
   staleTime?: number;
   refetchOnMount?: boolean | 'always';
+  /** Poll while the listed rows are not final yet: milliseconds until the next fetch, or false. */
+  refetchInterval?: (rows: T[]) => number | false;
 }
 
 export interface UseApiDataReturn<T> {

@@ -26,7 +26,7 @@ import { getPaginationInfo } from '@/shared/utils/pagination';
 const EMPTY_ARRAY: never[] = [];
 export function useApiData<T>(
   endpoint: string,
-  options: UseApiDataOptions = {},
+  options: UseApiDataOptions<T> = {},
 ): UseApiDataReturn<T> {
   const {
     page = PAGINATION.DEFAULT_PAGE,
@@ -75,6 +75,9 @@ export function useApiData<T>(
     enabled,
     staleTime,
     refetchOnMount: options.refetchOnMount,
+    refetchInterval: options.refetchInterval
+      ? (current) => options.refetchInterval?.(current.state.data?.data ?? []) ?? false
+      : undefined,
     // Keep previous data while fetching new page
     placeholderData: (previousData) => previousData,
   });

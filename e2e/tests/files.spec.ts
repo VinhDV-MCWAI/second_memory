@@ -114,7 +114,7 @@ test('owner resumes a large upload after the page is reloaded', async ({ page })
 
 // Preview (MEDIA-06): an image renders in the dialog and a text file shows as text, both straight
 // from MinIO through nginx with the type the server chose.
-test('owner previews an image and a text file', async ({ page }) => {
+test('owner previews an image and a text file; images and videos get thumbnails and lengths', async ({ page }) => {
   const dir = mkdtempSync(join(tmpdir(), 'e2e-preview-'));
   const image = join(dir, 'dot.png');
   const text = join(dir, 'readme.md');
@@ -124,6 +124,15 @@ test('owner previews an image and a text file', async ({ page }) => {
     Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8DwHwAFBQIAX8jx0gAAAABJRU5ErkJggg==', 'base64'),
   );
   writeFileSync(text, '# Preview from e2e <b>not bold</b>');
+  // 16×16 blue WebM, 3 seconds (made with ffmpeg: color=c=blue:s=16x16:r=1:d=3, libvpx)
+  const video = join(dir, 'tiny.webm');
+  writeFileSync(
+    video,
+    Buffer.from(
+      'GkXfo59ChoEBQveBAULygQRC84EIQoKEd2VibUKHgQJChYECGFOAZwEAAAAAAAJkEU2bdLpNu4tTq4QVSalmU6yBoU27i1OrhBZUrmtTrIHYTbuMU6uEElTDZ1OsggElTbuMU6uEHFO7a1OsggJO7AEAAAAAAABZAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAVSalmsirXsYMPQkBNgI1MYXZmNjIuMTIuMTAyV0GNTGF2ZjYyLjEyLjEwMkSJiECncAAAAAAAFlSua8iuAQAAAAAAAD/XgQFzxYhgFoEJ3chFqJyBACK1nIN1bmSIgQCGhVZfVlA4g4EBI+ODhDuaygDgkLCBELqBEJqBAlWwhFW5gQESVMNn/HNzoGPAgGfImkWjh0VOQ09ERVJEh41MYXZmNjIuMTIuMTAyc3PWY8CLY8WIYBaBCd3IRahnyKFFo4dFTkNPREVSRIeUTGF2YzYyLjI4LjEwMiBsaWJ2cHhnyKFFo4hEVVJBVElPTkSHkzAwOjAwOjAzLjAwMDAwMDAwMAAfQ7Z1QKLngQCjvYEAAICwAgCdASoQABAAAEcIhYWImYSIAgICdaoD+AIM/fsA/v9NEv/8SqfxKp/Eqn/xKp/9GH8MP4Yf3hCjroED6ACxAQABEBAAGAAwP/QMAO8A/v9NEv/8SqfxKp/Eqn/xKp/9GH8MP4Yf3hCjroEH0ACxAQABEBAAGAAwP/QMAO8A/v9NEv/8SqfxKp/Eqn/xKp/9GH8MP4Yf3hAcU7trkbuPs4EAt4r3gQHxggGm8IED',
+      'base64',
+    ),
+  );
   const previewFolder = `${folder} preview`;
 
   await page.goto('/login');
@@ -138,9 +147,15 @@ test('owner previews an image and a text file', async ({ page }) => {
   await page.getByRole('button', { name: previewFolder }).click();
   await expect(page).toHaveURL(/folder=/);
 
-  await page.getByTestId('media-file-input').setInputFiles([image, text]);
+  await page.getByTestId('media-file-input').setInputFiles([image, text, video]);
   // Width × height read from the start of the object in MinIO (MEDIA-10)
   await expect(page.getByRole('row').filter({ hasText: 'dot.png' })).toContainText('1 × 1');
+  // Thumbnails and length from ffmpeg in the queue worker; the listing asks again until they arrive (MEDIA-11)
+  await expect(page.getByRole('row').filter({ hasText: 'dot.png' }).locator('img')).toBeVisible();
+  const videoRow = page.getByRole('row').filter({ hasText: 'tiny.webm' });
+  await expect(videoRow).toContainText('16 × 16 · 0:03');
+  await expect(videoRow.locator('img')).toBeVisible();
+  expect(await videoRow.locator('img').evaluate((img: HTMLImageElement) => img.naturalWidth)).toBe(16);
   await page.getByRole('button', { name: 'dot.png' }).click();
   const shown = page.getByRole('dialog').getByRole('img', { name: 'dot.png' });
   await expect(shown).toBeVisible();

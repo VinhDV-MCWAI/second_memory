@@ -29,12 +29,28 @@ export function formatBytes(bytes: number | null | undefined): string {
   return `${unit === 0 ? value : value.toFixed(value < 10 ? 1 : 0)} ${UNITS[unit]}`;
 }
 
-/** Size of a file for the Files screen: bytes, plus width × height for an image (MEDIA-10). */
+/** A length in seconds as `m:ss`, or `h:mm:ss` from an hour on. */
+export function formatDuration(seconds: number): string {
+  const pad = (value: number) => String(value).padStart(2, '0');
+  const hours = Math.floor(seconds / 3600);
+  const minutes = Math.floor((seconds % 3600) / 60);
+  const rest = seconds % 60;
+  return hours > 0 ? `${hours}:${pad(minutes)}:${pad(rest)}` : `${minutes}:${pad(rest)}`;
+}
+
+/**
+ * Size of a file for the Files screen: bytes, plus width × height of an image or video (MEDIA-10)
+ * and the length of a video or audio (MEDIA-11).
+ */
 export function formatFileSize(item: {
   size?: number | null;
   width?: number | null;
   height?: number | null;
+  duration?: number | null;
 }): string {
-  const bytes = formatBytes(item.size);
-  return item.width && item.height ? `${bytes} · ${item.width} × ${item.height}` : bytes;
+  const parts = [formatBytes(item.size)];
+  if (item.width && item.height) parts.push(`${item.width} × ${item.height}`);
+  if (item.duration !== null && item.duration !== undefined)
+    parts.push(formatDuration(item.duration));
+  return parts.join(' · ');
 }

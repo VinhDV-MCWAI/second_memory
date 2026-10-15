@@ -1108,6 +1108,10 @@ export interface components {
       /** @description Image width and height in pixels (MEDIA-10); null for other files or an unreadable image */
       width: number | null;
       height: number | null;
+      /** @description Video or audio length in seconds (MEDIA-11) */
+      duration: number | null;
+      /** @description Presigned JPEG of an image or a video frame, at most 320 px wide (MEDIA-11); null when there is none */
+      thumbnail_url: string | null;
       /** @description 0 uploading, 1 processing, 2 completed, 3 failed */
       upload_status: number;
       /** @description How the file can be shown without downloading it; null: download only, or not available */
@@ -1234,6 +1238,10 @@ export interface components {
       /** @description Image width and height in pixels (MEDIA-10); null for other files or an unreadable image */
       width: number | null;
       height: number | null;
+      /** @description Video or audio length in seconds (MEDIA-11) */
+      duration: number | null;
+      /** @description Presigned JPEG of an image or a video frame, at most 320 px wide (MEDIA-11); null when there is none */
+      thumbnail_url: string | null;
       /** @description 0 uploading, 1 processing, 2 completed, 3 failed */
       upload_status: number;
       /** @description How the file can be shown without downloading it (`download-url/{id}?inline=1`); null: download only */

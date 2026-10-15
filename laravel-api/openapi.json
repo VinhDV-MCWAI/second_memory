@@ -6584,6 +6584,20 @@
                             "null"
                         ]
                     },
+                    "duration": {
+                        "type": [
+                            "integer",
+                            "null"
+                        ],
+                        "description": "Video or audio length in seconds (MEDIA-11)"
+                    },
+                    "thumbnail_url": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "description": "Presigned JPEG of an image or a video frame, at most 320 px wide (MEDIA-11); null when there is none"
+                    },
                     "upload_status": {
                         "type": "integer",
                         "description": "0 uploading, 1 processing, 2 completed, 3 failed"
@@ -6645,6 +6659,8 @@
                     "size",
                     "width",
                     "height",
+                    "duration",
+                    "thumbnail_url",
                     "upload_status",
                     "preview",
                     "created_at",
@@ -7027,6 +7043,20 @@
                             "null"
                         ]
                     },
+                    "duration": {
+                        "type": [
+                            "integer",
+                            "null"
+                        ],
+                        "description": "Video or audio length in seconds (MEDIA-11)"
+                    },
+                    "thumbnail_url": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "description": "Presigned JPEG of an image or a video frame, at most 320 px wide (MEDIA-11); null when there is none"
+                    },
                     "upload_status": {
                         "type": "integer",
                         "description": "0 uploading, 1 processing, 2 completed, 3 failed"
@@ -7084,6 +7114,8 @@
                     "size",
                     "width",
                     "height",
+                    "duration",
+                    "thumbnail_url",
                     "upload_status",
                     "preview",
                     "created_at",

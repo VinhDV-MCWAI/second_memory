@@ -144,6 +144,41 @@ class MediaRepository extends BaseRepository
             ->lazyById();
     }
 
+    /**
+     * Live completed files with one of $extensions whose duration and thumbnail were never looked for.
+     *
+     * @param  list<string>  $extensions
+     * @return LazyCollection<int, MediaMgmt>
+     */
+    public function filesWithoutInfo(array $extensions): LazyCollection
+    {
+        return $this->query()->live()
+            ->where('is_file', true)
+            ->where('upload_status', UploadStatus::COMPLETED)
+            ->whereRaw('coalesce((metadata->>?)::boolean, false) = false', [MediaConst::META_INFO_READ])
+            ->whereIn(DB::raw('lower(extension)'), $extensions)
+            ->lazyById();
+    }
+
+    /**
+     * Stores what MediaInfoService found, without touching updated_at.
+     *
+     * @param  array<string, mixed>  $metadata  merged into the existing metadata
+     */
+    public function setInfo(MediaMgmt $file, ?int $duration, ?int $width, ?int $height, array $metadata): void
+    {
+        $values = ['metadata' => json_encode([...($file->metadata ?? []), ...$metadata], JSON_THROW_ON_ERROR)];
+        if ($duration !== null) {
+            $values['duration'] = $duration;
+        }
+        // An image's size comes from its header (MEDIA-10); ffprobe adds it for videos
+        if ($width !== null && $height !== null && $file->width === null) {
+            $values['width'] = $width;
+            $values['height'] = $height;
+        }
+        $this->query()->whereKey($file->id)->toBase()->update($values);
+    }
+
     /** Sets the size without touching updated_at (it is when the file last changed, or was deleted). */
     public function setImageSize(int $id, int $width, int $height): void
     {

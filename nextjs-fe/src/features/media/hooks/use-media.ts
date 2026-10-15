@@ -5,6 +5,7 @@ import { apiClient, API_ENDPOINTS, queryKeys } from '@/shared/api';
 import { useApiData } from '@/shared/hooks/use-api-data';
 import type { SortOrder } from '@/shared/config';
 import type { MediaItem, UnfinishedUpload } from '@/shared/types/models';
+import { awaitingMediaInfo, MEDIA_INFO_POLL_MS } from '../lib/media-info';
 
 const BASE = API_ENDPOINTS.MEDIA.BASE;
 
@@ -30,6 +31,8 @@ export function useMediaList({ folder, name, page, perPage, sortBy, sortOrder }:
     filters: name ? { folder, name } : { folder },
     sort_by: sortBy,
     sort_order: sortOrder,
+    // Thumbnails and durations arrive from a background job shortly after an upload (MEDIA-11)
+    refetchInterval: (rows) => (awaitingMediaInfo(rows) ? MEDIA_INFO_POLL_MS : false),
   });
 }
 

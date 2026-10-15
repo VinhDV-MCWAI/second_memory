@@ -124,6 +124,10 @@ final class MediaTrashService
     {
         foreach ($rows as $file) {
             $this->storage->purge((string) $file->minio_object_key);
+            $thumbnail = MediaInfoService::thumbnailKey($file);
+            if ($thumbnail !== null) {
+                $this->storage->purge($thumbnail);
+            }
         }
     }
 

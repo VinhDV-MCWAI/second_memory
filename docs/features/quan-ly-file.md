@@ -23,6 +23,7 @@ Menu **Files** (`/admin/files`, cần quyền `media.list`).
 | Xóa | Nút thùng rác ở dòng, hoặc tick nhiều dòng rồi **Delete (n)**; hỏi lại trước khi xóa. File vào [thùng rác](#thùng-rác) 30 ngày | `media.delete` |
 | Thùng rác | Nút **Trash** (`/admin/files/trash`) | `media.trash-list` |
 | Xem kích thước ảnh | Cột dung lượng và dòng dưới tên trong hộp xem trước hiện thêm rộng × cao (ví dụ `2.0 MB · 1920 × 1080`) với ảnh jpg, png, gif, webp, avif, bmp. Đọc từ 1 MB đầu của file ngay khi upload xong; ảnh hỏng không đọc được thì chỉ hiện dung lượng, upload vẫn thành công. Ảnh upload trước ngày 2026-10-15: chạy `docker exec ml-php php artisan media:read-image-sizes` (chạy lại bao nhiêu lần cũng được) | `media.list` |
+| Xem ảnh nhỏ, thời lượng | Ảnh (jpg, png, gif, webp, avif, bmp) và video (mp4, m4v, webm, ogv) có ảnh nhỏ cạnh tên file; video và nhạc (mp3, m4a, wav, ogg, oga, flac) có thời lượng cạnh dung lượng, ví dụ `45 MB · 1280 × 720 · 3:12`. Có cả trong hộp chọn file và ô file của form bằng chứng. Tạo ngầm vài giây sau khi upload xong, màn hình tự hỏi lại tới khi có (tối đa 30 giây). Chi tiết ở mục [Ảnh nhỏ và thời lượng](#ảnh-nhỏ-và-thời-lượng) | `media.list` |
 | Xem file đang gắn vào bằng chứng nào | Cột **Evidence**: kẹp giấy + số lần gắn. Rê chuột vào file thấy tên các bằng chứng; bấm vào số của một file thì mở màn hình Evidence chỉ hiện các bằng chứng dùng file đó (cần quyền `evidence.list`); thư mục đếm các file bên trong (không tính file đã xóa). Xóa file / thư mục đang được gắn thì hộp thoại xóa cảnh báo thêm số liên kết sẽ hiện "Deleted" | `media.list` |
 
 Nút nào không có quyền thì không hiện (API vẫn chặn bằng 403). Vai trò Chỉ xem: xem và tải về.
@@ -47,6 +48,25 @@ File đã xóa nằm trong thùng rác **30 ngày**, sau đó MinIO tự xóa h�
 | Cách MinIO giữ file | Kho chính bật lưu phiên bản. Xóa chỉ đặt một "dấu đã xóa", dữ liệu vẫn còn. Khôi phục là gỡ dấu đó. Xóa vĩnh viễn là xóa mọi phiên bản. Luật trong `docker/minio/ilm-history.json`: phiên bản cũ mất sau 30 ngày |
 | Trước ngày 2026-10-15 | Luật cũ giữ 5 phiên bản cũ gần nhất **mãi mãi**, nên file đã xóa không bao giờ được giải phóng dung lượng. Đã sửa |
 | Nhật ký thay đổi | Khôi phục ghi `restored`, xóa vĩnh viễn ghi `purged` |
+
+### Ảnh nhỏ và thời lượng
+
+Từ 2026-10-15. Upload xong thì một việc nền (container `ml-queue`, không hiện thông báo) dùng **ffmpeg** đọc file trên MinIO qua link ký tạm, chỉ tải những đoạn cần, không tải cả file:
+
+| Loại | Kết quả |
+|---|---|
+| Video | Thời lượng, rộng × cao, ảnh nhỏ là khung hình ở giây thứ 1 (video ngắn hơn thì khung đầu) |
+| Nhạc | Thời lượng |
+| Ảnh | Ảnh nhỏ. Ảnh trên 50 triệu điểm ảnh thì bỏ qua để không tràn bộ nhớ của worker |
+
+| Ghi chú | |
+|---|---|
+| Ảnh nhỏ | JPEG rộng tối đa 320 px, lưu trong kho chính tại `thumbnails/<tên file trong kho>.jpg`, tên ghi trong cột `metadata` |
+| File ffmpeg không đọc được | Upload vẫn thành công, chỉ không có ảnh nhỏ và thời lượng. Lý do ghi vào log (`ffprobe could not read a file`) |
+| An toàn | Mỗi lần chạy ffmpeg tối đa 60 giây. ffmpeg chỉ được đọc file qua mạng (http) và chỉ với các định dạng video, nhạc, ảnh thông thường: một file giả làm video nhưng bên trong là danh sách phát (trỏ tới file khác trên máy) bị từ chối |
+| Xóa | Ảnh nhỏ ở lại trong thùng rác cùng file. Xóa vĩnh viễn hoặc lệnh dọn hằng ngày thì xóa luôn ảnh nhỏ |
+| File upload trước ngày 2026-10-15 | `docker exec ml-php php artisan media:read-media-info`. Chạy lại bao nhiêu lần cũng được: file đã đọc (kể cả không đọc được) được bỏ qua |
+| Image PHP | Có thêm ffmpeg nên image bản dev nặng 433 MB (trước là 252 MB) |
 
 ### Xem trước
 
@@ -169,7 +189,7 @@ Mọi thay đổi (tạo thư mục, upload xong, đổi tên, chuyển, xóa) g
 |---|---|
 | Kho `media-official` | File chính thức, tên trong kho là `năm/tháng/uuid.đuôi`; bật lưu phiên bản, phiên bản cũ (file đã xóa) mất sau 30 ngày |
 | Kho `media-temp` | Chưa dùng; tự xóa sau 1 ngày |
-| Bảng `media_mgmt` | Tên, đường dẫn ảo (`/Docs/a.pdf`), dung lượng, loại file, trạng thái (0 đang tải lên, 1 đang xử lý, 2 hoàn tất, 3 lỗi), mã upload chia phần (`upload_id`, xóa khi ghép xong), đã xóa hay chưa |
+| Bảng `media_mgmt` | Tên, đường dẫn ảo (`/Docs/a.pdf`), dung lượng, rộng × cao, thời lượng, `metadata` (tên ảnh nhỏ), loại file, trạng thái (0 đang tải lên, 1 đang xử lý, 2 hoàn tất, 3 lỗi), mã upload chia phần (`upload_id`, xóa khi ghép xong), đã xóa hay chưa |
 
 ## Cấu hình
 
@@ -189,11 +209,12 @@ Mọi thay đổi (tạo thư mục, upload xong, đổi tên, chuyển, xóa) g
 | Nói chuyện với MinIO | `app/Services/Media/ObjectStorage.php` (thư viện `aws/aws-sdk-php`) |
 | Upload chia phần, dọn upload treo | `app/Services/Media/MultipartUploadService.php`, `app/Jobs/Media/ProcessUploadJob.php`, `app/Console/Commands/CleanStuckUploadsCommand.php` (lịch trong `routes/console.php`) |
 | Dọn dòng đã xóa quá 30 ngày | `app/Console/Commands/PruneTrashCommand.php`, `MediaTrashService::pruneExpired()`; test `tests/Feature/Media/PruneTrashCommandTest.php` |
+| Kích thước ảnh, ảnh nhỏ, thời lượng | `MediaService::imageSize()`, `app/Services/Media/MediaInfoService.php` (gọi ffprobe / ffmpeg), `app/Jobs/Media/ReadMediaInfoJob.php`, lệnh `media:read-image-sizes` và `media:read-media-info`; test `tests/Feature/Media/{ImageSizeTest,MediaInfoTest}.php` (ffmpeg giả bằng `Process::fake()`) |
 | Truy vấn | `app/Repositories/Media/MediaRepository.php` |
 | Test | `tests/Feature/Media/{MediaApiTest,MultipartUploadApiTest}.php` (MinIO giả trong bộ nhớ: `tests/Fakes/FakeObjectStorage.php`) |
 | Bộ upload phía trình duyệt | `nextjs-fe/src/features/media/lib/uploader.ts` (`uploadFile(file, {folder, onProgress, signal})`) |
 | Màn hình | `nextjs-fe/src/app/admin/files/page.tsx`, `src/features/media/components/` (trình duyệt file, khung upload, hộp thoại), `src/features/media/hooks/` (danh sách, hàng chờ upload) |
-| Test e2e | `e2e/tests/files.spec.ts` (thư mục, file nhỏ, file 120 MB qua việc nền, đổi tên, tải về, xóa) |
+| Test e2e | `e2e/tests/files.spec.ts` (thư mục, file nhỏ, file 120 MB qua việc nền, đổi tên, tải về, xóa; xem trước; ảnh nhỏ và thời lượng của ảnh và video thật) |
 | nginx | nhánh `/media-official/` trong `docker/nginx/default.conf` |
 | MinIO | `docker/minio/create-buckets.sh` (kho, quyền, tắt đọc công khai) |
 
@@ -212,4 +233,4 @@ Mọi thay đổi (tạo thư mục, upload xong, đổi tên, chuyển, xóa) g
 | Bằng chứng chỉ có file, không cần link | Xong |
 | Bấm số ở cột Evidence để mở các bằng chứng dùng file | Xong |
 | Kích thước ảnh (rộng × cao) | Xong |
-| Thời lượng video, nhạc; ảnh thu nhỏ | Chưa làm: cần thêm công cụ (ffmpeg, thư viện xử lý ảnh) vào container, chờ chủ dự án quyết |
+| Thời lượng video, nhạc; ảnh nhỏ của ảnh và video | Xong |
