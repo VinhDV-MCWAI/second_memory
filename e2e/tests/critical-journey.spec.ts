@@ -50,7 +50,7 @@ test('owner records a skill with evidence and it shows on the public page', asyn
     await page.getByRole('button', { name: 'Create Evidence' }).click();
     const dialog = page.getByRole('dialog');
     await dialog.getByLabel('Title').fill(evidenceTitle);
-    await dialog.getByLabel('Link (http or https)').fill(`https://example.com/e2e/${runId}`);
+    await dialog.getByLabel(/^Link \(http or https/).fill(`https://example.com/e2e/${runId}`);
     await dialog.getByLabel('Date').fill(yesterday());
     await dialog.getByLabel('Summary').fill('Recorded by the end-to-end test.');
     await dialog.getByLabel(publicSkill, { exact: true }).check();
