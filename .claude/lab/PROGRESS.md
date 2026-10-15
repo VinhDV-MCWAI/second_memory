@@ -115,6 +115,8 @@ Mỗi dòng do `scripts/lane.sh done` tự thêm. Không sửa tay.
 
 - 2026-10-15 — [lane main] MEDIA-11 done: e2a66080, d2fb118a — ffmpeg trong image PHP; ảnh nhỏ 320 px cho ảnh và video, thời lượng video và nhạc, tạo ngầm sau upload, hiện ở Files, hộp chọn file, form bằng chứng; chặn file độc (giới hạn 60 giây, chỉ định dạng thông thường); lệnh media:read-media-info; make verify pass (238 backend, 133 giao diện, 63 importer), make e2e 8/8, thử 13 loại file trên MinIO thật
 
+- 2026-10-15 — [lane main] AUTH-04 done: 157f5afd, 8768876f, 74499eaf, 0388a668 — màn hình Signed-in devices: xem thiết bị đang đăng nhập (trình duyệt, IP, lần dùng cuối), đăng xuất một thiết bị hoặc mọi thiết bị khác; phiên vẫn trong Redis + bảng admin_session; đổi mật khẩu, khóa, xóa tài khoản cũng xóa thiết bị; make verify pass (252 backend, 144 giao diện, 63 importer), make e2e 8/8, thử thật trên dev
+
 ## Next step
 
 Cập nhật 2026-10-15, sau khi rà tài liệu tiến độ.
