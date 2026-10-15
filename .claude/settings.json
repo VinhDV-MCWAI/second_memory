@@ -19,7 +19,11 @@
       "Bash(docker exec ml-nextjs pnpm test:*)",
       "Bash(docker exec ml-nextjs pnpm exec tsc:*)",
       "Bash(docker exec ml-nextjs-docs pnpm lint:*)",
-      "Bash(docker exec ml-nextjs-docs pnpm exec tsc:*)"
+      "Bash(docker exec ml-nextjs-docs pnpm exec tsc:*)",
+      "Write(.claude/**)",
+      "Edit(.claude/**)",
+      "Edit(CLAUDE.md)",
+      "Bash(git rm:*)"
     ],
     "ask": [
       "Bash(docker exec ml-php php artisan migrate:*)",
