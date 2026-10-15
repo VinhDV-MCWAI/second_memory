@@ -114,7 +114,8 @@
   },
   "header": {
     "searchPlaceholder": "Search... (⌘K)",
-    "userMenu": "User menu"
+    "userMenu": "User menu",
+    "sessions": "Signed-in devices"
   },
   "navigation": {
     "navigateTo": "Navigate to...",
@@ -719,5 +720,25 @@
     "discardDescription": "You have changes that are not saved. Closing now will lose them.",
     "discard": "Discard",
     "keepEditing": "Keep editing"
+  },
+  "sessions": {
+    "title": "Signed-in devices",
+    "description": "Where your account is signed in. Sign out a device you do not recognise or no longer use.",
+    "device": "Device",
+    "ipAddress": "IP address",
+    "signedIn": "Signed in",
+    "lastActive": "Last active",
+    "thisDevice": "This device",
+    "unknownDevice": "Unknown device",
+    "deviceName": "{browser} on {os}",
+    "signOut": "Sign out",
+    "signOutOthers": "Sign out all other devices",
+    "signOutTitle": "Sign out this device?",
+    "signOutDescription": "{device} will have to sign in again.",
+    "signOutOthersTitle": "Sign out all other devices?",
+    "signOutOthersDescription": "Every device except this one will have to sign in again.",
+    "signedOut": "{count, plural, =0 {No device was signed out} one {Signed out one device} other {Signed out # devices}}",
+    "failed": "Could not sign out. Try again.",
+    "onlyThisDevice": "You are signed in on this device only."
   }
 }

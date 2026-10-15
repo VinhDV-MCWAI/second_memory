@@ -209,6 +209,7 @@ export const ADMIN_ROUTES = {
   FILES: '/admin/files',
   FILES_TRASH: '/admin/files/trash',
   AUDIT_LOG: '/admin/audit-log',
+  SESSIONS: '/admin/sessions',
   LOGIN: '/login',
 } as const;
 

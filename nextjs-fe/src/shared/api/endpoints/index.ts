@@ -11,6 +11,7 @@ export const API_ENDPOINTS = {
     ADMIN: '/admin/admin-mst',
     ROLE: '/admin/role',
     PERMISSION: '/admin/permission/list',
+    ADMIN_SESSION: '/admin/admin-session',
   },
   AUDIT: {
     LOG: '/admin/audit-log',

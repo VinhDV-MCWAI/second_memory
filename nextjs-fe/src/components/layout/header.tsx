@@ -12,8 +12,9 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Input } from '@/components/ui/input';
 import { useState, useEffect, type FormEvent } from 'react';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { Search, Sun, Moon, LogOut } from 'lucide-react';
+import { Search, Sun, Moon, LogOut, MonitorSmartphone } from 'lucide-react';
 import { useTheme } from 'next-themes';
 import { useTranslations } from 'next-intl';
 import { ADMIN_ROUTES, SEARCH_PARAM, THEME } from '@/shared/config';
@@ -129,6 +130,12 @@ export function Header() {
                 )}
               </DropdownMenuLabel>
               <DropdownMenuSeparator />
+              <DropdownMenuItem asChild>
+                <Link href={ADMIN_ROUTES.SESSIONS}>
+                  <MonitorSmartphone className="mr-2 h-4 w-4" />
+                  {t('sessions')}
+                </Link>
+              </DropdownMenuItem>
               <DropdownMenuItem
                 className="text-red-600 focus:text-red-600 dark:text-red-400"
                 onSelect={() => void logout()}
