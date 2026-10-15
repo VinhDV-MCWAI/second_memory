@@ -204,3 +204,8 @@ Mọi thay đổi (tạo thư mục, upload xong, đổi tên, chuyển, xóa) g
 | [Việc nền và thông báo tức thì](viec-nen-va-thong-bao.md) (dùng chung) | Xong |
 | Upload file lớn chia phần, xử lý nền, dọn upload treo | Xong |
 | Giao diện quản lý file | Xong |
+| Tiếp tục upload dở sau khi tải lại trang | Xong |
+| Xem trước ảnh, PDF, video, nhạc, file chữ | Xong |
+| Thùng rác 30 ngày, khôi phục, xóa vĩnh viễn, dọn hằng ngày | Xong |
+| Gắn file vào bằng chứng của [Skill Ledger](skill-ledger.md), cột Evidence ở màn hình Files | Xong |
+| Bằng chứng chỉ có file, không cần link | Xong |
