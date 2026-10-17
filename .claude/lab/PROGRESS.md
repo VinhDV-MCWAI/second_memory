@@ -132,6 +132,8 @@ Mỗi dòng do `scripts/lane.sh done` tự thêm. Không sửa tay.
 
 - 2026-10-17 — [lane main] DEPT-05 done: 086aab2b, 3c2247b7 — test trình duyệt: Chủ thêm phòng ban trên màn hình, khóa thư mục cho phòng ban của e2e_member; e2e_member thấy, e2e_outsider không thấy; run.sh tạo/xóa tài khoản phụ và phòng ban E2E; make e2e 9/9; tài liệu phong-ban.md hoàn chỉnh
 
+- 2026-10-17 — [lane main] MEDIA-12 done: 7ca95382, 27078a80, b57d6b7f, 350d3f1a — ảnh nhỏ trong thùng rác Files và cạnh file đính kèm trên trang public (link ký tạm 1 giờ có sẵn trong API, không tốn thêm request); make verify pass (276 backend, 154 giao diện, 63 importer), thử thật trên dev
+
 ## Next step
 
 Cập nhật 2026-10-17, cuối phiên làm Phòng ban và khóa thư mục.
