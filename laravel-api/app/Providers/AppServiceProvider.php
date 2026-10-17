@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Providers;
 
+use App\Constants\EndUserConst;
 use App\Constants\LedgerConst;
 use App\Enums\AdminRole;
 use App\Models\Master\AdminMst;
@@ -49,6 +50,9 @@ class AppServiceProvider extends ServiceProvider
         // A deleted or disabled admin cannot log in, and an existing session stops working on the next request
         Auth::provider('active-admins', fn (Application $app, array $config): EloquentUserProvider => (new EloquentUserProvider($app['hash'], $config['model']))
             ->withQuery(fn (Builder $query) => $query->where('is_delete', false)->where('is_active', true)));
+        // A locked end user is signed out on the next request (ADR-0020)
+        Auth::provider('active-end-users', fn (Application $app, array $config): EloquentUserProvider => (new EloquentUserProvider($app['hash'], $config['model']))
+            ->withQuery(fn (Builder $query) => $query->where('is_active', true)));
         // Same rule for API tokens: Sanctum loads the token's admin without the provider above
         Sanctum::authenticateAccessTokensUsing(fn (PersonalAccessToken $token, bool $isValid): bool => $isValid
             && $token->tokenable instanceof AdminMst && ! $token->tokenable->isDeleted() && $token->tokenable->isActive());
@@ -57,6 +61,8 @@ class AppServiceProvider extends ServiceProvider
         Gate::before(fn (mixed $admin): ?bool => $admin instanceof AdminMst && $admin->hasRole(AdminRole::OWNER->value) ? true : null);
 
         RateLimiter::for('public', fn (Request $request): Limit => Limit::perMinute(LedgerConst::PUBLIC_RATE_PER_MINUTE)->by((string) $request->ip()));
+        RateLimiter::for('user', fn (Request $request): Limit => Limit::perMinute(EndUserConst::RATE_PER_MINUTE)->by((string) $request->ip()));
+        RateLimiter::for('user-register', fn (Request $request): Limit => Limit::perHour(EndUserConst::REGISTER_PER_HOUR)->by((string) $request->ip()));
 
         // Under /api so nginx routes it to Laravel (/docs belongs to the docs site)
         Scramble::configure()

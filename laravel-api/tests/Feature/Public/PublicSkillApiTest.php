@@ -68,6 +68,7 @@ final class PublicSkillApiTest extends TestCase
             ->assertJsonPath('data.data.history.0', ['level' => 3, 'level_label' => 'Independent', 'changed_on' => now()->toDateString()])
             ->assertJsonCount(2, 'data.data.history')
             ->assertJsonPath('data.data.evidence', [[
+                'key' => $this->publicEvidence->refresh()->public_key,
                 'type' => 'pr',
                 'title' => 'Audit log PR',
                 'url' => $this->publicEvidence->url,

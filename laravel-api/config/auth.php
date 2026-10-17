@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use App\Models\Master\AdminMst;
+use App\Models\User\EndUser;
 
 return [
 
@@ -43,6 +44,11 @@ return [
             'driver' => 'session',
             'provider' => 'admins',
         ],
+        // End users of the public site (ADR-0020): same session cookie, own table, never the admin API
+        'user' => [
+            'driver' => 'session',
+            'provider' => 'end-users',
+        ],
     ],
 
     /*
@@ -67,6 +73,11 @@ return [
         'admins' => [
             'driver' => 'active-admins',
             'model' => AdminMst::class,
+        ],
+        // Only active end users can log in or keep a session (AppServiceProvider)
+        'end-users' => [
+            'driver' => 'active-end-users',
+            'model' => EndUser::class,
         ],
     ],
 

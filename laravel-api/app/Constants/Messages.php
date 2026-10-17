@@ -110,6 +110,8 @@ class Messages
 
     const E0045 = 'Only folders can be given to departments';
 
+    const E0046 = 'Registration is closed';
+
     /**
      * Errors http messages
      */

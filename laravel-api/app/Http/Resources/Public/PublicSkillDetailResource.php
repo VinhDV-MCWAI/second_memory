@@ -35,6 +35,8 @@ class PublicSkillDetailResource extends PublicSkillResource
                 'changed_on' => $entry->changed_on->format(LedgerConst::DATE_FORMAT),
             ])->all(),
             'evidence' => $this->evidence->map(fn (Evidence $evidence): array => [
+                // Random key (ADR-0020): end users save an evidence by it, no id leaves the API
+                'key' => (string) $evidence->public_key,
                 'type' => $evidence->type,
                 'title' => $evidence->title,
                 /** @var string|null */
