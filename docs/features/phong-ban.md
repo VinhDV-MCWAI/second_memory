@@ -7,8 +7,17 @@ Trạng thái: **đang làm**.
 | Phần | Trạng thái |
 |---|---|
 | Phòng ban, phần máy chủ: API thêm, sửa, xóa, tìm; gán quản trị viên vào phòng ban | Xong (2026-10-17) |
-| Phòng ban, giao diện: màn hình Phòng ban, ô chọn phòng ban trong form Quản trị viên | Chưa làm |
+| Phòng ban, giao diện: màn hình Phòng ban, ô chọn phòng ban trong form Quản trị viên | Xong (2026-10-17) |
 | Khóa thư mục Files theo phòng ban, phần máy chủ và giao diện | Chưa làm |
+
+## Màn hình
+
+| Địa chỉ | Làm gì |
+|---|---|
+| http://localhost:81/admin/departments (menu "Master Data" → "Departments") | Bảng phòng ban: mã, tên, mô tả, số quản trị viên, đang dùng hay không, ngày sửa. Lọc theo mã, tên, trạng thái. Thêm, sửa, xóa (nút chỉ hiện khi có quyền) |
+| Form phòng ban | Mã, tên, mô tả, ô Đang dùng. Khi sửa, phía dưới có lịch sử thay đổi |
+| Form quản trị viên | Ô "Departments": tick nhiều phòng ban. Bỏ tick hết thì quản trị viên không thuộc phòng ban nào |
+| Danh sách quản trị viên | Thêm cột Departments và bộ lọc theo phòng ban |
 
 ## Thông tin một phòng ban
 
