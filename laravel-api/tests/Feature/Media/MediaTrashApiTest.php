@@ -64,6 +64,18 @@ final class MediaTrashApiTest extends TestCase
         $this->assertTrue(AuditLog::query()->where('auditable_type', 'media')->where('auditable_id', $id)->where('event', AuditEvent::RESTORED->value)->exists());
     }
 
+    public function test_a_deleted_file_keeps_its_thumbnail_in_the_trash(): void
+    {
+        $photo = $this->file(MediaConst::ROOT, 'photo.jpg');
+        $other = $this->file(MediaConst::ROOT, 'notes.txt');
+        MediaMgmt::query()->findOrFail($photo)->update(['metadata' => [MediaConst::META_THUMBNAIL => MediaConst::THUMBNAIL_PREFIX.'photo.jpg.jpg']]);
+        $this->deleteItems([$photo, $other]);
+
+        $items = collect($this->call('GET', self::BASE.'/trash/list', [], $this->owner)->assertOk()->json('data.data'))->keyBy('id');
+        $this->assertStringContainsString(MediaConst::THUMBNAIL_PREFIX, (string) $items[$photo]['thumbnail_url']);
+        $this->assertNull($items[$other]['thumbnail_url']);
+    }
+
     public function test_restoring_a_file_of_a_deleted_folder_recreates_the_folders(): void
     {
         $this->folder('Work');

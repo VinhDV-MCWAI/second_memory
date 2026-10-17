@@ -9,12 +9,13 @@ use App\Models\Ledger\Evidence;
 use App\Models\Ledger\Skill;
 use App\Models\Ledger\SkillLevel;
 use App\Models\Media\MediaMgmt;
+use App\Services\Media\MediaInfoService;
 use Illuminate\Http\Request;
 
 /**
  * One public skill with the dates of its level changes (no reasons, no recorder) and its
  * public evidence (REQ-002 US-3) with the files that can be downloaded (LEDGER-01: a random key
- * for `public/files/{key}`, no id, no folder path). Goals are never public.
+ * for `public/files/{key}`, no id, no folder path) and their thumbnails. Goals are never public.
  *
  * @mixin Skill
  */
@@ -40,12 +41,14 @@ class PublicSkillDetailResource extends PublicSkillResource
                 'url' => $evidence->url,
                 'occurred_on' => $evidence->occurred_on->format(LedgerConst::DATE_FORMAT),
                 'summary' => $evidence->summary,
-                /** @var list<array{key: string, name: string, size: int|null, mime_type: string|null}> */
+                /** @var list<array{key: string, name: string, size: int|null, mime_type: string|null, thumbnail_url: string|null}> */
                 'files' => $evidence->availableFiles->map(fn (MediaMgmt $file): array => [
                     'key' => (string) $file->pivot?->getAttribute('public_id'),
                     'name' => (string) $file->original_name,
                     'size' => $file->size,
                     'mime_type' => $file->mime_type,
+                    // Presigned for an hour (MEDIA-12): the page caches this answer 60 seconds
+                    'thumbnail_url' => MediaInfoService::thumbnailUrl($file),
                 ])->all(),
             ])->all(),
         ];

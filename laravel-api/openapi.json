@@ -8309,13 +8309,20 @@
                                                     "string",
                                                     "null"
                                                 ]
+                                            },
+                                            "thumbnail_url": {
+                                                "type": [
+                                                    "string",
+                                                    "null"
+                                                ]
                                             }
                                         },
                                         "required": [
                                             "key",
                                             "name",
                                             "size",
-                                            "mime_type"
+                                            "mime_type",
+                                            "thumbnail_url"
                                         ]
                                     }
                                 }
@@ -9021,6 +9028,13 @@
                             "null"
                         ]
                     },
+                    "thumbnail_url": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "description": "Presigned JPEG, at most 320 px wide (MEDIA-12); null when there is none"
+                    },
                     "deleted_at": {
                         "type": [
                             "string",
@@ -9047,6 +9061,7 @@
                     "path",
                     "size",
                     "mime_type",
+                    "thumbnail_url",
                     "deleted_at",
                     "deleted_by",
                     "expires_at"

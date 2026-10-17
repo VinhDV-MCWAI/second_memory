@@ -8,6 +8,7 @@ use App\Constants\MediaConst;
 use App\Models\Ledger\Evidence;
 use App\Models\Ledger\Skill;
 use App\Models\Master\AdminMst;
+use App\Models\Media\MediaMgmt;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Tests\Concerns\AuthenticatesAdmins;
@@ -52,7 +53,19 @@ final class PublicFileApiTest extends TestCase
                 'name' => 'certificate.pdf',
                 'size' => 2048,
                 'mime_type' => 'application/octet-stream',
+                'thumbnail_url' => null,
             ]]);
+    }
+
+    public function test_an_image_shows_its_thumbnail(): void
+    {
+        $photo = $this->uploadFile($this->owner, 'photo.jpg');
+        MediaMgmt::query()->findOrFail($photo)->update(['metadata' => [MediaConst::META_THUMBNAIL => MediaConst::THUMBNAIL_PREFIX.'photo.jpg.jpg']]);
+        $this->evidence->files()->attach($photo);
+
+        $url = (string) $this->getJson('/api/public/skills/laravel')->assertOk()->json('data.data.evidence.0.files.0.thumbnail_url');
+        $this->assertStringContainsString(MediaConst::THUMBNAIL_PREFIX, $url);
+        $this->assertStringContainsString('inline=image%2Fjpeg', $url);
     }
 
     public function test_evidence_without_a_link_is_shown_with_its_files(): void

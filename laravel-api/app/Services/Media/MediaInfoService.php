@@ -38,6 +38,18 @@ final class MediaInfoService
         return is_string($key) ? $key : null;
     }
 
+    /**
+     * Presigned link of the thumbnail; null when there is none. Signed locally, no request to MinIO.
+     * The thumbnail stays live while its file is in the trash, so the trash can show it too.
+     */
+    public static function thumbnailUrl(MediaMgmt $file): ?string
+    {
+        $key = self::thumbnailKey($file);
+
+        return $key === null ? null : app(ObjectStorage::class)
+            ->presignedGetUrl($key, pathinfo((string) $file->original_name, PATHINFO_FILENAME).'.jpg', MediaConst::PREVIEW_URL_TTL_SECONDS, MediaConst::THUMBNAIL_CONTENT_TYPE);
+    }
+
     public function read(MediaMgmt $file): void
     {
         $kind = PreviewKind::forFile($file->extension, $file->size);

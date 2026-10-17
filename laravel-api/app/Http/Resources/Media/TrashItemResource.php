@@ -6,6 +6,7 @@ namespace App\Http\Resources\Media;
 
 use App\Constants\MediaConst;
 use App\Models\Media\MediaMgmt;
+use App\Services\Media\MediaInfoService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -30,6 +31,8 @@ class TrashItemResource extends JsonResource
             /** @var int|null */
             'size' => $this->size,
             'mime_type' => $this->mime_type,
+            /** Presigned JPEG, at most 320 px wide (MEDIA-12); null when there is none */
+            'thumbnail_url' => MediaInfoService::thumbnailUrl($this->resource),
             'deleted_at' => $this->updated_at?->toIso8601String(),
             'deleted_by' => $this->updater?->user_name,
             /**

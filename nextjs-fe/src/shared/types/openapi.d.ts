@@ -1486,6 +1486,7 @@ export interface components {
           name: string;
           size: number | null;
           mime_type: string | null;
+          thumbnail_url: string | null;
         }[];
       }[];
     };
@@ -1676,6 +1677,8 @@ export interface components {
       path: string;
       size: number | null;
       mime_type: string | null;
+      /** @description Presigned JPEG, at most 320 px wide (MEDIA-12); null when there is none */
+      thumbnail_url: string | null;
       deleted_at: string | null;
       deleted_by: string | null;
       /** @description When MinIO drops it for good */
