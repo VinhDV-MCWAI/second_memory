@@ -63,7 +63,7 @@ Các giai đoạn 2–6 mới ghi ở mức việc lớn; khi bắt đầu giai 
 
 **Đăng nhập** (chủ dự án quyết 2026-10-15): làm Màn hình Phiên đăng nhập (giữ phiên trong Redis, thêm bảng `admin_session`) rồi Ghi nhớ đăng nhập (30 ngày). Các mục còn lại trong "Nâng cấp để dành" của [đăng nhập](../features/dang-nhap.md) vẫn tạm dừng, chỉ làm khi chủ dự án yêu cầu.
 
-Thêm ngày 2026-10-14, theo thứ tự làm. MEDIA-06, MEDIA-07, LEDGER-01 thêm theo chủ dự án chọn ngày 2026-10-14; từ MEDIA-08 tới MEDIA-11 thêm ngày 2026-10-15 (việc nối tiếp file đính kèm và Files). Lấy từ các mục "chưa làm" trong [đăng nhập](../features/dang-nhap.md), [nhật ký thay đổi](../features/nhat-ky-thay-doi.md) và [ADR-0014](../adr/0014-media-minio-upload.md).
+Thêm ngày 2026-10-14, theo thứ tự làm. MEDIA-06, MEDIA-07, LEDGER-01 thêm theo chủ dự án chọn ngày 2026-10-14; từ MEDIA-08 tới MEDIA-11 thêm ngày 2026-10-15 (việc nối tiếp file đính kèm và Files); MEDIA-12 và SEARCH-01 thêm ngày 2026-10-17 theo chủ dự án chọn. Lấy từ các mục "chưa làm" trong [đăng nhập](../features/dang-nhap.md), [nhật ký thay đổi](../features/nhat-ky-thay-doi.md) và [ADR-0014](../adr/0014-media-minio-upload.md).
 
 | Mã | Việc | Kết quả | Trạng thái |
 |---|---|---|---|
@@ -86,6 +86,8 @@ Thêm ngày 2026-10-14, theo thứ tự làm. MEDIA-06, MEDIA-07, LEDGER-01 thê
 | LEDGER-03 | **[XÁC NHẬN]** Lọc danh sách bằng chứng theo file: bấm số ở cột Evidence của Files mở các bằng chứng dùng file đó | Từ một file mở thẳng các bằng chứng dùng nó | done (db9b76a0, 5d1347b5, 99199f24 — bấm số ở cột Evidence của Files mở danh sách bằng chứng chỉ gồm các bằng chứng dùng file đó (API lọc media_id, nút Show all evidence); make verify pass (232 backend, 130 giao diện, 63 importer), make e2e 8/8) |
 | MEDIA-10 | Đọc kích thước ảnh (rộng × cao) sau khi upload, hiện ở Files và hộp xem trước; lệnh chạy bù cho ảnh cũ | Biết kích thước ảnh mà không phải mở file | done (60c5de4c, a7dcce58 — ảnh (jpg, png, gif, webp, avif, bmp) có rộng × cao sau khi upload, hiện ở Files và xem trước; lệnh media:read-image-sizes chạy bù; sửa test e2e upload dở chập chờn; make verify pass (234 backend, 130 giao diện, 63 importer), make e2e 8/8) |
 | MEDIA-11 | **[XÁC NHẬN]** Thời lượng video, nhạc và ảnh thu nhỏ trong Files (thêm ffmpeg vào container PHP) | Biết thời lượng video, nhạc và thấy ảnh nhỏ ngay trong danh sách | done (e2a66080, d2fb118a — ffmpeg trong image PHP; ảnh nhỏ 320 px cho ảnh và video, thời lượng video và nhạc, tạo ngầm sau upload, hiện ở Files, hộp chọn file, form bằng chứng; chặn file độc (giới hạn 60 giây, chỉ định dạng thông thường); lệnh media:read-media-info; make verify pass (238 backend, 133 giao diện, 63 importer), make e2e 8/8, thử 13 loại file trên MinIO thật) |
+| MEDIA-12 | Ảnh nhỏ trên trang public (file đính kèm bằng chứng) và trong thùng rác Files | Nhìn ảnh nhỏ là biết file nào, ở cả trang public và thùng rác | todo |
+| SEARCH-01 | **[XÁC NHẬN]** Tìm file theo tên trong ô tìm kiếm chung (tôn trọng khóa thư mục theo phòng ban) | Gõ một chỗ là ra cả kỹ năng, mục tiêu, bằng chứng và file | todo |
 
 ## 7. Sau cùng
 
