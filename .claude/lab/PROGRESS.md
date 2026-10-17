@@ -28,7 +28,6 @@ Cập nhật 2026-10-17. Mỗi dòng là thứ còn mở, chưa thành việc tr
 | # | Việc | Chi tiết | Ai làm |
 |---|---|---|---|
 | 1 | Push code và tag | Đã push và merge tới bằng chứng chỉ có file (2026-10-15). Branch trên GitHub đã bị xóa sau merge; mọi commit từ đó tới nay và tag `v2.2.0` chỉ có trên máy (`git push origin feature/p3-ledger-api v2.2.0`) | Chủ dự án |
-| 2 | Dữ liệu thử còn trên DB dev | Chủ dự án đã cho xóa vĩnh viễn (2026-10-17), nhưng hệ thống quyền của Claude Code chặn lệnh. Lệnh soạn sẵn đã đưa chủ dự án tự chạy: xóa vai trò `test full`, tài khoản `tmp_auth01`, `lab_viewer`, hai file `big-….bin` 3 GB, `smoke-….txt`, thư mục `Smoke locked`, `Hợp đồng thử`. Giữ `Do_An_Tot_Nghiep.docx`. Kiểm tra lại bằng câu SQL trong [don-dep.md](../../docs/runbooks/don-dep.md) mục 3 | Chủ dự án |
 | 3 | Tiếp tục upload dở từ máy khác không kiểm tra được "đúng file" | Máy khác chỉ so tên + dung lượng | Chấp nhận, ghi trong [quan-ly-file.md](../../docs/features/quan-ly-file.md) |
 | 4 | Việc để sau | Người dùng cuối (ADR-0015); dữ liệu mẫu + HTTPS cho bản demo | Chờ chủ dự án |
 | 5 | Gợi ý chưa đề xuất | Khóa phòng ban mới áp dụng cho Files; bằng chứng, kỹ năng chưa bị chặn theo phòng ban | Chờ chủ dự án |
@@ -64,6 +63,6 @@ Mỗi dòng do `scripts/lane.sh done` tự thêm. Không sửa tay. Các dòng t
 ## Next step
 
 1. Đầu phiên: đọc file này, rồi `scripts/lane.sh status`. Bảng việc chỉ còn các việc "để sau" theo quyết định chủ dự án.
-2. Nhắc chủ dự án push branch nếu chưa push, và kiểm tra dữ liệu thử đã xóa chưa ("Việc tồn đọng" mục 2).
+2. Nhắc chủ dự án push branch và tag nếu chưa push ("Việc tồn đọng" mục 1). Dữ liệu thử trên DB dev đã xóa hết (kiểm tra 2026-10-17).
 3. Khi chủ dự án trả lời REQ-003: ghi câu trả lời vào mục 3 của REQ-003, viết ADR-0020, rồi `scripts/lane.sh release PUB-03` và `claim PUB-03` để làm (tài khoản người dùng, theo vòng đời đầy đủ của ADR-0018).
 4. `.claude/settings.json` còn 2 dòng quyền cho `ml-nextjs-docs` (container đã xóa): vô hại, chủ dự án tự xóa nếu muốn.
