@@ -125,6 +125,8 @@ Mỗi dòng do `scripts/lane.sh done` tự thêm. Không sửa tay.
 
 - 2026-10-17 — [lane main] DEPT-02 done: 9cc61353, 97aa921f, d738c743 — màn hình Phòng ban (menu Master Data: bảng, lọc, thêm/sửa/xóa, lịch sử), ô chọn nhiều phòng ban trong form Quản trị viên, cột + bộ lọc phòng ban ở danh sách Quản trị viên; make verify pass (267 backend, 150 giao diện, 63 importer), thử thật trên dev
 
+- 2026-10-17 — [lane main] DEPT-03 done: 41415b87, 59153f21, ab7e507e, 650a51e8, e932a5f2 — khóa thư mục Files theo phòng ban: API media/access/{id} (quyền media.access), chặn danh sách, tải, xem trước, upload, tạo thư mục, đổi tên, chuyển, xóa, thùng rác, upload dở, gắn file vào bằng chứng (file đã gắn hiện locked); khóa lồng xét cả cha lẫn con, admin chưa có phòng ban không thấy; sửa test e2e ảnh nhỏ chập chờn; make verify pass (274 backend, 150 giao diện, 63 importer), make e2e 8/8
+
 ## Next step
 
 Cập nhật 2026-10-15, sau khi rà tài liệu tiến độ.
