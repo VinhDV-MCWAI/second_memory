@@ -24,6 +24,7 @@ Mọi thứ không phải code nằm ở đây. Tài liệu viết bằng tiến
 | [dev-guide.md](dev-guide.md) | Hướng dẫn môi trường dev | Khi có lệnh mới hoặc gặp lỗi mới |
 | [features/](features/) | Mỗi tính năng một file: làm gì, màn hình, API, bảng, ai được dùng | Cùng commit với code làm thay đổi tính năng |
 | [architecture/](architecture/) | `current.md`: kiến trúc hiện tại | Khi đổi container, luồng đăng nhập, cấu trúc dữ liệu |
+| [requirements/](requirements/) | Hồ sơ yêu cầu của việc lớn: vấn đề, phạm vi, câu hỏi làm rõ, tiêu chí chấp nhận, phân tích ảnh hưởng (REQ-001, REQ-002 cũ nằm trong archive) | Khi nhận một yêu cầu lớn, trước khi thiết kế |
 | [adr/](adr/) | Các quyết định kỹ thuật, mỗi quyết định một file. Đã "Accepted" thì không sửa, muốn đổi thì viết quyết định mới | Khi có một lựa chọn thật sự giữa nhiều phương án |
 | [releases/](releases/) | Ghi chú phát hành theo từng phiên bản | Khi gắn tag phiên bản mới |
 | [runbooks/](runbooks/) | Hướng dẫn vận hành từng bước: sao lưu và khôi phục, nhập từ Obsidian, dọn dẹp | Khi đổi script vận hành |
