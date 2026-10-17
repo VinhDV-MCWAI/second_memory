@@ -53,6 +53,8 @@ Mỗi dòng do `scripts/lane.sh done` tự thêm. Không sửa tay. Các dòng t
 - 2026-10-15 — Skill Ledger: file đính kèm bằng chứng, bằng chứng chỉ có file, lọc bằng chứng theo file, test trình duyệt
 - 2026-10-17 — Phòng ban và khóa thư mục Files (ADR-0017); ảnh nhỏ trên trang public và thùng rác; tìm file trong ô tìm kiếm chung. `make verify` pass (280 backend, 155 giao diện, 63 importer), `make e2e` 9/9
 
+- 2026-10-17 — [lane main] CLEAN-01 done: 85f81197…79ab6c53 — README tiếng Anh, kiến trúc viết lại, bỏ 3 tài liệu lỗi thời, make clean xóa thêm 15 ảnh Docker không dùng, quy tắc + hướng dẫn dọn dẹp, bảng việc gom vào 05-done.md; dữ liệu thử trên DB dev chờ chủ dự án (không có quyền xóa vĩnh viễn)
+
 ## Next step
 
 1. Đầu phiên: đọc file này, rồi `scripts/lane.sh status`. Bảng việc chỉ còn các việc "để sau" theo quyết định chủ dự án.
