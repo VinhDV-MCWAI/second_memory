@@ -2,7 +2,7 @@
 
 | | |
 |---|---|
-| Trạng thái | Đã chấp nhận (2026-10-14, chủ dự án xác nhận) |
+| Trạng thái | Đã chấp nhận (2026-10-14, chủ dự án xác nhận). Phần phòng ban và chính sách được làm lại theo [ADR-0017](0017-departments-folder-policies.md) (2026-10-17); người dùng cuối vẫn để sau |
 | Ngày | 2026-10-14 |
 | Người quyết định | Chủ dự án |
 | Liên quan | [ADR-0012](0012-restore-features-dev-first.md) (danh sách tính năng cần lấy lại), [ADR-0013](0013-dynamic-permissions.md) (phân quyền động) |

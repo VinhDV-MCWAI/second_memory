@@ -40,6 +40,8 @@ Mỗi giai đoạn bắt đầu bằng **một đề xuất thiết kế** để
 > **Để sau** (2026-10-14, [ADR-0015](../adr/0015-defer-end-users-departments.md)): phạm vi hiện tại chỉ cần phân quyền theo vai trò. ADR ghi lại những gì đã tìm hiểu về bản `v1.0.0` và các câu hỏi còn mở, để làm lại sau.
 >
 > **Làm lại phòng ban và chính sách** (chủ dự án quyết 2026-10-15): chính sách chặn thật, bắt đầu từ thư mục trong Files; làm sau Phiên đăng nhập và Ghi nhớ đăng nhập. Người dùng cuối vẫn để sau, phòng ban không cần nó.
+>
+> **Phòng ban và khóa thư mục Files: xong 2026-10-17** ([ADR-0017](../adr/0017-departments-folder-policies.md), [phong-ban.md](../features/phong-ban.md), việc USER-03, DEPT-01…05). Còn lại của giai đoạn này: người dùng cuối (USER-02, vẫn để sau).
 
 | | |
 |---|---|

@@ -10,8 +10,8 @@
 | Branch | `feature/p3-ledger-api` (đổi branch khi chủ dự án yêu cầu) |
 | Môi trường | Chỉ dev (`make up`, http://localhost:81). Bản demo prod-like đã tắt container ngày 2026-10-15 (không việc nào dùng); staging, production thật, đo tải: tạm dừng |
 | CI/CD | Chỉ chạy trên máy: `make ci`, `make cd`. **Trên GitHub/GitLab đang TẮT chạy tự động** (push không chạy gì); cách bật lại: [ci/README.md](../../ci/README.md) |
-| Việc tiếp theo | Bảng việc không còn việc nhận được (MEDIA-11 xong 2026-10-15). Chủ dự án duyệt kế hoạch 2026-10-15: Màn hình Phiên đăng nhập → Ghi nhớ đăng nhập (30 ngày) → đề xuất phòng ban (chính sách chặn theo thư mục Files) → DEPT-01…05 |
-| Tạm dừng | Mọi việc về **đăng nhập và phân quyền** (AUTH-04, AUTH-05, các mục "Nâng cấp để dành" trong [dang-nhap.md](../../docs/features/dang-nhap.md), loại quyền mới, người dùng cuối, phòng ban, chính sách): không đề xuất, không nhận, kể cả việc mới, **chỉ làm khi chủ dự án yêu cầu** (quyết 2026-10-14, thêm phân quyền 2026-10-15) |
+| Việc tiếp theo | Bảng việc không còn việc nhận được (cập nhật 2026-10-17). Đã xong theo kế hoạch duyệt 2026-10-15: Màn hình Phiên đăng nhập, Ghi nhớ đăng nhập, Phòng ban và khóa thư mục Files theo phòng ban (USER-03, DEPT-01…05). Chờ chủ dự án đưa danh sách việc mới |
+| Tạm dừng | Mọi việc **mới** về đăng nhập và phân quyền (các mục "Nâng cấp để dành" trong [dang-nhap.md](../../docs/features/dang-nhap.md), loại quyền mới, người dùng cuối, mở rộng khóa phòng ban sang chỗ khác ngoài Files): không đề xuất, không nhận, **chỉ làm khi chủ dự án yêu cầu** (quyết 2026-10-14, thêm phân quyền 2026-10-15). Các việc đã duyệt 2026-10-15 đều đã xong |
 | Dọn dẹp | Mỗi việc xong phải dọn theo mục "Dọn dẹp khi xong việc" trong [01-goals-and-workflow.md](../../docs/plan/01-goals-and-workflow.md) (`make clean` + xóa code chết, dữ liệu thử) |
 
 ## Việc chủ dự án phải tự làm
@@ -24,13 +24,14 @@ Claude không có quyền làm những việc này:
 
 ## Việc tồn đọng
 
-Cập nhật 2026-10-15 (kiểm tra lại: bản demo prod-like đã xóa hẳn, không còn container `sm-prod-like`). Mỗi dòng là thứ còn mở, chưa thành việc trên bảng.
+Cập nhật 2026-10-17. Mỗi dòng là thứ còn mở, chưa thành việc trên bảng.
 
 | # | Việc | Chi tiết | Ai làm |
 |---|---|---|---|
-| 1 | Push code | Chủ dự án đã push và merge tới LEDGER-02 (2026-10-15). Branch `feature/p3-ledger-api` trên GitHub đã bị xóa (sau merge); 24 commit từ `a6c9b363` (sửa tf-destroy) tới MEDIA-11 chỉ có trên máy, push lại sẽ tạo lại branch | Chủ dự án |
+| 1 | Push code | Chủ dự án đã push và merge tới LEDGER-02 (2026-10-15). Branch `feature/p3-ledger-api` trên GitHub đã bị xóa (sau merge); các commit từ `a6c9b363` (sửa tf-destroy) qua MEDIA-11, AUTH-04, AUTH-05 tới DEPT-05 (ngày 2026-10-17) chỉ có trên máy, push lại sẽ tạo lại branch | Chủ dự án |
 | 6 | Tiếp tục upload dở từ máy khác không kiểm tra được "đúng file" | Trình duyệt chỉ nhớ thời điểm sửa file trên máy đã bắt đầu upload; máy khác chỉ so tên + dung lượng | Chấp nhận, ghi trong [quan-ly-file.md](../../docs/features/quan-ly-file.md) |
-| 8 | Việc để sau theo quyết định chủ dự án | Người dùng cuối, phòng ban (USER-02, USER-03, ADR-0015); dữ liệu mẫu + HTTPS cho bản demo (DEMO-01, DEMO-02) | Chờ chủ dự án |
+| 8 | Việc để sau theo quyết định chủ dự án | Người dùng cuối (USER-02, ADR-0015); dữ liệu mẫu + HTTPS cho bản demo (DEMO-01, DEMO-02). Phòng ban đã làm xong (ADR-0017) | Chờ chủ dự án |
+| 9 | Gợi ý nhỏ chưa đề xuất | Hiện ảnh nhỏ (thumbnail) trên trang public và trong thùng rác. Khóa phòng ban hiện chỉ áp dụng cho Files; bằng chứng, kỹ năng chưa bị chặn theo phòng ban (đúng phạm vi đã duyệt) | Chờ chủ dự án |
 
 ## Lưu ý môi trường
 
@@ -133,10 +134,14 @@ Mỗi dòng do `scripts/lane.sh done` tự thêm. Không sửa tay.
 
 ## Next step
 
-Cập nhật 2026-10-15, sau khi rà tài liệu tiến độ.
+Cập nhật 2026-10-17, cuối phiên làm Phòng ban và khóa thư mục.
 
-1. Đầu phiên: `scripts/lane.sh status` và xem "Việc tồn đọng" ở trên: mục 1 (push) là việc của chủ dự án; nhắc nếu vẫn còn.
-2. Đăng nhập, phòng ban: chủ dự án duyệt ngày 2026-10-15 các việc AUTH-04, AUTH-05, USER-03, DEPT-01…05 trên bảng (giữ phiên trong Redis + bảng `admin_session`; ghi nhớ 30 ngày; không làm đá phiên tức thì; chính sách chặn theo thư mục Files; người dùng cuối để sau). Các việc đăng nhập, phân quyền khác vẫn tạm dừng. Bản demo prod-like: không làm.
-3. Hỏi chủ dự án việc tiếp theo. Gợi ý nhỏ còn lại: hiện ảnh nhỏ trên trang public và trong thùng rác (chưa làm, chưa đề xuất). Sau khi đổi Dockerfile PHP: `make up` hoặc `docker compose -f docker/docker-compose.yml up -d --build ml-php ml-queue ml-scheduler ml-reverb` (tải ffmpeg lần đầu mất khoảng 20 phút trên mạng chậm).
-4. Việc mới: thêm bằng `scripts/lane.sh add main <mã> …`, nhận bằng `claim`, xong thì dọn dẹp (`make clean`, xóa dữ liệu thử) rồi `done`.
-5. `make verify` gần nhất: 2026-10-15 sau MEDIA-11, pass (238 test backend, 133 giao diện, 63 importer). `make e2e` cùng ngày: 8/8 pass. Cây làm việc sạch.
+1. Đầu phiên: đọc file này, rồi `scripts/lane.sh status`. Bảng việc hiện **không còn việc nhận được**: chỉ còn USER-02 (người dùng cuối), DEMO-01, DEMO-02, đều đang chặn "để sau" theo quyết định chủ dự án.
+2. Nhắc chủ dự án push branch `feature/p3-ledger-api` nếu vẫn chưa push ("Việc tồn đọng" mục 1).
+3. Chủ dự án sẽ đưa danh sách việc mới. Với mỗi việc: thêm vào bảng bằng `scripts/lane.sh add main <mã> "<việc>" "<tài liệu>" "<phụ thuộc>"` (lock `docs/plan/03-backlog.md` nếu thêm dòng vào backlog), việc lớn thì viết đề xuất theo mẫu trong [01-goals-and-workflow.md](../../docs/plan/01-goals-and-workflow.md) và chờ duyệt, rồi `claim` → làm → test nhanh → dọn dẹp (`make clean`, xóa dữ liệu thử) → `done`. Kỹ năng `/lab-task` đi qua từng bước.
+4. Đã có sau phiên 2026-10-17 (đọc trước khi đụng tới):
+   - Phòng ban: [docs/features/phong-ban.md](../../docs/features/phong-ban.md), [ADR-0017](../../docs/adr/0017-departments-folder-policies.md). Màn hình Master Data → Departments; admin chọn nhiều phòng ban trong form Quản trị viên.
+   - Khóa thư mục Files: nút chìa khóa **Access** trên thư mục. Mọi API Files đi qua `App\Services\Media\FolderAccess` (ghi chú trong [laravel-api/CLAUDE.md](../../laravel-api/CLAUDE.md)). Thêm API Files mới thì phải chặn qua lớp này và thêm test vào `FolderPolicyApiTest`.
+   - `e2e/run.sh` tạo thêm hai tài khoản phụ `e2e_member`, `e2e_outsider` và phòng ban `E2E …` cho test trình duyệt, chạy xong tự xóa / tắt.
+5. Sau khi đổi Dockerfile PHP: `make up` hoặc `docker compose -f docker/docker-compose.yml up -d --build ml-php ml-queue ml-scheduler ml-reverb` (tải ffmpeg lần đầu mất khoảng 20 phút trên mạng chậm). Sau khi đổi code việc nền: `make workers-restart` (worker giữ code cũ trong bộ nhớ).
+6. Kết quả gần nhất (2026-10-17): `make verify` pass (274 test backend, 153 giao diện, 63 importer); `make e2e` 9/9 pass. Cây làm việc sạch, bảng việc khớp backlog.
