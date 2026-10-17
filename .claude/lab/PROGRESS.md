@@ -134,6 +134,8 @@ Mỗi dòng do `scripts/lane.sh done` tự thêm. Không sửa tay.
 
 - 2026-10-17 — [lane main] MEDIA-12 done: 7ca95382, 27078a80, b57d6b7f, 350d3f1a — ảnh nhỏ trong thùng rác Files và cạnh file đính kèm trên trang public (link ký tạm 1 giờ có sẵn trong API, không tốn thêm request); make verify pass (276 backend, 154 giao diện, 63 importer), thử thật trên dev
 
+- 2026-10-17 — [lane main] SEARCH-01 done: 882d7662, b5337d0d, 360559c1, 5de5b280 — ô tìm kiếm chung có nhóm Files: tìm tên file và thư mục (không dấu, mọi từ, gõ sai vẫn ra), bỏ thùng rác, upload dở và thư mục khóa theo phòng ban, cần quyền media.list; chỉ mục trigram media_mgmt_name_trgm; make verify pass (280 backend, 155 giao diện, 63 importer), make e2e 9/9, thử thật trên dev
+
 ## Next step
 
 Cập nhật 2026-10-17, cuối phiên làm Phòng ban và khóa thư mục.
