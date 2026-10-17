@@ -129,6 +129,8 @@ Mỗi dòng do `scripts/lane.sh done` tự thêm. Không sửa tay.
 
 - 2026-10-17 — [lane main] DEPT-04 done: e3299ce4, 3a2a4411 — màn hình Files: nút chìa khóa Access chọn phòng ban cho thư mục (bỏ tick hết là mở khóa), ổ khóa vàng cạnh thư mục khóa; form bằng chứng hiện nhãn Locked, không mở được file bị khóa; make verify pass (274 backend, 153 giao diện, 63 importer), thử thật trên dev
 
+- 2026-10-17 — [lane main] DEPT-05 done: 086aab2b, 3c2247b7 — test trình duyệt: Chủ thêm phòng ban trên màn hình, khóa thư mục cho phòng ban của e2e_member; e2e_member thấy, e2e_outsider không thấy; run.sh tạo/xóa tài khoản phụ và phòng ban E2E; make e2e 9/9; tài liệu phong-ban.md hoàn chỉnh
+
 ## Next step
 
 Cập nhật 2026-10-15, sau khi rà tài liệu tiến độ.
