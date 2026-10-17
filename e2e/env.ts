@@ -9,3 +9,8 @@ export const PUBLIC_URL = ADMIN_URL;
 /** Throwaway owner account that e2e/run.sh creates before the run (fresh password each time). */
 export const E2E_USER = process.env.E2E_USER ?? 'e2e_owner';
 export const E2E_PASSWORD = process.env.E2E_PASSWORD ?? '';
+
+/** Admins without the owner role, in their own department each (e2e/run.sh); same password. */
+export const [E2E_MEMBER, E2E_OUTSIDER] = (
+  process.env.E2E_HELPERS ?? 'e2e_member,e2e_outsider'
+).split(',');

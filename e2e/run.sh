@@ -32,8 +32,12 @@ IMAGE=ml-e2e
 E2E_USER=e2e_owner
 E2E_PASSWORD="$(head -c 18 /dev/urandom | base64 | tr -d '/+=')"
 
+# Admins without the owner role for departments.spec.ts (ADR-0017): one in the department a
+# folder is locked to, one outside it. Same password as $E2E_USER, disabled again afterwards.
+E2E_HELPERS=e2e_member,e2e_outsider
+
 artisan_tinker() {
-  docker exec -e E2E_USER="$E2E_USER" -e E2E_PASSWORD="$E2E_PASSWORD" "$PHP" php artisan tinker --execute "$1"
+  docker exec -e E2E_USER="$E2E_USER" -e E2E_PASSWORD="$E2E_PASSWORD" -e E2E_HELPERS="$E2E_HELPERS" "$PHP" php artisan tinker --execute "$1"
 }
 
 # shellcheck disable=SC2317  # called by the EXIT trap
@@ -46,8 +50,10 @@ cleanup() {
     DB::table("skill")->whereIn("id", $skills)->delete();
     // Model deletes, so the permission package clears its cache
     $roles = Spatie\Permission\Models\Role::where("name", "like", "E2E %")->get()->each->delete();
-    $admin = DB::table("admin_mst")->where("user_name", getenv("E2E_USER"));
-    $audit = DB::table("audit_log")->where("admin_mst_id", $admin->value("id"))->delete();
+    $admin = DB::table("admin_mst")->whereIn("user_name", [getenv("E2E_USER"), ...explode(",", getenv("E2E_HELPERS"))]);
+    $audit = DB::table("audit_log")->whereIn("admin_mst_id", $admin->pluck("id"))->delete();
+    // Departments of departments.spec.ts; their folder locks and memberships go with them
+    $departments = DB::table("department")->where("name", "like", "E2E %")->delete();
     // Files of files.spec.ts: drop the MinIO objects (or unfinished parts), then hide the rows
     $media = App\Models\Media\MediaMgmt::query()->live()->where("virtual_path", "like", "/E2E %")->get();
     $media->each(fn ($row) => app(App\Services\Media\MediaService::class)->discardObject($row));
@@ -61,7 +67,7 @@ cleanup() {
     // The failing test background job (background-jobs.spec.ts) is kept as a failed job
     $failed = DB::table("failed_jobs")->where("payload", "like", "%TestBackgroundJob%")->delete();
     $admin->update(["is_active" => false]);
-    echo "deleted skills={$skills->count()} evidence={$evidence->count()} roles={$roles->count()} audit_log={$audit} failed_jobs={$failed} media={$media->count()} trash={$trash->count()}\n";
+    echo "deleted skills={$skills->count()} evidence={$evidence->count()} roles={$roles->count()} departments={$departments} audit_log={$audit} failed_jobs={$failed} media={$media->count()} trash={$trash->count()}\n";
   '
 }
 trap cleanup EXIT
@@ -80,6 +86,26 @@ artisan_tinker '
       "is_delete" => false,
     ],
   )->syncRoles([App\Enums\AdminRole::OWNER->value]);
+  // Folder locks (departments.spec.ts): a role that may browse Files, and a department per helper
+  $role = Spatie\Permission\Models\Role::findOrCreate("E2E Files reader", "admin");
+  $role->syncPermissions(["media.list"]);
+  foreach (explode(",", getenv("E2E_HELPERS")) as $name) {
+    $helper = App\Models\Master\AdminMst::updateOrCreate(
+      ["user_name" => $name],
+      [
+        "email" => $name."@e2e.invalid",
+        "password" => Hash::make(getenv("E2E_PASSWORD")),
+        "first_name" => "E2E",
+        "last_name" => $name,
+        "status" => 1,
+        "is_active" => true,
+        "is_delete" => false,
+      ],
+    );
+    $helper->syncRoles([$role]);
+    $department = App\Models\Master\Department::updateOrCreate(["code" => strtoupper($name)], ["name" => "E2E ".$name, "is_active" => true]);
+    $helper->departments()->sync([$department->id]);
+  }
   echo "ok\n";
 '
 
@@ -89,7 +115,7 @@ docker build -q -f e2e/Dockerfile -t "$IMAGE" . >/dev/null
 mkdir -p e2e/artifacts
 echo "==> Running the journey"
 docker run --rm --network "$NETWORK" --user "$(id -u):$(id -g)" -e HOME=/tmp \
-  -e E2E_USER="$E2E_USER" -e E2E_PASSWORD="$E2E_PASSWORD" \
+  -e E2E_USER="$E2E_USER" -e E2E_PASSWORD="$E2E_PASSWORD" -e E2E_HELPERS="$E2E_HELPERS" \
   -e E2E_ADMIN_URL="$ADMIN_URL" -e E2E_ADMIN_UPSTREAM="$UPSTREAM" \
   -v "$PWD/e2e/artifacts:/repo/e2e/artifacts" \
   "$IMAGE"
