@@ -1,6 +1,6 @@
 # Mục tiêu và cách làm việc
 
-Cập nhật: 2026-10-09. Lý do đổi hướng: [ADR-0012](../adr/0012-restore-features-dev-first.md).
+Cập nhật: 2026-10-17. Lý do đổi hướng: [ADR-0012](../adr/0012-restore-features-dev-first.md); mục tiêu 5: [ADR-0018](../adr/0018-lifecycle-practice-track.md).
 
 ## Mục tiêu
 
@@ -10,6 +10,7 @@ Second Memory là hệ thống quản lý kiến thức cá nhân, tự host. T�
 2. **Code sạch, dễ hiểu.** Mỗi thư mục, mỗi file có lý do tồn tại rõ ràng.
 3. **Làm nhanh trên dev.** Build nhanh, sửa lỗi nhanh, test nhanh. Staging và production làm sau, khi sản phẩm đã hoàn thiện.
 4. **Tài liệu dễ đọc.** Viết tiếng Việt, gọi tính năng bằng tên đầy đủ.
+5. **Luyện quy trình làm phần mềm kiểu doanh nghiệp** trên chính các tính năng thật: nhận yêu cầu → làm rõ → phân tích → thiết kế → làm → test → QA → đóng gói → triển khai → bàn giao. CI/CD tự động chỉ làm khi chủ dự án yêu cầu.
 
 ## Luồng làm một việc
 

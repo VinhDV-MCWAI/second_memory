@@ -3,8 +3,10 @@
 Cập nhật: 2026-10-17. Mục tiêu và cách làm việc: [01-goals-and-workflow.md](01-goals-and-workflow.md). Việc còn mở: [03-backlog.md](03-backlog.md). Việc đã xong: [05-done.md](05-done.md).
 
 ```
-1. Dọn nền ─► 2. Phân quyền động ─► 3. Media MinIO + upload ─► 4. Người dùng cuối, phòng ban ─► 5. CI/CD gộp chung (rồi tắt) ─► 6. Nâng cấp trên dev ─► 7. Staging, production, giám sát
-   (dev)          (dev)                   (dev)                     (để sau)                        (dev)                           (dev)                   (sau cùng)
+Tính năng:     1. Dọn nền ─► 2. Phân quyền động ─► 3. Media MinIO ─► 4. Phòng ban ─► 5. CI/CD (rồi tắt) ─► 6. Nâng cấp trên dev ─► 9. Trang cho người dùng
+                  (xong)         (xong)                 (xong)            (xong)          (xong, đang tắt)        (xong)                 (đang làm)
+Luyện quy trình:                                                                                                8. Đóng gói → sổ tay → vòng đời đầy đủ (đang làm)
+Sau cùng:      7. Triển khai, vận hành, sự cố, hiệu năng & bảo mật, portfolio; CI/CD chỉ khi chủ dự án yêu cầu
 ```
 
 Mỗi giai đoạn bắt đầu bằng **một đề xuất thiết kế** để chủ dự án xác nhận, rồi mới làm.
@@ -69,4 +71,34 @@ Mỗi giai đoạn bắt đầu bằng **một đề xuất thiết kế** để
 
 ## 7. Sau cùng (chi tiết hóa khi tới)
 
-Bản demo prod-like (dữ liệu mẫu, HTTPS; chủ dự án quyết để sau ngày 2026-10-14), staging và production (Terraform trong `infra/`), bật lại CI/CD tự động, giám sát (log, chỉ số, cảnh báo), đo tải, rà bảo mật, sao lưu định kỳ.
+Ghi lại để làm sau, theo thứ tự dự kiến. Mỗi mục bắt đầu bằng một đề xuất.
+
+| Mục | Gồm | Ghi chú |
+|---|---|---|
+| Triển khai | Bản demo prod-like có dữ liệu mẫu và HTTPS (DEMO-01, DEMO-02), quản lý bí mật, staging, diễn tập dựng lại từ đầu bằng Terraform | `infra/` |
+| Vận hành | Log có mã request, chỉ số, cảnh báo, mục tiêu chất lượng dịch vụ, hướng dẫn xử lý từng cảnh báo | |
+| Sự cố | Gây lỗi giả lập, báo cáo sự cố, nhìn lại không đổ lỗi, diễn tập khôi phục dữ liệu đo thời gian | Mẫu trong `archive/engineering-lab/templates/` |
+| Hiệu năng và bảo mật | Đo tải trước / sau, phân tích mối đe dọa, quét lỗ hổng | `perf/` |
+| Portfolio | Case study, tài khoản demo chỉ xem | |
+| Sao lưu định kỳ | Cài rclone, lên lịch | Chủ dự án tự làm |
+| Gợi ý tính năng chưa đề xuất | Khóa phòng ban cho bằng chứng và kỹ năng; các mục "Nâng cấp để dành" trong [dang-nhap.md](../features/dang-nhap.md) | Chỉ làm khi chủ dự án yêu cầu |
+| **CI/CD tự động** | Bật lại CI trên GitHub/GitLab, chặn merge khi lỗi, quét bảo mật, tự phát hành | **Chỉ làm khi chủ dự án yêu cầu** ([ADR-0018](../adr/0018-lifecycle-practice-track.md)): làm chậm việc làm nhanh tính năng |
+
+## 8. Luyện quy trình làm phần mềm kiểu doanh nghiệp
+
+| | |
+|---|---|
+| Mục tiêu | Đúc kết kinh nghiệm của một developer trong doanh nghiệp thật: nhận yêu cầu → làm rõ → phân tích → thiết kế → làm → test → QA → đóng gói → triển khai → bàn giao → vận hành ([ADR-0018](../adr/0018-lifecycle-practice-track.md)) |
+| Cách làm | Luyện trên các tính năng thật, không thu gọn ứng dụng. Tham khảo [sổ tay cũ](../archive/engineering-lab/handbook/README.md) và [mẫu tài liệu](../archive/engineering-lab/templates/) |
+| Gồm | (1) Đóng gói và bàn giao bản `v2.2.0`; (2) sổ tay quy trình bản mới; (3) một vòng đời đầy đủ trên trang cho người dùng và tài khoản người dùng cuối |
+| Không gồm | CI/CD tự động (chỉ làm khi chủ dự án yêu cầu) |
+| Xong khi | Có tag `v2.2.0` với ghi chú phát hành, biên bản nghiệm thu, tài liệu bàn giao; sổ tay mới được dùng thật; một tính năng có đủ hồ sơ từ yêu cầu tới nhìn lại |
+
+## 9. Trang cho người dùng
+
+| | |
+|---|---|
+| Mục tiêu | Người xem đọc thông tin công khai không cần đăng nhập; người dùng có thể đăng nhập để lưu lịch sử đã xem, yêu thích, xem sau. Rất đơn giản, nhẹ |
+| Cách làm | Thay `nextjs-docs` bằng công nghệ nhẹ hơn: đề xuất trong [ADR-0019](../adr/0019-public-user-frontend.md), **chờ chủ dự án chọn** |
+| Gồm | Thử nhanh và đo; làm lại trang public; tài khoản người dùng cuối (thay việc quản lý người dùng cuối của giai đoạn 4); lịch sử, yêu thích, xem sau |
+| Xong khi | Trang public chạy trên công nghệ mới, nhẹ hơn (có số đo); người dùng đăng nhập dùng được 3 tính năng; có test và tài liệu |

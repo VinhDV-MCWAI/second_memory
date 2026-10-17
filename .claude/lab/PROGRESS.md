@@ -6,13 +6,13 @@
 
 | | |
 |---|---|
-| Giai đoạn đang làm | 6. Nâng cấp trên dev: xong mọi việc đã duyệt |
+| Giai đoạn đang làm | 8. Luyện quy trình ([ADR-0018](../../docs/adr/0018-lifecycle-practice-track.md), không gồm CI/CD) và 9. Trang cho người dùng ([ADR-0019](../../docs/adr/0019-public-user-frontend.md), chờ chọn phương án) |
 | Branch | `feature/p3-ledger-api` (đổi branch khi chủ dự án yêu cầu) |
 | Môi trường | Chỉ dev (`make up`, http://localhost:81). Bản demo prod-like không còn (Terraform state rỗng, kiểm tra 2026-10-17); staging, production thật, đo tải: tạm dừng |
 | CI/CD | Chỉ chạy trên máy: `make ci`, `make cd`. **Trên GitHub/GitLab đang TẮT chạy tự động**; cách bật lại: [ci/README.md](../../ci/README.md) |
-| Việc tiếp theo | Chờ chủ dự án chọn hướng: tiếp tục thêm tính năng, hay quay lại mục tiêu luyện quy trình làm phần mềm kiểu doanh nghiệp (kế hoạch cũ P4–P10 trong [archive/engineering-lab/02-roadmap.md](../../docs/archive/engineering-lab/02-roadmap.md), chưa có trong kế hoạch hiện tại) |
+| Việc tiếp theo | Nhận được ngay: đóng gói bản `v2.2.0` (REL-01); chọn công nghệ trang cho người dùng (PUB-01, chờ chủ dự án trả lời ADR-0019). CI/CD tự động: chỉ khi chủ dự án yêu cầu. Việc để sau: bảng "Sau cùng" trong [02-roadmap.md](../../docs/plan/02-roadmap.md) |
 | Tạm dừng | Mọi việc **mới** về đăng nhập và phân quyền (các mục "Nâng cấp để dành" trong [dang-nhap.md](../../docs/features/dang-nhap.md), loại quyền mới, người dùng cuối, khóa phòng ban ngoài Files): chỉ làm khi chủ dự án yêu cầu |
-| Dọn dẹp | Mỗi việc xong phải dọn theo [.claude/rules/cleanup.md](../rules/cleanup.md) và [docs/runbooks/don-dep.md](../../docs/runbooks/don-dep.md) |
+| Dọn dẹp | Mỗi việc xong phải dọn theo [.claude/rules/cleanup.md](../rules/cleanup.md) và [docs/runbooks/don-dep.md](../../docs/runbooks/don-dep.md). Rác trong bảng "Được xóa không cần hỏi" của don-dep.md: xóa luôn, không hỏi |
 
 ## Việc chủ dự án phải tự làm
 
@@ -28,7 +28,7 @@ Cập nhật 2026-10-17. Mỗi dòng là thứ còn mở, chưa thành việc tr
 | # | Việc | Chi tiết | Ai làm |
 |---|---|---|---|
 | 1 | Push code | Đã push và merge tới bằng chứng chỉ có file (2026-10-15). Branch trên GitHub đã bị xóa sau merge; mọi commit từ đó tới nay chỉ có trên máy | Chủ dự án |
-| 2 | Dữ liệu thử còn trên DB dev | Vai trò `test full`, tài khoản `tmp_auth01` (đã xóa mềm) và `lab_viewer` (đã xóa mềm); trong thùng rác Files: `smoke-….txt`, hai file `big-….bin` 3 GB, thư mục `Smoke locked`, `Hợp đồng thử`. Claude không được phép xóa vĩnh viễn: chủ dự án xóa trên giao diện (Roles, Admins, Files → Trash → Delete forever) hoặc cho phép Claude xóa. `Do_An_Tot_Nghiep.docx` trong thùng rác có vẻ là file thật: chưa đụng | Chủ dự án |
+| 2 | Dữ liệu thử còn trên DB dev | Chủ dự án đã cho xóa vĩnh viễn (2026-10-17), nhưng hệ thống quyền của Claude Code chặn lệnh. Lệnh soạn sẵn đã đưa chủ dự án tự chạy: xóa vai trò `test full`, tài khoản `tmp_auth01`, `lab_viewer`, hai file `big-….bin` 3 GB, `smoke-….txt`, thư mục `Smoke locked`, `Hợp đồng thử`. Giữ `Do_An_Tot_Nghiep.docx`. Kiểm tra lại bằng câu SQL trong [don-dep.md](../../docs/runbooks/don-dep.md) mục 3 | Chủ dự án |
 | 3 | Tiếp tục upload dở từ máy khác không kiểm tra được "đúng file" | Máy khác chỉ so tên + dung lượng | Chấp nhận, ghi trong [quan-ly-file.md](../../docs/features/quan-ly-file.md) |
 | 4 | Việc để sau | Người dùng cuối (ADR-0015); dữ liệu mẫu + HTTPS cho bản demo | Chờ chủ dự án |
 | 5 | Gợi ý chưa đề xuất | Khóa phòng ban mới áp dụng cho Files; bằng chứng, kỹ năng chưa bị chặn theo phòng ban | Chờ chủ dự án |
@@ -58,5 +58,5 @@ Mỗi dòng do `scripts/lane.sh done` tự thêm. Không sửa tay. Các dòng t
 ## Next step
 
 1. Đầu phiên: đọc file này, rồi `scripts/lane.sh status`. Bảng việc chỉ còn các việc "để sau" theo quyết định chủ dự án.
-2. Nhắc chủ dự án push branch nếu chưa push, và xử lý dữ liệu thử ("Việc tồn đọng" mục 2).
-3. Chủ dự án chọn hướng tiếp theo. Với mỗi việc: thêm vào bảng bằng `scripts/lane.sh add main <mã> "<việc>" "<tài liệu>" "<phụ thuộc>"`, việc lớn thì đề xuất theo mẫu trong [01-goals-and-workflow.md](../../docs/plan/01-goals-and-workflow.md) và chờ duyệt, rồi `claim` → làm → test nhanh → dọn dẹp → `done`. Kỹ năng `/lab-task` đi qua từng bước.
+2. Nhắc chủ dự án push branch nếu chưa push, và kiểm tra dữ liệu thử đã xóa chưa ("Việc tồn đọng" mục 2).
+3. Việc nhận được: REL-01 (đóng gói `v2.2.0`), PUB-01 (đề xuất ADR-0019 đã viết, chờ chủ dự án chọn phương án rồi mới thử nhanh). Mỗi việc: `claim` → làm → test nhanh → dọn dẹp → `done`; kỹ năng `/lab-task` đi qua từng bước.
