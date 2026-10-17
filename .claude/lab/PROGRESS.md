@@ -121,6 +121,8 @@ Mỗi dòng do `scripts/lane.sh done` tự thêm. Không sửa tay.
 
 - 2026-10-17 — [lane main] USER-03 done: b6db0804 — chủ dự án duyệt ADR-0017 cả 5 đề xuất: admin chưa có phòng ban không thấy thư mục khóa, nhiều phòng ban, khóa lồng xét cả cha lẫn con, cấp ở màn hình Files, trang public giữ như nay
 
+- 2026-10-17 — [lane main] DEPT-01 done: 64a207eb, 6d967876 — API phòng ban (thêm, sửa, xóa, tìm; mã không trùng không phân biệt hoa thường; xóa khi còn người chỉ bỏ liên kết), admin thuộc nhiều phòng ban qua department_ids, quyền department.* (Chỉ xem được xem), nhật ký; make verify pass (267 backend, 147 giao diện, 63 importer)
+
 ## Next step
 
 Cập nhật 2026-10-15, sau khi rà tài liệu tiến độ.

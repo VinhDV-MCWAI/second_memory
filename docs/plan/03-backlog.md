@@ -44,7 +44,7 @@ Các giai đoạn 2–6 mới ghi ở mức việc lớn; khi bắt đầu giai 
 | USER-01 | Đề xuất thiết kế dựa trên bản `v1.0.0` | Đề xuất được xác nhận | done (a9f776c2 — chủ dự án quyết để sau cả người dùng cuối, phòng ban, chính sách (ADR-0015); phạm vi hiện tại chỉ phân quyền theo vai trò) |
 | USER-02 | Quản lý người dùng cuối: API + giao diện + test | Màn hình người dùng cuối | blocked: để sau (ADR-0015) |
 | USER-03 | **[XÁC NHẬN]** Phòng ban và chính sách: đề xuất thiết kế (ADR-0017). Chủ dự án chọn 2026-10-15: chính sách chặn thật theo thư mục Files, không cần người dùng cuối | Thiết kế được duyệt, chia việc DEPT-01…05 | done (b6db0804 — chủ dự án duyệt ADR-0017 cả 5 đề xuất: admin chưa có phòng ban không thấy thư mục khóa, nhiều phòng ban, khóa lồng xét cả cha lẫn con, cấp ở màn hình Files, trang public giữ như nay) |
-| DEPT-01 | Phòng ban, phần máy chủ: thêm/sửa/xóa/tìm phòng ban, gán admin vào phòng ban, quyền, test | API phòng ban | todo |
+| DEPT-01 | Phòng ban, phần máy chủ: thêm/sửa/xóa/tìm phòng ban, gán admin vào phòng ban, quyền, test | API phòng ban | done (64a207eb, 6d967876 — API phòng ban (thêm, sửa, xóa, tìm; mã không trùng không phân biệt hoa thường; xóa khi còn người chỉ bỏ liên kết), admin thuộc nhiều phòng ban qua department_ids, quyền department.* (Chỉ xem được xem), nhật ký; make verify pass (267 backend, 147 giao diện, 63 importer)) |
 | DEPT-02 | Phòng ban, giao diện: màn hình Phòng ban, chọn phòng ban trong màn hình Quản trị viên | Màn hình phòng ban | todo |
 | DEPT-03 | Chính sách, phần máy chủ: admin chỉ thấy và làm việc với thư mục Files phòng ban mình được cấp | Chính sách chặn thật | todo |
 | DEPT-04 | Chính sách, giao diện: cấp thư mục cho phòng ban, Files ẩn thư mục không được cấp | Cấp thư mục trên giao diện | todo |
