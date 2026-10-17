@@ -37,6 +37,7 @@ const file = (id: number, name: string, available = true): EvidenceFile => ({
   created_at: null,
   updated_at: null,
   available,
+  locked: false,
 });
 const page = (rows: unknown[]) =>
   envelope({

@@ -47,6 +47,7 @@ const imported: Evidence = {
       created_at: null,
       updated_at: null,
       available: true,
+      locked: false,
     },
   ],
   created_at: null,

@@ -47,12 +47,14 @@ export function EvidenceFilesField({
     .map((id) => known.find((file) => file.id === id))
     .filter((file): file is EvidenceFile => file !== undefined);
   const canOpen = can('media.download-url');
+  // A file in a folder the admin may not use keeps its name but does not open (ADR-0017)
+  const opens = (file: EvidenceFile) => file.available && !file.locked && canOpen;
   const room = ValidationRules.EVIDENCE_FILES_MAX - value.length;
 
   const add = (picked: MediaItem[]) => {
     setKnown((previous) => [
       ...previous.filter((file) => !picked.some((item) => item.id === file.id)),
-      ...picked.map((item) => ({ ...item, available: true })),
+      ...picked.map((item) => ({ ...item, available: true, locked: false })),
     ]);
     onChange([...value, ...picked.map((item) => item.id)]);
   };
@@ -94,12 +96,12 @@ export function EvidenceFilesField({
                 </Badge>
               )}
               <span className="ml-auto flex shrink-0 items-center">
-                {file.available && canOpen && file.preview && (
+                {opens(file) && file.preview && (
                   <IconButton label={tMedia('preview.open')} onClick={() => setPreviewing(file)}>
                     <Eye className="h-4 w-4" />
                   </IconButton>
                 )}
-                {file.available && canOpen && (
+                {opens(file) && (
                   <IconButton label={tMedia('download')} onClick={() => download(file)}>
                     <Download className="h-4 w-4" />
                   </IconButton>
