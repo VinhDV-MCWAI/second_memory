@@ -123,6 +123,8 @@ Mỗi dòng do `scripts/lane.sh done` tự thêm. Không sửa tay.
 
 - 2026-10-17 — [lane main] DEPT-01 done: 64a207eb, 6d967876 — API phòng ban (thêm, sửa, xóa, tìm; mã không trùng không phân biệt hoa thường; xóa khi còn người chỉ bỏ liên kết), admin thuộc nhiều phòng ban qua department_ids, quyền department.* (Chỉ xem được xem), nhật ký; make verify pass (267 backend, 147 giao diện, 63 importer)
 
+- 2026-10-17 — [lane main] DEPT-02 done: 9cc61353, 97aa921f, d738c743 — màn hình Phòng ban (menu Master Data: bảng, lọc, thêm/sửa/xóa, lịch sử), ô chọn nhiều phòng ban trong form Quản trị viên, cột + bộ lọc phòng ban ở danh sách Quản trị viên; make verify pass (267 backend, 150 giao diện, 63 importer), thử thật trên dev
+
 ## Next step
 
 Cập nhật 2026-10-15, sau khi rà tài liệu tiến độ.
