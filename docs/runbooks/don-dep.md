@@ -14,7 +14,26 @@ Cập nhật: 2026-10-17. Mỗi việc chỉ được đánh dấu xong khi đã
 | 6 | Tài liệu | Sửa mọi chỗ nhắc tới thứ vừa xóa hoặc đổi tên |
 | 7 | Kiểm tra lại | `git status` sạch (trừ việc của người khác), `make clean` chạy lần hai không còn gì để xóa |
 
-**Không bao giờ tự xóa:** volume `ml_postgres_data`, `ml_minio_data`, `ml_redis_data` (dữ liệu dev); dữ liệu mẫu của `make seed`; file thật của chủ dự án; `make fresh`. Muốn xóa dữ liệu không tạo lại được thì hỏi chủ dự án trước.
+### Được xóa không cần hỏi (chủ dự án cho phép 2026-10-17)
+
+| Loại | Ví dụ |
+|---|---|
+| Rác Docker | Mọi thứ `make clean` xóa; ảnh công cụ build lại được (`ml-e2e`, `sm-ci-*`, `lab-metrics-*`, `ledger-importer*`) khi cần chỗ trống; container đã dừng, volume vô danh không việc nào dùng |
+| Kết quả test, bộ nhớ đệm sinh ra | `e2e/artifacts`, báo cáo PHPUnit / coverage / Playwright, cache Laravel, cache Larastan / Rector |
+| File tạm, code chết | Script tạm, file `.bak` / `.orig`, dòng in ra để gỡ lỗi, code bị comment lại |
+| Dữ liệu thử trên DB dev và MinIO (xóa **vĩnh viễn**) | Bản ghi tên `TMP …`, `E2E …`, `smoke…`, `test …`; tài khoản `tmp_…`; file `smoke-*.txt`, `big-*.bin`; vai trò, phòng ban, thư mục thử; việc nền lỗi của việc thử; upload treo quá 24 giờ; dòng nhật ký của chính các tài khoản thử |
+| Tài liệu | Câu sai so với code (sửa), tài liệu về code hay lệnh không còn tồn tại |
+
+### Phải hỏi trước
+
+| Loại | Ví dụ |
+|---|---|
+| Dữ liệu dev không tạo lại được | Volume `ml_postgres_data`, `ml_minio_data`, `ml_redis_data`; `make fresh`; `migrate:rollback` trên DB dev; `make tf-destroy` |
+| Dữ liệu thật | File thật của chủ dự án (vd. `Do_An_Tot_Nghiep.docx`), dữ liệu mẫu của `make seed`, nhật ký của tài khoản thật |
+| Code, tài liệu tham khảo | Code hoặc thư mục tính năng trong git; tài liệu học tập, tham khảo trong `docs/archive/` (sổ tay, mẫu, báo cáo, ghi chú học tập) |
+| Không chắc | Bất cứ thứ gì không chắc là dữ liệu thử |
+
+Khi hệ thống quyền của Claude Code chặn một lệnh xóa đã được cho phép, Claude không lách qua. Claude soạn sẵn lệnh vào một file script để chủ dự án tự chạy.
 
 ## 2. Docker: `make clean`
 
