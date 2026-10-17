@@ -1,0 +1,29 @@
+{
+  "name": "public-site",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "start": "node dist/server/entry.mjs",
+    "typecheck": "astro check",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "gen:api": "openapi-typescript ../laravel-api/openapi.json -o src/types/openapi.d.ts && prettier --write src/types/openapi.d.ts"
+  },
+  "dependencies": {
+    "@astrojs/node": "^11.1.8",
+    "astro": "~7.3.8"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.10",
+    "@tailwindcss/vite": "^4.3.3",
+    "openapi-typescript": "^7.13.0",
+    "prettier": "3.8.1",
+    "prettier-plugin-astro": "^1.1.1",
+    "prettier-plugin-tailwindcss": "^0.7.4",
+    "tailwindcss": "^4.3.3",
+    "typescript": "^5.9.3"
+  }
+}

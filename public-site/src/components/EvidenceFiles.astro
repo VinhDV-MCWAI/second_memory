@@ -1,0 +1,53 @@
+---
+import type { PublicFile } from '@/lib/public-api';
+
+interface Props {
+  files: PublicFile[];
+}
+
+const UNITS = ['B', 'KB', 'MB', 'GB', 'TB'];
+const KIBI = 1024;
+
+function formatBytes(bytes: number | null): string {
+  if (bytes === null) return '';
+  let value = bytes;
+  let unit = 0;
+  while (value >= KIBI && unit < UNITS.length - 1) {
+    value /= KIBI;
+    unit++;
+  }
+  return `${unit === 0 ? value : value.toFixed(value < 10 ? 1 : 0)} ${UNITS[unit]}`;
+}
+
+// Files attached to one evidence, with their thumbnail when they have one. Images, PDF, video,
+// audio and text open in the browser, the rest download (the API decides).
+const { files } = Astro.props;
+---
+
+{files.length > 0 && (
+  <ul class="mt-2 space-y-1 text-sm">
+    {files.map((file) => (
+      <li class="flex items-center gap-2">
+        {file.thumbnail_url ? (
+          <img
+            src={file.thumbnail_url}
+            alt=""
+            loading="lazy"
+            class="h-10 w-10 shrink-0 rounded border object-cover"
+          />
+        ) : (
+          <span aria-hidden="true">📎</span>
+        )}
+        <a
+          href={`${import.meta.env.BASE_URL}/files/${file.key}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="hover:underline"
+        >
+          {file.name}
+        </a>
+        <span class="text-muted-foreground font-mono text-xs">{formatBytes(file.size)}</span>
+      </li>
+    ))}
+  </ul>
+)}

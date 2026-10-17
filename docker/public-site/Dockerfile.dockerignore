@@ -1,0 +1,13 @@
+# Build context for docker/public-site/Dockerfile is the repo root: send only the workspace
+# manifest and the public site.
+**
+!package.json
+!pnpm-lock.yaml
+!pnpm-workspace.yaml
+!public-site/
+
+**/node_modules
+**/dist
+**/.astro
+**/.env
+**/.env.*

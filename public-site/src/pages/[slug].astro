@@ -1,0 +1,89 @@
+---
+import EvidenceFiles from '@/components/EvidenceFiles.astro';
+import SkillLevel from '@/components/SkillLevel.astro';
+import Base from '@/layouts/Base.astro';
+import { getPublicSkill } from '@/lib/public-api';
+
+const HTTP_NOT_FOUND = 404;
+
+// A private skill and a missing one both answer 404, so the page does not reveal which it is.
+const skill = await getPublicSkill(Astro.params.slug ?? '');
+if (!skill) {
+  Astro.response.status = HTTP_NOT_FOUND;
+}
+---
+
+{skill ? (
+  <Base title={`${skill.name} — Skills`}>
+    <a href={import.meta.env.BASE_URL} class="text-sm hover:underline">
+      ← All skills
+    </a>
+    <h1 class="mt-4 text-3xl font-semibold">{skill.name}</h1>
+    <p class="text-muted-foreground mt-1">{skill.category}</p>
+    <div class="mt-3">
+      <SkillLevel level={skill.current_level} label={skill.current_level_label} />
+    </div>
+    {skill.description && <p class="mt-6 whitespace-pre-line">{skill.description}</p>}
+
+    <section class="mt-10">
+      <h2 class="text-xl font-semibold">Level history</h2>
+      <ol class="mt-4 space-y-2">
+        {skill.history.map((change) => (
+          <li class="flex gap-4 text-sm">
+            <time datetime={change.changed_on} class="w-28 shrink-0 font-mono">
+              {change.changed_on}
+            </time>
+            <span>
+              {change.level_label} ({change.level})
+            </span>
+          </li>
+        ))}
+      </ol>
+    </section>
+
+    <section class="mt-10">
+      <h2 class="text-xl font-semibold">Evidence</h2>
+      {skill.evidence.length === 0 ? (
+        <p class="mt-4 text-sm">No published evidence yet.</p>
+      ) : (
+        <ul class="mt-4 space-y-4">
+          {skill.evidence.map((item) => (
+            <li>
+              <div class="flex flex-wrap items-baseline gap-x-3">
+                <span class="bg-muted rounded px-1.5 py-0.5 font-mono text-xs uppercase">
+                  {item.type}
+                </span>
+                {item.url ? (
+                  <a
+                    href={item.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="font-medium hover:underline"
+                  >
+                    {item.title}
+                  </a>
+                ) : (
+                  <span class="font-medium">{item.title}</span>
+                )}
+                <time datetime={item.occurred_on} class="font-mono text-sm">
+                  {item.occurred_on}
+                </time>
+              </div>
+              {item.summary && <p class="mt-1 text-sm">{item.summary}</p>}
+              <EvidenceFiles files={item.files} />
+            </li>
+          ))}
+        </ul>
+      )}
+    </section>
+  </Base>
+) : (
+  <Base title="Skill not found">
+    <h1 class="text-3xl font-semibold">Skill not found</h1>
+    <p class="mt-4">
+      <a href={import.meta.env.BASE_URL} class="hover:underline">
+        ← All skills
+      </a>
+    </p>
+  </Base>
+)}
