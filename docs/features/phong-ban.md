@@ -88,6 +88,7 @@ Không được phép thì API trả về y như khi thư mục hoặc file khô
 | Thùng rác | Chỉ thấy, khôi phục, xóa hẳn file của thư mục được phép. Thư mục khóa đã bị xóa vẫn giữ khóa cho file của nó trong thùng rác |
 | Upload dở | Thư mục bị khóa sau khi bắt đầu upload: upload biến khỏi khung Unfinished uploads, không gửi tiếp được |
 | Gắn file vào bằng chứng | Không gắn được file bị khóa (422 ở `media_ids`). File đã gắn từ trước thì vẫn giữ, vẫn hiện tên, nhưng `locked: true`: không có xem trước, không có ảnh nhỏ, không có nút mở/tải |
+| Ô tìm kiếm chung | Thư mục bị khóa và mọi thứ bên trong không hiện trong nhóm Files của [Tìm kiếm](tim-kiem.md) (từ 2026-10-17) |
 
 ### API
 
@@ -107,7 +108,7 @@ Ghi chú: thư mục khóa bị xóa rồi khôi phục một file bên trong th
 | Loại | Ở đâu | Kiểm tra gì |
 |---|---|---|
 | Máy chủ | `laravel-api/tests/Feature/Master/DepartmentApiTest.php` | Thêm, sửa, xóa, tìm phòng ban; mã không trùng; quyền; admin thuộc nhiều phòng ban |
-| Máy chủ | `laravel-api/tests/Feature/Media/FolderPolicyApiTest.php` | Từng chỗ bị chặn ở bảng trên, khóa lồng nhau, phòng ban ngừng dùng, thùng rác, upload dở, bằng chứng |
+| Máy chủ | `laravel-api/tests/Feature/Media/FolderPolicyApiTest.php` | Từng chỗ bị chặn ở bảng trên, khóa lồng nhau, phòng ban ngừng dùng, thùng rác, upload dở, bằng chứng, tìm kiếm |
 | Giao diện | `department-form.test.tsx`, `media-browser.test.tsx`, `evidence-files-field.test.tsx` | Form phòng ban, nút Access, ổ khóa, nhãn Locked |
 | Trình duyệt | `e2e/tests/departments.spec.ts` (`make e2e`) | Chủ thêm phòng ban trên màn hình Departments, tạo thư mục, khóa cho phòng ban của `e2e_member`: `e2e_member` vẫn thấy, `e2e_outsider` (phòng ban khác) không thấy |
 
