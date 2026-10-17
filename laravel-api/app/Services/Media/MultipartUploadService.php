@@ -32,6 +32,7 @@ final class MultipartUploadService
         private readonly MediaRepository $media,
         private readonly ObjectStorage $storage,
         private readonly BackgroundTaskTracker $tracker,
+        private readonly FolderAccess $access,
     ) {}
 
     /**
@@ -101,7 +102,12 @@ final class MultipartUploadService
     public function unfinished(): array
     {
         $uploads = [];
+        $blocked = $this->access->blockedFolders();
         foreach ($this->media->unfinishedUploadsOf((int) Auth::id()) as $file) {
+            // The folder was locked after the upload started: it cannot be continued (ADR-0017)
+            if (! FolderAccess::allows($file->virtual_path, $blocked)) {
+                continue;
+            }
             $parts = $this->storage->listParts((string) $file->minio_object_key, (string) $file->upload_id);
             if ($parts === null) {
                 $this->fail($file);
@@ -237,6 +243,6 @@ final class MultipartUploadService
             throw (new ModelNotFoundException)->setModel(MediaMgmt::class, [$id]);
         }
 
-        return $file;
+        return $this->access->ensureAllowed($file);
     }
 }

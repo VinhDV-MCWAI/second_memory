@@ -11,6 +11,7 @@ use App\Http\Resources\Ledger\EvidenceResource;
 use App\Models\Ledger\Evidence;
 use App\Repositories\Ledger\EvidenceRepository;
 use App\Repositories\Media\MediaRepository;
+use App\Services\Media\FolderAccess;
 use App\Services\AuditedCrudService;
 use App\Services\AuditLogger;
 use Illuminate\Validation\ValidationException;
@@ -25,6 +26,7 @@ class EvidenceService extends AuditedCrudService
         private readonly EvidenceRepository $evidence,
         private readonly MediaRepository $media,
         AuditLogger $auditLogger,
+        private readonly FolderAccess $folderAccess,
     ) {
         parent::__construct($evidence, $auditLogger);
     }
@@ -88,7 +90,7 @@ class EvidenceService extends AuditedCrudService
     private function ensureAttachable(array $payload, array $attached): void
     {
         $new = array_values(array_diff(array_map(intval(...), $payload['media_ids'] ?? []), $attached));
-        if ($new !== [] && count($this->media->availableIds($new)) !== count($new)) {
+        if ($new !== [] && count($this->media->availableIds($new, $this->folderAccess->blockedFolders())) !== count($new)) {
             throw ValidationException::withMessages(['media_ids' => Messages::E0041]);
         }
     }

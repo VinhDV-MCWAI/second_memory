@@ -7,6 +7,7 @@ namespace App\Models\Media;
 use App\Enums\UploadStatus;
 use App\Models\Ledger\Evidence;
 use App\Models\Master\AdminMst;
+use App\Models\Master\Department;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -89,6 +90,16 @@ class MediaMgmt extends Model
     public function evidence(): BelongsToMany
     {
         return $this->belongsToMany(Evidence::class, 'evidence_media', 'media_id', 'evidence_id');
+    }
+
+    /**
+     * Departments a folder is given to (ADR-0017); none: the folder is open to every admin with Files rights.
+     *
+     * @return BelongsToMany<Department, $this>
+     */
+    public function departments(): BelongsToMany
+    {
+        return $this->belongsToMany(Department::class, 'department_policy', 'media_id', 'department_id');
     }
 
     /**

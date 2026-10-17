@@ -54,6 +54,12 @@ class MediaResource extends JsonResource
             'used_by' => $this->whenLoaded('evidence', fn () => $this->evidence
                 ->map(fn (Evidence $evidence): array => ['id' => (int) $evidence->id, 'title' => (string) $evidence->title])
                 ->all()),
+            /**
+             * Departments a folder is given to (ADR-0017; Files listing only). Empty: open to every admin with Files rights
+             *
+             * @var list<int>
+             */
+            'department_ids' => $this->whenLoaded('departments', fn () => $this->departments->modelKeys()),
             'created_at' => $this->created_at?->toIso8601String(),
             'updated_at' => $this->updated_at?->toIso8601String(),
         ];

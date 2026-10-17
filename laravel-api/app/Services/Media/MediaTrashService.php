@@ -31,6 +31,7 @@ final class MediaTrashService
         private readonly MediaRepository $media,
         private readonly ObjectStorage $storage,
         private readonly AuditLogger $auditLogger,
+        private readonly FolderAccess $access,
     ) {}
 
     /**
@@ -39,7 +40,7 @@ final class MediaTrashService
      */
     public function list(array $payload): LengthAwarePaginator
     {
-        return $this->media->trash(self::keptSince(), $payload);
+        return $this->media->trash(self::keptSince(), $payload, $this->access->blockedFolders(true));
     }
 
     /**
@@ -50,7 +51,7 @@ final class MediaTrashService
      */
     public function restore(int $id): MediaMgmt
     {
-        $file = $this->media->inTrash(self::keptSince(), [$id])->first()
+        $file = $this->media->inTrash(self::keptSince(), [$id], $this->access->blockedFolders(true))->first()
             ?? throw (new ModelNotFoundException)->setModel(MediaMgmt::class, [$id]);
         $key = (string) $file->minio_object_key;
         if (! $this->storage->restorable($key)) {
@@ -82,7 +83,7 @@ final class MediaTrashService
      */
     public function purge(?array $ids): int
     {
-        $rows = $this->media->inTrash(self::keptSince(), $ids);
+        $rows = $this->media->inTrash(self::keptSince(), $ids, $this->access->blockedFolders(true));
         foreach ($rows as $file) {
             $this->auditLogger->record(MediaService::AUDIT_TYPE, $file->id, AuditEvent::PURGED, $this->mediaService->auditValues($file));
         }

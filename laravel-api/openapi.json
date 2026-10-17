@@ -3811,6 +3811,101 @@
                 }
             }
         },
+        "/admin/media/access/{id}": {
+            "put": {
+                "operationId": "media.access",
+                "summary": "Give a folder to departments: only their members (and owners) may use it and everything inside; an empty list opens it",
+                "tags": [
+                    "Media"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateMediaAccessRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "integer"
+                                        },
+                                        "error": {
+                                            "type": "object",
+                                            "properties": {
+                                                "status": {
+                                                    "type": "boolean"
+                                                },
+                                                "code": {
+                                                    "type": "integer"
+                                                },
+                                                "messages": {
+                                                    "type": "null"
+                                                }
+                                            },
+                                            "required": [
+                                                "status",
+                                                "code",
+                                                "messages"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data",
+                                        "error"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiError"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/admin/media/trash/list": {
             "get": {
                 "operationId": "media.trash-list",
@@ -7421,8 +7516,7 @@
                         "type": [
                             "string",
                             "null"
-                        ],
-                        "description": "Presigned JPEG of an image or a video frame, at most 320 px wide (MEDIA-11); null when there is none"
+                        ]
                     },
                     "upload_status": {
                         "type": "integer",
@@ -7433,7 +7527,7 @@
                             "string",
                             "null"
                         ],
-                        "description": "How the file can be shown without downloading it; null: download only, or not available"
+                        "description": "How the file can be shown without downloading it; null: download only, not available, or locked"
                     },
                     "attached_count": {
                         "type": "integer",
@@ -7458,6 +7552,13 @@
                             ]
                         }
                     },
+                    "department_ids": {
+                        "type": "array",
+                        "description": "Departments a folder is given to (ADR-0017; Files listing only). Empty: open to every admin with Files rights",
+                        "items": {
+                            "type": "integer"
+                        }
+                    },
                     "created_at": {
                         "type": [
                             "string",
@@ -7473,6 +7574,10 @@
                     "available": {
                         "type": "boolean",
                         "description": "false: deleted in the file manager (in the trash, or gone for good)"
+                    },
+                    "locked": {
+                        "type": "boolean",
+                        "description": "true: in a folder the signed-in admin may not use (ADR-0017); the name shows, the file does not open"
                     }
                 },
                 "required": [
@@ -7491,7 +7596,8 @@
                     "preview",
                     "created_at",
                     "updated_at",
-                    "available"
+                    "available",
+                    "locked"
                 ],
                 "title": "EvidenceFileResource"
             },
@@ -7919,6 +8025,13 @@
                                 "id",
                                 "title"
                             ]
+                        }
+                    },
+                    "department_ids": {
+                        "type": "array",
+                        "description": "Departments a folder is given to (ADR-0017; Files listing only). Empty: open to every admin with Files rights",
+                        "items": {
+                            "type": "integer"
                         }
                     },
                     "created_at": {
@@ -9175,6 +9288,22 @@
                     }
                 },
                 "title": "UpdateLearningGoalRequest"
+            },
+            "UpdateMediaAccessRequest": {
+                "type": "object",
+                "properties": {
+                    "department_ids": {
+                        "type": "array",
+                        "items": {
+                            "type": "integer"
+                        },
+                        "uniqueItems": true
+                    }
+                },
+                "required": [
+                    "department_ids"
+                ],
+                "title": "UpdateMediaAccessRequest"
             },
             "UpdateMediaRequest": {
                 "type": "object",

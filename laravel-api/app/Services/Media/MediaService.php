@@ -35,6 +35,7 @@ final class MediaService
         private readonly MediaRepository $media,
         private readonly ObjectStorage $storage,
         private readonly AuditLogger $auditLogger,
+        private readonly FolderAccess $access,
     ) {}
 
     /**
@@ -45,7 +46,7 @@ final class MediaService
     {
         $folder = $this->existingFolder($payload['folder'] ?? MediaConst::ROOT);
 
-        return $this->media->list($folder, $payload);
+        return $this->media->list($folder, $payload, $this->access->blockedFolders());
     }
 
     /**
@@ -210,7 +211,7 @@ final class MediaService
      */
     public function update(int $id, array $payload): int
     {
-        $item = $this->media->findLive($id) ?? throw (new ModelNotFoundException)->setModel(MediaMgmt::class, [$id]);
+        $item = $this->access->ensureAllowed($this->media->findLive($id) ?? throw (new ModelNotFoundException)->setModel(MediaMgmt::class, [$id]));
         $oldPath = $item->virtual_path;
         $name = $payload['name'] ?? $item->original_name;
         $folder = $payload['folder'] ?? $this->parentOf($oldPath);
@@ -243,10 +244,16 @@ final class MediaService
     public function delete(array $payload): void
     {
         $rows = [];
+        $blocked = $this->access->blockedFolders();
         foreach ($payload['ids'] as $id) {
             $item = $this->media->findLive($id);
-            if ($item === null) {
+            // Missing, or in a folder the admin may not use: skipped alike (ADR-0017)
+            if ($item === null || ! FolderAccess::allows($item->virtual_path, $blocked)) {
                 continue;
+            }
+            // Deleting would take folders along that the admin cannot even see
+            if (! $item->is_file && FolderAccess::holdsBlocked($item->virtual_path, $blocked)) {
+                throw ValidationException::withMessages(['ids' => Messages::E0044]);
             }
             foreach ($item->is_file ? [$item] : [$item, ...$this->media->descendants($item->virtual_path)] as $row) {
                 $rows[$row->id] = $row;
@@ -285,12 +292,44 @@ final class MediaService
             throw (new ModelNotFoundException)->setModel(MediaMgmt::class, [$id]);
         }
 
-        return $file;
+        return $this->access->ensureAllowed($file);
     }
 
+    /**
+     * Gives a folder to departments (ADR-0017): with at least one, only their members (and owners)
+     * may use it; an empty list opens it again.
+     *
+     * @param  list<int>  $departmentIds
+     *
+     * @throws ValidationException when the item is a file
+     */
+    public function setAccess(int $id, array $departmentIds): int
+    {
+        $folder = $this->access->ensureAllowed($this->media->findLive($id) ?? throw (new ModelNotFoundException)->setModel(MediaMgmt::class, [$id]));
+        if ($folder->is_file) {
+            throw ValidationException::withMessages(['id' => Messages::E0045]);
+        }
+
+        $old = $folder->departments()->orderBy('department.id')->pluck('department.id')->all();
+        $folder->departments()->sync($departmentIds);
+        $new = $folder->departments()->orderBy('department.id')->pluck('department.id')->all();
+        if ($old !== $new) {
+            $this->auditLogger->record(
+                self::AUDIT_TYPE,
+                $folder->id,
+                AuditEvent::UPDATED,
+                ['path' => $folder->virtual_path, 'department_ids' => $old],
+                ['path' => $folder->virtual_path, 'department_ids' => $new],
+            );
+        }
+
+        return $folder->id;
+    }
+
+    /** The folder, refused like a missing one when it lies in a folder the admin may not use (ADR-0017). */
     private function existingFolder(string $folder): string
     {
-        if (! $this->media->folderExists($folder)) {
+        if (! $this->media->folderExists($folder) || ! FolderAccess::allows($folder, $this->access->blockedFolders())) {
             throw ValidationException::withMessages(['folder' => Messages::E0028]);
         }
 

@@ -106,6 +106,10 @@ class Messages
 
     const E0043 = 'Log out to end the session you are using';
 
+    const E0044 = 'This folder holds folders you cannot use';
+
+    const E0045 = 'Only folders can be given to departments';
+
     /**
      * Errors http messages
      */

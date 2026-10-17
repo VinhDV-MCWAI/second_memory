@@ -32,18 +32,20 @@ class MediaRepository extends BaseRepository
     }
 
     /**
-     * Direct children of a folder, folders first. Rows still uploading are not shown.
+     * Direct children of a folder, folders first. Rows still uploading are not shown, nor folders in $blocked.
      *
      * @param  array<string, mixed>  $payload
+     * @param  list<string>  $blocked  paths of locked folders the admin may not use (ADR-0017)
      * @return LengthAwarePaginator<int, MediaMgmt>
      */
-    public function list(string $folder, array $payload): LengthAwarePaginator
+    public function list(string $folder, array $payload, array $blocked = []): LengthAwarePaginator
     {
         $query = $this->query()->live()->where('upload_status', '<>', UploadStatus::UPLOADING->value)
             ->select('media_mgmt.*')
-            ->with('evidence:id,title')
+            ->with(['evidence:id,title', 'departments:id'])
             ->selectSub($this->attachedCount(), 'attached_count');
         $this->whereChildOf($query, $folder);
+        $this->excludeFolders($query, $blocked);
 
         if (isset($payload['name'])) {
             $query->whereRaw('lower(original_name) like lower(?)', ['%'.$this->escapeLike($payload['name']).'%']);
@@ -68,6 +70,30 @@ class MediaRepository extends BaseRepository
                 ->whereColumn('attached.id', 'media_mgmt.id')
                 ->orWhereRaw("attached.virtual_path like replace(replace(replace(media_mgmt.virtual_path, '\\', '\\\\'), '%', '\\%'), '_', '\\_') || '/%'"))
             ->selectRaw('count(*)');
+    }
+
+    /**
+     * Paths of the locked folders (with a department_policy row) none of whose active departments the
+     * admin belongs to (ADR-0017). Deleted folders count too when $withDeleted, for the trash.
+     *
+     * @return list<string>
+     */
+    public function foldersLockedAgainst(int $adminId, bool $withDeleted = false): array
+    {
+        $memberOf = DB::table('admin_department')
+            ->join('department', 'department.id', '=', 'admin_department.department_id')
+            ->where('admin_department.admin_id', $adminId)
+            ->where('department.is_active', true)
+            ->select('admin_department.department_id');
+
+        return DB::table('department_policy')
+            ->join('media_mgmt', 'media_mgmt.id', '=', 'department_policy.media_id')
+            ->when(! $withDeleted, fn (QueryBuilder $q) => $q->where('media_mgmt.is_delete', false))
+            ->groupBy('media_mgmt.id', 'media_mgmt.virtual_path')
+            ->havingRaw('not bool_or(department_policy.department_id in ('.$memberOf->toSql().'))', $memberOf->getBindings())
+            ->pluck('media_mgmt.virtual_path')
+            ->map(strval(...))
+            ->all();
     }
 
     public function findLive(int $id): ?MediaMgmt
@@ -189,11 +215,15 @@ class MediaRepository extends BaseRepository
      * The ids among $ids that are available files (LEDGER-01: what an evidence may attach).
      *
      * @param  list<int>  $ids
+     * @param  list<string>  $blocked  paths of locked folders the admin may not use (ADR-0017)
      * @return list<int>
      */
-    public function availableIds(array $ids): array
+    public function availableIds(array $ids, array $blocked = []): array
     {
-        return $this->query()->available()->whereKey($ids)->pluck('id')->map(intval(...))->all();
+        $query = $this->query()->available()->whereKey($ids);
+        $this->excludeFolders($query, $blocked);
+
+        return $query->pluck('id')->map(intval(...))->all();
     }
 
     /**
@@ -253,11 +283,13 @@ class MediaRepository extends BaseRepository
      * row is never changed again, so `updated_at` is the deletion time and `updated_by` who deleted it.
      *
      * @param  array<string, mixed>  $payload
+     * @param  list<string>  $blocked  paths of locked folders the admin may not use (ADR-0017)
      * @return LengthAwarePaginator<int, MediaMgmt>
      */
-    public function trash(CarbonInterface $since, array $payload): LengthAwarePaginator
+    public function trash(CarbonInterface $since, array $payload, array $blocked = []): LengthAwarePaginator
     {
         $query = $this->trashQuery($since)->with('updater:id,user_name');
+        $this->excludeFolders($query, $blocked);
         if (isset($payload['name'])) {
             $query->whereRaw('lower(original_name) like lower(?)', ['%'.$this->escapeLike($payload['name']).'%']);
         }
@@ -270,11 +302,15 @@ class MediaRepository extends BaseRepository
      * Trash rows among $ids, or every trash row when $ids is null.
      *
      * @param  list<int>|null  $ids
+     * @param  list<string>  $blocked  paths of locked folders the admin may not use (ADR-0017)
      * @return Collection<int, MediaMgmt>
      */
-    public function inTrash(CarbonInterface $since, ?array $ids = null): Collection
+    public function inTrash(CarbonInterface $since, ?array $ids = null, array $blocked = []): Collection
     {
-        return $this->trashQuery($since)->when($ids !== null, fn (Builder $q) => $q->whereKey($ids))->get();
+        $query = $this->trashQuery($since)->when($ids !== null, fn (Builder $q) => $q->whereKey($ids));
+        $this->excludeFolders($query, $blocked);
+
+        return $query->get();
     }
 
     /**
@@ -340,6 +376,20 @@ class MediaRepository extends BaseRepository
         $prefix = $folder === MediaConst::ROOT ? '' : $this->escapeLike($folder);
         $query->where('virtual_path', 'like', $prefix.MediaConst::PATH_SEPARATOR.'%')
             ->where('virtual_path', 'not like', $prefix.MediaConst::PATH_SEPARATOR.'%'.MediaConst::PATH_SEPARATOR.'%');
+    }
+
+    /**
+     * Leaves out the folders in $folders and everything below them.
+     *
+     * @param  Builder<MediaMgmt>  $query
+     * @param  list<string>  $folders
+     */
+    private function excludeFolders(Builder $query, array $folders): void
+    {
+        foreach ($folders as $folder) {
+            $query->where('media_mgmt.virtual_path', '<>', $folder)
+                ->where('media_mgmt.virtual_path', 'not like', $this->escapeLike($folder).MediaConst::PATH_SEPARATOR.'%');
+        }
     }
 
     /** `%`, `_` and `\` in a name are literal in LIKE patterns (PostgreSQL's default escape is `\`). */

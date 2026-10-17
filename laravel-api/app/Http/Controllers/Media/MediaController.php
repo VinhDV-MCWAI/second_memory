@@ -10,6 +10,7 @@ use App\Http\Requests\Media\DeleteMediaRequest;
 use App\Http\Requests\Media\DownloadUrlRequest;
 use App\Http\Requests\Media\ListMediaRequest;
 use App\Http\Requests\Media\StoreFolderRequest;
+use App\Http\Requests\Media\UpdateMediaAccessRequest;
 use App\Http\Requests\Media\UpdateMediaRequest;
 use App\Http\Resources\Media\MediaResource;
 use App\Services\Media\MediaService;
@@ -76,6 +77,14 @@ class MediaController extends Controller
     public function update(UpdateMediaRequest $request, string $id): int
     {
         return $this->media->update((int) $id, $request->validated());
+    }
+
+    /**
+     * Give a folder to departments: only their members (and owners) may use it and everything inside; an empty list opens it
+     */
+    public function access(UpdateMediaAccessRequest $request, string $id): int
+    {
+        return $this->media->setAccess((int) $id, array_map(intval(...), $request->validated('department_ids')));
     }
 
     /**

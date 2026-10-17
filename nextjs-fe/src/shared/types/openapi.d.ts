@@ -593,6 +593,23 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/admin/media/access/{id}': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    /** Give a folder to departments: only their members (and owners) may use it and everything inside; an empty list opens it */
+    put: operations['media.access'];
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/admin/media/trash/list': {
     parameters: {
       query?: never;
@@ -1262,11 +1279,10 @@ export interface components {
       height: number | null;
       /** @description Video or audio length in seconds (MEDIA-11) */
       duration: number | null;
-      /** @description Presigned JPEG of an image or a video frame, at most 320 px wide (MEDIA-11); null when there is none */
       thumbnail_url: string | null;
       /** @description 0 uploading, 1 processing, 2 completed, 3 failed */
       upload_status: number;
-      /** @description How the file can be shown without downloading it; null: download only, or not available */
+      /** @description How the file can be shown without downloading it; null: download only, not available, or locked */
       preview: string | null;
       /** @description Links to evidence: of the file, or of the files inside the folder (MEDIA-09; Files listing only) */
       attached_count?: number;
@@ -1275,10 +1291,14 @@ export interface components {
         id: number;
         title: string;
       }[];
+      /** @description Departments a folder is given to (ADR-0017; Files listing only). Empty: open to every admin with Files rights */
+      department_ids?: number[];
       created_at: string | null;
       updated_at: string | null;
       /** @description false: deleted in the file manager (in the trash, or gone for good) */
       available: boolean;
+      /** @description true: in a folder the signed-in admin may not use (ADR-0017); the name shows, the file does not open */
+      locked: boolean;
     };
     /** EvidenceResource */
     EvidenceResource: {
@@ -1407,6 +1427,8 @@ export interface components {
         id: number;
         title: string;
       }[];
+      /** @description Departments a folder is given to (ADR-0017; Files listing only). Empty: open to every admin with Files rights */
+      department_ids?: number[];
       created_at: string | null;
       updated_at: string | null;
     };
@@ -1725,6 +1747,10 @@ export interface components {
        */
       status?: 'open' | 'dropped';
       note?: string | null;
+    };
+    /** UpdateMediaAccessRequest */
+    UpdateMediaAccessRequest: {
+      department_ids: number[];
     };
     /**
      * UpdateMediaRequest
@@ -3412,6 +3438,58 @@ export interface operations {
       401: components['responses']['AuthenticationException'];
       /** @description Forbidden */
       403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ApiError'];
+        };
+      };
+      422: components['responses']['ValidationException'];
+    };
+  };
+  'media.access': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['UpdateMediaAccessRequest'];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            data: number;
+            error: {
+              status: boolean;
+              code: number;
+              messages: null;
+            };
+          };
+        };
+      };
+      401: components['responses']['AuthenticationException'];
+      /** @description Forbidden */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ApiError'];
+        };
+      };
+      /** @description Not Found */
+      404: {
         headers: {
           [name: string]: unknown;
         };

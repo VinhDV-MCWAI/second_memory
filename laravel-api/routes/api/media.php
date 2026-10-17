@@ -16,6 +16,8 @@ Route::post('media/complete/{id}', [MediaController::class, 'complete'])->name('
 Route::get('media/download-url/{id}', [MediaController::class, 'downloadUrl'])->name('media.download-url');
 Route::put('media/update/{id}', [MediaController::class, 'update'])->name('media.update');
 Route::post('media/delete', [MediaController::class, 'delete'])->name('media.delete');
+// Folders given to departments (ADR-0017)
+Route::put('media/access/{id}', [MediaController::class, 'access'])->name('media.access');
 
 // Large files in parts (multipart upload); the joined file is processed by a background job
 Route::post('media/multipart/start', [MultipartUploadController::class, 'start'])->name('media.multipart-start');
