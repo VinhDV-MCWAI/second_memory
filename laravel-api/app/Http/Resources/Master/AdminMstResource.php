@@ -6,6 +6,7 @@ namespace App\Http\Resources\Master;
 
 use App\Http\Resources\Concerns\FormatsDates;
 use App\Models\Master\AdminMst;
+use App\Models\Master\Department;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -37,6 +38,7 @@ class AdminMstResource extends JsonResource
             'status' => (int) $this->status,
             'is_active' => (bool) $this->is_active,
             'roles' => $this->roles->map(fn (Model $role): array => ['id' => (int) $role->getKey(), 'name' => (string) $role->getAttribute('name')])->values()->all(),
+            'departments' => $this->departments->map(fn (Department $department): array => ['id' => $department->id, 'code' => $department->code, 'name' => $department->name])->values()->all(),
             'avatar' => (string) $this->avatar,
             'is_delete' => (bool) $this->is_delete,
             'updated_at' => $this->formatDate($this->updated_at),

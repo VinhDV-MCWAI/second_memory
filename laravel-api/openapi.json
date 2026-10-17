@@ -210,6 +210,16 @@
                         }
                     },
                     {
+                        "name": "department_id",
+                        "in": "query",
+                        "schema": {
+                            "type": [
+                                "integer",
+                                "null"
+                            ]
+                        }
+                    },
+                    {
                         "name": "avatar",
                         "in": "query",
                         "schema": {
@@ -1241,6 +1251,28 @@
                                                         ]
                                                     }
                                                 },
+                                                "departments": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "integer"
+                                                            },
+                                                            "code": {
+                                                                "type": "string"
+                                                            },
+                                                            "name": {
+                                                                "type": "string"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "id",
+                                                            "code",
+                                                            "name"
+                                                        ]
+                                                    }
+                                                },
                                                 "avatar": {
                                                     "type": "string"
                                                 },
@@ -1270,6 +1302,7 @@
                                                 "status",
                                                 "is_active",
                                                 "roles",
+                                                "departments",
                                                 "avatar",
                                                 "is_delete",
                                                 "updated_at",
@@ -1444,6 +1477,28 @@
                                                         ]
                                                     }
                                                 },
+                                                "departments": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "integer"
+                                                            },
+                                                            "code": {
+                                                                "type": "string"
+                                                            },
+                                                            "name": {
+                                                                "type": "string"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "id",
+                                                            "code",
+                                                            "name"
+                                                        ]
+                                                    }
+                                                },
                                                 "avatar": {
                                                     "type": "string"
                                                 },
@@ -1473,6 +1528,7 @@
                                                 "status",
                                                 "is_active",
                                                 "roles",
+                                                "departments",
                                                 "avatar",
                                                 "is_delete",
                                                 "updated_at",
@@ -1640,6 +1696,421 @@
                     },
                     "401": {
                         "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/admin/department/list": {
+            "get": {
+                "operationId": "department.list",
+                "tags": [
+                    "Department"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "query",
+                        "schema": {
+                            "type": [
+                                "integer",
+                                "null"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "schema": {
+                            "type": [
+                                "integer",
+                                "null"
+                            ],
+                            "minimum": 1
+                        }
+                    },
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "schema": {
+                            "type": [
+                                "integer",
+                                "null"
+                            ],
+                            "minimum": 1
+                        }
+                    },
+                    {
+                        "name": "sort_by",
+                        "in": "query",
+                        "schema": {
+                            "type": [
+                                "string",
+                                "null"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "sort_order",
+                        "in": "query",
+                        "schema": {
+                            "type": [
+                                "string",
+                                "null"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "code",
+                        "in": "query",
+                        "schema": {
+                            "type": [
+                                "string",
+                                "null"
+                            ],
+                            "maxLength": 30
+                        }
+                    },
+                    {
+                        "name": "name",
+                        "in": "query",
+                        "schema": {
+                            "type": [
+                                "string",
+                                "null"
+                            ],
+                            "maxLength": 100
+                        }
+                    },
+                    {
+                        "name": "is_active",
+                        "in": "query",
+                        "schema": {
+                            "anyOf": [
+                                {
+                                    "$ref": "#/components/schemas/IsActive"
+                                },
+                                {
+                                    "type": "null"
+                                }
+                            ]
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Array of `DepartmentResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "data": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "$ref": "#/components/schemas/DepartmentResource"
+                                                    }
+                                                },
+                                                "links": {
+                                                    "$ref": "#/components/schemas/PaginationLinks"
+                                                },
+                                                "meta": {
+                                                    "$ref": "#/components/schemas/PaginationMeta"
+                                                }
+                                            },
+                                            "required": [
+                                                "data",
+                                                "links",
+                                                "meta"
+                                            ]
+                                        },
+                                        "error": {
+                                            "type": "object",
+                                            "properties": {
+                                                "status": {
+                                                    "type": "boolean"
+                                                },
+                                                "code": {
+                                                    "type": "integer"
+                                                },
+                                                "messages": {
+                                                    "type": "null"
+                                                }
+                                            },
+                                            "required": [
+                                                "status",
+                                                "code",
+                                                "messages"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data",
+                                        "error"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/admin/department/store": {
+            "post": {
+                "operationId": "department.store",
+                "tags": [
+                    "Department"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/StoreDepartmentRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "integer"
+                                        },
+                                        "error": {
+                                            "type": "object",
+                                            "properties": {
+                                                "status": {
+                                                    "type": "boolean"
+                                                },
+                                                "code": {
+                                                    "type": "integer"
+                                                },
+                                                "messages": {
+                                                    "type": "null"
+                                                }
+                                            },
+                                            "required": [
+                                                "status",
+                                                "code",
+                                                "messages"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data",
+                                        "error"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/admin/department/update/{id}": {
+            "put": {
+                "operationId": "department.update",
+                "tags": [
+                    "Department"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateDepartmentRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "integer"
+                                        },
+                                        "error": {
+                                            "type": "object",
+                                            "properties": {
+                                                "status": {
+                                                    "type": "boolean"
+                                                },
+                                                "code": {
+                                                    "type": "integer"
+                                                },
+                                                "messages": {
+                                                    "type": "null"
+                                                }
+                                            },
+                                            "required": [
+                                                "status",
+                                                "code",
+                                                "messages"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data",
+                                        "error"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiError"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/admin/department/delete": {
+            "post": {
+                "operationId": "department.delete",
+                "tags": [
+                    "Department"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/DeleteDepartmentRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "null"
+                                        },
+                                        "error": {
+                                            "type": "object",
+                                            "properties": {
+                                                "status": {
+                                                    "type": "boolean"
+                                                },
+                                                "code": {
+                                                    "type": "integer"
+                                                },
+                                                "messages": {
+                                                    "type": "null"
+                                                }
+                                            },
+                                            "required": [
+                                                "status",
+                                                "code",
+                                                "messages"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data",
+                                        "error"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
                     },
                     "403": {
                         "description": "Forbidden",
@@ -6357,6 +6828,28 @@
                             ]
                         }
                     },
+                    "departments": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "id": {
+                                    "type": "integer"
+                                },
+                                "code": {
+                                    "type": "string"
+                                },
+                                "name": {
+                                    "type": "string"
+                                }
+                            },
+                            "required": [
+                                "id",
+                                "code",
+                                "name"
+                            ]
+                        }
+                    },
                     "avatar": {
                         "type": "string"
                     },
@@ -6380,6 +6873,7 @@
                     "status",
                     "is_active",
                     "roles",
+                    "departments",
                     "avatar",
                     "is_delete",
                     "updated_at"
@@ -6700,6 +7194,23 @@
                 ],
                 "title": "DeleteAdminMstRequest"
             },
+            "DeleteDepartmentRequest": {
+                "type": "object",
+                "properties": {
+                    "ids": {
+                        "type": "array",
+                        "items": {
+                            "type": "integer"
+                        },
+                        "minItems": 1,
+                        "uniqueItems": true
+                    }
+                },
+                "required": [
+                    "ids"
+                ],
+                "title": "DeleteDepartmentRequest"
+            },
             "DeleteEvidenceRequest": {
                 "type": "object",
                 "properties": {
@@ -6796,6 +7307,45 @@
                     "ids"
                 ],
                 "title": "DeleteTagRequest"
+            },
+            "DepartmentResource": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "code": {
+                        "type": "string"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "description": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "is_active": {
+                        "type": "boolean"
+                    },
+                    "admin_count": {
+                        "type": "integer"
+                    },
+                    "updated_at": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "id",
+                    "code",
+                    "name",
+                    "description",
+                    "is_active",
+                    "admin_count",
+                    "updated_at"
+                ],
+                "title": "DepartmentResource"
             },
             "EndAdminSessionRequest": {
                 "type": "object",
@@ -8006,6 +8556,13 @@
                         },
                         "uniqueItems": true
                     },
+                    "department_ids": {
+                        "type": "array",
+                        "items": {
+                            "type": "integer"
+                        },
+                        "uniqueItems": true
+                    },
                     "avatar": {
                         "type": [
                             "string",
@@ -8030,6 +8587,35 @@
                     "is_delete"
                 ],
                 "title": "StoreAdminMstRequest"
+            },
+            "StoreDepartmentRequest": {
+                "type": "object",
+                "properties": {
+                    "code": {
+                        "type": "string",
+                        "maxLength": 30
+                    },
+                    "name": {
+                        "type": "string",
+                        "maxLength": 100
+                    },
+                    "description": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "maxLength": 1000
+                    },
+                    "is_active": {
+                        "$ref": "#/components/schemas/IsActive"
+                    }
+                },
+                "required": [
+                    "code",
+                    "name",
+                    "is_active"
+                ],
+                "title": "StoreDepartmentRequest"
             },
             "StoreEvidenceRequest": {
                 "type": "object",
@@ -8429,6 +9015,13 @@
                         },
                         "uniqueItems": true
                     },
+                    "department_ids": {
+                        "type": "array",
+                        "items": {
+                            "type": "integer"
+                        },
+                        "uniqueItems": true
+                    },
                     "avatar": {
                         "type": [
                             "string",
@@ -8460,6 +9053,36 @@
                     "is_active"
                 ],
                 "title": "UpdateAdminMstRequest"
+            },
+            "UpdateDepartmentRequest": {
+                "type": "object",
+                "description": "Same fields as a new department; the code stays unique apart from this row.",
+                "properties": {
+                    "code": {
+                        "type": "string",
+                        "maxLength": 30
+                    },
+                    "name": {
+                        "type": "string",
+                        "maxLength": 100
+                    },
+                    "description": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "maxLength": 1000
+                    },
+                    "is_active": {
+                        "$ref": "#/components/schemas/IsActive"
+                    }
+                },
+                "required": [
+                    "code",
+                    "name",
+                    "is_active"
+                ],
+                "title": "UpdateDepartmentRequest"
             },
             "UpdateEvidenceRequest": {
                 "type": "object",

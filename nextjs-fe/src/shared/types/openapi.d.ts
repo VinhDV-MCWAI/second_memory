@@ -258,6 +258,70 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/admin/department/list': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations['department.list'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/admin/department/store': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations['department.store'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/admin/department/update/{id}': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put: operations['department.update'];
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/admin/department/delete': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations['department.delete'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/admin/evidence/list': {
     parameters: {
       query?: never;
@@ -1035,6 +1099,11 @@ export interface components {
         id: number;
         name: string;
       }[];
+      departments: {
+        id: number;
+        code: string;
+        name: string;
+      }[];
       avatar: string;
       is_delete: boolean;
       updated_at: string;
@@ -1137,6 +1206,10 @@ export interface components {
     DeleteAdminMstRequest: {
       ids: number[];
     };
+    /** DeleteDepartmentRequest */
+    DeleteDepartmentRequest: {
+      ids: number[];
+    };
     /** DeleteEvidenceRequest */
     DeleteEvidenceRequest: {
       ids: number[];
@@ -1160,6 +1233,16 @@ export interface components {
     /** DeleteTagRequest */
     DeleteTagRequest: {
       ids: number[];
+    };
+    /** DepartmentResource */
+    DepartmentResource: {
+      id: number;
+      code: string;
+      name: string;
+      description: string | null;
+      is_active: boolean;
+      admin_count: number;
+      updated_at: string;
     };
     /** EndAdminSessionRequest */
     EndAdminSessionRequest: {
@@ -1472,8 +1555,16 @@ export interface components {
       status: components['schemas']['AdminStatus'];
       is_active: components['schemas']['IsActive'];
       role_ids?: number[];
+      department_ids?: number[];
       avatar?: string | null;
       is_delete: components['schemas']['IsDelete'];
+    };
+    /** StoreDepartmentRequest */
+    StoreDepartmentRequest: {
+      code: string;
+      name: string;
+      description?: string | null;
+      is_active: components['schemas']['IsActive'];
     };
     /**
      * StoreEvidenceRequest
@@ -1584,8 +1675,19 @@ export interface components {
       status: components['schemas']['AdminStatus'];
       is_active: components['schemas']['IsActive'];
       role_ids?: number[];
+      department_ids?: number[];
       avatar?: string | null;
       is_delete?: components['schemas']['IsDelete'] | null;
+    };
+    /**
+     * UpdateDepartmentRequest
+     * @description Same fields as a new department; the code stays unique apart from this row.
+     */
+    UpdateDepartmentRequest: {
+      code: string;
+      name: string;
+      description?: string | null;
+      is_active: components['schemas']['IsActive'];
     };
     /**
      * UpdateEvidenceRequest
@@ -1709,6 +1811,7 @@ export interface operations {
         status?: components['schemas']['StatusEnum'] | null;
         is_active?: components['schemas']['IsActive'] | null;
         role_id?: number | null;
+        department_id?: number | null;
         avatar?: string | null;
         is_delete?: components['schemas']['IsDelete'] | null;
         from_date?: string | null;
@@ -2178,6 +2281,11 @@ export interface operations {
                 id: number;
                 name: string;
               }[];
+              departments: {
+                id: number;
+                code: string;
+                name: string;
+              }[];
               avatar: string;
               is_delete: boolean;
               updated_at: string;
@@ -2259,6 +2367,11 @@ export interface operations {
               is_active: boolean;
               roles: {
                 id: number;
+                name: string;
+              }[];
+              departments: {
+                id: number;
+                code: string;
                 name: string;
               }[];
               avatar: string;
@@ -2355,6 +2468,191 @@ export interface operations {
           'application/json': components['schemas']['ApiError'];
         };
       };
+    };
+  };
+  'department.list': {
+    parameters: {
+      query?: {
+        id?: number | null;
+        page?: number | null;
+        per_page?: number | null;
+        sort_by?: string | null;
+        sort_order?: string | null;
+        code?: string | null;
+        name?: string | null;
+        is_active?: components['schemas']['IsActive'] | null;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Array of `DepartmentResource` */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            data: {
+              data: components['schemas']['DepartmentResource'][];
+              links: components['schemas']['PaginationLinks'];
+              meta: components['schemas']['PaginationMeta'];
+            };
+            error: {
+              status: boolean;
+              code: number;
+              messages: null;
+            };
+          };
+        };
+      };
+      401: components['responses']['AuthenticationException'];
+      /** @description Forbidden */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ApiError'];
+        };
+      };
+      422: components['responses']['ValidationException'];
+    };
+  };
+  'department.store': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['StoreDepartmentRequest'];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            data: number;
+            error: {
+              status: boolean;
+              code: number;
+              messages: null;
+            };
+          };
+        };
+      };
+      401: components['responses']['AuthenticationException'];
+      /** @description Forbidden */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ApiError'];
+        };
+      };
+      422: components['responses']['ValidationException'];
+    };
+  };
+  'department.update': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['UpdateDepartmentRequest'];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            data: number;
+            error: {
+              status: boolean;
+              code: number;
+              messages: null;
+            };
+          };
+        };
+      };
+      401: components['responses']['AuthenticationException'];
+      /** @description Forbidden */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ApiError'];
+        };
+      };
+      /** @description Not Found */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ApiError'];
+        };
+      };
+      422: components['responses']['ValidationException'];
+    };
+  };
+  'department.delete': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['DeleteDepartmentRequest'];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            data: null;
+            error: {
+              status: boolean;
+              code: number;
+              messages: null;
+            };
+          };
+        };
+      };
+      401: components['responses']['AuthenticationException'];
+      /** @description Forbidden */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ApiError'];
+        };
+      };
+      422: components['responses']['ValidationException'];
     };
   };
   'evidence.list': {

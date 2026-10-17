@@ -10,6 +10,7 @@ use App\Enums\Gender;
 use App\Enums\IsActive;
 use App\Enums\IsDelete;
 use App\Models\Master\AdminMst;
+use App\Models\Master\Department;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
@@ -57,6 +58,8 @@ class UpdateAdminMstRequest extends FormRequest
             'is_active' => ['required', Rule::enum(IsActive::class)],
             'role_ids' => ['sometimes', 'array'],
             'role_ids.*' => ['integer', 'distinct', Rule::exists(Role::class, 'id')],
+            'department_ids' => ['sometimes', 'array'],
+            'department_ids.*' => ['integer', 'distinct', Rule::exists(Department::class, 'id')],
             'avatar' => ['nullable', 'string', 'min:'.CommonVal::MIN_VARCHAR, 'max:30'],
             // 'is_delete' => ['required', Rule::enum(IsDelete::class),], // Removed required check for update
             'is_delete' => ['nullable', Rule::enum(IsDelete::class)],
@@ -78,6 +81,7 @@ class UpdateAdminMstRequest extends FormRequest
             'status' => __('messages.status'),
             'is_active' => __('messages.is_active'),
             'role_ids' => __('messages.role'),
+            'department_ids' => __('messages.department'),
             'avatar' => __('messages.avatar'),
             'is_delete' => __('messages.is_delete'),
         ];

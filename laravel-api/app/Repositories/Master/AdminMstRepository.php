@@ -42,7 +42,7 @@ class AdminMstRepository extends SoftDeleteCrudRepository
                 'avatar',
                 'updated_at',
             ])
-            ->with('roles:id,name')
+            ->with(['roles:id,name', 'departments:id,code,name'])
             ->notDeleted(); // Use scope from HasSoftDelete trait
 
         // Apply exact match filters
@@ -65,6 +65,10 @@ class AdminMstRepository extends SoftDeleteCrudRepository
 
         if (isset($payload['role_id'])) {
             $query->whereHas('roles', fn ($roles) => $roles->where('roles.id', $payload['role_id']));
+        }
+
+        if (isset($payload['department_id'])) {
+            $query->whereHas('departments', fn ($departments) => $departments->where('department.id', $payload['department_id']));
         }
 
         // Apply date range filter
@@ -122,6 +126,7 @@ class AdminMstRepository extends SoftDeleteCrudRepository
         $model->save();
         // A new admin without a choice gets the read-only role, as before ADR-0013
         $model->syncRoles(array_map('intval', $payload['role_ids'] ?? [$this->viewerRoleId()]));
+        $model->departments()->sync(array_map('intval', $payload['department_ids'] ?? []));
 
         return $model->id;
     }
@@ -158,6 +163,9 @@ class AdminMstRepository extends SoftDeleteCrudRepository
         $model->save();
         if (array_key_exists('role_ids', $payload)) {
             $model->syncRoles(array_map('intval', $payload['role_ids']));
+        }
+        if (array_key_exists('department_ids', $payload)) {
+            $model->departments()->sync(array_map('intval', $payload['department_ids']));
         }
 
         return $model->id;

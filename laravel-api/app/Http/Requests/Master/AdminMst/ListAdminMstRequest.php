@@ -32,6 +32,7 @@ class ListAdminMstRequest extends ListRequest
             'status' => ['nullable', Rule::enum(StatusEnum::class)],
             'is_active' => ['nullable', Rule::enum(IsActive::class)],
             'role_id' => ['nullable', 'integer'],
+            'department_id' => ['nullable', 'integer'],
             'avatar' => ['nullable', 'string', 'min:'.CommonVal::MIN_VARCHAR, 'max:30'],
             'is_delete' => ['nullable', Rule::enum(IsDelete::class)],
             'from_date' => [
@@ -63,6 +64,7 @@ class ListAdminMstRequest extends ListRequest
             'status' => __('messages.status'),
             'is_active' => __('messages.is_active'),
             'role_id' => __('messages.role'),
+            'department_id' => __('messages.department'),
             'avatar' => __('messages.avatar'),
             'is_delete' => __('messages.is_delete'),
             'from_date' => __('messages.from_date'),

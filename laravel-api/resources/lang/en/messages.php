@@ -17,6 +17,8 @@ return [
     'status' => 'status',
     'is_active' => 'is active',
     'role' => 'role',
+    'department' => 'department',
+    'code' => 'code',
     'permissions' => 'permissions',
     'avatar' => 'avatar',
     'email_verified_at' => 'email verified',

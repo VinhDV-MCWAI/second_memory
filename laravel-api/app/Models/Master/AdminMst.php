@@ -13,6 +13,7 @@ use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Foundation\Auth\Access\Authorizable;
 use Laravel\Sanctum\Contracts\HasAbilities;
 use Laravel\Sanctum\HasApiTokens;
@@ -85,6 +86,16 @@ class AdminMst extends Model implements AuthenticatableContract, AuthorizableCon
             'created_at' => 'datetime',
             'updated_at' => 'datetime',
         ];
+    }
+
+    /**
+     * Departments the admin belongs to (ADR-0017); several are allowed.
+     *
+     * @return BelongsToMany<Department, $this>
+     */
+    public function departments(): BelongsToMany
+    {
+        return $this->belongsToMany(Department::class, 'admin_department', 'admin_id', 'department_id');
     }
 
     /**

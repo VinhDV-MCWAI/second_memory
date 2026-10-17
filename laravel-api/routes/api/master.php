@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use App\Http\Controllers\Master\AdminMstController;
 use App\Http\Controllers\Master\AdminSessionController;
+use App\Http\Controllers\Master\DepartmentController;
 use App\Http\Controllers\Master\PermissionController;
 use App\Http\Controllers\Master\RoleController;
 use Illuminate\Support\Facades\Route;
@@ -12,6 +13,7 @@ use Illuminate\Support\Facades\Route;
 foreach ([
     'admin-mst' => AdminMstController::class,
     'role' => RoleController::class,
+    'department' => DepartmentController::class,
 ] as $resource => $controller) {
     Route::get("{$resource}/list", [$controller, 'list'])->name("{$resource}.list");
     Route::post("{$resource}/store", [$controller, 'store'])->name("{$resource}.store");
