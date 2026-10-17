@@ -2,7 +2,7 @@
 
 | | |
 |---|---|
-| Trạng thái | **Đề xuất, chờ chủ dự án xác nhận** (2026-10-15) |
+| Trạng thái | Đã chấp nhận (2026-10-17, chủ dự án xác nhận cả 5 đề xuất) |
 | Ngày | 2026-10-15 |
 | Người quyết định | Chủ dự án |
 | Liên quan | [ADR-0015](0015-defer-end-users-departments.md) (hoãn và các câu hỏi còn mở), [ADR-0013](0013-dynamic-permissions.md) (phân quyền theo vai trò), [ADR-0014](0014-media-minio-upload.md) (Files) |
@@ -69,12 +69,12 @@ Không được phép thì trả **404** như khi thư mục không tồn tại,
 | Được | Chia Files theo phòng ban thật sự (không chỉ lưu như bản cũ); dữ liệu hiện có không đổi; vai trò vẫn quyết định "làm được gì", phòng ban quyết định "trên thư mục nào" |
 | Mất | Mỗi lần gọi Files thêm một truy vấn lấy danh sách thư mục khóa (nhỏ: số thư mục khóa thường ít); mọi API Files phải đi qua kiểm tra mới, quên một chỗ là lộ, nên mỗi chỗ ở mục 3 có test riêng; thêm 3 bảng và 1 quyền |
 
-## Câu hỏi cho chủ dự án
+## Quyết định của chủ dự án (2026-10-17)
 
-| # | Câu hỏi | Đề xuất |
+| # | Câu hỏi | Chọn |
 |---|---|---|
-| 1 | Admin **chưa thuộc phòng ban nào** thì thấy thư mục khóa không? ADR-0015 từng ghi "không bị giới hạn", nhưng như vậy chỉ cần không gán phòng ban là vượt được khóa | **Không thấy**: admin chưa có phòng ban chỉ dùng được thư mục mở |
-| 2 | Một admin thuộc **nhiều** phòng ban? | **Có** |
-| 3 | Khóa lồng nhau: phải được **cả cha lẫn con** cho phép, hay chỉ xét thư mục khóa gần nhất? | **Cả hai** |
-| 4 | Cấp thư mục ở **màn hình Files** (nút Access trên thư mục) hay trong **form Phòng ban**? | **Màn hình Files** |
-| 5 | Trang public vẫn mở file gắn vào bằng chứng công khai dù thư mục bị khóa? | **Có** (giữ như hiện nay) |
+| 1 | Admin chưa thuộc phòng ban nào có thấy thư mục khóa không | **Không thấy**: chỉ dùng được thư mục mở |
+| 2 | Một admin thuộc nhiều phòng ban | **Có** |
+| 3 | Khóa lồng nhau | Phải được **cả cha lẫn con** cho phép |
+| 4 | Nơi cấp thư mục cho phòng ban | **Màn hình Files** (nút Access trên thư mục) |
+| 5 | Trang public vẫn mở file gắn vào bằng chứng công khai dù thư mục bị khóa | **Có**, giữ như hiện nay |
