@@ -1,4 +1,5 @@
 import {
+  Building2,
   LayoutDashboard,
   Database,
   ShieldCheck,
@@ -77,6 +78,12 @@ export const NAVIGATION_MENU: MenuItem[] = [
         icon: ShieldCheck,
         href: ADMIN_ROUTES.ROLES,
         permission: 'role.list',
+      },
+      {
+        label: 'entities.departments',
+        icon: Building2,
+        href: ADMIN_ROUTES.DEPARTMENTS,
+        permission: 'department.list',
       },
     ],
   },

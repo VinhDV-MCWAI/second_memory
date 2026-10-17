@@ -9,6 +9,7 @@ type Schemas = components['schemas'];
 
 export type AdminMst = Schemas['AdminMstResource'];
 export type Role = Schemas['RoleResource'];
+export type Department = Schemas['DepartmentResource'];
 
 /** The signed-in admin with the permission names it holds (`credential/me`, ADR-0013). */
 export type CurrentAdmin = OkData<operations['credential.me']>;

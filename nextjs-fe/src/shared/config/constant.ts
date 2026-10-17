@@ -203,6 +203,7 @@ export const ADMIN_ROUTES = {
   DASHBOARD: '/admin',
   ADMINS: '/admin/admins',
   ROLES: '/admin/roles',
+  DEPARTMENTS: '/admin/departments',
   SKILLS: '/admin/skills',
   TAGS: '/admin/tags',
   EVIDENCE: '/admin/evidence',
@@ -224,4 +225,5 @@ export const AUDITABLE_TYPES = [
   'learning_goal',
   'evidence',
   'tag',
+  'department',
 ] as const;

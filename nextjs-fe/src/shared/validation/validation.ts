@@ -84,6 +84,7 @@ export const getAdminSchema = (t: Translator) =>
     gender: genderValidation,
     status: adminStatusValidation,
     role_ids: z.array(z.number()),
+    department_ids: z.array(z.number()),
     is_active: z.boolean(),
     avatar: getAvatarValidation(t),
   });
@@ -110,6 +111,36 @@ export const getTagSchema = (t: Translator) =>
   });
 
 export type TagFormData = z.infer<ReturnType<typeof getTagSchema>>;
+
+// Department schema matching StoreDepartmentRequest (ADR-0017)
+export const getDepartmentSchema = (t: Translator) =>
+  z.object({
+    code: z
+      .string()
+      .trim()
+      .min(1, t('departmentCode.required'))
+      .max(
+        ValidationRules.DEPARTMENT_CODE_MAX,
+        t('departmentCode.maxLength', { max: ValidationRules.DEPARTMENT_CODE_MAX }),
+      ),
+    name: z
+      .string()
+      .trim()
+      .min(1, t('departmentName.required'))
+      .max(
+        ValidationRules.DEPARTMENT_NAME_MAX,
+        t('departmentName.maxLength', { max: ValidationRules.DEPARTMENT_NAME_MAX }),
+      ),
+    description: z
+      .string()
+      .max(
+        ValidationRules.DEPARTMENT_DESCRIPTION_MAX,
+        t('description.maxLength', { max: ValidationRules.DEPARTMENT_DESCRIPTION_MAX }),
+      ),
+    is_active: z.boolean(),
+  });
+
+export type DepartmentFormData = z.infer<ReturnType<typeof getDepartmentSchema>>;
 
 // Role schema matching StoreRoleRequest (ADR-0013)
 export const getRoleSchema = (t: Translator) =>

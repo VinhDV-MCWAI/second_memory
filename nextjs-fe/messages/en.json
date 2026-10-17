@@ -205,7 +205,9 @@
     "goal": "Goal",
     "goals": "Goals",
     "role": "Role",
-    "roles": "Roles"
+    "roles": "Roles",
+    "department": "Department",
+    "departments": "Departments"
   },
   "fields": {
     "id": "ID",
@@ -247,7 +249,10 @@
     "achievedOn": "Achieved on",
     "skills": "Skills",
     "permissions": "Permissions",
-    "adminCount": "Admins"
+    "adminCount": "Admins",
+    "code": "Code",
+    "departments": "Departments",
+    "isActive": "Active"
   },
   "management": {
     "title": "{entity} Management",
@@ -318,7 +323,9 @@
       "targetLevel": "Target level",
       "targetDate": "Target date",
       "note": "Note",
-      "permissions": "Permissions"
+      "permissions": "Permissions",
+      "code": "Code",
+      "departments": "Departments"
     },
     "placeholders": {
       "urlExample": "https://example.com",
@@ -332,7 +339,8 @@
       "deviceName": "Device Name",
       "ipAddress": "IP Address",
       "settingKey": "e.g. privacy_policy",
-      "settingValue": "https://example.com/privacy"
+      "settingValue": "https://example.com/privacy",
+      "noDepartments": "No departments yet"
     }
   },
   "auditLog": {
@@ -355,7 +363,8 @@
       "skill_level": "Skill level",
       "learning_goal": "Goal",
       "evidence": "Evidence",
-      "tag": "Tag"
+      "tag": "Tag",
+      "department": "Department"
     }
   },
   "history": {
@@ -484,6 +493,14 @@
     "roleName": {
       "required": "Name is required",
       "maxLength": "Name cannot exceed {max} characters"
+    },
+    "departmentCode": {
+      "required": "Code is required",
+      "maxLength": "Code cannot exceed {max} characters"
+    },
+    "departmentName": {
+      "required": "Name is required",
+      "maxLength": "Name cannot exceed {max} characters"
     }
   },
   "advancedSearch": {
@@ -596,7 +613,8 @@
       "search": "Search",
       "skill": "Skills",
       "skill-level": "Skill levels",
-      "tag": "Tags"
+      "tag": "Tags",
+      "department": "Departments"
     },
     "builtInName": "Built-in role: the name cannot change.",
     "ownerHasAll": "The owner role always has every permission.",

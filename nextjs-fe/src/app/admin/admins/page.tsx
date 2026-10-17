@@ -13,21 +13,29 @@ import { useApiData } from '@/shared/hooks/use-api-data';
 import { usePermissions } from '@/shared/hooks/use-permissions';
 import { SORT_FIELDS } from '@/shared/config';
 import type { AdminMst } from '@/shared/types/api';
-import type { Role } from '@/shared/types/models';
+import type { Department, Role } from '@/shared/types/models';
 import type { SearchField } from '@/shared/types/data-table.types';
 
-/** Roles fit on one page: a handful per installation. */
-const ROLE_PAGE_SIZE = 100;
+/** Roles and departments fit on one page: a handful per installation. */
+const OPTION_PAGE_SIZE = 100;
 
 export default function AdminListPage() {
   const tCommon = useTranslations('common');
   const tFields = useTranslations('fields');
   const { can } = usePermissions();
   const { data: roles } = useApiData<Role>(API_ENDPOINTS.MASTER.ROLE, {
-    per_page: ROLE_PAGE_SIZE,
+    per_page: OPTION_PAGE_SIZE,
     enabled: can('role.list'),
   });
   const roleOptions = roles.map((role) => ({ value: String(role.id), label: role.name }));
+  const { data: departments } = useApiData<Department>(API_ENDPOINTS.MASTER.DEPARTMENT, {
+    per_page: OPTION_PAGE_SIZE,
+    enabled: can('department.list'),
+  });
+  const departmentOptions = departments.map((department) => ({
+    value: String(department.id),
+    label: department.name,
+  }));
 
   const columns: Column<AdminMst>[] = [
     { key: 'id', label: tFields('id'), sortable: true },
@@ -38,6 +46,11 @@ export default function AdminListPage() {
       key: 'roles',
       label: tFields('roles'),
       render: (item) => item.roles.map((role) => role.name).join(', '),
+    },
+    {
+      key: 'departments',
+      label: tFields('departments'),
+      render: (item) => item.departments.map((department) => department.name).join(', '),
     },
     {
       key: 'status',
@@ -56,6 +69,12 @@ export default function AdminListPage() {
     { key: 'first_name', label: tFields('firstName'), type: 'text' },
     { key: 'email', label: tFields('email'), type: 'text' },
     { key: 'role_id', label: tFields('roles'), type: 'select', options: roleOptions },
+    {
+      key: 'department_id',
+      label: tFields('departments'),
+      type: 'select',
+      options: departmentOptions,
+    },
     {
       key: 'status',
       label: tFields('status'),

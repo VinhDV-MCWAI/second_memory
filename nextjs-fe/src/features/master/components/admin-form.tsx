@@ -65,6 +65,7 @@ export function AdminForm({
       gender: Gender.MALE,
       status: AdminStatus.ACTIVE,
       role_ids: [],
+      department_ids: [],
       is_active: true,
     },
   });
@@ -82,6 +83,7 @@ export function AdminForm({
         gender: initialData.gender ? Number(initialData.gender) : Gender.MALE,
         status: initialData.status !== undefined ? Number(initialData.status) : AdminStatus.ACTIVE,
         role_ids: initialData.roles.map((role) => role.id),
+        department_ids: initialData.departments.map((department) => department.id),
         is_active: initialData.is_active,
         avatar: initialData.avatar,
       });
@@ -98,6 +100,7 @@ export function AdminForm({
         gender: Gender.MALE,
         status: AdminStatus.ACTIVE,
         role_ids: [],
+        department_ids: [],
         is_active: true,
         avatar: '',
       });
@@ -158,6 +161,7 @@ export function AdminForm({
   const genderValue = useWatch({ control, name: 'gender' });
   const statusValue = useWatch({ control, name: 'status' });
   const roleIds = useWatch({ control, name: 'role_ids' });
+  const departmentIds = useWatch({ control, name: 'department_ids' });
 
   return (
     <>
@@ -298,6 +302,19 @@ export function AdminForm({
             onChange={(ids) => setValue('role_ids', ids, { shouldDirty: true })}
           />
           {!isEdit && <p className="text-xs text-muted-foreground">{tForms('rolesDefault')}</p>}
+        </FormField>
+
+        <FormField
+          id="department_ids"
+          label={tLabels('departments')}
+          error={errors.department_ids?.message}
+        >
+          <IdPicker
+            endpoint={ENDPOINTS.MASTER.DEPARTMENT}
+            emptyMessage={tForms('noDepartments')}
+            value={departmentIds}
+            onChange={(ids) => setValue('department_ids', ids, { shouldDirty: true })}
+          />
         </FormField>
 
         <div className="mt-4 flex items-center gap-2">

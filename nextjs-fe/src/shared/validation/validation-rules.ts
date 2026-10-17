@@ -36,6 +36,10 @@ export const ValidationRules = {
   AVATAR_MAX: 30,
   ROLE_NAME_MAX: 50, // laravel-api PermissionConst::ROLE_NAME_MAX
   ROLE_PERMISSION_MAX: 50,
+  // laravel-api DepartmentConst
+  DEPARTMENT_CODE_MAX: 30,
+  DEPARTMENT_NAME_MAX: 100,
+  DEPARTMENT_DESCRIPTION_MAX: 1000,
   CODE_MAX: 50,
   ICON_MAX: 50,
 
