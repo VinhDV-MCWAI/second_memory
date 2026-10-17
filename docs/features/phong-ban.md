@@ -9,7 +9,7 @@ Trạng thái: **đang làm**.
 | Phòng ban, phần máy chủ: API thêm, sửa, xóa, tìm; gán quản trị viên vào phòng ban | Xong (2026-10-17) |
 | Phòng ban, giao diện: màn hình Phòng ban, ô chọn phòng ban trong form Quản trị viên | Xong (2026-10-17) |
 | Khóa thư mục Files theo phòng ban, phần máy chủ | Xong (2026-10-17) |
-| Khóa thư mục Files theo phòng ban, giao diện: nút Access, biểu tượng ổ khóa | Chưa làm |
+| Khóa thư mục Files theo phòng ban, giao diện: nút Access, biểu tượng ổ khóa | Xong (2026-10-17) |
 
 ## Màn hình
 
@@ -52,6 +52,15 @@ Mọi lần thêm, sửa, xóa phòng ban ghi vào [nhật ký thay đổi](nhat
 | `admin_department` | Quản trị viên nào thuộc phòng ban nào. Xóa phòng ban hoặc xóa hẳn tài khoản thì dòng liên kết tự mất |
 
 ## Khóa thư mục trong Files
+
+Cách làm trên màn hình Files (http://localhost:81/admin/files):
+
+| Thao tác | Cách làm | Quyền |
+|---|---|---|
+| Khóa thư mục | Nút chìa khóa (**Access**) ở dòng thư mục → tick các phòng ban → **Save** | `media.access` và `department.list` (vai trò Chủ có sẵn) |
+| Mở khóa | Cùng nút đó, bỏ tick hết → **Save** | như trên |
+| Nhận ra thư mục khóa | Biểu tượng ổ khóa màu vàng cạnh tên thư mục | `media.list` |
+| File bị khóa trong form bằng chứng | Hiện tên kèm nhãn **Locked**, không có nút xem trước và tải về | `evidence.list` |
 
 | Luật | |
 |---|---|
