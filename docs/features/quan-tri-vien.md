@@ -28,6 +28,7 @@ Quản lý các tài khoản được vào trang quản trị: thêm, sửa, xó
 | Họ, tên | Có | Tối đa 20 ký tự mỗi ô |
 | Giới tính, trạng thái, đang hoạt động | Có | Trạng thái: chưa kích hoạt / hoạt động / chờ / tạm khóa |
 | Vai trò (`role_ids`) | Không | Danh sách id vai trò, chọn được nhiều. Khi thêm mà không chọn: tài khoản là Chỉ xem. Danh sách trả về `roles: [{ id, name }]`, lọc theo `role_id` |
+| Phòng ban (`department_ids`) | Không | Danh sách id phòng ban, chọn được nhiều ([phòng ban](phong-ban.md)). Không gửi thì giữ nguyên, gửi danh sách rỗng thì bỏ khỏi mọi phòng ban. Danh sách trả về `departments: [{ id, code, name }]`, lọc theo `department_id` |
 | Địa chỉ, số điện thoại, ngày sinh, ảnh đại diện | Không | |
 
 ## Quy tắc

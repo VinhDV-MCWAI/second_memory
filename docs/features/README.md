@@ -14,6 +14,7 @@ Mỗi tính năng một file: nó làm gì, màn hình nào, API nào, bảng n�
 | Nhập từ Obsidian | [nhap-tu-obsidian.md](nhap-tu-obsidian.md) | Đồng bộ ghi chú Obsidian có `publish: true` thành bằng chứng |
 | Việc nền và thông báo tức thì | [viec-nen-va-thong-bao.md](viec-nen-va-thong-bao.md) | Việc chạy lâu làm ở container riêng, xong thì báo ngay lên màn hình (dùng chung cho mọi tính năng) |
 | Quản lý file | [quan-ly-file.md](quan-ly-file.md) | Màn hình Files: thư mục, upload (kéo-thả, file tới 10 GB chia phần), tải về, đổi tên, di chuyển, xóa; file nằm trong MinIO |
+| Phòng ban | [phong-ban.md](phong-ban.md) | Nhóm quản trị viên theo phòng ban; sắp tới dùng để khóa thư mục trong Files theo phòng ban |
 
 ## Quyền dùng chung cho mọi tính năng quản trị
 
