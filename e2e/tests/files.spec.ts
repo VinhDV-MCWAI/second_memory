@@ -155,11 +155,14 @@ test('owner previews an image and a text file; images and videos get thumbnails 
   const videoRow = page.getByRole('row').filter({ hasText: 'tiny.webm' });
   await expect(videoRow).toContainText('16 × 16 · 0:03');
   await expect(videoRow.locator('img')).toBeVisible();
-  expect(await videoRow.locator('img').evaluate((img: HTMLImageElement) => img.naturalWidth)).toBe(16);
+  // Visible before it has loaded: wait for the decoded size
+  await expect
+    .poll(() => videoRow.locator('img').evaluate((img: HTMLImageElement) => img.naturalWidth))
+    .toBe(16);
   await page.getByRole('button', { name: 'dot.png' }).click();
   const shown = page.getByRole('dialog').getByRole('img', { name: 'dot.png' });
   await expect(shown).toBeVisible();
-  expect(await shown.evaluate((img: HTMLImageElement) => img.naturalWidth)).toBe(1);
+  await expect.poll(() => shown.evaluate((img: HTMLImageElement) => img.naturalWidth)).toBe(1);
   // Read by the browser: the signed URL is for the host it uses (the runner's container cannot reach it)
   const headers = await shown.evaluate(async (img: HTMLImageElement) => {
     const response = await fetch(img.src);
