@@ -17,6 +17,7 @@ const person = {
   last_name: 'Lovelace',
   gender: Gender.MALE,
   role_ids: [],
+  department_ids: [],
   is_active: true,
 };
 
@@ -46,6 +47,12 @@ describe('admin schema', () => {
     const valid = { ...person, status: AdminStatus.ACTIVE, password: '' };
     expect(getAdminSchema(t).safeParse({ ...valid, role_ids: [1, 2] }).success).toBe(true);
     expect(getAdminSchema(t).safeParse({ ...valid, role_ids: ['admin'] }).success).toBe(false);
+  });
+
+  it('accept a list of department ids only', () => {
+    const valid = { ...person, status: AdminStatus.ACTIVE, password: '' };
+    expect(getAdminSchema(t).safeParse({ ...valid, department_ids: [3] }).success).toBe(true);
+    expect(getAdminSchema(t).safeParse({ ...valid, department_ids: ['hr'] }).success).toBe(false);
   });
 
   it('reject an unknown status', () => {
