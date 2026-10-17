@@ -33,6 +33,8 @@ export interface PublicFile {
   name: string;
   size: number | null;
   mime_type: string | null;
+  // Signed MinIO link of a small JPEG (images, video frames), valid an hour; null when there is none
+  thumbnail_url: string | null;
 }
 
 export interface PublicSkillDetail extends PublicSkill {

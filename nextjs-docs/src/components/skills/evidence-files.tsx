@@ -14,16 +14,26 @@ function formatBytes(bytes: number | null): string {
   return `${unit === 0 ? value : value.toFixed(value < 10 ? 1 : 0)} ${UNITS[unit]}`;
 }
 
-// Files attached to one evidence. Images, PDF, video, audio and text open in the browser, the
-// rest download (the API decides).
+// Files attached to one evidence, with their thumbnail when they have one. Images, PDF, video,
+// audio and text open in the browser, the rest download (the API decides).
 export function EvidenceFiles({ files }: { files: PublicFile[] }) {
   if (files.length === 0) return null;
 
   return (
     <ul className="mt-2 space-y-1 text-sm">
       {files.map((file) => (
-        <li key={file.key} className="flex items-baseline gap-2">
-          <span aria-hidden>📎</span>
+        <li key={file.key} className="flex items-center gap-2">
+          {file.thumbnail_url ? (
+            // eslint-disable-next-line @next/next/no-img-element -- a short-lived presigned URL, not a static asset
+            <img
+              src={file.thumbnail_url}
+              alt=""
+              loading="lazy"
+              className="h-10 w-10 shrink-0 rounded border object-cover"
+            />
+          ) : (
+            <span aria-hidden>📎</span>
+          )}
           <a
             href={`/skills/files/${file.key}`}
             target="_blank"
