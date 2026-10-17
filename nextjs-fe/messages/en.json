@@ -552,7 +552,9 @@
       "remove": "Remove {name}",
       "count": "{count, plural, one {# file} other {# files}} attached",
       "filtered": "Evidence using the file {name}",
-      "showAll": "Show all evidence"
+      "showAll": "Show all evidence",
+      "locked": "Locked",
+      "lockedHint": "In a folder of Files you cannot use. It stays attached but cannot be opened."
     },
     "achievedHint": "Achieved goals keep their target; only the date and note can change.",
     "search": {
@@ -723,6 +725,18 @@
       "nameTooLong": "At most {max} characters",
       "nameInvalid": "A name cannot contain / or be . or ..",
       "folderInvalid": "Start with / and do not end with / (for example /Docs)"
+    },
+    "access": {
+      "open": "Access",
+      "title": "Access to {name}",
+      "description": "Tick departments to lock this folder: only their members (and owners) can see and use it and everything inside. Tick none to open it to everyone with Files rights.",
+      "save": "Save",
+      "locked": "Folder locked to the chosen departments",
+      "opened": "Folder opened to everyone with Files rights",
+      "failed": "Could not change the access",
+      "lockedHint": "Locked: admins outside these departments will not see this folder.",
+      "openHint": "Open: everyone with Files rights sees this folder.",
+      "lockedIcon": "Locked to departments"
     }
   },
   "backgroundTasks": {

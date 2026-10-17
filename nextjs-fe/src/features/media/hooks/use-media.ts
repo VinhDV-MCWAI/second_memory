@@ -36,7 +36,7 @@ export function useMediaList({ folder, name, page, perPage, sortBy, sortOrder }:
   });
 }
 
-/** Folder, rename / move and delete calls; each refreshes every cached folder listing. */
+/** Folder, rename / move, access (ADR-0017) and delete calls; each refreshes every cached folder listing. */
 export function useMediaActions() {
   const queryClient = useQueryClient();
   const refresh = () => queryClient.invalidateQueries({ queryKey: queryKeys.resource(BASE) });
@@ -51,6 +51,11 @@ export function useMediaActions() {
       apiClient.put<number>(`${BASE}/update/${id}`, input),
     onSuccess: refresh,
   });
+  const setAccess = useMutation({
+    mutationFn: ({ id, departmentIds }: { id: number; departmentIds: number[] }) =>
+      apiClient.put<number>(`${BASE}/access/${id}`, { department_ids: departmentIds }),
+    onSuccess: refresh,
+  });
   const remove = useMutation({
     mutationFn: (ids: number[]) => apiClient.post(`${BASE}/delete`, { ids }),
     onSuccess: refresh,
@@ -62,7 +67,7 @@ export function useMediaActions() {
     window.location.assign(data.url);
   };
 
-  return { createFolder, update, remove, download, refresh };
+  return { createFolder, update, setAccess, remove, download, refresh };
 }
 
 /** Your large uploads that stopped before the end (reload, network), to resume or discard. */

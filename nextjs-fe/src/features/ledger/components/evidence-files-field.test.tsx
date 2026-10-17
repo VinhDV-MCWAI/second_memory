@@ -79,6 +79,14 @@ describe('EvidenceFilesField', () => {
     granted = ['media.list', 'media.download-url'];
   });
 
+  it('marks a file in a locked folder, which keeps its name but does not open', () => {
+    renderField([file(1, 'a.pdf'), { ...file(2, 'plan.txt'), locked: true }]);
+
+    expect(screen.getByText('plan.txt')).toBeTruthy();
+    expect(screen.getByText('locked')).toBeTruthy();
+    expect(screen.getAllByRole('button', { name: 'download' })).toHaveLength(1);
+  });
+
   it('marks a deleted file, reorders and removes attachments', () => {
     const changes = renderField([file(1, 'a.pdf'), file(2, 'b.zip', false)]);
 

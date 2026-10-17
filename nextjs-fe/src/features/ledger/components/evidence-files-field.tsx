@@ -90,6 +90,11 @@ export function EvidenceFilesField({
                 {file.name}
               </span>
               <span className="shrink-0 text-muted-foreground">{formatFileSize(file)}</span>
+              {file.available && file.locked && (
+                <Badge variant="secondary" title={t('lockedHint')}>
+                  {t('locked')}
+                </Badge>
+              )}
               {!file.available && (
                 <Badge variant="secondary" title={t('deletedHint')}>
                   {t('deleted')}

@@ -12,6 +12,8 @@ import {
   Folder,
   FolderInput,
   FolderPlus,
+  KeyRound,
+  Lock,
   Pencil,
   Trash,
   Trash2,
@@ -39,6 +41,7 @@ import { discardUpload } from '../lib/uploader';
 import { crumbsOf, formatBytes, formatFileSize, parentOf, ROOT } from '../lib/media-paths';
 import { IconButton } from './icon-button';
 import { FileThumb } from './file-thumb';
+import { FolderAccessDialog } from './folder-access-dialog';
 import { UsedBy } from './used-by';
 import { MediaFieldDialog } from './media-field-dialog';
 import { PreviewDialog } from './preview-dialog';
@@ -76,6 +79,7 @@ export function MediaBrowser() {
   const [dialog, setDialog] = useState<DialogState>(null);
   const [deleteIds, setDeleteIds] = useState<number[]>([]);
   const [previewing, setPreviewing] = useState<MediaItem | null>(null);
+  const [accessFor, setAccessFor] = useState<MediaItem | null>(null);
   const [dragging, setDragging] = useState(false);
   const fileInput = useRef<HTMLInputElement>(null);
 
@@ -103,6 +107,9 @@ export function MediaBrowser() {
   const canUpdate = can('media.update');
   const canPreview = (item: MediaItem) => item.preview !== null && can('media.download-url');
   const canDelete = can('media.delete');
+  // The dialog lists departments by name
+  const canGrant = can('media.access') && can('department.list');
+  const isLocked = (item: MediaItem) => (item.department_ids?.length ?? 0) > 0;
 
   const nameSchema = z
     .string()
@@ -222,6 +229,15 @@ export function MediaBrowser() {
           >
             <Folder className="h-4 w-4 shrink-0" aria-hidden />
             <span className="truncate">{item.name}</span>
+            {isLocked(item) && (
+              <span title={t('access.lockedIcon')} className="shrink-0">
+                <Lock
+                  className="h-3.5 w-3.5 text-amber-600"
+                  role="img"
+                  aria-label={t('access.lockedIcon')}
+                />
+              </span>
+            )}
           </button>
         ),
     },
@@ -273,6 +289,11 @@ export function MediaBrowser() {
                 <FolderInput className="h-4 w-4" />
               </IconButton>
             </>
+          )}
+          {canGrant && !item.is_file && (
+            <IconButton label={t('access.open')} onClick={() => setAccessFor(item)}>
+              <KeyRound className="h-4 w-4" />
+            </IconButton>
           )}
           {canDelete && (
             <IconButton label={tCommon('delete')} onClick={() => setDeleteIds([item.id])}>
@@ -459,6 +480,11 @@ export function MediaBrowser() {
             ? actions.update.mutateAsync({ id: dialog.item.id, folder: value })
             : Promise.resolve()
         }
+      />
+      <FolderAccessDialog
+        folder={accessFor}
+        onClose={() => setAccessFor(null)}
+        onSave={(id, departmentIds) => actions.setAccess.mutateAsync({ id, departmentIds })}
       />
       <PreviewDialog
         item={previewing}

@@ -294,4 +294,43 @@ describe('MediaBrowser', () => {
     // Shown as text: the markup is not interpreted
     await screen.findByText('# Hello <script>x</script>');
   });
+
+  it('marks a locked folder and gives a folder to departments', async () => {
+    granted = [...ALL, 'media.access', 'department.list'];
+    let body: unknown;
+    server.use(
+      http.get(apiUrl('/admin/media/list'), () =>
+        HttpResponse.json(
+          page([
+            { ...item(1, 'Docs', false), department_ids: [] },
+            { ...item(5, 'Secret', false), department_ids: [4] },
+          ]),
+        ),
+      ),
+      http.get(apiUrl('/admin/department/list'), () =>
+        HttpResponse.json(page([{ id: 4, name: 'Sales' }])),
+      ),
+      http.put(apiUrl('/admin/media/access/1'), async ({ request }) => {
+        body = await request.json();
+        return HttpResponse.json(envelope(1));
+      }),
+    );
+    renderBrowser();
+
+    await screen.findByText('Secret');
+    expect(screen.getAllByRole('img', { name: 'access.lockedIcon' })).toHaveLength(1);
+
+    fireEvent.click(screen.getAllByRole('button', { name: 'access.open' })[0]);
+    fireEvent.click(await screen.findByRole('checkbox', { name: 'Sales' }));
+    fireEvent.click(screen.getByRole('button', { name: 'save' }));
+
+    await waitFor(() => expect(body).toEqual({ department_ids: [4] }));
+    expect(notification.success).toHaveBeenCalledWith('locked');
+  });
+
+  it('hides the access button without the permission', async () => {
+    renderBrowser();
+    await screen.findByText('notes.txt');
+    expect(screen.queryByRole('button', { name: 'access.open' })).toBeNull();
+  });
 });
