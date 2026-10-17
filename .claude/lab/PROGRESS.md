@@ -119,6 +119,8 @@ Mỗi dòng do `scripts/lane.sh done` tự thêm. Không sửa tay.
 
 - 2026-10-15 — [lane main] AUTH-05 done: 07473408, 8e4bd368, b375bb00 — ô ghi nhớ đăng nhập: thiết bị tự đăng nhập lại 30 ngày, ghi nhớ riêng từng thiết bị (đá một máy chỉ máy đó bị quên), đăng xuất, đổi mật khẩu, khóa tài khoản đều xóa ghi nhớ; giao diện tự gửi lại khi gặp 419; make verify pass (260 backend, 147 giao diện, 63 importer), make e2e 8/8, thử thật trên dev
 
+- 2026-10-17 — [lane main] USER-03 done: b6db0804 — chủ dự án duyệt ADR-0017 cả 5 đề xuất: admin chưa có phòng ban không thấy thư mục khóa, nhiều phòng ban, khóa lồng xét cả cha lẫn con, cấp ở màn hình Files, trang public giữ như nay
+
 ## Next step
 
 Cập nhật 2026-10-15, sau khi rà tài liệu tiến độ.
