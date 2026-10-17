@@ -2,7 +2,7 @@
 
 Gom quản trị viên theo phòng ban. Một quản trị viên được thuộc nhiều phòng ban. Mục đích chính: khóa thư mục trong Files để chỉ người của phòng ban được cấp mới thấy và dùng được. Quyết định thiết kế: [ADR-0017](../adr/0017-departments-folder-policies.md).
 
-Trạng thái: **đang làm**.
+Trạng thái: **xong** (máy chủ, giao diện, test trình duyệt; 2026-10-17).
 
 | Phần | Trạng thái |
 |---|---|
@@ -10,6 +10,7 @@ Trạng thái: **đang làm**.
 | Phòng ban, giao diện: màn hình Phòng ban, ô chọn phòng ban trong form Quản trị viên | Xong (2026-10-17) |
 | Khóa thư mục Files theo phòng ban, phần máy chủ | Xong (2026-10-17) |
 | Khóa thư mục Files theo phòng ban, giao diện: nút Access, biểu tượng ổ khóa | Xong (2026-10-17) |
+| Test trình duyệt | Xong (2026-10-17) |
 
 ## Màn hình
 
@@ -100,3 +101,14 @@ Mỗi lần đổi khóa ghi vào nhật ký thay đổi của thư mục (loạ
 Bảng `department_policy`: cặp (phòng ban, thư mục). Xóa phòng ban thì khóa của phòng ban đó mất. Xóa hẳn thư mục (khỏi thùng rác) thì khóa mất theo.
 
 Ghi chú: thư mục khóa bị xóa rồi khôi phục một file bên trong thì thư mục được tạo lại là thư mục **mới, chưa khóa**. Muốn khóa lại thì khóa thư mục mới đó.
+
+## Test
+
+| Loại | Ở đâu | Kiểm tra gì |
+|---|---|---|
+| Máy chủ | `laravel-api/tests/Feature/Master/DepartmentApiTest.php` | Thêm, sửa, xóa, tìm phòng ban; mã không trùng; quyền; admin thuộc nhiều phòng ban |
+| Máy chủ | `laravel-api/tests/Feature/Media/FolderPolicyApiTest.php` | Từng chỗ bị chặn ở bảng trên, khóa lồng nhau, phòng ban ngừng dùng, thùng rác, upload dở, bằng chứng |
+| Giao diện | `department-form.test.tsx`, `media-browser.test.tsx`, `evidence-files-field.test.tsx` | Form phòng ban, nút Access, ổ khóa, nhãn Locked |
+| Trình duyệt | `e2e/tests/departments.spec.ts` (`make e2e`) | Chủ thêm phòng ban trên màn hình Departments, tạo thư mục, khóa cho phòng ban của `e2e_member`: `e2e_member` vẫn thấy, `e2e_outsider` (phòng ban khác) không thấy |
+
+`e2e/run.sh` tạo sẵn hai tài khoản `e2e_member`, `e2e_outsider` (vai trò `E2E Files reader`, chỉ có quyền xem Files) và mỗi người một phòng ban `E2E …`. Chạy xong thì xóa mọi phòng ban `E2E …` (khóa thư mục đi theo), xóa vai trò, tắt hai tài khoản.
