@@ -95,14 +95,6 @@ if [ -f "$ROOT_DIR/nextjs-fe/.tenv.example" ]; then
     echo "   - nextjs-fe/.env updated from master configuration."
 fi
 
-# For nextjs-docs
-NEXTJS_DOCS_ENV="$ROOT_DIR/nextjs-docs/.env"
-if [ -d "$ROOT_DIR/nextjs-docs" ]; then
-    rm -f "$NEXTJS_DOCS_ENV"
-    echo "NEXT_PUBLIC_API_URL=http://localhost:${NGINX_PORT_OUTSIDE_ENV}/api" > "$NEXTJS_DOCS_ENV"
-    echo "   - nextjs-docs/.env updated from master configuration."
-fi
-
 echo "=== UNIFIED CONFIGURATION SETUP COMPLETE ==="
 echo "Các mật khẩu và khóa bảo mật đã được đồng bộ tự động cho toàn bộ hệ thống!"
 

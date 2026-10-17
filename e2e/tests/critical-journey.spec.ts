@@ -80,4 +80,10 @@ test('owner records a skill with evidence and it shows on the public page', asyn
     await page.goto(`${PUBLIC_URL}/skills`);
     await expect(page.getByText(privateSkill)).toHaveCount(0);
   });
+
+  await test.step('an old /docs link lands on the public skills', async () => {
+    await page.goto(`${PUBLIC_URL}/docs/some/old/page`);
+    await expect(page).toHaveURL(`${PUBLIC_URL}/skills`);
+    await expect(page.getByRole('heading', { level: 1, name: 'Skills' })).toBeVisible();
+  });
 });

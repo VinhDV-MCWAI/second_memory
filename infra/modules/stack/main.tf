@@ -14,7 +14,7 @@ locals {
     redis    = "${local.name}-redis"
     php      = "${local.name}-php"
     nextjs   = "${local.name}-nextjs"
-    docs     = "${local.name}-nextjs-docs"
+    site     = "${local.name}-public-site"
     minio    = "${local.name}-minio"
     reverb   = "${local.name}-reverb"
   }
@@ -88,7 +88,7 @@ locals {
   }
 
   # Compose's proxy config with the dev upstream names (ml-php:9000 …) swapped for this environment's
-  nginx_site = replace(file("${var.config_dir}/nginx/default.conf"), "/\\bml-(php|nextjs-docs|nextjs|reverb|minio):/", "${local.name}-$1:")
+  nginx_site = replace(file("${var.config_dir}/nginx/default.conf"), "/\\bml-(php|public-site|nextjs|reverb|minio):/", "${local.name}-$1:")
 }
 
 # Secrets are generated and kept in state until SOPS + age replace them (P4-09)
@@ -489,15 +489,15 @@ resource "docker_container" "nextjs" {
   }
 }
 
-resource "docker_container" "docs" {
-  name    = local.hosts.docs
-  image   = "sm-nextjs-docs:${var.image_tag}"
+resource "docker_container" "site" {
+  name    = local.hosts.site
+  image   = "sm-public-site:${var.image_tag}"
   restart = "unless-stopped"
-  memory  = var.memory_mb.docs
+  memory  = var.memory_mb.site
   # Server-side calls to the public API go through this environment's proxy, not dev's ml-nginx
   env = [
-    "PORT=3457",
-    "HOSTNAME=0.0.0.0",
+    "PORT=4321",
+    "HOST=0.0.0.0",
     "API_INTERNAL_URL=http://${local.name}-proxy:8080/api",
   ]
 
@@ -506,7 +506,7 @@ resource "docker_container" "docs" {
   }
 
   healthcheck {
-    test         = ["CMD-SHELL", "wget --quiet --tries=1 --spider http://localhost:3457/docs || exit 1"]
+    test         = ["CMD-SHELL", "wget --quiet --tries=1 --spider http://127.0.0.1:4321/skills/healthz || exit 1"]
     interval     = "15s"
     timeout      = "5s"
     retries      = 5
@@ -566,7 +566,7 @@ resource "docker_container" "proxy" {
     }
   }
 
-  depends_on = [docker_container.php, docker_container.nextjs, docker_container.docs, docker_container.worker, docker_container.minio]
+  depends_on = [docker_container.php, docker_container.nextjs, docker_container.site, docker_container.worker, docker_container.minio]
 
   lifecycle {
     precondition {

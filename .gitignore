@@ -47,8 +47,9 @@ nextjs-fe/.env
 nextjs-fe/.env.local
 nextjs-fe/.env.*.local
 nextjs-fe/next-env.d.ts
-nextjs-docs/.env
-nextjs-docs/next-env.d.ts
+public-site/.env
+public-site/.astro/
+public-site/dist/
 
 # -------------------------------------------------------
 # Build / Cache outputs

@@ -10,7 +10,7 @@ set -euo pipefail
 cd "$(dirname "$0")/.."
 
 cache_keep=${CACHE_KEEP:-168h}
-production_images='^(sm-api|sm-nextjs-fe|sm-nextjs-docs|sm-minio):'
+production_images='^(sm-api|sm-nextjs-fe|sm-public-site|sm-minio):'
 # Built on this machine by compose, make e2e / ci / import, perf/metrics.sh and infra/tf.sh: kept so the next run is fast
 built_images='^(my_lm-ml-[a-z-]+|ml-e2e|sm-ci-[a-z]+|ledger-importer(-dev)?|lab-metrics-[a-z]+|sm-tools):'
 

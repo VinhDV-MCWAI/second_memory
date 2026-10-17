@@ -60,12 +60,14 @@ step "Backend: tests" php 'php artisan test'
 step "Backend: openapi.json up to date" php "$(unchanged openapi.json 'php artisan scramble:export')"
 step "Backend: composer audit (informational)" php 'composer audit || echo "    findings above do not fail the run"'
 
-# ---------- Frontend: nextjs-fe + nextjs-docs (pnpm workspace) ----------
+# ---------- Frontend: nextjs-fe + public-site (pnpm workspace) ----------
 step "Frontend: pnpm install" node 'pnpm install --frozen-lockfile'
 step "Frontend: lint" node 'pnpm lint'
 step "Frontend: format" node 'pnpm format:check'
 step "Frontend: API types up to date" node \
   "$(unchanged nextjs-fe/src/shared/types/openapi.d.ts 'pnpm --filter nextjs-fe gen:api >/dev/null')"
+step "Public site: API types up to date" node \
+  "$(unchanged public-site/src/types/openapi.d.ts 'pnpm --filter public-site gen:api >/dev/null')"
 step "Frontend: typecheck" node 'pnpm typecheck'
 # Same as `make fe-test`: only nextjs-fe has unit tests (the e2e package needs the running stack).
 # Coverage thresholds on src/shared live in nextjs-fe/vitest.config.ts

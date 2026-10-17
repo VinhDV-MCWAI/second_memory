@@ -7,7 +7,7 @@ SHELL := /usr/bin/env bash
 COMPOSE := docker compose -f docker/docker-compose.yml
 PHP     := docker exec ml-php
 FE      := docker exec ml-nextjs
-DOCS    := docker exec ml-nextjs-docs
+SITE    := docker exec ml-public-site
 IMPORTER_DIR := tools/ledger-importer
 
 ##@ Environment
@@ -68,12 +68,15 @@ analyse: ## Static analysis (Larastan)
 	$(PHP) composer analyse
 
 .PHONY: openapi
-openapi: ## Regenerate laravel-api/openapi.json and the admin FE types (commit both; CI checks them)
+openapi: ## Regenerate laravel-api/openapi.json and the API types of both apps (commit them; CI checks them)
 	$(PHP) php artisan scramble:export
-	@# The FE container only mounts nextjs-fe; copy the spec to where `gen:api` looks for it
+	@# Each FE container only mounts its own app; copy the spec to where `gen:api` looks for it
 	$(FE) mkdir -p /repo/laravel-api
 	docker cp laravel-api/openapi.json ml-nextjs:/repo/laravel-api/openapi.json
 	$(FE) sh -c 'pnpm gen:api && chown $(shell id -u):$(shell id -g) src/shared/types/openapi.d.ts'
+	$(SITE) mkdir -p /repo/laravel-api
+	docker cp laravel-api/openapi.json ml-public-site:/repo/laravel-api/openapi.json
+	$(SITE) pnpm gen:api
 
 .PHONY: rector
 rector: ## Preview automated refactors (dry run)
@@ -100,14 +103,13 @@ fresh: ## DROP all dev tables, re-migrate and seed (asks first)
 ##@ Frontend
 
 .PHONY: fe-lint
-fe-lint: ## Lint both Next.js apps
+fe-lint: ## Lint the admin app (the public site is checked by `astro check` in fe-typecheck)
 	$(FE) pnpm lint
-	$(DOCS) pnpm lint
 
 .PHONY: fe-typecheck
-fe-typecheck: ## Type-check both Next.js apps
+fe-typecheck: ## Type-check the admin app and the public site (astro check)
 	$(FE) pnpm typecheck
-	$(DOCS) pnpm typecheck
+	$(SITE) pnpm typecheck
 
 .PHONY: fe-test
 fe-test: ## Run admin FE unit tests
@@ -118,9 +120,9 @@ e2e: ## Critical-journey E2E (Playwright) against the running stack; see e2e/run
 	bash e2e/run.sh $(or $(env),dev)
 
 .PHONY: fe-format
-fe-format: ## Format both Next.js apps (Prettier)
+fe-format: ## Format both FE apps (Prettier)
 	$(FE) pnpm format
-	$(DOCS) pnpm format
+	$(SITE) pnpm format
 
 ##@ Quality gates
 
@@ -132,12 +134,12 @@ lint: ## All linters/format checks (backend + frontend)
 	$(PHP) composer lint
 	$(MAKE) fe-lint
 	$(FE) pnpm format:check
-	$(DOCS) pnpm format:check
+	$(SITE) pnpm format:check
 	$(MAKE) importer-lint
 
 .PHONY: openapi-check
 openapi-check: openapi ## Fail if openapi.json or the FE types were stale (make ci runs the same check)
-	git diff --exit-code -- laravel-api/openapi.json nextjs-fe/src/shared/types/openapi.d.ts || { echo "OpenAPI spec or FE types were stale: review and commit the regenerated files"; exit 1; }
+	git diff --exit-code -- laravel-api/openapi.json nextjs-fe/src/shared/types/openapi.d.ts public-site/src/types/openapi.d.ts || { echo "OpenAPI spec or FE types were stale: review and commit the regenerated files"; exit 1; }
 
 .PHONY: verify
 verify: lint analyse openapi-check fe-typecheck test-ci fe-test importer-test ## Quick gate in the dev containers (includes uncommitted changes)

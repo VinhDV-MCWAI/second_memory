@@ -223,33 +223,29 @@ services:
           memory: 512M
           cpus: "1"
 
-  # Next.js Documentation Frontend
-  ml-nextjs-docs:
-    container_name: ml-nextjs-docs
+  # Public site (public-site/, Astro, ADR-0019): /skills for visitors, no login
+  ml-public-site:
+    container_name: ml-public-site
     build:
       # Repo root context: installs from the workspace root pnpm-lock.yaml
       context: ..
-      dockerfile: docker/nextjs/Dockerfile
+      dockerfile: docker/public-site/Dockerfile
       target: development
-      args:
-        APP: nextjs-docs
     restart: unless-stopped
     volumes:
-      - ../nextjs-docs:/repo/nextjs-docs
-      - /repo/nextjs-docs/.next
-      - /repo/nextjs-docs/node_modules
+      - ../public-site:/repo/public-site
+      - /repo/public-site/.astro
+      - /repo/public-site/node_modules
     environment:
       NODE_ENV: development
-      HOSTNAME: 0.0.0.0
-      NEXT_PUBLIC_API_URL: http://localhost:81/api
     ports:
-      # 3457 is fixed by nextjs-docs/package.json (`next dev -p 3457`) and the nginx upstream
-      - "${NEXTJS_DOCS_PORT_OUTSIDE_ENV}:3457"
+      # 4321 is fixed by public-site/astro.config.mjs and the nginx upstream
+      - "${PUBLIC_SITE_PORT_OUTSIDE_ENV:-3002}:4321"
     healthcheck:
       test:
         [
           "CMD-SHELL",
-          "wget --no-verbose --tries=1 --spider --timeout=15 http://localhost:3457/ || exit 1",
+          "wget --no-verbose --tries=1 --spider --timeout=15 http://localhost:4321/skills/healthz || exit 1",
         ]
       interval: 30s
       timeout: 10s
@@ -260,9 +256,9 @@ services:
     deploy:
       resources:
         limits:
-          memory: 1G
+          memory: 512M
         reservations:
-          memory: 256M
+          memory: 128M
 
   # Nginx Reverse Proxy
   ml-nginx:
@@ -281,7 +277,7 @@ services:
         condition: service_healthy
       ml-nextjs:
         condition: service_healthy
-      ml-nextjs-docs:
+      ml-public-site:
         condition: service_healthy
     healthcheck:
       test:

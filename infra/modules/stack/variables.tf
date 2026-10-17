@@ -14,7 +14,7 @@ variable "app_env" {
 }
 
 variable "image_tag" {
-  description = "Tag of the sm-api / sm-nextjs-fe / sm-nextjs-docs / sm-minio images built by ci/build.sh (short git SHA)."
+  description = "Tag of the sm-api / sm-nextjs-fe / sm-public-site / sm-minio images built by ci/build.sh (short git SHA)."
   type        = string
 }
 
@@ -54,7 +54,7 @@ variable "memory_mb" {
     php        = 384
     migrate    = 256
     nextjs     = 256
-    docs       = 192
+    site       = 128
     proxy      = 64
     minio      = 256
     minio_init = 64

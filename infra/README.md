@@ -7,7 +7,7 @@ Quyết định và bố cục: [ADR-0011](../docs/adr/0011-infrastructure-as-co
 ```bash
 make cd                        # cách thường dùng: kiểm tra → build image → deploy → test trình duyệt (ci/deploy.sh)
 make cd SKIP_CHECK=1           # bỏ bước kiểm tra khi commit đã qua make ci
-make tf-images                 # chỉ build image sm-api / sm-nextjs-fe / sm-nextjs-docs / sm-minio:<short sha>
+make tf-images                 # chỉ build image sm-api / sm-nextjs-fe / sm-public-site / sm-minio:<short sha>
 make tf-plan                   # xem Terraform sẽ đổi gì (tag=<image tag> để chạy image khác)
 make tf-apply                  # deploy, hỏi trước khi làm; chờ mọi container khỏe
 make tf-destroy                # xóa container, network và volume (MẤT dữ liệu demo)
@@ -33,7 +33,7 @@ Mở **http://localhost:9443**, đăng nhập `root` / `12345678`. Máy không c
 | `migrate` | Chạy một lần trước PHP: migration → đăng ký quyền cho mọi API quản trị → tạo tài khoản `root` (chỉ khi `seed_root = true`, đang bật cho demo) |
 | `php` | API (php-fpm) |
 | `queue`, `scheduler`, `reverb` | Việc nền, việc hẹn giờ (dọn upload treo), WebSocket báo kết quả tức thì; cùng image API, khác lệnh |
-| `nextjs`, `nextjs-docs` | Giao diện quản trị, trang công khai Skill Ledger |
+| `nextjs`, `public-site` | Giao diện quản trị, trang public (Astro) |
 | `proxy` | nginx, cổng duy nhất mở ra máy (9443) |
 
 - **Cấu hình dùng chung với Compose:** `docker/nginx/*.conf`, `docker/postgres/pg_hba.conf`, `docker/redis/redis.conf`, `docker/minio/*` được đọc bằng `file()` rồi đưa vào container; tên `ml-*` trong cấu hình nginx được đổi thành `sm-prod-like-*`.
@@ -52,7 +52,7 @@ Mở **http://localhost:9443**, đăng nhập `root` / `12345678`. Máy không c
 |---|---|
 | `sm-api` | 332 MB |
 | `sm-nextjs-fe` | 307 MB |
-| `sm-nextjs-docs` | 300 MB |
+| `sm-public-site` | 248 MB |
 
 ## Giới hạn hiện tại
 

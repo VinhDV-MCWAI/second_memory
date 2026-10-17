@@ -39,5 +39,5 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v5
 
-      - name: Build the api, nextjs-fe and nextjs-docs images (no push)
+      - name: Build the api, nextjs-fe and public-site images (no push)
         run: ci/build.sh

@@ -1,4 +1,4 @@
-# Shared image for the pnpm workspace apps (nextjs-fe, nextjs-docs).
+# Image of the admin app (nextjs-fe). The public site has its own: docker/public-site/Dockerfile.
 # Build context is the repository root so installs use the single root pnpm-lock.yaml:
 #   docker build -f docker/nextjs/Dockerfile --build-arg APP=nextjs-fe --target production .
 # Context filtering: docker/nextjs/Dockerfile.dockerignore
