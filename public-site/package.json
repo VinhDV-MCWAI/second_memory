@@ -7,7 +7,7 @@
     "dev": "astro dev",
     "build": "astro build",
     "start": "node dist/server/entry.mjs",
-    "typecheck": "astro check",
+    "typecheck": "NODE_OPTIONS=--max-old-space-size=768 astro check",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "gen:api": "openapi-typescript ../laravel-api/openapi.json -o src/types/openapi.d.ts && prettier --write src/types/openapi.d.ts"

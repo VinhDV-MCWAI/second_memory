@@ -1,0 +1,82 @@
+---
+import Base from '@/layouts/Base.astro';
+---
+
+<Base title="Create an account — Second Memory">
+  <h1 class="text-3xl font-semibold">Create an account</h1>
+  <p class="text-muted-foreground mt-2">
+    Only an email, a name and a password. No e-mail is ever sent.
+  </p>
+  <p data-closed hidden class="mt-8">
+    Registration is closed for now.
+  </p>
+  <form id="register" class="mt-8 max-w-sm space-y-4">
+    <label class="block">
+      <span class="text-sm">Email</span>
+      <input
+        name="email"
+        type="email"
+        required
+        autocomplete="email"
+        class="mt-1 w-full rounded border bg-transparent px-3 py-2"
+      />
+    </label>
+    <label class="block">
+      <span class="text-sm">Display name</span>
+      <input
+        name="display_name"
+        required
+        maxlength="50"
+        autocomplete="nickname"
+        class="mt-1 w-full rounded border bg-transparent px-3 py-2"
+      />
+    </label>
+    <label class="block">
+      <span class="text-sm">Password (at least 8 characters)</span>
+      <input
+        name="password"
+        type="password"
+        required
+        minlength="8"
+        autocomplete="new-password"
+        class="mt-1 w-full rounded border bg-transparent px-3 py-2"
+      />
+    </label>
+    <label class="block">
+      <span class="text-sm">Password again</span>
+      <input
+        name="password_confirmation"
+        type="password"
+        required
+        minlength="8"
+        autocomplete="new-password"
+        class="mt-1 w-full rounded border bg-transparent px-3 py-2"
+      />
+    </label>
+    <div data-errors hidden role="alert" class="text-sm text-red-600"></div>
+    <button type="submit" class="bg-primary rounded px-4 py-2 text-sm font-medium text-white">
+      Create account
+    </button>
+  </form>
+</Base>
+
+<script>
+  import { api, nextPage, showErrors, signIn } from '@/scripts/user-api';
+
+  const form = document.querySelector<HTMLFormElement>('#register');
+  void api<{ open: boolean }>('GET', 'user/registration').then(({ open }) => {
+    if (!open && form) {
+      form.hidden = true;
+      document.querySelector<HTMLElement>('[data-closed]')!.hidden = false;
+    }
+  });
+  form?.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    try {
+      await signIn('user/register', Object.fromEntries(new FormData(form)));
+      location.href = nextPage();
+    } catch (error) {
+      showErrors(form.querySelector<HTMLElement>('[data-errors]')!, error);
+    }
+  });
+</script>

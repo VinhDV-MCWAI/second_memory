@@ -256,7 +256,8 @@ services:
     deploy:
       resources:
         limits:
-          memory: 512M
+          # The dev server needs ~150 MB; `astro check` (type check) up to ~700 MB
+          memory: 1G
         reservations:
           memory: 128M
 

@@ -1,0 +1,58 @@
+---
+import Base from '@/layouts/Base.astro';
+---
+
+<Base title="Sign in — Second Memory">
+  <h1 class="text-3xl font-semibold">Sign in</h1>
+  <p class="text-muted-foreground mt-2">Keep favorites and things to read later.</p>
+  <form id="login" class="mt-8 max-w-sm space-y-4">
+    <label class="block">
+      <span class="text-sm">Email</span>
+      <input
+        name="email"
+        type="email"
+        required
+        autocomplete="email"
+        class="mt-1 w-full rounded border bg-transparent px-3 py-2"
+      />
+    </label>
+    <label class="block">
+      <span class="text-sm">Password</span>
+      <input
+        name="password"
+        type="password"
+        required
+        autocomplete="current-password"
+        class="mt-1 w-full rounded border bg-transparent px-3 py-2"
+      />
+    </label>
+    <div data-errors hidden role="alert" class="text-sm text-red-600"></div>
+    <button type="submit" class="bg-primary rounded px-4 py-2 text-sm font-medium text-white">
+      Sign in
+    </button>
+  </form>
+  <p class="mt-6 text-sm">
+    No account yet?{' '}
+    <a data-register href={`${import.meta.env.BASE_URL}/account/register`} class="underline">
+      Create one
+    </a>
+  </p>
+</Base>
+
+<script>
+  import { nextPage, showErrors, signIn } from '@/scripts/user-api';
+
+  const form = document.querySelector<HTMLFormElement>('#login');
+  const register = document.querySelector<HTMLAnchorElement>('a[data-register]');
+  if (register) register.href += location.search;
+  form?.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    const data = new FormData(form);
+    try {
+      await signIn('user/login', { email: data.get('email'), password: data.get('password') });
+      location.href = nextPage();
+    } catch (error) {
+      showErrors(form.querySelector<HTMLElement>('[data-errors]')!, error);
+    }
+  });
+</script>

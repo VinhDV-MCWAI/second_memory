@@ -1,0 +1,162 @@
+---
+import Base from '@/layouts/Base.astro';
+---
+
+<Base title="My lists — Second Memory">
+  <h1 class="text-3xl font-semibold">My lists</h1>
+  <p data-who class="text-muted-foreground mt-2"></p>
+
+  <section class="mt-10">
+    <h2 class="text-xl font-semibold">Favorites</h2>
+    <ul data-list="favorite" class="mt-4 space-y-2"></ul>
+  </section>
+
+  <section class="mt-10">
+    <h2 class="text-xl font-semibold">Read later</h2>
+    <ul data-list="read_later" class="mt-4 space-y-2"></ul>
+  </section>
+
+  <section class="mt-12 max-w-sm">
+    <h2 class="text-xl font-semibold">Account</h2>
+    <button type="button" data-logout class="mt-4 text-sm underline">
+      Sign out
+    </button>
+
+    <form id="password" class="mt-6 space-y-3">
+      <h3 class="font-medium">Change password</h3>
+      <input
+        name="current_password"
+        type="password"
+        required
+        placeholder="Current password"
+        autocomplete="current-password"
+        class="w-full rounded border bg-transparent px-3 py-2"
+      />
+      <input
+        name="password"
+        type="password"
+        required
+        minlength="8"
+        placeholder="New password"
+        autocomplete="new-password"
+        class="w-full rounded border bg-transparent px-3 py-2"
+      />
+      <input
+        name="password_confirmation"
+        type="password"
+        required
+        minlength="8"
+        placeholder="New password again"
+        autocomplete="new-password"
+        class="w-full rounded border bg-transparent px-3 py-2"
+      />
+      <div data-errors hidden role="alert" class="text-sm text-red-600"></div>
+      <p data-done hidden class="text-sm">
+        Password changed.
+      </p>
+      <button type="submit" class="rounded border px-4 py-2 text-sm">
+        Change password
+      </button>
+    </form>
+
+    <form id="delete" class="mt-8 space-y-3">
+      <h3 class="font-medium">Delete account</h3>
+      <p class="text-muted-foreground text-sm">Removes the account and both lists for good.</p>
+      <input
+        name="password"
+        type="password"
+        required
+        placeholder="Password"
+        autocomplete="current-password"
+        class="w-full rounded border bg-transparent px-3 py-2"
+      />
+      <div data-errors hidden role="alert" class="text-sm text-red-600"></div>
+      <button type="submit" class="rounded border border-red-600 px-4 py-2 text-sm text-red-600">
+        Delete my account
+      </button>
+    </form>
+  </section>
+</Base>
+
+<script>
+  import {
+    api,
+    currentUser,
+    loginUrl,
+    savedItems,
+    showErrors,
+    signOut,
+    type SavedItem,
+  } from '@/scripts/user-api';
+
+  function row(item: SavedItem): HTMLLIElement {
+    const li = document.createElement('li');
+    const link = document.createElement('a');
+    link.href = `/skills/${item.skill_slug}`;
+    link.className = 'font-medium hover:underline';
+    link.textContent = item.title;
+    li.append(link);
+    if (item.target === 'evidence') {
+      const where = document.createElement('span');
+      where.className = 'text-muted-foreground ml-2 text-sm';
+      where.textContent = `evidence · ${item.skill_name}`;
+      li.append(where);
+    }
+    return li;
+  }
+
+  void (async () => {
+    const user = await currentUser();
+    if (!user) {
+      location.href = loginUrl();
+      return;
+    }
+    document.querySelector('[data-who]')!.textContent = `${user.display_name} (${user.email})`;
+    const items = await savedItems();
+    for (const list of document.querySelectorAll<HTMLUListElement>('ul[data-list]')) {
+      const mine = items.filter((item) => item.kind === list.dataset.list);
+      list.replaceChildren(
+        ...(mine.length > 0
+          ? mine.map(row)
+          : [
+              Object.assign(document.createElement('li'), {
+                className: 'text-sm',
+                textContent: 'Nothing yet.',
+              }),
+            ]),
+      );
+    }
+  })();
+
+  document.querySelector('[data-logout]')?.addEventListener('click', async () => {
+    await signOut();
+    location.href = '/skills';
+  });
+
+  const password = document.querySelector<HTMLFormElement>('#password')!;
+  password.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    const errors = password.querySelector<HTMLElement>('[data-errors]')!;
+    try {
+      await api('PUT', 'user/password', Object.fromEntries(new FormData(password)));
+      errors.hidden = true;
+      password.reset();
+      password.querySelector<HTMLElement>('[data-done]')!.hidden = false;
+    } catch (error) {
+      showErrors(errors, error);
+    }
+  });
+
+  const remove = document.querySelector<HTMLFormElement>('#delete')!;
+  remove.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    if (!confirm('Delete your account and both lists for good?')) return;
+    try {
+      await api('POST', 'user/delete-account', Object.fromEntries(new FormData(remove)));
+      await signOut();
+      location.href = '/skills';
+    } catch (error) {
+      showErrors(remove.querySelector<HTMLElement>('[data-errors]')!, error);
+    }
+  });
+</script>
