@@ -16,12 +16,13 @@ vi.mock('@/shared/hooks/use-permissions', () => ({
 const notification = vi.hoisted(() => ({ success: vi.fn(), error: vi.fn() }));
 vi.mock('@/shared/utils/notification', () => ({ notification }));
 
-const trashed = (id: number, name: string) => ({
+const trashed = (id: number, name: string, thumbnail_url: string | null = null) => ({
   id,
   name,
   path: `/Docs/${name}`,
   size: 2048,
   mime_type: 'text/plain',
+  thumbnail_url,
   deleted_at: '2026-10-15T08:00:00+00:00',
   deleted_by: 'root',
   expires_at: '2026-11-14T08:00:00+00:00',
@@ -113,6 +114,16 @@ describe('TrashBrowser', () => {
     expect(screen.queryByRole('button', { name: 'restore' })).toBeNull();
     expect(screen.queryByRole('button', { name: 'deleteForever' })).toBeNull();
     expect(screen.queryByRole('button', { name: 'empty' })).toBeNull();
+  });
+
+  it('shows the thumbnail of a deleted image', async () => {
+    rows = [trashed(1, 'photo.jpg', 'http://storage.test/thumb.jpg'), trashed(2, 'notes.txt')];
+    const { container } = renderTrash();
+    await screen.findByText('photo.jpg');
+
+    const thumbnails = container.querySelectorAll('img');
+    expect(thumbnails).toHaveLength(1);
+    expect(thumbnails[0].getAttribute('src')).toBe('http://storage.test/thumb.jpg');
   });
 
   it('says when the trash is empty', async () => {

@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { useTranslations } from 'next-intl';
-import { ArrowLeft, File as FileIcon, RotateCcw, Trash2 } from 'lucide-react';
+import { ArrowLeft, RotateCcw, Trash2 } from 'lucide-react';
 import { DataTable, type Column } from '@/components/common/data-table/data-table';
 import { Pagination } from '@/components/common/data-table/pagination';
 import { Button } from '@/components/ui/button';
@@ -17,6 +17,7 @@ import type { TrashItem } from '@/shared/types/models';
 import { MEDIA_PER_PAGE } from '../hooks/use-media';
 import { useTrashActions, useTrashList } from '../hooks/use-trash';
 import { formatBytes } from '../lib/media-paths';
+import { FileThumb } from './file-thumb';
 
 const DAY_MS = 24 * 60 * 60 * 1000;
 
@@ -79,7 +80,7 @@ export function TrashBrowser() {
       label: tMedia('name'),
       render: (item) => (
         <span className="flex items-center gap-2">
-          <FileIcon className="h-4 w-4 shrink-0 text-slate-400" aria-hidden />
+          <FileThumb item={item} />
           <span className="truncate">{item.name}</span>
         </span>
       ),
