@@ -10,7 +10,7 @@
 | Branch | `feature/p3-ledger-api` (đổi branch khi chủ dự án yêu cầu) |
 | Môi trường | Chỉ dev (`make up`, http://localhost:81). Bản demo prod-like đã tắt container ngày 2026-10-15 (không việc nào dùng); staging, production thật, đo tải: tạm dừng |
 | CI/CD | Chỉ chạy trên máy: `make ci`, `make cd`. **Trên GitHub/GitLab đang TẮT chạy tự động** (push không chạy gì); cách bật lại: [ci/README.md](../../ci/README.md) |
-| Việc tiếp theo | Bảng việc không còn việc nhận được (cập nhật 2026-10-17). Đã xong theo kế hoạch duyệt 2026-10-15: Màn hình Phiên đăng nhập, Ghi nhớ đăng nhập, Phòng ban và khóa thư mục Files theo phòng ban (USER-03, DEPT-01…05). Chờ chủ dự án đưa danh sách việc mới |
+| Việc tiếp theo | Bảng việc không còn việc nhận được (cập nhật 2026-10-17, sau Ảnh nhỏ trên trang public và thùng rác, Tìm file trong ô tìm kiếm chung: MEDIA-12, SEARCH-01). Đã xong theo kế hoạch duyệt 2026-10-15: Màn hình Phiên đăng nhập, Ghi nhớ đăng nhập, Phòng ban và khóa thư mục Files theo phòng ban (USER-03, DEPT-01…05). Chờ chủ dự án đưa danh sách việc mới |
 | Tạm dừng | Mọi việc **mới** về đăng nhập và phân quyền (các mục "Nâng cấp để dành" trong [dang-nhap.md](../../docs/features/dang-nhap.md), loại quyền mới, người dùng cuối, mở rộng khóa phòng ban sang chỗ khác ngoài Files): không đề xuất, không nhận, **chỉ làm khi chủ dự án yêu cầu** (quyết 2026-10-14, thêm phân quyền 2026-10-15). Các việc đã duyệt 2026-10-15 đều đã xong |
 | Dọn dẹp | Mỗi việc xong phải dọn theo mục "Dọn dẹp khi xong việc" trong [01-goals-and-workflow.md](../../docs/plan/01-goals-and-workflow.md) (`make clean` + xóa code chết, dữ liệu thử) |
 
@@ -31,7 +31,7 @@ Cập nhật 2026-10-17. Mỗi dòng là thứ còn mở, chưa thành việc tr
 | 1 | Push code | Chủ dự án đã push và merge tới LEDGER-02 (2026-10-15). Branch `feature/p3-ledger-api` trên GitHub đã bị xóa (sau merge); các commit từ `a6c9b363` (sửa tf-destroy) qua MEDIA-11, AUTH-04, AUTH-05 tới DEPT-05 (ngày 2026-10-17) chỉ có trên máy, push lại sẽ tạo lại branch | Chủ dự án |
 | 6 | Tiếp tục upload dở từ máy khác không kiểm tra được "đúng file" | Trình duyệt chỉ nhớ thời điểm sửa file trên máy đã bắt đầu upload; máy khác chỉ so tên + dung lượng | Chấp nhận, ghi trong [quan-ly-file.md](../../docs/features/quan-ly-file.md) |
 | 8 | Việc để sau theo quyết định chủ dự án | Người dùng cuối (USER-02, ADR-0015); dữ liệu mẫu + HTTPS cho bản demo (DEMO-01, DEMO-02). Phòng ban đã làm xong (ADR-0017) | Chờ chủ dự án |
-| 9 | Gợi ý nhỏ chưa đề xuất | Hiện ảnh nhỏ (thumbnail) trên trang public và trong thùng rác. Khóa phòng ban hiện chỉ áp dụng cho Files; bằng chứng, kỹ năng chưa bị chặn theo phòng ban (đúng phạm vi đã duyệt) | Chờ chủ dự án |
+| 9 | Gợi ý nhỏ chưa đề xuất | Khóa phòng ban hiện chỉ áp dụng cho Files; bằng chứng, kỹ năng chưa bị chặn theo phòng ban (đúng phạm vi đã duyệt) | Chờ chủ dự án |
 
 ## Lưu ý môi trường
 
