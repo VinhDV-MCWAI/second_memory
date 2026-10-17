@@ -40,7 +40,7 @@ Các mục còn lại của giai đoạn này (triển khai, vận hành, sự c
 
 | Mã | Việc | Kết quả | Trạng thái |
 |---|---|---|---|
-| PUB-01 | **[XÁC NHẬN]** Chọn công nghệ thay `nextjs-docs` (ADR-0019); nếu chọn ứng dụng mới thì thử nhanh và đo RAM, image, JS so với Next.js | Phương án được chọn, có số đo | todo |
+| PUB-01 | **[XÁC NHẬN]** Chọn công nghệ thay `nextjs-docs` (ADR-0019); nếu chọn ứng dụng mới thì thử nhanh và đo RAM, image, JS so với Next.js | Phương án được chọn, có số đo | done (5e8fb014 — chọn Astro; đo: RAM production 76 → 35 MB, dev 499 → 133 MB, image 301 → 248 MB, JS xuống trình duyệt 579 KB → 0) |
 | PUB-02 | Làm lại trang public trên công nghệ đã chọn (danh sách, chi tiết kỹ năng, mở file), chuyển test trình duyệt, nginx, xóa `nextjs-docs` và mọi chỗ nhắc tới | Trang public nhẹ hơn, như cũ về tính năng | todo |
 | PUB-03 | **[XÁC NHẬN]** Tài khoản người dùng cuối: hồ sơ yêu cầu, câu hỏi làm rõ, thiết kế (bảng, đăng ký hay admin tạo, đăng nhập riêng tách khỏi admin), API, test | Người dùng đăng nhập được trên trang cho người dùng | todo |
 | PUB-04 | Lịch sử đã xem, yêu thích, lưu xem sau (API + giao diện + test); admin xem và khóa tài khoản người dùng | 3 tính năng cho người dùng đã đăng nhập | todo |
