@@ -1,7 +1,6 @@
 ---
 paths:
   - "nextjs-fe/**/*.{ts,tsx,mjs,css}"
-  - "nextjs-docs/**/*.{ts,tsx,mjs,css}"
 ---
 
 # Next.js / React conventions
@@ -15,7 +14,7 @@ paths:
 
 ## React
 - React 19 + React Compiler: don't add `useMemo` / `useCallback` / `memo` for performance unless profiling shows a need.
-- Server Components by default in `nextjs-docs`. In `nextjs-fe` (client-rendered SPA), add `'use client'` at the lowest level that needs it.
+- `nextjs-fe` is a client-rendered SPA: add `'use client'` at the lowest level that needs it. The public site is Astro (`public-site/CLAUDE.md`).
 - Shared layouts go in `layout.tsx`, not wrapped inside each `page.tsx`.
 - Forms: react-hook-form + zod schema (`zodResolver`). Validation messages via next-intl.
 - Server state: TanStack Query only (no Redux, no ad-hoc `useEffect` fetching). Query keys from a central key factory.

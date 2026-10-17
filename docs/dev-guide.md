@@ -41,7 +41,8 @@ Trình duyệt → http://localhost:81 (nginx)
   ├─ /api/...           → Laravel API
   ├─ /media-official/… → MinIO (chỉ link ký tạm do API cấp; quản lý file)
   ├─ /app/…            → Reverb (WebSocket, thông báo tức thì)
-  ├─ /skills, /docs     → trang public
+  ├─ /skills           → trang public (Astro, ứng dụng public-site)
+  ├─ /docs…            → chuyển hướng tới /skills
   └─ mọi đường dẫn khác → trang quản trị (Next.js): /login, /admin, ...
 ```
 
@@ -63,7 +64,7 @@ Thư mục code được gắn thẳng vào container, nên phần lớn thay đ
 |---|---|
 | Code PHP (`laravel-api/`) | Không cần làm gì, reload trang là thấy |
 | Code PHP chạy trong việc nền, việc hẹn giờ hoặc Reverb (job, event, `routes/console.php`, `routes/channels.php`) | `make workers-restart`: ba container này giữ code cũ trong bộ nhớ, giống server thật |
-| Code giao diện (`nextjs-fe/`, `nextjs-docs/`) | Không cần làm gì, trình duyệt tự cập nhật |
+| Code giao diện (`nextjs-fe/`, `public-site/`) | Không cần làm gì, trình duyệt tự cập nhật |
 | Thêm migration | `docker exec ml-php php artisan migrate --force` |
 | Thêm hoặc xóa class PHP | `docker exec ml-php composer dump-autoload` |
 | Đổi route hoặc request/response của API | `make openapi`, để sinh lại kiểu dữ liệu cho giao diện |
@@ -71,7 +72,7 @@ Thư mục code được gắn thẳng vào container, nên phần lớn thay đ
 | Thêm thư viện PHP | `docker exec ml-php composer require <tên gói>` |
 | Thêm thư viện JS (sửa `pnpm-lock.yaml`) | `make up` (dựng lại image và tạo mới thư mục `node_modules` trong container; thiếu bước tạo mới thì báo "Cannot find module") |
 | Sửa `docker/.env` hoặc Dockerfile | `make restart` |
-| Thiếu hoặc hỏng file env của Laravel / giao diện | `make setup` (chạy `scripts/setup-env.sh`: giữ bí mật đã có trong `docker/.env`, tạo lại `laravel-api/.env`, `nextjs-fe/.env`, `nextjs-docs/.env`), rồi `make restart` |
+| Thiếu hoặc hỏng file env của Laravel / giao diện | `make setup` (chạy `scripts/setup-env.sh`: giữ bí mật đã có trong `docker/.env`, tạo lại `laravel-api/.env`, `nextjs-fe/.env`), rồi `make restart` |
 
 ## 4. Test nhanh
 

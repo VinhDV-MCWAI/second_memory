@@ -5,7 +5,7 @@
 - Anything beyond a small fix goes through the proposal step in `docs/plan/01-goals-and-workflow.md` first (the `/lab-task` skill).
 
 ## While changing code
-- Keep the HTTP contract stable (routes, envelope, cookie auth) unless the approved plan item says otherwise. If a backend contract changes, update `nextjs-fe` and `nextjs-docs` in the same change.
+- Keep the HTTP contract stable (routes, envelope, cookie auth) unless the approved plan item says otherwise. If a backend contract changes, update `nextjs-fe` and `public-site` in the same change (`make openapi` regenerates both type files).
 - Refactors are behavior-preserving: no feature changes mixed in. If you find a bug, fix it in a separate commit and call it out.
 - Delete dead code instead of commenting it out. No `.bak` files.
 - Don't add dependencies without saying why; prefer what the stack already has.

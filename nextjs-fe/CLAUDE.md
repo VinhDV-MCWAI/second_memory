@@ -8,7 +8,7 @@ Client-rendered admin panel for the Laravel API. Conventions: `.claude/rules/fro
 docker exec ml-nextjs pnpm lint            # eslint (flat config, eslint-config-next + prettier)
 docker exec ml-nextjs pnpm typecheck
 docker exec ml-nextjs pnpm test --run      # Vitest 4 (jsdom)
-docker exec ml-nextjs pnpm format:check    # Prettier (.prettierrc.json, same as nextjs-docs)
+docker exec ml-nextjs pnpm format:check    # Prettier (.prettierrc.json)
 ```
 
 ## Layout

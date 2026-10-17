@@ -42,7 +42,7 @@ Script `scripts/clean.sh`, chạy lại nhiều lần vẫn an toàn.
 | Bước | Xóa gì | Giữ gì |
 |---|---|---|
 | Ảnh không tên | Ảnh `<none>` còn sót sau khi build lại | — |
-| Ảnh production cũ | Tag `sm-api`, `sm-nextjs-fe`, `sm-nextjs-docs`, `sm-minio` không container nào dùng | Tag đang chạy |
+| Ảnh production cũ | Tag `sm-api`, `sm-nextjs-fe`, `sm-public-site`, `sm-minio` không container nào dùng | Tag đang chạy |
 | Ảnh tải về không dùng | Ảnh tải từ registry mà không container nào chạy và không file nào trong repo ghi tên (vd. `node:22-alpine` của Dockerfile cũ, `alpine:latest` của lệnh thử) | Ảnh dự án tự build (`my_lm-ml-*`, `ml-e2e`, `sm-ci-*`, `ledger-importer*`, `lab-metrics-*`, `sm-tools`) để lần sau chạy nhanh |
 | Volume vô danh | Volume không container nào dùng | Mọi volume có tên |
 | Bộ nhớ đệm build | Cũ hơn 7 ngày (`CACHE_KEEP=168h`, đổi được) | Phần mới hơn |

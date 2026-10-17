@@ -1,4 +1,3 @@
-// Kept identical in nextjs-fe and nextjs-docs: each dev container only mounts its own app.
 import { defineConfig, globalIgnores } from 'eslint/config';
 import nextVitals from 'eslint-config-next/core-web-vitals';
 import nextTs from 'eslint-config-next/typescript';

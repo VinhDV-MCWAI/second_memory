@@ -12,10 +12,10 @@ The whole development environment is one Compose project, `docker/docker-compose
 
 | Container | Image / build | Role | Host port | Memory limit |
 |---|---|---|---|---|
-| `ml-nginx` | `nginx-unprivileged` 1.25 | reverse proxy: `/api/` → PHP-FPM, `/skills`, `/docs` → public site, the rest → admin | **81** | 256 MB |
+| `ml-nginx` | `nginx-unprivileged` 1.25 | reverse proxy: `/api/` → PHP-FPM, `/skills` → public site, `/docs` → redirect to `/skills`, the rest → admin | **81** | 256 MB |
 | `ml-php` | `laravel/Dockerfile` (PHP 8.5 FPM) | Laravel API; migrates and seeds an empty database on start | – | 2 GB |
 | `ml-nextjs` | `nextjs/Dockerfile` (Node 24) | admin dashboard, Next.js dev server | 3456 | 2 GB |
-| `ml-nextjs-docs` | `nextjs/Dockerfile` | public site, Next.js dev server | 3002 | 1 GB |
+| `ml-public-site` | `public-site/Dockerfile` (Node 24) | public site, Astro dev server | 3002 | 512 MB |
 | `ml-postgres` | `postgres:16` | dev database `ml_pg_db` and test database `testing` | 5502 | 1 GB |
 | `ml-redis` | `redis:7.4` | sessions and cache (tests use Redis DBs 14 / 15) | 6601 | 512 MB |
 | `ml-minio` + `ml-minio-init` | `minio/Dockerfile` | object storage for the kept media objects; `init` creates buckets and lifecycle rules once | 9100, console 9102 | 1 GB |
@@ -67,4 +67,4 @@ docker exec ml-nginx nginx -t && docker exec ml-nginx nginx -s reload   # after 
 | nginx answers 502 | the upstream container is down or restarting: `make ps`, then `make logs s=<container>` |
 | Permission errors in `vendor/`, `storage/` or `node_modules/` | files owned by root from older images: see the `chown` command in [CLAUDE.md](CLAUDE.md) |
 | Hot reload misses edits | keep the checkout on the WSL filesystem (`~/…`), not under `/mnt/c/…` |
-| Next.js dev container fails after a lockfile change | rebuild it: `docker compose up -d --build ml-nextjs ml-nextjs-docs` (from `docker/`) |
+| A FE dev container fails after a lockfile change | rebuild it: `docker compose up -d --build --renew-anon-volumes ml-nextjs ml-public-site` (from `docker/`) |

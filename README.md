@@ -16,7 +16,7 @@ The project is also a practice ground for professional software work: every feat
 | Search | One search box over skills, goals, evidence, files and folders: Vietnamese without diacritics, typo tolerant | [tim-kiem.md](docs/features/tim-kiem.md) |
 | Audit log | Every change and sign-in attempt, with a filterable screen | [nhat-ky-thay-doi.md](docs/features/nhat-ky-thay-doi.md) |
 | Background jobs | Queue, scheduler and live notifications (Reverb WebSocket) shared by every long-running feature | [viec-nen-va-thong-bao.md](docs/features/viec-nen-va-thong-bao.md) |
-| Public page | `/skills`: public skills, level history, public evidence and their files | [trang-public.md](docs/features/trang-public.md) |
+| Public page | `/skills`: public skills, level history, public evidence and their files; no login, no client JavaScript; old `/docs` links redirect here | [trang-public.md](docs/features/trang-public.md) |
 | Obsidian import | Notes marked `publish: true` become evidence (Python CLI) | [nhap-tu-obsidian.md](docs/features/nhap-tu-obsidian.md) |
 
 ## Architecture
@@ -25,7 +25,7 @@ The project is also a practice ground for professional software work: every feat
 browser ──► ml-nginx :81 ─┬─ /api/*              ─► ml-php (Laravel API) ──┬─► ml-postgres (data, search)
                           ├─ /app/* (WebSocket)  ─► ml-reverb               ├─► ml-redis (sessions, cache, queue)
                           ├─ /media-official/*   ─► ml-minio (signed links) └─► ml-minio (files)
-                          ├─ /skills             ─► ml-nextjs-docs (public site)
+                          ├─ /skills             ─► ml-public-site (public site, Astro)
                           └─ everything else     ─► ml-nextjs (admin dashboard)
                                                     ml-queue, ml-scheduler: background jobs (same image as ml-php)
 ```
@@ -36,7 +36,7 @@ browser ──► ml-nginx :81 ─┬─ /api/*              ─► ml-php (Lara
 | API | Laravel 13, PHP 8.5, Sanctum, spatie/laravel-permission, Scramble (OpenAPI), ffmpeg | `ml-php` | – |
 | Background jobs | Laravel queue worker, scheduler, Reverb | `ml-queue`, `ml-scheduler`, `ml-reverb` | – |
 | Admin dashboard | Next.js 16, React 19, TanStack Query, react-hook-form + zod, next-intl, shadcn/ui, Tailwind 4 | `ml-nextjs` | 3456 |
-| Public site | Next.js 16 (server components) | `ml-nextjs-docs` | 3002 |
+| Public site | Astro 7 (server rendering, no client JavaScript), Tailwind 4 | `ml-public-site` | 3002 |
 | Database | PostgreSQL 16 (full-text + trigram search) | `ml-postgres` | 5502 |
 | Cache, sessions, queue | Redis 7.4 | `ml-redis` | 6601 |
 | Object storage | MinIO (S3), private buckets, browser uploads through signed URLs | `ml-minio` | 9100, console 9102 |
@@ -82,7 +82,7 @@ Open <http://localhost:81> (admin) and <http://localhost:81/skills> (public page
 |---|---|
 | [laravel-api/](laravel-api/) | REST API |
 | [nextjs-fe/](nextjs-fe/) | admin dashboard |
-| [nextjs-docs/](nextjs-docs/) | public site |
+| [public-site/](public-site/) | public site |
 | [tools/ledger-importer/](tools/ledger-importer/) | Python Obsidian importer |
 | [e2e/](e2e/) | Playwright end-to-end tests |
 | [docker/](docker/) | Compose stack, Dockerfiles, nginx / Postgres / Redis / MinIO config |

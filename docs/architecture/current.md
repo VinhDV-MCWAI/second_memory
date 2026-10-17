@@ -10,7 +10,7 @@ flowchart LR
     N -->|/api/*| P[ml-php<br/>Laravel API]
     N -->|/app/* WebSocket| R2[ml-reverb]
     N -->|/media-official/* link ký tạm| M[(ml-minio)]
-    N -->|/skills, /docs| D[ml-nextjs-docs<br/>trang public]
+    N -->|/skills| D[ml-public-site<br/>trang public, Astro]
     N -->|còn lại| F[ml-nextjs<br/>trang quản trị]
     D -->|GET /api/public/*| N
     P --> PG[(ml-postgres)]
@@ -29,7 +29,7 @@ flowchart LR
 | `ml-php` | REST API (php-fpm). Khởi động lần đầu thì migrate và seed DB trống. Có `ffmpeg` để đọc thời lượng và tạo ảnh nhỏ |
 | `ml-queue`, `ml-scheduler`, `ml-reverb` | Cùng image với `ml-php`: làm việc nền (hàng đợi Redis), chạy lệnh hẹn giờ, gửi thông báo tức thì qua WebSocket. Đổi code việc nền thì `make workers-restart` |
 | `ml-nextjs` | Trang quản trị |
-| `ml-nextjs-docs` | Trang public `/skills` (server components, gọi API qua nginx, giữ kết quả 60 giây) |
+| `ml-public-site` | Trang public `/skills` (Astro, HTML render ở server, không gửi JavaScript; gọi API qua nginx, giữ kết quả 60 giây). `/docs…` cũ được nginx chuyển hướng tới `/skills` ([ADR-0019](../adr/0019-public-user-frontend.md)) |
 | `ml-postgres` | Dữ liệu và tìm kiếm. DB `testing` riêng cho test |
 | `ml-redis` | Phiên đăng nhập, cache, hàng đợi (test dùng DB 14 / 15) |
 | `ml-minio` (+ `ml-minio-init`) | Kho file. Bucket không cho đọc công khai; trình duyệt upload và tải bằng link ký tạm. Bucket chính bật lưu phiên bản, bản cũ tự hết hạn sau 30 ngày (thùng rác) |
@@ -104,5 +104,6 @@ Tìm kiếm ([ADR-0009](../adr/0009-postgres-search.md)): cột `search_tsv` + c
 |---|---|
 | Backend | ~11,3 nghìn dòng PHP trong `app/`, 88 migration, 280 test PHPUnit |
 | Trang quản trị | ~16,8 nghìn dòng TS/TSX (không tính kiểu sinh tự động), 155 test Vitest |
+| Trang public | ~0,3 nghìn dòng TS/Astro; RAM production 35 MB, image 248 MB, 0 KB JavaScript xuống trình duyệt |
 | Công cụ nhập Obsidian | 63 test pytest |
 | Test trình duyệt | 9 luồng Playwright |

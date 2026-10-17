@@ -6,7 +6,7 @@
 |---|---|---|---|
 | `laravel-api/` | PHP, Laravel, Sanctum, PostgreSQL, Redis | REST API (:81/api via nginx) | [laravel-api/CLAUDE.md](laravel-api/CLAUDE.md) |
 | `nextjs-fe/` | Next.js App Router, React, TanStack Query, RHF + zod, next-intl, shadcn/ui, Tailwind 4 | Admin dashboard (:3000) | [nextjs-fe/CLAUDE.md](nextjs-fe/CLAUDE.md) |
-| `nextjs-docs/` | Next.js App Router (server components) | Public site: Skill Ledger at `/skills`, old `/docs` links show "content moved" (:3457) | [nextjs-docs/CLAUDE.md](nextjs-docs/CLAUDE.md) |
+| `public-site/` | Astro (server rendering, no client JS), Tailwind 4 | Public site at `/skills`; old `/docs` links redirect there (:4321) | [public-site/CLAUDE.md](public-site/CLAUDE.md) |
 | `docker/`, `ci/`, `.github/`, `backup/` | Docker Compose, shared CI scripts (ADR-0016) behind thin GitHub / GitLab configs, shell | Runtime & ops | [docker/CLAUDE.md](docker/CLAUDE.md) |
 | `infra/` | Terraform (Docker provider) in a pinned tools container | Production-like environments, production images (ADR-0011) | [infra/README.md](infra/README.md) |
 | `tools/ledger-importer/` | Python, uv, ruff, mypy, pytest | Obsidian → evidence importer (`make import`) | [tools/ledger-importer/README.md](tools/ledger-importer/README.md) |

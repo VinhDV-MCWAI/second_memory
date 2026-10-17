@@ -42,7 +42,7 @@ Without an archive argument the newest backup on the first remote is downloaded 
 
 ### Full restore (disaster recovery)
 
-1. Maintenance mode: stop traffic at nginx, stop the app containers (`docker compose -f docker/docker-compose.yml stop ml-php ml-nextjs ml-nextjs-docs`).
+1. Maintenance mode: stop traffic at nginx, stop the app containers (`docker compose -f docker/docker-compose.yml stop ml-php ml-nextjs ml-public-site`).
 2. Make sure `ml-postgres` and `ml-minio` run: `docker compose -f docker/docker-compose.yml up -d ml-postgres ml-minio`.
 3. Restore (newest cloud backup, or pass the archive path):
    ```bash
