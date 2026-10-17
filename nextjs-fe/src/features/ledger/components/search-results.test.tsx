@@ -32,6 +32,7 @@ describe('SearchResults', () => {
             skills: [{ id: 1, title: 'PostgreSQL', snippet: 'Tối ưu truy vấn' }],
             goals: [],
             evidence: [{ id: 4, title: 'PostgreSQL partitioning', snippet: null }],
+            files: [],
           }),
         );
       }),
@@ -46,10 +47,59 @@ describe('SearchResults', () => {
     expect(screen.queryByText('goals')).toBeNull();
   });
 
+  it('links files and folders to their folder in Files', async () => {
+    server.use(
+      http.get(apiUrl('/admin/search'), () =>
+        HttpResponse.json(
+          envelope({
+            match: 'exact',
+            skills: [],
+            goals: [],
+            evidence: [],
+            files: [
+              {
+                id: 7,
+                is_file: false,
+                name: 'Hợp đồng',
+                path: '/Docs/Hợp đồng',
+                size: null,
+                thumbnail_url: null,
+              },
+              {
+                id: 8,
+                is_file: true,
+                name: 'hop-dong.jpg',
+                path: '/Docs/Hợp đồng/hop-dong.jpg',
+                size: 2048,
+                thumbnail_url: 'http://storage.test/thumb.jpg',
+              },
+            ],
+          }),
+        ),
+      ),
+    );
+
+    renderResults('hop dong');
+
+    const folder = await screen.findByRole('link', { name: /^Hợp đồng/ });
+    expect(folder.getAttribute('href')).toBe(
+      `/admin/files?folder=${encodeURIComponent('/Docs/Hợp đồng')}`,
+    );
+    const file = screen.getByRole('link', { name: /hop-dong\.jpg/ });
+    expect(file.getAttribute('href')).toBe(
+      `/admin/files?folder=${encodeURIComponent('/Docs/Hợp đồng')}`,
+    );
+    expect(file.querySelector('img')?.getAttribute('src')).toBe('http://storage.test/thumb.jpg');
+    expect(screen.getByText('/Docs/Hợp đồng · 2.0 KB')).toBeTruthy();
+    expect(screen.queryByText('fuzzy')).toBeNull();
+  });
+
   it('shows an empty state when nothing matches', async () => {
     server.use(
       http.get(apiUrl('/admin/search'), () =>
-        HttpResponse.json(envelope({ match: 'fuzzy', skills: [], goals: [], evidence: [] })),
+        HttpResponse.json(
+          envelope({ match: 'fuzzy', skills: [], goals: [], evidence: [], files: [] }),
+        ),
       ),
     );
 

@@ -559,14 +559,16 @@
     "achievedHint": "Achieved goals keep their target; only the date and note can change.",
     "search": {
       "title": "Search",
-      "description": "Skills, goals and evidence. Accents and case are ignored.",
+      "description": "Skills, goals, evidence and file names. Accents and case are ignored.",
       "fuzzy": "No exact match — showing similar results",
       "empty": "Nothing found for “{q}”",
       "hint": "Type at least {min} characters",
       "skills": "Skills",
       "goals": "Goals",
       "evidence": "Evidence",
-      "openList": "Open list"
+      "files": "Files",
+      "openList": "Open list",
+      "openFiles": "Open Files"
     },
     "dashboard": {
       "skills": "Skills",

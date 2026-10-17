@@ -38,7 +38,14 @@ import {
 } from '../hooks/use-media';
 import { useUploads, type UploadState } from '../hooks/use-uploads';
 import { discardUpload } from '../lib/uploader';
-import { crumbsOf, formatBytes, formatFileSize, parentOf, ROOT } from '../lib/media-paths';
+import {
+  crumbsOf,
+  filesHref,
+  formatBytes,
+  formatFileSize,
+  parentOf,
+  ROOT,
+} from '../lib/media-paths';
 import { IconButton } from './icon-button';
 import { FileThumb } from './file-thumb';
 import { FolderAccessDialog } from './folder-access-dialog';
@@ -128,11 +135,7 @@ export function MediaBrowser() {
   const openFolder = (path: string) => {
     setPage(1);
     setSelectedIds([]);
-    router.push(
-      path === ROOT
-        ? ADMIN_ROUTES.FILES
-        : `${ADMIN_ROUTES.FILES}?folder=${encodeURIComponent(path)}`,
-    );
+    router.push(filesHref(path));
   };
 
   const startUpload = (files: FileList | null) => {

@@ -1,8 +1,17 @@
+import { ADMIN_ROUTES } from '@/shared/config';
+
 /** Virtual paths of the file manager (ADR-0014): `/` is the root, `/Docs/report.pdf` a file in Docs. */
 export const ROOT = '/';
 
 export function joinPath(folder: string, name: string): string {
   return `${folder === ROOT ? '' : folder}/${name}`;
+}
+
+/** The Files screen opened on a folder. */
+export function filesHref(folder: string): string {
+  return folder === ROOT
+    ? ADMIN_ROUTES.FILES
+    : `${ADMIN_ROUTES.FILES}?folder=${encodeURIComponent(folder)}`;
 }
 
 export function parentOf(path: string): string {
