@@ -31,6 +31,9 @@ class MediaRepository extends BaseRepository
         parent::__construct($model);
     }
 
+    /** Unaccented lower-case name: the expression of the `media_mgmt_name_trgm` index (SEARCH-01) */
+    private const NAME_TEXT = 'f_unaccent(lower(media_mgmt.original_name))';
+
     /**
      * Direct children of a folder, folders first. Rows still uploading are not shown, nor folders in $blocked.
      *
@@ -55,6 +58,34 @@ class MediaRepository extends BaseRepository
         $this->applySorting($query, $payload, self::SORTABLE, 'original_name');
 
         return $query->paginate($payload['per_page'] ?? MediaConst::PER_PAGE, ['*'], 'page', $payload['page'] ?? 1);
+    }
+
+    /**
+     * Live files and folders for the admin search (SEARCH-01): every word inside the name, shortest
+     * names first; with $fuzzy the closest names by trigram word similarity instead (the caller sets
+     * `pg_trgm.word_similarity_threshold`). Unfinished uploads and everything in $blocked are left out.
+     *
+     * @param  list<string>  $words  letters and digits only, so nothing in them is special to LIKE
+     * @param  list<string>  $blocked  paths of locked folders the admin may not use (ADR-0017)
+     * @return Collection<int, MediaMgmt>
+     */
+    public function searchNames(array $words, bool $fuzzy, array $blocked, int $limit): Collection
+    {
+        $query = $this->query()->live()->where('upload_status', UploadStatus::COMPLETED->value);
+        $this->excludeFolders($query, $blocked);
+
+        if ($fuzzy) {
+            $text = implode(' ', $words);
+            $query->whereRaw('f_unaccent(lower(?)) <% '.self::NAME_TEXT, [$text])
+                ->orderByRaw('f_unaccent(lower(?)) <<-> '.self::NAME_TEXT, [$text]);
+        } else {
+            foreach ($words as $word) {
+                $query->whereRaw(self::NAME_TEXT." like '%' || f_unaccent(lower(?)) || '%'", [$word]);
+            }
+            $query->orderByRaw('length(media_mgmt.original_name)')->orderBy('media_mgmt.original_name');
+        }
+
+        return $query->limit($limit)->get();
     }
 
     /**

@@ -115,6 +115,18 @@ final class FolderPolicyApiTest extends TestCase
         $this->call('POST', self::BASE.'/delete', ['ids' => [$this->plan]], $member)->assertOk();
     }
 
+    public function test_the_admin_search_finds_a_locked_folder_and_its_files_only_for_members(): void
+    {
+        foreach (['secret', 'plan'] as $q) {
+            $this->call('GET', '/api/admin/search', ['q' => $q], $this->filesUser($this->legal))->assertOk()->assertJsonPath('data.files', []);
+            $this->call('GET', '/api/admin/search', ['q' => $q], $this->filesUser())->assertOk()->assertJsonPath('data.files', []);
+        }
+        $this->call('GET', '/api/admin/search', ['q' => 'plan'], $this->filesUser($this->sales))->assertOk()
+            ->assertJsonPath('data.files.0.id', $this->plan);
+        $this->call('GET', '/api/admin/search', ['q' => 'secret'], $this->filesUser($this->sales))->assertOk()
+            ->assertJsonPath('data.files.0.id', $this->secret);
+    }
+
     public function test_a_lock_inside_a_lock_needs_both_and_survives_a_rename(): void
     {
         $inner = $this->folder('Inner', '/Secret');
@@ -200,7 +212,7 @@ final class FolderPolicyApiTest extends TestCase
     }
 
     /**
-     * An admin who may use every Files and evidence API, in the given departments.
+     * An admin who may use every Files and evidence API and the search, in the given departments.
      *
      * @return array<string, string>
      */
@@ -208,7 +220,7 @@ final class FolderPolicyApiTest extends TestCase
     {
         $role = Role::findOrCreate('Files user', CommonVal::ADMIN_GUARD);
         $role->syncPermissions(Permission::query()->where('guard_name', CommonVal::ADMIN_GUARD)
-            ->where(fn ($q) => $q->where('name', 'like', 'media.%')->orWhere('name', 'like', 'evidence.%'))
+            ->where(fn ($q) => $q->where('name', 'like', 'media.%')->orWhere('name', 'like', 'evidence.%')->orWhere('name', 'search.query'))
             ->pluck('name'));
         $admin = AdminMst::factory()->create();
         $admin->syncRoles([$role]);

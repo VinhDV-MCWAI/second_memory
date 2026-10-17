@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Concerns;
 
+use App\Constants\MediaConst;
 use App\Models\Media\MediaMgmt;
 use App\Services\Media\ObjectStorage;
 use Tests\Fakes\FakeObjectStorage;
@@ -23,13 +24,13 @@ trait UploadsFiles
     }
 
     /**
-     * Uploads a small file into the root folder and returns its id.
+     * Uploads a small file (into the root folder by default) and returns its id.
      *
      * @param  array<string, string>  $cookies  session of an admin allowed to upload
      */
-    private function uploadFile(array $cookies, string $name, int $size = 10): int
+    private function uploadFile(array $cookies, string $name, int $size = 10, string $folder = MediaConst::ROOT): int
     {
-        $id = $this->call('POST', '/api/admin/media/upload-url', ['folder' => '/', 'name' => $name, 'size' => $size, 'mime_type' => 'application/octet-stream'], $cookies)
+        $id = $this->call('POST', '/api/admin/media/upload-url', ['folder' => $folder, 'name' => $name, 'size' => $size, 'mime_type' => 'application/octet-stream'], $cookies)
             ->assertOk()->json('data.id');
         $this->storage->put((string) MediaMgmt::query()->findOrFail($id)->minio_object_key, $size);
         $this->call('POST', "/api/admin/media/complete/{$id}", [], $cookies)->assertOk();

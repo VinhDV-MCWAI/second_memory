@@ -5650,7 +5650,7 @@
         "/admin/search": {
             "get": {
                 "operationId": "search.query",
-                "summary": "Search skills, goals and evidence (accents and case ignored; typo fallback when nothing matches)",
+                "summary": "Search skills, goals, evidence and the names of files and folders (accents and case ignored; typo fallback when nothing matches).\n`files` is empty for an admin without `media.list`, and never holds the trash or locked folders the admin may not use",
                 "tags": [
                     "Search"
                 ],
@@ -5754,13 +5754,54 @@
                                                             "snippet"
                                                         ]
                                                     }
+                                                },
+                                                "files": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "integer"
+                                                            },
+                                                            "is_file": {
+                                                                "type": "boolean"
+                                                            },
+                                                            "name": {
+                                                                "type": "string"
+                                                            },
+                                                            "path": {
+                                                                "type": "string"
+                                                            },
+                                                            "size": {
+                                                                "type": [
+                                                                    "integer",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "thumbnail_url": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "id",
+                                                            "is_file",
+                                                            "name",
+                                                            "path",
+                                                            "size",
+                                                            "thumbnail_url"
+                                                        ]
+                                                    }
                                                 }
                                             },
                                             "required": [
                                                 "match",
                                                 "skills",
                                                 "goals",
-                                                "evidence"
+                                                "evidence",
+                                                "files"
                                             ]
                                         },
                                         "error": {

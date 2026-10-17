@@ -68,6 +68,9 @@ final class MediaConst
     /** Bytes read from the start of an image to find its width and height (MEDIA-10); the header is near the start. */
     public const IMAGE_PROBE_BYTES = 1024 * 1024;
 
+    /** Permission (route name) to see the file manager; the admin search lists files only with it (SEARCH-01) */
+    public const LIST_PERMISSION = 'media.list';
+
     /** Thumbnails (MEDIA-11): JPEG at most this wide, stored next to the file under THUMBNAIL_PREFIX. */
     public const THUMBNAIL_WIDTH = 320;
 

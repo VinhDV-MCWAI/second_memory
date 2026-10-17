@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace App\Repositories\Ledger;
 
 use App\Constants\LedgerConst;
+use App\Models\Media\MediaMgmt;
+use App\Repositories\Media\MediaRepository;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Facades\DB;
 
@@ -13,18 +15,24 @@ use Illuminate\Support\Facades\DB;
  * f_unaccent(lower(...)), so "ky nang" finds "Kỹ năng". Skills and evidence keep that text in
  * `search_text` and its weighted vector in `search_tsv` (stored, GIN; title / name ranks first); `search_text` also has a GiST trigram
  * index for the typo fallback. Goals have no search columns: they are few, and they match on
- * their note and their skill's name.
+ * their note and their skill's name. File and folder names (SEARCH-01) come from the file manager's
+ * repository, which knows the locked folders; `$blocked` null means the admin may not see Files.
  */
 final class SearchRepository
 {
     private const GOAL_TEXT = "f_unaccent(lower(coalesce(learning_goal.note, '') || ' ' || skill.name))";
 
+    public function __construct(private readonly MediaRepository $media) {}
+
     /**
-     * Full-text match; `$tsQuery` is a to_tsquery string such as `ky & nang:*`.
+     * Full-text match; `$tsQuery` is a to_tsquery string such as `ky & nang:*` made of `$words`.
+     * Names of files and folders contain every word.
      *
-     * @return array{skills: list<object>, goals: list<object>, evidence: list<object>}
+     * @param  list<string>  $words
+     * @param  list<string>|null  $blocked
+     * @return array{skills: list<object>, goals: list<object>, evidence: list<object>, files: list<MediaMgmt>}
      */
-    public function fullText(string $tsQuery): array
+    public function fullText(string $tsQuery, array $words, ?array $blocked): array
     {
         $match = function (string $text, ?string $vector): array {
             // Rank on the stored, weighted vector where there is one; recomputing it per match was the cost (DB-01)
@@ -37,17 +45,21 @@ final class SearchRepository
             ];
         };
 
-        return $this->run($match, $tsQuery);
+        return [...$this->run($match, $tsQuery), 'files' => $this->files($words, false, $blocked)];
     }
 
     /**
      * Typo-tolerant match with pg_trgm word similarity, used only when full text finds nothing.
      *
-     * @return array{skills: list<object>, goals: list<object>, evidence: list<object>}
+     * @param  list<string>  $words
+     * @param  list<string>|null  $blocked
+     * @return array{skills: list<object>, goals: list<object>, evidence: list<object>, files: list<MediaMgmt>}
      */
-    public function fuzzy(string $text): array
+    public function fuzzy(array $words, ?array $blocked): array
     {
-        return DB::transaction(function () use ($text): array {
+        $text = implode(' ', $words);
+
+        return DB::transaction(function () use ($text, $words, $blocked): array {
             // Local to this transaction; the `<%` operator reads it. With the GiST index, ORDER BY `<<->`
             // walks the index in distance order and stops after SEARCH_LIMIT rows
             DB::select("SELECT set_config('pg_trgm.word_similarity_threshold', ?, true)", [LedgerConst::SEARCH_FUZZY_THRESHOLD]);
@@ -56,8 +68,18 @@ final class SearchRepository
                 "f_unaccent(lower(?)) <<-> {$column}",
             ];
 
-            return $this->run($match, $text);
+            return [...$this->run($match, $text), 'files' => $this->files($words, true, $blocked)];
         });
+    }
+
+    /**
+     * @param  list<string>  $words
+     * @param  list<string>|null  $blocked
+     * @return list<MediaMgmt>
+     */
+    private function files(array $words, bool $fuzzy, ?array $blocked): array
+    {
+        return $blocked === null ? [] : $this->media->searchNames($words, $fuzzy, $blocked, LedgerConst::SEARCH_LIMIT)->all();
     }
 
     /**

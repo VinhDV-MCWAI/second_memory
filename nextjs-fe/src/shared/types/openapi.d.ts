@@ -922,7 +922,10 @@ export interface paths {
       path?: never;
       cookie?: never;
     };
-    /** Search skills, goals and evidence (accents and case ignored; typo fallback when nothing matches) */
+    /**
+     * Search skills, goals, evidence and the names of files and folders (accents and case ignored; typo fallback when nothing matches).
+     *     `files` is empty for an admin without `media.list`, and never holds the trash or locked folders the admin may not use
+     */
     get: operations['search.query'];
     put?: never;
     post?: never;
@@ -4380,6 +4383,14 @@ export interface operations {
                 id: number;
                 title: string;
                 snippet: string | null;
+              }[];
+              files: {
+                id: number;
+                is_file: boolean;
+                name: string;
+                path: string;
+                size: number | null;
+                thumbnail_url: string | null;
               }[];
             };
             error: {
