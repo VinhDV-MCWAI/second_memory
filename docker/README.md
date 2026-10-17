@@ -56,7 +56,7 @@ docker exec ml-nginx nginx -t && docker exec ml-nginx nginx -s reload   # after 
 
 ## Troubleshooting
 
-> 🇻🇳 Xử lý sự cố thường gặp. Thêm các lưu ý khác ở `.claude/lab/PROGRESS.md` → "Environment gotchas".
+> 🇻🇳 Xử lý sự cố thường gặp. Thêm lỗi mới vào [docs/dev-guide.md](../docs/dev-guide.md) mục 6 "Các lỗi hay gặp".
 
 | Symptom | Fix |
 |---|---|

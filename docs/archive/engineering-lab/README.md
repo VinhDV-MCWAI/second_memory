@@ -5,7 +5,7 @@ Tài liệu của giai đoạn Engineering Lab, trước khi đổi hướng ng�
 | Thư mục / file | Nội dung |
 |---|---|
 | `01-analysis.md`, `02-roadmap.md`, `03-backlog.md`, `github-setup.md` | Kế hoạch cũ |
-| `lab/`, `refactor-2026-10/` | Bảng việc, nhật ký tiến độ và kế hoạch refactor cũ |
+| `refactor-2026-10/` | Kế hoạch và nhật ký đợt refactor trước Engineering Lab. Bảng việc và nhật ký thô của giai đoạn Engineering Lab (`lab/`) đã xóa ngày 2026-10-17; xem lại: `git log -- docs/archive/engineering-lab/lab/` |
 | `handbook/` | Sổ tay quy trình kiểu một đội nhiều người: nhận yêu cầu, thiết kế, git, code, QA, phát hành, vận hành, báo cáo |
 | `templates/` | Mẫu tài liệu: yêu cầu, thiết kế, ADR, sự cố, báo cáo ngày/tuần, nhìn lại giai đoạn |
 | `requirements/` | Hồ sơ yêu cầu: thu gọn hệ thống, Skill Ledger |

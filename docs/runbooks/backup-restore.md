@@ -81,7 +81,7 @@ Clean up a drill: `docker exec ml-postgres sh -c 'psql -U "$POSTGRES_USER" -d po
 
 - The previous `backup.sh` had no error handling and always deleted the local archive: without rclone it printed "done" and exited `0` with **no backup anywhere**. Fixed (see Backup above).
 - The previous `restore.sh` discarded every `pg_restore` error (`> /dev/null 2>&1`) and, with `--clean`, could leave a half-dropped database; it could only restore over the live data and used `docker-compose` v1. Fixed: single-transaction restore, errors stop the script, test mode, `docker compose`.
-- Today's MinIO buckets are empty (media API removed in ADR-0007), so the media step ran but copied no object.
+- At the time of that test the MinIO buckets were empty (the media feature had been removed; it came back with ADR-0014 on 2026-10-13), so the media step ran but copied no object. The next drill must check that the Files objects come back.
 - Not measured: the full restore end to end (it would overwrite the dev data) — do it on a scratch environment when P4 provides one.
 
 > 🇻🇳 Phát hiện: `backup.sh` cũ không kiểm tra lỗi và luôn xoá file cục bộ — thiếu rclone vẫn báo xong, thoát 0 mà **không có bản backup nào**. `restore.sh` cũ nuốt mọi lỗi `pg_restore` và có thể để DB bị xoá dở. Đã sửa cả hai. Bucket MinIO hiện trống. Chưa đo khôi phục thật đầu-cuối (sẽ ghi đè dữ liệu dev) — làm khi P4 có môi trường tạm.
