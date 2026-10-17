@@ -71,17 +71,9 @@ Lệnh chi tiết và cách xử lý lỗi: [dev-guide.md](../dev-guide.md).
 
 ## Dọn dẹp khi xong việc
 
-Làm trước khi đánh dấu xong mỗi việc (từ 2026-10-15):
+Làm trước khi đánh dấu xong mỗi việc: theo bảng kiểm trong [hướng dẫn dọn dẹp](../runbooks/don-dep.md) (rác Docker bằng `make clean`, dữ liệu thử tên `TMP …` trên DB dev, file thử trong MinIO, container tạm, code chết, tài liệu nhắc tới thứ đã xóa).
 
-| Dọn gì | Cách làm |
-|---|---|
-| Rác Docker: ảnh không tên, ảnh production cũ, ổ đĩa tạm không dùng, bộ nhớ đệm build quá 7 ngày, kết quả test cũ | `make clean`. Không đụng dữ liệu dev, container đang chạy, ảnh còn container dùng |
-| Code chết, đoạn code comment lại, file `.bak`, file thử | Xóa hẳn, không comment lại |
-| File, thư mục, dữ liệu thử tạo ra trong lúc làm (file upload thử, tài khoản thử, script tạm) | Xóa, trừ khi là dữ liệu mẫu của `make seed` |
-| Container hoặc môi trường dựng tạm để thử | Tắt và xóa khi không còn việc nào dùng |
-| Tài liệu nhắc tới thứ đã xóa | Sửa theo |
-
-Xóa thư mục có trong git, hoặc dữ liệu không tạo lại được (DB dev, file trong MinIO dev): hỏi chủ dự án trước.
+Xóa thư mục có trong git, hoặc dữ liệu không tạo lại được (DB dev, file trong MinIO dev) mà không phải do chính việc đó tạo ra: hỏi chủ dự án trước.
 
 ## Việc tạm dừng
 

@@ -86,10 +86,11 @@ Ghi lại quyết định này vào tài liệu của tính năng (docs/features
 Không sửa code. Kiểm tra repo Second Memory rồi báo cáo bằng tiếng Việt:
 
 1. Chạy `scripts/lane.sh status` và `git log --oneline -20`. Liệt kê việc đã xong, đang làm, bị chặn.
-2. Với mỗi việc đánh dấu done gần đây, đối chiếu cột "Kết quả" trong docs/plan/03-backlog.md với code và tài liệu thật:
+2. Với mỗi việc đánh dấu done gần đây (nhật ký trong .claude/lab/PROGRESS.md, tóm tắt trong docs/plan/05-done.md), đối chiếu kết quả ghi lại với code và tài liệu thật:
    - kết quả đã có thật chưa (file, API, màn hình, test)?
    - có commit tương ứng không?
    - tài liệu tiếng Việt đã cập nhật chưa (docs/features/, docs/dev-guide.md)?
+   - đã dọn dẹp chưa (docs/runbooks/don-dep.md): dữ liệu thử `TMP …`, file thử, rác Docker?
 3. Chạy `scripts/lane.sh run make verify` và báo số test pass/fail thật.
 4. Kiểm tra vi phạm quy tắc: có tính năng nào bị xóa mà không có xác nhận của tôi không? có thư viện mới không được duyệt không? có commit chứa .env hoặc bí mật không?
 5. Kết luận dạng bảng: Việc | Trạng thái trên bảng | Thực tế | Thiếu gì.

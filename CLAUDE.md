@@ -47,6 +47,7 @@ Detailed, path-scoped conventions live in `.claude/rules/`. The essentials:
 - No magic values: use Enums / Constants / message keys.
 - One Node lockfile at the repo root (pnpm workspace). Never add per-package lockfiles.
 - Scripts (env, build, DB, backup) must be idempotent.
+- Clean up after every task before marking it done ([.claude/rules/cleanup.md](.claude/rules/cleanup.md)): `make clean`, remove `TMP ` test records and files you created, dead code.
 - Simple over clever. Don't add abstractions that aren't used at least twice.
 - Never read, print or commit secrets or `.env` files.
 - Git: all tasks on one branch (currently `feature/p3-ledger-api`); the owner pushes and opens PRs (→ `developer` → `main`). Conventional Commits.

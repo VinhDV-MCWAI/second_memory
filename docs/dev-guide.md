@@ -135,7 +135,7 @@ Test dùng một database riêng tên `testing`, không đụng dữ liệu dev.
 | Khởi động lại container | `make restart` | Không mất gì |
 | Tắt hết | `make down` | Không mất gì, dữ liệu vẫn còn |
 | Thêm lại tài khoản và dữ liệu mẫu bị thiếu | `make seed` | Không mất gì |
-| Dọn rác Docker và kết quả test cũ (làm sau mỗi việc) | `make clean` | Không mất dữ liệu dev; lần build sau có thể chậm hơn một chút |
+| Dọn rác Docker, ảnh không dùng và kết quả test cũ (làm sau mỗi việc, xem [hướng dẫn dọn dẹp](runbooks/don-dep.md)) | `make clean` | Không mất dữ liệu dev; lần build sau có thể chậm hơn một chút |
 | Xóa sạch DB dev rồi tạo lại (kèm tài khoản và dữ liệu mẫu) | `make fresh` (sẽ hỏi trước khi chạy) | **Mất toàn bộ dữ liệu dev** |
 
 Không dùng `migrate:rollback` trên DB dev. Muốn thử rollback một migration thì làm trên DB `testing`:
