@@ -127,6 +127,8 @@ Mỗi dòng do `scripts/lane.sh done` tự thêm. Không sửa tay.
 
 - 2026-10-17 — [lane main] DEPT-03 done: 41415b87, 59153f21, ab7e507e, 650a51e8, e932a5f2 — khóa thư mục Files theo phòng ban: API media/access/{id} (quyền media.access), chặn danh sách, tải, xem trước, upload, tạo thư mục, đổi tên, chuyển, xóa, thùng rác, upload dở, gắn file vào bằng chứng (file đã gắn hiện locked); khóa lồng xét cả cha lẫn con, admin chưa có phòng ban không thấy; sửa test e2e ảnh nhỏ chập chờn; make verify pass (274 backend, 150 giao diện, 63 importer), make e2e 8/8
 
+- 2026-10-17 — [lane main] DEPT-04 done: e3299ce4, 3a2a4411 — màn hình Files: nút chìa khóa Access chọn phòng ban cho thư mục (bỏ tick hết là mở khóa), ổ khóa vàng cạnh thư mục khóa; form bằng chứng hiện nhãn Locked, không mở được file bị khóa; make verify pass (274 backend, 153 giao diện, 63 importer), thử thật trên dev
+
 ## Next step
 
 Cập nhật 2026-10-15, sau khi rà tài liệu tiến độ.
