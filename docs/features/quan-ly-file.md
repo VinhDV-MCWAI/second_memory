@@ -37,7 +37,7 @@ File đã xóa nằm trong thùng rác **30 ngày**, sau đó MinIO tự xóa h�
 
 | Thao tác | Kết quả | Quyền |
 |---|---|---|
-| Xem | Tên, thư mục cũ, dung lượng, ngày xóa, ai xóa, còn mấy ngày. Lọc theo tên | `media.trash-list` (vai trò Chỉ xem cũng có) |
+| Xem | Ảnh nhỏ (nếu có), tên, thư mục cũ, dung lượng, ngày xóa, ai xóa, còn mấy ngày. Lọc theo tên | `media.trash-list` (vai trò Chỉ xem cũng có) |
 | **Restore** | File về đúng thư mục cũ. Thư mục cũ đã bị xóa thì tự tạo lại (cả các thư mục cha). Tên đã có file khác dùng thì đặt thành `tên (restored).đuôi`, rồi `tên (restored 2).đuôi`, … | `media.trash-restore` |
 | **Delete forever** (từng file hoặc tick nhiều) | Hỏi lại, rồi xóa hẳn: không khôi phục được nữa | `media.trash-delete` |
 | **Empty trash** | Hỏi lại, rồi xóa hẳn mọi file trong thùng rác | `media.trash-empty` |
@@ -65,7 +65,8 @@ Từ 2026-10-15. Upload xong thì một việc nền (container `ml-queue`, khô
 | Ảnh nhỏ | JPEG rộng tối đa 320 px, lưu trong kho chính tại `thumbnails/<tên file trong kho>.jpg`, tên ghi trong cột `metadata` |
 | File ffmpeg không đọc được | Upload vẫn thành công, chỉ không có ảnh nhỏ và thời lượng. Lý do ghi vào log (`ffprobe could not read a file`) |
 | An toàn | Mỗi lần chạy ffmpeg tối đa 60 giây. ffmpeg chỉ được đọc file qua mạng (http) và chỉ với các định dạng video, nhạc, ảnh thông thường: một file giả làm video nhưng bên trong là danh sách phát (trỏ tới file khác trên máy) bị từ chối |
-| Xóa | Ảnh nhỏ ở lại trong thùng rác cùng file. Xóa vĩnh viễn hoặc lệnh dọn hằng ngày thì xóa luôn ảnh nhỏ |
+| Xóa | Ảnh nhỏ ở lại cùng file (không bị đặt dấu đã xóa), nên thùng rác vẫn hiện được (từ 2026-10-17). Xóa vĩnh viễn hoặc lệnh dọn hằng ngày thì xóa luôn ảnh nhỏ |
+| Trang public | File đính kèm bằng chứng công khai cũng hiện ảnh nhỏ, xem [Trang public](trang-public.md) |
 | File upload trước ngày 2026-10-15 | `docker exec ml-php php artisan media:read-media-info`. Chạy lại bao nhiêu lần cũng được: file đã đọc (kể cả không đọc được) được bỏ qua |
 | Image PHP | Có thêm ffmpeg nên image bản dev nặng 433 MB (trước là 252 MB) |
 
