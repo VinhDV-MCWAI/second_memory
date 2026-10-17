@@ -2,7 +2,7 @@
 
 | | |
 |---|---|
-| Trạng thái | **Đề xuất**, chờ chủ dự án chọn phương án (2026-10-17) |
+| Trạng thái | Đã chấp nhận (2026-10-17, chủ dự án chọn phương án C: Astro; đồng ý chuyển hướng `/docs` → `/skills`; người dùng xem kỹ năng, bằng chứng và file đính kèm như hiện tại) |
 | Ngày | 2026-10-17 |
 | Người quyết định | Chủ dự án |
 | Liên quan | [ADR-0015](0015-defer-end-users-departments.md) (người dùng cuối để sau), [ADR-0018](0018-lifecycle-practice-track.md) (làm theo vòng đời đầy đủ), [trang public](../features/trang-public.md) |
@@ -49,6 +49,20 @@ Next.js quá nặng cho việc chỉ để đọc: một container 500 MB RAM �
 - **Đăng nhập người dùng cuối vẫn đơn giản:** cùng tên miền (nginx :81), dùng cookie phiên của Laravel giống trang quản trị, với một bộ đăng nhập riêng cho người dùng.
 
 Nếu chủ dự án muốn **ít container nhất** và chấp nhận trộn trang vào API, chọn **D**.
+
+## Kết quả đo (2026-10-17, thử nhanh)
+
+Cùng trang chi tiết một kỹ năng, cùng dữ liệu, bản production của mỗi bên chạy trong container trên cùng máy, sau 30 lần mở trang:
+
+| | Next.js (`nextjs-docs`) | Astro (`public-site`) |
+|---|---|---|
+| RAM khi chạy production | 76 MB | **35 MB** |
+| RAM khi chạy dev | 499 MB | **133 MB** |
+| Image production | 301 MB | **248 MB** (gần hết là image Node gốc; mọi thư viện được gói vào `dist/`, 1,4 MB) |
+| HTML của trang | 14 KB | **2,7 KB** |
+| JavaScript gửi xuống trình duyệt | 579 KB, 11 file | **0** |
+
+Lần build đầu image Astro nặng 446 MB vì mang theo cả `node_modules`. Gói mọi thư viện vào bản build (`ssr.noExternal` trong `astro.config.mjs`) đưa về 248 MB.
 
 ## Kế hoạch nếu chọn C
 
