@@ -73,6 +73,8 @@ Mỗi dòng do `scripts/lane.sh done` tự thêm. Không sửa tay. Các dòng t
 
 - 2026-10-19 — [lane main] CMS-01 done: 0b9a2f21 — bảng danh mục + bài viết, 8 API quản trị, 3 API public (Markdown → HTML an toàn), lưu bài viết, 10 danh mục mẫu × 2 bài trên dev; 311 test backend pass
 
+- 2026-10-19 — [lane main] CMS-02 done: 2ecf677e — menu Public content → Categories, Articles: thêm, sửa, ẩn/hiện, thứ tự, xóa, lịch sử thay đổi, link mở trang public; 160 test giao diện pass
+
 ## Next step
 
 1. Đầu phiên: đọc file này, rồi `scripts/lane.sh status`. Bảng việc chỉ còn các việc "để sau" theo quyết định chủ dự án.
