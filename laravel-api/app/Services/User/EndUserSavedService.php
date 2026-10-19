@@ -12,7 +12,7 @@ use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 /**
  * Favourites and read-later lists of end users (ADR-0020). Targets are named the way the public
- * site names them: a skill by its slug, an evidence by its public key.
+ * site names them: a skill by its slug, an evidence or an article by its public key.
  */
 final class EndUserSavedService
 {
@@ -24,7 +24,7 @@ final class EndUserSavedService
     }
 
     /**
-     * @param  array{kind: string, skill?: string, evidence?: string}  $payload
+     * @param  array{kind: string, skill?: string, evidence?: string, article?: string}  $payload
      *
      * @throws ModelNotFoundException when the target is not on the public site
      */
@@ -34,7 +34,7 @@ final class EndUserSavedService
     }
 
     /**
-     * @param  array{kind: string, skill?: string, evidence?: string}  $payload
+     * @param  array{kind: string, skill?: string, evidence?: string, article?: string}  $payload
      *
      * @throws ModelNotFoundException when the target is not on the public site
      */
@@ -44,13 +44,15 @@ final class EndUserSavedService
     }
 
     /**
-     * @param  array{kind: string, skill?: string, evidence?: string}  $payload
-     * @return array{skill_id: int}|array{evidence_id: int}
+     * @param  array{kind: string, skill?: string, evidence?: string, article?: string}  $payload
+     * @return array{skill_id: int}|array{evidence_id: int}|array{article_id: int}
      */
     private function target(array $payload): array
     {
-        return isset($payload['skill'])
-            ? ['skill_id' => $this->saved->publicSkillId($payload['skill'])]
-            : ['evidence_id' => $this->saved->visibleEvidenceId((string) ($payload['evidence'] ?? ''))];
+        return match (true) {
+            isset($payload['skill']) => ['skill_id' => $this->saved->publicSkillId($payload['skill'])],
+            isset($payload['article']) => ['article_id' => $this->saved->visibleArticleId($payload['article'])],
+            default => ['evidence_id' => $this->saved->visibleEvidenceId((string) ($payload['evidence'] ?? ''))],
+        };
     }
 }

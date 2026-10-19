@@ -112,6 +112,8 @@ class Messages
 
     const E0046 = 'Registration is closed';
 
+    const E0047 = 'Move or delete the articles of this category first';
+
     /**
      * Errors http messages
      */

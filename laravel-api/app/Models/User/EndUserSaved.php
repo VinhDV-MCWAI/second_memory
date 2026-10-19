@@ -5,13 +5,14 @@ declare(strict_types=1);
 namespace App\Models\User;
 
 use App\Enums\SavedKind;
+use App\Models\Content\Article;
 use App\Models\Ledger\Evidence;
 use App\Models\Ledger\Skill;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
- * One skill or one evidence an end user saved as a favourite or to read later (ADR-0020).
+ * One skill, evidence or article an end user saved as a favourite or to read later (ADR-0020).
  */
 class EndUserSaved extends Model
 {
@@ -19,7 +20,7 @@ class EndUserSaved extends Model
 
     protected $table = 'end_user_saved';
 
-    protected $fillable = ['end_user_id', 'kind', 'skill_id', 'evidence_id'];
+    protected $fillable = ['end_user_id', 'kind', 'skill_id', 'evidence_id', 'article_id'];
 
     /**
      * @return BelongsTo<Skill, $this>
@@ -37,6 +38,14 @@ class EndUserSaved extends Model
         return $this->belongsTo(Evidence::class);
     }
 
+    /**
+     * @return BelongsTo<Article, $this>
+     */
+    public function article(): BelongsTo
+    {
+        return $this->belongsTo(Article::class);
+    }
+
     protected function casts(): array
     {
         return [
@@ -45,6 +54,7 @@ class EndUserSaved extends Model
             'kind' => SavedKind::class,
             'skill_id' => 'integer',
             'evidence_id' => 'integer',
+            'article_id' => 'integer',
             'created_at' => 'datetime',
         ];
     }

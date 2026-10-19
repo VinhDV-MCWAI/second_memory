@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Tests\Feature\User;
 
 use App\Constants\CommonVal;
+use App\Models\Content\Article;
+use App\Models\Content\ContentCategory;
 use App\Models\Ledger\Evidence;
 use App\Models\Ledger\Skill;
 use App\Models\User\EndUser;
@@ -74,6 +76,29 @@ final class SavedApiTest extends TestCase
 
         $this->skill->forceFill(['is_public' => false])->save();
         $this->call('GET', self::BASE.'/list', [], $this->cookies)->assertJsonCount(0, 'data.data');
+    }
+
+    public function test_articles_are_saved_by_key_and_drop_out_when_hidden(): void
+    {
+        $article = Article::factory()->create(['title' => 'Bộ câu hỏi làm rõ']);
+        $key = $this->call('GET', "/api/public/articles/{$article->category->slug}/{$article->slug}")->assertOk()->json('data.data.key');
+
+        $this->call('POST', self::BASE.'/store', ['kind' => 'read_later', 'article' => $key], $this->cookies)->assertOk();
+        $this->call('GET', self::BASE.'/list', ['kind' => 'read_later'], $this->cookies)->assertOk()
+            ->assertJsonPath('data.data.0.target', 'article')
+            ->assertJsonPath('data.data.0.key', $key)
+            ->assertJsonPath('data.data.0.title', 'Bộ câu hỏi làm rõ')
+            ->assertJsonPath('data.data.0.category_slug', $article->category->slug)
+            ->assertJsonPath('data.data.0.article_slug', $article->slug)
+            ->assertJsonPath('data.data.0.skill_slug', null);
+
+        // A hidden category hides its articles, without leaking their titles
+        ContentCategory::query()->whereKey($article->content_category_id)->update(['is_public' => false]);
+        $this->call('GET', self::BASE.'/list', [], $this->cookies)->assertJsonCount(0, 'data.data');
+        $this->call('POST', self::BASE.'/store', ['kind' => 'favorite', 'article' => $key], $this->cookies)->assertNotFound();
+
+        $article->delete();
+        $this->assertDatabaseCount('end_user_saved', 0);
     }
 
     public function test_one_target_and_a_known_list(): void

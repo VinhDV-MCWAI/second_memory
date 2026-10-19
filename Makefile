@@ -92,7 +92,7 @@ permissions: ## Register new admin API routes as permissions, in the dev and tes
 	docker exec -e DB_DATABASE=testing ml-php php artisan permission:sync-routes
 
 .PHONY: seed
-seed: ## Add the root owner, the viewer account and sample Skill Ledger data (idempotent, keeps existing rows)
+seed: ## Add the root owner, the viewer account, sample Skill Ledger data and sample categories + articles (idempotent, keeps existing rows)
 	$(PHP) php artisan db:seed
 
 .PHONY: fresh

@@ -71,4 +71,6 @@ return [
     'notes' => 'Notes',
     'external_key' => 'Vault path',
     'dry_run' => 'Dry run',
+    'body' => 'Content',
+    'sort_order' => 'Order',
 ];

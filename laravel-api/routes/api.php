@@ -7,6 +7,7 @@ use App\Constants\LedgerConst;
 use App\Http\Controllers\Audit\AuditLogController;
 use App\Http\Controllers\Custom\CredentialController;
 use App\Http\Controllers\Ledger\EvidenceImportController;
+use App\Http\Controllers\Public\PublicContentController;
 use App\Http\Controllers\Public\PublicFileController;
 use App\Http\Controllers\Public\PublicSkillController;
 use App\Http\Controllers\User\EndUserController;
@@ -36,6 +37,7 @@ Route::prefix('admin')
                         Route::group([], base_path('routes/api/ledger.php'));
                         Route::group([], base_path('routes/api/media.php'));
                         Route::group([], base_path('routes/api/system.php'));
+                        Route::group([], base_path('routes/api/content.php'));
                         Route::get('audit-log/list', [AuditLogController::class, 'list'])->name('audit-log.list');
                     });
 
@@ -74,4 +76,8 @@ Route::prefix('public')
         Route::get('skills/{slug}', [PublicSkillController::class, 'show']);
         // Files attached to public evidence (LEDGER-01)
         Route::get('files/{key}', [PublicFileController::class, 'url'])->whereUuid('key');
+        // Categories and articles of the home page (ADR-0021)
+        Route::get('categories', [PublicContentController::class, 'categories']);
+        Route::get('categories/{slug}', [PublicContentController::class, 'category']);
+        Route::get('articles/{category}/{slug}', [PublicContentController::class, 'article']);
     });

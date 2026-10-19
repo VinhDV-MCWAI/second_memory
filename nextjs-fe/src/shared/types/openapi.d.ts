@@ -122,6 +122,70 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/admin/article/list': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations['article.list'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/admin/article/store': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations['article.store'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/admin/article/update/{id}': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put: operations['article.update'];
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/admin/article/delete': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations['article.delete'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/admin/audit-log/list': {
     parameters: {
       query?: never;
@@ -167,6 +231,70 @@ export interface paths {
     get: operations['background-task.status'];
     put?: never;
     post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/admin/content-category/list': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations['content-category.list'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/admin/content-category/store': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations['content-category.store'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/admin/content-category/update/{id}': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put: operations['content-category.update'];
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/admin/content-category/delete': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations['content-category.delete'];
     delete?: never;
     options?: never;
     head?: never;
@@ -997,6 +1125,57 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/public/categories': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Public categories of the home page, in the owner's order */
+    get: operations['publicContent.categories'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/public/categories/{slug}': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** One public category with its public articles; private or missing → 404 */
+    get: operations['publicContent.category'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/public/articles/{category}/{slug}': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** One public article, its Markdown body as safe HTML; private (or private category) or missing → 404 */
+    get: operations['publicContent.article'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/public/files/{key}': {
     parameters: {
       query?: never;
@@ -1141,7 +1320,7 @@ export interface paths {
     };
     get?: never;
     put?: never;
-    /** Save a skill (`skill`: slug) or an evidence (`evidence`: its public `key`). Saving twice is fine */
+    /** Save a skill (`skill`: slug), an evidence (`evidence`) or an article (`article`): their public `key`. Saving twice is fine */
     post: operations['saved.store'];
     delete?: never;
     options?: never;
@@ -1416,6 +1595,20 @@ export interface components {
       username: string;
       password: string;
     };
+    /** ArticleResource */
+    ArticleResource: {
+      id: number;
+      content_category_id: number;
+      category_name: string;
+      category_slug: string;
+      title: string;
+      slug: string;
+      summary: string | null;
+      body: string;
+      sort_order: number;
+      is_public: boolean;
+      updated_at: string | null;
+    };
     /**
      * AuditEvent
      * @description What an audit_log row records (ADR-0006).
@@ -1474,6 +1667,17 @@ export interface components {
         etag: string;
       }[];
     };
+    /** ContentCategoryResource */
+    ContentCategoryResource: {
+      id: number;
+      name: string;
+      slug: string;
+      description: string;
+      sort_order: number;
+      is_public: boolean;
+      article_count: number;
+      updated_at: string | null;
+    };
     /**
      * CreateUploadRequest
      * @description One-PUT upload of a small file (ADR-0014); bigger files use multipart upload.
@@ -1493,6 +1697,14 @@ export interface components {
     };
     /** DeleteAdminMstRequest */
     DeleteAdminMstRequest: {
+      ids: number[];
+    };
+    /** DeleteArticleRequest */
+    DeleteArticleRequest: {
+      ids: number[];
+    };
+    /** DeleteContentCategoryRequest */
+    DeleteContentCategoryRequest: {
       ids: number[];
     };
     /** DeleteDepartmentRequest */
@@ -1745,6 +1957,38 @@ export interface components {
     PartUrlsRequest: {
       part_numbers: number[];
     };
+    /** PublicArticleResource */
+    PublicArticleResource: {
+      title: string;
+      slug: string;
+      key: string;
+      summary: string | null;
+      body_html: string;
+      updated_at: string;
+      category: {
+        name: string;
+        slug: string;
+      };
+    };
+    /** PublicCategoryDetailResource */
+    PublicCategoryDetailResource: {
+      name: string;
+      slug: string;
+      description: string;
+      articles: {
+        title: string;
+        slug: string;
+        summary: string | null;
+        updated_at: string;
+      }[];
+    };
+    /** PublicCategoryResource */
+    PublicCategoryResource: {
+      name: string;
+      slug: string;
+      description: string;
+      article_count: number;
+    };
     /** PublicSkillDetailResource */
     PublicSkillDetailResource: {
       name: string;
@@ -1808,11 +2052,14 @@ export interface components {
     SavedItemResource: {
       kind: string;
       /** @enum {string} */
-      target: 'skill' | 'evidence';
+      target: 'skill' | 'evidence' | 'article';
       key: string;
       title: string;
-      skill_slug: string;
-      skill_name: string;
+      skill_slug: string | null;
+      skill_name: string | null;
+      category_slug: string | null;
+      category_name: string | null;
+      article_slug: string | null;
       saved_at: string;
     };
     /**
@@ -1823,13 +2070,15 @@ export interface components {
     SavedKind: 'favorite' | 'read_later';
     /**
      * SavedRequest
-     * @description A skill (by slug) or an evidence (by public key), and which list (ADR-0020).
+     * @description A skill (by slug), an evidence or an article (by public key), and which list (ADR-0020, ADR-0021).
      */
     SavedRequest: {
       kind: components['schemas']['SavedKind'];
       skill?: string;
       /** Format: uuid */
       evidence?: string;
+      /** Format: uuid */
+      article?: string;
     };
     /**
      * SearchMatch
@@ -1903,6 +2152,25 @@ export interface components {
       department_ids?: number[];
       avatar?: string | null;
       is_delete: components['schemas']['IsDelete'];
+    };
+    /**
+     * StoreArticleRequest
+     * @description The body is Markdown; the public API turns it into safe HTML (ADR-0021).
+     */
+    StoreArticleRequest: {
+      content_category_id: number;
+      title: string;
+      summary?: string | null;
+      body: string;
+      sort_order?: number;
+      is_public?: boolean;
+    };
+    /** StoreContentCategoryRequest */
+    StoreContentCategoryRequest: {
+      name: string;
+      description?: string | null;
+      sort_order?: number;
+      is_public?: boolean;
     };
     /** StoreDepartmentRequest */
     StoreDepartmentRequest: {
@@ -2025,6 +2293,25 @@ export interface components {
       department_ids?: number[];
       avatar?: string | null;
       is_delete?: components['schemas']['IsDelete'] | null;
+    };
+    /**
+     * UpdateArticleRequest
+     * @description The body is Markdown; the public API turns it into safe HTML (ADR-0021).
+     */
+    UpdateArticleRequest: {
+      content_category_id: number;
+      title: string;
+      summary?: string | null;
+      body: string;
+      sort_order?: number;
+      is_public?: boolean;
+    };
+    /** UpdateContentCategoryRequest */
+    UpdateContentCategoryRequest: {
+      name: string;
+      description?: string | null;
+      sort_order?: number;
+      is_public?: boolean;
     };
     /**
      * UpdateDepartmentRequest
@@ -2478,6 +2765,191 @@ export interface operations {
       };
     };
   };
+  'article.list': {
+    parameters: {
+      query?: {
+        id?: number | null;
+        page?: number | null;
+        per_page?: number | null;
+        sort_by?: string | null;
+        sort_order?: string | null;
+        title?: string | null;
+        content_category_id?: number | null;
+        is_public?: boolean | null;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Array of `ArticleResource` */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            data: {
+              data: components['schemas']['ArticleResource'][];
+              links: components['schemas']['PaginationLinks'];
+              meta: components['schemas']['PaginationMeta'];
+            };
+            error: {
+              status: boolean;
+              code: number;
+              messages: null;
+            };
+          };
+        };
+      };
+      401: components['responses']['AuthenticationException'];
+      /** @description Forbidden */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ApiError'];
+        };
+      };
+      422: components['responses']['ValidationException'];
+    };
+  };
+  'article.store': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['StoreArticleRequest'];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            data: number;
+            error: {
+              status: boolean;
+              code: number;
+              messages: null;
+            };
+          };
+        };
+      };
+      401: components['responses']['AuthenticationException'];
+      /** @description Forbidden */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ApiError'];
+        };
+      };
+      422: components['responses']['ValidationException'];
+    };
+  };
+  'article.update': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['UpdateArticleRequest'];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            data: number;
+            error: {
+              status: boolean;
+              code: number;
+              messages: null;
+            };
+          };
+        };
+      };
+      401: components['responses']['AuthenticationException'];
+      /** @description Forbidden */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ApiError'];
+        };
+      };
+      /** @description Not Found */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ApiError'];
+        };
+      };
+      422: components['responses']['ValidationException'];
+    };
+  };
+  'article.delete': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['DeleteArticleRequest'];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            data: null;
+            error: {
+              status: boolean;
+              code: number;
+              messages: null;
+            };
+          };
+        };
+      };
+      401: components['responses']['AuthenticationException'];
+      /** @description Forbidden */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ApiError'];
+        };
+      };
+      422: components['responses']['ValidationException'];
+    };
+  };
   'audit-log.list': {
     parameters: {
       query?: {
@@ -2616,6 +3088,190 @@ export interface operations {
         };
       };
       404: components['responses']['NotFoundHttpException'];
+    };
+  };
+  'content-category.list': {
+    parameters: {
+      query?: {
+        id?: number | null;
+        page?: number | null;
+        per_page?: number | null;
+        sort_by?: string | null;
+        sort_order?: string | null;
+        name?: string | null;
+        is_public?: boolean | null;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Array of `ContentCategoryResource` */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            data: {
+              data: components['schemas']['ContentCategoryResource'][];
+              links: components['schemas']['PaginationLinks'];
+              meta: components['schemas']['PaginationMeta'];
+            };
+            error: {
+              status: boolean;
+              code: number;
+              messages: null;
+            };
+          };
+        };
+      };
+      401: components['responses']['AuthenticationException'];
+      /** @description Forbidden */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ApiError'];
+        };
+      };
+      422: components['responses']['ValidationException'];
+    };
+  };
+  'content-category.store': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['StoreContentCategoryRequest'];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            data: number;
+            error: {
+              status: boolean;
+              code: number;
+              messages: null;
+            };
+          };
+        };
+      };
+      401: components['responses']['AuthenticationException'];
+      /** @description Forbidden */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ApiError'];
+        };
+      };
+      422: components['responses']['ValidationException'];
+    };
+  };
+  'content-category.update': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['UpdateContentCategoryRequest'];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            data: number;
+            error: {
+              status: boolean;
+              code: number;
+              messages: null;
+            };
+          };
+        };
+      };
+      401: components['responses']['AuthenticationException'];
+      /** @description Forbidden */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ApiError'];
+        };
+      };
+      /** @description Not Found */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ApiError'];
+        };
+      };
+      422: components['responses']['ValidationException'];
+    };
+  };
+  'content-category.delete': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['DeleteContentCategoryRequest'];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            data: null;
+            error: {
+              status: boolean;
+              code: number;
+              messages: null;
+            };
+          };
+        };
+      };
+      401: components['responses']['AuthenticationException'];
+      /** @description Forbidden */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ApiError'];
+        };
+      };
+      422: components['responses']['ValidationException'];
     };
   };
   'credential.login': {
@@ -4875,6 +5531,143 @@ export interface operations {
       401: components['responses']['AuthenticationException'];
       /** @description Forbidden */
       403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ApiError'];
+        };
+      };
+    };
+  };
+  'publicContent.categories': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Array of `PublicCategoryResource` */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            data: {
+              data: components['schemas']['PublicCategoryResource'][];
+            };
+            error: {
+              status: boolean;
+              code: number;
+              messages: null;
+            };
+          };
+        };
+      };
+      /** @description Too Many Requests */
+      429: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ApiError'];
+        };
+      };
+    };
+  };
+  'publicContent.category': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        slug: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description `PublicCategoryDetailResource` */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            data: {
+              data: components['schemas']['PublicCategoryDetailResource'];
+            };
+            error: {
+              status: boolean;
+              code: number;
+              messages: null;
+            };
+          };
+        };
+      };
+      /** @description Not Found */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ApiError'];
+        };
+      };
+      /** @description Too Many Requests */
+      429: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ApiError'];
+        };
+      };
+    };
+  };
+  'publicContent.article': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        category: string;
+        slug: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description `PublicArticleResource` */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            data: {
+              data: components['schemas']['PublicArticleResource'];
+            };
+            error: {
+              status: boolean;
+              code: number;
+              messages: null;
+            };
+          };
+        };
+      };
+      /** @description Not Found */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ApiError'];
+        };
+      };
+      /** @description Too Many Requests */
+      429: {
         headers: {
           [name: string]: unknown;
         };
