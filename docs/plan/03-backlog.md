@@ -33,7 +33,7 @@ Các mục còn lại của giai đoạn này (triển khai, vận hành, sự c
 |---|---|---|---|
 | REL-01 | Đóng gói và bàn giao bản `v2.2.0`: ghi chú phát hành cho mọi việc từ `v2.1.0`, biên bản nghiệm thu (chạy kiểm tra, thử trên trình duyệt), tài liệu bàn giao, nhìn lại giai đoạn, tag trên máy (chủ dự án push) | `docs/releases/v2.2.0.md` + tag | done (67075790 — ghi chú phát hành v2.2.0 (nổi bật, phá vỡ tương thích, nâng cấp, trước/sau, nghiệm thu 10 bước, bàn giao, lỗi đã biết, nhìn lại); tag v2.2.0 trên máy, chủ dự án push) |
 | PROC-01 | **[XÁC NHẬN]** Sổ tay quy trình bản mới (tiếng Việt, gọn, hai tốc độ) từ sổ tay cũ; trả lời câu hỏi có khôi phục vai giả lập PO, QA, Ops để tạo đầu vào hay không | `docs/handbook/` được dùng thật | done (8c1e1daf — sổ tay quy trình tiếng Việt 7 chương trong docs/handbook/, mỗi chương có mục kinh nghiệm làm việc với từng vai; không khôi phục vai giả lập (chủ dự án quyết); dùng thật ở REL-02; dọn: không tạo dữ liệu hay container) |
-| REL-02 | Đóng gói bản `v2.3.0` (tài khoản người dùng trên trang public, yêu thích, xem sau, màn hình End users) **theo sổ tay mới**: ghi chú phát hành, biên bản nghiệm thu, tài liệu bàn giao, nhìn lại vòng đời đầy đủ, tag trên máy (chủ dự án push). Phần cuối của [REQ-003](../requirements/REQ-003-tai-khoan-nguoi-dung.md) mục 9 | `docs/releases/v2.3.0.md` + tag | todo |
+| REL-02 | Đóng gói bản `v2.3.0` (tài khoản người dùng trên trang public, yêu thích, xem sau, màn hình End users) **theo sổ tay mới**: ghi chú phát hành, biên bản nghiệm thu, tài liệu bàn giao, nhìn lại vòng đời đầy đủ, tag trên máy (chủ dự án push). Phần cuối của [REQ-003](../requirements/REQ-003-tai-khoan-nguoi-dung.md) mục 9 | `docs/releases/v2.3.0.md` + tag | doing |
 
 ## 9. Trang cho người dùng
 
