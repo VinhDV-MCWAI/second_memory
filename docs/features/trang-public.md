@@ -1,6 +1,6 @@
 # Trang public
 
-Trang ai cũng xem được, không cần đăng nhập: danh sách kỹ năng công khai và chi tiết từng kỹ năng. Chạy trong ứng dụng riêng `public-site` (Astro, từ 2026-10-17, [ADR-0019](../adr/0019-public-user-frontend.md)): HTML render sẵn ở server, không gửi JavaScript xuống trình duyệt, chỉ đọc.
+Trang ai cũng xem được, không cần đăng nhập: danh sách kỹ năng công khai và chi tiết từng kỹ năng. Chạy trong ứng dụng riêng `public-site` (Astro, từ 2026-10-17, [ADR-0019](../adr/0019-public-user-frontend.md)): HTML render sẵn ở server, chỉ đọc. Người xem có thể đăng nhập để lưu yêu thích và xem sau ([người dùng cuối](nguoi-dung-cuoi.md)); phần đó dùng một script nhỏ (~3 KB), khách chưa đăng nhập không gọi API nào thêm.
 
 ## Màn hình
 

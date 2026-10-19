@@ -8,13 +8,14 @@ Mỗi tính năng một file: nó làm gì, màn hình nào, API nào, bảng n�
 | Quản trị viên | [quan-tri-vien.md](quan-tri-vien.md) | Thêm, sửa, xóa tài khoản quản trị, chọn vai trò |
 | Phân quyền động | [phan-quyen-dong.md](phan-quyen-dong.md) | Mỗi API là một quyền, quyền gom vào vai trò, vai trò gán cho admin |
 | Skill Ledger | [skill-ledger.md](skill-ledger.md) | Kỹ năng, lịch sử cấp độ, bằng chứng, mục tiêu học, nhãn, trang tổng quan |
-| Tìm kiếm | [tim-kiem.md](tim-kiem.md) | Một ô tìm kiếm cho kỹ năng, mục tiêu và bằng chứng; gõ không dấu, gõ sai vẫn ra |
+| Tìm kiếm | [tim-kiem.md](tim-kiem.md) | Một ô tìm kiếm cho kỹ năng, mục tiêu, bằng chứng, file và thư mục; gõ không dấu, gõ sai vẫn ra |
 | Nhật ký thay đổi | [nhat-ky-thay-doi.md](nhat-ky-thay-doi.md) | Ghi lại ai đổi gì, lúc nào, và mọi lần đăng nhập |
 | Trang public | [trang-public.md](trang-public.md) | Trang `/skills` ai cũng xem được: kỹ năng và bằng chứng công khai |
 | Nhập từ Obsidian | [nhap-tu-obsidian.md](nhap-tu-obsidian.md) | Đồng bộ ghi chú Obsidian có `publish: true` thành bằng chứng |
 | Việc nền và thông báo tức thì | [viec-nen-va-thong-bao.md](viec-nen-va-thong-bao.md) | Việc chạy lâu làm ở container riêng, xong thì báo ngay lên màn hình (dùng chung cho mọi tính năng) |
 | Quản lý file | [quan-ly-file.md](quan-ly-file.md) | Màn hình Files: thư mục, upload (kéo-thả, file tới 10 GB chia phần), tải về, đổi tên, di chuyển, xóa; file nằm trong MinIO |
-| Phòng ban | [phong-ban.md](phong-ban.md) | Nhóm quản trị viên theo phòng ban; sắp tới dùng để khóa thư mục trong Files theo phòng ban |
+| Phòng ban | [phong-ban.md](phong-ban.md) | Nhóm quản trị viên theo phòng ban; khóa thư mục trong Files theo phòng ban |
+| Người dùng cuối | [nguoi-dung-cuoi.md](nguoi-dung-cuoi.md) | Người xem trang public tự đăng ký để lưu yêu thích, xem sau; admin khóa / mở, bật / tắt đăng ký |
 
 ## Quyền dùng chung cho mọi tính năng quản trị
 

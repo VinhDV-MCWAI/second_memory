@@ -17,6 +17,7 @@ Cập nhật: 2026-10-17. Tóm tắt các việc đã xong từ khi đổi hư�
 | Nhật ký thay đổi | Màn hình nhật ký: lọc theo loại, việc, người làm, ngày; xem giá trị cũ → mới | 10-14 | [nhat-ky-thay-doi.md](../features/nhat-ky-thay-doi.md) |
 | Tìm kiếm | Ô tìm kiếm chung có thêm file và thư mục (không dấu, gõ sai vẫn ra, tôn trọng khóa phòng ban) | 10-17 | [tim-kiem.md](../features/tim-kiem.md) |
 | CI/CD | Gộp vào `ci/` dùng chung cho GitHub và GitLab; `make ci` trên máy; `make cd` dựng bản demo prod-like bằng Terraform; tắt chạy tự động | 10-14 | [ci/README.md](../../ci/README.md), [ADR-0016](../adr/0016-ci-shared-folder.md) |
+| Người dùng cuối | Người xem trang public tự đăng ký (email, mật khẩu), lưu yêu thích và xem sau kỹ năng, bằng chứng; trang My lists; admin khóa / mở, đặt lại mật khẩu, bật / tắt đăng ký ở màn hình End users; bộ đăng nhập riêng, không gọi được API quản trị | 10-19 | [nguoi-dung-cuoi.md](../features/nguoi-dung-cuoi.md), [ADR-0020](../adr/0020-end-user-accounts.md) |
 | Đóng gói `v2.2.0` | Ghi chú phát hành, nghiệm thu, bàn giao, nhìn lại; tag trên máy | 10-17 | [v2.2.0.md](../releases/v2.2.0.md) |
 | Dọn dẹp | Bỏ tài liệu lỗi thời; viết lại README (tiếng Anh) và tài liệu kiến trúc; `make clean` xóa thêm ảnh Docker không dùng; quy tắc và hướng dẫn dọn dẹp sau mỗi việc; rút gọn bảng việc | 10-17 | [don-dep.md](../runbooks/don-dep.md) |
 
@@ -24,9 +25,8 @@ Cập nhật: 2026-10-17. Tóm tắt các việc đã xong từ khi đổi hư�
 
 | Việc | Lý do | Tài liệu |
 |---|---|---|
-| Quản lý người dùng cuối | Chưa có chỗ nào cho người dùng cuối đăng nhập | [ADR-0015](../adr/0015-defer-end-users-departments.md) |
 | Dữ liệu mẫu và HTTPS cho bản demo prod-like | Chỉ làm trên dev tới giai đoạn cuối | [infra/README.md](../../infra/README.md) |
 
 ## Kết quả kiểm tra gần nhất
 
-2026-10-17: `make verify` pass (280 test backend, 155 test giao diện, 63 test công cụ nhập Obsidian), `make e2e` 9/9 pass.
+2026-10-19: `make verify` pass (299 test backend, 158 test giao diện, 63 test công cụ nhập Obsidian, `astro check` 0 lỗi), `make e2e` 10/10 pass.

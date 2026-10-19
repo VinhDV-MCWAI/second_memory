@@ -29,14 +29,14 @@ flowchart LR
 | `ml-php` | REST API (php-fpm). Khởi động lần đầu thì migrate và seed DB trống. Có `ffmpeg` để đọc thời lượng và tạo ảnh nhỏ |
 | `ml-queue`, `ml-scheduler`, `ml-reverb` | Cùng image với `ml-php`: làm việc nền (hàng đợi Redis), chạy lệnh hẹn giờ, gửi thông báo tức thì qua WebSocket. Đổi code việc nền thì `make workers-restart` |
 | `ml-nextjs` | Trang quản trị |
-| `ml-public-site` | Trang public `/skills` (Astro, HTML render ở server, không gửi JavaScript; gọi API qua nginx, giữ kết quả 60 giây). `/docs…` cũ được nginx chuyển hướng tới `/skills` ([ADR-0019](../adr/0019-public-user-frontend.md)) |
+| `ml-public-site` | Trang public `/skills` (Astro, HTML render ở server; chỉ một script nhỏ cho tài khoản người dùng, ~3 KB; gọi API qua nginx, giữ kết quả 60 giây). `/docs…` cũ được nginx chuyển hướng tới `/skills` ([ADR-0019](../adr/0019-public-user-frontend.md)) |
 | `ml-postgres` | Dữ liệu và tìm kiếm. DB `testing` riêng cho test |
 | `ml-redis` | Phiên đăng nhập, cache, hàng đợi (test dùng DB 14 / 15) |
 | `ml-minio` (+ `ml-minio-init`) | Kho file. Bucket không cho đọc công khai; trình duyệt upload và tải bằng link ký tạm. Bucket chính bật lưu phiên bản, bản cũ tự hết hạn sau 30 ngày (thùng rác) |
 
 ## 2. Các nhóm API
 
-68 API. Hợp đồng đầy đủ: `laravel-api/openapi.json` (sinh từ code, [ADR-0008](../adr/0008-code-first-openapi-contract.md)). Mọi response cùng một dạng: `{ "data": …, "error": { "status", "code", "messages" } }`.
+83 API. Hợp đồng đầy đủ: `laravel-api/openapi.json` (sinh từ code, [ADR-0008](../adr/0008-code-first-openapi-contract.md)). Mọi response cùng một dạng: `{ "data": …, "error": { "status", "code", "messages" } }`.
 
 | Nhóm | Đường dẫn | Tài liệu |
 |---|---|---|
@@ -47,6 +47,7 @@ flowchart LR
 | Tìm kiếm, nhật ký | `admin/search`, `admin/audit-log/*` | [tim-kiem.md](../features/tim-kiem.md), [nhat-ky-thay-doi.md](../features/nhat-ky-thay-doi.md) |
 | Việc nền | `admin/background-task/*`, `broadcasting/auth` | [viec-nen-va-thong-bao.md](../features/viec-nen-va-thong-bao.md) |
 | Nhập Obsidian | `admin/evidence/import` (chỉ token API) | [nhap-tu-obsidian.md](../features/nhap-tu-obsidian.md) |
+| Người dùng cuối | `user/*` (bộ đăng nhập `user`), `admin/end-user/*` | [nguoi-dung-cuoi.md](../features/nguoi-dung-cuoi.md) |
 | Public | `public/skills/*`, `public/files/*` | [trang-public.md](../features/trang-public.md) |
 
 ## 3. Đăng nhập và phân quyền
@@ -69,6 +70,7 @@ sequenceDiagram
 | Phiên | Cookie phiên Sanctum, không có token trong trình duyệt. Ghi nhớ đăng nhập 30 ngày, riêng từng thiết bị | [ADR-0004](../adr/0004-sanctum-spa-cookie-auth.md) |
 | Quyền | Mỗi API quản trị là một quyền, gom vào vai trò lưu trong DB (`spatie/laravel-permission`). Có sẵn vai trò Chủ (toàn quyền) và Chỉ xem | [ADR-0013](../adr/0013-dynamic-permissions.md) |
 | Khóa thư mục | Thư mục Files gắn phòng ban thì chỉ thành viên (và Chủ) thấy. Mọi API Files đi qua `App\Services\Media\FolderAccess` | [ADR-0017](../adr/0017-departments-folder-policies.md) |
+| Người dùng cuối | Bộ đăng nhập riêng `user` trên bảng `end_user`, chung cookie phiên với admin nhưng không gọi được API quản trị (và ngược lại) | [ADR-0020](../adr/0020-end-user-accounts.md) |
 | Token API | Token cá nhân Sanctum chỉ mở được API nhập Obsidian | [ADR-0010](../adr/0010-python-importer-tooling.md) |
 | Nhật ký | Một bảng `audit_log`: mọi thêm / sửa / xóa, đăng nhập, đăng xuất, đăng nhập sai | [ADR-0006](../adr/0006-audit-log.md) |
 
@@ -81,6 +83,7 @@ sequenceDiagram
 | `media_mgmt` | File và thư mục trong Files (đường dẫn ảo, khóa MinIO, kích thước, thời lượng, trạng thái upload, đã xóa hay chưa) |
 | `department`, `admin_department`, `department_policy` | Phòng ban, thành viên, thư mục khóa theo phòng ban |
 | `admin_mst`, `admin_session` | Quản trị viên, thiết bị đang đăng nhập |
+| `end_user`, `end_user_saved`, `app_setting` | Người dùng cuối, yêu thích / xem sau, công tắc đăng ký |
 | `roles`, `permissions`, `model_has_roles`, `model_has_permissions`, `role_has_permissions` | Phân quyền động |
 | `audit_log` | Nhật ký thay đổi |
 | `personal_access_tokens` | Token của công cụ nhập Obsidian |
@@ -98,12 +101,12 @@ Tìm kiếm ([ADR-0009](../adr/0009-postgres-search.md)): cột `search_tsv` + c
 | Sao lưu | `make backup`: `pg_dump` + bản sao MinIO + `docker/.env` → rclone ([runbook](../runbooks/backup-restore.md)) |
 | Dọn dẹp | `make clean` sau mỗi việc ([hướng dẫn dọn dẹp](../runbooks/don-dep.md)) |
 
-## 6. Số liệu (2026-10-17)
+## 6. Số liệu (2026-10-19)
 
 | | |
 |---|---|
-| Backend | ~11,3 nghìn dòng PHP trong `app/`, 88 migration, 280 test PHPUnit |
-| Trang quản trị | ~16,8 nghìn dòng TS/TSX (không tính kiểu sinh tự động), 155 test Vitest |
+| Backend | ~12 nghìn dòng PHP trong `app/`, 90 migration, 299 test PHPUnit |
+| Trang quản trị | ~16,8 nghìn dòng TS/TSX (không tính kiểu sinh tự động), 158 test Vitest |
 | Trang public | ~0,3 nghìn dòng TS/Astro; RAM production 35 MB, image 248 MB, 0 KB JavaScript xuống trình duyệt |
 | Công cụ nhập Obsidian | 63 test pytest |
-| Test trình duyệt | 9 luồng Playwright |
+| Test trình duyệt | 10 luồng Playwright |

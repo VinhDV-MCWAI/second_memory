@@ -2,7 +2,7 @@
 
 | | |
 |---|---|
-| Trạng thái | **Sẵn sàng** (2026-10-17): chủ dự án bỏ lịch sử đã xem, các câu khác theo phương án khuyên, đăng nhập theo phương án A. Thiết kế: [ADR-0020](../adr/0020-end-user-accounts.md) |
+| Trạng thái | **Xong** (2026-10-19, [nguoi-dung-cuoi.md](../features/nguoi-dung-cuoi.md)). Chốt yêu cầu 2026-10-17: chủ dự án bỏ lịch sử đã xem, các câu khác theo phương án khuyên, đăng nhập theo phương án A. Thiết kế: [ADR-0020](../adr/0020-end-user-accounts.md) |
 | Người yêu cầu | Chủ dự án, 2026-10-17 |
 | Độ ưu tiên | Cao: việc tiếp theo của trang cho người dùng ([ADR-0019](../adr/0019-public-user-frontend.md)) |
 | Cỡ | Lớn: thêm bảng, đăng nhập mới, API mới, màn hình mới. Cần ADR sau khi chốt câu trả lời |

@@ -16,7 +16,8 @@ The project is also a practice ground for professional software work: every feat
 | Search | One search box over skills, goals, evidence, files and folders: Vietnamese without diacritics, typo tolerant | [tim-kiem.md](docs/features/tim-kiem.md) |
 | Audit log | Every change and sign-in attempt, with a filterable screen | [nhat-ky-thay-doi.md](docs/features/nhat-ky-thay-doi.md) |
 | Background jobs | Queue, scheduler and live notifications (Reverb WebSocket) shared by every long-running feature | [viec-nen-va-thong-bao.md](docs/features/viec-nen-va-thong-bao.md) |
-| Public page | `/skills`: public skills, level history, public evidence and their files; no login, no client JavaScript; old `/docs` links redirect here | [trang-public.md](docs/features/trang-public.md) |
+| Public page | `/skills`: public skills, level history, public evidence and their files; ~3 KB of client JavaScript; old `/docs` links redirect here | [trang-public.md](docs/features/trang-public.md) |
+| End users | Visitors may sign up on the public page to keep favorites and a read-later list; admins lock accounts and open / close sign-up | [nguoi-dung-cuoi.md](docs/features/nguoi-dung-cuoi.md) |
 | Obsidian import | Notes marked `publish: true` become evidence (Python CLI) | [nhap-tu-obsidian.md](docs/features/nhap-tu-obsidian.md) |
 
 ## Architecture
@@ -97,7 +98,7 @@ Open <http://localhost:81> (admin) and <http://localhost:81/skills> (public page
 
 - Development happens on the dev environment only; staging, production, automatic CI/CD and load tests are paused ([ADR-0012](docs/adr/0012-restore-features-dev-first.md)).
 - Plan and progress (Vietnamese): [roadmap](docs/plan/02-roadmap.md), [what has been done](docs/plan/05-done.md), [current state](.claude/lab/PROGRESS.md).
-- Latest full check (2026-10-17): 280 backend, 155 admin dashboard and 63 importer tests pass; 9/9 browser journeys pass.
+- Latest full check (2026-10-19): 299 backend, 158 admin dashboard and 63 importer tests pass; 10/10 browser journeys pass.
 - Git flow: one working branch → pull request to `developer` → `main`, Conventional Commits.
 
 ## License
