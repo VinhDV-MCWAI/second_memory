@@ -101,5 +101,5 @@ Ghi lại để làm sau, theo thứ tự dự kiến. Mỗi mục bắt đầu 
 | Mục tiêu | Người xem đọc thông tin công khai không cần đăng nhập; người dùng có thể đăng nhập để lưu yêu thích, xem sau. Rất đơn giản, nhẹ |
 | Cách làm | Thay `nextjs-docs` bằng Astro ([ADR-0019](../adr/0019-public-user-frontend.md)); tài khoản người dùng dùng bộ đăng nhập riêng, tách khỏi admin ([ADR-0020](../adr/0020-end-user-accounts.md)) |
 | Gồm | Thử nhanh và đo; làm lại trang public; tài khoản người dùng cuối (thay việc quản lý người dùng cuối của giai đoạn 4); yêu thích, xem sau; màn hình End users trong trang quản trị. Lịch sử đã xem: bỏ theo chủ dự án (2026-10-19) |
-| Tình trạng | Xong 2026-10-19 (PUB-01…04). Còn đóng gói `v2.3.0` (REL-02, giai đoạn 8) |
+| Tình trạng | Xong 2026-10-19 (PUB-01…04). Thêm theo yêu cầu cùng ngày ([REQ-004](../requirements/REQ-004-trang-chu-danh-muc.md), [ADR-0021](../adr/0021-public-home-categories-articles.md)): trang public về gốc `/` với trang chủ danh mục, bài viết theo các bước làm phần mềm, đăng nhập người dùng bằng tên đăng nhập, trang quản trị vào `/admin` (PUB-05, PUB-06, CMS-01, CMS-02). Còn nghiệm thu và tag `v2.3.0` (REL-02, giai đoạn 8) |
 | Xong khi | Trang public chạy trên công nghệ mới, nhẹ hơn (có số đo); người dùng đăng nhập dùng được yêu thích và xem sau; có test và tài liệu |

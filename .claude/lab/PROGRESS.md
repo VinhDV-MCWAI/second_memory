@@ -6,11 +6,11 @@
 
 | | |
 |---|---|
-| Giai đoạn đang làm | 8. Luyện quy trình ([ADR-0018](../../docs/adr/0018-lifecycle-practice-track.md), không gồm CI/CD; đã đóng gói `v2.2.0`). Giai đoạn 9. Trang cho người dùng đã xong 2026-10-19, còn đóng gói `v2.3.0` (REL-02) |
+| Giai đoạn đang làm | 8. Luyện quy trình ([ADR-0018](../../docs/adr/0018-lifecycle-practice-track.md), không gồm CI/CD; đã đóng gói `v2.2.0`, sổ tay xong). Giai đoạn 9. Trang cho người dùng xong 2026-10-19, thêm trang chủ danh mục và bài viết ([ADR-0021](../../docs/adr/0021-public-home-categories-articles.md)); còn nghiệm thu và tag `v2.3.0` (REL-02) |
 | Branch | `feature/p3-ledger-api` (đổi branch khi chủ dự án yêu cầu) |
-| Môi trường | Chỉ dev (`make up`, http://localhost:81). Bản demo prod-like không còn (Terraform state rỗng, kiểm tra 2026-10-17); staging, production thật, đo tải: tạm dừng |
+| Môi trường | Chỉ dev (`make up`): trang public http://localhost:81/, trang quản trị http://localhost:81/admin (từ 2026-10-19). Bản demo prod-like không còn (Terraform state rỗng, kiểm tra 2026-10-17); staging, production thật, đo tải: tạm dừng |
 | CI/CD | Chỉ chạy trên máy: `make ci`, `make cd`. **Trên GitHub/GitLab đang TẮT chạy tự động**; cách bật lại: [ci/README.md](../../ci/README.md) |
-| Việc tiếp theo | **Chờ chủ dự án thử 8 bước trên trình duyệt** trong mục "Nghiệm thu" của [v2.3.0.md](../../docs/releases/v2.3.0.md) (REL-02). Xong thì: ghi kết quả vào bảng đó, `git tag -a v2.3.0`, `scripts/lane.sh release REL-02` → `claim` → `done`. Sổ tay quy trình đã xong: [docs/handbook/](../../docs/handbook/README.md). CI/CD tự động: chỉ khi chủ dự án yêu cầu. Việc để sau: bảng "Sau cùng" trong [02-roadmap.md](../../docs/plan/02-roadmap.md) |
+| Việc tiếp theo | **Chờ chủ dự án thử 9 bước trên trình duyệt** trong mục "Nghiệm thu" của [v2.3.0.md](../../docs/releases/v2.3.0.md) (REL-02: trang chủ danh mục, bài viết, tài khoản người dùng bằng tên đăng nhập, quản trị dưới `/admin`). Xong thì ghi kết quả vào bảng đó, `git tag -a v2.3.0`, `scripts/lane.sh release REL-02` → `claim` → `done`. Chủ dự án sẽ tự gom commit và merge. CI/CD tự động: chỉ khi chủ dự án yêu cầu. Việc để sau: bảng "Sau cùng" trong [02-roadmap.md](../../docs/plan/02-roadmap.md) |
 | Tạm dừng | Mọi việc **mới** về đăng nhập và phân quyền (các mục "Nâng cấp để dành" trong [dang-nhap.md](../../docs/features/dang-nhap.md), loại quyền mới, khóa phòng ban ngoài Files): chỉ làm khi chủ dự án yêu cầu. Tài khoản người dùng cuối đã làm theo yêu cầu (ADR-0020) |
 | Dọn dẹp | Mỗi việc xong phải dọn theo [.claude/rules/cleanup.md](../rules/cleanup.md) và [docs/runbooks/don-dep.md](../../docs/runbooks/don-dep.md). Rác trong bảng "Được xóa không cần hỏi" của don-dep.md: xóa luôn, không hỏi |
 
@@ -38,7 +38,7 @@ Xem [docs/dev-guide.md](../../docs/dev-guide.md) mục 6 "Các lỗi hay gặp".
 
 - Sau khi đổi Dockerfile PHP: `make up` (tải ffmpeg lần đầu mất khoảng 20 phút trên mạng chậm). Sau khi đổi code việc nền: `make workers-restart`.
 - Thêm API Files mới thì phải chặn qua `App\Services\Media\FolderAccess` và thêm test vào `FolderPolicyApiTest`.
-- `e2e/run.sh` tạo tài khoản phụ `e2e_member`, `e2e_outsider`, phòng ban `E2E …` và người dùng cuối `e2e-…@example.com`, chạy xong tự xóa / tắt.
+- `e2e/run.sh` tạo tài khoản phụ `e2e_member`, `e2e_outsider`, phòng ban `E2E …` người dùng cuối `e2e-…` và danh mục `E2E …` (kèm bài viết), chạy xong tự xóa / tắt.
 - Sau khi máy hoặc Docker Desktop khởi động lại, nhiều container có thể dừng với mã 127: `docker ps -a` để thấy, `docker compose -f docker/docker-compose.yml up -d` để bật lại (2026-10-19).
 
 ## Log
