@@ -14,13 +14,15 @@ Mọi thứ không phải code nằm ở đây. Tài liệu viết bằng tiến
 | 6 | [architecture/current.md](architecture/current.md) | Hệ thống đang chạy thế nào (container, API, đăng nhập, dữ liệu) |
 | 7 | [features/](features/) | Mỗi tính năng làm gì, màn hình, API, quyền |
 | 8 | [runbooks/don-dep.md](runbooks/don-dep.md) | Dọn dẹp sau mỗi việc: Docker, dữ liệu thử, file thử |
-| 9 | [adr/0012-restore-features-dev-first.md](adr/0012-restore-features-dev-first.md) | Vì sao đổi hướng ngày 2026-10-09 |
+| 9 | [handbook/](handbook/README.md) | Sổ tay quy trình: một việc đi qua những bước nào, và kinh nghiệm làm việc với các vai trong doanh nghiệp |
+| 10 | [adr/0012-restore-features-dev-first.md](adr/0012-restore-features-dev-first.md) | Vì sao đổi hướng ngày 2026-10-09 |
 
 ## Các thư mục
 
 | Thư mục | Chứa gì | Khi nào sửa |
 |---|---|---|
 | [plan/](plan/) | Mục tiêu, lộ trình, việc còn mở, việc đã làm, prompt cho AI | Khi đổi kế hoạch. Trạng thái việc chỉ đổi bằng `scripts/lane.sh` |
+| [handbook/](handbook/) | Sổ tay quy trình, 7 chương | Sau mỗi buổi nhìn lại, khi cách làm thay đổi |
 | [dev-guide.md](dev-guide.md) | Hướng dẫn môi trường dev | Khi có lệnh mới hoặc gặp lỗi mới |
 | [features/](features/) | Mỗi tính năng một file: làm gì, màn hình, API, bảng, ai được dùng | Cùng commit với code làm thay đổi tính năng |
 | [architecture/](architecture/) | `current.md`: kiến trúc hiện tại | Khi đổi container, luồng đăng nhập, cấu trúc dữ liệu |
@@ -34,6 +36,6 @@ Mọi thứ không phải code nằm ở đây. Tài liệu viết bằng tiến
 
 | Thư mục | Nội dung |
 |---|---|
-| [archive/engineering-lab/](archive/engineering-lab/) | Giai đoạn Engineering Lab (trước 2026-10-09): kế hoạch luyện vòng đời phần mềm P0–P11, sổ tay quy trình (nhận yêu cầu, thiết kế, git, QA, phát hành, vận hành, báo cáo), mẫu tài liệu, báo cáo, hồ sơ yêu cầu, thiết kế, sự cố. Tài liệu tham khảo, không phải hướng dẫn hiện hành |
+| [archive/engineering-lab/](archive/engineering-lab/) | Giai đoạn Engineering Lab (trước 2026-10-09): kế hoạch luyện vòng đời phần mềm P0–P11, sổ tay quy trình cũ (đã viết lại thành [handbook/](handbook/)), mẫu tài liệu, báo cáo, hồ sơ yêu cầu, thiết kế, sự cố. Tài liệu tham khảo, không phải hướng dẫn hiện hành |
 | [archive/learning/](archive/learning/) | Ghi chú học tập của chủ dự án |
 | [archive/legacy-architecture/](archive/legacy-architecture/) | Bộ tài liệu kiến trúc tiếng Việt đầu tiên (đã lỗi thời) |

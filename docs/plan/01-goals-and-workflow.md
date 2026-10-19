@@ -38,7 +38,7 @@ Các việc sau **luôn** phải qua bước ③:
 - thêm thư viện mới;
 - đổi cách đăng nhập, phân quyền, cấu trúc DB.
 
-Không dùng câu trả lời của vai giả lập (PO, QA, Ops do AI đóng) để quyết định thay chủ dự án.
+Việc lớn đi đủ vòng đời theo [sổ tay quy trình](../handbook/README.md). Không có vai giả lập do AI đóng: các vai trong sổ tay là ghi chép kinh nghiệm làm việc với người đặt yêu cầu, người kiểm thử, người vận hành… (chủ dự án quyết 2026-10-19).
 
 ## Mẫu "Đề xuất"
 

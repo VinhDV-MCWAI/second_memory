@@ -39,3 +39,8 @@ Thêm một mạch việc **Luyện quy trình** chạy song song với việc l
 - Sổ tay, mẫu tài liệu, báo cáo trong `docs/archive/engineering-lab/` là tài liệu tham khảo của mạch này: không xóa.
 - Bảng việc trống tính năng **không** có nghĩa là hết việc.
 - Câu hỏi còn mở: có khôi phục các vai giả lập (PO, QA, Ops) để tạo đầu vào như yêu cầu mơ hồ, báo lỗi hay không. Nếu khôi phục, vai giả lập không bao giờ quyết thay chủ dự án.
+
+## Cập nhật 2026-10-19
+
+- Sổ tay quy trình bản mới: [docs/handbook/](../handbook/README.md), 7 chương.
+- Câu hỏi về vai giả lập: **không khôi phục**. Các vai trong sổ tay dùng để ghi lại kinh nghiệm một developer làm việc với từng vai trong doanh nghiệp, không phải để AI đóng giả các vai đó (chủ dự án quyết).
