@@ -1,9 +1,12 @@
 import {
+  BookOpen,
   Building2,
   LayoutDashboard,
   Database,
   ShieldCheck,
   FileCheck,
+  FileText,
+  Globe,
   FolderOpen,
   History,
   GraduationCap,
@@ -61,6 +64,24 @@ export const NAVIGATION_MENU: MenuItem[] = [
         icon: Tags,
         href: ADMIN_ROUTES.TAGS,
         permission: 'tag.list',
+      },
+    ],
+  },
+  {
+    label: 'navigation.content',
+    icon: Globe,
+    children: [
+      {
+        label: 'entities.contentCategories',
+        icon: BookOpen,
+        href: ADMIN_ROUTES.CONTENT_CATEGORIES,
+        permission: 'content-category.list',
+      },
+      {
+        label: 'entities.articles',
+        icon: FileText,
+        href: ADMIN_ROUTES.ARTICLES,
+        permission: 'article.list',
       },
     ],
   },

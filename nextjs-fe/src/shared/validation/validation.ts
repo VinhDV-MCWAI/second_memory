@@ -112,6 +112,71 @@ export const getTagSchema = (t: Translator) =>
 
 export type TagFormData = z.infer<ReturnType<typeof getTagSchema>>;
 
+const sortOrder = (t: Translator) =>
+  z
+    .number()
+    .int()
+    .min(0, t('sortOrder.range', { max: ValidationRules.SORT_ORDER_MAX }))
+    .max(
+      ValidationRules.SORT_ORDER_MAX,
+      t('sortOrder.range', { max: ValidationRules.SORT_ORDER_MAX }),
+    );
+
+// Category of the public home page, matching StoreContentCategoryRequest (ADR-0021)
+export const getContentCategorySchema = (t: Translator) =>
+  z.object({
+    name: z
+      .string()
+      .trim()
+      .min(1, t('categoryName.required'))
+      .max(
+        ValidationRules.CATEGORY_NAME_MAX,
+        t('categoryName.maxLength', { max: ValidationRules.CATEGORY_NAME_MAX }),
+      ),
+    description: z
+      .string()
+      .max(
+        ValidationRules.CATEGORY_DESCRIPTION_MAX,
+        t('description.maxLength', { max: ValidationRules.CATEGORY_DESCRIPTION_MAX }),
+      ),
+    sort_order: sortOrder(t),
+    is_public: z.boolean(),
+  });
+
+export type ContentCategoryFormData = z.infer<ReturnType<typeof getContentCategorySchema>>;
+
+// Article, matching StoreArticleRequest (ADR-0021): the body is Markdown
+export const getArticleSchema = (t: Translator) =>
+  z.object({
+    content_category_id: z.number().int().min(1, t('articleCategory.required')),
+    title: z
+      .string()
+      .trim()
+      .min(1, t('articleTitle.required'))
+      .max(
+        ValidationRules.ARTICLE_TITLE_MAX,
+        t('articleTitle.maxLength', { max: ValidationRules.ARTICLE_TITLE_MAX }),
+      ),
+    summary: z
+      .string()
+      .max(
+        ValidationRules.ARTICLE_SUMMARY_MAX,
+        t('summary.maxLength', { max: ValidationRules.ARTICLE_SUMMARY_MAX }),
+      ),
+    body: z
+      .string()
+      .trim()
+      .min(1, t('articleBody.required'))
+      .max(
+        ValidationRules.ARTICLE_BODY_MAX,
+        t('articleBody.maxLength', { max: ValidationRules.ARTICLE_BODY_MAX }),
+      ),
+    sort_order: sortOrder(t),
+    is_public: z.boolean(),
+  });
+
+export type ArticleFormData = z.infer<ReturnType<typeof getArticleSchema>>;
+
 // Department schema matching StoreDepartmentRequest (ADR-0017)
 export const getDepartmentSchema = (t: Translator) =>
   z.object({

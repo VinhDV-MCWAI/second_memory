@@ -27,6 +27,10 @@ export const API_ENDPOINTS = {
     SEARCH: '/admin/search',
     DASHBOARD: '/admin/dashboard/summary',
   },
+  CONTENT: {
+    CATEGORY: '/admin/content-category',
+    ARTICLE: '/admin/article',
+  },
   MEDIA: {
     BASE: '/admin/media',
     MULTIPART: '/admin/media/multipart',

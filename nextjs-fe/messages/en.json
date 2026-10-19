@@ -124,7 +124,8 @@
     "dashboard": "Dashboard",
     "masterData": "Master Data",
     "skillLedger": "Skill Ledger",
-    "auditLog": "Audit log"
+    "auditLog": "Audit log",
+    "content": "Public content"
   },
   "search": {
     "placeholder": "Search...",
@@ -209,7 +210,11 @@
     "department": "Department",
     "departments": "Departments",
     "endUser": "End user",
-    "endUsers": "End users"
+    "endUsers": "End users",
+    "contentCategory": "Category",
+    "contentCategories": "Categories",
+    "article": "Article",
+    "articles": "Articles"
   },
   "fields": {
     "id": "ID",
@@ -257,7 +262,10 @@
     "isActive": "Active",
     "displayName": "Display name",
     "savedCount": "Saved",
-    "lastLoginAt": "Last sign-in"
+    "lastLoginAt": "Last sign-in",
+    "slug": "Path",
+    "sortOrder": "Order",
+    "articleCount": "Articles"
   },
   "management": {
     "title": "{entity} Management",
@@ -333,7 +341,10 @@
       "departments": "Departments",
       "newPassword": "New password",
       "newPasswordHint": "Leave empty to keep the current password. There is no \"forgot password\" e-mail: set one here when an end user asks.",
-      "activeEndUser": "Can sign in (untick to lock: signed out at once)"
+      "activeEndUser": "Can sign in (untick to lock: signed out at once)",
+      "body": "Content (Markdown)",
+      "sortOrder": "Order",
+      "categoryOfArticle": "Category"
     },
     "placeholders": {
       "urlExample": "https://example.com",
@@ -374,7 +385,9 @@
       "tag": "Tag",
       "department": "Department",
       "end_user": "End user",
-      "app_setting": "Setting"
+      "app_setting": "Setting",
+      "content_category": "Category",
+      "article": "Article"
     }
   },
   "history": {
@@ -511,6 +524,24 @@
     "departmentName": {
       "required": "Name is required",
       "maxLength": "Name cannot exceed {max} characters"
+    },
+    "categoryName": {
+      "required": "Name is required",
+      "maxLength": "Name cannot exceed {max} characters"
+    },
+    "articleTitle": {
+      "required": "Title is required",
+      "maxLength": "Title cannot exceed {max} characters"
+    },
+    "articleBody": {
+      "required": "Content is required",
+      "maxLength": "Content cannot exceed {max} characters"
+    },
+    "articleCategory": {
+      "required": "Choose a category"
+    },
+    "sortOrder": {
+      "range": "Order must be between 0 and {max}"
     }
   },
   "advancedSearch": {
@@ -794,5 +825,9 @@
     "registrationOpen": "Visitors can create an account on the public site",
     "registrationHint": "Untick to close sign-up; existing accounts keep working.",
     "registrationSaved": "Sign-up setting saved"
+  },
+  "content": {
+    "bodyHint": "Markdown: ## heading, **bold**, - list, | table |, [link](https://…). HTML is shown as text.",
+    "viewOnSite": "Open on the public site"
   }
 }

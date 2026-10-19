@@ -214,6 +214,8 @@ export const ADMIN_ROUTES = {
   FILES_TRASH: '/admin/files/trash',
   AUDIT_LOG: '/admin/audit-log',
   SESSIONS: '/admin/sessions',
+  CONTENT_CATEGORIES: '/admin/content-categories',
+  ARTICLES: '/admin/articles',
   LOGIN: '/login',
 } as const;
 
@@ -227,4 +229,6 @@ export const AUDITABLE_TYPES = [
   'evidence',
   'tag',
   'department',
+  'content_category',
+  'article',
 ] as const;

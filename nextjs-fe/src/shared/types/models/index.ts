@@ -4,3 +4,4 @@ export type * from './history';
 export type * from './ledger';
 export type * from './system';
 export type * from './media';
+export type * from './content';

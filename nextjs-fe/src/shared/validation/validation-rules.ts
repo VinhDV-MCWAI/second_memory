@@ -57,4 +57,12 @@ export const ValidationRules = {
   /** LedgerConst::EVIDENCE_FILES_MAX */
   EVIDENCE_FILES_MAX: 10,
   GOAL_NOTE_MAX: 1000,
+
+  // Public home page content (laravel-api ContentConst)
+  CATEGORY_NAME_MAX: 100,
+  CATEGORY_DESCRIPTION_MAX: 500,
+  ARTICLE_TITLE_MAX: 200,
+  ARTICLE_SUMMARY_MAX: 500,
+  ARTICLE_BODY_MAX: 100000,
+  SORT_ORDER_MAX: 9999,
 } as const;
