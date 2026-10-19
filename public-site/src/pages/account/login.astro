@@ -39,6 +39,13 @@ import { ROUTES } from '@/lib/routes';
       Create one
     </a>
   </p>
+  <p class="text-muted-foreground mt-2 text-sm">
+    Admin accounts (such as <code>root</code>) do not work here: they sign in at
+    <a href={ROUTES.ADMIN_LOGIN} class="underline">
+      {ROUTES.ADMIN_LOGIN}
+    </a>
+    .
+  </p>
 </Base>
 
 <script>

@@ -2,7 +2,7 @@
 
 Người xem trang public **có thể** tạo tài khoản để đánh dấu **yêu thích** và **lưu xem sau** kỹ năng, bằng chứng hoặc [bài viết](bai-viet.md). Không có tài khoản vẫn xem được đầy đủ. Yêu cầu: [REQ-003](../requirements/REQ-003-tai-khoan-nguoi-dung.md). Thiết kế: [ADR-0020](../adr/0020-end-user-accounts.md).
 
-Trạng thái: **xong** (2026-10-19). Không làm lịch sử đã xem (chủ dự án bỏ).
+Trạng thái: **xong** (2026-10-19). Tài khoản quản trị (`root`, `viewer`) **không** đăng nhập được ở đây; trên dev có sẵn người dùng mẫu `demo` / `12345678` (`make seed`). Không làm lịch sử đã xem (chủ dự án bỏ).
 
 ## Màn hình trên trang public
 

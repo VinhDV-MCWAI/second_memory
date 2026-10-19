@@ -20,6 +20,7 @@ Mở trình duyệt vào **http://localhost:81/admin** và đăng nhập:
 |---|---|---|---|
 | Chủ | `root` (không phải email `root@gmail.com`) | `12345678` | Toàn quyền |
 | Chỉ xem | `viewer` | `12345678` | Xem mọi trang, sửa gì cũng bị báo lỗi 403 |
+| Người dùng trang public | `demo` | `12345678` | Chỉ đăng nhập được ở http://localhost:81/account/login (yêu thích, xem sau); không vào được trang quản trị. Tạo bởi `make seed` |
 
 `make seed` còn thêm dữ liệu mẫu cho Skill Ledger để có cái mà thử:
 
@@ -107,6 +108,7 @@ Test dùng một database riêng tên `testing`, không đụng dữ liệu dev.
 
 | Lỗi | Nguyên nhân | Cách sửa |
 |---|---|---|
+| Đăng nhập ở trang public (`/account/login`) báo 401 với `root` | `root`, `viewer` là tài khoản quản trị, tách riêng khỏi tài khoản người dùng trang public ([ADR-0020](adr/0020-end-user-accounts.md)) | Dùng `demo` / `12345678` (`make seed`) hoặc tự đăng ký; `root` đăng nhập ở `/admin/login` |
 | Đăng nhập báo 401 dù mật khẩu đúng | Nhập email thay vì tên đăng nhập; hoặc mở trang quản trị ở cổng 3456 thay vì qua cổng 81 (gặp ngày 2026-10-19) | Nhập `root`; mở http://localhost:81/admin/login |
 | Đăng nhập báo 429 | Sai quá nhiều lần, bị khóa tạm 15 phút (5 lần sai cùng một tên, hoặc 30 lần sai từ cùng một IP với mọi tên) | Đợi theo số giây trong header `Retry-After`. Trên dev muốn mở ngay: `docker exec ml-php php artisan cache:clear` |
 | Trang báo lỗi kết nối, `docker ps -a` thấy `ml-php`, `ml-postgres`, `ml-redis`, `ml-nginx`… `Exited (127)` | Máy hoặc WSL khởi động lại, các container không tự chạy lại (gặp ngày 2026-10-15) | `docker compose -f docker/docker-compose.yml up -d` (hoặc `make up`). Migration chạy lại tự động khi `ml-php` khởi động |
