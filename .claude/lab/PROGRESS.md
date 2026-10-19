@@ -6,11 +6,11 @@
 
 | | |
 |---|---|
-| Giai đoạn đang làm | 8. Luyện quy trình ([ADR-0018](../../docs/adr/0018-lifecycle-practice-track.md), không gồm CI/CD; đã đóng gói `v2.2.0`) và 9. Trang cho người dùng ([ADR-0019](../../docs/adr/0019-public-user-frontend.md): trang public đã chạy trên Astro) |
+| Giai đoạn đang làm | 8. Luyện quy trình ([ADR-0018](../../docs/adr/0018-lifecycle-practice-track.md), không gồm CI/CD; đã đóng gói `v2.2.0`). Giai đoạn 9. Trang cho người dùng đã xong 2026-10-19, còn đóng gói `v2.3.0` (REL-02) |
 | Branch | `feature/p3-ledger-api` (đổi branch khi chủ dự án yêu cầu) |
 | Môi trường | Chỉ dev (`make up`, http://localhost:81). Bản demo prod-like không còn (Terraform state rỗng, kiểm tra 2026-10-17); staging, production thật, đo tải: tạm dừng |
 | CI/CD | Chỉ chạy trên máy: `make ci`, `make cd`. **Trên GitHub/GitLab đang TẮT chạy tự động**; cách bật lại: [ci/README.md](../../ci/README.md) |
-| Việc tiếp theo | **Chờ chủ dự án duyệt đề xuất sổ tay quy trình bản mới** (PROC-01, gửi 2026-10-19): 7 chương tiếng Việt trong `docs/handbook/`, có khôi phục vai giả lập không. Tài khoản người dùng trên trang public đã xong (2026-10-19). CI/CD tự động: chỉ khi chủ dự án yêu cầu. Việc để sau: bảng "Sau cùng" trong [02-roadmap.md](../../docs/plan/02-roadmap.md) |
+| Việc tiếp theo | **Chờ chủ dự án duyệt đề xuất sổ tay quy trình bản mới** (PROC-01, gửi 2026-10-19): 7 chương tiếng Việt trong `docs/handbook/`, có khôi phục vai giả lập không. Sau đó: đóng gói `v2.3.0` theo sổ tay mới (REL-02). CI/CD tự động: chỉ khi chủ dự án yêu cầu. Việc để sau: bảng "Sau cùng" trong [02-roadmap.md](../../docs/plan/02-roadmap.md) |
 | Tạm dừng | Mọi việc **mới** về đăng nhập và phân quyền (các mục "Nâng cấp để dành" trong [dang-nhap.md](../../docs/features/dang-nhap.md), loại quyền mới, khóa phòng ban ngoài Files): chỉ làm khi chủ dự án yêu cầu. Tài khoản người dùng cuối đã làm theo yêu cầu (ADR-0020) |
 | Dọn dẹp | Mỗi việc xong phải dọn theo [.claude/rules/cleanup.md](../rules/cleanup.md) và [docs/runbooks/don-dep.md](../../docs/runbooks/don-dep.md). Rác trong bảng "Được xóa không cần hỏi" của don-dep.md: xóa luôn, không hỏi |
 
@@ -23,13 +23,13 @@ Claude không có quyền làm những việc này:
 
 ## Việc tồn đọng
 
-Cập nhật 2026-10-17. Mỗi dòng là thứ còn mở, chưa thành việc trên bảng.
+Cập nhật 2026-10-19. Mỗi dòng là thứ còn mở, chưa thành việc trên bảng.
 
 | # | Việc | Chi tiết | Ai làm |
 |---|---|---|---|
-| 1 | Push code và tag | Đã push và merge tới bằng chứng chỉ có file (2026-10-15). Branch trên GitHub đã bị xóa sau merge; mọi commit từ đó tới nay và tag `v2.2.0` chỉ có trên máy (`git push origin feature/p3-ledger-api v2.2.0`) | Chủ dự án |
+| 1 | Push code và tag | Đã push và merge tới bằng chứng chỉ có file (2026-10-15). Branch trên GitHub đã bị xóa sau merge; hơn 100 commit từ đó tới nay và tag `v2.2.0` chỉ có trên máy. Chủ dự án sẽ gom commit và merge sau (2026-10-19) | Chủ dự án |
 | 3 | Tiếp tục upload dở từ máy khác không kiểm tra được "đúng file" | Máy khác chỉ so tên + dung lượng | Chấp nhận, ghi trong [quan-ly-file.md](../../docs/features/quan-ly-file.md) |
-| 4 | Việc để sau | Người dùng cuối (ADR-0015); dữ liệu mẫu + HTTPS cho bản demo | Chờ chủ dự án |
+| 4 | Việc để sau | Dữ liệu mẫu + HTTPS cho bản demo (DEMO-01, DEMO-02) | Chờ chủ dự án |
 | 5 | Gợi ý chưa đề xuất | Khóa phòng ban mới áp dụng cho Files; bằng chứng, kỹ năng chưa bị chặn theo phòng ban | Chờ chủ dự án |
 
 ## Lưu ý môi trường
@@ -70,6 +70,6 @@ Mỗi dòng do `scripts/lane.sh done` tự thêm. Không sửa tay. Các dòng t
 ## Next step
 
 1. Đầu phiên: đọc file này, rồi `scripts/lane.sh status`. Bảng việc chỉ còn các việc "để sau" theo quyết định chủ dự án.
-2. Nhắc chủ dự án push branch và tag nếu chưa push ("Việc tồn đọng" mục 1). Dữ liệu thử trên DB dev đã xóa hết (kiểm tra 2026-10-17).
-3. Khi chủ dự án trả lời REQ-003: ghi câu trả lời vào mục 3 của REQ-003, viết ADR-0020, rồi `scripts/lane.sh release PUB-03` và `claim PUB-03` để làm (tài khoản người dùng, theo vòng đời đầy đủ của ADR-0018).
+2. Chủ dự án sẽ tự gom commit và merge ("Việc tồn đọng" mục 1): không nhắc lại.
+3. Khi chủ dự án duyệt đề xuất sổ tay: `scripts/lane.sh release PROC-01`, `claim PROC-01`, viết `docs/handbook/`. Xong thì làm REL-02 theo sổ tay mới.
 4. `.claude/settings.json` còn 2 dòng quyền cho `ml-nextjs-docs` (container đã xóa): vô hại, chủ dự án tự xóa nếu muốn.
