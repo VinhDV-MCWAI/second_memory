@@ -33,6 +33,11 @@ Gắn phiên bản sau mỗi nhóm tính năng, **không để quá 2 tuần** (
 | 7 | Push branch và tag, mở pull request `developer` → `main` | Chủ dự án |
 | 8 | Nâng cấp môi trường, kiểm tra nhanh (trang chủ, đăng nhập, một luồng chính), xem log 15 phút | Người vận hành |
 
+Bài học từ `v2.3.0`:
+
+- Việc nào hứa ghi chú phát hành, bàn giao, nhìn lại thì chỉ `done` khi đã có file trong `docs/releases/`.
+- Việc `done` cuối cùng của một giai đoạn sửa luôn mục đó trong [02-roadmap.md](../plan/02-roadmap.md), không để lộ trình ghi sai trạng thái.
+
 ## Ghi chú phát hành
 
 Mẫu thật: [v2.2.0](../releases/v2.2.0.md).
