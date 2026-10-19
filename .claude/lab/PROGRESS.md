@@ -10,8 +10,8 @@
 | Branch | `feature/p3-ledger-api` (đổi branch khi chủ dự án yêu cầu) |
 | Môi trường | Chỉ dev (`make up`, http://localhost:81). Bản demo prod-like không còn (Terraform state rỗng, kiểm tra 2026-10-17); staging, production thật, đo tải: tạm dừng |
 | CI/CD | Chỉ chạy trên máy: `make ci`, `make cd`. **Trên GitHub/GitLab đang TẮT chạy tự động**; cách bật lại: [ci/README.md](../../ci/README.md) |
-| Việc tiếp theo | **Chờ chủ dự án trả lời** 8 câu hỏi và chọn phương án đăng nhập trong [REQ-003](../../docs/requirements/REQ-003-tai-khoan-nguoi-dung.md) (tài khoản người dùng trên trang public, PUB-03 đang chặn). Nhận được ngay: sổ tay quy trình bản mới (PROC-01, cần xác nhận). CI/CD tự động: chỉ khi chủ dự án yêu cầu |
-| Tạm dừng | Mọi việc **mới** về đăng nhập và phân quyền (các mục "Nâng cấp để dành" trong [dang-nhap.md](../../docs/features/dang-nhap.md), loại quyền mới, người dùng cuối, khóa phòng ban ngoài Files): chỉ làm khi chủ dự án yêu cầu |
+| Việc tiếp theo | **Chờ chủ dự án duyệt đề xuất sổ tay quy trình bản mới** (PROC-01, gửi 2026-10-19): 7 chương tiếng Việt trong `docs/handbook/`, có khôi phục vai giả lập không. Tài khoản người dùng trên trang public đã xong (2026-10-19). CI/CD tự động: chỉ khi chủ dự án yêu cầu. Việc để sau: bảng "Sau cùng" trong [02-roadmap.md](../../docs/plan/02-roadmap.md) |
+| Tạm dừng | Mọi việc **mới** về đăng nhập và phân quyền (các mục "Nâng cấp để dành" trong [dang-nhap.md](../../docs/features/dang-nhap.md), loại quyền mới, khóa phòng ban ngoài Files): chỉ làm khi chủ dự án yêu cầu. Tài khoản người dùng cuối đã làm theo yêu cầu (ADR-0020) |
 | Dọn dẹp | Mỗi việc xong phải dọn theo [.claude/rules/cleanup.md](../rules/cleanup.md) và [docs/runbooks/don-dep.md](../../docs/runbooks/don-dep.md). Rác trong bảng "Được xóa không cần hỏi" của don-dep.md: xóa luôn, không hỏi |
 
 ## Việc chủ dự án phải tự làm
@@ -38,7 +38,8 @@ Xem [docs/dev-guide.md](../../docs/dev-guide.md) mục 6 "Các lỗi hay gặp".
 
 - Sau khi đổi Dockerfile PHP: `make up` (tải ffmpeg lần đầu mất khoảng 20 phút trên mạng chậm). Sau khi đổi code việc nền: `make workers-restart`.
 - Thêm API Files mới thì phải chặn qua `App\Services\Media\FolderAccess` và thêm test vào `FolderPolicyApiTest`.
-- `e2e/run.sh` tạo tài khoản phụ `e2e_member`, `e2e_outsider` và phòng ban `E2E …`, chạy xong tự xóa / tắt.
+- `e2e/run.sh` tạo tài khoản phụ `e2e_member`, `e2e_outsider`, phòng ban `E2E …` và người dùng cuối `e2e-…@example.com`, chạy xong tự xóa / tắt.
+- Sau khi máy hoặc Docker Desktop khởi động lại, nhiều container có thể dừng với mã 127: `docker ps -a` để thấy, `docker compose -f docker/docker-compose.yml up -d` để bật lại (2026-10-19).
 
 ## Log
 

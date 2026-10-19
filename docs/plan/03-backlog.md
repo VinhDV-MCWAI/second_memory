@@ -32,7 +32,7 @@ Các mục còn lại của giai đoạn này (triển khai, vận hành, sự c
 | Mã | Việc | Kết quả | Trạng thái |
 |---|---|---|---|
 | REL-01 | Đóng gói và bàn giao bản `v2.2.0`: ghi chú phát hành cho mọi việc từ `v2.1.0`, biên bản nghiệm thu (chạy kiểm tra, thử trên trình duyệt), tài liệu bàn giao, nhìn lại giai đoạn, tag trên máy (chủ dự án push) | `docs/releases/v2.2.0.md` + tag | done (67075790 — ghi chú phát hành v2.2.0 (nổi bật, phá vỡ tương thích, nâng cấp, trước/sau, nghiệm thu 10 bước, bàn giao, lỗi đã biết, nhìn lại); tag v2.2.0 trên máy, chủ dự án push) |
-| PROC-01 | **[XÁC NHẬN]** Sổ tay quy trình bản mới (tiếng Việt, gọn, hai tốc độ) từ sổ tay cũ; trả lời câu hỏi có khôi phục vai giả lập PO, QA, Ops để tạo đầu vào hay không | `docs/handbook/` được dùng thật | todo |
+| PROC-01 | **[XÁC NHẬN]** Sổ tay quy trình bản mới (tiếng Việt, gọn, hai tốc độ) từ sổ tay cũ; trả lời câu hỏi có khôi phục vai giả lập PO, QA, Ops để tạo đầu vào hay không | `docs/handbook/` được dùng thật | doing |
 
 ## 9. Trang cho người dùng
 
