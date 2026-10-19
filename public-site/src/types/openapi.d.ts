@@ -1672,7 +1672,7 @@ export interface components {
       id: number;
       name: string;
       slug: string;
-      description: string;
+      description: string | null;
       sort_order: number;
       is_public: boolean;
       article_count: number;
@@ -1974,7 +1974,7 @@ export interface components {
     PublicCategoryDetailResource: {
       name: string;
       slug: string;
-      description: string;
+      description: string | null;
       articles: {
         title: string;
         slug: string;
@@ -1986,7 +1986,7 @@ export interface components {
     PublicCategoryResource: {
       name: string;
       slug: string;
-      description: string;
+      description: string | null;
       article_count: number;
     };
     /** PublicSkillDetailResource */
