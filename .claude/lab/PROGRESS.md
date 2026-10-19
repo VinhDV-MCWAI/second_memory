@@ -69,6 +69,8 @@ Mỗi dòng do `scripts/lane.sh done` tự thêm. Không sửa tay. Các dòng t
 
 - 2026-10-19 — [lane main] PROC-01 done: 8c1e1daf — sổ tay quy trình tiếng Việt 7 chương trong docs/handbook/, mỗi chương có mục kinh nghiệm làm việc với từng vai; không khôi phục vai giả lập (chủ dự án quyết); dùng thật ở REL-02; dọn: không tạo dữ liệu hay container
 
+- 2026-10-19 — [lane main] PUB-05 done: b92a70fc — đăng ký, đăng nhập bằng tên đăng nhập; tài khoản cũ lấy phần trước @ của email; 20 test người dùng pass; ghi chú: migration đã chạy trên DB dev (không có tài khoản người dùng nào)
+
 ## Next step
 
 1. Đầu phiên: đọc file này, rồi `scripts/lane.sh status`. Bảng việc chỉ còn các việc "để sau" theo quyết định chủ dự án.
