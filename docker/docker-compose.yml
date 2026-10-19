@@ -223,7 +223,7 @@ services:
           memory: 512M
           cpus: "1"
 
-  # Public site (public-site/, Astro, ADR-0019): /skills for visitors, no login
+  # Public site (public-site/, Astro, ADR-0019, ADR-0021): every path but /admin, no login needed
   ml-public-site:
     container_name: ml-public-site
     build:
@@ -245,7 +245,7 @@ services:
       test:
         [
           "CMD-SHELL",
-          "wget --no-verbose --tries=1 --spider --timeout=15 http://localhost:4321/skills/healthz || exit 1",
+          "wget --no-verbose --tries=1 --spider --timeout=15 http://localhost:4321/healthz || exit 1",
         ]
       interval: 30s
       timeout: 10s

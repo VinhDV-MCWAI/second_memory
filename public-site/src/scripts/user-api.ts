@@ -1,6 +1,7 @@
 // Browser side of end-user accounts (ADR-0020). Same origin as the API, session cookie + XSRF
 // header as the admin app does it. Visitors who never signed in make no API call: the marker
 // cookie below (no secret in it) tells the pages that a session may exist.
+import { ROUTES } from '@/lib/routes';
 import type { components } from '@/types/openapi';
 
 export type SavedItem = components['schemas']['SavedItemResource'];
@@ -14,7 +15,6 @@ const MARKER = 'sm_user';
 const MARKER_DAYS = 30;
 const DAY_SECONDS = 86_400;
 const HTTP_UNAUTHORIZED = 401;
-const BASE = '/skills';
 
 export class ApiError extends Error {
   constructor(
@@ -95,16 +95,16 @@ export async function savedItems(): Promise<SavedItem[]> {
   return (await api<{ data: SavedItem[] }>('GET', 'user/saved/list')).data;
 }
 
-/** Where to go after signing in: only pages of this site. */
+/** Where to go after signing in: only pages of this site, never the admin app. */
 export function nextPage(): string {
   const next = new URLSearchParams(location.search).get('next');
-  return next !== null && next.startsWith(`${BASE}/`) && !next.startsWith('//')
-    ? next
-    : `${BASE}/me`;
+  // "//host" and "/\\host" would leave the site
+  const local = next !== null && next.startsWith('/') && !/^\/[/\\]/.test(next);
+  return local && !next.startsWith('/admin') ? next : ROUTES.ME;
 }
 
 export function loginUrl(): string {
-  return `${BASE}/account/login?next=${encodeURIComponent(location.pathname)}`;
+  return `${ROUTES.LOGIN}?next=${encodeURIComponent(location.pathname)}`;
 }
 
 /** Shows the API's messages under a form. */

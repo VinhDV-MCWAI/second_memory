@@ -90,6 +90,8 @@ export type ResourceListPageProps<T extends { id: number }> = Editor<T> & {
   filterFields: FilterField[];
   searchFields: SearchField[];
   defaultSortBy: string;
+  /** Newest-first lists pass `SORT_ORDER.DESC`. */
+  defaultSortOrder?: SortOrder;
   /** localStorage key of the saved filters. */
   filtersKey: string;
   staleTime?: number;
@@ -107,6 +109,7 @@ export function ResourceListPage<T extends { id: number }>({
   filterFields,
   searchFields,
   defaultSortBy,
+  defaultSortOrder = SORT_ORDER.ASC,
   filtersKey,
   staleTime,
   fixedFilters,
@@ -117,7 +120,7 @@ export function ResourceListPage<T extends { id: number }>({
   const [perPage, setPerPage] = useState<number>(PAGINATION.DEFAULT_PER_PAGE);
   const [filters, setFilters] = useState<Record<string, FilterValue>>({});
   const [sortBy, setSortBy] = useState(defaultSortBy);
-  const [sortOrder, setSortOrder] = useState<SortOrder>(SORT_ORDER.ASC);
+  const [sortOrder, setSortOrder] = useState<SortOrder>(defaultSortOrder);
   const [selectedIds, setSelectedIds] = useState<number[]>([]);
   const [deleteIds, setDeleteIds] = useState<number[]>([]);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);

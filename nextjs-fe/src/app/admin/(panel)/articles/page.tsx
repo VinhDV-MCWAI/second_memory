@@ -7,6 +7,8 @@ import type { Column } from '@/components/common/data-table/data-table';
 import type { FilterField } from '@/components/common/data-table/filter-panel';
 import { ArticleForm } from '@/features/content/components/article-form';
 import { API_ENDPOINTS } from '@/shared/api';
+import { SORT_ORDER } from '@/shared/config';
+import { formatTimestamp } from '@/shared/utils/date-formatter';
 import type { Article } from '@/shared/types/models';
 import type { SearchField } from '@/shared/types/data-table.types';
 
@@ -28,7 +30,12 @@ export default function ArticleListPage() {
         </StatusBadge>
       ),
     },
-    { key: 'updated_at', label: tFields('updatedAt'), sortable: true },
+    {
+      key: 'updated_at',
+      label: tFields('updatedAt'),
+      sortable: true,
+      render: (item) => formatTimestamp(item.updated_at),
+    },
   ];
 
   const filterFields: FilterField[] = [
@@ -45,6 +52,7 @@ export default function ArticleListPage() {
       filterFields={filterFields}
       searchFields={searchFields}
       defaultSortBy="updated_at"
+      defaultSortOrder={SORT_ORDER.DESC}
       filtersKey="article-filters"
       form={ArticleForm}
       dialogSize="xl"

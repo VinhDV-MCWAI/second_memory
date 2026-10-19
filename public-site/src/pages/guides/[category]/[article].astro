@@ -1,0 +1,46 @@
+---
+import SaveButtons from '@/components/SaveButtons.astro';
+import Base from '@/layouts/Base.astro';
+import { getPublicArticle } from '@/lib/public-api';
+import { ROUTES } from '@/lib/routes';
+
+const HTTP_NOT_FOUND = 404;
+
+// Private (or in a private category) and missing both answer 404 (ADR-0021)
+const article = await getPublicArticle(Astro.params.category ?? '', Astro.params.article ?? '');
+if (!article) {
+  Astro.response.status = HTTP_NOT_FOUND;
+}
+---
+
+{article ? (
+  <Base
+    title={`${article.title} — ${article.category.name}`}
+    description={article.summary ?? undefined}
+  >
+    <a href={ROUTES.category(article.category.slug)} class="text-sm hover:underline">
+      ← {article.category.name}
+    </a>
+    <h1 class="mt-4 text-3xl font-semibold">
+      {article.title} <SaveButtons article={article.key} label={article.title} />
+    </h1>
+    {article.summary && <p class="text-muted-foreground mt-2">{article.summary}</p>}
+    <p class="text-muted-foreground mt-2 font-mono text-xs">
+      Updated <time datetime={article.updated_at}>{article.updated_at.slice(0, 10)}</time>
+    </p>
+    {/* Built by the API from Markdown with raw HTML escaped and unsafe links removed */}
+    <div class="article-body mt-8" set:html={article.body_html} />
+    <script>
+      import '@/scripts/save-buttons';
+    </script>
+  </Base>
+) : (
+  <Base title="Article not found">
+    <h1 class="text-3xl font-semibold">Article not found</h1>
+    <p class="mt-4">
+      <a href={ROUTES.HOME} class="hover:underline">
+        ← All categories
+      </a>
+    </p>
+  </Base>
+)}

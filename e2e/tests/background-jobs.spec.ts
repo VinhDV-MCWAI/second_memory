@@ -4,7 +4,7 @@ import { E2E_PASSWORD, E2E_USER } from '../env';
 // Background jobs and live notifications (ADR-0014): the test job goes through the Redis queue,
 // the ml-queue worker and Reverb, and its result comes back to this page as a toast.
 test('the test background job reports back live', async ({ page }) => {
-  await page.goto('/login');
+  await page.goto('/admin/login');
   await page.getByLabel('Username').fill(E2E_USER);
   await page.getByLabel('Password').fill(E2E_PASSWORD);
   await page.getByRole('button', { name: 'Sign In' }).click();

@@ -17,7 +17,7 @@ test('owner manages files: folder, small and large upload, rename, download, del
   writeFileSync(small, 'hello from e2e');
   writeFileSync(large, Buffer.alloc(120 * MB, 7));
 
-  await page.goto('/login');
+  await page.goto('/admin/login');
   await page.getByLabel('Username').fill(E2E_USER);
   await page.getByLabel('Password').fill(E2E_PASSWORD);
   await page.getByRole('button', { name: 'Sign In' }).click();
@@ -66,7 +66,7 @@ test('owner resumes a large upload after the page is reloaded', async ({ page })
   writeFileSync(large, Buffer.alloc(120 * MB, 3)); // 8 parts of 16 MB
   const resumeFolder = `${folder} resume`;
 
-  await page.goto('/login');
+  await page.goto('/admin/login');
   await page.getByLabel('Username').fill(E2E_USER);
   await page.getByLabel('Password').fill(E2E_PASSWORD);
   await page.getByRole('button', { name: 'Sign In' }).click();
@@ -135,7 +135,7 @@ test('owner previews an image and a text file; images and videos get thumbnails 
   );
   const previewFolder = `${folder} preview`;
 
-  await page.goto('/login');
+  await page.goto('/admin/login');
   await page.getByLabel('Username').fill(E2E_USER);
   await page.getByLabel('Password').fill(E2E_PASSWORD);
   await page.getByRole('button', { name: 'Sign In' }).click();
@@ -191,7 +191,7 @@ test('owner restores a deleted file from the trash, then deletes it for good', a
   writeFileSync(note, 'restore me');
   const trashFolder = `${folder} trash`;
 
-  await page.goto('/login');
+  await page.goto('/admin/login');
   await page.getByLabel('Username').fill(E2E_USER);
   await page.getByLabel('Password').fill(E2E_PASSWORD);
   await page.getByRole('button', { name: 'Sign In' }).click();

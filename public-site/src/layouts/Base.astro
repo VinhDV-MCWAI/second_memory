@@ -1,12 +1,13 @@
 ---
 import '@/styles/global.css';
+import { ROUTES } from '@/lib/routes';
 
 interface Props {
   title: string;
   description?: string;
 }
 
-const { title, description = 'Published skills with their current level and evidence' } =
+const { title, description = 'Skills, evidence and notes on how software gets built' } =
   Astro.props;
 ---
 
@@ -19,10 +20,10 @@ const { title, description = 'Published skills with their current level and evid
   </head>
   <body>
     <header class="mx-auto flex max-w-3xl items-center justify-between px-6 pt-6 text-sm">
-      <a href={import.meta.env.BASE_URL} class="font-medium hover:underline">
+      <a href={ROUTES.HOME} class="font-medium hover:underline">
         Second Memory
       </a>
-      <a href={`${import.meta.env.BASE_URL}/account/login`} data-account class="hover:underline">
+      <a href={ROUTES.LOGIN} data-account class="hover:underline">
         Sign in
       </a>
     </header>

@@ -9,7 +9,7 @@ describe('proxy (admin route guard)', () => {
 
     expect(response.status).toBe(307);
     const location = new URL(response.headers.get('location') ?? '');
-    expect(location.pathname).toBe('/login');
+    expect(location.pathname).toBe('/admin/login');
     expect(location.searchParams.get('redirect')).toBe('/admin/admins?page=2');
   });
 

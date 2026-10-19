@@ -506,7 +506,7 @@ resource "docker_container" "site" {
   }
 
   healthcheck {
-    test         = ["CMD-SHELL", "wget --quiet --tries=1 --spider http://127.0.0.1:4321/skills/healthz || exit 1"]
+    test         = ["CMD-SHELL", "wget --quiet --tries=1 --spider http://127.0.0.1:4321/healthz || exit 1"]
     interval     = "15s"
     timeout      = "5s"
     retries      = 5

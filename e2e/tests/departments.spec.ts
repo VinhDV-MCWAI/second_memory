@@ -10,7 +10,7 @@ const locked = `E2E locked ${suffix}`;
 const open = `E2E open ${suffix}`;
 
 async function signIn(page: Page, user: string) {
-  await page.goto('/login');
+  await page.goto('/admin/login');
   await page.getByLabel('Username').fill(user);
   await page.getByLabel('Password').fill(E2E_PASSWORD);
   await page.getByRole('button', { name: 'Sign In' }).click();

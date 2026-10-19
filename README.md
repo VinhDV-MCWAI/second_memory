@@ -16,7 +16,8 @@ The project is also a practice ground for professional software work: every feat
 | Search | One search box over skills, goals, evidence, files and folders: Vietnamese without diacritics, typo tolerant | [tim-kiem.md](docs/features/tim-kiem.md) |
 | Audit log | Every change and sign-in attempt, with a filterable screen | [nhat-ky-thay-doi.md](docs/features/nhat-ky-thay-doi.md) |
 | Background jobs | Queue, scheduler and live notifications (Reverb WebSocket) shared by every long-running feature | [viec-nen-va-thong-bao.md](docs/features/viec-nen-va-thong-bao.md) |
-| Public page | `/skills`: public skills, level history, public evidence and their files; ~3 KB of client JavaScript; old `/docs` links redirect here | [trang-public.md](docs/features/trang-public.md) |
+| Public page | The site root: a home page of categories, `/skills` (public skills, level history, public evidence and their files) and articles; ~3 KB of client JavaScript; old `/docs` links redirect here | [trang-public.md](docs/features/trang-public.md) |
+| Categories and articles | Home page categories (the steps of building software) and Markdown articles, edited in the admin app | [bai-viet.md](docs/features/bai-viet.md) |
 | End users | Visitors may sign up on the public page to keep favorites and a read-later list; admins lock accounts and open / close sign-up | [nguoi-dung-cuoi.md](docs/features/nguoi-dung-cuoi.md) |
 | Obsidian import | Notes marked `publish: true` become evidence (Python CLI) | [nhap-tu-obsidian.md](docs/features/nhap-tu-obsidian.md) |
 
@@ -52,10 +53,10 @@ The host needs only **Docker** (Docker Desktop on WSL2 works) and **make**. PHP,
 make up        # first run: generates docker/.env and the app env files, builds and starts the stack;
                # an empty database is migrated and seeded on start
 make ps        # every container should be healthy
-make seed      # optional: sample skills, evidence, goals, tags and a read-only "viewer" account
+make seed      # optional: sample skills, evidence, goals, tags, categories + articles and a read-only "viewer" account
 ```
 
-Open <http://localhost:81> (admin) and <http://localhost:81/skills> (public page). The seed creates a local-only owner account, `root` / `12345678`. Never use it outside dev.
+Open <http://localhost:81/> (public site) and <http://localhost:81/admin> (admin). The seed creates a local-only owner account, `root` / `12345678`. Never use it outside dev.
 
 ## Everyday commands
 

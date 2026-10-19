@@ -16,9 +16,9 @@ The admin panel of the Skill Ledger: skills and their level history, learning go
 
 ## Pages
 
-> 🇻🇳 Các trang. Chưa đăng nhập vào `/admin/*` sẽ bị chuyển về `/login`.
+> 🇻🇳 Các trang. Chưa đăng nhập vào `/admin/*` sẽ bị chuyển về `/admin/login`.
 
-`/login`, then under `/admin`: dashboard, `skills`, `goals`, `evidence`, `tags`, `search`, `admins`. Without the session cookie, `/admin/*` redirects to `/login` (`src/proxy.ts`); the API decides what the account may do (role `owner` writes, `viewer` reads).
+Everything lives under `/admin` (the public site owns the rest, ADR-0021): `/admin/login`, then dashboard, `skills`, `goals`, `evidence`, `tags`, `content-categories`, `articles`, `search`, `admins`… Without the session cookie, `/admin/*` redirects to `/admin/login` (`src/proxy.ts`); the API decides what the account may do (role `owner` writes, `viewer` reads).
 
 ## Commands
 

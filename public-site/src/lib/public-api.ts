@@ -24,6 +24,9 @@ type Data<P extends keyof paths> = paths[P] extends {
 export type PublicSkill = components['schemas']['PublicSkillResource'];
 export type PublicSkillDetail = components['schemas']['PublicSkillDetailResource'];
 export type PublicFile = PublicSkillDetail['evidence'][number]['files'][number];
+export type PublicCategory = components['schemas']['PublicCategoryResource'];
+export type PublicCategoryDetail = components['schemas']['PublicCategoryDetailResource'];
+export type PublicArticle = components['schemas']['PublicArticleResource'];
 
 const cache = new Map<string, { at: number; data: unknown }>();
 
@@ -54,6 +57,25 @@ export async function getPublicSkill(slug: string): Promise<PublicSkillDetail | 
     (await getPublic<Data<'/public/skills/{slug}'>>(`skills/${encodeURIComponent(slug)}`))?.data ??
     null
   );
+}
+
+export async function getPublicCategories(): Promise<PublicCategory[]> {
+  return (await getPublic<Data<'/public/categories'>>('categories'))?.data ?? [];
+}
+
+export async function getPublicCategory(slug: string): Promise<PublicCategoryDetail | null> {
+  return (
+    (await getPublic<Data<'/public/categories/{slug}'>>(`categories/${encodeURIComponent(slug)}`))
+      ?.data ?? null
+  );
+}
+
+export async function getPublicArticle(
+  category: string,
+  slug: string,
+): Promise<PublicArticle | null> {
+  const path = `articles/${encodeURIComponent(category)}/${encodeURIComponent(slug)}`;
+  return (await getPublic<Data<'/public/articles/{category}/{slug}'>>(path))?.data ?? null;
 }
 
 // Short-lived MinIO link of an attached file; null when the file is not on the public ledger.

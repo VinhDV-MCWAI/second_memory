@@ -12,7 +12,7 @@ The whole development environment is one Compose project, `docker/docker-compose
 
 | Container | Image / build | Role | Host port | Memory limit |
 |---|---|---|---|---|
-| `ml-nginx` | `nginx-unprivileged` 1.25 | reverse proxy: `/api/` → PHP-FPM, `/skills` → public site, `/docs` → redirect to `/skills`, the rest → admin | **81** | 256 MB |
+| `ml-nginx` | `nginx-unprivileged` 1.25 | reverse proxy: `/api/` → PHP-FPM, `/admin` → admin, `/docs` → redirect to `/`, the rest → public site | **81** | 256 MB |
 | `ml-php` | `laravel/Dockerfile` (PHP 8.5 FPM) | Laravel API; migrates and seeds an empty database on start | – | 2 GB |
 | `ml-nextjs` | `nextjs/Dockerfile` (Node 24) | admin dashboard, Next.js dev server | 3456 | 2 GB |
 | `ml-public-site` | `public-site/Dockerfile` (Node 24) | public site, Astro dev server | 3002 | 512 MB |

@@ -5,6 +5,7 @@ import { useTranslations } from 'next-intl';
 import { Button } from '@/components/ui/button';
 import { ShieldAlert, ArrowLeft } from 'lucide-react';
 import { SUPPORT_EMAIL } from '@/shared/config';
+import { ADMIN_ROUTES } from '@/shared/config';
 
 export default function UnauthorizedPage() {
   const t = useTranslations('errors');
@@ -43,7 +44,7 @@ export default function UnauthorizedPage() {
             {tCommon('goBack')}
           </Button>
           <Button asChild size="lg" className="gap-2">
-            <Link href="/login">{tCommon('signIn')}</Link>
+            <Link href={ADMIN_ROUTES.LOGIN}>{tCommon('signIn')}</Link>
           </Button>
         </div>
 

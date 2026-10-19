@@ -4,7 +4,7 @@ import { ADMIN_UPSTREAM, ADMIN_URL } from './env';
 // The browser runs in a container on the Compose network, but the pages must keep the origins
 // the stack is configured for (Sanctum stateful domain, CSRF Referer, NEXT_PUBLIC_API_URL), so
 // Chromium resolves localhost:81 to nginx instead of rewriting the URLs. The public pages are
-// behind the same nginx (/skills).
+// behind the same nginx (every path but /admin).
 const hostRule = `MAP ${new URL(ADMIN_URL).host} ${ADMIN_UPSTREAM}`;
 
 export default defineConfig({

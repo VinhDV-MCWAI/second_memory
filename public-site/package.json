@@ -4,7 +4,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "astro dev",
+    "dev": "astro dev --ignore-lock",
     "build": "astro build",
     "start": "node dist/server/entry.mjs",
     "typecheck": "NODE_OPTIONS=--max-old-space-size=768 astro check",

@@ -1,5 +1,6 @@
 ---
 import Base from '@/layouts/Base.astro';
+import { ROUTES } from '@/lib/routes';
 ---
 
 <Base title="Sign in — Second Memory">
@@ -34,7 +35,7 @@ import Base from '@/layouts/Base.astro';
   </form>
   <p class="mt-6 text-sm">
     No account yet?{' '}
-    <a data-register href={`${import.meta.env.BASE_URL}/account/register`} class="underline">
+    <a data-register href={ROUTES.REGISTER} class="underline">
       Create one
     </a>
   </p>

@@ -1,6 +1,6 @@
 # Kiến trúc hiện tại
 
-Cập nhật: 2026-10-17. Hệ thống đang chạy thế nào trên môi trường dev. Sửa file này cùng commit với thay đổi về container, đăng nhập, phân quyền hoặc cấu trúc dữ liệu. Chi tiết từng tính năng nằm trong [docs/features/](../features/). Kiến trúc của bản `v1.0.0` (trước khi thu gọn): [as-is.md](../archive/engineering-lab/architecture/as-is.md).
+Cập nhật: 2026-10-19. Hệ thống đang chạy thế nào trên môi trường dev. Sửa file này cùng commit với thay đổi về container, đăng nhập, phân quyền hoặc cấu trúc dữ liệu. Chi tiết từng tính năng nằm trong [docs/features/](../features/). Kiến trúc của bản `v1.0.0` (trước khi thu gọn): [as-is.md](../archive/engineering-lab/architecture/as-is.md).
 
 ## 1. Container (dev, Docker Compose)
 
@@ -10,8 +10,8 @@ flowchart LR
     N -->|/api/*| P[ml-php<br/>Laravel API]
     N -->|/app/* WebSocket| R2[ml-reverb]
     N -->|/media-official/* link ký tạm| M[(ml-minio)]
-    N -->|/skills| D[ml-public-site<br/>trang public, Astro]
-    N -->|còn lại| F[ml-nextjs<br/>trang quản trị]
+    N -->|/admin, /_next| F[ml-nextjs<br/>trang quản trị]
+    N -->|còn lại: /, /skills, /guides| D[ml-public-site<br/>trang public, Astro]
     D -->|GET /api/public/*| N
     P --> PG[(ml-postgres)]
     P --> R[(ml-redis)]
@@ -28,15 +28,15 @@ flowchart LR
 | `ml-nginx` | Cửa vào duy nhất (máy :81 → 8080 bên trong). Cấu hình: `docker/nginx/default.conf` |
 | `ml-php` | REST API (php-fpm). Khởi động lần đầu thì migrate và seed DB trống. Có `ffmpeg` để đọc thời lượng và tạo ảnh nhỏ |
 | `ml-queue`, `ml-scheduler`, `ml-reverb` | Cùng image với `ml-php`: làm việc nền (hàng đợi Redis), chạy lệnh hẹn giờ, gửi thông báo tức thì qua WebSocket. Đổi code việc nền thì `make workers-restart` |
-| `ml-nextjs` | Trang quản trị |
-| `ml-public-site` | Trang public `/skills` (Astro, HTML render ở server; chỉ một script nhỏ cho tài khoản người dùng, ~3 KB; gọi API qua nginx, giữ kết quả 60 giây). `/docs…` cũ được nginx chuyển hướng tới `/skills` ([ADR-0019](../adr/0019-public-user-frontend.md)) |
+| `ml-nextjs` | Trang quản trị, chỉ dưới `/admin` (đăng nhập `/admin/login`, [ADR-0021](../adr/0021-public-home-categories-articles.md)) |
+| `ml-public-site` | Trang public ở gốc `/`: trang chủ danh mục, `/skills`, `/guides/…`, tài khoản người dùng (Astro, HTML render ở server; chỉ một script nhỏ cho tài khoản người dùng, ~3 KB; gọi API qua nginx, giữ kết quả 60 giây). `/docs…` cũ được nginx chuyển hướng tới `/` ([ADR-0019](../adr/0019-public-user-frontend.md), [ADR-0021](../adr/0021-public-home-categories-articles.md)) |
 | `ml-postgres` | Dữ liệu và tìm kiếm. DB `testing` riêng cho test |
 | `ml-redis` | Phiên đăng nhập, cache, hàng đợi (test dùng DB 14 / 15) |
 | `ml-minio` (+ `ml-minio-init`) | Kho file. Bucket không cho đọc công khai; trình duyệt upload và tải bằng link ký tạm. Bucket chính bật lưu phiên bản, bản cũ tự hết hạn sau 30 ngày (thùng rác) |
 
 ## 2. Các nhóm API
 
-83 API. Hợp đồng đầy đủ: `laravel-api/openapi.json` (sinh từ code, [ADR-0008](../adr/0008-code-first-openapi-contract.md)). Mọi response cùng một dạng: `{ "data": …, "error": { "status", "code", "messages" } }`.
+94 API. Hợp đồng đầy đủ: `laravel-api/openapi.json` (sinh từ code, [ADR-0008](../adr/0008-code-first-openapi-contract.md)). Mọi response cùng một dạng: `{ "data": …, "error": { "status", "code", "messages" } }`.
 
 | Nhóm | Đường dẫn | Tài liệu |
 |---|---|---|
@@ -48,7 +48,8 @@ flowchart LR
 | Việc nền | `admin/background-task/*`, `broadcasting/auth` | [viec-nen-va-thong-bao.md](../features/viec-nen-va-thong-bao.md) |
 | Nhập Obsidian | `admin/evidence/import` (chỉ token API) | [nhap-tu-obsidian.md](../features/nhap-tu-obsidian.md) |
 | Người dùng cuối | `user/*` (bộ đăng nhập `user`), `admin/end-user/*` | [nguoi-dung-cuoi.md](../features/nguoi-dung-cuoi.md) |
-| Public | `public/skills/*`, `public/files/*` | [trang-public.md](../features/trang-public.md) |
+| Danh mục, bài viết | `admin/content-category/*`, `admin/article/*` | [bai-viet.md](../features/bai-viet.md) |
+| Public | `public/skills/*`, `public/files/*`, `public/categories/*`, `public/articles/*` | [trang-public.md](../features/trang-public.md), [bai-viet.md](../features/bai-viet.md) |
 
 ## 3. Đăng nhập và phân quyền
 

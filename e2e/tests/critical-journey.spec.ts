@@ -33,7 +33,7 @@ test('owner records a skill with evidence and it shows on the public page', asyn
   expect(E2E_PASSWORD, 'E2E_PASSWORD is set by e2e/run.sh').not.toBe('');
 
   await test.step('log in', async () => {
-    await page.goto('/login');
+    await page.goto('/admin/login');
     await page.getByLabel('Username').fill(E2E_USER);
     await page.getByLabel('Password').fill(E2E_PASSWORD);
     await page.getByRole('button', { name: 'Sign In' }).click();
@@ -81,9 +81,13 @@ test('owner records a skill with evidence and it shows on the public page', asyn
     await expect(page.getByText(privateSkill)).toHaveCount(0);
   });
 
-  await test.step('an old /docs link lands on the public skills', async () => {
+  await test.step('old links land on the right pages (ADR-0021)', async () => {
     await page.goto(`${PUBLIC_URL}/docs/some/old/page`);
-    await expect(page).toHaveURL(`${PUBLIC_URL}/skills`);
-    await expect(page.getByRole('heading', { level: 1, name: 'Skills' })).toBeVisible();
+    await expect(page).toHaveURL(`${PUBLIC_URL}/`);
+    await expect(page.getByRole('heading', { level: 1, name: 'Second Memory' })).toBeVisible();
+    await page.goto(`${PUBLIC_URL}/skills/me`);
+    await expect(page).toHaveURL(/\/(me|account\/login\?next=%2Fme)$/);
+    await page.goto(`${PUBLIC_URL}/login`);
+    await expect(page).toHaveURL(/\/admin(\/login)?/);
   });
 });

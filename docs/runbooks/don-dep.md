@@ -55,7 +55,7 @@ Cuối script in `docker system df`. Cần thêm chỗ trống thì xóa tay ả
 | Nguồn | Ai dọn | Cách làm |
 |---|---|---|
 | Test backend (`make test`) | Tự động | Chạy trên DB `testing`, mỗi test cuộn lại giao dịch (`DatabaseTransactions`), không đụng DB dev |
-| Test trình duyệt (`make e2e`) | Tự động | `e2e/run.sh` đặt tên mọi bản ghi `E2E …`, chạy xong xóa skill, bằng chứng, vai trò, phòng ban, file, nhật ký của tài khoản e2e, và tắt các tài khoản `e2e_owner`, `e2e_member`, `e2e_outsider` |
+| Test trình duyệt (`make e2e`) | Tự động | `e2e/run.sh` đặt tên mọi bản ghi `E2E …`, chạy xong xóa skill, bằng chứng, danh mục và bài viết, vai trò, phòng ban, người dùng `e2e-…`, file, nhật ký của tài khoản e2e, và tắt các tài khoản `e2e_owner`, `e2e_member`, `e2e_outsider` |
 | Thử bằng tay trên trình duyệt | Người thử | Đặt tên bắt đầu bằng `TMP ` (skill, bằng chứng, vai trò, phòng ban, thư mục, tài khoản `tmp_…`) để dễ nhận ra, xong thì xóa trên giao diện |
 | File upload thử | Người thử | Files → xóa → Trash → **Delete forever** (xóa hẳn khỏi MinIO). Không làm thì lệnh `media:prune-trash` tự xóa sau 30 ngày |
 | Upload dở dang | Tự động | `media:clean-stuck-uploads` mỗi giờ dọn upload treo quá 24 giờ |

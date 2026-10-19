@@ -79,6 +79,7 @@ import Base from '@/layouts/Base.astro';
 </Base>
 
 <script>
+  import { ROUTES } from '@/lib/routes';
   import {
     api,
     currentUser,
@@ -92,15 +93,21 @@ import Base from '@/layouts/Base.astro';
   function row(item: SavedItem): HTMLLIElement {
     const li = document.createElement('li');
     const link = document.createElement('a');
-    link.href = `/skills/${item.skill_slug}`;
+    link.href =
+      item.target === 'article'
+        ? ROUTES.article(item.category_slug ?? '', item.article_slug ?? '')
+        : ROUTES.skill(item.skill_slug ?? '');
     link.className = 'font-medium hover:underline';
     link.textContent = item.title;
     li.append(link);
-    if (item.target === 'evidence') {
-      const where = document.createElement('span');
-      where.className = 'text-muted-foreground ml-2 text-sm';
-      where.textContent = `evidence · ${item.skill_name}`;
-      li.append(where);
+    const where = { evidence: `evidence · ${item.skill_name}`, article: item.category_name };
+    if (item.target !== 'skill') {
+      li.append(
+        Object.assign(document.createElement('span'), {
+          className: 'text-muted-foreground ml-2 text-sm',
+          textContent: where[item.target],
+        }),
+      );
     }
     return li;
   }
@@ -130,7 +137,7 @@ import Base from '@/layouts/Base.astro';
 
   document.querySelector('[data-logout]')?.addEventListener('click', async () => {
     await signOut();
-    location.href = '/skills';
+    location.href = ROUTES.HOME;
   });
 
   const password = document.querySelector<HTMLFormElement>('#password')!;
@@ -154,7 +161,7 @@ import Base from '@/layouts/Base.astro';
     try {
       await api('POST', 'user/delete-account', Object.fromEntries(new FormData(remove)));
       await signOut();
-      location.href = '/skills';
+      location.href = ROUTES.HOME;
     } catch (error) {
       showErrors(remove.querySelector<HTMLElement>('[data-errors]')!, error);
     }

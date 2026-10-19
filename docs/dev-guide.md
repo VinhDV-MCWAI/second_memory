@@ -34,21 +34,22 @@ Chạy lại `make seed` bao nhiêu lần cũng được: dòng đã có thì gi
 
 ## 2. Các địa chỉ
 
-Luôn vào qua cổng **81**. nginx ở cổng này chia request cho từng phần; đăng nhập (cookie, CSRF) chỉ hoạt động đúng khi đi qua đây.
+Luôn vào qua cổng **81**. nginx ở cổng này chia request cho từng phần; đăng nhập (cookie, CSRF) chỉ hoạt động đúng khi đi qua đây. Cổng 3456 (trang quản trị) và 3002 (trang public) chỉ để gỡ lỗi container: mở trang quản trị ở 3456 thì đăng nhập báo 401, mở 3002 thì không có API.
 
 ```
 Trình duyệt → http://localhost:81 (nginx)
   ├─ /api/...           → Laravel API
   ├─ /media-official/… → MinIO (chỉ link ký tạm do API cấp; quản lý file)
   ├─ /app/…            → Reverb (WebSocket, thông báo tức thì)
-  ├─ /skills           → trang public (Astro, ứng dụng public-site)
-  ├─ /docs…            → chuyển hướng tới /skills
-  └─ mọi đường dẫn khác → trang quản trị (Next.js): /login, /admin, ...
+  ├─ /admin…, /_next/… → trang quản trị (Next.js): đăng nhập ở /admin/login
+  ├─ /login, /docs…    → chuyển hướng tới /admin/login, /
+  └─ mọi đường dẫn khác → trang public (Astro, ứng dụng public-site): /, /skills, /guides/…, /me
 ```
 
 | Dịch vụ | Địa chỉ từ máy | Dùng để |
 |---|---|---|
-| Trang quản trị + API | http://localhost:81 | Dùng hằng ngày |
+| Trang public | http://localhost:81/ | Trang chủ danh mục, kỹ năng, bài viết |
+| Trang quản trị + API | http://localhost:81/admin | Dùng hằng ngày (`root` / `12345678`) |
 | Danh sách API (OpenAPI) | file `laravel-api/openapi.json` (sinh bằng `make openapi`) | Xem các API hiện có |
 | MinIO console | http://localhost:9102 | Xem bucket và file |
 | PostgreSQL | `localhost:5502` | Mở DB bằng DBeaver / TablePlus |
@@ -106,10 +107,10 @@ Test dùng một database riêng tên `testing`, không đụng dữ liệu dev.
 
 | Lỗi | Nguyên nhân | Cách sửa |
 |---|---|---|
-| Đăng nhập báo 401 dù mật khẩu đúng | Nhập email thay vì tên đăng nhập | Nhập `root` |
+| Đăng nhập báo 401 dù mật khẩu đúng | Nhập email thay vì tên đăng nhập; hoặc mở trang quản trị ở cổng 3456 thay vì qua cổng 81 (gặp ngày 2026-10-19) | Nhập `root`; mở http://localhost:81/admin/login |
 | Đăng nhập báo 429 | Sai quá nhiều lần, bị khóa tạm 15 phút (5 lần sai cùng một tên, hoặc 30 lần sai từ cùng một IP với mọi tên) | Đợi theo số giây trong header `Retry-After`. Trên dev muốn mở ngay: `docker exec ml-php php artisan cache:clear` |
 | Trang báo lỗi kết nối, `docker ps -a` thấy `ml-php`, `ml-postgres`, `ml-redis`, `ml-nginx`… `Exited (127)` | Máy hoặc WSL khởi động lại, các container không tự chạy lại (gặp ngày 2026-10-15) | `docker compose -f docker/docker-compose.yml up -d` (hoặc `make up`). Migration chạy lại tự động khi `ml-php` khởi động |
-| `GET /api/admin/credential/me` trả 401 trong console | Bình thường khi chưa đăng nhập: trang dùng nó để kiểm tra rồi chuyển tới `/login` | Không cần sửa |
+| `GET /api/admin/credential/me` trả 401 trong console | Bình thường khi chưa đăng nhập: trang dùng nó để kiểm tra rồi chuyển tới `/admin/login` | Không cần sửa |
 | Cảnh báo "Encountered a script tag" trong console | Script chống nháy màu của thư viện chọn giao diện sáng/tối bị render trên trình duyệt (đã sửa trong `nextjs-fe/src/app/providers.tsx`) | Nếu còn thấy: tải lại trang không dùng cache (Ctrl+Shift+R) |
 | 419 "CSRF token mismatch" khi gọi API bằng curl | Thiếu cookie CSRF | Gọi `GET /api/sanctum/csrf-cookie` trước, gửi kèm header `Referer: http://localhost:81/...`, rồi gửi giá trị cookie `XSRF-TOKEN` trong header `X-XSRF-TOKEN` |
 | Container dừng với mã 127 sau khi khởi động lại Docker hoặc WSL | Đường dẫn gắn vào container bị cũ | `make up` |
@@ -127,6 +128,7 @@ Test dùng một database riêng tên `testing`, không đụng dữ liệu dev.
 | Việc nền lỗi, cần xem lý do | Việc lỗi sau mọi lần thử được lưu lại | `docker exec ml-php php artisan queue:failed`; chạy lại: `queue:retry <id>` |
 | Sửa code job mà việc nền vẫn chạy code cũ | Worker giữ code trong bộ nhớ | `make workers-restart` |
 | `make tf-destroy` / `make tf-apply`: gõ `yes` mà vẫn báo "Destroy cancelled" / "Apply cancelled" | Bộ gõ tiếng Việt (Unikey, EVKey, kiểu Telex) coi `s` là dấu sắc, tự xóa rồi gõ lại chữ. Màn hình hiện `yes` nhưng Terraform nhận thêm ký tự xóa (`yes\bs`) | Tắt bộ gõ (chuyển sang E) trước khi gõ `yes` |
+| `ml-public-site` khởi động lại liên tục, log báo "Another astro dev server is already running" | Astro ghi file khóa `.astro/dev.json` vào volume còn giữ sau khi container khởi động lại (gặp ngày 2026-10-19) | Đã sửa: `pnpm dev` chạy `astro dev --ignore-lock`. Nếu vẫn gặp: `docker run --rm --volumes-from ml-public-site alpine:3.24 rm /repo/public-site/.astro/dev.json` rồi `docker restart ml-public-site` |
 | Đổi `docker/minio/create-buckets.sh` mà MinIO không đổi | Script chỉ chạy khi khởi động | `cd docker && docker compose up ml-minio-init` |
 
 ## 7. Làm lại từ đầu

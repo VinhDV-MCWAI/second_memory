@@ -12,7 +12,7 @@ const username = `e2e-${suffix}`;
 const password = 'e2e-visitor-1';
 
 async function signInAsOwner(page: Page) {
-  await page.goto('/login');
+  await page.goto('/admin/login');
   await page.getByLabel('Username').fill(E2E_USER);
   await page.getByLabel('Password').fill(E2E_PASSWORD);
   await page.getByRole('button', { name: 'Sign In' }).click();
@@ -40,7 +40,7 @@ test('a visitor signs up, saves a skill, and is signed out once locked', async (
   await test.step('a guest who clicks ☆ is asked to sign in, and registers', async () => {
     await visitor.goto(`${PUBLIC_URL}/skills/${slug}`);
     await favorite.click();
-    await expect(visitor).toHaveURL(/\/skills\/account\/login\?next=/);
+    await expect(visitor).toHaveURL(/\/account\/login\?next=/);
     await visitor.getByRole('link', { name: 'Create one' }).click();
     await visitor.getByLabel('Username (3–30 letters, digits, . _ -)').fill(username);
     await visitor.getByLabel('Display name').fill(`E2E visitor ${suffix}`);
@@ -60,7 +60,7 @@ test('a visitor signs up, saves a skill, and is signed out once locked', async (
     await visitor.reload();
     await expect(favorite).toHaveAttribute('aria-pressed', 'true');
 
-    await visitor.goto(`${PUBLIC_URL}/skills/me`);
+    await visitor.goto(`${PUBLIC_URL}/me`);
     for (const list of ['Favorites', 'Read later']) {
       const section = visitor.locator('section').filter({ has: visitor.getByRole('heading', { name: list }) });
       await expect(section.getByRole('link', { name: skill })).toBeVisible();
@@ -77,8 +77,8 @@ test('a visitor signs up, saves a skill, and is signed out once locked', async (
     await dialog.getByRole('button', { name: 'Update', exact: true }).click();
     await expect(dialog).toBeHidden();
 
-    await visitor.goto(`${PUBLIC_URL}/skills/me`);
-    await expect(visitor).toHaveURL(/\/skills\/account\/login/);
+    await visitor.goto(`${PUBLIC_URL}/me`);
+    await expect(visitor).toHaveURL(/\/account\/login/);
   });
 
   await context.close();

@@ -4,10 +4,13 @@ import { api, loginUrl, maybeSignedIn, savedItems, type SavedKind } from '@/scri
 
 const buttons = [...document.querySelectorAll<HTMLButtonElement>('button[data-save]')];
 
-function target(button: HTMLButtonElement): { skill: string } | { evidence: string } {
-  return button.dataset.skill
-    ? { skill: button.dataset.skill }
-    : { evidence: button.dataset.evidence ?? '' };
+type Target = 'skill' | 'evidence' | 'article';
+
+/** What a button saves: its data-skill (slug), data-evidence or data-article (public key). */
+function target(button: HTMLButtonElement): [Target, string] {
+  const { skill, article, evidence } = button.dataset;
+  if (skill) return ['skill', skill];
+  return article ? ['article', article] : ['evidence', evidence ?? ''];
 }
 
 function setPressed(button: HTMLButtonElement, pressed: boolean): void {
@@ -20,9 +23,7 @@ async function markSaved(): Promise<void> {
   const saved = await savedItems().catch(() => []);
   const keys = new Set(saved.map((item) => `${item.kind}|${item.target}|${item.key}`));
   for (const button of buttons) {
-    const [type, key] = button.dataset.skill
-      ? ['skill', button.dataset.skill]
-      : ['evidence', button.dataset.evidence];
+    const [type, key] = target(button);
     setPressed(button, keys.has(`${button.dataset.save}|${type}|${key}`));
   }
 }
@@ -34,7 +35,8 @@ for (const button of buttons) {
       return;
     }
     const pressed = button.getAttribute('aria-pressed') === 'true';
-    const body = { kind: button.dataset.save as SavedKind, ...target(button) };
+    const [type, key] = target(button);
+    const body = { kind: button.dataset.save as SavedKind, [type]: key };
     button.disabled = true;
     try {
       await api('POST', pressed ? 'user/saved/delete' : 'user/saved/store', body);

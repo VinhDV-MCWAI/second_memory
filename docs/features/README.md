@@ -10,7 +10,8 @@ Mỗi tính năng một file: nó làm gì, màn hình nào, API nào, bảng n�
 | Skill Ledger | [skill-ledger.md](skill-ledger.md) | Kỹ năng, lịch sử cấp độ, bằng chứng, mục tiêu học, nhãn, trang tổng quan |
 | Tìm kiếm | [tim-kiem.md](tim-kiem.md) | Một ô tìm kiếm cho kỹ năng, mục tiêu, bằng chứng, file và thư mục; gõ không dấu, gõ sai vẫn ra |
 | Nhật ký thay đổi | [nhat-ky-thay-doi.md](nhat-ky-thay-doi.md) | Ghi lại ai đổi gì, lúc nào, và mọi lần đăng nhập |
-| Trang public | [trang-public.md](trang-public.md) | Trang `/skills` ai cũng xem được: kỹ năng và bằng chứng công khai |
+| Trang public | [trang-public.md](trang-public.md) | Trang ai cũng xem được ở gốc `/`: trang chủ danh mục, kỹ năng và bằng chứng công khai, bài viết |
+| Danh mục và bài viết | [bai-viet.md](bai-viet.md) | Danh mục trang chủ (các bước làm phần mềm) và bài viết Markdown, sửa trên trang quản trị |
 | Nhập từ Obsidian | [nhap-tu-obsidian.md](nhap-tu-obsidian.md) | Đồng bộ ghi chú Obsidian có `publish: true` thành bằng chứng |
 | Việc nền và thông báo tức thì | [viec-nen-va-thong-bao.md](viec-nen-va-thong-bao.md) | Việc chạy lâu làm ở container riêng, xong thì báo ngay lên màn hình (dùng chung cho mọi tính năng) |
 | Quản lý file | [quan-ly-file.md](quan-ly-file.md) | Màn hình Files: thư mục, upload (kéo-thả, file tới 10 GB chia phần), tải về, đổi tên, di chuyển, xóa; file nằm trong MinIO |

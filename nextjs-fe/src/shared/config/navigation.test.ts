@@ -20,7 +20,15 @@ describe('NAVIGATION_MENU', () => {
   // Guards module removals: a menu entry must not outlive its page.
   it('links only to pages that exist', () => {
     const missing = hrefsOf(NAVIGATION_MENU).filter(
-      (href) => !existsSync(path.join(process.cwd(), 'src/app', href, 'page.tsx')),
+      (href) =>
+        !existsSync(
+          path.join(
+            process.cwd(),
+            'src/app/admin/(panel)',
+            href.replace(/^\/admin/, ''),
+            'page.tsx',
+          ),
+        ),
     );
     expect(missing).toEqual([]);
   });

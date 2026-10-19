@@ -4,6 +4,7 @@ import SaveButtons from '@/components/SaveButtons.astro';
 import SkillLevel from '@/components/SkillLevel.astro';
 import Base from '@/layouts/Base.astro';
 import { getPublicSkill } from '@/lib/public-api';
+import { ROUTES } from '@/lib/routes';
 
 const HTTP_NOT_FOUND = 404;
 
@@ -16,7 +17,7 @@ if (!skill) {
 
 {skill ? (
   <Base title={`${skill.name} — Skills`}>
-    <a href={import.meta.env.BASE_URL} class="text-sm hover:underline">
+    <a href={ROUTES.SKILLS} class="text-sm hover:underline">
       ← All skills
     </a>
     <h1 class="mt-4 text-3xl font-semibold">
@@ -88,7 +89,7 @@ if (!skill) {
   <Base title="Skill not found">
     <h1 class="text-3xl font-semibold">Skill not found</h1>
     <p class="mt-4">
-      <a href={import.meta.env.BASE_URL} class="hover:underline">
+      <a href={ROUTES.SKILLS} class="hover:underline">
         ← All skills
       </a>
     </p>

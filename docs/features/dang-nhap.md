@@ -6,9 +6,9 @@ Quản trị viên đăng nhập bằng **tên đăng nhập** và mật khẩu.
 
 | Địa chỉ | Làm gì |
 |---|---|
-| http://localhost:81/login | Form đăng nhập. Đăng nhập xong quay lại trang đang mở dở (nếu có), không thì tới trang tổng quan `/admin`. Ô **Keep me signed in on this device for 30 days** để ghi nhớ đăng nhập, xem mục "Ghi nhớ đăng nhập" |
-| Nút đăng xuất ở góc trên | Kết thúc phiên, quay về `/login` |
-| Mọi trang `/admin/...` | Chưa đăng nhập thì tự chuyển tới `/login` |
+| http://localhost:81/admin/login | Form đăng nhập (`/login` cũ chuyển hướng tới đây, từ 2026-10-19). Đăng nhập xong quay lại trang đang mở dở (nếu có), không thì tới trang tổng quan `/admin`. Ô **Keep me signed in on this device for 30 days** để ghi nhớ đăng nhập, xem mục "Ghi nhớ đăng nhập" |
+| Nút đăng xuất ở góc trên | Kết thúc phiên, quay về `/admin/login` |
+| Mọi trang `/admin/...` | Chưa đăng nhập thì tự chuyển tới `/admin/login` |
 | http://localhost:81/admin/sessions (menu tài khoản ở góc trên → **Signed-in devices**) | Xem tài khoản đang đăng nhập ở những thiết bị nào, đăng xuất một thiết bị hoặc mọi thiết bị khác. Xem mục "Thiết bị đang đăng nhập" bên dưới |
 
 Tài khoản dev: chủ `root` / `12345678` và chỉ xem `viewer` / `12345678` (tạo bằng `make seed`, xem [dev-guide.md](../dev-guide.md)).
@@ -100,7 +100,7 @@ Token API (dùng cho [nhập từ Obsidian](nhap-tu-obsidian.md)) là cách đă
 | Xử lý | `laravel-api/app/Services/Custom/CredentialService.php` |
 | Kiểm tra vai trò mỗi request | `laravel-api/app/Http/Middleware/AdminMiddleware.php` |
 | Thiết bị đang đăng nhập, ghi nhớ đăng nhập | `laravel-api/app/Services/Master/AdminSessionService.php`, `laravel-api/app/Http/Middleware/TrackAdminSession.php`, `laravel-api/app/Http/Middleware/RestoreRememberedSession.php`, `nextjs-fe/src/features/master/components/session-list.tsx` |
-| Trang đăng nhập | `nextjs-fe/src/app/login/page.tsx` |
+| Trang đăng nhập | `nextjs-fe/src/app/admin/login/page.tsx` |
 | Test | `make test f=LoginApi`, `make test f=LogoutApi`, `make test f=MeApi`, `make test f=PasswordChangeSession`, `make test f=AdminSessionTest`, `make test f=RememberMeTest` |
 
 Lỗi hay gặp (401 khi nhập email, 429, 419 CSRF): [dev-guide.md mục 6](../dev-guide.md#6-các-lỗi-hay-gặp).

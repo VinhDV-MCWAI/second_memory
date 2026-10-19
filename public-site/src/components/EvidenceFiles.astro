@@ -22,6 +22,7 @@ function formatBytes(bytes: number | null): string {
 // Files attached to one evidence, with their thumbnail when they have one. Images, PDF, video,
 // audio and text open in the browser, the rest download (the API decides).
 const { files } = Astro.props;
+import { ROUTES } from '@/lib/routes';
 ---
 
 {files.length > 0 && (
@@ -39,7 +40,7 @@ const { files } = Astro.props;
           <span aria-hidden="true">📎</span>
         )}
         <a
-          href={`${import.meta.env.BASE_URL}/files/${file.key}`}
+          href={ROUTES.file(file.key)}
           target="_blank"
           rel="noopener noreferrer"
           class="hover:underline"

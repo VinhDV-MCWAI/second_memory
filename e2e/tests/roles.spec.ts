@@ -6,7 +6,7 @@ import { E2E_PASSWORD, E2E_USER } from '../env';
 const roleName = `E2E Tag reader ${Date.now().toString(36)}`;
 
 test('owner creates a role from the permission matrix', async ({ page }) => {
-  await page.goto('/login');
+  await page.goto('/admin/login');
   await page.getByLabel('Username').fill(E2E_USER);
   await page.getByLabel('Password').fill(E2E_PASSWORD);
   await page.getByRole('button', { name: 'Sign In' }).click();

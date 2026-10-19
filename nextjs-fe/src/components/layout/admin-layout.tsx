@@ -9,6 +9,7 @@ import { Header } from './header';
 import { Content } from './content';
 import type { AdminLayoutProps } from '@/shared/types/ui.types';
 import { useTranslations } from 'next-intl';
+import { ADMIN_ROUTES } from '@/shared/config';
 
 export function AdminLayout({ children, className }: AdminLayoutProps) {
   const router = useRouter();
@@ -26,7 +27,7 @@ export function AdminLayout({ children, className }: AdminLayoutProps) {
 
   useEffect(() => {
     if (!isLoading && !isAuthenticated) {
-      router.push('/login');
+      router.push(ADMIN_ROUTES.LOGIN);
     }
   }, [isLoading, isAuthenticated, router]);
 

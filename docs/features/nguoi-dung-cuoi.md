@@ -1,6 +1,6 @@
 # Người dùng cuối (tài khoản trên trang public)
 
-Người xem trang public **có thể** tạo tài khoản để đánh dấu **yêu thích** và **lưu xem sau** kỹ năng hoặc bằng chứng. Không có tài khoản vẫn xem được đầy đủ. Yêu cầu: [REQ-003](../requirements/REQ-003-tai-khoan-nguoi-dung.md). Thiết kế: [ADR-0020](../adr/0020-end-user-accounts.md).
+Người xem trang public **có thể** tạo tài khoản để đánh dấu **yêu thích** và **lưu xem sau** kỹ năng, bằng chứng hoặc [bài viết](bai-viet.md). Không có tài khoản vẫn xem được đầy đủ. Yêu cầu: [REQ-003](../requirements/REQ-003-tai-khoan-nguoi-dung.md). Thiết kế: [ADR-0020](../adr/0020-end-user-accounts.md).
 
 Trạng thái: **xong** (2026-10-19). Không làm lịch sử đã xem (chủ dự án bỏ).
 
@@ -9,10 +9,10 @@ Trạng thái: **xong** (2026-10-19). Không làm lịch sử đã xem (chủ d�
 | Địa chỉ | Làm gì |
 |---|---|
 | Góc trên mọi trang | "Sign in", hoặc tên người dùng → My lists |
-| http://localhost:81/skills/{slug} | Nút ☆ (yêu thích) và 🔖 (xem sau) cạnh tên kỹ năng và cạnh từng bằng chứng. Chưa đăng nhập mà bấm thì chuyển sang trang đăng nhập, xong thì quay lại đúng trang đó |
-| http://localhost:81/skills/account/login | Đăng nhập bằng tên đăng nhập + mật khẩu |
-| http://localhost:81/skills/account/register | Đăng ký: tên đăng nhập (3–30 ký tự `a-z 0-9 . _ -`), tên hiển thị, mật khẩu ≥ 8 ký tự. Admin tắt đăng ký thì trang báo "Registration is closed for now" |
-| http://localhost:81/skills/me | Hai danh sách Favorites, Read later (mới nhất trước); đăng xuất; đổi mật khẩu; xóa tài khoản (nhập lại mật khẩu) |
+| http://localhost:81/skills/{slug}, http://localhost:81/guides/{danh mục}/{bài} | Nút ☆ (yêu thích) và 🔖 (xem sau) cạnh tên kỹ năng, cạnh từng bằng chứng và cạnh tiêu đề bài viết. Chưa đăng nhập mà bấm thì chuyển sang trang đăng nhập, xong thì quay lại đúng trang đó |
+| http://localhost:81/account/login | Đăng nhập bằng tên đăng nhập + mật khẩu |
+| http://localhost:81/account/register | Đăng ký: tên đăng nhập (3–30 ký tự `a-z 0-9 . _ -`), tên hiển thị, mật khẩu ≥ 8 ký tự. Admin tắt đăng ký thì trang báo "Registration is closed for now" |
+| http://localhost:81/me | Hai danh sách Favorites, Read later (mới nhất trước); đăng xuất; đổi mật khẩu; xóa tài khoản (nhập lại mật khẩu) |
 
 ## Màn hình trong trang quản trị
 
@@ -37,8 +37,8 @@ Không có nút Thêm: người dùng tự đăng ký. Vai trò Chỉ xem có ha
 | Tên đăng nhập | Không phân biệt hoa thường, lưu dạng chữ thường, không trùng. Không lưu email (bỏ từ 2026-10-19, [ADR-0021](../adr/0021-public-home-categories-articles.md)); tài khoản cũ dùng phần trước `@` của email, thêm số nếu trùng |
 | Đăng nhập sai | Cùng một thông báo cho tên lạ, sai mật khẩu, tài khoản bị khóa. Sai 5 lần theo tên đăng nhập + IP hoặc 30 lần theo IP thì chặn 15 phút |
 | Giới hạn | Đăng ký 5 lần / giờ / IP; mọi API người dùng 60 request / phút / IP |
-| Chỉ lưu thứ đang công khai | Kỹ năng phải công khai; bằng chứng phải công khai, chưa bị ẩn, thuộc ít nhất một kỹ năng công khai. Thứ khác trả 404. Thứ đã lưu mà sau đó bị ẩn thì không hiện trong danh sách (không lộ tiêu đề) |
-| Xóa | Xóa kỹ năng, bằng chứng hay tài khoản thì các dòng đã lưu tự mất (khóa ngoại) |
+| Chỉ lưu thứ đang công khai | Kỹ năng phải công khai; bằng chứng phải công khai, chưa bị ẩn, thuộc ít nhất một kỹ năng công khai; bài viết phải công khai và nằm trong danh mục công khai. Thứ khác trả 404. Thứ đã lưu mà sau đó bị ẩn thì không hiện trong danh sách (không lộ tiêu đề) |
+| Xóa | Xóa kỹ năng, bằng chứng, bài viết hay tài khoản thì các dòng đã lưu tự mất (khóa ngoại) |
 | Nhẹ | Trang vẫn đọc được khi tắt JavaScript. Script chỉ 2,9 KB trên trang kỹ năng (1,6 KB khi nén); khách chưa đăng nhập không gọi API nào thêm (trình duyệt chỉ gọi khi có cookie đánh dấu `sm_user`) |
 | Đổi mật khẩu | Không đăng xuất các thiết bị khác (khác admin) |
 
@@ -52,8 +52,8 @@ Không có nút Thêm: người dùng tự đăng ký. Vai trò Chỉ xem có ha
 | `GET /api/user/me` | `{username, display_name}` |
 | `PUT /api/user/password` | `current_password`, `password`, `password_confirmation` |
 | `POST /api/user/delete-account` | `password` |
-| `GET /api/user/saved/list` | Danh sách đã lưu (`kind` để lọc): `kind`, `target` (`skill` / `evidence`), `key`, `title`, `skill_slug`, `skill_name`, `saved_at` |
-| `POST /api/user/saved/store`, `POST /api/user/saved/delete` | `kind` (`favorite` / `read_later`) + `skill` (slug) **hoặc** `evidence` (mã `key` của bằng chứng trong API public). Lưu hai lần hay bỏ thứ chưa lưu đều không lỗi |
+| `GET /api/user/saved/list` | Danh sách đã lưu (`kind` để lọc): `kind`, `target` (`skill` / `evidence` / `article`), `key`, `title`, `skill_slug`, `skill_name` (kỹ năng, bằng chứng), `category_slug`, `category_name`, `article_slug` (bài viết), `saved_at` |
+| `POST /api/user/saved/store`, `POST /api/user/saved/delete` | `kind` (`favorite` / `read_later`) + **một trong** `skill` (slug), `evidence` hoặc `article` (mã `key` trong API public). Lưu hai lần hay bỏ thứ chưa lưu đều không lỗi |
 | `GET /api/admin/end-user/list`, `PUT update/{id}`, `POST delete` | Quản trị người dùng |
 | `GET /api/admin/end-user/registration`, `PUT registration-update` | Xem / đổi công tắc đăng ký |
 
@@ -64,7 +64,7 @@ Gọi `GET /api/sanctum/csrf-cookie` trước mọi lệnh ghi, như trang quả
 | Bảng | Dùng cho |
 |---|---|
 | `end_user` | Tên đăng nhập (duy nhất, chữ thường), tên hiển thị, mật khẩu băm, đang dùng, lần đăng nhập cuối |
-| `end_user_saved` | Người dùng, loại (`favorite` / `read_later`), **hoặc** `skill_id` **hoặc** `evidence_id` (ràng buộc CHECK), không trùng |
+| `end_user_saved` | Người dùng, loại (`favorite` / `read_later`), đúng một trong `skill_id`, `evidence_id`, `article_id` (ràng buộc CHECK), không trùng |
 | `app_setting` | Công tắc `end_user_registration_open` (không có dòng = đang mở) |
 | `evidence.public_key` | Mã ngẫu nhiên của bằng chứng cho trang public |
 

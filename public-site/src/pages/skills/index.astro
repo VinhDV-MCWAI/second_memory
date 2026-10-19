@@ -1,0 +1,51 @@
+---
+import SkillLevel from '@/components/SkillLevel.astro';
+import Base from '@/layouts/Base.astro';
+import { getPublicSkills, type PublicSkill } from '@/lib/public-api';
+import { ROUTES } from '@/lib/routes';
+
+function groupByCategory(skills: PublicSkill[]): [string, PublicSkill[]][] {
+  const groups = new Map<string, PublicSkill[]>();
+  for (const skill of skills) {
+    groups.set(skill.category, [...(groups.get(skill.category) ?? []), skill]);
+  }
+  return [...groups.entries()].sort(([a], [b]) => a.localeCompare(b));
+}
+
+const skills = await getPublicSkills();
+---
+
+<Base title="Skills — Second Memory">
+  <a href={ROUTES.HOME} class="text-sm hover:underline">
+    ← Home
+  </a>
+  <h1 class="mt-4 text-3xl font-semibold">Skills</h1>
+  <p class="text-muted-foreground mt-2">
+    What I work with, at which level, and the evidence behind it.
+  </p>
+
+  {skills.length === 0 ? (
+    <p class="mt-10">No skills are published yet.</p>
+  ) : (
+    groupByCategory(skills).map(([category, items]) => (
+      <section class="mt-10">
+        <h2 class="text-xl font-semibold">{category}</h2>
+        <ul class="divide-border mt-4 divide-y">
+          {items.map((skill) => (
+            <li class="py-4">
+              <a href={ROUTES.skill(skill.slug)} class="font-medium hover:underline">
+                {skill.name}
+              </a>
+              <div class="mt-1 flex flex-wrap items-center gap-x-4 gap-y-1">
+                <SkillLevel level={skill.current_level} label={skill.current_level_label} />
+                {skill.tags.length > 0 && (
+                  <span class="text-muted-foreground text-sm">{skill.tags.join(' · ')}</span>
+                )}
+              </div>
+            </li>
+          ))}
+        </ul>
+      </section>
+    ))
+  )}
+</Base>

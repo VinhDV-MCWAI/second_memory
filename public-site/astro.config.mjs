@@ -4,9 +4,14 @@ import tailwindcss from '@tailwindcss/vite';
 import { defineConfig } from 'astro/config';
 
 export default defineConfig({
-  // Pages and built assets live under /skills, so nginx sends one path prefix here and the rest to
-  // the admin app. In dev, Vite's own files (/@vite, /src, ...) have their own nginx location.
-  base: '/skills',
+  // The site lives at the root; nginx sends /admin and /_next to the admin app and the rest here
+  // (ADR-0021). Old addresses from when the site lived under /skills keep working.
+  redirects: {
+    '/skills/me': '/me',
+    '/skills/account/login': '/account/login',
+    '/skills/account/register': '/account/register',
+    '/skills/files/[key]': '/files/[key]',
+  },
   output: 'server',
   adapter: node({ mode: 'standalone' }),
   server: { host: '0.0.0.0', port: 4321 },

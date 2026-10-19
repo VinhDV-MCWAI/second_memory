@@ -216,7 +216,7 @@ export const ADMIN_ROUTES = {
   SESSIONS: '/admin/sessions',
   CONTENT_CATEGORIES: '/admin/content-categories',
   ARTICLES: '/admin/articles',
-  LOGIN: '/login',
+  LOGIN: '/admin/login',
 } as const;
 
 /** audit_log.auditable_type values the backend writes (each service's `$auditableType`, ADR-0006). */

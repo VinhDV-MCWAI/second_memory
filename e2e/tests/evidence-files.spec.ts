@@ -23,7 +23,7 @@ test('owner attaches files to evidence and they show on the public page', async 
   writeFileSync(join(dir, first), 'first attachment');
   writeFileSync(join(dir, second), 'second attachment');
 
-  await page.goto('/login');
+  await page.goto('/admin/login');
   await page.getByLabel('Username').fill(E2E_USER);
   await page.getByLabel('Password').fill(E2E_PASSWORD);
   await page.getByRole('button', { name: 'Sign In' }).click();
