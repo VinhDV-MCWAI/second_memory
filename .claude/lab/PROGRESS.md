@@ -79,7 +79,7 @@ Mỗi dòng do `scripts/lane.sh done` tự thêm. Không sửa tay. Các dòng t
 
 - 2026-10-19 — [lane main] TEST-01 done: cacffc59 — nguyên nhân: kiểm tra email admin hỏi DNS thật, mạng chập chờn thì 3 test lỗi; tắt khi chạy test (EMAIL_DNS_CHECK), thêm test cho lúc bật; tái hiện bằng cắt DNS: trước 3 lỗi, sau pass; 312 backend pass; dọn: make clean, container tạm --rm
 
-- 2026-10-19 — [lane main] I18N-01 done: $(git log -1 --format=%h) — test tự quét trang quản trị, thiếu câu chữ dịch thì make fe-test / make verify / make ci báo lỗi kèm tên file; đặt trong test thay vì make lint (không phải thêm script, sửa Makefile); thử lại lỗi ô ảnh đại diện: test bắt đúng; 161 test giao diện pass; dọn: make clean
+- 2026-10-19 — [lane main] I18N-01 done: c136ff73 — test tự quét trang quản trị, thiếu câu chữ dịch thì make fe-test / make verify / make ci báo lỗi kèm tên file; đặt trong test thay vì make lint (không phải thêm script, sửa Makefile); thử lại lỗi ô ảnh đại diện: test bắt đúng; 161 test giao diện pass; dọn: make clean
 
 ## Next step
 
