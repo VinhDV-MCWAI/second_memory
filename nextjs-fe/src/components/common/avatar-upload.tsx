@@ -31,13 +31,13 @@ export function AvatarUpload({
 
     // Validate file type
     if (!file.type.startsWith(MIME_TYPE_PREFIX.IMAGE)) {
-      toast.error(t('media.invalidFileType', { accept: 'image/*' }));
+      toast.error(t('upload.invalidFileType', { accept: 'image/*' }));
       return;
     }
 
     // Validate file size
     if (file.size > maxSize * 1024 * 1024) {
-      toast.error(t('media.fileSizeExceeded', { maxSize }));
+      toast.error(t('upload.fileSizeExceeded', { maxSize }));
       return;
     }
 
@@ -108,7 +108,7 @@ export function AvatarUpload({
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={preview}
-              alt={t('media.avatarPreview')}
+              alt={t('upload.avatarPreview')}
               className="h-full w-full rounded-full object-cover"
             />
             <Button
@@ -128,9 +128,9 @@ export function AvatarUpload({
           <div className="flex flex-col items-center gap-2 text-center">
             <ImageIcon className="h-8 w-8 text-gray-400" />
             <div className="text-sm text-gray-500">
-              <span className="font-medium text-primary">{t('media.clickToUpload')}</span>
+              <span className="font-medium text-primary">{t('upload.clickToUpload')}</span>
               <br />
-              {t('media.orDragAndDrop')}
+              {t('upload.orDragAndDrop')}
             </div>
             <p className="text-xs text-gray-400">{t('upload.imageFormats', { maxSize })}</p>
           </div>

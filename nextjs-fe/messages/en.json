@@ -274,6 +274,7 @@
   "savedFilters": {
     "filterName": "Filter name",
     "filterDeleted": "Filter deleted",
+    "appliedFilter": "Applied filter: {name}",
     "filterSaved": "Filter saved successfully",
     "deleteFilterConfirm": "Are you sure you want to delete this filter?",
     "enterFilterName": "Please enter a filter name",
@@ -287,6 +288,11 @@
   },
   "upload": {
     "avatar": "Avatar",
+    "clickToUpload": "Click to upload",
+    "invalidFileType": "Only {accept} files are allowed",
+    "fileSizeExceeded": "The file is larger than {maxSize}MB",
+    "avatarPreview": "Avatar preview",
+    "orDragAndDrop": "or drag and drop",
     "imageFormats": "PNG, JPG, GIF up to {maxSize}MB"
   },
   "forms": {
