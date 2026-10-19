@@ -12,7 +12,12 @@ final class EndUserConst
     /** Guard of end users; admins use CommonVal::ADMIN_GUARD */
     public const GUARD = 'user';
 
-    public const EMAIL_MAX = 191;
+    public const USERNAME_MIN = 3;
+
+    public const USERNAME_MAX = 30;
+
+    /** Letters (any case, stored lower case), digits, dot, underscore, dash */
+    public const USERNAME_PATTERN = '/^[A-Za-z0-9._-]+$/';
 
     public const DISPLAY_NAME_MAX = 50;
 

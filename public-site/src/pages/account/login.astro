@@ -7,12 +7,13 @@ import Base from '@/layouts/Base.astro';
   <p class="text-muted-foreground mt-2">Keep favorites and things to read later.</p>
   <form id="login" class="mt-8 max-w-sm space-y-4">
     <label class="block">
-      <span class="text-sm">Email</span>
+      <span class="text-sm">Username</span>
       <input
-        name="email"
-        type="email"
+        name="username"
         required
-        autocomplete="email"
+        maxlength="30"
+        autocomplete="username"
+        autocapitalize="none"
         class="mt-1 w-full rounded border bg-transparent px-3 py-2"
       />
     </label>
@@ -49,7 +50,10 @@ import Base from '@/layouts/Base.astro';
     event.preventDefault();
     const data = new FormData(form);
     try {
-      await signIn('user/login', { email: data.get('email'), password: data.get('password') });
+      await signIn('user/login', {
+        username: data.get('username'),
+        password: data.get('password'),
+      });
       location.href = nextPage();
     } catch (error) {
       showErrors(form.querySelector<HTMLElement>('[data-errors]')!, error);

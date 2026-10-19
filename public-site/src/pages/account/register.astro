@@ -4,20 +4,21 @@ import Base from '@/layouts/Base.astro';
 
 <Base title="Create an account — Second Memory">
   <h1 class="text-3xl font-semibold">Create an account</h1>
-  <p class="text-muted-foreground mt-2">
-    Only an email, a name and a password. No e-mail is ever sent.
-  </p>
+  <p class="text-muted-foreground mt-2">Only a username, a name and a password.</p>
   <p data-closed hidden class="mt-8">
     Registration is closed for now.
   </p>
   <form id="register" class="mt-8 max-w-sm space-y-4">
     <label class="block">
-      <span class="text-sm">Email</span>
+      <span class="text-sm">Username (3–30 letters, digits, . _ -)</span>
       <input
-        name="email"
-        type="email"
+        name="username"
         required
-        autocomplete="email"
+        minlength="3"
+        maxlength="30"
+        pattern="[A-Za-z0-9._\-]+"
+        autocomplete="username"
+        autocapitalize="none"
         class="mt-1 w-full rounded border bg-transparent px-3 py-2"
       />
     </label>

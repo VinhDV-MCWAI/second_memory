@@ -2185,14 +2185,14 @@
                         }
                     },
                     {
-                        "name": "email",
+                        "name": "username",
                         "in": "query",
                         "schema": {
                             "type": [
                                 "string",
                                 "null"
                             ],
-                            "maxLength": 191
+                            "maxLength": 30
                         }
                     },
                     {
@@ -2706,7 +2706,7 @@
                                         "data": {
                                             "type": "object",
                                             "properties": {
-                                                "email": {
+                                                "username": {
                                                     "type": "string"
                                                 },
                                                 "display_name": {
@@ -2714,7 +2714,7 @@
                                                 }
                                             },
                                             "required": [
-                                                "email",
+                                                "username",
                                                 "display_name"
                                             ]
                                         },
@@ -2803,7 +2803,7 @@
                                         "data": {
                                             "type": "object",
                                             "properties": {
-                                                "email": {
+                                                "username": {
                                                     "type": "string"
                                                 },
                                                 "display_name": {
@@ -2811,7 +2811,7 @@
                                                 }
                                             },
                                             "required": [
-                                                "email",
+                                                "username",
                                                 "display_name"
                                             ]
                                         },
@@ -2939,7 +2939,7 @@
                                         "data": {
                                             "type": "object",
                                             "properties": {
-                                                "email": {
+                                                "username": {
                                                     "type": "string"
                                                 },
                                                 "display_name": {
@@ -2947,7 +2947,7 @@
                                                 }
                                             },
                                             "required": [
-                                                "email",
+                                                "username",
                                                 "display_name"
                                             ]
                                         },
@@ -8390,9 +8390,9 @@
             "App.Http.Requests.User.LoginRequest": {
                 "type": "object",
                 "properties": {
-                    "email": {
+                    "username": {
                         "type": "string",
-                        "maxLength": 191
+                        "maxLength": 30
                     },
                     "password": {
                         "type": "string",
@@ -8400,7 +8400,7 @@
                     }
                 },
                 "required": [
-                    "email",
+                    "username",
                     "password"
                 ],
                 "title": "App.Http.Requests.User.LoginRequest"
@@ -8845,7 +8845,7 @@
                     "id": {
                         "type": "integer"
                     },
-                    "email": {
+                    "username": {
                         "type": "string"
                     },
                     "display_name": {
@@ -8869,7 +8869,7 @@
                 },
                 "required": [
                     "id",
-                    "email",
+                    "username",
                     "display_name",
                     "is_active",
                     "saved_count",
@@ -9819,10 +9819,11 @@
             "RegisterRequest": {
                 "type": "object",
                 "properties": {
-                    "email": {
+                    "username": {
                         "type": "string",
-                        "format": "email",
-                        "maxLength": 191
+                        "pattern": "^[A-Za-z0-9._-]+$",
+                        "minLength": 3,
+                        "maxLength": 30
                     },
                     "display_name": {
                         "type": "string",
@@ -9840,7 +9841,7 @@
                     }
                 },
                 "required": [
-                    "email",
+                    "username",
                     "display_name",
                     "password",
                     "password_confirmation"

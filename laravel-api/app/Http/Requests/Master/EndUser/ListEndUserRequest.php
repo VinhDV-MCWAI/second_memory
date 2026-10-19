@@ -14,7 +14,7 @@ class ListEndUserRequest extends ListRequest
     protected function filters(): array
     {
         return [
-            'email' => ['nullable', 'string', 'max:'.EndUserConst::EMAIL_MAX],
+            'username' => ['nullable', 'string', 'max:'.EndUserConst::USERNAME_MAX],
             'display_name' => ['nullable', 'string', 'max:'.EndUserConst::DISPLAY_NAME_MAX],
             'is_active' => ['nullable', Rule::enum(IsActive::class)],
         ];

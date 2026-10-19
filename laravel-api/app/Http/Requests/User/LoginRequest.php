@@ -17,13 +17,13 @@ class LoginRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'email' => ['required', 'string', 'max:'.EndUserConst::EMAIL_MAX],
+            'username' => ['required', 'string', 'max:'.EndUserConst::USERNAME_MAX],
             'password' => ['required', 'string', 'max:'.EndUserConst::PASSWORD_MAX],
         ];
     }
 
     public function attributes(): array
     {
-        return ['email' => __('messages.email'), 'password' => __('messages.password')];
+        return ['username' => __('messages.user_name'), 'password' => __('messages.password')];
     }
 }

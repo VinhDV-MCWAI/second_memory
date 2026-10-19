@@ -14,7 +14,7 @@ vi.mock('@/features/history/components/history-viewer', () => ({ HistoryViewer: 
 
 const endUser: EndUser = {
   id: 7,
-  email: 'ann@example.com',
+  username: 'ann',
   display_name: 'Ann',
   is_active: true,
   saved_count: 2,

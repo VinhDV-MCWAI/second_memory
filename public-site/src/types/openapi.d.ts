@@ -1413,7 +1413,7 @@ export interface components {
     };
     /** App.Http.Requests.User.LoginRequest */
     'App.Http.Requests.User.LoginRequest': {
-      email: string;
+      username: string;
       password: string;
     };
     /**
@@ -1544,7 +1544,7 @@ export interface components {
     /** EndUserResource */
     EndUserResource: {
       id: number;
-      email: string;
+      username: string;
       display_name: string;
       is_active: boolean;
       saved_count: number;
@@ -1790,8 +1790,7 @@ export interface components {
     };
     /** RegisterRequest */
     RegisterRequest: {
-      /** Format: email */
-      email: string;
+      username: string;
       display_name: string;
       password: string;
       password_confirmation: string;
@@ -3036,7 +3035,7 @@ export interface operations {
         per_page?: number | null;
         sort_by?: string | null;
         sort_order?: string | null;
-        email?: string | null;
+        username?: string | null;
         display_name?: string | null;
         is_active?: components['schemas']['IsActive'] | null;
       };
@@ -3308,7 +3307,7 @@ export interface operations {
         content: {
           'application/json': {
             data: {
-              email: string;
+              username: string;
               display_name: string;
             };
             error: {
@@ -3361,7 +3360,7 @@ export interface operations {
         content: {
           'application/json': {
             data: {
-              email: string;
+              username: string;
               display_name: string;
             };
             error: {
@@ -3436,7 +3435,7 @@ export interface operations {
         content: {
           'application/json': {
             data: {
-              email: string;
+              username: string;
               display_name: string;
             };
             error: {

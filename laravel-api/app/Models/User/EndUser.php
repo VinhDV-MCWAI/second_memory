@@ -19,7 +19,7 @@ class EndUser extends Model implements AuthenticatableContract
 
     protected $table = 'end_user';
 
-    protected $fillable = ['email', 'display_name', 'password', 'is_active', 'last_login_at'];
+    protected $fillable = ['username', 'display_name', 'password', 'is_active', 'last_login_at'];
 
     protected $hidden = ['password'];
 

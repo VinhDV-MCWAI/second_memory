@@ -21,7 +21,7 @@ class CurrentEndUserResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'email' => (string) $this->email,
+            'username' => (string) $this->username,
             'display_name' => (string) $this->display_name,
         ];
     }

@@ -6,7 +6,7 @@ import type { components } from '@/types/openapi';
 export type SavedItem = components['schemas']['SavedItemResource'];
 export type SavedKind = components['schemas']['SavedKind'];
 export interface CurrentUser {
-  email: string;
+  username: string;
   display_name: string;
 }
 

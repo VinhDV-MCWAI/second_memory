@@ -16,6 +16,6 @@ trait AuthenticatesEndUsers
      */
     protected function loginAsEndUser(EndUser $endUser, string $password = 'password'): array
     {
-        return $this->cookiesOf($this->postJson('/api/user/login', ['email' => $endUser->email, 'password' => $password])->assertOk());
+        return $this->cookiesOf($this->postJson('/api/user/login', ['username' => $endUser->username, 'password' => $password])->assertOk());
     }
 }

@@ -63,8 +63,8 @@ export function EndUserForm({
     <>
       <form id={formId} onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         <dl className="grid grid-cols-2 gap-2 text-sm">
-          <dt className="text-muted-foreground">{tFields('email')}</dt>
-          <dd>{initialData?.email}</dd>
+          <dt className="text-muted-foreground">{tFields('username')}</dt>
+          <dd>{initialData?.username}</dd>
           <dt className="text-muted-foreground">{tFields('displayName')}</dt>
           <dd>{initialData?.display_name}</dd>
         </dl>

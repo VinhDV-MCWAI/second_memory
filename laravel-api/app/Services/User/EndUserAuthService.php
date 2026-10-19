@@ -30,7 +30,7 @@ final class EndUserAuthService
     ) {}
 
     /**
-     * @param  array{email: string, display_name: string, password: string}  $payload
+     * @param  array{username: string, display_name: string, password: string}  $payload
      *
      * @throws AuthenticationException without a session (request not from the public site)
      * @throws AccessDeniedHttpException when the owner closed registration
@@ -42,14 +42,14 @@ final class EndUserAuthService
             throw new AccessDeniedHttpException(Messages::E0046);
         }
 
-        $endUser = $this->endUsers->create($payload['email'], $payload['display_name'], $payload['password']);
+        $endUser = $this->endUsers->create($payload['username'], $payload['display_name'], $payload['password']);
         $this->signIn($endUser, $request);
 
         return $endUser;
     }
 
     /**
-     * @param  array{email: string, password: string}  $credentials
+     * @param  array{username: string, password: string}  $credentials
      *
      * @throws AuthenticationException
      * @throws ThrottleRequestsException
@@ -57,23 +57,23 @@ final class EndUserAuthService
     public function login(array $credentials, Request $request): EndUser
     {
         $this->ensureSession($request);
-        $email = EndUserRepository::normalizeEmail($credentials['email']);
-        $emailKey = 'user-login:'.$email.'|'.$request->ip();
+        $username = EndUserRepository::normalizeUsername($credentials['username']);
+        $usernameKey = 'user-login:'.$username.'|'.$request->ip();
         $ipKey = 'user-login-ip:'.$request->ip();
-        foreach ([$emailKey => CommonVal::LOGIN_MAX_ATTEMPTS, $ipKey => CommonVal::LOGIN_IP_MAX_ATTEMPTS] as $key => $maxAttempts) {
+        foreach ([$usernameKey => CommonVal::LOGIN_MAX_ATTEMPTS, $ipKey => CommonVal::LOGIN_IP_MAX_ATTEMPTS] as $key => $maxAttempts) {
             if (RateLimiter::tooManyAttempts($key, $maxAttempts)) {
                 throw new ThrottleRequestsException(Messages::E0429, headers: ['Retry-After' => RateLimiter::availableIn($key)]);
             }
         }
 
-        // Same answer for an unknown email, a wrong password and a locked account
-        if (! $this->guard()->attempt(['email' => $email, 'password' => $credentials['password']])) {
-            RateLimiter::hit($emailKey, CommonVal::LOGIN_LOCK_SECONDS);
+        // Same answer for an unknown username, a wrong password and a locked account
+        if (! $this->guard()->attempt(['username' => $username, 'password' => $credentials['password']])) {
+            RateLimiter::hit($usernameKey, CommonVal::LOGIN_LOCK_SECONDS);
             RateLimiter::hit($ipKey, CommonVal::LOGIN_LOCK_SECONDS);
 
             throw new AuthenticationException(Messages::E0401);
         }
-        RateLimiter::clear($emailKey);
+        RateLimiter::clear($usernameKey);
 
         /** @var EndUser $endUser */
         $endUser = $this->guard()->user();

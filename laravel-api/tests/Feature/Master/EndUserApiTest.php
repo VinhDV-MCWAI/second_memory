@@ -32,11 +32,11 @@ final class EndUserApiTest extends TestCase
 
     public function test_list_lock_reset_password_and_delete_with_audit(): void
     {
-        $endUser = EndUser::factory()->create(['email' => 'dan@example.com', 'display_name' => 'Dan']);
+        $endUser = EndUser::factory()->create(['username' => 'dan', 'display_name' => 'Dan']);
         $userCookies = $this->loginAsEndUser($endUser);
 
-        $this->call('GET', self::BASE.'/list', ['email' => 'DAN'], $this->owner)->assertOk()
-            ->assertJsonPath('data.data.0.email', 'dan@example.com')
+        $this->call('GET', self::BASE.'/list', ['username' => 'DA'], $this->owner)->assertOk()
+            ->assertJsonPath('data.data.0.username', 'dan')
             ->assertJsonPath('data.data.0.is_active', true)
             ->assertJsonPath('data.data.0.saved_count', 0)
             ->assertJsonMissingPath('data.data.0.password');

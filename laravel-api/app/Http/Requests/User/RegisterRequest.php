@@ -18,7 +18,10 @@ class RegisterRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'email' => ['required', 'string', 'email', 'max:'.EndUserConst::EMAIL_MAX, new UniqueIgnoringCase('end_user', 'email')],
+            'username' => [
+                'required', 'string', 'min:'.EndUserConst::USERNAME_MIN, 'max:'.EndUserConst::USERNAME_MAX,
+                'regex:'.EndUserConst::USERNAME_PATTERN, new UniqueIgnoringCase('end_user', 'username'),
+            ],
             'display_name' => ['required', 'string', 'max:'.EndUserConst::DISPLAY_NAME_MAX],
             'password' => ['required', 'string', 'min:'.EndUserConst::PASSWORD_MIN, 'max:'.EndUserConst::PASSWORD_MAX, 'confirmed'],
         ];
@@ -27,7 +30,7 @@ class RegisterRequest extends FormRequest
     public function attributes(): array
     {
         return [
-            'email' => __('messages.email'),
+            'username' => __('messages.user_name'),
             'display_name' => __('messages.name'),
             'password' => __('messages.password'),
         ];

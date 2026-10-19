@@ -48,8 +48,8 @@ final class EndUserController extends Controller
      */
     public function register(RegisterRequest $request): array
     {
-        /** @var array{email: string, display_name: string, password: string} $payload */
-        $payload = $request->safe()->only(['email', 'display_name', 'password']);
+        /** @var array{username: string, display_name: string, password: string} $payload */
+        $payload = $request->safe()->only(['username', 'display_name', 'password']);
 
         return (new CurrentEndUserResource($this->auth->register($payload, $request)))->toArray($request);
     }
@@ -64,7 +64,7 @@ final class EndUserController extends Controller
      */
     public function login(LoginRequest $request): array
     {
-        /** @var array{email: string, password: string} $credentials */
+        /** @var array{username: string, password: string} $credentials */
         $credentials = $request->validated();
 
         return (new CurrentEndUserResource($this->auth->login($credentials, $request)))->toArray($request);

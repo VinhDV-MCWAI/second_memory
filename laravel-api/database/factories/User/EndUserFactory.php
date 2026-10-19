@@ -17,7 +17,7 @@ class EndUserFactory extends Factory
     public function definition(): array
     {
         return [
-            'email' => fake()->unique()->safeEmail(),
+            'username' => fake()->unique()->userName(),
             'display_name' => fake()->name(),
             'password' => 'password',
             'is_active' => true,

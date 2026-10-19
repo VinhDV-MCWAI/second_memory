@@ -23,7 +23,7 @@ export default function EndUserListPage() {
   ];
 
   const columns: Column<EndUser>[] = [
-    { key: 'email', label: tFields('email'), sortable: true },
+    { key: 'username', label: tFields('username'), sortable: true },
     { key: 'display_name', label: tFields('displayName'), sortable: true },
     { key: 'saved_count', label: tFields('savedCount') },
     {
@@ -46,12 +46,12 @@ export default function EndUserListPage() {
   ];
 
   const filterFields: FilterField[] = [
-    { key: 'email', label: tFields('email'), type: 'text' },
+    { key: 'username', label: tFields('username'), type: 'text' },
     { key: 'display_name', label: tFields('displayName'), type: 'text' },
     { key: 'is_active', label: tFields('status'), type: 'select', options: activeOptions },
   ];
   const searchFields: SearchField[] = [
-    { key: 'email', label: tFields('email'), type: 'text' },
+    { key: 'username', label: tFields('username'), type: 'text' },
     { key: 'display_name', label: tFields('displayName'), type: 'text' },
   ];
 

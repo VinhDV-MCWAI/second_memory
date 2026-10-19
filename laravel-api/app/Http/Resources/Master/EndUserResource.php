@@ -25,7 +25,7 @@ class EndUserResource extends JsonResource
     {
         return [
             'id' => (int) $this->id,
-            'email' => (string) $this->email,
+            'username' => (string) $this->username,
             'display_name' => (string) $this->display_name,
             'is_active' => (bool) $this->is_active,
             'saved_count' => (int) $this->saved_items_count,

@@ -111,7 +111,7 @@ import Base from '@/layouts/Base.astro';
       location.href = loginUrl();
       return;
     }
-    document.querySelector('[data-who]')!.textContent = `${user.display_name} (${user.email})`;
+    document.querySelector('[data-who]')!.textContent = `${user.display_name} (${user.username})`;
     const items = await savedItems();
     for (const list of document.querySelectorAll<HTMLUListElement>('ul[data-list]')) {
       const mine = items.filter((item) => item.kind === list.dataset.list);

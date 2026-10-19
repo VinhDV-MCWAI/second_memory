@@ -24,35 +24,35 @@ class EndUserRepository extends CrudRepository
     public function list(array $payload): LengthAwarePaginator
     {
         $query = $this->model->query()
-            ->select(['id', 'email', 'display_name', 'is_active', 'last_login_at', 'created_at', 'updated_at'])
+            ->select(['id', 'username', 'display_name', 'is_active', 'last_login_at', 'created_at', 'updated_at'])
             ->withCount('savedItems');
 
         $this->applyFilters($query, $payload, ['id', 'is_active']);
-        foreach (['email', 'display_name'] as $column) {
+        foreach (['username', 'display_name'] as $column) {
             if (isset($payload[$column])) {
                 $query->whereRaw("lower({$column}) like lower(?)", ['%'.$payload[$column].'%']);
             }
         }
 
-        $this->applySorting($query, $payload, ['id', 'email', 'display_name', 'is_active', 'last_login_at', 'created_at'], 'created_at', 'desc');
+        $this->applySorting($query, $payload, ['id', 'username', 'display_name', 'is_active', 'last_login_at', 'created_at'], 'created_at', 'desc');
 
         return $query->paginate($payload['per_page'] ?? EndUserConst::PER_PAGE, ['*'], 'page', $payload['page'] ?? 1);
     }
 
-    public function create(string $email, string $displayName, string $password): EndUser
+    public function create(string $username, string $displayName, string $password): EndUser
     {
         /** @var EndUser */
         return $this->model->newQuery()->create([
-            'email' => self::normalizeEmail($email),
+            'username' => self::normalizeUsername($username),
             'display_name' => $displayName,
             'password' => $password,
         ]);
     }
 
-    /** Emails are kept lower case, so the login lookup and the unique index agree. */
-    public static function normalizeEmail(string $email): string
+    /** Usernames are kept lower case, so the login lookup and the unique index agree. */
+    public static function normalizeUsername(string $username): string
     {
-        return Str::lower(trim($email));
+        return Str::lower(trim($username));
     }
 
     /**

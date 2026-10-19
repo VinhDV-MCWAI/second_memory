@@ -4,11 +4,11 @@ import { E2E_PASSWORD, E2E_USER, PUBLIC_URL } from '../env';
 // End-user accounts of the public site (ADR-0020, REQ-003): a visitor clicks ☆ on a public skill,
 // creates an account, comes back to the skill, keeps it as a favourite and to read later, sees both
 // in My lists; the owner locks the account and the visitor is signed out. e2e/run.sh removes the
-// `E2E …` skill and every `e2e-…@example.com` end user afterwards.
+// `E2E …` skill and every `e2e-…` end user afterwards.
 const suffix = Date.now().toString(36);
 const skill = `E2E Shared ${suffix}`;
 const slug = skill.toLowerCase().replaceAll(' ', '-');
-const email = `e2e-${suffix}@example.com`;
+const username = `e2e-${suffix}`;
 const password = 'e2e-visitor-1';
 
 async function signInAsOwner(page: Page) {
@@ -42,7 +42,7 @@ test('a visitor signs up, saves a skill, and is signed out once locked', async (
     await favorite.click();
     await expect(visitor).toHaveURL(/\/skills\/account\/login\?next=/);
     await visitor.getByRole('link', { name: 'Create one' }).click();
-    await visitor.getByLabel('Email').fill(email);
+    await visitor.getByLabel('Username (3–30 letters, digits, . _ -)').fill(username);
     await visitor.getByLabel('Display name').fill(`E2E visitor ${suffix}`);
     await visitor.getByLabel('Password (at least 8 characters)').fill(password);
     await visitor.getByLabel('Password again').fill(password);
@@ -69,7 +69,7 @@ test('a visitor signs up, saves a skill, and is signed out once locked', async (
 
   await test.step('the owner locks the account; the visitor is signed out', async () => {
     await page.goto('/admin/end-users');
-    const row = page.getByRole('row').filter({ hasText: email });
+    const row = page.getByRole('row').filter({ hasText: username });
     await expect(row).toBeVisible();
     await row.getByRole('button', { name: 'Edit' }).click();
     const dialog = page.getByRole('dialog');
