@@ -118,6 +118,7 @@ Test dùng một database riêng tên `testing`, không đụng dữ liệu dev.
 | Container dừng với mã 127 sau khi khởi động lại Docker hoặc WSL | Đường dẫn gắn vào container bị cũ | `make up` |
 | `make up` báo "ml-redis is unhealthy" | Redis đang nạp lại dữ liệu | Đợi một lúc rồi `make up` lại |
 | `Permission denied` / `EACCES` trên `vendor/`, `storage/`, `.next/` | File do container chạy quyền root tạo ra trước đây | `docker run --rm -v "$PWD":/r alpine:3.24 chown -R 1000:1000 /r/<đường dẫn>` |
+| Tạo admin trên dev báo "The email must be a valid email address." dù email đúng | Email admin phải thuộc tên miền có thật: máy hỏi DNS trên Internet, mạng chập chờn thì hỏi không được. Khi chạy test thì phần kiểm tra này tắt (`EMAIL_DNS_CHECK=false` trong `laravel-api/phpunit.xml`), nên test không cần mạng | Kiểm tra mạng rồi thử lại |
 | Bảng không tồn tại khi chạy test có lọc (`f=...`) | Test có lọc không tự tạo bảng trong DB `testing` | `docker exec -e DB_DATABASE=testing ml-php php artisan migrate --force` |
 | API quản trị mới trả 403 cho mọi người trừ Chủ | Route chưa có tên, hoặc quyền chưa được tạo, hoặc chưa vai trò nào có quyền đó | Đặt tên route, `make permissions`, rồi gán quyền cho vai trò |
 | `DynamicPermissionTest` báo "run make permissions" | DB `testing` chưa có quyền cho route mới | `make permissions` |

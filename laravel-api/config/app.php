@@ -125,4 +125,16 @@ return [
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Email DNS Check
+    |--------------------------------------------------------------------------
+    |
+    | Admin emails must belong to a domain with a real DNS record. Tests turn
+    | this off (phpunit.xml) so they never depend on the network.
+    |
+    */
+
+    'email_dns_check' => (bool) env('EMAIL_DNS_CHECK', true),
+
 ];

@@ -398,12 +398,30 @@ class StoreAdminMstTest extends TestCase
     }
 
     /**
+     * MST_STR_021: Email domain without DNS record is rejected when the DNS check is on.
+     * A `.invalid` domain never resolves, so the result is the same with or without network.
+     */
+    public function test_ms_t_st_r_021_email_dns_check_rejects_unknown_domain()
+    {
+        config(['app.email_dns_check' => true]);
+        $admin = AdminMst::factory()->create(['password' => Hash::make('password')]);
+        $cookies = $this->getAuthCookies($admin);
+
+        $payload = $this->getValidPayload();
+        $payload['email'] = 'test@domain.invalid';
+
+        $response = $this->call('POST', $this->storeUrl, $payload, $cookies);
+
+        $this->assertCustomValidationErrors($response, 'email');
+    }
+
+    /**
      * Helper to generate valid payload
      */
     private function getValidPayload(): array
     {
         return [
-            'email' => 'test@gmail.com', // Use real domain for DNS check
+            'email' => 'test@gmail.com',
             'user_name' => 'testuser',
             'password' => 'Password123',
             'first_name' => 'Test',
