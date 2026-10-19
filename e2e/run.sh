@@ -66,8 +66,12 @@ cleanup() {
     App\Models\Media\MediaMgmt::query()->whereKey($trash->modelKeys())->delete();
     // The failing test background job (background-jobs.spec.ts) is kept as a failed job
     $failed = DB::table("failed_jobs")->where("payload", "like", "%TestBackgroundJob%")->delete();
+    // End users of end-users.spec.ts (their saved items go with them) and the audit rows about them
+    $endUsers = DB::table("end_user")->where("email", "like", "e2e-%@example.com")->pluck("id");
+    $audit += DB::table("audit_log")->where("auditable_type", "end_user")->whereIn("auditable_id", $endUsers)->delete();
+    DB::table("end_user")->whereIn("id", $endUsers)->delete();
     $admin->update(["is_active" => false]);
-    echo "deleted skills={$skills->count()} evidence={$evidence->count()} roles={$roles->count()} departments={$departments} audit_log={$audit} failed_jobs={$failed} media={$media->count()} trash={$trash->count()}\n";
+    echo "deleted skills={$skills->count()} evidence={$evidence->count()} roles={$roles->count()} departments={$departments} end_users={$endUsers->count()} audit_log={$audit} failed_jobs={$failed} media={$media->count()} trash={$trash->count()}\n";
   '
 }
 trap cleanup EXIT
