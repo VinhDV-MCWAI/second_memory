@@ -204,6 +204,7 @@ export const ADMIN_ROUTES = {
   ADMINS: '/admin/admins',
   ROLES: '/admin/roles',
   DEPARTMENTS: '/admin/departments',
+  END_USERS: '/admin/end-users',
   SKILLS: '/admin/skills',
   TAGS: '/admin/tags',
   EVIDENCE: '/admin/evidence',

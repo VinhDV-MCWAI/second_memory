@@ -142,6 +142,27 @@ export const getDepartmentSchema = (t: Translator) =>
 
 export type DepartmentFormData = z.infer<ReturnType<typeof getDepartmentSchema>>;
 
+// End user (ADR-0020), matching UpdateEndUserRequest: lock / unlock, optional new password
+export const getEndUserSchema = (t: Translator) =>
+  z.object({
+    is_active: z.boolean(),
+    password: z.union([
+      z
+        .string()
+        .min(
+          ValidationRules.END_USER_PASSWORD_MIN,
+          t('password.minLength', { min: ValidationRules.END_USER_PASSWORD_MIN }),
+        )
+        .max(
+          ValidationRules.PASSWORD_MAX,
+          t('password.maxLength', { max: ValidationRules.PASSWORD_MAX }),
+        ),
+      z.literal(''),
+    ]),
+  });
+
+export type EndUserFormData = z.infer<ReturnType<typeof getEndUserSchema>>;
+
 // Role schema matching StoreRoleRequest (ADR-0013)
 export const getRoleSchema = (t: Translator) =>
   z.object({

@@ -207,7 +207,9 @@
     "role": "Role",
     "roles": "Roles",
     "department": "Department",
-    "departments": "Departments"
+    "departments": "Departments",
+    "endUser": "End user",
+    "endUsers": "End users"
   },
   "fields": {
     "id": "ID",
@@ -252,7 +254,10 @@
     "adminCount": "Admins",
     "code": "Code",
     "departments": "Departments",
-    "isActive": "Active"
+    "isActive": "Active",
+    "displayName": "Display name",
+    "savedCount": "Saved",
+    "lastLoginAt": "Last sign-in"
   },
   "management": {
     "title": "{entity} Management",
@@ -325,7 +330,10 @@
       "note": "Note",
       "permissions": "Permissions",
       "code": "Code",
-      "departments": "Departments"
+      "departments": "Departments",
+      "newPassword": "New password",
+      "newPasswordHint": "Leave empty to keep the current password. There is no \"forgot password\" e-mail: set one here when an end user asks.",
+      "activeEndUser": "Can sign in (untick to lock: signed out at once)"
     },
     "placeholders": {
       "urlExample": "https://example.com",
@@ -364,7 +372,9 @@
       "learning_goal": "Goal",
       "evidence": "Evidence",
       "tag": "Tag",
-      "department": "Department"
+      "department": "Department",
+      "end_user": "End user",
+      "app_setting": "Setting"
     }
   },
   "history": {
@@ -602,7 +612,9 @@
       "multipart-complete": "Finish large upload",
       "multipart-abort": "Cancel upload",
       "test": "Run test",
-      "status": "Status"
+      "status": "Status",
+      "registration": "View sign-up switch",
+      "registration-update": "Open / close sign-up"
     },
     "features": {
       "admin-mst": "Admins",
@@ -618,7 +630,8 @@
       "skill": "Skills",
       "skill-level": "Skill levels",
       "tag": "Tags",
-      "department": "Departments"
+      "department": "Departments",
+      "end-user": "End users"
     },
     "builtInName": "Built-in role: the name cannot change.",
     "ownerHasAll": "The owner role always has every permission.",
@@ -776,5 +789,10 @@
     "failed": "Could not sign out. Try again.",
     "onlyThisDevice": "You are signed in on this device only.",
     "remembered": "Kept signed in until"
+  },
+  "endUsers": {
+    "registrationOpen": "Visitors can create an account on the public site",
+    "registrationHint": "Untick to close sign-up; existing accounts keep working.",
+    "registrationSaved": "Sign-up setting saved"
   }
 }

@@ -28,6 +28,8 @@ export const ValidationRules = {
   USERNAME_MAX: 50,
   PASSWORD_MIN: 6,
   PASSWORD_MAX: 100,
+  /** End users of the public site (EndUserConst::PASSWORD_MIN) */
+  END_USER_PASSWORD_MIN: 8,
   NAME_MAX: 50,
   FIRST_NAME_MAX: 20,
   LAST_NAME_MAX: 20,

@@ -10,6 +10,7 @@ import {
   Tags,
   Target,
   UserCog,
+  Users,
 } from 'lucide-react';
 import { MenuItem } from '@/shared/types';
 import { ADMIN_ROUTES } from '@/shared/config';
@@ -84,6 +85,12 @@ export const NAVIGATION_MENU: MenuItem[] = [
         icon: Building2,
         href: ADMIN_ROUTES.DEPARTMENTS,
         permission: 'department.list',
+      },
+      {
+        label: 'entities.endUsers',
+        icon: Users,
+        href: ADMIN_ROUTES.END_USERS,
+        permission: 'end-user.list',
       },
     ],
   },
