@@ -77,6 +77,8 @@ Mỗi dòng do `scripts/lane.sh done` tự thêm. Không sửa tay. Các dòng t
 
 - 2026-10-19 — [lane main] PUB-06 done: 74f1bd47 — trang public ở gốc / (trang chủ 11 thẻ: Skills + 10 danh mục), /guides/{danh mục}/{bài}, quản trị dưới /admin (/admin/login), chuyển hướng đường dẫn cũ, Astro --ignore-lock; make verify pass (311 backend, 160 giao diện, 63 importer), make e2e 11/11
 
+- 2026-10-19 — [lane main] TEST-01 done: cacffc59 — nguyên nhân: kiểm tra email admin hỏi DNS thật, mạng chập chờn thì 3 test lỗi; tắt khi chạy test (EMAIL_DNS_CHECK), thêm test cho lúc bật; tái hiện bằng cắt DNS: trước 3 lỗi, sau pass; 312 backend pass; dọn: make clean, container tạm --rm
+
 ## Next step
 
 1. Đầu phiên: đọc file này, rồi `scripts/lane.sh status`. Bảng việc chỉ còn các việc "để sau" theo quyết định chủ dự án.
