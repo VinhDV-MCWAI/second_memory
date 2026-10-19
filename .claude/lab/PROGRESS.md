@@ -67,6 +67,8 @@ Mỗi dòng do `scripts/lane.sh done` tự thêm. Không sửa tay. Các dòng t
 
 - 2026-10-19 — [lane main] USER-02 done: thay bằng tài khoản người dùng trên trang public (PUB-03, PUB-04, ADR-0020)
 
+- 2026-10-19 — [lane main] PROC-01 done: 8c1e1daf — sổ tay quy trình tiếng Việt 7 chương trong docs/handbook/, mỗi chương có mục kinh nghiệm làm việc với từng vai; không khôi phục vai giả lập (chủ dự án quyết); dùng thật ở REL-02; dọn: không tạo dữ liệu hay container
+
 ## Next step
 
 1. Đầu phiên: đọc file này, rồi `scripts/lane.sh status`. Bảng việc chỉ còn các việc "để sau" theo quyết định chủ dự án.
