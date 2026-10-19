@@ -14,7 +14,7 @@ Phòng ban và khóa thư mục Files: xong 2026-10-17.
 
 | Mã | Việc | Kết quả | Trạng thái |
 |---|---|---|---|
-| USER-02 | Quản lý người dùng cuối: API + giao diện + test. Sẽ được thay bằng tài khoản người dùng cuối của trang cho người dùng (PUB-03, PUB-04) | Màn hình người dùng cuối | blocked: để sau (ADR-0015) |
+| USER-02 | Quản lý người dùng cuối: API + giao diện + test. Sẽ được thay bằng tài khoản người dùng cuối của trang cho người dùng (PUB-03, PUB-04) | Màn hình người dùng cuối | done (thay bằng tài khoản người dùng trên trang public (PUB-03, PUB-04, ADR-0020)) |
 
 ## 7. Sau cùng
 
