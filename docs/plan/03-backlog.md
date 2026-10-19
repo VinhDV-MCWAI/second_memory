@@ -24,6 +24,9 @@ Các mục còn lại của giai đoạn này (triển khai, vận hành, sự c
 |---|---|---|---|
 | DEMO-01 | **[XÁC NHẬN]** Dữ liệu mẫu cho bản demo prod-like (tài khoản Chỉ xem + Skill Ledger mẫu) | Bản demo mở ra có dữ liệu | blocked: để sau (chủ dự án quyết 2026-10-14: chỉ làm trên dev) |
 | DEMO-02 | **[XÁC NHẬN]** HTTPS cho bản demo prod-like | Bản demo chạy HTTPS | blocked: để sau (chủ dự án quyết 2026-10-14: chỉ làm trên dev) |
+| TEST-01 | Tìm và sửa nguyên nhân 3 test tạo admin thỉnh thoảng lỗi khi chạy cả bộ (lỗi đã biết của `v2.3.0`) | Test tạo admin pass ổn định | todo |
+| I18N-01 | Kiểm tra tự động câu chữ dịch bị thiếu trong trang quản trị, chạy trong `make lint` (sau lỗi thiếu câu chữ ở ô tải ảnh đại diện 2026-10-19) | Thiếu câu chữ dịch thì `make lint` báo lỗi | todo |
+| OPS-01 | **[XÁC NHẬN]** Đề xuất mục Sự cố: gây lỗi giả lập, báo cáo sự cố, diễn tập khôi phục dữ liệu (cả file MinIO) có đo thời gian | Đề xuất được chủ dự án duyệt | todo |
 
 ## 8. Luyện quy trình làm phần mềm kiểu doanh nghiệp
 
