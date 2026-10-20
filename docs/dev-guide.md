@@ -145,6 +145,7 @@ Test dùng một database riêng tên `testing`, không đụng dữ liệu dev.
 | Bật để làm việc mỗi ngày (không build lại, khoảng 30 giây) | `make start` | Không mất gì |
 | Tắt khi xong việc (giữ container, lần bật sau nhanh) | `make stop` | Không mất gì |
 | Build lại và bật (lần đầu, sau khi đổi Dockerfile hoặc `pnpm-lock.yaml`) | `make up` | Không mất gì; tự xóa thư mục `node_modules` cũ trong Docker |
+| Bật / tắt thông báo Windows khi container dừng hoặc việc nền kẹt (xem [cảnh báo](runbooks/canh-bao.md)) | `make watch-on` / `make watch-off` | Không mất gì |
 | Khởi động lại container | `make restart` | Không mất gì |
 | Tắt và xóa container | `make down` | Không mất gì, dữ liệu vẫn còn |
 | Thêm lại tài khoản và dữ liệu mẫu bị thiếu | `make seed` | Không mất gì |

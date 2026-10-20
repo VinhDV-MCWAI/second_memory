@@ -61,6 +61,16 @@ sh: ## Shell into a container (make sh s=ml-php)
 clean: ## Remove leftovers after a task: Docker garbage, old production images, test output (keeps dev data)
 	bash scripts/clean.sh
 
+.PHONY: watch-on watch-off watch-status
+watch-on: ## Windows alerts every minute: a container down or unhealthy, a job waiting too long, new failed jobs
+	bash scripts/health-watch.sh install
+
+watch-off: ## Stop the alerts and remove their state
+	bash scripts/health-watch.sh uninstall
+
+watch-status: ## Alert timer state, current problems and the last alerts
+	bash scripts/health-watch.sh status
+
 ##@ Backend (laravel-api)
 
 .PHONY: test

@@ -29,7 +29,7 @@ Mọi thứ không phải code nằm ở đây. Tài liệu viết bằng tiến
 | [requirements/](requirements/) | Hồ sơ yêu cầu của việc lớn: vấn đề, phạm vi, câu hỏi làm rõ, tiêu chí chấp nhận, phân tích ảnh hưởng (REQ-001, REQ-002 cũ nằm trong archive) | Khi nhận một yêu cầu lớn, trước khi thiết kế |
 | [adr/](adr/) | Các quyết định kỹ thuật, mỗi quyết định một file. Đã "Accepted" thì không sửa, muốn đổi thì viết quyết định mới | Khi có một lựa chọn thật sự giữa nhiều phương án |
 | [releases/](releases/) | Ghi chú phát hành theo từng phiên bản | Khi gắn tag phiên bản mới |
-| [runbooks/](runbooks/) | Hướng dẫn vận hành từng bước: sao lưu và khôi phục, nhập từ Obsidian, dọn dẹp | Khi đổi script vận hành |
+| [runbooks/](runbooks/) | Hướng dẫn vận hành từng bước: sao lưu và khôi phục, nhập từ Obsidian, dọn dẹp, cảnh báo | Khi đổi script vận hành |
 | [archive/](archive/) | Tài liệu cũ, giữ để tra lịch sử, không cập nhật nữa | Không sửa |
 
 ## Tài liệu cũ trong archive
