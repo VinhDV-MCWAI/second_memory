@@ -81,6 +81,8 @@ Mỗi dòng do `scripts/lane.sh done` tự thêm. Không sửa tay. Các dòng t
 
 - 2026-10-19 — [lane main] I18N-01 done: c136ff73 — test tự quét trang quản trị, thiếu câu chữ dịch thì make fe-test / make verify / make ci báo lỗi kèm tên file; đặt trong test thay vì make lint (không phải thêm script, sửa Makefile); thử lại lỗi ô ảnh đại diện: test bắt đúng; 161 test giao diện pass; dọn: make clean
 
+- 2026-10-20 — [lane main] OPS-01 done: 9830eb8f + docs/incidents — diễn tập 3 tình huống trên dev: khôi phục thử 32/32 bảng và file giống hệt (5 giây), hàng đợi dừng không mất việc, Redis dừng chỉ hỏng trang quản trị; gặp sự cố thật (cả trang sập sau khởi động lại), sửa bài kiểm tra sức khỏe app quản trị; phát hiện file trong thùng rác không được sao lưu (OPS-02); dọn: DB, bucket tạm, file sao lưu, file TMP, make clean
+
 ## Next step
 
 1. Đầu phiên: đọc file này, rồi `scripts/lane.sh status`. Bảng việc chỉ còn các việc "để sau" theo quyết định chủ dự án.
