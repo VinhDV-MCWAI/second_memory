@@ -85,6 +85,8 @@ Mỗi dòng do `scripts/lane.sh done` tự thêm. Không sửa tay. Các dòng t
 
 - 2026-10-20 — [lane main] OPS-02 done: 7956ef4e — sao lưu thêm file trong thùng rác (media-trash/), khôi phục đặt lại dấu đã xóa nên file về đúng thùng rác; thử thật: sao lưu, khôi phục thử vào DB và bucket tạm, file 11 MB giống hệt từng byte, gỡ dấu đã xóa tải về được; shellcheck sạch; dọn: DB, bucket tạm, file sao lưu, image shellcheck, make clean
 
+- 2026-10-20 — [lane main] OPS-03 done: bebd5eea, 1b6945f1, f2e6ce13, d624e4ee, 8d6a611f, 85bd3ae1 — gắn thư mục thay file lẻ, mật khẩu Redis ra khỏi dòng lệnh; thử bật/tắt 20 lần: sửa Redis chết khi container khởi động lại, header Date trùng làm phình log nginx; khởi động nhanh hơn (down→up 72→40s, stop→start hỏng→24s), PHP build 1 lần, log tối đa 30 MB/container, tắt sạch (init), composer chỉ cài khi lock đổi, make start/stop, tự xóa volume rác; make verify pass (313 backend, 161 giao diện, 63 importer), make e2e 11/11; dọn: make clean, 3 image worker cũ; còn: chủ dự án thử wsl --shutdown
+
 ## Next step
 
 1. Đầu phiên: đọc file này, rồi `scripts/lane.sh status`. Bảng việc chỉ còn các việc "để sau" theo quyết định chủ dự án.
