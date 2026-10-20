@@ -6,7 +6,6 @@ namespace Tests\Feature\User;
 
 use App\Constants\CommonVal;
 use App\Models\Content\Article;
-use App\Models\Content\ContentCategory;
 use App\Models\User\EndUser;
 use Tests\Concerns\AuthenticatesAdmins;
 use Tests\Concerns\AuthenticatesEndUsers;
@@ -32,7 +31,7 @@ final class SavedApiTest extends TestCase
     {
         parent::setUp();
         $this->article = Article::factory()->create(['title' => 'Bộ câu hỏi làm rõ']);
-        $this->key = (string) $this->call('GET', "/api/public/articles/{$this->article->category->slug}/{$this->article->slug}")->assertOk()->json('data.data.key');
+        $this->key = (string) $this->call('GET', "/api/public/articles/{$this->article->slug}")->assertOk()->json('data.data.key');
         $this->cookies = $this->loginAsEndUser(EndUser::factory()->create());
     }
 
@@ -51,7 +50,6 @@ final class SavedApiTest extends TestCase
             ->assertJsonPath('data.data.0.key', $otherKey)
             ->assertJsonPath('data.data.0.title', 'Checklist nghiệm thu')
             ->assertJsonPath('data.data.1.kind', 'favorite')
-            ->assertJsonPath('data.data.1.category_slug', $this->article->category->slug)
             ->assertJsonPath('data.data.1.article_slug', $this->article->slug);
         $this->call('GET', self::BASE.'/list', ['kind' => 'favorite'], $this->cookies)->assertJsonCount(1, 'data.data');
 
@@ -59,13 +57,14 @@ final class SavedApiTest extends TestCase
         $this->call('GET', self::BASE.'/list', ['kind' => 'favorite'], $this->cookies)->assertJsonCount(0, 'data.data');
     }
 
-    public function test_hidden_articles_cannot_be_saved_and_drop_out_without_leaking_titles(): void
+    public function test_hidden_articles_cannot_be_saved_and_drop_out(): void
     {
         $private = Article::factory()->private()->create();
         $this->call('POST', self::BASE.'/store', ['kind' => 'favorite', 'article' => (string) $private->refresh()->public_key], $this->cookies)->assertNotFound();
 
         $this->call('POST', self::BASE.'/store', ['kind' => 'read_later', 'article' => $this->key], $this->cookies)->assertOk();
-        ContentCategory::query()->whereKey($this->article->content_category_id)->update(['is_public' => false]);
+        // Hidden by a private parent article, without leaking the title
+        $this->article->update(['parent_id' => Article::factory()->private()->create()->id]);
         $this->call('GET', self::BASE.'/list', [], $this->cookies)->assertJsonCount(0, 'data.data');
         $this->call('POST', self::BASE.'/store', ['kind' => 'favorite', 'article' => $this->key], $this->cookies)->assertNotFound();
     }

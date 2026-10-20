@@ -12,7 +12,7 @@ use App\Repositories\Content\ContentCategoryRepository;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 /**
- * Read-only public view of categories and articles (ADR-0021). Private or missing → 404.
+ * Read-only public view of categories and articles (ADR-0022). Private or missing → 404.
  */
 final class PublicContentService
 {
@@ -31,8 +31,8 @@ final class PublicContentService
         return new PublicCategoryDetailResource($this->categories->publicCategoryBySlug($slug));
     }
 
-    public function article(string $categorySlug, string $slug): PublicArticleResource
+    public function article(string $slug): PublicArticleResource
     {
-        return new PublicArticleResource($this->articles->publicArticle($categorySlug, $slug));
+        return new PublicArticleResource($this->articles->publicArticle($slug));
     }
 }

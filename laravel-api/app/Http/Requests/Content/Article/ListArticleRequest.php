@@ -13,7 +13,11 @@ class ListArticleRequest extends ListRequest
     {
         return [
             'title' => ['nullable', 'string', 'max:'.ContentConst::ARTICLE_TITLE_MAX],
-            'content_category_id' => ['nullable', 'integer'],
+            'category_id' => ['nullable', 'integer'],
+            /** Sub-pages of this article */
+            'parent_id' => ['nullable', 'integer'],
+            /** Only articles without a parent */
+            'root' => ['nullable', 'boolean'],
             'is_public' => ['nullable', 'boolean'],
         ];
     }

@@ -22,6 +22,7 @@ type Data<P extends keyof paths> = paths[P] extends {
 export type PublicCategory = components['schemas']['PublicCategoryResource'];
 export type PublicCategoryDetail = components['schemas']['PublicCategoryDetailResource'];
 export type PublicArticle = components['schemas']['PublicArticleResource'];
+export type PublicAttachment = components['schemas']['PublicAttachmentResource'];
 
 const cache = new Map<string, { at: number; data: unknown }>();
 
@@ -54,15 +55,12 @@ export async function getPublicCategory(slug: string): Promise<PublicCategoryDet
   );
 }
 
-export async function getPublicArticle(
-  category: string,
-  slug: string,
-): Promise<PublicArticle | null> {
-  const path = `articles/${encodeURIComponent(category)}/${encodeURIComponent(slug)}`;
-  return (await getPublic<Data<'/public/articles/{category}/{slug}'>>(path))?.data ?? null;
+export async function getPublicArticle(slug: string): Promise<PublicArticle | null> {
+  const path = `articles/${encodeURIComponent(slug)}`;
+  return (await getPublic<Data<'/public/articles/{slug}'>>(path))?.data ?? null;
 }
 
-// Short-lived MinIO link of an attached file; null when the file is not on the public ledger.
+// Short-lived MinIO link of an attached file; null when the file is not on the public site.
 // Kept for less time than the link lives (5 minutes for a download, 1 hour for a preview).
 export async function getPublicFileUrl(key: string): Promise<string | null> {
   return (

@@ -6,21 +6,25 @@ import { ROUTES } from '@/lib/routes';
 
 const HTTP_NOT_FOUND = 404;
 
-// Private (or in a private category) and missing both answer 404 (ADR-0021)
-const article = await getPublicArticle(Astro.params.category ?? '', Astro.params.article ?? '');
+// Private (or under a private article) and missing both answer 404 (ADR-0022)
+const article = await getPublicArticle(Astro.params.slug ?? '');
 if (!article) {
   Astro.response.status = HTTP_NOT_FOUND;
 }
 ---
 
 {article ? (
-  <Base
-    title={`${article.title} — ${article.category.name}`}
-    description={article.summary ?? undefined}
-  >
-    <a href={ROUTES.category(article.category.slug)} class="text-sm hover:underline">
-      ← {article.category.name}
-    </a>
+  <Base title={`${article.title} — Second Memory`} description={article.summary ?? undefined}>
+    <p class="flex flex-wrap gap-2 text-sm">
+      {article.categories.map((category) => (
+        <a
+          href={ROUTES.category(category.slug)}
+          class="bg-muted rounded px-2 py-0.5 hover:underline"
+        >
+          {category.name}
+        </a>
+      ))}
+    </p>
     <h1 class="mt-4 text-3xl font-semibold">
       {article.title} <SaveButtons article={article.key} label={article.title} />
     </h1>

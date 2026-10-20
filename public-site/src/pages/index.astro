@@ -1,16 +1,17 @@
 ---
 import Base from '@/layouts/Base.astro';
-import { getPublicCategories } from '@/lib/public-api';
+import { getPublicCategories, type PublicCategory } from '@/lib/public-api';
 import { ROUTES } from '@/lib/routes';
 
-// The owner's categories in the order set in the admin app (ADR-0021)
-const categories = await getPublicCategories();
-const cards = categories.map((category) => ({
-  href: ROUTES.category(category.slug),
-  name: category.name,
-  description: category.description,
-  count: category.article_count,
-}));
+// Groups in the owner's order, each with its categories (ADR-0022). The API lists a group right
+// before its categories; a category's `group` names it.
+const rows = await getPublicCategories();
+const groups = rows
+  .filter((row) => row.group === null)
+  .map((group) => ({ group, categories: rows.filter((row) => row.group === group.name) }));
+
+const count = (category: PublicCategory) =>
+  `${category.article_count} ${category.article_count === 1 ? 'article' : 'articles'}`;
 ---
 
 <Base title="Second Memory">
@@ -19,17 +20,26 @@ const cards = categories.map((category) => ({
     Notes from experience on building software. Pick a category.
   </p>
 
-  <ul class="mt-10 grid gap-4 sm:grid-cols-2">
-    {cards.map((card) => (
-      <li>
-        <a href={card.href} class="hover:bg-muted block h-full rounded-lg border p-5">
-          <span class="font-medium">{card.name}</span>
-          {card.description && <p class="text-muted-foreground mt-1 text-sm">{card.description}</p>}
-          <p class="text-muted-foreground mt-3 font-mono text-xs">
-            {card.count} {card.count === 1 ? 'article' : 'articles'}
-          </p>
+  {groups.map(({ group, categories }) => (
+    <section class="mt-10">
+      <h2 class="text-xl font-semibold">
+        <a href={ROUTES.category(group.slug)} class="hover:underline">
+          {group.name}
         </a>
-      </li>
-    ))}
-  </ul>
+      </h2>
+      <ul class="mt-4 grid gap-4 sm:grid-cols-2">
+        {categories.map((category) => (
+          <li>
+            <a
+              href={ROUTES.category(category.slug)}
+              class="hover:bg-muted block h-full rounded-lg border p-5"
+            >
+              <span class="font-medium">{category.name}</span>
+              <p class="text-muted-foreground mt-3 font-mono text-xs">{count(category)}</p>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </section>
+  ))}
 </Base>

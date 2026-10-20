@@ -91,17 +91,52 @@ export const getAdminSchema = (t: Translator) =>
 
 export type AdminFormData = z.infer<ReturnType<typeof getAdminSchema>>;
 
-const sortOrder = (t: Translator) =>
-  z
-    .number()
-    .int()
-    .min(0, t('sortOrder.range', { max: ValidationRules.SORT_ORDER_MAX }))
-    .max(
-      ValidationRules.SORT_ORDER_MAX,
-      t('sortOrder.range', { max: ValidationRules.SORT_ORDER_MAX }),
-    );
+/** http(s) only, like the API's `url:http,https` rule: no javascript: or data: links. */
+const isHttpUrl = (value: string) => {
+  try {
+    return ['http:', 'https:'].includes(new URL(value).protocol);
+  } catch {
+    return false;
+  }
+};
 
-// Category of the public home page, matching StoreContentCategoryRequest (ADR-0021)
+/** Evidence of a category: a link, a file of the file manager, or both (ADR-0022). */
+const getAttachmentSchema = (t: Translator) =>
+  z
+    .object({
+      id: z.number().int().optional(),
+      title: z
+        .string()
+        .trim()
+        .min(1, t('attachmentTitle.required'))
+        .max(
+          ValidationRules.ATTACHMENT_TITLE_MAX,
+          t('attachmentTitle.maxLength', { max: ValidationRules.ATTACHMENT_TITLE_MAX }),
+        ),
+      url: z
+        .string()
+        .trim()
+        .max(
+          ValidationRules.ATTACHMENT_URL_MAX,
+          t('url.maxLength', { max: ValidationRules.ATTACHMENT_URL_MAX }),
+        )
+        .refine((value) => value === '' || isHttpUrl(value), t('url.invalid')),
+      media_id: z.number().int().nullable(),
+      note: z
+        .string()
+        .max(
+          ValidationRules.ATTACHMENT_NOTE_MAX,
+          t('note.maxLength', { max: ValidationRules.ATTACHMENT_NOTE_MAX }),
+        ),
+    })
+    .refine((item) => item.url !== '' || item.media_id !== null, {
+      message: t('url.linkOrFile'),
+      path: ['url'],
+    });
+
+export type AttachmentFormData = z.infer<ReturnType<typeof getAttachmentSchema>>;
+
+// Group or category, matching StoreContentCategoryRequest (ADR-0022): the description is Markdown
 export const getContentCategorySchema = (t: Translator) =>
   z.object({
     name: z
@@ -118,16 +153,18 @@ export const getContentCategorySchema = (t: Translator) =>
         ValidationRules.CATEGORY_DESCRIPTION_MAX,
         t('description.maxLength', { max: ValidationRules.CATEGORY_DESCRIPTION_MAX }),
       ),
-    sort_order: sortOrder(t),
+    parent_id: z.number().int().nullable(),
     is_public: z.boolean(),
+    attachments: z.array(getAttachmentSchema(t)).max(ValidationRules.ATTACHMENTS_MAX),
   });
 
 export type ContentCategoryFormData = z.infer<ReturnType<typeof getContentCategorySchema>>;
 
-// Article, matching StoreArticleRequest (ADR-0021): the body is Markdown
+// Article, matching StoreArticleRequest (ADR-0022): the body is Markdown, any number of categories
 export const getArticleSchema = (t: Translator) =>
   z.object({
-    content_category_id: z.number().int().min(1, t('articleCategory.required')),
+    parent_id: z.number().int().nullable(),
+    category_ids: z.array(z.number().int()),
     title: z
       .string()
       .trim()
@@ -150,7 +187,6 @@ export const getArticleSchema = (t: Translator) =>
         ValidationRules.ARTICLE_BODY_MAX,
         t('articleBody.maxLength', { max: ValidationRules.ARTICLE_BODY_MAX }),
       ),
-    sort_order: sortOrder(t),
     is_public: z.boolean(),
   });
 

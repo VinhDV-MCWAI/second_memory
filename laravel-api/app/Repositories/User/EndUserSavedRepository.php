@@ -25,7 +25,7 @@ class EndUserSavedRepository
             ->where('end_user_id', $endUserId)
             ->when($kind, fn (Builder $query) => $query->where('kind', $kind))
             ->whereHas('article', fn (Builder $article) => $article->visible())
-            ->with(['article:id,content_category_id,title,slug,public_key', 'article.category:id,name,slug'])
+            ->with('article:id,title,slug,public_key')
             ->orderByDesc('created_at')
             ->orderByDesc('id')
             ->get();

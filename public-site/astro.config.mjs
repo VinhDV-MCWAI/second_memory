@@ -8,7 +8,9 @@ export default defineConfig({
   // (ADR-0021). Old addresses keep working; the skill pages are gone (ADR-0022).
   redirects: {
     '/skills': '/',
-    '/skills/[slug]': '/',
+    '/skills/[slug]': '/categories/[slug]',
+    '/guides/[category]': '/categories/[category]',
+    '/guides/[category]/[article]': '/articles/[article]',
     '/skills/me': '/me',
     '/skills/account/login': '/account/login',
     '/skills/account/register': '/account/register',

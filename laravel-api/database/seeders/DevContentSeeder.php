@@ -5,23 +5,31 @@ declare(strict_types=1);
 namespace Database\Seeders;
 
 use App\Models\Content\Article;
+use App\Models\Content\CategoryAttachment;
 use App\Models\Content\ContentCategory;
 use Illuminate\Database\Seeder;
 use RuntimeException;
 
 /**
- * Development only (refuses production): the software lifecycle categories of the public home page
- * and two sample articles each (ADR-0021), for the owner to replace with real content.
- * Idempotent: categories are matched by slug, articles by category + slug, never overwritten.
+ * Development only (refuses production): sample content of the public site (ADR-0022) for the owner
+ * to replace: a "Software process" group with one category per lifecycle step and two articles each,
+ * a "Skills" group whose categories carry evidence, and a book of nested chapters.
+ * Idempotent: categories and articles are matched by slug and never overwritten.
  */
 class DevContentSeeder extends Seeder
 {
+    /** Groups keyed by slug: [name, description] */
+    private const GROUPS = [
+        'quy-trinh' => ['Quy trình làm phần mềm', 'Kinh nghiệm theo từng bước, từ lúc nhận yêu cầu tới khi vận hành.'],
+        'ky-nang' => ['Kỹ năng', 'Công nghệ tôi dùng hằng ngày, kèm bằng chứng và bài viết kinh nghiệm.'],
+    ];
+
     /**
-     * Categories keyed by slug, in home page order: [name, description, articles as [slug, title, summary, body]].
+     * Categories of the process group keyed by slug, in order: [name, description, articles as [slug, title, summary, body]].
      *
      * @var array<string, array{string, string, list<array{string, string, string, string}>}>
      */
-    private const CATEGORIES = [
+    private const PROCESS = [
         'nhan-yeu-cau' => ['Nhận yêu cầu', 'Yêu cầu tới từ đâu, ghi lại thế nào, phân loại ra sao.', [
             ['ghi-lai-yeu-cau', 'Ghi lại mọi yêu cầu bằng chữ', 'Yêu cầu nhận qua lời nói phải thành chữ ở nơi còn lưu lại.', "## Vì sao\n\nNhận việc qua cuộc gọi rồi làm theo trí nhớ: tới lúc giao, hai bên nhớ khác nhau.\n\n## Làm thế nào\n\n1. Chép lại yêu cầu vào hồ sơ (issue, `REQ-…`).\n2. Gửi lại: *\"Tôi hiểu thế này, đúng không?\"*\n3. Chỉ bắt đầu khi người đặt yêu cầu xác nhận.\n\n> Nội dung mẫu: chủ dự án cập nhật sau."],
             ['phan-loai-yeu-cau', 'Phân loại: nhỏ, thường, lớn, sự cố', 'Cỡ việc quyết định phải đi qua những bước nào.', "| Cỡ | Ví dụ | Phải có |\n|---|---|---|\n| Nhỏ | Sửa chữ | Commit rõ, test pass |\n| Thường | Thêm một màn hình | Đề xuất, xác nhận, test |\n| Lớn | Tính năng mới cả cụm | Hồ sơ yêu cầu, ADR, nghiệm thu |\n| Sự cố | Ứng dụng hỏng | Khắc phục trước, điều tra sau |\n\n> Nội dung mẫu: chủ dự án cập nhật sau."],
@@ -64,32 +72,122 @@ class DevContentSeeder extends Seeder
         ]],
     ];
 
+    /**
+     * Categories of the skills group keyed by slug: [name, description, attachments as [title, url, note]].
+     *
+     * @var array<string, array{string, string, list<array{string, string, string}>}>
+     */
+    private const SKILLS = [
+        'laravel' => ['Laravel', "Dựng API cho Second Memory: phân quyền động, hàng đợi, upload file lớn.\n\n> Nội dung mẫu: chủ dự án cập nhật sau.", [
+            ['Tài liệu Laravel', 'https://laravel.com/docs', 'Nơi tra cứu chính'],
+        ]],
+        'postgresql' => ['PostgreSQL', "Tìm kiếm tiếng Việt không dấu, index, đọc query plan.\n\n> Nội dung mẫu: chủ dự án cập nhật sau.", [
+            ['Tài liệu PostgreSQL', 'https://www.postgresql.org/docs/', 'Phần full text search'],
+        ]],
+        'docker' => ['Docker', "Môi trường dev chạy hoàn toàn trong container trên WSL.\n\n> Nội dung mẫu: chủ dự án cập nhật sau.", []],
+        'nextjs' => ['Next.js', "Trang quản trị: App Router, TanStack Query.\n\n> Nội dung mẫu: chủ dự án cập nhật sau.", []],
+    ];
+
+    /**
+     * A book: [slug, title, summary, body, category slugs, sub-pages] (ADR-0022).
+     *
+     * @var array{string, string, string, string, list<string>, list<mixed>}
+     */
+    private const BOOK = ['laravel-thuc-chien', 'Laravel thực chiến', 'Ghi chép khi dựng API của Second Memory, chia theo chương.', "Cuốn sổ tay này gom kinh nghiệm dựng API bằng Laravel.\n\n## Đọc theo thứ tự\n\nMỗi chương là một bài riêng, xem ở menu bên trái.\n\n> Nội dung mẫu: chủ dự án cập nhật sau.", ['laravel', 'thuc-hien'], [
+        ['cai-dat-du-an', 'Cài đặt dự án', 'Chạy trong Docker, cấu hình môi trường.', "## Các bước\n\n1. `make up`\n2. `make seed`\n\n> Nội dung mẫu.", [], []],
+        ['hang-doi', 'Hàng đợi', 'Việc nền chạy ngoài request.', "## Khi nào dùng\n\nViệc lâu hơn vài giây: ghép file, tạo ảnh nhỏ.\n\n> Nội dung mẫu.", ['laravel'], [
+            ['redis-cho-hang-doi', 'Redis cho hàng đợi', 'Cấu hình và giám sát.', "## Cấu hình\n\n`QUEUE_CONNECTION=redis`\n\n> Nội dung mẫu.", [], []],
+            ['xu-ly-viec-loi', 'Xử lý việc lỗi', 'Thử lại, báo lỗi, xem failed_jobs.', "## Thử lại có giới hạn\n\nSau số lần thử, việc vào `failed_jobs`.\n\n> Nội dung mẫu.", [], []],
+        ]],
+        ['trien-khai-laravel', 'Triển khai', 'Từ máy dev tới môi trường giống production.', "## Kiểm tra trước\n\n`make ci` phải xanh.\n\n> Nội dung mẫu.", ['trien-khai'], []],
+    ]];
+
     public function run(): void
     {
         if (app()->isProduction()) {
             throw new RuntimeException('DevContentSeeder never runs in production.');
         }
 
-        $order = 0;
-        foreach (self::CATEGORIES as $slug => [$name, $description, $articles]) {
-            $order += 10;
-            $category = ContentCategory::firstOrCreate(['slug' => $slug], [
-                'name' => $name,
-                'description' => $description,
-                'sort_order' => $order,
-                'is_public' => true,
-            ]);
-            foreach ($articles as $position => [$articleSlug, $title, $summary, $body]) {
-                Article::firstOrCreate(['content_category_id' => $category->id, 'slug' => $articleSlug], [
-                    'title' => $title,
-                    'summary' => $summary,
-                    'body' => $body,
-                    'sort_order' => ($position + 1) * 10,
-                    'is_public' => true,
-                ]);
+        $groups = [];
+        foreach (array_keys(self::GROUPS) as $position => $slug) {
+            [$name, $description] = self::GROUPS[$slug];
+            $groups[$slug] = $this->category($slug, $name, $description, null, $position + 1)->id;
+        }
+
+        $categories = [];
+        foreach (array_keys(self::PROCESS) as $position => $slug) {
+            [$name, $description, $articles] = self::PROCESS[$slug];
+            $categories[$slug] = $this->category($slug, $name, $description, $groups['quy-trinh'], $position + 1)->id;
+            foreach ($articles as $order => [$articleSlug, $title, $summary, $body]) {
+                $this->article($articleSlug, $title, $summary, $body, [$categories[$slug]], null, $order + 1);
             }
         }
 
-        $this->command->info('Sample content ready: '.count(self::CATEGORIES).' categories.');
+        foreach (array_keys(self::SKILLS) as $position => $slug) {
+            [$name, $description, $attachments] = self::SKILLS[$slug];
+            $category = $this->category($slug, $name, $description, $groups['ky-nang'], $position + 1);
+            $categories[$slug] = $category->id;
+            if (! CategoryAttachment::query()->where('content_category_id', $category->id)->exists()) {
+                foreach ($attachments as $order => [$title, $url, $note]) {
+                    CategoryAttachment::create(['content_category_id' => $category->id, 'title' => $title, 'url' => $url, 'note' => $note, 'position' => $order]);
+                }
+            }
+        }
+
+        $this->book(self::BOOK, null, 1, $categories);
+
+        $this->command->info('Sample content ready: '.count(self::GROUPS).' groups, '.(count(self::PROCESS) + count(self::SKILLS)).' categories, a book.');
+    }
+
+    /**
+     * A group or category matched by slug. A category seeded before groups existed joins its group.
+     */
+    private function category(string $slug, string $name, string $description, ?int $parentId, int $position): ContentCategory
+    {
+        $category = ContentCategory::firstOrCreate(['slug' => $slug], [
+            'parent_id' => $parentId,
+            'name' => $name,
+            'description' => $description,
+            'sort_order' => $position,
+            'is_public' => true,
+        ]);
+        if ($parentId !== null && $category->parent_id === null) {
+            $category->update(['parent_id' => $parentId]);
+        }
+
+        return $category;
+    }
+
+    /**
+     * @param  list<int>  $categoryIds
+     */
+    private function article(string $slug, string $title, string $summary, string $body, array $categoryIds, ?int $parentId, int $position): Article
+    {
+        $article = Article::firstOrCreate(['slug' => $slug], [
+            'parent_id' => $parentId,
+            'title' => $title,
+            'summary' => $summary,
+            'body' => $body,
+            'sort_order' => $position,
+            'is_public' => true,
+        ]);
+        $article->categories()->syncWithoutDetaching($categoryIds);
+
+        return $article;
+    }
+
+    /**
+     * @param  array{string, string, string, string, list<string>, list<mixed>}  $page
+     * @param  array<string, int>  $categories  ids by slug
+     */
+    private function book(array $page, ?int $parentId, int $position, array $categories): void
+    {
+        [$slug, $title, $summary, $body, $categorySlugs, $children] = $page;
+        $ids = array_map(fn (string $categorySlug): int => $categories[$categorySlug], $categorySlugs);
+        $article = $this->article($slug, $title, $summary, $body, $ids, $parentId, $position);
+        foreach ($children as $order => $child) {
+            /** @var array{string, string, string, string, list<string>, list<mixed>} $child */
+            $this->book($child, $article->id, $order + 1, $categories);
+        }
     }
 }

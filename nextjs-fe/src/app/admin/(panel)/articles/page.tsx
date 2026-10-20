@@ -6,21 +6,44 @@ import { StatusBadge } from '@/components/common/data-table/cells';
 import type { Column } from '@/components/common/data-table/data-table';
 import type { FilterField } from '@/components/common/data-table/filter-panel';
 import { ArticleForm } from '@/features/content/components/article-form';
+import { useApiData } from '@/shared/hooks/use-api-data';
 import { API_ENDPOINTS } from '@/shared/api';
 import { SORT_ORDER } from '@/shared/config';
 import { formatTimestamp } from '@/shared/utils/date-formatter';
-import type { Article } from '@/shared/types/models';
+import type { Article, ContentCategory } from '@/shared/types/models';
 import type { SearchField } from '@/shared/types/data-table.types';
 
-/** Articles of the public site (ADR-0021). */
+/** Every category fits the filter's select. */
+const CATEGORY_PAGE_SIZE = 100;
+
+/** Articles (ADR-0022): newest change first, with their categories and their place in a book. */
 export default function ArticleListPage() {
   const tFields = useTranslations('fields');
   const tContent = useTranslations('content');
+  const { data: categories } = useApiData<ContentCategory>(API_ENDPOINTS.CONTENT.CATEGORY, {
+    per_page: CATEGORY_PAGE_SIZE,
+  });
 
   const columns: Column<Article>[] = [
-    { key: 'title', label: tFields('title'), sortable: true },
-    { key: 'category_name', label: tFields('category') },
-    { key: 'sort_order', label: tFields('sortOrder'), sortable: true },
+    {
+      key: 'title',
+      label: tFields('title'),
+      sortable: true,
+      render: (item) => (
+        <span>
+          <span className="block">{item.title}</span>
+          {item.parent_title && (
+            <span className="block text-xs text-muted-foreground">↳ {item.parent_title}</span>
+          )}
+        </span>
+      ),
+    },
+    {
+      key: 'categories',
+      label: tFields('categories'),
+      render: (item) => item.categories.map((category) => category.name).join(', '),
+    },
+    { key: 'children_count', label: tFields('subPages') },
     {
       key: 'is_public',
       label: tFields('visibility'),
@@ -40,6 +63,12 @@ export default function ArticleListPage() {
 
   const filterFields: FilterField[] = [
     { key: 'title', label: tFields('title'), type: 'text' },
+    {
+      key: 'category_id',
+      label: tFields('category'),
+      type: 'select',
+      options: categories.map((category) => ({ value: category.id, label: category.name })),
+    },
     { key: 'is_public', label: tContent('public'), type: 'boolean' },
   ];
   const searchFields: SearchField[] = [{ key: 'title', label: tFields('title'), type: 'text' }];

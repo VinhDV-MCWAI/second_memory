@@ -28,6 +28,11 @@ class ContentCategoryFactory extends Factory
         ];
     }
 
+    public function in(ContentCategory $group): static
+    {
+        return $this->state(['parent_id' => $group->id]);
+    }
+
     public function private(): static
     {
         return $this->state(['is_public' => false]);

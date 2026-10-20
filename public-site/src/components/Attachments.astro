@@ -1,0 +1,71 @@
+---
+import type { PublicAttachment } from '@/lib/public-api';
+import { ROUTES } from '@/lib/routes';
+
+interface Props {
+  attachments: PublicAttachment[];
+}
+
+const UNITS = ['B', 'KB', 'MB', 'GB', 'TB'];
+const KIBI = 1024;
+
+function formatBytes(bytes: number | null): string {
+  if (bytes === null) return '';
+  let value = bytes;
+  let unit = 0;
+  while (value >= KIBI && unit < UNITS.length - 1) {
+    value /= KIBI;
+    unit++;
+  }
+  return `${unit === 0 ? value : value.toFixed(value < 10 ? 1 : 0)} ${UNITS[unit]}`;
+}
+
+// Evidence of a category (ADR-0022): links and files, with a thumbnail when a file has one.
+// Images, PDF, video, audio and text open in the browser, the rest download (the API decides).
+const { attachments } = Astro.props;
+---
+
+{attachments.length > 0 && (
+  <ul class="mt-4 space-y-3 text-sm">
+    {attachments.map((attachment) => (
+      <li class="flex items-start gap-3">
+        {attachment.file?.thumbnail_url ? (
+          <img
+            src={attachment.file.thumbnail_url}
+            alt=""
+            loading="lazy"
+            class="h-10 w-10 shrink-0 rounded border object-cover"
+          />
+        ) : (
+          <span aria-hidden="true">{attachment.file ? '📎' : '🔗'}</span>
+        )}
+        <span>
+          <span class="block font-medium">{attachment.title}</span>
+          {attachment.url && (
+            <a
+              href={attachment.url}
+              rel="noopener noreferrer"
+              class="block break-all hover:underline"
+            >
+              {attachment.url}
+            </a>
+          )}
+          {attachment.file && (
+            <a
+              href={ROUTES.file(attachment.file.key)}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="block hover:underline"
+            >
+              {attachment.file.name}
+              <span class="text-muted-foreground ml-1 font-mono text-xs">
+                {formatBytes(attachment.file.size)}
+              </span>
+            </a>
+          )}
+          {attachment.note && <span class="text-muted-foreground block">{attachment.note}</span>}
+        </span>
+      </li>
+    ))}
+  </ul>
+)}

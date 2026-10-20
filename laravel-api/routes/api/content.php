@@ -8,7 +8,7 @@ use App\Http\Controllers\Content\DashboardController;
 use App\Http\Controllers\Content\SearchController;
 use Illuminate\Support\Facades\Route;
 
-// Categories and articles of the public site (ADR-0021). Loaded inside the authenticated admin group;
+// Categories and articles of the public site (ADR-0021, ADR-0022). Loaded inside the authenticated admin group;
 // every route name is its permission (ADR-0013).
 foreach ([
     'content-category' => ContentCategoryController::class,
@@ -18,6 +18,8 @@ foreach ([
     Route::post("{$resource}/store", [$controller, 'store'])->name("{$resource}.store");
     Route::put("{$resource}/update/{id}", [$controller, 'update'])->name("{$resource}.update");
     Route::post("{$resource}/delete", [$controller, 'delete'])->name("{$resource}.delete");
+    // The ↑ ↓ buttons among siblings (ADR-0022)
+    Route::put("{$resource}/move/{id}", [$controller, 'move'])->name("{$resource}.move");
 }
 
 // One search box (ADR-0009)

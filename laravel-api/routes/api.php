@@ -65,8 +65,8 @@ Route::prefix('public')
     ->group(function () {
         // Files the public site shows (ADR-0022)
         Route::get('files/{key}', [PublicFileController::class, 'url'])->whereUuid('key');
-        // Categories and articles of the home page (ADR-0021)
+        // Categories and articles (ADR-0022)
         Route::get('categories', [PublicContentController::class, 'categories']);
         Route::get('categories/{slug}', [PublicContentController::class, 'category']);
-        Route::get('articles/{category}/{slug}', [PublicContentController::class, 'article']);
+        Route::get('articles/{slug}', [PublicContentController::class, 'article']);
     });

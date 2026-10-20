@@ -5,13 +5,22 @@ declare(strict_types=1);
 namespace App\Constants;
 
 /**
- * Categories and articles of the public site (ADR-0021).
+ * Categories and articles of the public site (ADR-0021, ADR-0022).
  */
 final class ContentConst
 {
     public const CATEGORY_NAME_MAX = 100;
 
-    public const CATEGORY_DESCRIPTION_MAX = 500;
+    /** Markdown, shown on the category page */
+    public const CATEGORY_DESCRIPTION_MAX = 20_000;
+
+    public const ATTACHMENTS_MAX = 20;
+
+    public const ATTACHMENT_TITLE_MAX = 200;
+
+    public const ATTACHMENT_URL_MAX = 2048;
+
+    public const ATTACHMENT_NOTE_MAX = 500;
 
     public const ARTICLE_TITLE_MAX = 200;
 
@@ -20,7 +29,8 @@ final class ContentConst
     /** Markdown source of one article */
     public const ARTICLE_BODY_MAX = 100_000;
 
-    public const SORT_ORDER_MAX = 9999;
+    /** Levels of an article tree (a book → chapters → …), the root counting as one */
+    public const ARTICLE_DEPTH_MAX = 10;
 
     public const PER_PAGE = 15;
 

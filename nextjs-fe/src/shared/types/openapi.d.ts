@@ -186,6 +186,23 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/admin/article/move/{id}': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    /** One step up or down among its siblings (the same parent) */
+    put: operations['article.move'];
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/admin/audit-log/list': {
     parameters: {
       query?: never;
@@ -295,6 +312,23 @@ export interface paths {
     get?: never;
     put?: never;
     post: operations['content-category.delete'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/admin/content-category/move/{id}': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    /** One step up or down among its siblings (the same parent) */
+    put: operations['content-category.move'];
+    post?: never;
     delete?: never;
     options?: never;
     head?: never;
@@ -980,7 +1014,7 @@ export interface paths {
       path?: never;
       cookie?: never;
     };
-    /** Public categories of the home page, in the owner's order */
+    /** Public groups and categories of the home page: each group followed by its categories, in the owner's order */
     get: operations['publicContent.categories'];
     put?: never;
     post?: never;
@@ -997,7 +1031,7 @@ export interface paths {
       path?: never;
       cookie?: never;
     };
-    /** One public category with its public articles; private or missing → 404 */
+    /** One public category: description as safe HTML, evidence, public articles; private (or in a private group) or missing → 404 */
     get: operations['publicContent.category'];
     put?: never;
     post?: never;
@@ -1007,14 +1041,14 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
-  '/public/articles/{category}/{slug}': {
+  '/public/articles/{slug}': {
     parameters: {
       query?: never;
       header?: never;
       path?: never;
       cookie?: never;
     };
-    /** One public article, its Markdown body as safe HTML; private (or private category) or missing → 404 */
+    /** One public article, its Markdown body as safe HTML; private (or under a private article) or missing → 404 */
     get: operations['publicContent.article'];
     put?: never;
     post?: never;
@@ -1249,16 +1283,50 @@ export interface components {
     /** ArticleResource */
     ArticleResource: {
       id: number;
-      content_category_id: number;
-      category_name: string;
-      category_slug: string;
+      parent_id: number | null;
+      parent_title: string | null;
+      categories: {
+        id: number;
+        name: string;
+        slug: string;
+      }[];
       title: string;
       slug: string;
       summary: string | null;
       body: string;
+      /** @description Place among the sub-pages of its parent, 1 first; changed with `move` */
       sort_order: number;
       is_public: boolean;
+      children_count: number;
       updated_at: string | null;
+    };
+    /** AttachedFileResource */
+    AttachedFileResource: {
+      id: number;
+      is_file: boolean;
+      name: string;
+      path: string;
+      extension: string | null;
+      mime_type: string | null;
+      size: number | null;
+      /** @description Image width and height in pixels (MEDIA-10); null for other files or an unreadable image */
+      width: number | null;
+      height: number | null;
+      /** @description Video or audio length in seconds (MEDIA-11) */
+      duration: number | null;
+      thumbnail_url: string | null;
+      /** @description 0 uploading, 1 processing, 2 completed, 3 failed */
+      upload_status: number;
+      /** @description How the file can be shown without downloading it; null: download only, not available, or locked */
+      preview: string | null;
+      /** @description Departments a folder is given to (ADR-0017; Files listing only). Empty: open to every admin with Files rights */
+      department_ids?: number[];
+      created_at: string | null;
+      updated_at: string | null;
+      /** @description false: deleted in the file manager (in the trash, or gone for good) */
+      available: boolean;
+      /** @description true: in a folder the signed-in admin may not use (ADR-0017); the name shows, the file does not open */
+      locked: boolean;
     };
     /**
      * AuditEvent
@@ -1321,12 +1389,27 @@ export interface components {
     /** ContentCategoryResource */
     ContentCategoryResource: {
       id: number;
+      parent_id: number | null;
+      parent_name: string | null;
       name: string;
       slug: string;
+      /** @description Markdown */
       description: string | null;
+      /** @description Place among its siblings, 1 first; changed with `move` */
       sort_order: number;
       is_public: boolean;
       article_count: number;
+      /** @description Categories inside this group */
+      children_count: number;
+      /** @description Links or files shown as the category's evidence, in display order */
+      attachments: {
+        id: number;
+        title: string;
+        url: string | null;
+        media_id: number | null;
+        note: string | null;
+        file: components['schemas']['AttachedFileResource'] | null;
+      }[];
       updated_at: string | null;
     };
     /**
@@ -1445,6 +1528,19 @@ export interface components {
       created_at: string | null;
       updated_at: string | null;
     };
+    /**
+     * MoveDirection
+     * @description One step up or down among siblings: the ↑ ↓ buttons that replace typed order numbers (ADR-0022).
+     * @enum {string}
+     */
+    MoveDirection: 'up' | 'down';
+    /**
+     * MoveRequest
+     * @description One step up or down among the row's siblings (ADR-0022).
+     */
+    MoveRequest: {
+      direction: components['schemas']['MoveDirection'];
+    };
     /** PaginationLinks */
     PaginationLinks: {
       first: string | null;
@@ -1480,16 +1576,34 @@ export interface components {
       summary: string | null;
       body_html: string;
       updated_at: string;
-      category: {
+      categories: {
         name: string;
         slug: string;
-      };
+      }[];
+    };
+    /** PublicAttachmentResource */
+    PublicAttachmentResource: {
+      title: string;
+      url: string | null;
+      note: string | null;
+      file: {
+        key: string;
+        name: string;
+        size: number | null;
+        mime_type: string | null;
+        thumbnail_url: string | null;
+      } | null;
     };
     /** PublicCategoryDetailResource */
     PublicCategoryDetailResource: {
       name: string;
       slug: string;
-      description: string | null;
+      group: {
+        name: string;
+        slug: string;
+      } | null;
+      description_html: string;
+      attachments: components['schemas']['PublicAttachmentResource'][];
       articles: {
         title: string;
         slug: string;
@@ -1501,7 +1615,8 @@ export interface components {
     PublicCategoryResource: {
       name: string;
       slug: string;
-      description: string | null;
+      /** @description Name of the group it is in; null for a group */
+      group: unknown;
       article_count: number;
     };
     /** RegisterRequest */
@@ -1525,8 +1640,6 @@ export interface components {
       kind: string;
       key: string;
       title: string;
-      category_slug: string;
-      category_name: string;
       article_slug: string;
       saved_at: string;
     };
@@ -1587,22 +1700,35 @@ export interface components {
     };
     /**
      * StoreArticleRequest
-     * @description The body is Markdown; the public API turns it into safe HTML (ADR-0021).
+     * @description The body is Markdown (ADR-0021). An article belongs to any number of categories and may sit
+     *     under a parent article (ADR-0022).
      */
     StoreArticleRequest: {
-      content_category_id: number;
+      parent_id?: number | null;
+      category_ids?: number[];
       title: string;
       summary?: string | null;
       body: string;
-      sort_order?: number;
       is_public?: boolean;
     };
-    /** StoreContentCategoryRequest */
+    /**
+     * StoreContentCategoryRequest
+     * @description A group (no parent) or a category inside one (ADR-0022). `attachments` replaces the list, in
+     *     display order; an item with an `id` keeps that attachment (and its public key).
+     */
     StoreContentCategoryRequest: {
+      parent_id?: number | null;
       name: string;
       description?: string | null;
-      sort_order?: number;
       is_public?: boolean;
+      attachments?: {
+        id?: number | null;
+        title: string;
+        /** Format: uri */
+        url?: string | null;
+        media_id?: number | null;
+        note?: string | null;
+      }[];
     };
     /** StoreDepartmentRequest */
     StoreDepartmentRequest: {
@@ -1663,22 +1789,33 @@ export interface components {
     };
     /**
      * UpdateArticleRequest
-     * @description The body is Markdown; the public API turns it into safe HTML (ADR-0021).
+     * @description Same fields as on create; without `category_ids` the categories stay as they are.
      */
     UpdateArticleRequest: {
-      content_category_id: number;
+      parent_id?: number | null;
+      category_ids?: number[];
       title: string;
       summary?: string | null;
       body: string;
-      sort_order?: number;
       is_public?: boolean;
     };
-    /** UpdateContentCategoryRequest */
+    /**
+     * UpdateContentCategoryRequest
+     * @description Same fields as on create; without `attachments` the attachments stay as they are.
+     */
     UpdateContentCategoryRequest: {
+      parent_id?: number | null;
       name: string;
       description?: string | null;
-      sort_order?: number;
       is_public?: boolean;
+      attachments?: {
+        id?: number | null;
+        title: string;
+        /** Format: uri */
+        url?: string | null;
+        media_id?: number | null;
+        note?: string | null;
+      }[];
     };
     /**
      * UpdateDepartmentRequest
@@ -2088,7 +2225,11 @@ export interface operations {
         sort_by?: string | null;
         sort_order?: string | null;
         title?: string | null;
-        content_category_id?: number | null;
+        category_id?: number | null;
+        /** @description Sub-pages of this article */
+        parent_id?: number | null;
+        /** @description Only articles without a parent */
+        root?: boolean | null;
         is_public?: boolean | null;
       };
       header?: never;
@@ -2264,6 +2405,58 @@ export interface operations {
       422: components['responses']['ValidationException'];
     };
   };
+  'article.move': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['MoveRequest'];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            data: null;
+            error: {
+              status: boolean;
+              code: number;
+              messages: null;
+            };
+          };
+        };
+      };
+      401: components['responses']['AuthenticationException'];
+      /** @description Forbidden */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ApiError'];
+        };
+      };
+      /** @description Not Found */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ApiError'];
+        };
+      };
+      422: components['responses']['ValidationException'];
+    };
+  };
   'audit-log.list': {
     parameters: {
       query?: {
@@ -2413,6 +2606,9 @@ export interface operations {
         sort_by?: string | null;
         sort_order?: string | null;
         name?: string | null;
+        parent_id?: number | null;
+        /** @description Only groups (categories without a parent) */
+        root?: boolean | null;
         is_public?: boolean | null;
       };
       header?: never;
@@ -2578,6 +2774,58 @@ export interface operations {
       401: components['responses']['AuthenticationException'];
       /** @description Forbidden */
       403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ApiError'];
+        };
+      };
+      422: components['responses']['ValidationException'];
+    };
+  };
+  'content-category.move': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['MoveRequest'];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            data: null;
+            error: {
+              status: boolean;
+              code: number;
+              messages: null;
+            };
+          };
+        };
+      };
+      401: components['responses']['AuthenticationException'];
+      /** @description Forbidden */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ApiError'];
+        };
+      };
+      /** @description Not Found */
+      404: {
         headers: {
           [name: string]: unknown;
         };
@@ -4510,7 +4758,6 @@ export interface operations {
       query?: never;
       header?: never;
       path: {
-        category: string;
         slug: string;
       };
       cookie?: never;

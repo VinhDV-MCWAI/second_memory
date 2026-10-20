@@ -51,6 +51,10 @@ return [
     // Categories and articles (ADR-0022)
     'name' => 'Name',
     'category' => 'Category',
+    'category_ids' => 'Categories',
+    'parent_id' => 'Parent',
+    'attachments' => 'Attachments',
+    'direction' => 'Direction',
     'is_public' => 'Public',
     'media_ids' => 'Files',
     'url' => 'URL',

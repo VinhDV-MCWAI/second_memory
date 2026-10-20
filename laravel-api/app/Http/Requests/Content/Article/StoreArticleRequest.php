@@ -5,12 +5,14 @@ declare(strict_types=1);
 namespace App\Http\Requests\Content\Article;
 
 use App\Constants\ContentConst;
+use App\Models\Content\Article;
 use App\Models\Content\ContentCategory;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
 /**
- * The body is Markdown; the public API turns it into safe HTML (ADR-0021).
+ * The body is Markdown (ADR-0021). An article belongs to any number of categories and may sit
+ * under a parent article (ADR-0022).
  */
 class StoreArticleRequest extends FormRequest
 {
@@ -22,11 +24,12 @@ class StoreArticleRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'content_category_id' => ['required', 'integer', Rule::exists(ContentCategory::class, 'id')],
+            'parent_id' => ['nullable', 'integer', Rule::exists(Article::class, 'id')],
+            'category_ids' => ['sometimes', 'array'],
+            'category_ids.*' => ['integer', 'distinct', Rule::exists(ContentCategory::class, 'id')],
             'title' => ['required', 'string', 'max:'.ContentConst::ARTICLE_TITLE_MAX],
             'summary' => ['nullable', 'string', 'max:'.ContentConst::ARTICLE_SUMMARY_MAX],
             'body' => ['required', 'string', 'max:'.ContentConst::ARTICLE_BODY_MAX],
-            'sort_order' => ['sometimes', 'integer', 'min:0', 'max:'.ContentConst::SORT_ORDER_MAX],
             'is_public' => ['sometimes', 'boolean'],
         ];
     }
@@ -34,11 +37,12 @@ class StoreArticleRequest extends FormRequest
     public function attributes(): array
     {
         return [
-            'content_category_id' => __('messages.category'),
+            'parent_id' => __('messages.parent_id'),
+            'category_ids' => __('messages.category_ids'),
+            'category_ids.*' => __('messages.category'),
             'title' => __('messages.title'),
             'summary' => __('messages.summary'),
             'body' => __('messages.body'),
-            'sort_order' => __('messages.sort_order'),
             'is_public' => __('messages.is_public'),
         ];
     }

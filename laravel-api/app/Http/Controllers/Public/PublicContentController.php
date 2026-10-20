@@ -12,14 +12,14 @@ use App\Services\Public\PublicContentService;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 /**
- * No login. GET only, rate-limited per IP, like the public skills (ADR-0021).
+ * No login. GET only, rate-limited per IP (ADR-0021, ADR-0022).
  */
 class PublicContentController extends Controller
 {
     public function __construct(private readonly PublicContentService $content) {}
 
     /**
-     * Public categories of the home page, in the owner's order
+     * Public groups and categories of the home page: each group followed by its categories, in the owner's order
      *
      * @unauthenticated
      *
@@ -31,7 +31,7 @@ class PublicContentController extends Controller
     }
 
     /**
-     * One public category with its public articles; private or missing → 404
+     * One public category: description as safe HTML, evidence, public articles; private (or in a private group) or missing → 404
      *
      * @unauthenticated
      */
@@ -41,12 +41,12 @@ class PublicContentController extends Controller
     }
 
     /**
-     * One public article, its Markdown body as safe HTML; private (or private category) or missing → 404
+     * One public article, its Markdown body as safe HTML; private (or under a private article) or missing → 404
      *
      * @unauthenticated
      */
-    public function article(string $category, string $slug): PublicArticleResource
+    public function article(string $slug): PublicArticleResource
     {
-        return $this->content->article($category, $slug);
+        return $this->content->article($slug);
     }
 }

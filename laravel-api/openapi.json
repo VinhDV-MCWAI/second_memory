@@ -869,11 +869,33 @@
                         }
                     },
                     {
-                        "name": "content_category_id",
+                        "name": "category_id",
                         "in": "query",
                         "schema": {
                             "type": [
                                 "integer",
+                                "null"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "parent_id",
+                        "in": "query",
+                        "description": "Sub-pages of this article",
+                        "schema": {
+                            "type": [
+                                "integer",
+                                "null"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "root",
+                        "in": "query",
+                        "description": "Only articles without a parent",
+                        "schema": {
+                            "type": [
+                                "boolean",
                                 "null"
                             ]
                         }
@@ -1021,11 +1043,11 @@
                             }
                         }
                     },
-                    "401": {
-                        "$ref": "#/components/responses/AuthenticationException"
-                    },
                     "422": {
                         "$ref": "#/components/responses/ValidationException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
                     },
                     "403": {
                         "description": "Forbidden",
@@ -1105,11 +1127,11 @@
                             }
                         }
                     },
-                    "401": {
-                        "$ref": "#/components/responses/AuthenticationException"
-                    },
                     "422": {
                         "$ref": "#/components/responses/ValidationException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
                     },
                     "403": {
                         "description": "Forbidden",
@@ -1189,6 +1211,91 @@
                             }
                         }
                     },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/admin/article/move/{id}": {
+            "put": {
+                "operationId": "article.move",
+                "summary": "One step up or down among its siblings (the same parent)",
+                "tags": [
+                    "Article"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/MoveRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "null"
+                                        },
+                                        "error": {
+                                            "type": "object",
+                                            "properties": {
+                                                "status": {
+                                                    "type": "boolean"
+                                                },
+                                                "code": {
+                                                    "type": "integer"
+                                                },
+                                                "messages": {
+                                                    "type": "null"
+                                                }
+                                            },
+                                            "required": [
+                                                "status",
+                                                "code",
+                                                "messages"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data",
+                                        "error"
+                                    ]
+                                }
+                            }
+                        }
+                    },
                     "401": {
                         "$ref": "#/components/responses/AuthenticationException"
                     },
@@ -1197,6 +1304,16 @@
                     },
                     "403": {
                         "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiError"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -1650,6 +1767,27 @@
                         }
                     },
                     {
+                        "name": "parent_id",
+                        "in": "query",
+                        "schema": {
+                            "type": [
+                                "integer",
+                                "null"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "root",
+                        "in": "query",
+                        "description": "Only groups (categories without a parent)",
+                        "schema": {
+                            "type": [
+                                "boolean",
+                                "null"
+                            ]
+                        }
+                    },
+                    {
                         "name": "is_public",
                         "in": "query",
                         "schema": {
@@ -1792,11 +1930,11 @@
                             }
                         }
                     },
-                    "401": {
-                        "$ref": "#/components/responses/AuthenticationException"
-                    },
                     "422": {
                         "$ref": "#/components/responses/ValidationException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
                     },
                     "403": {
                         "description": "Forbidden",
@@ -1876,11 +2014,11 @@
                             }
                         }
                     },
-                    "401": {
-                        "$ref": "#/components/responses/AuthenticationException"
-                    },
                     "422": {
                         "$ref": "#/components/responses/ValidationException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
                     },
                     "403": {
                         "description": "Forbidden",
@@ -1968,6 +2106,101 @@
                     },
                     "403": {
                         "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/admin/content-category/move/{id}": {
+            "put": {
+                "operationId": "content-category.move",
+                "summary": "One step up or down among its siblings (the same parent)",
+                "tags": [
+                    "ContentCategory"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/MoveRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "null"
+                                        },
+                                        "error": {
+                                            "type": "object",
+                                            "properties": {
+                                                "status": {
+                                                    "type": "boolean"
+                                                },
+                                                "code": {
+                                                    "type": "integer"
+                                                },
+                                                "messages": {
+                                                    "type": "null"
+                                                }
+                                            },
+                                            "required": [
+                                                "status",
+                                                "code",
+                                                "messages"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data",
+                                        "error"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiError"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -5831,7 +6064,7 @@
         "/public/categories": {
             "get": {
                 "operationId": "publicContent.categories",
-                "summary": "Public categories of the home page, in the owner's order",
+                "summary": "Public groups and categories of the home page: each group followed by its categories, in the owner's order",
                 "tags": [
                     "PublicContent"
                 ],
@@ -5902,7 +6135,7 @@
         "/public/categories/{slug}": {
             "get": {
                 "operationId": "publicContent.category",
-                "summary": "One public category with its public articles; private or missing \u2192 404",
+                "summary": "One public category: description as safe HTML, evidence, public articles; private (or in a private group) or missing \u2192 404",
                 "tags": [
                     "PublicContent"
                 ],
@@ -5987,22 +6220,14 @@
                 "security": []
             }
         },
-        "/public/articles/{category}/{slug}": {
+        "/public/articles/{slug}": {
             "get": {
                 "operationId": "publicContent.article",
-                "summary": "One public article, its Markdown body as safe HTML; private (or private category) or missing \u2192 404",
+                "summary": "One public article, its Markdown body as safe HTML; private (or under a private article) or missing \u2192 404",
                 "tags": [
                     "PublicContent"
                 ],
                 "parameters": [
-                    {
-                        "name": "category",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
                     {
                         "name": "slug",
                         "in": "path",
@@ -7187,14 +7412,39 @@
                     "id": {
                         "type": "integer"
                     },
-                    "content_category_id": {
-                        "type": "integer"
+                    "parent_id": {
+                        "type": [
+                            "integer",
+                            "null"
+                        ]
                     },
-                    "category_name": {
-                        "type": "string"
+                    "parent_title": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
                     },
-                    "category_slug": {
-                        "type": "string"
+                    "categories": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "id": {
+                                    "type": "integer"
+                                },
+                                "name": {
+                                    "type": "string"
+                                },
+                                "slug": {
+                                    "type": "string"
+                                }
+                            },
+                            "required": [
+                                "id",
+                                "name",
+                                "slug"
+                            ]
+                        }
                     },
                     "title": {
                         "type": "string"
@@ -7212,10 +7462,14 @@
                         "type": "string"
                     },
                     "sort_order": {
-                        "type": "integer"
+                        "type": "integer",
+                        "description": "Place among the sub-pages of its parent, 1 first; changed with `move`"
                     },
                     "is_public": {
                         "type": "boolean"
+                    },
+                    "children_count": {
+                        "type": "integer"
                     },
                     "updated_at": {
                         "type": [
@@ -7226,18 +7480,138 @@
                 },
                 "required": [
                     "id",
-                    "content_category_id",
-                    "category_name",
-                    "category_slug",
+                    "parent_id",
+                    "parent_title",
+                    "categories",
                     "title",
                     "slug",
                     "summary",
                     "body",
                     "sort_order",
                     "is_public",
+                    "children_count",
                     "updated_at"
                 ],
                 "title": "ArticleResource"
+            },
+            "AttachedFileResource": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "is_file": {
+                        "type": "boolean"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "path": {
+                        "type": "string"
+                    },
+                    "extension": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "mime_type": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "size": {
+                        "type": [
+                            "integer",
+                            "null"
+                        ]
+                    },
+                    "width": {
+                        "type": [
+                            "integer",
+                            "null"
+                        ],
+                        "description": "Image width and height in pixels (MEDIA-10); null for other files or an unreadable image"
+                    },
+                    "height": {
+                        "type": [
+                            "integer",
+                            "null"
+                        ]
+                    },
+                    "duration": {
+                        "type": [
+                            "integer",
+                            "null"
+                        ],
+                        "description": "Video or audio length in seconds (MEDIA-11)"
+                    },
+                    "thumbnail_url": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "upload_status": {
+                        "type": "integer",
+                        "description": "0 uploading, 1 processing, 2 completed, 3 failed"
+                    },
+                    "preview": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "description": "How the file can be shown without downloading it; null: download only, not available, or locked"
+                    },
+                    "department_ids": {
+                        "type": "array",
+                        "description": "Departments a folder is given to (ADR-0017; Files listing only). Empty: open to every admin with Files rights",
+                        "items": {
+                            "type": "integer"
+                        }
+                    },
+                    "created_at": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "updated_at": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "available": {
+                        "type": "boolean",
+                        "description": "false: deleted in the file manager (in the trash, or gone for good)"
+                    },
+                    "locked": {
+                        "type": "boolean",
+                        "description": "true: in a folder the signed-in admin may not use (ADR-0017); the name shows, the file does not open"
+                    }
+                },
+                "required": [
+                    "id",
+                    "is_file",
+                    "name",
+                    "path",
+                    "extension",
+                    "mime_type",
+                    "size",
+                    "width",
+                    "height",
+                    "duration",
+                    "thumbnail_url",
+                    "upload_status",
+                    "preview",
+                    "created_at",
+                    "updated_at",
+                    "available",
+                    "locked"
+                ],
+                "title": "AttachedFileResource"
             },
             "AuditEvent": {
                 "type": "string",
@@ -7426,6 +7800,18 @@
                     "id": {
                         "type": "integer"
                     },
+                    "parent_id": {
+                        "type": [
+                            "integer",
+                            "null"
+                        ]
+                    },
+                    "parent_name": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
                     "name": {
                         "type": "string"
                     },
@@ -7436,16 +7822,73 @@
                         "type": [
                             "string",
                             "null"
-                        ]
+                        ],
+                        "description": "Markdown"
                     },
                     "sort_order": {
-                        "type": "integer"
+                        "type": "integer",
+                        "description": "Place among its siblings, 1 first; changed with `move`"
                     },
                     "is_public": {
                         "type": "boolean"
                     },
                     "article_count": {
                         "type": "integer"
+                    },
+                    "children_count": {
+                        "type": "integer",
+                        "description": "Categories inside this group"
+                    },
+                    "attachments": {
+                        "type": "array",
+                        "description": "Links or files shown as the category's evidence, in display order",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "id": {
+                                    "type": "integer"
+                                },
+                                "title": {
+                                    "type": "string"
+                                },
+                                "url": {
+                                    "type": [
+                                        "string",
+                                        "null"
+                                    ]
+                                },
+                                "media_id": {
+                                    "type": [
+                                        "integer",
+                                        "null"
+                                    ]
+                                },
+                                "note": {
+                                    "type": [
+                                        "string",
+                                        "null"
+                                    ]
+                                },
+                                "file": {
+                                    "anyOf": [
+                                        {
+                                            "$ref": "#/components/schemas/AttachedFileResource"
+                                        },
+                                        {
+                                            "type": "null"
+                                        }
+                                    ]
+                                }
+                            },
+                            "required": [
+                                "id",
+                                "title",
+                                "url",
+                                "media_id",
+                                "note",
+                                "file"
+                            ]
+                        }
                     },
                     "updated_at": {
                         "type": [
@@ -7456,12 +7899,16 @@
                 },
                 "required": [
                     "id",
+                    "parent_id",
+                    "parent_name",
                     "name",
                     "slug",
                     "description",
                     "sort_order",
                     "is_public",
                     "article_count",
+                    "children_count",
+                    "attachments",
                     "updated_at"
                 ],
                 "title": "ContentCategoryResource"
@@ -7885,6 +8332,28 @@
                 ],
                 "title": "MediaResource"
             },
+            "MoveDirection": {
+                "type": "string",
+                "description": "One step up or down among siblings: the \u2191 \u2193 buttons that replace typed order numbers (ADR-0022).\n",
+                "enum": [
+                    "up",
+                    "down"
+                ],
+                "title": "MoveDirection"
+            },
+            "MoveRequest": {
+                "type": "object",
+                "description": "One step up or down among the row's siblings (ADR-0022).",
+                "properties": {
+                    "direction": {
+                        "$ref": "#/components/schemas/MoveDirection"
+                    }
+                },
+                "required": [
+                    "direction"
+                ],
+                "title": "MoveRequest"
+            },
             "PaginationLinks": {
                 "type": "object",
                 "properties": {
@@ -8040,8 +8509,116 @@
                     "updated_at": {
                         "type": "string"
                     },
-                    "category": {
-                        "type": "object",
+                    "categories": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "name": {
+                                    "type": "string"
+                                },
+                                "slug": {
+                                    "type": "string"
+                                }
+                            },
+                            "required": [
+                                "name",
+                                "slug"
+                            ]
+                        }
+                    }
+                },
+                "required": [
+                    "title",
+                    "slug",
+                    "key",
+                    "summary",
+                    "body_html",
+                    "updated_at",
+                    "categories"
+                ],
+                "title": "PublicArticleResource"
+            },
+            "PublicAttachmentResource": {
+                "type": "object",
+                "properties": {
+                    "title": {
+                        "type": "string"
+                    },
+                    "url": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "note": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "file": {
+                        "type": [
+                            "object",
+                            "null"
+                        ],
+                        "properties": {
+                            "key": {
+                                "type": "string"
+                            },
+                            "name": {
+                                "type": "string"
+                            },
+                            "size": {
+                                "type": [
+                                    "integer",
+                                    "null"
+                                ]
+                            },
+                            "mime_type": {
+                                "type": [
+                                    "string",
+                                    "null"
+                                ]
+                            },
+                            "thumbnail_url": {
+                                "type": [
+                                    "string",
+                                    "null"
+                                ]
+                            }
+                        },
+                        "required": [
+                            "key",
+                            "name",
+                            "size",
+                            "mime_type",
+                            "thumbnail_url"
+                        ]
+                    }
+                },
+                "required": [
+                    "title",
+                    "url",
+                    "note",
+                    "file"
+                ],
+                "title": "PublicAttachmentResource"
+            },
+            "PublicCategoryDetailResource": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "slug": {
+                        "type": "string"
+                    },
+                    "group": {
+                        "type": [
+                            "object",
+                            "null"
+                        ],
                         "properties": {
                             "name": {
                                 "type": "string"
@@ -8054,33 +8631,15 @@
                             "name",
                             "slug"
                         ]
-                    }
-                },
-                "required": [
-                    "title",
-                    "slug",
-                    "key",
-                    "summary",
-                    "body_html",
-                    "updated_at",
-                    "category"
-                ],
-                "title": "PublicArticleResource"
-            },
-            "PublicCategoryDetailResource": {
-                "type": "object",
-                "properties": {
-                    "name": {
+                    },
+                    "description_html": {
                         "type": "string"
                     },
-                    "slug": {
-                        "type": "string"
-                    },
-                    "description": {
-                        "type": [
-                            "string",
-                            "null"
-                        ]
+                    "attachments": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/PublicAttachmentResource"
+                        }
                     },
                     "articles": {
                         "type": "array",
@@ -8115,7 +8674,9 @@
                 "required": [
                     "name",
                     "slug",
-                    "description",
+                    "group",
+                    "description_html",
+                    "attachments",
                     "articles"
                 ],
                 "title": "PublicCategoryDetailResource"
@@ -8129,11 +8690,8 @@
                     "slug": {
                         "type": "string"
                     },
-                    "description": {
-                        "type": [
-                            "string",
-                            "null"
-                        ]
+                    "group": {
+                        "description": "Name of the group it is in; null for a group"
                     },
                     "article_count": {
                         "type": "integer"
@@ -8142,7 +8700,7 @@
                 "required": [
                     "name",
                     "slug",
-                    "description",
+                    "group",
                     "article_count"
                 ],
                 "title": "PublicCategoryResource"
@@ -8223,12 +8781,6 @@
                     "title": {
                         "type": "string"
                     },
-                    "category_slug": {
-                        "type": "string"
-                    },
-                    "category_name": {
-                        "type": "string"
-                    },
                     "article_slug": {
                         "type": "string"
                     },
@@ -8240,8 +8792,6 @@
                     "kind",
                     "key",
                     "title",
-                    "category_slug",
-                    "category_name",
                     "article_slug",
                     "saved_at"
                 ],
@@ -8428,10 +8978,20 @@
             },
             "StoreArticleRequest": {
                 "type": "object",
-                "description": "The body is Markdown; the public API turns it into safe HTML (ADR-0021).",
+                "description": "The body is Markdown (ADR-0021). An article belongs to any number of categories and may sit\nunder a parent article (ADR-0022).",
                 "properties": {
-                    "content_category_id": {
-                        "type": "integer"
+                    "parent_id": {
+                        "type": [
+                            "integer",
+                            "null"
+                        ]
+                    },
+                    "category_ids": {
+                        "type": "array",
+                        "items": {
+                            "type": "integer"
+                        },
+                        "uniqueItems": true
                     },
                     "title": {
                         "type": "string",
@@ -8448,17 +9008,11 @@
                         "type": "string",
                         "maxLength": 100000
                     },
-                    "sort_order": {
-                        "type": "integer",
-                        "minimum": 0,
-                        "maximum": 9999
-                    },
                     "is_public": {
                         "type": "boolean"
                     }
                 },
                 "required": [
-                    "content_category_id",
                     "title",
                     "body"
                 ],
@@ -8466,7 +9020,14 @@
             },
             "StoreContentCategoryRequest": {
                 "type": "object",
+                "description": "A group (no parent) or a category inside one (ADR-0022). `attachments` replaces the list, in\ndisplay order; an item with an `id` keeps that attachment (and its public key).",
                 "properties": {
+                    "parent_id": {
+                        "type": [
+                            "integer",
+                            "null"
+                        ]
+                    },
                     "name": {
                         "type": "string",
                         "maxLength": 100
@@ -8476,15 +9037,53 @@
                             "string",
                             "null"
                         ],
-                        "maxLength": 500
-                    },
-                    "sort_order": {
-                        "type": "integer",
-                        "minimum": 0,
-                        "maximum": 9999
+                        "maxLength": 20000
                     },
                     "is_public": {
                         "type": "boolean"
+                    },
+                    "attachments": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "id": {
+                                    "type": [
+                                        "integer",
+                                        "null"
+                                    ]
+                                },
+                                "title": {
+                                    "type": "string",
+                                    "maxLength": 200
+                                },
+                                "url": {
+                                    "type": [
+                                        "string",
+                                        "null"
+                                    ],
+                                    "format": "uri",
+                                    "maxLength": 2048
+                                },
+                                "media_id": {
+                                    "type": [
+                                        "integer",
+                                        "null"
+                                    ]
+                                },
+                                "note": {
+                                    "type": [
+                                        "string",
+                                        "null"
+                                    ],
+                                    "maxLength": 500
+                                }
+                            },
+                            "required": [
+                                "title"
+                            ]
+                        },
+                        "maxItems": 20
                     }
                 },
                 "required": [
@@ -8764,10 +9363,20 @@
             },
             "UpdateArticleRequest": {
                 "type": "object",
-                "description": "The body is Markdown; the public API turns it into safe HTML (ADR-0021).",
+                "description": "Same fields as on create; without `category_ids` the categories stay as they are.",
                 "properties": {
-                    "content_category_id": {
-                        "type": "integer"
+                    "parent_id": {
+                        "type": [
+                            "integer",
+                            "null"
+                        ]
+                    },
+                    "category_ids": {
+                        "type": "array",
+                        "items": {
+                            "type": "integer"
+                        },
+                        "uniqueItems": true
                     },
                     "title": {
                         "type": "string",
@@ -8784,17 +9393,11 @@
                         "type": "string",
                         "maxLength": 100000
                     },
-                    "sort_order": {
-                        "type": "integer",
-                        "minimum": 0,
-                        "maximum": 9999
-                    },
                     "is_public": {
                         "type": "boolean"
                     }
                 },
                 "required": [
-                    "content_category_id",
                     "title",
                     "body"
                 ],
@@ -8802,7 +9405,14 @@
             },
             "UpdateContentCategoryRequest": {
                 "type": "object",
+                "description": "Same fields as on create; without `attachments` the attachments stay as they are.",
                 "properties": {
+                    "parent_id": {
+                        "type": [
+                            "integer",
+                            "null"
+                        ]
+                    },
                     "name": {
                         "type": "string",
                         "maxLength": 100
@@ -8812,15 +9422,53 @@
                             "string",
                             "null"
                         ],
-                        "maxLength": 500
-                    },
-                    "sort_order": {
-                        "type": "integer",
-                        "minimum": 0,
-                        "maximum": 9999
+                        "maxLength": 20000
                     },
                     "is_public": {
                         "type": "boolean"
+                    },
+                    "attachments": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "id": {
+                                    "type": [
+                                        "integer",
+                                        "null"
+                                    ]
+                                },
+                                "title": {
+                                    "type": "string",
+                                    "maxLength": 200
+                                },
+                                "url": {
+                                    "type": [
+                                        "string",
+                                        "null"
+                                    ],
+                                    "format": "uri",
+                                    "maxLength": 2048
+                                },
+                                "media_id": {
+                                    "type": [
+                                        "integer",
+                                        "null"
+                                    ]
+                                },
+                                "note": {
+                                    "type": [
+                                        "string",
+                                        "null"
+                                    ],
+                                    "maxLength": 500
+                                }
+                            },
+                            "required": [
+                                "title"
+                            ]
+                        },
+                        "maxItems": 20
                     }
                 },
                 "required": [

@@ -21,7 +21,6 @@ class ArticleFactory extends Factory
         $title = fake()->unique()->sentence(4);
 
         return [
-            'content_category_id' => ContentCategory::factory(),
             'title' => $title,
             'slug' => Str::slug($title),
             'summary' => fake()->sentence(),
@@ -29,6 +28,16 @@ class ArticleFactory extends Factory
             'sort_order' => 0,
             'is_public' => true,
         ];
+    }
+
+    /**
+     * Linked to the given category, or to a new one.
+     */
+    public function inCategory(?ContentCategory $category = null): static
+    {
+        return $this->afterCreating(function (Article $article) use ($category): void {
+            $article->categories()->attach(($category ?? ContentCategory::factory()->create())->id);
+        });
     }
 
     public function private(): static

@@ -181,8 +181,29 @@ final class FolderPolicyApiTest extends TestCase
         $this->call('POST', self::BASE."/multipart/part-urls/{$id}", ['part_numbers' => [1]], $uploader)->assertStatus(CommonVal::HTTP_NOT_FOUND);
     }
 
+    public function test_a_category_attaches_only_allowed_files_and_shows_locked_ones_by_name(): void
+    {
+        $outsider = $this->filesUser($this->legal);
+        $payload = ['name' => 'Kế hoạch', 'attachments' => [['title' => 'Plan', 'media_id' => $this->plan]]];
+
+        $this->call('POST', '/api/admin/content-category/store', $payload, $outsider)
+            ->assertStatus(CommonVal::HTTP_UNPROCESSABLE_CONTENT)->assertJsonPath('error.messages.attachments.0', Messages::E0041);
+        $id = $this->call('POST', '/api/admin/content-category/store', $payload, $this->filesUser($this->sales))->assertOk()->json('data');
+
+        $this->call('GET', '/api/admin/content-category/list', ['id' => $id], $outsider)->assertOk()
+            ->assertJsonPath('data.data.0.attachments.0.file.name', 'plan.txt')
+            ->assertJsonPath('data.data.0.attachments.0.file.locked', true)
+            ->assertJsonPath('data.data.0.attachments.0.file.preview', null);
+        $this->call('GET', '/api/admin/content-category/list', ['id' => $id], $this->owner)->assertOk()
+            ->assertJsonPath('data.data.0.attachments.0.file.locked', false)
+            ->assertJsonPath('data.data.0.attachments.0.file.preview', 'text');
+
+        // Keeping a file already attached is fine, even for an admin who cannot open it
+        $this->call('PUT', "/api/admin/content-category/update/{$id}", $payload, $outsider)->assertOk();
+    }
+
     /**
-     * An admin who may use every Files API and the search, in the given departments.
+     * An admin who may use every Files and category API and the search, in the given departments.
      *
      * @return array<string, string>
      */
@@ -190,7 +211,7 @@ final class FolderPolicyApiTest extends TestCase
     {
         $role = Role::findOrCreate('Files user', CommonVal::ADMIN_GUARD);
         $role->syncPermissions(Permission::query()->where('guard_name', CommonVal::ADMIN_GUARD)
-            ->where(fn ($q) => $q->where('name', 'like', 'media.%')->orWhere('name', 'search.query'))
+            ->where(fn ($q) => $q->where('name', 'like', 'media.%')->orWhere('name', 'like', 'content-category.%')->orWhere('name', 'search.query'))
             ->pluck('name'));
         $admin = AdminMst::factory()->create();
         $admin->syncRoles([$role]);

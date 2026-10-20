@@ -33,12 +33,24 @@ abstract class AuditedCrudService extends CrudService
 
     public function update(array $payload): int
     {
-        $id = (int) $payload['id'];
+        return $this->auditedChange((int) $payload['id'], fn (): int => $this->repository->executeUpdate($payload));
+    }
+
+    /**
+     * Runs a change of row $id outside the plain update (e.g. a reorder) and audits it as an update.
+     *
+     * @template T
+     *
+     * @param  callable(): T  $change
+     * @return T
+     */
+    protected function auditedChange(int $id, callable $change): mixed
+    {
         $before = $this->snapshot($id);
-        $affected = $this->repository->executeUpdate($payload);
+        $result = $change();
         $this->audit($id, AuditEvent::UPDATED, $before);
 
-        return $affected;
+        return $result;
     }
 
     public function delete(array $payload): void

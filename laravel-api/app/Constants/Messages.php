@@ -106,7 +106,15 @@ class Messages
 
     const E0046 = 'Registration is closed';
 
-    const E0047 = 'Move or delete the articles of this category first';
+    const E0047 = 'Move or delete the categories inside this group first';
+
+    const E0048 = 'A group cannot go inside another category, and a category with categories inside stays a group';
+
+    const E0049 = 'An article cannot go under itself or one of its sub-pages';
+
+    const E0050 = 'Sub-pages can go at most 10 levels deep';
+
+    const E0051 = 'Move or delete the sub-pages of this article first';
 
     /**
      * Errors http messages

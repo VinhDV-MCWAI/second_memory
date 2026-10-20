@@ -265,8 +265,10 @@
     "savedCount": "Saved",
     "lastLoginAt": "Last sign-in",
     "slug": "Path",
-    "sortOrder": "Order",
-    "articleCount": "Articles"
+    "articleCount": "Articles",
+    "subPages": "Sub-pages",
+    "order": "Order",
+    "categories": "Categories"
   },
   "management": {
     "title": "{entity} Management",
@@ -350,8 +352,7 @@
       "newPasswordHint": "Leave empty to keep the current password. There is no \"forgot password\" e-mail: set one here when an end user asks.",
       "activeEndUser": "Can sign in (untick to lock: signed out at once)",
       "body": "Content (Markdown)",
-      "sortOrder": "Order",
-      "categoryOfArticle": "Category"
+      "categories": "Categories"
     },
     "placeholders": {
       "urlExample": "https://example.com",
@@ -511,11 +512,9 @@
       "required": "Content is required",
       "maxLength": "Content cannot exceed {max} characters"
     },
-    "articleCategory": {
-      "required": "Choose a category"
-    },
-    "sortOrder": {
-      "range": "Order must be between 0 and {max}"
+    "attachmentTitle": {
+      "required": "Give the attachment a title",
+      "maxLength": "The title cannot exceed {max} characters"
     }
   },
   "advancedSearch": {
@@ -743,6 +742,28 @@
     "bodyHint": "Markdown: ## heading, **bold**, - list, | table |, [link](https://…). HTML is shown as text.",
     "viewOnSite": "Open on the public site",
     "public": "Public",
-    "private": "Private"
+    "private": "Private",
+    "group": "Group",
+    "noGroup": "None: this is a group",
+    "parent": "Parent article",
+    "noParent": "None: a page of its own",
+    "moveUp": "Move up",
+    "moveDown": "Move down",
+    "subPages": "Sub-pages",
+    "subPagesHint": "Shown in this order in the book menu.",
+    "noSubPages": "No sub-pages yet: choose this article as the parent of another one.",
+    "attachments": "Attachments (evidence)",
+    "attachmentsHint": "Links or files shown on the category page.",
+    "addLink": "Add link",
+    "attachFiles": "Attach files",
+    "noAttachments": "No attachments",
+    "attachmentTitle": "Title",
+    "attachmentUrl": "Link",
+    "attachmentNote": "Note",
+    "remove": "Remove {name}",
+    "fileDeleted": "Deleted in Files",
+    "fileLocked": "Locked folder",
+    "noCategories": "Create a category first",
+    "descriptionHint": "Markdown, shown on the category page."
   }
 }

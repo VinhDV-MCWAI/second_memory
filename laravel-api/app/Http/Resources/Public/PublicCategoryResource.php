@@ -9,7 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 /**
- * A public category on the home page (ADR-0021). No ids, no private fields.
+ * A public group or category of the home page (ADR-0022). No ids, no private fields.
  *
  * @mixin ContentCategory
  */
@@ -23,7 +23,8 @@ class PublicCategoryResource extends JsonResource
         return [
             'name' => (string) $this->name,
             'slug' => (string) $this->slug,
-            'description' => $this->description,
+            /** Name of the group it is in; null for a group */
+            'group' => $this->getAttribute('parent_name'),
             'article_count' => (int) $this->articles_count,
         ];
     }

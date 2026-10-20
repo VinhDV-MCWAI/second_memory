@@ -1,24 +1,27 @@
 ---
+import Attachments from '@/components/Attachments.astro';
 import Base from '@/layouts/Base.astro';
 import { getPublicCategory } from '@/lib/public-api';
 import { ROUTES } from '@/lib/routes';
 
 const HTTP_NOT_FOUND = 404;
 
-// A private category and a missing one both answer 404 (ADR-0021)
-const category = await getPublicCategory(Astro.params.category ?? '');
+// A private category (or one in a private group) and a missing one both answer 404 (ADR-0022)
+const category = await getPublicCategory(Astro.params.slug ?? '');
 if (!category) {
   Astro.response.status = HTTP_NOT_FOUND;
 }
 ---
 
 {category ? (
-  <Base title={`${category.name} — Second Memory`} description={category.description ?? undefined}>
+  <Base title={`${category.name} — Second Memory`}>
     <a href={ROUTES.HOME} class="text-sm hover:underline">
-      ← All categories
+      ← {category.group?.name ?? 'All categories'}
     </a>
     <h1 class="mt-4 text-3xl font-semibold">{category.name}</h1>
-    {category.description && <p class="text-muted-foreground mt-2">{category.description}</p>}
+    {/* Built by the API from Markdown with raw HTML escaped and unsafe links removed */}
+    <div class="article-body mt-4" set:html={category.description_html} />
+    <Attachments attachments={category.attachments} />
 
     {category.articles.length === 0 ? (
       <p class="mt-10">No articles are published here yet.</p>
@@ -26,10 +29,7 @@ if (!category) {
       <ul class="divide-border mt-10 divide-y">
         {category.articles.map((article) => (
           <li class="py-4">
-            <a
-              href={ROUTES.article(category.slug, article.slug)}
-              class="font-medium hover:underline"
-            >
+            <a href={ROUTES.article(article.slug)} class="font-medium hover:underline">
               {article.title}
             </a>
             {article.summary && <p class="text-muted-foreground mt-1 text-sm">{article.summary}</p>}

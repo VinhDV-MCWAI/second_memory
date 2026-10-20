@@ -11,8 +11,8 @@ use App\Services\Media\MediaService;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 /**
- * Files of the public Skill Ledger (LEDGER-01): only those attached to public evidence of a public
- * skill. Types a browser shows without running code open inline, the rest download (MEDIA-06 rules).
+ * Files of the public site (ADR-0022): only those attached to a category the public site shows.
+ * Types a browser shows without running code open inline, the rest download (MEDIA-06 rules).
  */
 final class PublicFileService
 {

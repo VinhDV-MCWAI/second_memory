@@ -21,8 +21,8 @@ final class DashboardApiTest extends TestCase
 
     public function test_counts_categories_and_articles(): void
     {
-        Article::factory()->count(2)->create();
-        Article::factory()->private()->create();
+        Article::factory()->count(2)->inCategory()->create();
+        Article::factory()->private()->inCategory()->create();
 
         $this->call('GET', self::URL, [], $this->loginAs(AdminMst::factory()->create()))
             ->assertOk()

@@ -8,25 +8,31 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { FormField } from '@/components/common/form-field';
 import { OptionSelect } from '@/components/common/option-select';
+import { IdPicker } from '@/components/common/id-picker';
 import type { ResourceFormProps } from '@/components/common/resource-list-page';
 import { HistoryViewer } from '@/features/history/components/history-viewer';
 import { IsPublicField } from '@/features/content/components/is-public-field';
+import { SubPages } from '@/features/content/components/sub-pages';
 import { useApiData } from '@/shared/hooks/use-api-data';
 import { useCrud } from '@/shared/hooks/use-crud';
 import { API_ENDPOINTS } from '@/shared/api';
+import { publicPaths } from '@/shared/config';
 import { handleBindErrors } from '@/shared/utils/error-handler';
 import { getArticleSchema, type ArticleFormData } from '@/shared/validation/validation';
-import type { Article, ContentCategory } from '@/shared/types/models';
+import type { Article } from '@/shared/types/models';
 
 /** audit_log.auditable_type of articles (ContentConst::ARTICLE_AUDITABLE_TYPE). */
 const AUDITABLE_TYPE = 'article';
 
-/** A home page has a handful of categories; one page fills the select. */
-const CATEGORY_PAGE_SIZE = 100;
+/** Parents offered in the select: a personal site has at most a few hundred articles. */
+const PARENT_PAGE_SIZE = 500;
+
+/** Value of the "no parent" option (Radix Select forbids an empty value). */
+const NO_PARENT = 'none';
 
 /**
- * An article of the public site (ADR-0021). The body is Markdown; the public page shows it as
- * HTML (raw HTML is escaped). It is visible when it and its category are both public.
+ * An article (ADR-0022): Markdown, any number of categories, optionally a sub-page of another
+ * article (a book). It is visible when it and every article above it are public.
  */
 export function ArticleForm({
   initialData,
@@ -41,8 +47,10 @@ export function ArticleForm({
   const { create, update, loading } = useCrud(API_ENDPOINTS.CONTENT.ARTICLE, {
     invalidateKeys: [API_ENDPOINTS.CONTENT.ARTICLE, API_ENDPOINTS.CONTENT.CATEGORY],
   });
-  const { data: categories } = useApiData<ContentCategory>(API_ENDPOINTS.CONTENT.CATEGORY, {
-    per_page: CATEGORY_PAGE_SIZE,
+  const { data: articles } = useApiData<Article>(API_ENDPOINTS.CONTENT.ARTICLE, {
+    per_page: PARENT_PAGE_SIZE,
+    sort_by: 'title',
+    sort_order: 'asc',
   });
 
   const {
@@ -54,11 +62,11 @@ export function ArticleForm({
   } = useForm<ArticleFormData>({
     resolver: zodResolver(getArticleSchema(tValidation)),
     values: {
-      content_category_id: initialData?.content_category_id ?? 0,
+      parent_id: initialData?.parent_id ?? null,
+      category_ids: initialData?.categories.map((category) => category.id) ?? [],
       title: initialData?.title ?? '',
       summary: initialData?.summary ?? '',
       body: initialData?.body ?? '',
-      sort_order: initialData?.sort_order ?? 0,
       is_public: initialData?.is_public ?? true,
     },
   });
@@ -84,45 +92,44 @@ export function ArticleForm({
   return (
     <>
       <form id={formId} onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-        <div className="grid grid-cols-3 gap-4">
-          <div className="col-span-2">
-            <FormField
-              id="content_category_id"
-              label={tLabels('categoryOfArticle')}
-              required
-              error={errors.content_category_id?.message}
-            >
-              <Controller
-                control={control}
-                name="content_category_id"
-                render={({ field }) => (
-                  <OptionSelect
-                    value={field.value || undefined}
-                    onChange={(value) => field.onChange(Number(value))}
-                    options={categories.map((category) => ({
-                      value: category.id,
-                      label: category.name,
-                    }))}
-                  />
-                )}
-              />
-            </FormField>
-          </div>
-          <FormField
-            id="sort_order"
-            label={tLabels('sortOrder')}
-            error={errors.sort_order?.message}
-          >
-            <Input
-              id="sort_order"
-              type="number"
-              min={0}
-              {...register('sort_order', { valueAsNumber: true })}
-            />
-          </FormField>
-        </div>
         <FormField id="title" label={tLabels('title')} required error={errors.title?.message}>
           <Input id="title" {...register('title')} aria-invalid={!!errors.title} />
+        </FormField>
+        <FormField
+          id="category_ids"
+          label={tLabels('categories')}
+          error={errors.category_ids?.message}
+        >
+          <Controller
+            control={control}
+            name="category_ids"
+            render={({ field }) => (
+              <IdPicker
+                endpoint={API_ENDPOINTS.CONTENT.CATEGORY}
+                emptyMessage={tContent('noCategories')}
+                value={field.value}
+                onChange={field.onChange}
+              />
+            )}
+          />
+        </FormField>
+        <FormField id="parent_id" label={tContent('parent')} error={errors.parent_id?.message}>
+          <Controller
+            control={control}
+            name="parent_id"
+            render={({ field }) => (
+              <OptionSelect
+                value={field.value ?? NO_PARENT}
+                onChange={(value) => field.onChange(value === NO_PARENT ? null : Number(value))}
+                options={[
+                  { value: NO_PARENT, label: tContent('noParent') },
+                  ...articles
+                    .filter((article) => article.id !== initialData?.id)
+                    .map((article) => ({ value: article.id, label: article.title })),
+                ]}
+              />
+            )}
+          />
         </FormField>
         <FormField id="summary" label={tLabels('summary')} error={errors.summary?.message}>
           <Textarea id="summary" rows={2} {...register('summary')} />
@@ -140,7 +147,7 @@ export function ArticleForm({
         <IsPublicField control={control} />
         {initialData && (
           <a
-            href={`/guides/${initialData.category_slug}/${initialData.slug}`}
+            href={publicPaths.article(initialData.slug)}
             target="_blank"
             rel="noreferrer"
             className="text-sm underline"
@@ -149,6 +156,11 @@ export function ArticleForm({
           </a>
         )}
       </form>
+      {initialData && (
+        <div className="mt-6">
+          <SubPages articleId={initialData.id} />
+        </div>
+      )}
       {initialData && (
         <HistoryViewer auditableType={AUDITABLE_TYPE} recordId={initialData.id} className="mt-6" />
       )}

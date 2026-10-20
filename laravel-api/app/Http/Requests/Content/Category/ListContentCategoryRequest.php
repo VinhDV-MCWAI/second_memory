@@ -13,6 +13,9 @@ class ListContentCategoryRequest extends ListRequest
     {
         return [
             'name' => ['nullable', 'string', 'max:'.ContentConst::CATEGORY_NAME_MAX],
+            'parent_id' => ['nullable', 'integer'],
+            /** Only groups (categories without a parent) */
+            'root' => ['nullable', 'boolean'],
             'is_public' => ['nullable', 'boolean'],
         ];
     }

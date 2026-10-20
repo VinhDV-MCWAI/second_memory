@@ -4,11 +4,13 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Content;
 
+use App\Enums\MoveDirection;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Content\Category\DeleteContentCategoryRequest;
 use App\Http\Requests\Content\Category\ListContentCategoryRequest;
 use App\Http\Requests\Content\Category\StoreContentCategoryRequest;
 use App\Http\Requests\Content\Category\UpdateContentCategoryRequest;
+use App\Http\Requests\Content\MoveRequest;
 use App\Http\Resources\Content\ContentCategoryResource;
 use App\Services\Content\ContentCategoryService;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
@@ -42,5 +44,13 @@ class ContentCategoryController extends Controller
     public function delete(DeleteContentCategoryRequest $request): void
     {
         $this->categories->delete($request->validated());
+    }
+
+    /**
+     * One step up or down among its siblings (the same parent)
+     */
+    public function move(MoveRequest $request, string $id): void
+    {
+        $this->categories->move((int) $id, MoveDirection::from((string) $request->validated('direction')));
     }
 }

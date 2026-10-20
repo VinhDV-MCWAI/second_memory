@@ -212,6 +212,12 @@ export const ADMIN_ROUTES = {
   LOGIN: '/admin/login',
 } as const;
 
+/** Pages of the public site (public-site/src/lib/routes.ts) that admin screens link to (ADR-0022). */
+export const publicPaths = {
+  category: (slug: string) => `/categories/${encodeURIComponent(slug)}`,
+  article: (slug: string) => `/articles/${encodeURIComponent(slug)}`,
+} as const;
+
 /** audit_log.auditable_type values the backend writes (each service's `$auditableType`, ADR-0006). */
 export const AUDITABLE_TYPES = [
   'admin',

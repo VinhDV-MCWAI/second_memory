@@ -7,23 +7,27 @@ import { createQueryWrapper } from '@/test/query-wrapper';
 import type { Article } from '@/shared/types/models';
 
 vi.mock('next-intl', () => ({ useTranslations: () => (key: string) => key }));
+vi.mock('@/shared/hooks/use-permissions', () => ({ usePermissions: () => ({ can: () => true }) }));
 vi.mock('@/shared/utils/notification', () => ({
   notification: { success: vi.fn(), error: vi.fn(), info: vi.fn(), warning: vi.fn() },
 }));
 
 const article: Article = {
   id: 7,
-  content_category_id: 3,
-  category_name: 'Thiết kế',
-  category_slug: 'thiet-ke',
+  parent_id: null,
+  parent_title: null,
+  categories: [{ id: 3, name: 'Thiết kế', slug: 'thiet-ke' }],
   title: 'Trình bày phương án',
   slug: 'trinh-bay-phuong-an',
   summary: null,
   body: '## Vấn đề',
-  sort_order: 10,
+  sort_order: 1,
   is_public: true,
+  children_count: 1,
   updated_at: null,
 };
+
+const chapter = { ...article, id: 8, parent_id: 7, title: 'Chương 1', slug: 'chuong-1' };
 
 const page = <T,>(data: T[]) =>
   envelope({ data, current_page: 1, last_page: 1, per_page: 100, total: data.length });
@@ -32,7 +36,22 @@ const renderForm = (onSuccess = vi.fn()) => {
   server.use(
     http.get(apiUrl('/admin/audit-log/list'), () => HttpResponse.json(page([]))),
     http.get(apiUrl('/admin/content-category/list'), () =>
-      HttpResponse.json(page([{ id: 3, name: 'Thiết kế' }])),
+      HttpResponse.json(
+        page([
+          { id: 3, name: 'Thiết kế' },
+          { id: 4, name: 'QA' },
+        ]),
+      ),
+    ),
+    // The parent select lists every article; the sub-pages panel only the children of #7
+    http.get(apiUrl('/admin/article/list'), ({ request }) =>
+      HttpResponse.json(
+        page(
+          new URL(request.url).searchParams.get('parent_id') === '7'
+            ? [chapter]
+            : [article, chapter],
+        ),
+      ),
     ),
   );
   const { Wrapper } = createQueryWrapper();
@@ -53,7 +72,7 @@ const renderForm = (onSuccess = vi.fn()) => {
 };
 
 describe('ArticleForm', () => {
-  it('sends the Markdown body and links to the public page', async () => {
+  it('sends the categories, the parent and the Markdown body and links to the public page', async () => {
     let body: Record<string, unknown> | undefined;
     server.use(
       http.put(apiUrl('/admin/article/update/7'), async ({ request }) => {
@@ -64,17 +83,26 @@ describe('ArticleForm', () => {
     const onSuccess = renderForm();
 
     expect(screen.getByRole('link', { name: 'viewOnSite' }).getAttribute('href')).toBe(
-      '/guides/thiet-ke/trinh-bay-phuong-an',
+      '/articles/trinh-bay-phuong-an',
     );
+    fireEvent.click(await screen.findByLabelText('QA'));
     fireEvent.change(screen.getByLabelText(/^body/), { target: { value: '## Vấn đề\n\n- A' } });
     fireEvent.click(screen.getByRole('button', { name: 'save' }));
 
     await waitFor(() => expect(onSuccess).toHaveBeenCalled());
     expect(body).toMatchObject({
-      content_category_id: 3,
+      category_ids: [3, 4],
+      parent_id: null,
       body: '## Vấn đề\n\n- A',
       is_public: true,
     });
+  });
+
+  it('lists its sub-pages in book order', async () => {
+    renderForm();
+
+    expect(await screen.findByText('Chương 1')).toBeTruthy();
+    expect(screen.getByText('subPages')).toBeTruthy();
   });
 
   it('shows the API error on the field', async () => {

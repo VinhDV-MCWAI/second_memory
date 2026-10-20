@@ -93,16 +93,10 @@ import Base from '@/layouts/Base.astro';
   function row(item: SavedItem): HTMLLIElement {
     const li = document.createElement('li');
     const link = document.createElement('a');
-    link.href = ROUTES.article(item.category_slug, item.article_slug);
+    link.href = ROUTES.article(item.article_slug);
     link.className = 'font-medium hover:underline';
     link.textContent = item.title;
     li.append(link);
-    li.append(
-      Object.assign(document.createElement('span'), {
-        className: 'text-muted-foreground ml-2 text-sm',
-        textContent: item.category_name,
-      }),
-    );
     return li;
   }
 
