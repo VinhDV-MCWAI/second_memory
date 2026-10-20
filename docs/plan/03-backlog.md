@@ -55,3 +55,18 @@ Các mục còn lại của giai đoạn này (triển khai, vận hành, sự c
 | CMS-01 | Danh mục và bài viết: bảng, API quản trị, API public, lưu bài viết, dữ liệu mẫu ([ADR-0021](../adr/0021-public-home-categories-articles.md)) | API đủ, có test | done (0b9a2f21 — bảng danh mục + bài viết, 8 API quản trị, 3 API public (Markdown → HTML an toàn), lưu bài viết, 10 danh mục mẫu × 2 bài trên dev; 311 test backend pass) |
 | CMS-02 | Màn hình quản trị Categories, Articles | Thêm, sửa, ẩn / hiện, xóa trên giao diện | done (2ecf677e — menu Public content → Categories, Articles: thêm, sửa, ẩn/hiện, thứ tự, xóa, lịch sử thay đổi, link mở trang public; 160 test giao diện pass) |
 | PUB-06 | Trang public về gốc `/`: trang chủ danh mục, trang danh mục, bài viết; trang quản trị vào `/admin`; nginx; chuyển hướng đường dẫn cũ | Mở http://localhost:81/ thấy đủ danh mục | done (74f1bd47 — trang public ở gốc / (trang chủ 11 thẻ: Skills + 10 danh mục), /guides/{danh mục}/{bài}, quản trị dưới /admin (/admin/login), chuyển hướng đường dẫn cũ, Astro --ignore-lock; make verify pass (311 backend, 160 giao diện, 63 importer), make e2e 11/11) |
+
+## 10. Trang tài liệu kinh nghiệm
+
+[REQ-005](../requirements/REQ-005-trang-tai-lieu-kinh-nghiem.md), [ADR-0022](../adr/0022-trang-tai-lieu-kinh-nghiem.md). Bỏ Skill Ledger; chỉ còn danh mục và bài viết, đọc như trang tài liệu. Làm theo vòng đời đầy đủ, ra bản `v3.0.0`.
+
+| Mã | Việc | Kết quả | Trạng thái |
+|---|---|---|---|
+| KB-01 | Hồ sơ yêu cầu, quyết định thiết kế, đưa việc lên bảng | REQ-005 + ADR-0022 | todo |
+| KB-02 | Bỏ Skill Ledger: kỹ năng, cấp độ, mục tiêu học, bằng chứng, nhãn (API, bảng, quyền, màn hình, trang `/skills`, dữ liệu mẫu, ☆ 🔖 kỹ năng / bằng chứng) | Không còn Skill Ledger, `make verify` xanh | todo |
+| KB-03 | Danh mục 2 cấp (nhóm → danh mục) có đính kèm link / file; bài viết nhiều danh mục, bài cha tối đa 10 cấp, thứ tự ↑ ↓ thay ô số; API + màn hình quản trị; dữ liệu mẫu mới | Quản lý được cây danh mục, cây bài viết | todo |
+| KB-04 | Markdown: neo tiêu đề, mục lục, `[[bài]]`, `![[bài]]`, `![[bài#Tiêu đề]]`, `![[file:…]]`; thẻ Viết / Xem trước; nút Chèn file, Chèn bài | Xem trước giống trang public, nhúng an toàn | todo |
+| KB-05 | Trang public kiểu tài liệu: trang chủ diễn đàn, trang danh mục, trang bài 3 cột (cây sách, mục lục, bài trước / sau), màu code, chuyển hướng `/skills`, `/guides` cũ | Đọc như trang tài liệu | todo |
+| KB-06 | Lượt xem, xếp hạng (Mới nhất, Cập nhật, Đọc nhiều, Được lưu nhiều), tìm kiếm public và quản trị, trang tổng quan, cột "dùng ở đâu" của Files | Xếp hạng và tìm kiếm chạy | todo |
+| KB-07 | Nhập từ Obsidian thành bài viết (gửi cả nội dung, danh mục, bài cha, `[[ ]]`) | `make import` tạo bài viết | todo |
+| KB-08 | Tài liệu tính năng, test trình duyệt, dọn dẹp, đóng gói `v3.0.0` | `docs/releases/v3.0.0.md` + tag | todo |

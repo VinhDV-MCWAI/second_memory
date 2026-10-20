@@ -6,6 +6,7 @@ Cập nhật: 2026-10-20. Mục tiêu và cách làm việc: [01-goals-and-workf
 Tính năng:     1. Dọn nền ─► 2. Phân quyền động ─► 3. Media MinIO ─► 4. Phòng ban ─► 5. CI/CD (rồi tắt) ─► 6. Nâng cấp trên dev ─► 9. Trang cho người dùng
                   (xong)         (xong)                 (xong)            (xong)          (xong, đang tắt)        (xong)                 (xong)
 Luyện quy trình:                                                                                                8. Đóng gói → sổ tay → vòng đời đầy đủ (đang làm: nghiệm thu v2.3.0)
+Tiếp theo:     10. Trang tài liệu kinh nghiệm (đang làm: bỏ Skill Ledger, danh mục + bài viết kiểu trang tài liệu → v3.0.0)
 Sau cùng:      7. Triển khai, vận hành, sự cố, hiệu năng & bảo mật, portfolio; CI/CD chỉ khi chủ dự án yêu cầu
 ```
 
@@ -103,3 +104,12 @@ Ghi lại để làm sau, theo thứ tự dự kiến. Mỗi mục bắt đầu 
 | Gồm | Thử nhanh và đo; làm lại trang public; tài khoản người dùng cuối (thay việc quản lý người dùng cuối của giai đoạn 4); yêu thích, xem sau; màn hình End users trong trang quản trị. Lịch sử đã xem: bỏ theo chủ dự án (2026-10-19) |
 | Tình trạng | Xong 2026-10-19 (PUB-01…04). Thêm theo yêu cầu cùng ngày ([REQ-004](../requirements/REQ-004-trang-chu-danh-muc.md), [ADR-0021](../adr/0021-public-home-categories-articles.md)): trang public về gốc `/` với trang chủ danh mục, bài viết theo các bước làm phần mềm, đăng nhập người dùng bằng tên đăng nhập, trang quản trị vào `/admin` (PUB-05, PUB-06, CMS-01, CMS-02). Còn nghiệm thu và tag `v2.3.0` (REL-02, giai đoạn 8) |
 | Xong khi | Trang public chạy trên công nghệ mới, nhẹ hơn (có số đo); người dùng đăng nhập dùng được yêu thích và xem sau; có test và tài liệu |
+
+## 10. Trang tài liệu kinh nghiệm
+
+| | |
+|---|---|
+| Mục tiêu | Lưu kinh nghiệm của chủ dự án và đọc như trang tài liệu (Next.js docs, Laravel docs), xếp theo kiểu diễn đàn. Không tự chấm điểm bản thân |
+| Cách làm | [REQ-005](../requirements/REQ-005-trang-tai-lieu-kinh-nghiem.md), [ADR-0022](../adr/0022-trang-tai-lieu-kinh-nghiem.md): bỏ Skill Ledger; danh mục 2 cấp có đính kèm; bài viết nhiều danh mục, cây chương tối đa 10 cấp, nhúng bài và file theo cú pháp Obsidian |
+| Gồm | KB-01…KB-08 trong [03-backlog.md](03-backlog.md#10-trang-tài-liệu-kinh-nghiệm) |
+| Xong khi | Tag `v3.0.0`; trang public đọc như trang tài liệu; `make verify`, `make e2e` xanh |
