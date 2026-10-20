@@ -89,6 +89,8 @@ Mỗi dòng do `scripts/lane.sh done` tự thêm. Không sửa tay. Các dòng t
 
 - 2026-10-20 — [lane main] OPS-04 done: 0b9b954f — cảnh báo cơ bản: thông báo Windows mỗi phút khi container dừng/không khỏe, việc nền chờ quá 5 phút, việc nền lỗi (make watch-on/off/status); thử thật cả 3 loại, báo một lần và báo khi hết; shellcheck sạch; dọn: hàng đợi giả trong Redis, thư mục trạng thái tạm, image shellcheck, make clean
 
+- 2026-10-20 — [lane main] FIX-01 done: 40c05e20 — ô lọc: câu gợi ý hiện đúng tên ô (trước hiện 'filters.searchPlaceholder' và báo lỗi console), mục All trong ô chọn không còn giá trị rỗng; test mới dùng câu chữ thật và bắt đúng lỗi cũ; 163 test giao diện pass; dọn: file tạm trong scratchpad
+
 ## Next step
 
 1. Đầu phiên: đọc file này, rồi `scripts/lane.sh status`. Bảng việc chỉ còn các việc "để sau" theo quyết định chủ dự án.
