@@ -121,4 +121,7 @@ USER laravel
 # Note: composer.json, composer.lock, and other files will be mounted via volume
 # Composer install will be handled by the entrypoint script for flexibility
 
-ENTRYPOINT ["bash", "/usr/local/bin/docker-entrypoint.sh"]
+# docker/laravel/ is mounted at /opt/ml-docker by Compose (a folder: single-file mounts go stale
+# when WSL restarts); php.ini there is loaded through PHP_INI_SCAN_DIR
+ENV PHP_INI_SCAN_DIR=":/opt/ml-docker"
+ENTRYPOINT ["bash", "/opt/ml-docker/docker-entrypoint.sh"]

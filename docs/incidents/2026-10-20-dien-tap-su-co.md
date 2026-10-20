@@ -62,8 +62,8 @@ Bật lại Redis: sau 2 giây mọi thứ chạy lại, admin **vẫn giữ đ�
 | Việc | Vì sao | Trạng thái |
 |---|---|---|
 | Sao lưu cả file trong thùng rác (phiên bản cũ trong MinIO) và trả lại khi khôi phục | Khôi phục thật đang làm mất file trong thùng rác | Xong cùng ngày: khôi phục thử trả file về thùng rác, giống hệt từng byte ([hướng dẫn](../runbooks/backup-restore.md)) |
-| Container tự bật lại sau khi WSL khởi động lại; mật khẩu Redis ra khỏi dòng lệnh | [Sự cố khởi động lại](2026-10-20-trang-sap-sau-khoi-dong-lai.md) lặp lại lần thứ ba | Trên bảng việc, chờ duyệt |
-| Cảnh báo cơ bản: container dừng hoặc không khỏe, việc nền chờ quá lâu | Cả ba tình huống và sự cố thật đều không có gì báo động | Trên bảng việc (mục Vận hành), chờ duyệt |
+| Container tự bật lại sau khi WSL khởi động lại; mật khẩu Redis ra khỏi dòng lệnh | [Sự cố khởi động lại](2026-10-20-trang-sap-sau-khoi-dong-lai.md) lặp lại lần thứ ba | Xong cùng ngày; còn chủ dự án thử `wsl --shutdown` |
+| Cảnh báo cơ bản: container dừng hoặc không khỏe, việc nền chờ quá lâu | Cả ba tình huống và sự cố thật đều không có gì báo động | Xong cùng ngày ([hướng dẫn cảnh báo](../runbooks/canh-bao.md)) |
 | Khôi phục thật đầu-cuối trên một môi trường tạm, đo thời gian | Lần này chỉ khôi phục thử | Để sau, cùng mục Triển khai |
 
 ## Dọn dẹp

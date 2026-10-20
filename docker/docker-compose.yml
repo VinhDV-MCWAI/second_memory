@@ -14,11 +14,19 @@ services:
       PGDATA: /var/lib/postgresql/data/pgdata
     volumes:
       - postgres_data:/var/lib/postgresql/data
-      - ./postgres/pg_hba.conf:/etc/postgresql/pg_hba.conf:ro
+      # Folders, never single files: on Docker Desktop + WSL a single-file bind mount goes stale
+      # when WSL restarts and the container fails with exit 127 (incident 2026-10-20). Long syntax
+      # next to a named volume: the short `-v` form makes Docker Desktop stage the folder the same way.
+      - type: bind
+        source: ./postgres
+        target: /etc/postgresql/custom
+        read_only: true
+        bind:
+          create_host_path: false
     ports:
       - "${POSTGRES_PORT_OUTSIDE_ENV}:${POSTGRES_PORT_INSIDE_ENV}"
     command: >
-      postgres -c shared_buffers=256MB -c max_connections=200 -c effective_cache_size=512MB -c maintenance_work_mem=64MB -c checkpoint_completion_target=0.9 -c wal_buffers=16MB -c default_statistics_target=100 -c random_page_cost=1.1 -c effective_io_concurrency=200 -c work_mem=4MB -c min_wal_size=1GB -c max_wal_size=4GB -c hba_file=/etc/postgresql/pg_hba.conf
+      postgres -c shared_buffers=256MB -c max_connections=200 -c effective_cache_size=512MB -c maintenance_work_mem=64MB -c checkpoint_completion_target=0.9 -c wal_buffers=16MB -c default_statistics_target=100 -c random_page_cost=1.1 -c effective_io_concurrency=200 -c work_mem=4MB -c min_wal_size=1GB -c max_wal_size=4GB -c hba_file=/etc/postgresql/custom/pg_hba.conf
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
       interval: 10s
@@ -43,13 +51,27 @@ services:
       REDIS_PASSWORD: ${REDIS_PASSWORD}
     volumes:
       - redis_data:/data
-      - ./redis/redis.conf:/usr/local/etc/redis/redis.conf:ro
+      # Folder, long syntax (see ml-postgres)
+      - type: bind
+        source: ./redis
+        target: /usr/local/etc/redis
+        read_only: true
+        bind:
+          create_host_path: false
     ports:
       - "${REDIS_PORT_OUTSIDE_ENV}:${REDIS_PORT_INSIDE_ENV}"
-    # Exec form so the image entrypoint drops to the redis user (a `sh -c` command ran as root)
-    command: ["redis-server", "/usr/local/etc/redis/redis.conf", "--requirepass", "${REDIS_PASSWORD}"]
+    # The password goes into a config file written at start instead of the command line (seen by
+    # `ps` and `docker inspect`); calling the image entrypoint again drops Redis to the redis user
+    command:
+      - sh
+      - -c
+      - >-
+        umask 077 &&
+        printf 'include /usr/local/etc/redis/redis.conf\nrequirepass %s\n' "$$REDIS_PASSWORD" > /tmp/redis-auth.conf &&
+        chown redis:redis /tmp/redis-auth.conf &&
+        exec docker-entrypoint.sh redis-server /tmp/redis-auth.conf
     healthcheck:
-      test: ["CMD-SHELL", "redis-cli --no-auth-warning -a \"$$REDIS_PASSWORD\" ping | grep -q PONG"]
+      test: ["CMD-SHELL", "REDISCLI_AUTH=\"$$REDIS_PASSWORD\" redis-cli ping | grep -q PONG"]
       interval: 10s
       timeout: 3s
       retries: 5
@@ -74,8 +96,8 @@ services:
     working_dir: /var/www/laravel-api
     volumes:
       - ../laravel-api:/var/www/laravel-api
-      - ./laravel/php.ini:/usr/local/etc/php/conf.d/custom.ini:ro
-      - ./laravel/docker-entrypoint.sh:/usr/local/bin/docker-entrypoint.sh:ro
+      # Folder mount (see ml-postgres): the entrypoint and php.ini (Dockerfile: PHP_INI_SCAN_DIR)
+      - ./laravel:/opt/ml-docker:ro
     environment:
       DB_CONNECTION: pgsql
       DB_HOST: ${POSTGRES_HOST_INSIDE_ENV}
@@ -129,7 +151,7 @@ services:
     command: ["queue:work", "redis", "--sleep=1", "--timeout=900", "--max-time=3600"]
     volumes:
       - ../laravel-api:/var/www/laravel-api
-      - ./laravel/php.ini:/usr/local/etc/php/conf.d/custom.ini:ro
+      - ./laravel:/opt/ml-docker:ro
     environment:
       DB_CONNECTION: pgsql
       DB_HOST: ${POSTGRES_HOST_INSIDE_ENV}
@@ -267,9 +289,10 @@ services:
     image: nginxinc/nginx-unprivileged:1.25.5-alpine3.19
     restart: unless-stopped
     volumes:
-      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
-      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
+      # Folder mount (see ml-postgres): edits show up at once, `nginx -s reload` is enough
+      - ./nginx:/etc/nginx/custom:ro
       - ../laravel-api/public:/var/www/laravel-api/public:ro
+    command: ["nginx", "-c", "/etc/nginx/custom/nginx.conf", "-g", "daemon off;"]
     ports:
       # Unprivileged nginx listens on 8080 (no TLS in dev; local TLS comes with P4-08)
       - "${NGINX_PORT_OUTSIDE_ENV}:8080"

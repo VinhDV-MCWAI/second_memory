@@ -52,8 +52,8 @@ Mở http://localhost:81 thì trình duyệt báo không kết nối được: c
 | Việc | Loại | Trạng thái |
 |---|---|---|
 | Sửa bài kiểm tra sức khỏe `ml-nextjs` sang `/admin/login` (dev + Terraform) | Chặn tái diễn | Xong, commit `9830eb8f` |
-| Container tự bật lại được sau khi WSL khởi động lại: bỏ gắn file lẻ (chép vào image hoặc gắn cả thư mục); đưa mật khẩu Redis ra khỏi dòng lệnh | Chặn tái diễn | Trên bảng việc, chờ chủ dự án duyệt |
-| Cảnh báo khi một container dừng hoặc không khỏe | Phát hiện sớm | Trên bảng việc (mục Vận hành), chờ chủ dự án duyệt |
+| Container tự bật lại được sau khi WSL khởi động lại: bỏ gắn file lẻ (chép vào image hoặc gắn cả thư mục); đưa mật khẩu Redis ra khỏi dòng lệnh | Chặn tái diễn | Xong cùng ngày: mọi container gắn cả thư mục, mật khẩu Redis nằm trong file cấu hình sinh lúc chạy. Thêm một phát hiện: thư mục gắn bằng cú pháp ngắn cạnh một volume có tên cũng bị Docker Desktop chuyển qua chỗ trung gian như file lẻ, nên Postgres và Redis dùng cú pháp dài. Còn bước thử cuối: chủ dự án chạy `wsl --shutdown` rồi mở lại |
+| Cảnh báo khi một container dừng hoặc không khỏe | Phát hiện sớm | Xong cùng ngày: thông báo Windows mỗi khi có vấn đề ([hướng dẫn cảnh báo](../runbooks/canh-bao.md)) |
 | Khi đổi đường dẫn của một app, tìm mọi chỗ gọi đường dẫn cũ (`grep` cả `docker/`, `infra/`, `e2e/`) | Bài học | Ghi ở đây |
 
 ## Bài học

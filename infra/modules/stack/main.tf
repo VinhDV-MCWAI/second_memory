@@ -536,7 +536,7 @@ resource "docker_container" "proxy" {
   }
 
   upload {
-    file    = "/etc/nginx/conf.d/default.conf"
+    file    = "/etc/nginx/custom/default.conf"
     content = local.nginx_site
   }
 
