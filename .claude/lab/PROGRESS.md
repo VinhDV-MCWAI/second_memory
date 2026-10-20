@@ -97,6 +97,8 @@ Mỗi dòng do `scripts/lane.sh done` tự thêm. Không sửa tay. Các dòng t
 
 - 2026-10-20 — [lane main] KB-03 done: 645f7dbf — nhóm → danh mục có đính kèm (link/file), bài viết nhiều danh mục và cây sách tối đa 10 cấp (chặn vòng), ↑ ↓ thay ô số thứ tự, trang quản trị mới (cây danh mục, ô đính kèm, bài cha, bài con), trang public /categories, /articles, chuyển hướng /guides, /skills; dữ liệu mẫu mới (2 nhóm, 14 danh mục, sách 3 cấp); 231 backend, 151 giao diện pass; dọn: make clean
 
+- 2026-10-20 — [lane main] KB-04 done: fd38a913 — [[bài]], ![[bài]], ![[bài#mục]], ![[file:id]] (bỏ qua code, chặn vòng, tối đa 3 lớp, bài riêng tư không lộ), neo tiêu đề + mục lục, file nhúng có mã riêng (article_media), API xem trước; ô soạn Viết / Xem trước, Chèn file, Chèn bài cho bài viết và mô tả danh mục; thử quay lui migration trên DB testing; 239 backend, 153 giao diện pass; dọn: make clean
+
 ## Next step
 
 1. Đầu phiên: đọc file này, rồi `scripts/lane.sh status`. Bảng việc chỉ còn các việc "để sau" theo quyết định chủ dự án.
