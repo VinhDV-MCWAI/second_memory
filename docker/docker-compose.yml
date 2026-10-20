@@ -206,7 +206,7 @@ services:
       test:
         [
           "CMD-SHELL",
-          "wget --no-verbose --tries=1 --spider --timeout=15 http://localhost:${NEXTJS_PORT_INSIDE_ENV}/ || exit 1",
+          "wget --no-verbose --tries=1 --spider --timeout=15 http://localhost:${NEXTJS_PORT_INSIDE_ENV}/admin/login || exit 1",
         ]
       interval: 45s
       timeout: 20s

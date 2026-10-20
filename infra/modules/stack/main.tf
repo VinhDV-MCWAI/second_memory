@@ -471,7 +471,7 @@ resource "docker_container" "nextjs" {
   }
 
   healthcheck {
-    test         = ["CMD-SHELL", "wget --quiet --tries=1 --spider http://localhost:6543/ || exit 1"]
+    test         = ["CMD-SHELL", "wget --quiet --tries=1 --spider http://localhost:6543/admin/login || exit 1"]
     interval     = "15s"
     timeout      = "5s"
     retries      = 5
