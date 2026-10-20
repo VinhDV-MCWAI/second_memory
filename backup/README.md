@@ -8,8 +8,8 @@ How to run a backup, a test restore and a disaster-recovery restore, step by ste
 
 | Script | What it does |
 |---|---|
-| `backup.sh [--local-only]` (`make backup`) | `pg_dump` (custom format) + mirror of the MinIO bucket + `docker/.env` → `backups/history/system_backup_<timestamp>.tar.gz`, copied to every rclone remote in `RCLONE_REMOTES`. The local archive is deleted only after every remote has it; any failure keeps it and exits non-zero |
-| `restore.sh [ARCHIVE] [--target-db NAME [--target-bucket NAME]] [--yes]` (`make restore`) | without `--target-db`: disaster recovery over the live database, bucket and `docker/.env`, in one database transaction; with it: a test restore into a throwaway database / bucket that leaves live data alone |
+| `backup.sh [--local-only]` (`make backup`) | `pg_dump` (custom format) + mirror of the MinIO bucket + the last version of every file in the trash (`media-trash/`, kept under a delete marker on the versioned bucket) + `docker/.env` → `backups/history/system_backup_<timestamp>.tar.gz`, copied to every rclone remote in `RCLONE_REMOTES`. The local archive is deleted only after every remote has it; any failure keeps it and exits non-zero |
+| `restore.sh [ARCHIVE] [--target-db NAME [--target-bucket NAME]] [--yes]` (`make restore`) | without `--target-db`: disaster recovery over the live database, bucket and `docker/.env`, in one database transaction; with it: a test restore into a throwaway database / bucket that leaves live data alone. Files from `media-trash/` are uploaded and deleted again, so they land back in the trash (the bucket gets versioning) |
 
 ## Targets and retention
 

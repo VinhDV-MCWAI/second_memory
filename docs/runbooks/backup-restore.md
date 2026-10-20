@@ -6,15 +6,16 @@ Một bản sao lưu chưa từng được khôi phục thử thì chưa đượ
 |---|---|
 | Dùng khi | Sao lưu hằng ngày; diễn tập khôi phục; mất dữ liệu thật |
 | Rủi ro | Sao lưu và khôi phục thử: thấp (chỉ đọc dữ liệu thật, ghi vào DB và bucket tạm). Khôi phục thật: **cao**, ghi đè DB, bucket chính và `docker/.env` |
-| Thời gian | Với dữ liệu dev hiện tại (212 KB): sao lưu dưới 1 giây, khôi phục thử 5 giây. Khôi phục thật cộng thêm thời gian tạo lại container (khoảng 1 phút) |
+| Thời gian | Với dữ liệu dev hiện tại (11 MB, phần lớn là một file trong thùng rác): sao lưu và khôi phục thử mỗi việc vài giây. Khôi phục thật cộng thêm thời gian tạo lại container (khoảng 1 phút) |
 | Mục tiêu | Mất tối đa 24 giờ dữ liệu, khôi phục xong trong 30 phút ([backup/README.md](../../backup/README.md)). Hiện chưa đạt mục tiêu 24 giờ vì chưa lên lịch sao lưu tự động (chưa cài rclone) |
-| Lần thử gần nhất | 2026-10-20, [diễn tập sự cố](../incidents/2026-10-20-dien-tap-su-co.md): khôi phục thử, 32/32 bảng giống hệt từng dòng, file MinIO giống hệt từng byte, ứng dụng chạy trên bản khôi phục đọc được dữ liệu. Chế độ khôi phục thật chưa chạy (sẽ ghi đè dev) |
+| Lần thử gần nhất | 2026-10-20, [diễn tập sự cố](../incidents/2026-10-20-dien-tap-su-co.md): khôi phục thử, 32/32 bảng giống hệt từng dòng, file MinIO giống hệt từng byte, ứng dụng chạy trên bản khôi phục đọc được dữ liệu. Cùng ngày, sau khi sửa: file trong thùng rác về lại thùng rác của bucket tạm, giống hệt từng byte, gỡ dấu đã xóa thì tải về được. Chế độ khôi phục thật chưa chạy (sẽ ghi đè dev) |
 
 ## Lỗi đã biết
 
 | Vấn đề | Hậu quả | Xử lý |
 |---|---|---|
-| Sao lưu chỉ chép phiên bản mới nhất của file trong MinIO. File trong thùng rác chỉ còn ở phiên bản cũ | Khôi phục sau thảm họa thì mất mọi file đang trong thùng rác (tối đa 30 ngày); màn hình Thùng rác vẫn hiện tên nhưng khôi phục báo lỗi | Việc "Sao lưu cả file trong thùng rác" trên bảng việc |
+| Bản sao lưu làm trước 2026-10-20 không có file trong thùng rác | Khôi phục từ bản cũ đó thì các file đang trong thùng rác không khôi phục được (màn hình Thùng rác vẫn hiện tên) | Dùng bản sao lưu mới. Script vẫn đọc được bản cũ, chỉ bỏ qua phần thùng rác |
+| Sau khi khôi phục, file trong thùng rác được tính lại 30 ngày từ lúc khôi phục (MinIO) | File có thể nằm trong thùng rác lâu hơn 30 ngày một chút | Chấp nhận: lệnh dọn thùng rác hằng ngày vẫn xóa hẳn theo ngày xóa ghi trong DB |
 | Tài khoản MinIO của ứng dụng chỉ có quyền trên bucket chính | Khi khôi phục thử vào bucket tạm, ứng dụng không đọc được file ở đó; phải kiểm file bằng tài khoản quản trị MinIO (mục "Kiểm tra") | Giữ nguyên: quyền chặt là đúng, khôi phục thật dùng bucket chính |
 
 ## Điều kiện
@@ -32,7 +33,7 @@ bash backup/backup.sh                 # DB + file MinIO + docker/.env → đẩy
 bash backup/backup.sh --local-only    # giữ backups/history/system_backup_<thời gian>.tar.gz, không đẩy
 ```
 
-Script dừng ở lỗi đầu tiên. File trên máy chỉ bị xóa khi **mọi** nơi lưu đã nhận; nếu không, file được giữ lại và script thoát mã `1`. Không có rclone (và không có `--local-only`) thì script từ chối ngay từ đầu (mã `2`). Bản sao DB được kiểm bằng `pg_restore --list` trước khi đóng gói. Tên file dùng giờ theo múi giờ trong `docker/.env`.
+Bản sao lưu gồm `core/` (DB, `docker/.env`), `media/` (file đang dùng) và `media-trash/` (phiên bản cuối của mỗi file đang trong thùng rác; MinIO giữ chúng dưới "dấu đã xóa" nên chép thường không thấy). Script dừng ở lỗi đầu tiên. File trên máy chỉ bị xóa khi **mọi** nơi lưu đã nhận; nếu không, file được giữ lại và script thoát mã `1`. Không có rclone (và không có `--local-only`) thì script từ chối ngay từ đầu (mã `2`). Bản sao DB được kiểm bằng `pg_restore --list` trước khi đóng gói. Tên file dùng giờ theo múi giờ trong `docker/.env`.
 
 ### Khôi phục thử (diễn tập)
 
@@ -43,7 +44,7 @@ bash backup/restore.sh backups/history/system_backup_<thời gian>.tar.gz \
   --target-db restore_check --target-bucket restore-check
 ```
 
-Không truyền file thì script tải bản mới nhất từ nơi lưu đầu tiên (cần rclone). Script từ chối khôi phục vào DB chính, `testing`, `postgres` và bucket chính.
+Bucket tạm được bật lưu phiên bản như bucket chính. File trong `media-trash/` được tải lên rồi xóa ngay, nên chúng về lại thùng rác (khôi phục được), không hiện như file đang dùng. Không truyền file thì script tải bản mới nhất từ nơi lưu đầu tiên (cần rclone). Script từ chối khôi phục vào DB chính, `testing`, `postgres` và bucket chính.
 
 ### Khôi phục thật (khi mất dữ liệu)
 
@@ -69,7 +70,8 @@ Không truyền file thì script tải bản mới nhất từ nơi lưu đầu 
   ```bash
   docker exec ml-minio sh -c 'mc alias set m http://127.0.0.1:9000 "$MINIO_ROOT_USER" "$MINIO_ROOT_PASSWORD" >/dev/null && mc diff m/media-official m/restore-check && echo "giống hệt"'
   ```
-- Khôi phục thật: đăng nhập trang quản trị, mở trang tổng quan, trang Skills trên trang public, tải thử một file trong Files.
+- File trong thùng rác: `mc ls --versions --recursive m/restore-check` phải thấy mỗi file trong thùng rác có một dòng `PUT` nằm dưới một dòng `DEL`, cùng dung lượng với bucket chính (`mc diff` ở trên không so phần này). Muốn chắc nội dung: `mc cat --version-id <mã phiên bản> …` ở cả hai bên rồi so mã băm.
+- Khôi phục thật: đăng nhập trang quản trị, mở trang tổng quan, trang Skills trên trang public, tải thử một file trong Files, khôi phục thử một file trong Thùng rác.
 
 ## Dọn sau diễn tập
 
@@ -94,4 +96,4 @@ rm -f backups/history/system_backup_<thời gian>.tar.gz   # file có chứa m�
 | Ngày | Phát hiện |
 |---|---|
 | 2026-10-08 | `backup.sh` cũ không kiểm lỗi và luôn xóa file trên máy: thiếu rclone vẫn báo xong, thoát 0 mà **không có bản sao lưu nào**. `restore.sh` cũ nuốt mọi lỗi `pg_restore` và có thể để DB bị xóa dở. Đã sửa cả hai. Lúc đó MinIO trống nên chưa thử được phần file |
-| 2026-10-20 | Diễn tập có file MinIO: file còn dùng khôi phục đúng; file trong thùng rác không được sao lưu (bảng "Lỗi đã biết") |
+| 2026-10-20 | Diễn tập có file MinIO: file còn dùng khôi phục đúng; file trong thùng rác không được sao lưu. Sửa cùng ngày: sao lưu thêm `media-trash/`, khôi phục đặt lại dấu đã xóa |

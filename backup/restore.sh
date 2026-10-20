@@ -59,7 +59,7 @@ WORK_DIR="$PROJECT_DIR/restore_tmp"
 cleanup() {
   rm -rf "$WORK_DIR"
   docker exec "$PG_CONTAINER" rm -f /tmp/db_backup.dump >/dev/null 2>&1 || true
-  docker exec "$MINIO_CONTAINER" rm -rf /tmp/restore-media >/dev/null 2>&1 || true
+  docker exec "$MINIO_CONTAINER" rm -rf /tmp/restore-media /tmp/restore-trash >/dev/null 2>&1 || true
 }
 trap cleanup EXIT
 SECONDS=0
@@ -127,7 +127,27 @@ if [ -n "$BUCKET" ]; then
   echo "[3/4] Media into bucket $BUCKET"
   docker exec "$MINIO_CONTAINER" rm -rf /tmp/restore-media
   docker cp "$EXTRACTED/media/." "$MINIO_CONTAINER:/tmp/restore-media/"
-  docker exec "$MINIO_CONTAINER" sh -c "mc alias set myminio http://127.0.0.1:\${MINIO_PORT_INSIDE_ENV:-9000} \"\$MINIO_ROOT_USER\" \"\$MINIO_ROOT_PASSWORD\" >/dev/null && mc mb --ignore-existing myminio/$BUCKET >/dev/null && mc mirror --overwrite --quiet /tmp/restore-media/ myminio/$BUCKET >/dev/null"
+  docker exec "$MINIO_CONTAINER" sh -c "mc alias set myminio http://127.0.0.1:\${MINIO_PORT_INSIDE_ENV:-9000} \"\$MINIO_ROOT_USER\" \"\$MINIO_ROOT_PASSWORD\" >/dev/null && mc mb --ignore-existing myminio/$BUCKET >/dev/null && mc version enable myminio/$BUCKET >/dev/null && mc mirror --overwrite --quiet /tmp/restore-media/ myminio/$BUCKET >/dev/null"
+  # Files that were in the trash: upload the saved version, then delete it again. On the versioned
+  # bucket the delete only adds a marker, so the file is back in the trash and can be restored.
+  # Archives made before media-trash/ existed have no such folder.
+  if [ -d "$EXTRACTED/media-trash" ]; then
+    docker exec "$MINIO_CONTAINER" rm -rf /tmp/restore-trash
+    docker cp "$EXTRACTED/media-trash/." "$MINIO_CONTAINER:/tmp/restore-trash/"
+    docker exec -i "$MINIO_CONTAINER" bash -s -- "$BUCKET" <<'TRASH'
+set -euo pipefail
+shopt -s globstar nullglob
+count=0
+for file in /tmp/restore-trash/**; do
+  [ -f "$file" ] || continue
+  key=${file#/tmp/restore-trash/}
+  mc cp --quiet "$file" "myminio/$1/$key" >/dev/null
+  mc rm --quiet "myminio/$1/$key" >/dev/null
+  count=$((count + 1))
+done
+echo "    $count file(s) back in the trash"
+TRASH
+  fi
 else
   echo "[3/4] Media skipped (test restore without --target-bucket)"
 fi

@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
-# Full backup: PostgreSQL dump (custom format) + MinIO media bucket + docker/.env, packed into
-# system_backup_<timestamp>.tar.gz and copied to every rclone remote in RCLONE_REMOTES.
+# Full backup: PostgreSQL dump (custom format) + MinIO media bucket (including the files in the
+# trash) + docker/.env, packed into system_backup_<timestamp>.tar.gz and copied to every rclone
+# remote in RCLONE_REMOTES.
 #
 # Usage: bash backup/backup.sh [--local-only]
 #   --local-only   keep the archive in backups/history/ and skip the cloud upload
@@ -43,7 +44,7 @@ read -ra REMOTES <<<"${RCLONE_REMOTES//,/ }"
 # The work folder always goes; the archive stays unless every upload succeeded (see the end)
 cleanup() {
   rm -rf "$WORK_DIR"
-  docker exec "$MINIO_CONTAINER" rm -rf /tmp/media-backup >/dev/null 2>&1 || true
+  docker exec "$MINIO_CONTAINER" rm -rf /tmp/media-backup /tmp/media-backup-trash >/dev/null 2>&1 || true
 }
 trap cleanup EXIT
 
@@ -54,7 +55,7 @@ if ! $LOCAL_ONLY && ! command -v rclone >/dev/null; then
 fi
 
 echo "=== Backup $TIMESTAMP (database $DB_NAME, bucket $MINIO_BUCKET) ==="
-mkdir -p "$WORK_DIR/core" "$WORK_DIR/media" "$BACKUP_DIR/history"
+mkdir -p "$WORK_DIR/core" "$WORK_DIR/media" "$WORK_DIR/media-trash" "$BACKUP_DIR/history"
 
 echo "[1/4] PostgreSQL dump (custom format)"
 docker exec -e PGPASSWORD="$POSTGRES_PASSWORD" "$PG_CONTAINER" \
@@ -66,6 +67,34 @@ cp "$ENV_FILE" "$WORK_DIR/core/docker.env"
 echo "[2/4] MinIO bucket $MINIO_BUCKET"
 docker exec "$MINIO_CONTAINER" sh -c "mc alias set myminio http://127.0.0.1:$MINIO_PORT \"\$MINIO_ROOT_USER\" \"\$MINIO_ROOT_PASSWORD\" >/dev/null && mc mirror --overwrite --quiet myminio/$MINIO_BUCKET /tmp/media-backup >/dev/null && mkdir -p /tmp/media-backup"
 docker cp "$MINIO_CONTAINER":/tmp/media-backup/. "$WORK_DIR/media/"
+# mirror copies only current objects. A file in the trash is a delete marker on top of its last
+# version (versioned bucket), so that version is saved under media-trash/ and restore.sh puts the
+# delete marker back.
+docker exec -i "$MINIO_CONTAINER" bash -s -- "$MINIO_BUCKET" "$MINIO_PORT" <<'TRASH'
+set -euo pipefail
+bucket=$1
+mc alias set myminio "http://127.0.0.1:$2" "$MINIO_ROOT_USER" "$MINIO_ROOT_PASSWORD" >/dev/null
+declare -A latest_ord latest_marker kept_ord kept_id
+while IFS= read -r line; do
+  [[ $line =~ \"key\":\"([^\"]*)\" ]] || continue
+  key=${BASH_REMATCH[1]}
+  [[ $line =~ \"versionId\":\"([^\"]*)\" ]] && id=${BASH_REMATCH[1]} || continue
+  [[ $line =~ \"versionOrdinal\":([0-9]+) ]] && ord=${BASH_REMATCH[1]} || continue
+  marker=false
+  [[ $line == *'"isDeleteMarker":true'* ]] && marker=true
+  if ((ord > ${latest_ord[$key]:-0})); then latest_ord[$key]=$ord; latest_marker[$key]=$marker; fi
+  if ! $marker && ((ord > ${kept_ord[$key]:-0})); then kept_ord[$key]=$ord; kept_id[$key]=$id; fi
+done < <(mc ls --versions --recursive --json "myminio/$bucket")
+mkdir -p /tmp/media-backup-trash
+count=0
+for key in "${!latest_marker[@]}"; do
+  [[ ${latest_marker[$key]} == true && -n ${kept_id[$key]:-} ]] || continue
+  mc cp --quiet --version-id "${kept_id[$key]}" "myminio/$bucket/$key" "/tmp/media-backup-trash/$key" >/dev/null
+  count=$((count + 1))
+done
+echo "    $count file(s) in the trash"
+TRASH
+docker cp "$MINIO_CONTAINER":/tmp/media-backup-trash/. "$WORK_DIR/media-trash/"
 
 echo "[3/4] Archive"
 tar -czf "$ARCHIVE" -C "$BACKUP_DIR" "$WORK_NAME"
