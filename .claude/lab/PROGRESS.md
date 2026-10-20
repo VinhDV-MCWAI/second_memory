@@ -83,6 +83,8 @@ Mỗi dòng do `scripts/lane.sh done` tự thêm. Không sửa tay. Các dòng t
 
 - 2026-10-20 — [lane main] OPS-01 done: 9830eb8f + docs/incidents — diễn tập 3 tình huống trên dev: khôi phục thử 32/32 bảng và file giống hệt (5 giây), hàng đợi dừng không mất việc, Redis dừng chỉ hỏng trang quản trị; gặp sự cố thật (cả trang sập sau khởi động lại), sửa bài kiểm tra sức khỏe app quản trị; phát hiện file trong thùng rác không được sao lưu (OPS-02); dọn: DB, bucket tạm, file sao lưu, file TMP, make clean
 
+- 2026-10-20 — [lane main] OPS-02 done: 7956ef4e — sao lưu thêm file trong thùng rác (media-trash/), khôi phục đặt lại dấu đã xóa nên file về đúng thùng rác; thử thật: sao lưu, khôi phục thử vào DB và bucket tạm, file 11 MB giống hệt từng byte, gỡ dấu đã xóa tải về được; shellcheck sạch; dọn: DB, bucket tạm, file sao lưu, image shellcheck, make clean
+
 ## Next step
 
 1. Đầu phiên: đọc file này, rồi `scripts/lane.sh status`. Bảng việc chỉ còn các việc "để sau" theo quyết định chủ dự án.
