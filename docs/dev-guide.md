@@ -31,6 +31,8 @@ Mở trình duyệt vào **http://localhost:81/admin** và đăng nhập:
 | Bằng chứng | 6 | Pull request, quyết định thiết kế, sự cố, và 2 ghi chú như được nhập từ Obsidian |
 | Mục tiêu học | 4 | 2 đang theo, 1 đã đạt, 1 đã bỏ |
 
+Những ngày sau chỉ cần `make start` khi bắt đầu và `make stop` khi xong (xem mục 7).
+
 Chạy lại `make seed` bao nhiêu lần cũng được: dòng đã có thì giữ nguyên (kể cả khi bạn đã sửa), không tạo trùng, không xóa gì. Muốn làm lại từ đầu thì `make fresh` (xóa sạch DB dev, hỏi trước). Seeder dữ liệu mẫu (`DevSampleSeeder`) từ chối chạy trên production.
 
 ## 2. Các địa chỉ
@@ -74,6 +76,7 @@ Thư mục code được gắn thẳng vào container, nên phần lớn thay đ
 | Thêm thư viện PHP | `docker exec ml-php composer require <tên gói>` |
 | Thêm thư viện JS (sửa `pnpm-lock.yaml`) | `make up` (dựng lại image và tạo mới thư mục `node_modules` trong container; thiếu bước tạo mới thì báo "Cannot find module") |
 | Sửa `docker/.env` hoặc Dockerfile | `make restart` |
+| Thêm thư viện PHP mà container khác chưa thấy, hoặc `vendor/` bị hỏng | `docker restart ml-php`: khi khởi động, container chỉ chạy `composer install` lúc `composer.lock` khác lần cài trước (mốc ở `laravel-api/vendor/.composer-lock.sha256`); xóa file mốc này thì lần sau cài lại |
 | Thiếu hoặc hỏng file env của Laravel / giao diện | `make setup` (chạy `scripts/setup-env.sh`: giữ bí mật đã có trong `docker/.env`, tạo lại `laravel-api/.env`, `nextjs-fe/.env`), rồi `make restart` |
 
 ## 4. Test nhanh
@@ -117,6 +120,7 @@ Test dùng một database riêng tên `testing`, không đụng dữ liệu dev.
 | Cảnh báo "Encountered a script tag" trong console | Script chống nháy màu của thư viện chọn giao diện sáng/tối bị render trên trình duyệt (đã sửa trong `nextjs-fe/src/app/providers.tsx`) | Nếu còn thấy: tải lại trang không dùng cache (Ctrl+Shift+R) |
 | 419 "CSRF token mismatch" khi gọi API bằng curl | Thiếu cookie CSRF | Gọi `GET /api/sanctum/csrf-cookie` trước, gửi kèm header `Referer: http://localhost:81/...`, rồi gửi giá trị cookie `XSRF-TOKEN` trong header `X-XSRF-TOKEN` |
 | `make up` báo "ml-redis is unhealthy" | Redis đang nạp lại dữ liệu | Đợi một lúc rồi `make up` lại |
+| `ml-redis` khởi động lại liên tục, log báo `can't create /tmp/redis-auth.conf: Permission denied`; kéo theo `ml-php`, `ml-nginx` dừng | File mật khẩu của lần chạy trước còn trong container, kernel chặn ghi đè (gặp 2026-10-20, ngay sau bản sửa gắn thư mục) | Đã sửa: container xóa file cũ trước khi ghi. Nếu gặp lại: `make down && make start` |
 | `Permission denied` / `EACCES` trên `vendor/`, `storage/`, `.next/` | File do container chạy quyền root tạo ra trước đây | `docker run --rm -v "$PWD":/r alpine:3.24 chown -R 1000:1000 /r/<đường dẫn>` |
 | Tạo admin trên dev báo "The email must be a valid email address." dù email đúng | Email admin phải thuộc tên miền có thật: máy hỏi DNS trên Internet, mạng chập chờn thì hỏi không được. Khi chạy test thì phần kiểm tra này tắt (`EMAIL_DNS_CHECK=false` trong `laravel-api/phpunit.xml`), nên test không cần mạng | Kiểm tra mạng rồi thử lại |
 | Bảng không tồn tại khi chạy test có lọc (`f=...`) | Test có lọc không tự tạo bảng trong DB `testing` | `docker exec -e DB_DATABASE=testing ml-php php artisan migrate --force` |
@@ -138,8 +142,11 @@ Test dùng một database riêng tên `testing`, không đụng dữ liệu dev.
 
 | Muốn | Lệnh | Mất gì |
 |---|---|---|
+| Bật để làm việc mỗi ngày (không build lại, khoảng 30 giây) | `make start` | Không mất gì |
+| Tắt khi xong việc (giữ container, lần bật sau nhanh) | `make stop` | Không mất gì |
+| Build lại và bật (lần đầu, sau khi đổi Dockerfile hoặc `pnpm-lock.yaml`) | `make up` | Không mất gì; tự xóa thư mục `node_modules` cũ trong Docker |
 | Khởi động lại container | `make restart` | Không mất gì |
-| Tắt hết | `make down` | Không mất gì, dữ liệu vẫn còn |
+| Tắt và xóa container | `make down` | Không mất gì, dữ liệu vẫn còn |
 | Thêm lại tài khoản và dữ liệu mẫu bị thiếu | `make seed` | Không mất gì |
 | Dọn rác Docker, ảnh không dùng và kết quả test cũ (làm sau mỗi việc, xem [hướng dẫn dọn dẹp](runbooks/don-dep.md)) | `make clean` | Không mất dữ liệu dev; lần build sau có thể chậm hơn một chút |
 | Xóa sạch DB dev rồi tạo lại (kèm tài khoản và dữ liệu mẫu) | `make fresh` (sẽ hỏi trước khi chạy) | **Mất toàn bộ dữ liệu dev** |
@@ -160,3 +167,27 @@ Chỉ để extension báo lỗi ngay khi gõ (ESLint, Prettier, Tailwind, Astro
 | Extension | `code --install-extension dbaeumer.vscode-eslint bradlc.vscode-tailwindcss astro-build.astro-vscode` | Extension PHP (Intelephense, PHP Tools) dùng `php` vừa cài |
 
 Không cài thư viện mới bằng `pnpm add` hay `composer require` trên máy: thêm thư viện vẫn làm trong container và cần chủ dự án đồng ý.
+
+## 9. Docker trên Windows + WSL: RAM và ổ đĩa
+
+Docker Desktop chạy trong một máy ảo WSL. Máy ảo này giữ RAM và ổ đĩa của Windows, kể cả khi container đã tắt.
+
+| Vấn đề | Cách xử lý |
+|---|---|
+| Máy chậm, thiếu RAM | Toàn bộ stack khi nghỉ dùng khoảng 1,5 GB (app quản trị khoảng 600 MB, trang public khoảng 400 MB). Mỗi container có giới hạn RAM riêng trong `docker/docker-compose.yml`, để một container lỗi không ăn hết máy. Giới hạn RAM cho cả máy ảo đặt trong file `%UserProfile%\.wslconfig` trên Windows (ví dụ bên dưới), rồi chạy `wsl --shutdown` trong PowerShell và mở lại Docker Desktop |
+| Không làm thì muốn trả RAM cho Windows | `make stop`. Docker Desktop có chế độ Resource Saver (Settings → Resources) tự thu nhỏ máy ảo khi không có container nào chạy |
+| Ổ C: đầy dần dù đã `make clean` | Ổ đĩa ảo của Docker chỉ lớn lên, không tự nhỏ lại. Sau `make clean`: Docker Desktop → Troubleshoot → **Clean / Purge data** thì xóa hết (cả dữ liệu dev, nên sao lưu trước theo [backup-restore.md](runbooks/backup-restore.md)). Giữ dữ liệu thì thu nhỏ file `.vhdx` (thường ở `%LOCALAPPDATA%\Docker\wsl\disk\`) bằng `diskpart`: `select vdisk file="<đường dẫn>"`, `compact vdisk`, sau khi tắt Docker Desktop và `wsl --shutdown` |
+| Rác sau mỗi lần dùng | `make up` và `make down` tự xóa thư mục `node_modules` cũ trong Docker. Log mỗi container giữ tối đa 30 MB. `make clean` xóa thêm image không dùng và giữ bộ nhớ đệm build dưới 4 GB |
+
+Ví dụ `.wslconfig` cho máy 16 GB RAM (máy 8 GB thì đặt `memory=6GB`):
+
+```ini
+[wsl2]
+memory=8GB
+swap=4GB
+
+[experimental]
+# Trả lại RAM không dùng cho Windows, và ổ đĩa ảo tự nhỏ lại khi xóa dữ liệu (WSL 2.0 trở lên)
+autoMemoryReclaim=gradual
+sparseVhd=true
+```

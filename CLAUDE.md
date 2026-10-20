@@ -20,6 +20,7 @@ Everything runs in Docker (containers prefixed `ml-`). The host has Node, pnpm a
 
 ```bash
 make up          # generate env if missing, then build + start the stack
+make start / make stop   # daily: start without a rebuild / stop and keep the containers
 make test        # backend tests (make test f=AdminMst); make test-ci runs them as CI does
 make lint        # Pint + ESLint + Prettier checks, backend and both FE apps
 make verify      # every gate, in the dev containers (includes uncommitted work)

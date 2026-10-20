@@ -45,7 +45,7 @@ Script `scripts/clean.sh`, chạy lại nhiều lần vẫn an toàn.
 | Ảnh production cũ | Tag `sm-api`, `sm-nextjs-fe`, `sm-public-site`, `sm-minio` không container nào dùng | Tag đang chạy |
 | Ảnh tải về không dùng | Ảnh tải từ registry mà không container nào chạy và không file nào trong repo ghi tên (vd. `node:22-alpine` của Dockerfile cũ, `alpine:latest` của lệnh thử) | Ảnh dự án tự build (`my_lm-ml-*`, `ml-e2e`, `sm-ci-*`, `ledger-importer*`, `lab-metrics-*`, `sm-tools`) để lần sau chạy nhanh |
 | Volume vô danh | Volume không container nào dùng | Mọi volume có tên |
-| Bộ nhớ đệm build | Cũ hơn 7 ngày (`CACHE_KEEP=168h`, đổi được) | Phần mới hơn |
+| Bộ nhớ đệm build | Cũ hơn 7 ngày (`CACHE_KEEP=168h`), và phần cũ nhất khi tổng vượt 4 GB (`CACHE_MAX=4GB`); cả hai đổi được | Phần mới hơn, trong giới hạn 4 GB |
 | Kết quả test | `e2e/artifacts/`, `laravel-api/.phpunit.result.cache` | — |
 
 Cuối script in `docker system df`. Cần thêm chỗ trống thì xóa tay ảnh công cụ ít dùng (build lại được): `docker rmi lab-metrics-api lab-metrics-fe` (đo tải đang tạm dừng), `docker rmi ml-e2e` (khoảng 4 GB, `make e2e` sẽ build lại).
