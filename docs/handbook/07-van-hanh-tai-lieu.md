@@ -1,6 +1,6 @@
 # 7. Vận hành, sự cố, nhìn lại, viết tài liệu
 
-Giám sát và mô phỏng sự cố đang tạm dừng tới khi có production ([01-goals-and-workflow.md](../plan/01-goals-and-workflow.md)). Các nguyên tắc dưới đây vẫn áp dụng ngay cho dev.
+Giám sát đang tạm dừng tới khi có production ([01-goals-and-workflow.md](../plan/01-goals-and-workflow.md)). Diễn tập sự cố đã làm trên dev ngày 2026-10-20 ([biên bản](../incidents/2026-10-20-dien-tap-su-co.md)). Các nguyên tắc dưới đây áp dụng ngay cho dev.
 
 ## Giám sát cơ bản
 
@@ -69,7 +69,7 @@ Runbook là các bước cụ thể cho một cảnh báo hoặc một thao tác
 | "Làm Y an toàn thế nào?" | Runbook | `docs/runbooks/` |
 | "Bản này có gì?" | Ghi chú phát hành | `docs/releases/` |
 | "Đang làm tới đâu?" | Bảng việc, nhật ký tiến độ | `.claude/lab/` (qua `scripts/lane.sh`) |
-| "Production đang hỏng" | Báo cáo sự cố + nhìn lại | `docs/incidents/` (tạo khi có sự cố đầu tiên) |
+| "Production đang hỏng" | Báo cáo sự cố + nhìn lại | `docs/incidents/` (mỗi sự cố một file `YYYY-MM-DD-<tên>.md`, gồm cả phần nhìn lại) |
 
 Mẫu tài liệu cũ (tiếng Anh) để tham khảo: [docs/archive/engineering-lab/templates/](../archive/engineering-lab/templates/).
 
