@@ -123,13 +123,19 @@
     "adminDashboard": "Admin Dashboard",
     "dashboard": "Dashboard",
     "masterData": "Master Data",
-    "skillLedger": "Skill Ledger",
     "auditLog": "Audit log",
     "content": "Public content"
   },
   "search": {
     "placeholder": "Search...",
-    "filter": "Filter"
+    "filter": "Filter",
+    "title": "Search",
+    "description": "File and folder names. Accents and case are ignored.",
+    "fuzzy": "No exact match — showing similar results",
+    "empty": "Nothing found for “{q}”",
+    "hint": "Type at least {min} characters",
+    "files": "Files",
+    "openFiles": "Open Files"
   },
   "dashboard": {
     "welcomeDescription": "Welcome back! Here's what's happening with your business today.",
@@ -143,7 +149,12 @@
     "totalUsers": "Total Users",
     "revenue": "Revenue",
     "totalOrders": "Total Orders",
-    "conversionRate": "Conversion Rate"
+    "conversionRate": "Conversion Rate",
+    "categories": "Categories",
+    "articles": "Articles",
+    "publicArticles": "Public articles",
+    "recentChanges": "Recent changes",
+    "noChanges": "No changes yet"
   },
   "metadata": {
     "title": "Admin Dashboard",
@@ -193,18 +204,8 @@
   "entities": {
     "admin": "Admin",
     "admins": "Admins",
-    "skill": "Skill",
-    "skills": "Skills",
-    "skillDescription": "Skill Description",
-    "skillDescriptions": "Skill Descriptions",
     "file": "File",
     "files": "Files",
-    "tag": "Tag",
-    "tags": "Tags",
-    "evidence": "Evidence",
-    "evidenceMany": "Evidence",
-    "goal": "Goal",
-    "goals": "Goals",
     "role": "Role",
     "roles": "Roles",
     "department": "Department",
@@ -456,9 +457,6 @@
       "required": "Description is required",
       "maxLength": "Description cannot exceed {max} characters"
     },
-    "link": {
-      "required": "Link is required"
-    },
     "image": {
       "required": "Image is required"
     },
@@ -471,50 +469,20 @@
       "required": "Value is required",
       "maxLength": "Value cannot exceed {max} characters"
     },
-    "skillName": {
-      "required": "Name is required",
-      "maxLength": "Name cannot exceed {max} characters"
-    },
     "category": {
       "required": "Category is required",
       "maxLength": "Category cannot exceed {max} characters"
-    },
-    "tagName": {
-      "required": "Name is required",
-      "maxLength": "Name cannot exceed {max} characters"
-    },
-    "level": {
-      "required": "Level is required"
-    },
-    "reason": {
-      "maxLength": "Reason cannot exceed {max} characters"
-    },
-    "changedOn": {
-      "future": "The date cannot be in the future"
-    },
-    "evidenceTitle": {
-      "required": "Title is required",
-      "maxLength": "Title cannot exceed {max} characters"
     },
     "url": {
       "invalid": "Enter an http or https link",
       "linkOrFile": "Give a link or attach at least one file",
       "maxLength": "The link cannot exceed {max} characters"
     },
-    "occurredOn": {
-      "required": "Date is required"
-    },
     "summary": {
       "maxLength": "Summary cannot exceed {max} characters"
     },
     "mediaIds": {
       "maxLength": "At most {max} files"
-    },
-    "skillIds": {
-      "required": "Pick at least one skill"
-    },
-    "skill": {
-      "required": "Skill is required"
     },
     "note": {
       "maxLength": "Note cannot exceed {max} characters"
@@ -574,60 +542,6 @@
   "delete": "Delete",
   "previous": "Previous",
   "next": "Next",
-  "ledger": {
-    "public": "Public",
-    "private": "Private",
-    "noTags": "No tags yet",
-    "levels": {
-      "title": "Level history",
-      "description": "Every level change, newest first. Entries cannot be edited.",
-      "empty": "No level changes yet",
-      "record": "Record level change",
-      "recording": "Recording",
-      "recorded": "Level recorded",
-      "by": "by {name}"
-    },
-    "noSkills": "Create a skill first",
-    "importedHint": "Imported from Obsidian: edit the title, link, date, summary, skills and tags in the vault.",
-    "files": {
-      "empty": "No files attached",
-      "attach": "Attach files",
-      "deleted": "Deleted",
-      "deletedHint": "Deleted in Files. It stays attached; restore it from the Files trash to show it again.",
-      "moveUp": "Move up",
-      "moveDown": "Move down",
-      "remove": "Remove {name}",
-      "count": "{count, plural, one {# file} other {# files}} attached",
-      "filtered": "Evidence using the file {name}",
-      "showAll": "Show all evidence",
-      "locked": "Locked",
-      "lockedHint": "In a folder of Files you cannot use. It stays attached but cannot be opened."
-    },
-    "achievedHint": "Achieved goals keep their target; only the date and note can change.",
-    "search": {
-      "title": "Search",
-      "description": "Skills, goals, evidence and file names. Accents and case are ignored.",
-      "fuzzy": "No exact match — showing similar results",
-      "empty": "Nothing found for “{q}”",
-      "hint": "Type at least {min} characters",
-      "skills": "Skills",
-      "goals": "Goals",
-      "evidence": "Evidence",
-      "files": "Files",
-      "openList": "Open list",
-      "openFiles": "Open Files"
-    },
-    "dashboard": {
-      "skills": "Skills",
-      "publicSkills": "Public skills",
-      "evidence": "Evidence",
-      "publicEvidence": "Public evidence",
-      "openGoals": "Open goals",
-      "levels": "Skills per level",
-      "recentActivity": "Recent changes",
-      "noActivity": "No changes yet"
-    }
-  },
   "permissions": {
     "feature": "Feature",
     "wholeFeature": "All of {feature}",
@@ -703,13 +617,6 @@
     "deleteSelected": "Delete ({count})",
     "deleteTitle": "Delete {count, plural, one {# item} other {# items}}?",
     "deleteDescription": "A folder is deleted with everything inside. MinIO keeps deleted files for 30 days, so they can still be restored.",
-    "usedBy": {
-      "column": "Evidence",
-      "file": "Attached to {count, plural, one {# evidence} other {# evidence}}: {titles}",
-      "folder": "Files inside are attached to evidence {count, plural, one {# time} other {# times}}",
-      "deleteWarning": "{count, plural, one {# attachment} other {# attachments}} to evidence will show as Deleted until the files are restored.",
-      "open": "Open the evidence using {name}"
-    },
     "deleted": "Deleted",
     "uploads": {
       "title": "Uploads",
@@ -834,6 +741,8 @@
   },
   "content": {
     "bodyHint": "Markdown: ## heading, **bold**, - list, | table |, [link](https://…). HTML is shown as text.",
-    "viewOnSite": "Open on the public site"
+    "viewOnSite": "Open on the public site",
+    "public": "Public",
+    "private": "Private"
   }
 }

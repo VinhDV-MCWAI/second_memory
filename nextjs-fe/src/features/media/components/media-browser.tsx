@@ -49,7 +49,6 @@ import {
 import { IconButton } from './icon-button';
 import { FileThumb } from './file-thumb';
 import { FolderAccessDialog } from './folder-access-dialog';
-import { UsedBy } from './used-by';
 import { MediaFieldDialog } from './media-field-dialog';
 import { PreviewDialog } from './preview-dialog';
 import { UnfinishedUploads } from './unfinished-uploads';
@@ -188,11 +187,6 @@ export function MediaBrowser() {
     }
   };
 
-  // Links to evidence among the rows being deleted (folders count the files inside)
-  const attachedInDelete = data
-    .filter((item) => deleteIds.includes(item.id))
-    .reduce((sum, item) => sum + (item.attached_count ?? 0), 0);
-
   const confirmDelete = async () => {
     try {
       await actions.remove.mutateAsync(deleteIds);
@@ -243,11 +237,6 @@ export function MediaBrowser() {
             )}
           </button>
         ),
-    },
-    {
-      key: 'attached_count',
-      label: t('usedBy.column'),
-      render: (item) => <UsedBy item={item} />,
     },
     {
       key: 'size',
@@ -498,11 +487,7 @@ export function MediaBrowser() {
         open={deleteIds.length > 0}
         onOpenChange={(open) => !open && setDeleteIds([])}
         title={t('deleteTitle', { count: deleteIds.length })}
-        description={
-          attachedInDelete > 0
-            ? `${t('deleteDescription')} ${t('usedBy.deleteWarning', { count: attachedInDelete })}`
-            : t('deleteDescription')
-        }
+        description={t('deleteDescription')}
         onConfirm={confirmDelete}
         confirmText={tCommon('delete')}
         variant="destructive"

@@ -13,17 +13,12 @@ const CACHE_MS = 60_000;
 
 const HTTP_NOT_FOUND = 404;
 
-export const MAX_LEVEL = 4;
-
 type Data<P extends keyof paths> = paths[P] extends {
   get: { responses: { 200: { content: { 'application/json': { data: infer D } } } } };
 }
   ? D
   : never;
 
-export type PublicSkill = components['schemas']['PublicSkillResource'];
-export type PublicSkillDetail = components['schemas']['PublicSkillDetailResource'];
-export type PublicFile = PublicSkillDetail['evidence'][number]['files'][number];
 export type PublicCategory = components['schemas']['PublicCategoryResource'];
 export type PublicCategoryDetail = components['schemas']['PublicCategoryDetailResource'];
 export type PublicArticle = components['schemas']['PublicArticleResource'];
@@ -46,17 +41,6 @@ async function getPublic<T>(path: string): Promise<T | null> {
     response.status === HTTP_NOT_FOUND ? null : ((await response.json()) as { data: T }).data;
   cache.set(path, { at: Date.now(), data });
   return data;
-}
-
-export async function getPublicSkills(): Promise<PublicSkill[]> {
-  return (await getPublic<Data<'/public/skills'>>('skills'))?.data ?? [];
-}
-
-export async function getPublicSkill(slug: string): Promise<PublicSkillDetail | null> {
-  return (
-    (await getPublic<Data<'/public/skills/{slug}'>>(`skills/${encodeURIComponent(slug)}`))?.data ??
-    null
-  );
 }
 
 export async function getPublicCategories(): Promise<PublicCategory[]> {

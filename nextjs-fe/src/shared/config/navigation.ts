@@ -4,14 +4,10 @@ import {
   LayoutDashboard,
   Database,
   ShieldCheck,
-  FileCheck,
   FileText,
   Globe,
   FolderOpen,
   History,
-  GraduationCap,
-  Tags,
-  Target,
   UserCog,
   Users,
 } from 'lucide-react';
@@ -36,36 +32,6 @@ export const NAVIGATION_MENU: MenuItem[] = [
     icon: History,
     href: ADMIN_ROUTES.AUDIT_LOG,
     permission: 'audit-log.list',
-  },
-  {
-    label: 'navigation.skillLedger',
-    icon: GraduationCap,
-    children: [
-      {
-        label: 'entities.skills',
-        icon: GraduationCap,
-        href: ADMIN_ROUTES.SKILLS,
-        permission: 'skill.list',
-      },
-      {
-        label: 'entities.evidenceMany',
-        icon: FileCheck,
-        href: ADMIN_ROUTES.EVIDENCE,
-        permission: 'evidence.list',
-      },
-      {
-        label: 'entities.goals',
-        icon: Target,
-        href: ADMIN_ROUTES.GOALS,
-        permission: 'learning-goal.list',
-      },
-      {
-        label: 'entities.tags',
-        icon: Tags,
-        href: ADMIN_ROUTES.TAGS,
-        permission: 'tag.list',
-      },
-    ],
   },
   {
     label: 'navigation.content',

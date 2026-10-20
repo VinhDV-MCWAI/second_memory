@@ -44,9 +44,7 @@ class MediaRepository extends BaseRepository
     public function list(string $folder, array $payload, array $blocked = []): LengthAwarePaginator
     {
         $query = $this->query()->live()->where('upload_status', '<>', UploadStatus::UPLOADING->value)
-            ->select('media_mgmt.*')
-            ->with(['evidence:id,title', 'departments:id'])
-            ->selectSub($this->attachedCount(), 'attached_count');
+            ->with('departments:id');
         $this->whereChildOf($query, $folder);
         $this->excludeFolders($query, $blocked);
 
@@ -86,21 +84,6 @@ class MediaRepository extends BaseRepository
         }
 
         return $query->limit($limit)->get();
-    }
-
-    /**
-     * Links to evidence of the row: of the file itself, or of the live files inside the folder
-     * (MEDIA-09). `\` escapes LIKE wildcards in the stored path, as escapeLike() does.
-     */
-    private function attachedCount(): QueryBuilder
-    {
-        return DB::table('evidence_media')
-            ->join('media_mgmt as attached', 'attached.id', '=', 'evidence_media.media_id')
-            ->where('attached.is_delete', false)
-            ->where(fn (QueryBuilder $match) => $match
-                ->whereColumn('attached.id', 'media_mgmt.id')
-                ->orWhereRaw("attached.virtual_path like replace(replace(replace(media_mgmt.virtual_path, '\\', '\\\\'), '%', '\\%'), '_', '\\_') || '/%'"))
-            ->selectRaw('count(*)');
     }
 
     /**
@@ -243,7 +226,7 @@ class MediaRepository extends BaseRepository
     }
 
     /**
-     * The ids among $ids that are available files (LEDGER-01: what an evidence may attach).
+     * The ids among $ids that are available files (what an article or a category may attach, ADR-0022).
      *
      * @param  list<int>  $ids
      * @param  list<string>  $blocked  paths of locked folders the admin may not use (ADR-0017)
@@ -258,18 +241,12 @@ class MediaRepository extends BaseRepository
     }
 
     /**
-     * The available file of an attachment (`evidence_media.public_id`) to public evidence of a public
-     * skill, the only files the public Skill Ledger serves (LEDGER-01); null otherwise.
+     * The available file behind a public key of the public site. Category attachments and files
+     * embedded in articles bring the keys back (ADR-0022, KB-03); until then no file is public.
      */
     public function publicFile(string $key): ?MediaMgmt
     {
-        return $this->query()->available()
-            ->whereHas('evidence', fn ($evidence) => $evidence
-                ->where('evidence_media.public_id', $key)
-                ->where('evidence.is_public', true)
-                ->whereNull('evidence.unpublished_at')
-                ->whereHas('skills', fn ($skills) => $skills->where('skill.is_public', true)))
-            ->first();
+        return null;
     }
 
     /**

@@ -121,7 +121,7 @@ final class EndUserAccountApiTest extends TestCase
     {
         $userCookies = $this->loginAsEndUser(EndUser::factory()->create());
         $this->call('GET', '/api/admin/credential/me', [], $userCookies)->assertUnauthorized();
-        $this->call('GET', '/api/admin/skill/list', [], $userCookies)->assertUnauthorized();
+        $this->call('GET', '/api/admin/article/list', [], $userCookies)->assertUnauthorized();
 
         $adminCookies = $this->loginAsOwner(AdminMst::factory()->create());
         $this->call('GET', self::BASE.'/me', [], $adminCookies)->assertUnauthorized();

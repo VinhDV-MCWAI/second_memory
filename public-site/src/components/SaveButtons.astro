@@ -1,14 +1,12 @@
 ---
-// ☆ favourite and 🔖 read later for one skill, evidence or article (ADR-0020, ADR-0021). The page HTML is the
+// ☆ favourite and 🔖 read later for one article (ADR-0020, ADR-0022). The page HTML is the
 // same for every visitor; src/scripts/save-buttons.ts marks what the signed-in user saved.
 interface Props {
-  skill?: string;
-  evidence?: string;
-  article?: string;
+  article: string;
   label: string;
 }
 
-const { skill, evidence, article, label } = Astro.props;
+const { article, label } = Astro.props;
 const buttons = [
   { kind: 'favorite', icon: '☆', on: '★', title: `Add ${label} to favorites` },
   { kind: 'read_later', icon: '🔖', on: '🔖', title: `Save ${label} to read later` },
@@ -21,8 +19,6 @@ const buttons = [
       type="button"
       class="text-muted-foreground hover:bg-muted rounded px-1 text-sm aria-pressed:text-primary aria-pressed:bg-muted"
       data-save={button.kind}
-      data-skill={skill}
-      data-evidence={evidence}
       data-article={article}
       data-icon={button.icon}
       data-icon-on={button.on}

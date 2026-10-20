@@ -8,7 +8,7 @@ The project is also a practice ground for professional software work: every feat
 
 | Area | What you can do | Details (Vietnamese) |
 |---|---|---|
-| Skill Ledger | Skills with level history, learning goals, tags, evidence with a link and/or up to 10 attached files | [skill-ledger.md](docs/features/skill-ledger.md) |
+| Skill Ledger | Removed on 2026-10-20 (ADR-0022): experience lives in categories and articles | [skill-ledger.md](docs/features/skill-ledger.md) |
 | Files | Folders; upload small files and large files up to 10 GB (chunked, resumable after a reload); preview images, PDF, video, audio, text; thumbnails, image size, media duration; 30-day trash | [quan-ly-file.md](docs/features/quan-ly-file.md) |
 | Departments | Departments, admins in several departments, folders in Files locked to departments | [phong-ban.md](docs/features/phong-ban.md) |
 | Dynamic permissions | Every admin API is a permission; roles with a permission matrix in the UI; menus and buttons follow the permissions | [phan-quyen-dong.md](docs/features/phan-quyen-dong.md) |

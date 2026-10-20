@@ -7,15 +7,13 @@ namespace Tests\Feature\User;
 use App\Constants\CommonVal;
 use App\Models\Content\Article;
 use App\Models\Content\ContentCategory;
-use App\Models\Ledger\Evidence;
-use App\Models\Ledger\Skill;
 use App\Models\User\EndUser;
 use Tests\Concerns\AuthenticatesAdmins;
 use Tests\Concerns\AuthenticatesEndUsers;
 use Tests\TestCase;
 
 /**
- * Favourites and read later (ADR-0020): only what the public site shows.
+ * Favourites and read later (ADR-0020): only articles the public site shows.
  */
 final class SavedApiTest extends TestCase
 {
@@ -23,9 +21,9 @@ final class SavedApiTest extends TestCase
 
     private const BASE = '/api/user/saved';
 
-    private Skill $skill;
+    private Article $article;
 
-    private Evidence $evidence;
+    private string $key;
 
     /** @var array<string, string> */
     private array $cookies;
@@ -33,79 +31,58 @@ final class SavedApiTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->skill = Skill::factory()->create(['is_public' => true, 'name' => 'PostgreSQL']);
-        $this->evidence = Evidence::factory()->create(['is_public' => true, 'title' => 'EXPLAIN notes']);
-        $this->evidence->skills()->attach($this->skill->id);
+        $this->article = Article::factory()->create(['title' => 'Bộ câu hỏi làm rõ']);
+        $this->key = (string) $this->call('GET', "/api/public/articles/{$this->article->category->slug}/{$this->article->slug}")->assertOk()->json('data.data.key');
         $this->cookies = $this->loginAsEndUser(EndUser::factory()->create());
     }
 
-    public function test_save_list_and_remove_skills_and_evidence(): void
+    public function test_save_list_and_remove_articles(): void
     {
-        $key = $this->call('GET', '/api/public/skills/'.$this->skill->slug)->assertOk()->json('data.data.evidence.0.key');
-        $this->assertIsString($key);
+        $other = Article::factory()->create(['title' => 'Checklist nghiệm thu']);
+        $otherKey = (string) $other->refresh()->public_key;
 
-        $this->call('POST', self::BASE.'/store', ['kind' => 'favorite', 'skill' => $this->skill->slug], $this->cookies)->assertOk();
-        $this->call('POST', self::BASE.'/store', ['kind' => 'favorite', 'skill' => $this->skill->slug], $this->cookies)->assertOk();
-        $this->call('POST', self::BASE.'/store', ['kind' => 'read_later', 'evidence' => $key], $this->cookies)->assertOk();
+        $this->call('POST', self::BASE.'/store', ['kind' => 'favorite', 'article' => $this->key], $this->cookies)->assertOk();
+        $this->call('POST', self::BASE.'/store', ['kind' => 'favorite', 'article' => $this->key], $this->cookies)->assertOk();
+        $this->call('POST', self::BASE.'/store', ['kind' => 'read_later', 'article' => $otherKey], $this->cookies)->assertOk();
 
         $this->call('GET', self::BASE.'/list', [], $this->cookies)->assertOk()
             ->assertJsonCount(2, 'data.data')
-            ->assertJsonPath('data.data.0.target', 'evidence')
-            ->assertJsonPath('data.data.0.key', $key)
-            ->assertJsonPath('data.data.0.title', 'EXPLAIN notes')
-            ->assertJsonPath('data.data.0.skill_slug', $this->skill->slug)
+            ->assertJsonPath('data.data.0.kind', 'read_later')
+            ->assertJsonPath('data.data.0.key', $otherKey)
+            ->assertJsonPath('data.data.0.title', 'Checklist nghiệm thu')
             ->assertJsonPath('data.data.1.kind', 'favorite')
-            ->assertJsonPath('data.data.1.target', 'skill')
-            ->assertJsonPath('data.data.1.title', 'PostgreSQL');
+            ->assertJsonPath('data.data.1.category_slug', $this->article->category->slug)
+            ->assertJsonPath('data.data.1.article_slug', $this->article->slug);
         $this->call('GET', self::BASE.'/list', ['kind' => 'favorite'], $this->cookies)->assertJsonCount(1, 'data.data');
 
-        $this->call('POST', self::BASE.'/delete', ['kind' => 'favorite', 'skill' => $this->skill->slug], $this->cookies)->assertOk();
+        $this->call('POST', self::BASE.'/delete', ['kind' => 'favorite', 'article' => $this->key], $this->cookies)->assertOk();
         $this->call('GET', self::BASE.'/list', ['kind' => 'favorite'], $this->cookies)->assertJsonCount(0, 'data.data');
     }
 
-    public function test_private_or_hidden_things_cannot_be_saved_and_drop_out_of_the_list(): void
+    public function test_hidden_articles_cannot_be_saved_and_drop_out_without_leaking_titles(): void
     {
-        $private = Skill::factory()->create(['is_public' => false]);
-        $this->call('POST', self::BASE.'/store', ['kind' => 'favorite', 'skill' => $private->slug], $this->cookies)->assertNotFound();
+        $private = Article::factory()->private()->create();
+        $this->call('POST', self::BASE.'/store', ['kind' => 'favorite', 'article' => (string) $private->refresh()->public_key], $this->cookies)->assertNotFound();
 
-        $this->call('POST', self::BASE.'/store', ['kind' => 'favorite', 'skill' => $this->skill->slug], $this->cookies)->assertOk();
-        $this->call('POST', self::BASE.'/store', ['kind' => 'favorite', 'evidence' => $this->evidence->refresh()->public_key], $this->cookies)->assertOk();
-
-        $this->evidence->forceFill(['is_public' => false])->save();
-        $this->call('GET', self::BASE.'/list', [], $this->cookies)->assertJsonCount(1, 'data.data')->assertJsonPath('data.data.0.target', 'skill');
-
-        $this->skill->forceFill(['is_public' => false])->save();
+        $this->call('POST', self::BASE.'/store', ['kind' => 'read_later', 'article' => $this->key], $this->cookies)->assertOk();
+        ContentCategory::query()->whereKey($this->article->content_category_id)->update(['is_public' => false]);
         $this->call('GET', self::BASE.'/list', [], $this->cookies)->assertJsonCount(0, 'data.data');
+        $this->call('POST', self::BASE.'/store', ['kind' => 'favorite', 'article' => $this->key], $this->cookies)->assertNotFound();
     }
 
-    public function test_articles_are_saved_by_key_and_drop_out_when_hidden(): void
+    public function test_deleting_the_article_removes_what_pointed_at_it(): void
     {
-        $article = Article::factory()->create(['title' => 'Bộ câu hỏi làm rõ']);
-        $key = $this->call('GET', "/api/public/articles/{$article->category->slug}/{$article->slug}")->assertOk()->json('data.data.key');
+        $this->call('POST', self::BASE.'/store', ['kind' => 'favorite', 'article' => $this->key], $this->cookies)->assertOk();
+        $this->article->delete();
 
-        $this->call('POST', self::BASE.'/store', ['kind' => 'read_later', 'article' => $key], $this->cookies)->assertOk();
-        $this->call('GET', self::BASE.'/list', ['kind' => 'read_later'], $this->cookies)->assertOk()
-            ->assertJsonPath('data.data.0.target', 'article')
-            ->assertJsonPath('data.data.0.key', $key)
-            ->assertJsonPath('data.data.0.title', 'Bộ câu hỏi làm rõ')
-            ->assertJsonPath('data.data.0.category_slug', $article->category->slug)
-            ->assertJsonPath('data.data.0.article_slug', $article->slug)
-            ->assertJsonPath('data.data.0.skill_slug', null);
-
-        // A hidden category hides its articles, without leaking their titles
-        ContentCategory::query()->whereKey($article->content_category_id)->update(['is_public' => false]);
-        $this->call('GET', self::BASE.'/list', [], $this->cookies)->assertJsonCount(0, 'data.data');
-        $this->call('POST', self::BASE.'/store', ['kind' => 'favorite', 'article' => $key], $this->cookies)->assertNotFound();
-
-        $article->delete();
         $this->assertDatabaseCount('end_user_saved', 0);
     }
 
-    public function test_one_target_and_a_known_list(): void
+    public function test_an_article_key_and_a_known_list(): void
     {
-        $this->call('POST', self::BASE.'/store', ['kind' => 'wish', 'skill' => $this->skill->slug, 'evidence' => (string) $this->evidence->refresh()->public_key], $this->cookies)
+        $this->call('POST', self::BASE.'/store', ['kind' => 'wish', 'article' => 'not-a-key'], $this->cookies)
             ->assertStatus(CommonVal::HTTP_UNPROCESSABLE_CONTENT)
-            ->assertJsonStructure(['error' => ['messages' => ['kind', 'skill']]]);
+            ->assertJsonStructure(['error' => ['messages' => ['kind', 'article']]]);
         $this->call('POST', self::BASE.'/store', ['kind' => 'favorite'], $this->cookies)
             ->assertStatus(CommonVal::HTTP_UNPROCESSABLE_CONTENT);
     }
@@ -113,14 +90,6 @@ final class SavedApiTest extends TestCase
     public function test_guests_get_401(): void
     {
         $this->call('GET', self::BASE.'/list')->assertUnauthorized();
-        $this->call('POST', self::BASE.'/store', ['kind' => 'favorite', 'skill' => $this->skill->slug])->assertUnauthorized();
-    }
-
-    public function test_deleting_the_skill_removes_what_pointed_at_it(): void
-    {
-        $this->call('POST', self::BASE.'/store', ['kind' => 'favorite', 'skill' => $this->skill->slug], $this->cookies)->assertOk();
-        $this->skill->delete();
-
-        $this->assertDatabaseCount('end_user_saved', 0);
+        $this->call('POST', self::BASE.'/store', ['kind' => 'favorite', 'article' => $this->key])->assertUnauthorized();
     }
 }

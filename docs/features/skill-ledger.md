@@ -1,4 +1,6 @@
-# Skill Ledger
+# Skill Ledger (đã bỏ)
+
+> **Đã bỏ từ 2026-10-20** ([ADR-0022](../adr/0022-trang-tai-lieu-kinh-nghiem.md)): kỹ năng, cấp độ, mục tiêu học, bằng chứng, nhãn không còn trong code. Kinh nghiệm nằm trong danh mục và bài viết ([bai-viet.md](bai-viet.md)). File này giữ để tra lịch sử.
 
 Sổ ghi kỹ năng: mỗi kỹ năng có cấp độ hiện tại, lịch sử lên cấp, các bằng chứng (pull request, quyết định kỹ thuật, sự cố, ghi chú…) có thể đính kèm file, mục tiêu học và nhãn. Thiết kế gốc: [RFC-002](../archive/engineering-lab/design/RFC-002-skill-ledger.md).
 

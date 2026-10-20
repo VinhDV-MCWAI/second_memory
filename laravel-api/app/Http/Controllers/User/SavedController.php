@@ -35,11 +35,11 @@ final class SavedController extends Controller
     }
 
     /**
-     * Save a skill (`skill`: slug), an evidence (`evidence`) or an article (`article`): their public `key`. Saving twice is fine.
+     * Save an article (`article`: its public `key`). Saving twice is fine.
      */
     public function store(SavedRequest $request): void
     {
-        /** @var array{kind: string, skill?: string, evidence?: string, article?: string} $payload */
+        /** @var array{kind: string, article: string} $payload */
         $payload = $request->validated();
         $this->saved->save($this->endUserId($request), $payload);
     }
@@ -49,7 +49,7 @@ final class SavedController extends Controller
      */
     public function delete(SavedRequest $request): void
     {
-        /** @var array{kind: string, skill?: string, evidence?: string, article?: string} $payload */
+        /** @var array{kind: string, article: string} $payload */
         $payload = $request->validated();
         $this->saved->remove($this->endUserId($request), $payload);
     }

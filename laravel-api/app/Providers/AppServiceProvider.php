@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Providers;
 
+use App\Constants\ContentConst;
 use App\Constants\EndUserConst;
-use App\Constants\LedgerConst;
 use App\Enums\AdminRole;
 use App\Models\Master\AdminMst;
 use App\OpenApi\ResponseEnvelope;
@@ -60,7 +60,7 @@ class AppServiceProvider extends ServiceProvider
         // Dynamic permissions (ADR-0013): the owner role passes every check, so it can never lock itself out
         Gate::before(fn (mixed $admin): ?bool => $admin instanceof AdminMst && $admin->hasRole(AdminRole::OWNER->value) ? true : null);
 
-        RateLimiter::for('public', fn (Request $request): Limit => Limit::perMinute(LedgerConst::PUBLIC_RATE_PER_MINUTE)->by((string) $request->ip()));
+        RateLimiter::for('public', fn (Request $request): Limit => Limit::perMinute(ContentConst::PUBLIC_RATE_PER_MINUTE)->by((string) $request->ip()));
         RateLimiter::for('user', fn (Request $request): Limit => Limit::perMinute(EndUserConst::RATE_PER_MINUTE)->by((string) $request->ip()));
         RateLimiter::for('user-register', fn (Request $request): Limit => Limit::perHour(EndUserConst::REGISTER_PER_HOUR)->by((string) $request->ip()));
 

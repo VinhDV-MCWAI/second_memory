@@ -108,7 +108,7 @@ final class ResponseEnvelope
     }
 
     /**
-     * Routes whose responses go through the envelope, keyed like "GET api/admin/skill/list" without the `api/` prefix.
+     * Routes whose responses go through the envelope, keyed like "GET api/admin/article/list" without the `api/` prefix.
      *
      * @return array<string, Route>
      */

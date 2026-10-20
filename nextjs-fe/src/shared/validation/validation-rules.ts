@@ -45,19 +45,6 @@ export const ValidationRules = {
   CODE_MAX: 50,
   ICON_MAX: 50,
 
-  // Skill Ledger (laravel-api LedgerConst)
-  SKILL_NAME_MAX: 100,
-  SKILL_CATEGORY_MAX: 50,
-  SKILL_DESCRIPTION_MAX: 2000,
-  LEVEL_REASON_MAX: 500,
-  TAG_NAME_MAX: 50,
-  EVIDENCE_TITLE_MAX: 200,
-  EVIDENCE_URL_MAX: 2048,
-  EVIDENCE_SUMMARY_MAX: 1000,
-  /** LedgerConst::EVIDENCE_FILES_MAX */
-  EVIDENCE_FILES_MAX: 10,
-  GOAL_NOTE_MAX: 1000,
-
   // Public home page content (laravel-api ContentConst)
   CATEGORY_NAME_MAX: 100,
   CATEGORY_DESCRIPTION_MAX: 500,

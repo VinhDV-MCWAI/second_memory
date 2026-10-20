@@ -93,22 +93,16 @@ import Base from '@/layouts/Base.astro';
   function row(item: SavedItem): HTMLLIElement {
     const li = document.createElement('li');
     const link = document.createElement('a');
-    link.href =
-      item.target === 'article'
-        ? ROUTES.article(item.category_slug ?? '', item.article_slug ?? '')
-        : ROUTES.skill(item.skill_slug ?? '');
+    link.href = ROUTES.article(item.category_slug, item.article_slug);
     link.className = 'font-medium hover:underline';
     link.textContent = item.title;
     li.append(link);
-    const where = { evidence: `evidence · ${item.skill_name}`, article: item.category_name };
-    if (item.target !== 'skill') {
-      li.append(
-        Object.assign(document.createElement('span'), {
-          className: 'text-muted-foreground ml-2 text-sm',
-          textContent: where[item.target],
-        }),
-      );
-    }
+    li.append(
+      Object.assign(document.createElement('span'), {
+        className: 'text-muted-foreground ml-2 text-sm',
+        textContent: item.category_name,
+      }),
+    );
     return li;
   }
 

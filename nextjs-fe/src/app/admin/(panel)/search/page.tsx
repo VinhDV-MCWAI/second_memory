@@ -4,7 +4,7 @@ import { Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { PageHeader } from '@/components/layout/page-header';
-import { SearchResults } from '@/features/ledger/components/search-results';
+import { SearchResults } from '@/features/content/components/search-results';
 import { ADMIN_ROUTES, SEARCH_PARAM } from '@/shared/config';
 
 function SearchPageContent() {
@@ -13,7 +13,7 @@ function SearchPageContent() {
 }
 
 export default function SearchPage() {
-  const t = useTranslations('ledger.search');
+  const t = useTranslations('search');
   const tCommon = useTranslations('common');
 
   return (

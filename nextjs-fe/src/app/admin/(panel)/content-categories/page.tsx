@@ -13,7 +13,7 @@ import type { SearchField } from '@/shared/types/data-table.types';
 /** Categories of the public home page, in the order visitors see them (ADR-0021). */
 export default function ContentCategoryListPage() {
   const tFields = useTranslations('fields');
-  const tLedger = useTranslations('ledger');
+  const tContent = useTranslations('content');
 
   const columns: Column<ContentCategory>[] = [
     { key: 'sort_order', label: tFields('sortOrder'), sortable: true },
@@ -25,7 +25,7 @@ export default function ContentCategoryListPage() {
       label: tFields('visibility'),
       render: (item) => (
         <StatusBadge active={item.is_public}>
-          {item.is_public ? tLedger('public') : tLedger('private')}
+          {item.is_public ? tContent('public') : tContent('private')}
         </StatusBadge>
       ),
     },
@@ -33,7 +33,7 @@ export default function ContentCategoryListPage() {
 
   const filterFields: FilterField[] = [
     { key: 'name', label: tFields('name'), type: 'text' },
-    { key: 'is_public', label: tLedger('public'), type: 'boolean' },
+    { key: 'is_public', label: tContent('public'), type: 'boolean' },
   ];
   const searchFields: SearchField[] = [{ key: 'name', label: tFields('name'), type: 'text' }];
 

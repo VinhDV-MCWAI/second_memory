@@ -26,21 +26,21 @@ final class DynamicPermissionTest extends TestCase
 
         $this->assertSame([], $permissions->unnamed());
         $this->assertSame([], $permissions->sync()['added'], 'run make permissions after adding a route');
-        $this->assertArrayHasKey('skill.list', $permissions->all());
+        $this->assertArrayHasKey('article.list', $permissions->all());
         $this->assertArrayNotHasKey('credential.me', $permissions->all());
     }
 
     public function test_a_custom_role_opens_exactly_its_permissions(): void
     {
-        Role::create(['name' => 'evidence-reader', 'guard_name' => CommonVal::ADMIN_GUARD])->givePermissionTo('evidence.list');
+        Role::create(['name' => 'article-reader', 'guard_name' => CommonVal::ADMIN_GUARD])->givePermissionTo('article.list');
         $admin = AdminMst::factory()->create();
-        $admin->syncRoles(['evidence-reader']);
+        $admin->syncRoles(['article-reader']);
         $cookies = $this->loginAs($admin);
 
-        $this->call('GET', '/api/admin/evidence/list', [], $cookies)->assertOk();
+        $this->call('GET', '/api/admin/article/list', [], $cookies)->assertOk();
         $this->call('GET', '/api/admin/credential/me', [], $cookies)->assertOk();
-        $this->call('GET', '/api/admin/skill/list', [], $cookies)->assertStatus(CommonVal::HTTP_FORBIDDEN);
-        $this->call('POST', '/api/admin/tag/store', ['name' => 'go'], $cookies)->assertStatus(CommonVal::HTTP_FORBIDDEN);
+        $this->call('GET', '/api/admin/content-category/list', [], $cookies)->assertStatus(CommonVal::HTTP_FORBIDDEN);
+        $this->call('POST', '/api/admin/content-category/store', ['name' => 'Go'], $cookies)->assertStatus(CommonVal::HTTP_FORBIDDEN);
     }
 
     public function test_an_admin_without_roles_only_reaches_the_always_allowed_routes(): void
@@ -50,7 +50,7 @@ final class DynamicPermissionTest extends TestCase
         $cookies = $this->loginAs($admin);
 
         $this->call('GET', '/api/admin/credential/me', [], $cookies)->assertOk();
-        $this->call('GET', '/api/admin/skill/list', [], $cookies)->assertStatus(CommonVal::HTTP_FORBIDDEN);
+        $this->call('GET', '/api/admin/content-category/list', [], $cookies)->assertStatus(CommonVal::HTTP_FORBIDDEN);
     }
 
     public function test_the_viewer_role_reads_everything_and_writes_nothing(): void
@@ -66,14 +66,14 @@ final class DynamicPermissionTest extends TestCase
         $this->assertSame(0, Role::findByName(AdminRole::OWNER->value, CommonVal::ADMIN_GUARD)->permissions()->count());
         $cookies = $this->loginAsOwner(AdminMst::factory()->create());
 
-        $this->call('POST', '/api/admin/tag/store', ['name' => 'go'], $cookies)->assertOk();
+        $this->call('POST', '/api/admin/content-category/store', ['name' => 'Go'], $cookies)->assertOk();
     }
 
     public function test_me_lists_the_permissions_the_ui_may_show(): void
     {
         $viewer = $this->call('GET', '/api/admin/credential/me', [], $this->loginAs(AdminMst::factory()->create()))->assertOk();
-        $this->assertContains('skill.list', $viewer->json('data.permissions'));
-        $this->assertNotContains('skill.store', $viewer->json('data.permissions'));
+        $this->assertContains('article.list', $viewer->json('data.permissions'));
+        $this->assertNotContains('article.store', $viewer->json('data.permissions'));
         $viewer->assertJsonPath('data.roles.0.name', AdminRole::VIEWER->value);
 
         $owner = $this->call('GET', '/api/admin/credential/me', [], $this->loginAsOwner(AdminMst::factory()->create()))->assertOk();
@@ -82,10 +82,10 @@ final class DynamicPermissionTest extends TestCase
 
     public function test_the_sync_command_adds_missing_and_prunes_stale_permissions(): void
     {
-        Permission::query()->where('name', 'tag.list')->delete();
+        Permission::query()->where('name', 'article.list')->delete();
         Permission::create(['name' => 'gone.list', 'guard_name' => CommonVal::ADMIN_GUARD]);
 
-        $this->artisan('permission:sync-routes')->expectsOutputToContain('Added: tag.list')->assertSuccessful();
+        $this->artisan('permission:sync-routes')->expectsOutputToContain('Added: article.list')->assertSuccessful();
         $this->assertDatabaseHas('permissions', ['name' => 'gone.list']);
 
         $this->artisan('permission:sync-routes --prune')->expectsOutputToContain('Added: none')->assertSuccessful();

@@ -17,7 +17,7 @@ use Symfony\Component\HttpFoundation\Response;
  * permission, granted through the admin's roles. The owner role passes every check (Gate::before in
  * AppServiceProvider). A route without a name is refused, so a forgotten name fails closed.
  *
- * API tokens (ADR-0010) only open routes that name their abilities, e.g. `auth.admin:evidence:import`;
+ * API tokens (ADR-0010) only open routes that name their abilities, e.g. `auth.admin:article:import`;
  * on every other admin route a token gets 403, so a leaked importer token cannot read or change anything else.
  * A session login (Sanctum's transient token) passes the ability check.
  */

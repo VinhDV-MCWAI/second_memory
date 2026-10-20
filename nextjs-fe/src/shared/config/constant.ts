@@ -190,14 +190,11 @@ export const SESSION_COOKIE_NAME = 'laravel_session';
 export const REMEMBER_COOKIE_NAME = 'remember_device';
 
 // Admin Routes
-/** Shortest text the admin search accepts (laravel-api LedgerConst::SEARCH_QUERY_MIN). */
+/** Shortest text the admin search accepts (laravel-api SearchConst::QUERY_MIN). */
 export const SEARCH_QUERY_MIN = 2;
 
 /** Query-string parameter of the search page. */
 export const SEARCH_PARAM = 'q';
-
-/** Query-string parameters of the evidence page opened from a file (LEDGER-03). */
-export const EVIDENCE_FILE_PARAMS = { ID: 'media_id', NAME: 'file' } as const;
 
 export const ADMIN_ROUTES = {
   DASHBOARD: '/admin',
@@ -205,10 +202,6 @@ export const ADMIN_ROUTES = {
   ROLES: '/admin/roles',
   DEPARTMENTS: '/admin/departments',
   END_USERS: '/admin/end-users',
-  SKILLS: '/admin/skills',
-  TAGS: '/admin/tags',
-  EVIDENCE: '/admin/evidence',
-  GOALS: '/admin/goals',
   SEARCH: '/admin/search',
   FILES: '/admin/files',
   FILES_TRASH: '/admin/files/trash',
@@ -223,11 +216,6 @@ export const ADMIN_ROUTES = {
 export const AUDITABLE_TYPES = [
   'admin',
   'role',
-  'skill',
-  'skill_level',
-  'learning_goal',
-  'evidence',
-  'tag',
   'department',
   'content_category',
   'article',

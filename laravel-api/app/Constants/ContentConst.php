@@ -28,4 +28,14 @@ final class ContentConst
     public const CATEGORY_AUDITABLE_TYPE = 'content_category';
 
     public const ARTICLE_AUDITABLE_TYPE = 'article';
+
+    /** Requests per minute and IP on /api/public (RFC-002 §4.3). */
+    public const PUBLIC_RATE_PER_MINUTE = 60;
+
+    /** Sanctum ability of the Obsidian importer's token and the token name (ADR-0010). */
+    public const IMPORT_ABILITY = 'evidence:import';
+
+    public const IMPORT_TOKEN_NAME = 'ledger-importer';
+
+    public const IMPORT_TOKEN_DAYS = 90;
 }

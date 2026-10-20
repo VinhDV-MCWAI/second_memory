@@ -23,7 +23,7 @@ import { UPLOAD_CONFIG } from '@/shared/config';
 import { getAdminSchema, type AdminFormData } from '@/shared/validation/validation';
 import type { ResourceFormProps } from '@/components/common/resource-list-page';
 import { HistoryViewer } from '@/features/history/components/history-viewer';
-import { IdPicker } from '@/features/ledger/components/id-picker';
+import { IdPicker } from '@/components/common/id-picker';
 
 /** audit_log.auditable_type of admins (AdminMstService::$auditableType). */
 const AUDITABLE_TYPE = 'admin';

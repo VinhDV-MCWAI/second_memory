@@ -5,8 +5,10 @@ import { defineConfig } from 'astro/config';
 
 export default defineConfig({
   // The site lives at the root; nginx sends /admin and /_next to the admin app and the rest here
-  // (ADR-0021). Old addresses from when the site lived under /skills keep working.
+  // (ADR-0021). Old addresses keep working; the skill pages are gone (ADR-0022).
   redirects: {
+    '/skills': '/',
+    '/skills/[slug]': '/',
     '/skills/me': '/me',
     '/skills/account/login': '/account/login',
     '/skills/account/register': '/account/register',

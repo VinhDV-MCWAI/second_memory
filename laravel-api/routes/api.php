@@ -3,13 +3,10 @@
 declare(strict_types=1);
 
 use App\Constants\EndUserConst;
-use App\Constants\LedgerConst;
 use App\Http\Controllers\Audit\AuditLogController;
 use App\Http\Controllers\Custom\CredentialController;
-use App\Http\Controllers\Ledger\EvidenceImportController;
 use App\Http\Controllers\Public\PublicContentController;
 use App\Http\Controllers\Public\PublicFileController;
-use App\Http\Controllers\Public\PublicSkillController;
 use App\Http\Controllers\User\EndUserController;
 use App\Http\Controllers\User\SavedController;
 use Illuminate\Support\Facades\Route;
@@ -34,17 +31,11 @@ Route::prefix('admin')
                     ->group(function () {
                         Route::get('credential/me', [CredentialController::class, 'me'])->name('credential.me');
                         Route::group([], base_path('routes/api/master.php'));
-                        Route::group([], base_path('routes/api/ledger.php'));
                         Route::group([], base_path('routes/api/media.php'));
                         Route::group([], base_path('routes/api/system.php'));
                         Route::group([], base_path('routes/api/content.php'));
                         Route::get('audit-log/list', [AuditLogController::class, 'list'])->name('audit-log.list');
                     });
-
-                // The only route an API token opens (ADR-0010): the Obsidian importer CLI, or the owner's session
-                Route::post('evidence/import', [EvidenceImportController::class, 'import'])
-                    ->name('evidence.import')
-                    ->middleware(['auth.admin:'.LedgerConst::IMPORT_ABILITY, 'throttle:'.LedgerConst::IMPORT_RATE_PER_MINUTE.',1']);
             });
     });
 
@@ -68,13 +59,11 @@ Route::prefix('user')
         });
     });
 
-// Public, read-only Skill Ledger (RFC-002 §4.3): no session, GET only, rate-limited per IP
+// Public, read-only site (ADR-0021, ADR-0022): no session, GET only, rate-limited per IP
 Route::prefix('public')
     ->middleware(['api.response', 'throttle:public'])
     ->group(function () {
-        Route::get('skills', [PublicSkillController::class, 'list']);
-        Route::get('skills/{slug}', [PublicSkillController::class, 'show']);
-        // Files attached to public evidence (LEDGER-01)
+        // Files the public site shows (ADR-0022)
         Route::get('files/{key}', [PublicFileController::class, 'url'])->whereUuid('key');
         // Categories and articles of the home page (ADR-0021)
         Route::get('categories', [PublicContentController::class, 'categories']);

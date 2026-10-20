@@ -44,14 +44,10 @@ artisan_tinker() {
 cleanup() {
   echo "==> Removing E2E records and disabling $E2E_USER"
   artisan_tinker '
-    $skills = DB::table("skill")->where("name", "like", "E2E %")->pluck("id");
     // Categories of content.spec.ts and their articles (articles first: the category is restricted)
     $categories = DB::table("content_category")->where("name", "like", "E2E %")->pluck("id");
     $articles = DB::table("article")->whereIn("content_category_id", $categories)->delete();
     DB::table("content_category")->whereIn("id", $categories)->delete();
-    $evidence = DB::table("evidence")->where("title", "like", "E2E %")->pluck("id");
-    DB::table("evidence")->whereIn("id", $evidence)->delete();
-    DB::table("skill")->whereIn("id", $skills)->delete();
     // Model deletes, so the permission package clears its cache
     $roles = Spatie\Permission\Models\Role::where("name", "like", "E2E %")->get()->each->delete();
     $admin = DB::table("admin_mst")->whereIn("user_name", [getenv("E2E_USER"), ...explode(",", getenv("E2E_HELPERS"))]);
@@ -75,7 +71,7 @@ cleanup() {
     $audit += DB::table("audit_log")->where("auditable_type", "end_user")->whereIn("auditable_id", $endUsers)->delete();
     DB::table("end_user")->whereIn("id", $endUsers)->delete();
     $admin->update(["is_active" => false]);
-    echo "deleted categories={$categories->count()} articles={$articles} skills={$skills->count()} evidence={$evidence->count()} roles={$roles->count()} departments={$departments} end_users={$endUsers->count()} audit_log={$audit} failed_jobs={$failed} media={$media->count()} trash={$trash->count()}\n";
+    echo "deleted categories={$categories->count()} articles={$articles} roles={$roles->count()} departments={$departments} end_users={$endUsers->count()} audit_log={$audit} failed_jobs={$failed} media={$media->count()} trash={$trash->count()}\n";
   '
 }
 trap cleanup EXIT

@@ -7,7 +7,7 @@ Mỗi tính năng một file: nó làm gì, màn hình nào, API nào, bảng n�
 | Đăng nhập | [dang-nhap.md](dang-nhap.md) | Đăng nhập bằng tên đăng nhập + mật khẩu, giữ phiên bằng cookie |
 | Quản trị viên | [quan-tri-vien.md](quan-tri-vien.md) | Thêm, sửa, xóa tài khoản quản trị, chọn vai trò |
 | Phân quyền động | [phan-quyen-dong.md](phan-quyen-dong.md) | Mỗi API là một quyền, quyền gom vào vai trò, vai trò gán cho admin |
-| Skill Ledger | [skill-ledger.md](skill-ledger.md) | Kỹ năng, lịch sử cấp độ, bằng chứng, mục tiêu học, nhãn, trang tổng quan |
+| Skill Ledger (đã bỏ 2026-10-20) | [skill-ledger.md](skill-ledger.md) | Lịch sử: kỹ năng, cấp độ, bằng chứng, mục tiêu học, nhãn. Thay bằng danh mục và bài viết ([ADR-0022](../adr/0022-trang-tai-lieu-kinh-nghiem.md)) |
 | Tìm kiếm | [tim-kiem.md](tim-kiem.md) | Một ô tìm kiếm cho kỹ năng, mục tiêu, bằng chứng, file và thư mục; gõ không dấu, gõ sai vẫn ra |
 | Nhật ký thay đổi | [nhat-ky-thay-doi.md](nhat-ky-thay-doi.md) | Ghi lại ai đổi gì, lúc nào, và mọi lần đăng nhập |
 | Trang public | [trang-public.md](trang-public.md) | Trang ai cũng xem được ở gốc `/`: trang chủ danh mục, kỹ năng và bằng chứng công khai, bài viết |

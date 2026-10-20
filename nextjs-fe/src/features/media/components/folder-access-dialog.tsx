@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { AppDialog } from '@/components/common/app-dialog';
-import { IdPicker } from '@/features/ledger/components/id-picker';
+import { IdPicker } from '@/components/common/id-picker';
 import { API_ENDPOINTS } from '@/shared/api';
 import { getApiErrorMessage, notification } from '@/shared/utils';
 import type { MediaItem } from '@/shared/types/models';

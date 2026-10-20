@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 use App\Http\Controllers\Content\ArticleController;
 use App\Http\Controllers\Content\ContentCategoryController;
+use App\Http\Controllers\Content\DashboardController;
+use App\Http\Controllers\Content\SearchController;
 use Illuminate\Support\Facades\Route;
 
 // Categories and articles of the public site (ADR-0021). Loaded inside the authenticated admin group;
@@ -17,3 +19,8 @@ foreach ([
     Route::put("{$resource}/update/{id}", [$controller, 'update'])->name("{$resource}.update");
     Route::post("{$resource}/delete", [$controller, 'delete'])->name("{$resource}.delete");
 }
+
+// One search box (ADR-0009)
+Route::get('search', [SearchController::class, 'search'])->name('search.query');
+
+Route::get('dashboard/summary', [DashboardController::class, 'summary'])->name('dashboard.summary');

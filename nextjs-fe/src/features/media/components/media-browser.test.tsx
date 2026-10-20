@@ -154,28 +154,6 @@ describe('MediaBrowser', () => {
     await waitFor(() => expect(deleted).toHaveBeenCalledWith({ ids: [2] }));
   });
 
-  it('shows where a file is attached and warns before deleting it', async () => {
-    server.use(
-      http.get(apiUrl('/admin/media/list'), () =>
-        HttpResponse.json(
-          page([
-            { ...item(1, 'Docs', false), attached_count: 0, used_by: [] },
-            {
-              ...item(2, 'cert.pdf', true),
-              attached_count: 1,
-              used_by: [{ id: 9, title: 'AWS exam' }],
-            },
-          ]),
-        ),
-      ),
-    );
-    renderBrowser();
-
-    expect(await screen.findByLabelText('file')).toBeTruthy();
-    fireEvent.click(screen.getAllByRole('button', { name: 'delete' })[1]);
-    expect(await screen.findByText(/usedBy.deleteWarning/)).toBeTruthy();
-  });
-
   it('shows the thumbnail and the length of a video', async () => {
     server.use(
       http.get(apiUrl('/admin/media/list'), () =>
@@ -199,30 +177,6 @@ describe('MediaBrowser', () => {
     const thumbnails = container.querySelectorAll('img');
     expect(thumbnails).toHaveLength(1);
     expect(thumbnails[0].getAttribute('src')).toBe('http://storage.test/thumb.jpg');
-  });
-
-  it('links an attached file to its evidence when evidence can be listed', async () => {
-    granted = [...ALL, 'evidence.list'];
-    server.use(
-      http.get(apiUrl('/admin/media/list'), () =>
-        HttpResponse.json(
-          page([
-            { ...item(1, 'Docs', false), attached_count: 3, used_by: [] },
-            {
-              ...item(2, 'cert 1.pdf', true),
-              attached_count: 1,
-              used_by: [{ id: 9, title: 'AWS exam' }],
-            },
-          ]),
-        ),
-      ),
-    );
-    renderBrowser();
-
-    const link = await screen.findByRole('link', { name: 'open' });
-    expect(link.getAttribute('href')).toBe('/admin/evidence?media_id=2&file=cert+1.pdf');
-    // A folder only counts, it has no single file to filter by
-    expect(screen.getAllByRole('link')).toHaveLength(1);
   });
 
   it('resumes an unfinished upload when the same file is uploaded into the same folder', async () => {

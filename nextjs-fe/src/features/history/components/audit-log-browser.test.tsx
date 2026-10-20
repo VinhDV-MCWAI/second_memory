@@ -21,7 +21,7 @@ const page = (data: unknown[]) =>
 
 const entry = {
   id: 9,
-  auditable_type: 'skill',
+  auditable_type: 'article',
   auditable_id: 4,
   event: 'updated',
   old_values: { name: 'PHP' },
@@ -54,7 +54,7 @@ describe('AuditLogBrowser', () => {
 
     renderBrowser();
 
-    await screen.findByText('types.skill #4');
+    await screen.findByText('types.article #4');
     screen.getByText('events.updated');
     screen.getByText('root');
     screen.getByText('172.18.0.1');
@@ -76,7 +76,7 @@ describe('AuditLogBrowser', () => {
     );
 
     renderBrowser();
-    await screen.findByText('types.skill #4');
+    await screen.findByText('types.article #4');
     fireEvent.click(screen.getByRole('button', { name: 'show' }));
     fireEvent.change(screen.getByLabelText('fromDate'), { target: { value: '2026-10-01' } });
     fireEvent.click(screen.getByRole('button', { name: /apply/i }));

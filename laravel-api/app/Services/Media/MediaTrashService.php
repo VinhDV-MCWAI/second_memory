@@ -95,7 +95,7 @@ final class MediaTrashService
 
     /**
      * Removes the rows of everything deleted more than TRASH_DAYS ago (MEDIA-08): files that left the
-     * trash, folders, failed uploads. Their links to evidence go with them. Run daily by
+     * trash, folders, failed uploads. Their links to articles and categories go with them. Run daily by
      * `media:prune-trash`; MinIO has dropped the old versions already, purging again is a safety net.
      *
      * @return int rows removed

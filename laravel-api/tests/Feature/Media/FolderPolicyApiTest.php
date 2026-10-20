@@ -6,9 +6,7 @@ namespace Tests\Feature\Media;
 
 use App\Constants\CommonVal;
 use App\Constants\Messages;
-use App\Enums\EvidenceType;
 use App\Models\Audit\AuditLog;
-use App\Models\Ledger\Skill;
 use App\Models\Master\AdminMst;
 use App\Models\Master\Department;
 use App\Models\Media\MediaMgmt;
@@ -183,36 +181,8 @@ final class FolderPolicyApiTest extends TestCase
         $this->call('POST', self::BASE."/multipart/part-urls/{$id}", ['part_numbers' => [1]], $uploader)->assertStatus(CommonVal::HTTP_NOT_FOUND);
     }
 
-    public function test_evidence_attaches_only_allowed_files_and_shows_locked_ones_by_name(): void
-    {
-        $skill = Skill::factory()->create();
-        $outsider = $this->filesUser($this->legal);
-        $payload = [
-            'type' => EvidenceType::NOTE->value,
-            'title' => 'Plan',
-            'occurred_on' => '2026-10-17',
-            'skill_ids' => [$skill->id],
-            'media_ids' => [$this->plan],
-        ];
-
-        $this->call('POST', '/api/admin/evidence/store', $payload, $outsider)
-            ->assertStatus(CommonVal::HTTP_UNPROCESSABLE_CONTENT)->assertJsonPath('error.messages.media_ids.0', Messages::E0041);
-        $id = $this->call('POST', '/api/admin/evidence/store', $payload, $this->filesUser($this->sales))->assertOk()->json('data');
-
-        $this->call('GET', '/api/admin/evidence/list', ['id' => $id], $outsider)->assertOk()
-            ->assertJsonPath('data.data.0.files.0.name', 'plan.txt')
-            ->assertJsonPath('data.data.0.files.0.locked', true)
-            ->assertJsonPath('data.data.0.files.0.preview', null);
-        $this->call('GET', '/api/admin/evidence/list', ['id' => $id], $this->owner)->assertOk()
-            ->assertJsonPath('data.data.0.files.0.locked', false)
-            ->assertJsonPath('data.data.0.files.0.preview', 'text');
-
-        // Keeping a file already attached is fine, even for an admin who cannot open it
-        $this->call('PUT', "/api/admin/evidence/update/{$id}", ['title' => 'Plan v2', 'media_ids' => [$this->plan]], $outsider)->assertOk();
-    }
-
     /**
-     * An admin who may use every Files and evidence API and the search, in the given departments.
+     * An admin who may use every Files API and the search, in the given departments.
      *
      * @return array<string, string>
      */
@@ -220,7 +190,7 @@ final class FolderPolicyApiTest extends TestCase
     {
         $role = Role::findOrCreate('Files user', CommonVal::ADMIN_GUARD);
         $role->syncPermissions(Permission::query()->where('guard_name', CommonVal::ADMIN_GUARD)
-            ->where(fn ($q) => $q->where('name', 'like', 'media.%')->orWhere('name', 'like', 'evidence.%')->orWhere('name', 'search.query'))
+            ->where(fn ($q) => $q->where('name', 'like', 'media.%')->orWhere('name', 'search.query'))
             ->pluck('name'));
         $admin = AdminMst::factory()->create();
         $admin->syncRoles([$role]);

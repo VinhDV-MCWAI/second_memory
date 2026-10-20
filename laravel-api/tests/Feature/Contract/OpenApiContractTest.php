@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Feature\Contract;
 
-use App\Models\Ledger\Tag;
+use App\Models\Content\ContentCategory;
 use App\Models\Master\AdminMst;
 use PHPUnit\Framework\AssertionFailedError;
 use Tests\Concerns\AuthenticatesAdmins;
@@ -21,37 +21,37 @@ final class OpenApiContractTest extends TestCase
 
     public function test_a_body_that_drifts_from_the_spec_is_rejected(): void
     {
-        Tag::factory()->create();
-        $response = $this->call('GET', '/api/admin/tag/list', [], $this->loginAsOwner(AdminMst::factory()->create()));
+        ContentCategory::factory()->create();
+        $response = $this->call('GET', '/api/admin/content-category/list', [], $this->loginAsOwner(AdminMst::factory()->create()));
         $body = $response->json();
         $body['data']['data'][0]['id'] = 'not-an-integer';
         $response->baseResponse->setContent((string) json_encode($body));
 
         $this->expectException(AssertionFailedError::class);
-        $this->expectExceptionMessageMatches('#GET /admin/tag/list → 200 does not match openapi.json#');
+        $this->expectExceptionMessageMatches('#GET /admin/content-category/list → 200 does not match openapi.json#');
         OpenApiContract::instance()->assertMatches($response, 'GET');
     }
 
     public function test_a_paginated_list_must_carry_links_and_meta(): void
     {
-        $response = $this->call('GET', '/api/admin/tag/list', ['per_page' => 1], $this->loginAsOwner(AdminMst::factory()->create()));
+        $response = $this->call('GET', '/api/admin/content-category/list', ['per_page' => 1], $this->loginAsOwner(AdminMst::factory()->create()));
         $response->assertJsonPath('data.meta.per_page', 1)->assertJsonPath('data.links.prev', null);
         $body = $response->json();
         unset($body['data']['meta']);
         $response->baseResponse->setContent((string) json_encode($body));
 
         $this->expectException(AssertionFailedError::class);
-        $this->expectExceptionMessageMatches('#GET /admin/tag/list → 200 does not match openapi.json#');
+        $this->expectExceptionMessageMatches('#GET /admin/content-category/list → 200 does not match openapi.json#');
         OpenApiContract::instance()->assertMatches($response, 'GET');
     }
 
     public function test_an_undocumented_status_is_rejected(): void
     {
-        $response = $this->call('GET', '/api/public/skills');
+        $response = $this->call('GET', '/api/public/categories');
         $response->baseResponse->setStatusCode(418);
 
         $this->expectException(AssertionFailedError::class);
-        $this->expectExceptionMessageMatches('#GET /public/skills → 418 is not documented#');
+        $this->expectExceptionMessageMatches('#GET /public/categories → 418 is not documented#');
         OpenApiContract::instance()->assertMatches($response, 'GET');
     }
 }

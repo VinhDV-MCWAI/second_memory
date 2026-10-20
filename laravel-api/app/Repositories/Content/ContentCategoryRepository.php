@@ -15,7 +15,7 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 /**
- * Categories of the public site (ADR-0021). The slug is set once on create, like a skill's.
+ * Categories of the public site (ADR-0021). The slug is set once on create.
  */
 class ContentCategoryRepository extends CrudRepository
 {

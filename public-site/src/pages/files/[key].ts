@@ -4,7 +4,7 @@ import { getPublicFileUrl } from '@/lib/public-api';
 const HTTP_FOUND = 302;
 const HTTP_NOT_FOUND = 404;
 
-// Each click asks the API for a fresh short-lived link, so the cached skill page keeps a stable
+// Each click asks the API for a fresh short-lived link, so a cached page keeps a stable
 // address for its files.
 export const GET: APIRoute = async ({ params }) => {
   const url = await getPublicFileUrl(params.key ?? '');

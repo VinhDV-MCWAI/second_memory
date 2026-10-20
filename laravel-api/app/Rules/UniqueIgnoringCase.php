@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\DB;
 
 /**
  * Unique like Rule::unique, but "PostgreSQL" and "postgresql" count as the same value.
- * Matches the unique lower(column) indexes of the Skill Ledger tables.
+ * Matches the unique lower(column) indexes (roles, departments, categories, end users).
  */
 final class UniqueIgnoringCase implements ValidationRule
 {

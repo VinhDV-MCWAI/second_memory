@@ -35,7 +35,7 @@ final class FolderAccess
             return [];
         }
 
-        // Asked once per request: an evidence list checks every attached file
+        // Asked once per request: a listing checks every attached file
         $key = 'media.blocked_folders.'.(int) $withDeleted;
         $cache = request()->attributes;
         if (! $cache->has($key)) {

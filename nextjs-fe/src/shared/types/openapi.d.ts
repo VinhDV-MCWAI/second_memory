@@ -376,7 +376,7 @@ export interface paths {
       path?: never;
       cookie?: never;
     };
-    /** Skill Ledger counts for the dashboard */
+    /** Category and article counts for the dashboard */
     get: operations['dashboard.summary'];
     put?: never;
     post?: never;
@@ -644,158 +644,6 @@ export interface paths {
     put?: never;
     /** Delete the account and everything it saved, then sign out */
     post: operations['endUser.deleteAccount'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/admin/evidence/list': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get: operations['evidence.list'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/admin/evidence/store': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    /** Create an evidence link for one or more skills */
-    post: operations['evidence.store'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/admin/evidence/update/{id}': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    /** Update an evidence link (imported rows: only type and is_public) */
-    put: operations['evidence.update'];
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/admin/evidence/delete': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    post: operations['evidence.delete'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/admin/evidence/import': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    /**
-     * Sync the complete list of published Obsidian notes (idempotent; `dry_run` only counts)
-     * @description Called by the importer CLI with an API token that has the `evidence:import` ability, or by the owner's session.
-     */
-    post: operations['evidence.import'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/admin/learning-goal/list': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get: operations['learning-goal.list'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/admin/learning-goal/store': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    /** Create an open goal; the target must be above the current level */
-    post: operations['learning-goal.store'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/admin/learning-goal/update/{id}': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    /** Update a goal (status open or dropped; achieved goals: date and note only) */
-    put: operations['learning-goal.update'];
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/admin/learning-goal/delete': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    post: operations['learning-goal.delete'];
     delete?: never;
     options?: never;
     head?: never;
@@ -1196,40 +1044,6 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
-  '/public/skills': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** Public skills, by name */
-    get: operations['publicSkill.list'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/public/skills/{slug}': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** One public skill with its level history dates and public evidence; private or missing → 404 */
-    get: operations['publicSkill.show'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
   '/admin/role/list': {
     parameters: {
       query?: never;
@@ -1320,7 +1134,7 @@ export interface paths {
     };
     get?: never;
     put?: never;
-    /** Save a skill (`skill`: slug), an evidence (`evidence`) or an article (`article`): their public `key`. Saving twice is fine */
+    /** Save an article (`article`: its public `key`). Saving twice is fine */
     post: operations['saved.store'];
     delete?: never;
     options?: never;
@@ -1353,175 +1167,12 @@ export interface paths {
       cookie?: never;
     };
     /**
-     * Search skills, goals, evidence and the names of files and folders (accents and case ignored; typo fallback when nothing matches).
+     * Search the names of files and folders (accents and case ignored; typo fallback when nothing matches).
      *     `files` is empty for an admin without `media.list`, and never holds the trash or locked folders the admin may not use
      */
     get: operations['search.query'];
     put?: never;
     post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/admin/skill/list': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get: operations['skill.list'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/admin/skill/store': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    /** Create a skill with its first level entry */
-    post: operations['skill.store'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/admin/skill/update/{id}': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    /** Update a skill (its level changes through skill-level/store) */
-    put: operations['skill.update'];
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/admin/skill/delete': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    post: operations['skill.delete'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/admin/skill-level/list': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get: operations['skill-level.list'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/admin/skill-level/store': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    /** Record a level change; open goals reached by it become achieved */
-    post: operations['skill-level.store'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/admin/tag/list': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get: operations['tag.list'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/admin/tag/store': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    post: operations['tag.store'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/admin/tag/update/{id}': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put: operations['tag.update'];
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/admin/tag/delete': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    post: operations['tag.delete'];
     delete?: never;
     options?: never;
     head?: never;
@@ -1715,28 +1366,12 @@ export interface components {
     DeleteEndUserRequest: {
       ids: number[];
     };
-    /** DeleteEvidenceRequest */
-    DeleteEvidenceRequest: {
-      ids: number[];
-    };
-    /** DeleteLearningGoalRequest */
-    DeleteLearningGoalRequest: {
-      ids: number[];
-    };
     /** DeleteMediaRequest */
     DeleteMediaRequest: {
       ids: number[];
     };
     /** DeleteRoleRequest */
     DeleteRoleRequest: {
-      ids: number[];
-    };
-    /** DeleteSkillRequest */
-    DeleteSkillRequest: {
-      ids: number[];
-    };
-    /** DeleteTagRequest */
-    DeleteTagRequest: {
       ids: number[];
     };
     /** DepartmentResource */
@@ -1763,106 +1398,11 @@ export interface components {
       last_login_at: string | null;
       created_at: string;
     };
-    /** EvidenceFileResource */
-    EvidenceFileResource: {
-      id: number;
-      is_file: boolean;
-      name: string;
-      path: string;
-      extension: string | null;
-      mime_type: string | null;
-      size: number | null;
-      /** @description Image width and height in pixels (MEDIA-10); null for other files or an unreadable image */
-      width: number | null;
-      height: number | null;
-      /** @description Video or audio length in seconds (MEDIA-11) */
-      duration: number | null;
-      thumbnail_url: string | null;
-      /** @description 0 uploading, 1 processing, 2 completed, 3 failed */
-      upload_status: number;
-      /** @description How the file can be shown without downloading it; null: download only, not available, or locked */
-      preview: string | null;
-      /** @description Links to evidence: of the file, or of the files inside the folder (MEDIA-09; Files listing only) */
-      attached_count?: number;
-      /** @description Evidence this file is attached to (Files listing only) */
-      used_by?: {
-        id: number;
-        title: string;
-      }[];
-      /** @description Departments a folder is given to (ADR-0017; Files listing only). Empty: open to every admin with Files rights */
-      department_ids?: number[];
-      created_at: string | null;
-      updated_at: string | null;
-      /** @description false: deleted in the file manager (in the trash, or gone for good) */
-      available: boolean;
-      /** @description true: in a folder the signed-in admin may not use (ADR-0017); the name shows, the file does not open */
-      locked: boolean;
-    };
-    /** EvidenceResource */
-    EvidenceResource: {
-      id: number;
-      type: components['schemas']['EvidenceType'];
-      title: string;
-      /** @description null: files only (LEDGER-02) */
-      url: string | null;
-      occurred_on: string;
-      summary: string | null;
-      is_public: boolean;
-      source: components['schemas']['EvidenceSource'];
-      unpublished_at: string | null;
-      skills?: {
-        id: number;
-        name: string;
-      }[];
-      tags?: components['schemas']['TagResource'][];
-      /** @description Attached files in display order (LEDGER-01) */
-      files?: components['schemas']['EvidenceFileResource'][];
-      created_at: string | null;
-      updated_at: string | null;
-    };
-    /**
-     * EvidenceSource
-     * @description Who owns an evidence row: typed in the admin, or synced from the Obsidian vault (RFC-002 §4.5).
-     * @enum {string}
-     */
-    EvidenceSource: 'manual' | 'obsidian';
-    /**
-     * EvidenceType
-     * @description What a piece of evidence links to (REQ-002 Q3).
-     * @enum {string}
-     */
-    EvidenceType: 'pr' | 'adr' | 'incident' | 'note' | 'other';
     /**
      * Gender
      * @enum {integer}
      */
     Gender: 1 | 2 | 3;
-    /**
-     * GoalStatus
-     * @description Learning goal lifecycle (REQ-002 Q2): open goals become achieved when the skill reaches the target level.
-     * @enum {string}
-     */
-    GoalStatus: 'open' | 'achieved' | 'dropped';
-    /**
-     * ImportEvidenceRequest
-     * @description The complete list of published Obsidian notes (RFC-002 §4.5, ADR-0010 importer contract).
-     *     Skills and tags are names, not ids: unknown skills are reported, missing tags are created.
-     */
-    ImportEvidenceRequest: {
-      /** @description An empty list is valid: the vault has no published note left, so every imported row is hidden */
-      notes: {
-        external_key: string;
-        title: string;
-        /** Format: uri */
-        url: string;
-        /** Format: date */
-        occurred_on: string;
-        summary?: string | null;
-        tags?: string[];
-        skills?: string[];
-      }[];
-      dry_run?: boolean;
-    };
     /**
      * IsActive
      * @enum {integer}
@@ -1873,24 +1413,6 @@ export interface components {
      * @enum {integer}
      */
     IsDelete: 0 | 1;
-    /** LearningGoalResource */
-    LearningGoalResource: {
-      id: number;
-      skill: {
-        id: number;
-        name: string;
-        current_level: number;
-      };
-      target_level: components['schemas']['SkillLevel'];
-      /** @enum {string} */
-      target_level_label: 'Learning' | 'Can use with help' | 'Independent' | 'Can teach others';
-      target_date: string | null;
-      status: components['schemas']['GoalStatus'];
-      achieved_on: string | null;
-      note: string | null;
-      created_at: string | null;
-      updated_at: string | null;
-    };
     /** LoginRequest */
     LoginRequest: {
       user_name: string;
@@ -1918,13 +1440,6 @@ export interface components {
       upload_status: number;
       /** @description How the file can be shown without downloading it (`download-url/{id}?inline=1`); null: download only */
       preview: string | null;
-      /** @description Links to evidence: of the file, or of the files inside the folder (MEDIA-09; Files listing only) */
-      attached_count?: number;
-      /** @description Evidence this file is attached to (Files listing only) */
-      used_by?: {
-        id: number;
-        title: string;
-      }[];
       /** @description Departments a folder is given to (ADR-0017; Files listing only). Empty: open to every admin with Files rights */
       department_ids?: number[];
       created_at: string | null;
@@ -1989,49 +1504,6 @@ export interface components {
       description: string | null;
       article_count: number;
     };
-    /** PublicSkillDetailResource */
-    PublicSkillDetailResource: {
-      name: string;
-      slug: string;
-      category: string;
-      current_level: number;
-      /** @enum {string} */
-      current_level_label: 'Learning' | 'Can use with help' | 'Independent' | 'Can teach others';
-      tags: string[];
-      description: string | null;
-      history: {
-        level: number;
-        /** @enum {string} */
-        level_label: 'Learning' | 'Can use with help' | 'Independent' | 'Can teach others';
-        changed_on: string;
-      }[];
-      evidence: {
-        /** @description Random key (ADR-0020): end users save an evidence by it, no id leaves the API */
-        key: string;
-        type: components['schemas']['EvidenceType'];
-        title: string;
-        url: string | null;
-        occurred_on: string;
-        summary: string | null;
-        files: {
-          key: string;
-          name: string;
-          size: number | null;
-          mime_type: string | null;
-          thumbnail_url: string | null;
-        }[];
-      }[];
-    };
-    /** PublicSkillResource */
-    PublicSkillResource: {
-      name: string;
-      slug: string;
-      category: string;
-      current_level: number;
-      /** @enum {string} */
-      current_level_label: 'Learning' | 'Can use with help' | 'Independent' | 'Can teach others';
-      tags: string[];
-    };
     /** RegisterRequest */
     RegisterRequest: {
       username: string;
@@ -2051,15 +1523,11 @@ export interface components {
     /** SavedItemResource */
     SavedItemResource: {
       kind: string;
-      /** @enum {string} */
-      target: 'skill' | 'evidence' | 'article';
       key: string;
       title: string;
-      skill_slug: string | null;
-      skill_name: string | null;
-      category_slug: string | null;
-      category_name: string | null;
-      article_slug: string | null;
+      category_slug: string;
+      category_name: string;
+      article_slug: string;
       saved_at: string;
     };
     /**
@@ -2070,15 +1538,12 @@ export interface components {
     SavedKind: 'favorite' | 'read_later';
     /**
      * SavedRequest
-     * @description A skill (by slug), an evidence or an article (by public key), and which list (ADR-0020, ADR-0021).
+     * @description An article (by public key) and which list (ADR-0020, ADR-0022).
      */
     SavedRequest: {
       kind: components['schemas']['SavedKind'];
-      skill?: string;
       /** Format: uuid */
-      evidence?: string;
-      /** Format: uuid */
-      article?: string;
+      article: string;
     };
     /**
      * SearchMatch
@@ -2086,39 +1551,6 @@ export interface components {
      * @enum {string}
      */
     SearchMatch: 'exact' | 'fuzzy';
-    /**
-     * SkillLevel
-     * @description The fixed four-step skill scale (REQ-002 Q1).
-     * @enum {integer}
-     */
-    SkillLevel: 1 | 2 | 3 | 4;
-    /** SkillLevelResource */
-    SkillLevelResource: {
-      id: number;
-      skill_id: number;
-      level: number;
-      /** @enum {string} */
-      level_label: 'Learning' | 'Can use with help' | 'Independent' | 'Can teach others';
-      reason: string | null;
-      changed_on: string;
-      recorded_by_user_name: string | null;
-      created_at: string;
-    };
-    /** SkillResource */
-    SkillResource: {
-      id: number;
-      name: string;
-      slug: string;
-      category: string;
-      description: string | null;
-      is_public: boolean;
-      current_level: number;
-      /** @enum {string} */
-      current_level_label: 'Learning' | 'Can use with help' | 'Independent' | 'Can teach others';
-      tags?: components['schemas']['TagResource'][];
-      created_at: string | null;
-      updated_at: string | null;
-    };
     /**
      * StartMultipartUploadRequest
      * @description Multipart upload of a large file (ADR-0014): same fields as a small upload, up to MAX_FILE_BYTES.
@@ -2179,80 +1611,15 @@ export interface components {
       description?: string | null;
       is_active: components['schemas']['IsActive'];
     };
-    /**
-     * StoreEvidenceRequest
-     * @description Evidence is a link (ADR-0007) and/or files of the file manager (LEDGER-01, `media_ids` in display
-     *     order). EvidenceService checks the files are uploaded and that a link or a file is left (LEDGER-02). `source`, `external_key` and
-     *     `unpublished_at` belong to the importer (RFC-002 §4.5) and are not accepted here.
-     */
-    StoreEvidenceRequest: {
-      type: components['schemas']['EvidenceType'];
-      title: string;
-      /**
-       * Format: uri
-       * @description http(s) only: blocks javascript: and data: links on the public page (REQ-002 US-2)
-       */
-      url?: string | null;
-      /** Format: date */
-      occurred_on: string;
-      summary?: string | null;
-      is_public?: boolean;
-      skill_ids: number[];
-      tag_ids?: number[];
-      media_ids?: number[];
-    };
     /** StoreFolderRequest */
     StoreFolderRequest: {
       folder?: string | null;
       name: string;
     };
-    /**
-     * StoreLearningGoalRequest
-     * @description A new goal is always open; the target must be above the skill's current level (LearningGoalService).
-     */
-    StoreLearningGoalRequest: {
-      skill_id: number;
-      target_level: components['schemas']['SkillLevel'];
-      /** Format: date */
-      target_date?: string | null;
-      note?: string | null;
-    };
     /** StoreRoleRequest */
     StoreRoleRequest: {
       name: string;
       permissions?: string[];
-    };
-    /** StoreSkillLevelRequest */
-    StoreSkillLevelRequest: {
-      skill_id: number;
-      level: components['schemas']['SkillLevel'];
-      /** Format: date */
-      changed_on?: string;
-      reason?: string | null;
-    };
-    /**
-     * StoreSkillRequest
-     * @description A skill is created together with its first level entry (RFC-002 §4.2).
-     */
-    StoreSkillRequest: {
-      name: string;
-      category: string;
-      description?: string | null;
-      is_public?: boolean;
-      tag_ids?: number[];
-      level: components['schemas']['SkillLevel'];
-      /** Format: date */
-      changed_on?: string;
-      reason?: string | null;
-    };
-    /** StoreTagRequest */
-    StoreTagRequest: {
-      name: string;
-    };
-    /** TagResource */
-    TagResource: {
-      id: number;
-      name: string;
     };
     /** TestBackgroundTaskRequest */
     TestBackgroundTaskRequest: {
@@ -2331,43 +1698,6 @@ export interface components {
       is_active: components['schemas']['IsActive'];
       password?: string | null;
     };
-    /**
-     * UpdateEvidenceRequest
-     * @description Same fields as store, each optional. Imported rows accept only `type` and `is_public`
-     *     (EvidenceService::update).
-     */
-    UpdateEvidenceRequest: {
-      type?: components['schemas']['EvidenceType'];
-      title?: string;
-      /**
-       * Format: uri
-       * @description http(s) only: blocks javascript: and data: links on the public page (REQ-002 US-2)
-       */
-      url?: string | null;
-      /** Format: date */
-      occurred_on?: string;
-      summary?: string | null;
-      is_public?: boolean;
-      skill_ids?: number[];
-      tag_ids?: number[];
-      media_ids?: number[];
-    };
-    /**
-     * UpdateLearningGoalRequest
-     * @description The skill of a goal is fixed. `achieved` is set only by a level change (REQ-002 US-6),
-     *     so the status can be switched between open and dropped only.
-     */
-    UpdateLearningGoalRequest: {
-      target_level?: components['schemas']['SkillLevel'];
-      /** Format: date */
-      target_date?: string | null;
-      /**
-       * @description Learning goal lifecycle (REQ-002 Q2): open goals become achieved when the skill reaches the target level.
-       * @enum {string}
-       */
-      status?: 'open' | 'dropped';
-      note?: string | null;
-    };
     /** UpdateMediaAccessRequest */
     UpdateMediaAccessRequest: {
       department_ids: number[];
@@ -2388,22 +1718,6 @@ export interface components {
     UpdateRoleRequest: {
       name: string;
       permissions?: string[];
-    };
-    /**
-     * UpdateSkillRequest
-     * @description No level field: levels change only through skill-level/store, so the history stays complete.
-     *     The slug is not editable either; public URLs stay stable across renames.
-     */
-    UpdateSkillRequest: {
-      name?: string;
-      category?: string;
-      description?: string | null;
-      is_public?: boolean;
-      tag_ids?: number[];
-    };
-    /** UpdateTagRequest */
-    UpdateTagRequest: {
-      name: string;
     };
   };
   responses: {
@@ -3467,16 +2781,9 @@ export interface operations {
         content: {
           'application/json': {
             data: {
-              skills: number;
-              public_skills: number;
-              evidence: number;
-              public_evidence: number;
-              open_goals: number;
-              levels: {
-                level: number;
-                level_label: string;
-                count: number;
-              }[];
+              categories: number;
+              articles: number;
+              public_articles: number;
             };
             error: {
               status: boolean;
@@ -4194,435 +3501,6 @@ export interface operations {
           'application/json': components['schemas']['ApiError'];
         };
       };
-    };
-  };
-  'evidence.list': {
-    parameters: {
-      query?: {
-        id?: number | null;
-        page?: number | null;
-        per_page?: number | null;
-        sort_by?: string | null;
-        sort_order?: string | null;
-        title?: string | null;
-        type?: components['schemas']['EvidenceType'] | null;
-        source?: components['schemas']['EvidenceSource'] | null;
-        is_public?: boolean | null;
-        skill_id?: number | null;
-        tag_id?: number | null;
-        media_id?: number | null;
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Array of `EvidenceResource` */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': {
-            data: {
-              data: components['schemas']['EvidenceResource'][];
-              links: components['schemas']['PaginationLinks'];
-              meta: components['schemas']['PaginationMeta'];
-            };
-            error: {
-              status: boolean;
-              code: number;
-              messages: null;
-            };
-          };
-        };
-      };
-      401: components['responses']['AuthenticationException'];
-      /** @description Forbidden */
-      403: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ApiError'];
-        };
-      };
-      422: components['responses']['ValidationException'];
-    };
-  };
-  'evidence.store': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['StoreEvidenceRequest'];
-      };
-    };
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': {
-            data: number;
-            error: {
-              status: boolean;
-              code: number;
-              messages: null;
-            };
-          };
-        };
-      };
-      401: components['responses']['AuthenticationException'];
-      /** @description Forbidden */
-      403: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ApiError'];
-        };
-      };
-      422: components['responses']['ValidationException'];
-    };
-  };
-  'evidence.update': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        id: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: {
-      content: {
-        'application/json': components['schemas']['UpdateEvidenceRequest'];
-      };
-    };
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': {
-            data: number;
-            error: {
-              status: boolean;
-              code: number;
-              messages: null;
-            };
-          };
-        };
-      };
-      401: components['responses']['AuthenticationException'];
-      /** @description Forbidden */
-      403: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ApiError'];
-        };
-      };
-      /** @description Not Found */
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ApiError'];
-        };
-      };
-      422: components['responses']['ValidationException'];
-    };
-  };
-  'evidence.delete': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['DeleteEvidenceRequest'];
-      };
-    };
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': {
-            data: null;
-            error: {
-              status: boolean;
-              code: number;
-              messages: null;
-            };
-          };
-        };
-      };
-      401: components['responses']['AuthenticationException'];
-      /** @description Forbidden */
-      403: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ApiError'];
-        };
-      };
-      422: components['responses']['ValidationException'];
-    };
-  };
-  'evidence.import': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['ImportEvidenceRequest'];
-      };
-    };
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': {
-            data: {
-              created: number;
-              updated: number;
-              unchanged: number;
-              hidden: number;
-              unknown_skills: string[];
-            };
-            error: {
-              status: boolean;
-              code: number;
-              messages: null;
-            };
-          };
-        };
-      };
-      401: components['responses']['AuthenticationException'];
-      /** @description Forbidden */
-      403: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ApiError'];
-        };
-      };
-      422: components['responses']['ValidationException'];
-      /** @description Too Many Requests */
-      429: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ApiError'];
-        };
-      };
-    };
-  };
-  'learning-goal.list': {
-    parameters: {
-      query?: {
-        id?: number | null;
-        page?: number | null;
-        per_page?: number | null;
-        sort_by?: string | null;
-        sort_order?: string | null;
-        skill_id?: number | null;
-        status?: components['schemas']['GoalStatus'] | null;
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Array of `LearningGoalResource` */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': {
-            data: {
-              data: components['schemas']['LearningGoalResource'][];
-              links: components['schemas']['PaginationLinks'];
-              meta: components['schemas']['PaginationMeta'];
-            };
-            error: {
-              status: boolean;
-              code: number;
-              messages: null;
-            };
-          };
-        };
-      };
-      401: components['responses']['AuthenticationException'];
-      /** @description Forbidden */
-      403: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ApiError'];
-        };
-      };
-      422: components['responses']['ValidationException'];
-    };
-  };
-  'learning-goal.store': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['StoreLearningGoalRequest'];
-      };
-    };
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': {
-            data: number;
-            error: {
-              status: boolean;
-              code: number;
-              messages: null;
-            };
-          };
-        };
-      };
-      401: components['responses']['AuthenticationException'];
-      /** @description Forbidden */
-      403: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ApiError'];
-        };
-      };
-      422: components['responses']['ValidationException'];
-    };
-  };
-  'learning-goal.update': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        id: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: {
-      content: {
-        'application/json': components['schemas']['UpdateLearningGoalRequest'];
-      };
-    };
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': {
-            data: number;
-            error: {
-              status: boolean;
-              code: number;
-              messages: null;
-            };
-          };
-        };
-      };
-      401: components['responses']['AuthenticationException'];
-      /** @description Forbidden */
-      403: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ApiError'];
-        };
-      };
-      /** @description Not Found */
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ApiError'];
-        };
-      };
-      422: components['responses']['ValidationException'];
-    };
-  };
-  'learning-goal.delete': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['DeleteLearningGoalRequest'];
-      };
-    };
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': {
-            data: null;
-            error: {
-              status: boolean;
-              code: number;
-              messages: null;
-            };
-          };
-        };
-      };
-      401: components['responses']['AuthenticationException'];
-      /** @description Forbidden */
-      403: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ApiError'];
-        };
-      };
-      422: components['responses']['ValidationException'];
     };
   };
   'media.list': {
@@ -5726,93 +4604,6 @@ export interface operations {
       };
     };
   };
-  'publicSkill.list': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Array of `PublicSkillResource` */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': {
-            data: {
-              data: components['schemas']['PublicSkillResource'][];
-            };
-            error: {
-              status: boolean;
-              code: number;
-              messages: null;
-            };
-          };
-        };
-      };
-      /** @description Too Many Requests */
-      429: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ApiError'];
-        };
-      };
-    };
-  };
-  'publicSkill.show': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        slug: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description `PublicSkillDetailResource` */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': {
-            data: {
-              data: components['schemas']['PublicSkillDetailResource'];
-            };
-            error: {
-              status: boolean;
-              code: number;
-              messages: null;
-            };
-          };
-        };
-      };
-      /** @description Not Found */
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ApiError'];
-        };
-      };
-      /** @description Too Many Requests */
-      429: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ApiError'];
-        };
-      };
-    };
-  };
   'role.list': {
     parameters: {
       query?: {
@@ -6141,21 +4932,6 @@ export interface operations {
           'application/json': {
             data: {
               match: components['schemas']['SearchMatch'];
-              skills: {
-                id: number;
-                title: string;
-                snippet: string | null;
-              }[];
-              goals: {
-                id: number;
-                title: string;
-                snippet: string | null;
-              }[];
-              evidence: {
-                id: number;
-                title: string;
-                snippet: string | null;
-              }[];
               files: {
                 id: number;
                 is_file: boolean;
@@ -6165,466 +4941,6 @@ export interface operations {
                 thumbnail_url: string | null;
               }[];
             };
-            error: {
-              status: boolean;
-              code: number;
-              messages: null;
-            };
-          };
-        };
-      };
-      401: components['responses']['AuthenticationException'];
-      /** @description Forbidden */
-      403: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ApiError'];
-        };
-      };
-      422: components['responses']['ValidationException'];
-    };
-  };
-  'skill.list': {
-    parameters: {
-      query?: {
-        id?: number | null;
-        page?: number | null;
-        per_page?: number | null;
-        sort_by?: string | null;
-        sort_order?: string | null;
-        name?: string | null;
-        category?: string | null;
-        is_public?: boolean | null;
-        current_level?: components['schemas']['SkillLevel'] | null;
-        tag_id?: number | null;
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Array of `SkillResource` */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': {
-            data: {
-              data: components['schemas']['SkillResource'][];
-              links: components['schemas']['PaginationLinks'];
-              meta: components['schemas']['PaginationMeta'];
-            };
-            error: {
-              status: boolean;
-              code: number;
-              messages: null;
-            };
-          };
-        };
-      };
-      401: components['responses']['AuthenticationException'];
-      /** @description Forbidden */
-      403: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ApiError'];
-        };
-      };
-      422: components['responses']['ValidationException'];
-    };
-  };
-  'skill.store': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['StoreSkillRequest'];
-      };
-    };
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': {
-            data: number;
-            error: {
-              status: boolean;
-              code: number;
-              messages: null;
-            };
-          };
-        };
-      };
-      401: components['responses']['AuthenticationException'];
-      /** @description Forbidden */
-      403: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ApiError'];
-        };
-      };
-      422: components['responses']['ValidationException'];
-    };
-  };
-  'skill.update': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        id: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: {
-      content: {
-        'application/json': components['schemas']['UpdateSkillRequest'];
-      };
-    };
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': {
-            data: number;
-            error: {
-              status: boolean;
-              code: number;
-              messages: null;
-            };
-          };
-        };
-      };
-      401: components['responses']['AuthenticationException'];
-      /** @description Forbidden */
-      403: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ApiError'];
-        };
-      };
-      /** @description Not Found */
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ApiError'];
-        };
-      };
-      422: components['responses']['ValidationException'];
-    };
-  };
-  'skill.delete': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['DeleteSkillRequest'];
-      };
-    };
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': {
-            data: null;
-            error: {
-              status: boolean;
-              code: number;
-              messages: null;
-            };
-          };
-        };
-      };
-      401: components['responses']['AuthenticationException'];
-      /** @description Forbidden */
-      403: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ApiError'];
-        };
-      };
-      422: components['responses']['ValidationException'];
-    };
-  };
-  'skill-level.list': {
-    parameters: {
-      query: {
-        id?: number | null;
-        page?: number | null;
-        per_page?: number | null;
-        sort_by?: string | null;
-        sort_order?: string | null;
-        skill_id: number;
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Array of `SkillLevelResource` */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': {
-            data: {
-              data: components['schemas']['SkillLevelResource'][];
-              links: components['schemas']['PaginationLinks'];
-              meta: components['schemas']['PaginationMeta'];
-            };
-            error: {
-              status: boolean;
-              code: number;
-              messages: null;
-            };
-          };
-        };
-      };
-      401: components['responses']['AuthenticationException'];
-      /** @description Forbidden */
-      403: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ApiError'];
-        };
-      };
-      422: components['responses']['ValidationException'];
-    };
-  };
-  'skill-level.store': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['StoreSkillLevelRequest'];
-      };
-    };
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': {
-            data: number;
-            error: {
-              status: boolean;
-              code: number;
-              messages: null;
-            };
-          };
-        };
-      };
-      401: components['responses']['AuthenticationException'];
-      /** @description Forbidden */
-      403: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ApiError'];
-        };
-      };
-      422: components['responses']['ValidationException'];
-    };
-  };
-  'tag.list': {
-    parameters: {
-      query?: {
-        id?: number | null;
-        page?: number | null;
-        per_page?: number | null;
-        sort_by?: string | null;
-        sort_order?: string | null;
-        name?: string | null;
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Array of `TagResource` */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': {
-            data: {
-              data: components['schemas']['TagResource'][];
-              links: components['schemas']['PaginationLinks'];
-              meta: components['schemas']['PaginationMeta'];
-            };
-            error: {
-              status: boolean;
-              code: number;
-              messages: null;
-            };
-          };
-        };
-      };
-      401: components['responses']['AuthenticationException'];
-      /** @description Forbidden */
-      403: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ApiError'];
-        };
-      };
-      422: components['responses']['ValidationException'];
-    };
-  };
-  'tag.store': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['StoreTagRequest'];
-      };
-    };
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': {
-            data: number;
-            error: {
-              status: boolean;
-              code: number;
-              messages: null;
-            };
-          };
-        };
-      };
-      401: components['responses']['AuthenticationException'];
-      /** @description Forbidden */
-      403: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ApiError'];
-        };
-      };
-      422: components['responses']['ValidationException'];
-    };
-  };
-  'tag.update': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        id: string;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['UpdateTagRequest'];
-      };
-    };
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': {
-            data: number;
-            error: {
-              status: boolean;
-              code: number;
-              messages: null;
-            };
-          };
-        };
-      };
-      401: components['responses']['AuthenticationException'];
-      /** @description Forbidden */
-      403: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ApiError'];
-        };
-      };
-      /** @description Not Found */
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ApiError'];
-        };
-      };
-      422: components['responses']['ValidationException'];
-    };
-  };
-  'tag.delete': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['DeleteTagRequest'];
-      };
-    };
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': {
-            data: null;
             error: {
               status: boolean;
               code: number;

@@ -12,7 +12,7 @@ final class PermissionConst
     /** Routes behind this middleware alias (with or without abilities) are checked against permissions. */
     public const ADMIN_MIDDLEWARE = 'auth.admin';
 
-    /** Separates the feature from the action in a permission name: `skill.list` → feature `skill`. */
+    /** Separates the feature from the action in a permission name: `article.list` → feature `article`. */
     public const SEPARATOR = '.';
 
     public const ROLE_NAME_MAX = 50;

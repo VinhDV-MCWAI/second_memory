@@ -5,16 +5,13 @@ declare(strict_types=1);
 namespace App\Models\Media;
 
 use App\Enums\UploadStatus;
-use App\Models\Ledger\Evidence;
 use App\Models\Master\AdminMst;
 use App\Models\Master\Department;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Database\Eloquent\Relations\Pivot;
 use Illuminate\Support\Carbon;
 
 /**
@@ -42,8 +39,6 @@ use Illuminate\Support\Carbon;
  * @property int|null $updated_by
  * @property Carbon|null $updated_at
  * @property-read AdminMst|null $updater
- * @property-read Collection<int, Evidence> $evidence
- * @property-read Pivot|null $pivot set when loaded through Evidence::files() (`public_id`, LEDGER-01)
  */
 class MediaMgmt extends Model
 {
@@ -80,16 +75,6 @@ class MediaMgmt extends Model
     public function updater(): BelongsTo
     {
         return $this->belongsTo(AdminMst::class, 'updated_by');
-    }
-
-    /**
-     * Evidence this file is attached to (LEDGER-01).
-     *
-     * @return BelongsToMany<Evidence, $this>
-     */
-    public function evidence(): BelongsToMany
-    {
-        return $this->belongsToMany(Evidence::class, 'evidence_media', 'media_id', 'evidence_id');
     }
 
     /**

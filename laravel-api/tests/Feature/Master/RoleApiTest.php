@@ -32,22 +32,22 @@ final class RoleApiTest extends TestCase
 
     public function test_crud_with_permissions_and_audit(): void
     {
-        $id = $this->call('POST', self::BASE.'/store', ['name' => 'Evidence editor', 'permissions' => ['evidence.list', 'evidence.update']], $this->owner)
+        $id = $this->call('POST', self::BASE.'/store', ['name' => 'Article editor', 'permissions' => ['article.list', 'article.update']], $this->owner)
             ->assertOk()->json('data');
-        $this->call('POST', self::BASE.'/store', ['name' => 'EVIDENCE EDITOR'], $this->owner)->assertStatus(CommonVal::HTTP_UNPROCESSABLE_CONTENT);
+        $this->call('POST', self::BASE.'/store', ['name' => 'ARTICLE EDITOR'], $this->owner)->assertStatus(CommonVal::HTTP_UNPROCESSABLE_CONTENT);
 
-        $this->call('PUT', self::BASE."/update/{$id}", ['name' => 'Evidence editor', 'permissions' => ['evidence.list']], $this->owner)->assertOk();
+        $this->call('PUT', self::BASE."/update/{$id}", ['name' => 'Article editor', 'permissions' => ['article.list']], $this->owner)->assertOk();
 
-        $this->call('GET', self::BASE.'/list', ['name' => 'evidence'], $this->owner)
+        $this->call('GET', self::BASE.'/list', ['name' => 'article'], $this->owner)
             ->assertOk()
-            ->assertJsonPath('data.data.0.name', 'Evidence editor')
-            ->assertJsonPath('data.data.0.permissions', ['evidence.list'])
+            ->assertJsonPath('data.data.0.name', 'Article editor')
+            ->assertJsonPath('data.data.0.permissions', ['article.list'])
             ->assertJsonPath('data.data.0.is_built_in', false)
             ->assertJsonPath('data.data.0.admin_count', 0);
 
         $updated = AuditLog::query()->where(['auditable_type' => 'role', 'auditable_id' => $id])->latest('id')->firstOrFail();
-        $this->assertSame(['evidence.list', 'evidence.update'], $updated->old_values['permissions']);
-        $this->assertSame(['evidence.list'], $updated->new_values['permissions']);
+        $this->assertSame(['article.list', 'article.update'], $updated->old_values['permissions']);
+        $this->assertSame(['article.list'], $updated->new_values['permissions']);
 
         $this->call('POST', self::BASE.'/delete', ['ids' => [$id]], $this->owner)->assertOk();
         $this->assertDatabaseMissing('roles', ['id' => $id]);
@@ -66,12 +66,12 @@ final class RoleApiTest extends TestCase
         $owner = $this->roleId(AdminRole::OWNER);
 
         $this->call('PUT', self::BASE."/update/{$viewer}", ['name' => 'Reader'], $this->owner)->assertStatus(CommonVal::HTTP_UNPROCESSABLE_CONTENT);
-        $this->call('PUT', self::BASE."/update/{$owner}", ['name' => AdminRole::OWNER->value, 'permissions' => ['tag.list']], $this->owner)
+        $this->call('PUT', self::BASE."/update/{$owner}", ['name' => AdminRole::OWNER->value, 'permissions' => ['article.list']], $this->owner)
             ->assertStatus(CommonVal::HTTP_UNPROCESSABLE_CONTENT);
         $this->call('POST', self::BASE.'/delete', ['ids' => [$viewer]], $this->owner)->assertStatus(CommonVal::HTTP_UNPROCESSABLE_CONTENT);
 
         // The viewer role's permissions can still be changed
-        $this->call('PUT', self::BASE."/update/{$viewer}", ['name' => AdminRole::VIEWER->value, 'permissions' => ['tag.list']], $this->owner)->assertOk();
+        $this->call('PUT', self::BASE."/update/{$viewer}", ['name' => AdminRole::VIEWER->value, 'permissions' => ['article.list']], $this->owner)->assertOk();
     }
 
     public function test_a_role_held_by_an_admin_cannot_be_deleted(): void
@@ -86,8 +86,8 @@ final class RoleApiTest extends TestCase
     {
         $groups = collect($this->call('GET', '/api/admin/permission/list', [], $this->owner)->assertOk()->json('data'));
 
-        $skill = $groups->firstWhere('feature', 'skill');
-        $this->assertContains(['name' => 'skill.list', 'action' => 'list', 'method' => 'GET'], $skill['permissions']);
+        $article = $groups->firstWhere('feature', 'article');
+        $this->assertContains(['name' => 'article.list', 'action' => 'list', 'method' => 'GET'], $article['permissions']);
         $this->assertNotNull($groups->firstWhere('feature', 'role'));
     }
 

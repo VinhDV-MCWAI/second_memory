@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Console\Commands;
 
-use App\Constants\LedgerConst;
+use App\Constants\ContentConst;
 use App\Enums\AdminRole;
 use App\Models\Master\AdminMst;
 use Illuminate\Console\Command;
@@ -19,7 +19,7 @@ final class ImportTokenCommand extends Command
 {
     protected $signature = 'ledger:import-token
         {login_id : User name of an active owner}
-        {--days='.LedgerConst::IMPORT_TOKEN_DAYS.' : Lifetime in days}
+        {--days='.ContentConst::IMPORT_TOKEN_DAYS.' : Lifetime in days}
         {--revoke : Delete this admin\'s importer tokens instead}';
 
     protected $description = 'Create (or revoke) the API token used by the Obsidian importer';
@@ -37,7 +37,7 @@ final class ImportTokenCommand extends Command
         }
 
         if ($this->option('revoke')) {
-            $revoked = PersonalAccessToken::query()->whereMorphedTo('tokenable', $admin)->where('name', LedgerConst::IMPORT_TOKEN_NAME)->delete();
+            $revoked = PersonalAccessToken::query()->whereMorphedTo('tokenable', $admin)->where('name', ContentConst::IMPORT_TOKEN_NAME)->delete();
             $this->info("Revoked {$revoked} importer token(s).");
 
             return self::SUCCESS;
@@ -51,7 +51,7 @@ final class ImportTokenCommand extends Command
         }
 
         $expiresAt = Carbon::now()->addDays($days);
-        $token = $admin->createToken(LedgerConst::IMPORT_TOKEN_NAME, [LedgerConst::IMPORT_ABILITY], $expiresAt);
+        $token = $admin->createToken(ContentConst::IMPORT_TOKEN_NAME, [ContentConst::IMPORT_ABILITY], $expiresAt);
         $this->line($token->plainTextToken);
         $this->info('Expires '.$expiresAt->toDateString().'. Store it as LEDGER_API_TOKEN; it is not shown again.');
 

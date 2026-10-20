@@ -18,18 +18,11 @@ export const API_ENDPOINTS = {
   AUDIT: {
     LOG: '/admin/audit-log',
   },
-  LEDGER: {
-    SKILL: '/admin/skill',
-    SKILL_LEVEL: '/admin/skill-level',
-    TAG: '/admin/tag',
-    EVIDENCE: '/admin/evidence',
-    LEARNING_GOAL: '/admin/learning-goal',
-    SEARCH: '/admin/search',
-    DASHBOARD: '/admin/dashboard/summary',
-  },
   CONTENT: {
     CATEGORY: '/admin/content-category',
     ARTICLE: '/admin/article',
+    SEARCH: '/admin/search',
+    DASHBOARD: '/admin/dashboard/summary',
   },
   MEDIA: {
     BASE: '/admin/media',

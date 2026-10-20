@@ -11,8 +11,8 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 /**
- * Favourites and read-later lists of end users (ADR-0020). Targets are named the way the public
- * site names them: a skill by its slug, an evidence or an article by its public key.
+ * Favourites and read-later lists of end users (ADR-0020). Articles are named the way the public
+ * site names them: by their public key.
  */
 final class EndUserSavedService
 {
@@ -24,35 +24,22 @@ final class EndUserSavedService
     }
 
     /**
-     * @param  array{kind: string, skill?: string, evidence?: string, article?: string}  $payload
+     * @param  array{kind: string, article: string}  $payload
      *
-     * @throws ModelNotFoundException when the target is not on the public site
+     * @throws ModelNotFoundException when the article is not on the public site
      */
     public function save(int $endUserId, array $payload): void
     {
-        $this->saved->save($endUserId, SavedKind::from($payload['kind']), $this->target($payload));
+        $this->saved->save($endUserId, SavedKind::from($payload['kind']), $this->saved->visibleArticleId($payload['article']));
     }
 
     /**
-     * @param  array{kind: string, skill?: string, evidence?: string, article?: string}  $payload
+     * @param  array{kind: string, article: string}  $payload
      *
-     * @throws ModelNotFoundException when the target is not on the public site
+     * @throws ModelNotFoundException when the article is not on the public site
      */
     public function remove(int $endUserId, array $payload): void
     {
-        $this->saved->remove($endUserId, SavedKind::from($payload['kind']), $this->target($payload));
-    }
-
-    /**
-     * @param  array{kind: string, skill?: string, evidence?: string, article?: string}  $payload
-     * @return array{skill_id: int}|array{evidence_id: int}|array{article_id: int}
-     */
-    private function target(array $payload): array
-    {
-        return match (true) {
-            isset($payload['skill']) => ['skill_id' => $this->saved->publicSkillId($payload['skill'])],
-            isset($payload['article']) => ['article_id' => $this->saved->visibleArticleId($payload['article'])],
-            default => ['evidence_id' => $this->saved->visibleEvidenceId((string) ($payload['evidence'] ?? ''))],
-        };
+        $this->saved->remove($endUserId, SavedKind::from($payload['kind']), $this->saved->visibleArticleId($payload['article']));
     }
 }
