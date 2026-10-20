@@ -8,9 +8,11 @@ use App\Constants\ContentConst;
 use App\Enums\MoveDirection;
 use App\Models\Content\Article;
 use App\Models\Content\ContentCategory;
+use App\Models\Media\MediaMgmt;
 use App\Repositories\Concerns\MakesUniqueSlugs;
 use App\Repositories\Concerns\MovesAmongSiblings;
 use App\Repositories\CrudRepository;
+use App\Services\Content\WikiSyntax;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -70,6 +72,7 @@ class ArticleRepository extends CrudRepository
         $payload['sort_order'] = $this->nextPosition(self::idOrNull($payload['parent_id'] ?? null));
         $id = parent::executeStore($payload);
         $this->syncCategories($id, $payload);
+        $this->syncEmbeddedFiles($id, $payload);
 
         return $id;
     }
@@ -82,6 +85,7 @@ class ArticleRepository extends CrudRepository
         }
         $id = parent::executeUpdate($payload);
         $this->syncCategories($id, $payload);
+        $this->syncEmbeddedFiles($id, $payload);
 
         return $id;
     }
@@ -159,6 +163,38 @@ class ArticleRepository extends CrudRepository
                 $categories->visible()->select(['content_category.id', 'content_category.name', 'content_category.slug']);
             }])
             ->firstOrFail();
+    }
+
+    /**
+     * @return list<int>
+     */
+    public function embeddedMediaIds(int $articleId): array
+    {
+        return DB::table('article_media')->where('article_id', $articleId)->pluck('media_id')->map(intval(...))->all();
+    }
+
+    /** Key of an embedded file on the public site; null when the article does not embed it */
+    public function embeddedFileKey(int $articleId, int $mediaId): ?string
+    {
+        $key = DB::table('article_media')->where(['article_id' => $articleId, 'media_id' => $mediaId])->value('public_id');
+
+        return $key === null ? null : (string) $key;
+    }
+
+    /**
+     * `article_media` follows the `![[file:{id}]]` lines of the body; a file kept keeps its key.
+     *
+     * @param  array<string, mixed>  $payload
+     */
+    private function syncEmbeddedFiles(int $articleId, array $payload): void
+    {
+        if (! array_key_exists('body', $payload)) {
+            return;
+        }
+        $ids = WikiSyntax::fileIds((string) $payload['body']);
+        DB::table('article_media')->where('article_id', $articleId)->whereNotIn('media_id', $ids)->delete();
+        $existing = MediaMgmt::query()->whereKey($ids)->pluck('id')->all();
+        DB::table('article_media')->insertOrIgnore(array_map(fn ($id): array => ['article_id' => $articleId, 'media_id' => $id], $existing));
     }
 
     /**

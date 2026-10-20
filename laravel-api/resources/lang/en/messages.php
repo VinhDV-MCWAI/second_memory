@@ -63,4 +63,10 @@ return [
     'search_query' => 'Search text',
     'body' => 'Content',
     'sort_order' => 'Order',
+    // Notes in rendered articles (ADR-0022); the public page shows only the first two
+    'embed_loop' => 'Not embedded again: [[:slug]] already contains this article',
+    'embed_too_deep' => 'Not embedded: articles are embedded at most 3 levels deep',
+    'embed_hidden' => 'Not shown on the public site: [[:slug]] is private or does not exist',
+    'embed_no_section' => 'Not shown on the public site: no heading ":heading"',
+    'embed_file_missing' => 'Not shown on the public site: file :id is not available',
 ];

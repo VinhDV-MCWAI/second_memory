@@ -63,7 +63,7 @@ final class PublicContentApiTest extends TestCase
             ->assertJsonPath('data.data.key', $article->public_key)
             ->json('data.data.body_html');
 
-        $this->assertStringContainsString('<h2>Mục</h2>', $html);
+        $this->assertStringContainsString('<h2 id="mục">Mục<a href="#mục" class="heading-permalink"', $html);
         $this->assertStringContainsString('<table>', $html);
         $this->assertStringNotContainsString('<script>', $html);
         $this->assertStringNotContainsString('javascript:', $html);

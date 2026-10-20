@@ -12,6 +12,7 @@ import { IdPicker } from '@/components/common/id-picker';
 import type { ResourceFormProps } from '@/components/common/resource-list-page';
 import { HistoryViewer } from '@/features/history/components/history-viewer';
 import { IsPublicField } from '@/features/content/components/is-public-field';
+import { MarkdownEditor } from '@/features/content/components/markdown-editor';
 import { SubPages } from '@/features/content/components/sub-pages';
 import { useApiData } from '@/shared/hooks/use-api-data';
 import { useCrud } from '@/shared/hooks/use-crud';
@@ -135,15 +136,21 @@ export function ArticleForm({
           <Textarea id="summary" rows={2} {...register('summary')} />
         </FormField>
         <FormField id="body" label={tLabels('body')} required error={errors.body?.message}>
-          <Textarea
-            id="body"
-            rows={14}
-            className="font-mono text-sm"
-            {...register('body')}
-            aria-invalid={!!errors.body}
+          <Controller
+            control={control}
+            name="body"
+            render={({ field }) => (
+              <MarkdownEditor
+                id="body"
+                value={field.value}
+                onChange={field.onChange}
+                rows={16}
+                invalid={!!errors.body}
+                articleId={initialData?.id}
+              />
+            )}
           />
         </FormField>
-        <p className="text-xs text-muted-foreground">{tContent('bodyHint')}</p>
         <IsPublicField control={control} />
         {initialData && (
           <a

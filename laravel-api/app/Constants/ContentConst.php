@@ -34,6 +34,14 @@ final class ContentConst
 
     public const PER_PAGE = 15;
 
+    /** Articles embedded in articles: `![[a]]` inside `![[b]]` inside … (ADR-0022) */
+    public const EMBED_DEPTH_MAX = 3;
+
+    /** Paths of the public site (public-site/src/lib/routes.ts) written into rendered HTML */
+    public const PUBLIC_ARTICLE_PATH = '/articles/';
+
+    public const PUBLIC_FILE_PATH = '/files/';
+
     /** audit_log.auditable_type */
     public const CATEGORY_AUDITABLE_TYPE = 'content_category';
 

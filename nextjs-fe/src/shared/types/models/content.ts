@@ -14,5 +14,8 @@ export type CategoryAttachment = ContentCategory['attachments'][number];
 export type AttachedFile = Schemas['AttachedFileResource'];
 export type Article = Schemas['ArticleResource'];
 
+/** `article/preview`: Markdown as the public page shows it, with its table of contents. */
+export type MarkdownPreview = OkData<operations['article.preview']>;
+
 export type DashboardSummary = OkData<operations['dashboard.summary']>;
 export type SearchResult = OkData<operations['search.query']>;

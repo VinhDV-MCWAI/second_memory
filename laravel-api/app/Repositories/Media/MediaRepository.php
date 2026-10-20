@@ -7,6 +7,7 @@ namespace App\Repositories\Media;
 use App\Constants\MediaConst;
 use App\Constants\Messages;
 use App\Enums\UploadStatus;
+use App\Models\Content\Article;
 use App\Models\Content\CategoryAttachment;
 use App\Models\Media\MediaMgmt;
 use App\Repositories\BaseRepository;
@@ -242,17 +243,21 @@ class MediaRepository extends BaseRepository
     }
 
     /**
-     * The available file behind a public key of the public site: an attachment of a category the
-     * public site shows (ADR-0022); null otherwise.
+     * The available file behind a public key of the public site (ADR-0022): an attachment of a
+     * category the site shows, or a file embedded in an article it shows; null otherwise.
      */
     public function publicFile(string $key): ?MediaMgmt
     {
-        $attachment = CategoryAttachment::query()
+        $mediaId = CategoryAttachment::query()
             ->where('public_id', $key)
             ->whereHas('category', fn (Builder $category) => $category->visible())
-            ->first();
+            ->value('media_id')
+            ?? DB::table('article_media')
+                ->where('public_id', $key)
+                ->whereIn('article_id', Article::query()->visible()->select('article.id'))
+                ->value('media_id');
 
-        return $attachment?->media_id === null ? null : $this->query()->available()->find($attachment->media_id);
+        return $mediaId === null ? null : $this->query()->available()->find($mediaId);
     }
 
     /**

@@ -95,7 +95,7 @@ class DevContentSeeder extends Seeder
      */
     private const BOOK = ['laravel-thuc-chien', 'Laravel thực chiến', 'Ghi chép khi dựng API của Second Memory, chia theo chương.', "Cuốn sổ tay này gom kinh nghiệm dựng API bằng Laravel.\n\n## Đọc theo thứ tự\n\nMỗi chương là một bài riêng, xem ở menu bên trái.\n\n> Nội dung mẫu: chủ dự án cập nhật sau.", ['laravel', 'thuc-hien'], [
         ['cai-dat-du-an', 'Cài đặt dự án', 'Chạy trong Docker, cấu hình môi trường.', "## Các bước\n\n1. `make up`\n2. `make seed`\n\n> Nội dung mẫu.", [], []],
-        ['hang-doi', 'Hàng đợi', 'Việc nền chạy ngoài request.', "## Khi nào dùng\n\nViệc lâu hơn vài giây: ghép file, tạo ảnh nhỏ.\n\n> Nội dung mẫu.", ['laravel'], [
+        ['hang-doi', 'Hàng đợi', 'Việc nền chạy ngoài request.', "## Khi nào dùng\n\nViệc lâu hơn vài giây: ghép file, tạo ảnh nhỏ. Cấu hình ở [[redis-cho-hang-doi]].\n\n## Khi việc lỗi\n\n![[xu-ly-viec-loi#Thử lại có giới hạn]]\n\n> Nội dung mẫu.", ['laravel'], [
             ['redis-cho-hang-doi', 'Redis cho hàng đợi', 'Cấu hình và giám sát.', "## Cấu hình\n\n`QUEUE_CONNECTION=redis`\n\n> Nội dung mẫu.", [], []],
             ['xu-ly-viec-loi', 'Xử lý việc lỗi', 'Thử lại, báo lỗi, xem failed_jobs.', "## Thử lại có giới hạn\n\nSau số lần thử, việc vào `failed_jobs`.\n\n> Nội dung mẫu.", [], []],
         ]],

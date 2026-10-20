@@ -739,7 +739,6 @@
     "registrationSaved": "Sign-up setting saved"
   },
   "content": {
-    "bodyHint": "Markdown: ## heading, **bold**, - list, | table |, [link](https://…). HTML is shown as text.",
     "viewOnSite": "Open on the public site",
     "public": "Public",
     "private": "Private",
@@ -764,6 +763,22 @@
     "fileDeleted": "Deleted in Files",
     "fileLocked": "Locked folder",
     "noCategories": "Create a category first",
-    "descriptionHint": "Markdown, shown on the category page."
+    "descriptionHint": "Markdown, shown on the category page.",
+    "editor": {
+      "write": "Write",
+      "preview": "Preview",
+      "insertFile": "Insert file",
+      "insertArticle": "Insert article",
+      "rendering": "Rendering…",
+      "previewFailed": "The preview could not be rendered",
+      "hint": "Markdown. [[slug]] links to an article, ![[slug]] on its own line shows it here, ![[slug#Heading]] shows one section, ![[file:id]] shows a file. HTML is shown as text."
+    },
+    "picker": {
+      "title": "Insert an article",
+      "description": "Link: a link to it. Embed: its whole content shows here (private articles stay hidden on the public site).",
+      "search": "Search by title",
+      "link": "Link",
+      "embed": "Embed"
+    }
   }
 }

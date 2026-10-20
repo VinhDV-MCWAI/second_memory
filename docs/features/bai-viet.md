@@ -7,7 +7,7 @@ Nơi lưu kinh nghiệm của chủ dự án và hiện ra ở [trang public](tr
 
 Yêu cầu: [REQ-005](../requirements/REQ-005-trang-tai-lieu-kinh-nghiem.md). Thiết kế: [ADR-0022](../adr/0022-trang-tai-lieu-kinh-nghiem.md) (thay một phần [ADR-0021](../adr/0021-public-home-categories-articles.md)).
 
-Trạng thái: đang làm theo các bước KB-02…KB-08. **Xong** (2026-10-20): bỏ Skill Ledger, mô hình mới, màn hình quản trị, trang public tối thiểu. Còn: nhúng bài và file, xem trước Markdown (KB-04), giao diện kiểu trang tài liệu (KB-05), lượt xem và xếp hạng (KB-06), nhập từ Obsidian (KB-07). Nội dung hiện tại là **bài mẫu** (`make seed`).
+Trạng thái: đang làm theo các bước KB-02…KB-08. **Xong** (2026-10-20): bỏ Skill Ledger, mô hình mới, màn hình quản trị, trang public tối thiểu, nhúng bài và file, xem trước Markdown. Còn: giao diện kiểu trang tài liệu (KB-05), lượt xem và xếp hạng (KB-06), nhập từ Obsidian (KB-07). Nội dung hiện tại là **bài mẫu** (`make seed`).
 
 ## Màn hình trong trang quản trị
 
@@ -42,7 +42,28 @@ Nội dung viết bằng Markdown:
 | `[chữ](https://…)` | Link |
 | `> trích` | Đoạn trích |
 
-HTML viết thẳng vào bài được hiện thành chữ, không chạy; link `javascript:` bị bỏ, để bài viết không chèn được mã độc vào trang.
+Cú pháp riêng theo Obsidian (ngoài khối code ``` ```, và ngoài `code` trong dòng):
+
+| Viết | Ra |
+|---|---|
+| `[[slug]]`, `[[slug\|chữ hiện]]`, `[[slug#Tiêu đề]]` | Link tới bài (và tới một mục của bài). Bài không có hoặc riêng tư: chỉ hiện chữ, không link |
+| `![[slug]]` **đứng riêng một dòng** | Chèn toàn bộ nội dung bài đó vào chỗ này, trong khung có link về bài gốc |
+| `![[slug#Tiêu đề]]` đứng riêng một dòng | Chỉ chèn một mục: từ tiêu đề đó tới tiêu đề cùng cấp tiếp theo |
+| `![[file:{id}]]`, `![[file:{id}\|chú thích]]` đứng riêng một dòng | File trong Files: ảnh hiện ngay, video và nhạc có trình phát, loại khác là link mở / tải về |
+
+Trong form, nút **Insert file** (chọn từ Files) và **Insert article** (tìm theo tiêu đề, chọn **Link** hoặc **Embed**) tự viết cú pháp vào chỗ con trỏ. Thẻ **Preview** hiện đúng như trang public (máy chủ dựng HTML), kèm dòng ghi chú cho thứ trang public sẽ giấu.
+
+| Tình huống khi nhúng | Kết quả |
+|---|---|
+| Bài được nhúng riêng tư hoặc không có | Trang public không hiện gì (không để lộ bài có tồn tại); Preview hiện ghi chú |
+| Nhúng vòng (A nhúng B, B nhúng A) | Dừng ở lần lặp, hiện một dòng ghi chú |
+| Lồng quá 3 lớp | Không chèn lớp thứ 4, hiện một dòng ghi chú |
+| File bị xóa trong Files | Trang public không hiện; Preview hiện ghi chú |
+| Gắn file mới không dùng được (chưa upload xong, đã xóa, thư mục bị khóa) | Lưu bị chặn, báo ở ô nội dung |
+
+Mỗi tiêu đề có neo (`#tiêu-đề`, di chuột lên tiêu đề thấy dấu #). API public trả kèm **mục lục** (`toc`): tiêu đề cấp 2, 3 của chính bài, không gồm tiêu đề của bài được nhúng.
+
+HTML viết thẳng vào bài được hiện thành chữ, không chạy; link `javascript:` bị bỏ, để bài viết không chèn được mã độc vào trang. Phần HTML của cú pháp nhúng do máy chủ tự tạo.
 
 ## Quy tắc
 
@@ -68,10 +89,11 @@ HTML viết thẳng vào bài được hiện thành chữ, không chạy; link 
 | `PUT content-category/move/{id}` | `{direction: up|down}` |
 | `GET /api/admin/article/list` | Lọc `title`, `category_id`, `parent_id`, `root`, `is_public`; lọc theo `parent_id` thì xếp theo thứ tự trong sách |
 | `POST article/store`, `PUT update/{id}`, `POST delete`, `PUT move/{id}` | `parent_id`, `category_ids`, `title`, `summary`, `body`, `is_public` |
+| `POST article/preview` | `{body}` → `{html, toc}` như trang public, file dùng link ký tạm; không lưu gì (quyền `article.preview`) |
 | `GET /api/public/categories` | Nhóm và danh mục công khai theo thứ tự cây: `name`, `slug`, `group`, `article_count` |
 | `GET /api/public/categories/{slug}` | `group`, `description_html`, `attachments` (`title`, `url`, `note`, `file: {key, name, size, mime_type, thumbnail_url}`), `articles` |
-| `GET /api/public/articles/{slug}` | `title`, `key` (mã để lưu), `summary`, `body_html`, `updated_at`, `categories` |
-| `GET /api/public/files/{key}` | Link tạm của file đính kèm (như trước) |
+| `GET /api/public/articles/{slug}` | `title`, `key` (mã để lưu), `summary`, `body_html` (đã chèn bài và file), `toc`, `updated_at`, `categories` |
+| `GET /api/public/files/{key}` | Link tạm của file đính kèm danh mục hoặc file nhúng trong bài đang hiện |
 
 API public không cần đăng nhập, riêng tư hay không tồn tại đều trả 404.
 
@@ -83,14 +105,16 @@ API public không cần đăng nhập, riêng tư hay không tồn tại đều 
 | `category_attachment` | Đính kèm: tiêu đề, `url`, `media_id` (file trong Files), ghi chú, `position`, `public_id` (mã của `/files/{mã}`) |
 | `article` | `parent_id` (bài cha), tiêu đề, `slug` (duy nhất), tóm tắt, nội dung Markdown, `sort_order` (trong cùng cha), `is_public`, `public_key` |
 | `article_category` | Bài ↔ danh mục |
+| `article_media` | File nhúng trong nội dung (`![[file:{id}]]`), cập nhật mỗi lần lưu bài; `public_id` là mã của `/files/{mã}` |
 | `end_user_saved.article_id` | Bài viết người dùng đã lưu |
 
 ## Code
 
 | Phần | File |
 |---|---|
+| Markdown | `laravel-api/app/Services/Content/WikiSyntax.php` (đọc cú pháp), `MarkdownRenderer.php` (dựng HTML, mục lục) |
 | API | `laravel-api/app/{Http/Controllers,Services,Repositories,Http/Requests}/Content/`, `app/Models/Content/`, `app/Repositories/Concerns/MovesAmongSiblings.php`, `routes/api/content.php`, `app/Services/Public/` |
 | Dữ liệu mẫu | `laravel-api/database/seeders/DevContentSeeder.php`: nhóm Quy trình (10 danh mục × 2 bài), nhóm Kỹ năng (4 danh mục, có đính kèm), sách "Laravel thực chiến" 3 cấp; chỉ dev, chạy lại không nhân đôi |
-| Trang quản trị | `nextjs-fe/src/app/admin/(panel)/{content-categories,articles}/`, `src/features/content/` (`attachments-field`, `move-buttons`, `sub-pages`) |
+| Trang quản trị | `nextjs-fe/src/app/admin/(panel)/{content-categories,articles}/`, `src/features/content/` (`markdown-editor`, `article-picker-dialog`, `attachments-field`, `move-buttons`, `sub-pages`) |
 | Trang public | `public-site/src/pages/index.astro`, `src/pages/{categories,articles}/`, `src/components/Attachments.astro` |
-| Test | `make test f=ContentCategoryApi`, `f=ArticleApi`, `f=PublicContentApi`, `f=PublicFileApi`, `f=FolderPolicy`, `f=SavedApi`; `pnpm test src/features/content` |
+| Test | `make test f=ArticleEmbed`, `f=WikiSyntax`, `f=ContentCategoryApi`, `f=ArticleApi`, `f=PublicContentApi`, `f=PublicFileApi`, `f=FolderPolicy`, `f=SavedApi`; `pnpm test src/features/content` |

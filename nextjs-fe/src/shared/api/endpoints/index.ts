@@ -21,6 +21,7 @@ export const API_ENDPOINTS = {
   CONTENT: {
     CATEGORY: '/admin/content-category',
     ARTICLE: '/admin/article',
+    ARTICLE_PREVIEW: '/admin/article/preview',
     SEARCH: '/admin/search',
     DASHBOARD: '/admin/dashboard/summary',
   },

@@ -1325,6 +1325,112 @@
                 }
             }
         },
+        "/admin/article/preview": {
+            "post": {
+                "operationId": "article.preview",
+                "summary": "Markdown rendered as the public page shows it: HTML with embedded articles and files (signed\nlinks) and the table of contents. Nothing is saved",
+                "tags": [
+                    "Article"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/PreviewArticleRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "html": {
+                                                    "type": "string"
+                                                },
+                                                "toc": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "level": {
+                                                                "type": "integer"
+                                                            },
+                                                            "id": {
+                                                                "type": "string"
+                                                            },
+                                                            "text": {
+                                                                "type": "string"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "level",
+                                                            "id",
+                                                            "text"
+                                                        ]
+                                                    }
+                                                }
+                                            },
+                                            "required": [
+                                                "html",
+                                                "toc"
+                                            ]
+                                        },
+                                        "error": {
+                                            "type": "object",
+                                            "properties": {
+                                                "status": {
+                                                    "type": "boolean"
+                                                },
+                                                "code": {
+                                                    "type": "integer"
+                                                },
+                                                "messages": {
+                                                    "type": "null"
+                                                }
+                                            },
+                                            "required": [
+                                                "status",
+                                                "code",
+                                                "messages"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data",
+                                        "error"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/admin/audit-log/list": {
             "get": {
                 "operationId": "audit-log.list",
@@ -8485,6 +8591,23 @@
                 ],
                 "title": "PartUrlsRequest"
             },
+            "PreviewArticleRequest": {
+                "type": "object",
+                "description": "Markdown to show as the public page would (ADR-0022); nothing is saved.",
+                "properties": {
+                    "body": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "maxLength": 100000
+                    }
+                },
+                "required": [
+                    "body"
+                ],
+                "title": "PreviewArticleRequest"
+            },
             "PublicArticleResource": {
                 "type": "object",
                 "properties": {
@@ -8504,7 +8627,31 @@
                         ]
                     },
                     "body_html": {
-                        "type": "string"
+                        "type": "string",
+                        "description": "Embedded articles and files are in it; headings carry ids"
+                    },
+                    "toc": {
+                        "type": "array",
+                        "description": "Headings of level 2 and 3, for \"On this page\"",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "level": {
+                                    "type": "integer"
+                                },
+                                "id": {
+                                    "type": "string"
+                                },
+                                "text": {
+                                    "type": "string"
+                                }
+                            },
+                            "required": [
+                                "level",
+                                "id",
+                                "text"
+                            ]
+                        }
                     },
                     "updated_at": {
                         "type": "string"
@@ -8534,6 +8681,7 @@
                     "key",
                     "summary",
                     "body_html",
+                    "toc",
                     "updated_at",
                     "categories"
                 ],

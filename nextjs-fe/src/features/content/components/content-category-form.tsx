@@ -5,13 +5,13 @@ import { Controller, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useTranslations } from 'next-intl';
 import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
 import { FormField } from '@/components/common/form-field';
 import { OptionSelect } from '@/components/common/option-select';
 import type { ResourceFormProps } from '@/components/common/resource-list-page';
 import { HistoryViewer } from '@/features/history/components/history-viewer';
 import { AttachmentsField } from '@/features/content/components/attachments-field';
 import { IsPublicField } from '@/features/content/components/is-public-field';
+import { MarkdownEditor } from '@/features/content/components/markdown-editor';
 import { useApiData } from '@/shared/hooks/use-api-data';
 import { useCrud } from '@/shared/hooks/use-crud';
 import { API_ENDPOINTS } from '@/shared/api';
@@ -143,11 +143,17 @@ export function ContentCategoryForm({
           label={tLabels('description')}
           error={errors.description?.message}
         >
-          <Textarea
-            id="description"
-            rows={6}
-            className="font-mono text-sm"
-            {...register('description')}
+          <Controller
+            control={control}
+            name="description"
+            render={({ field }) => (
+              <MarkdownEditor
+                id="description"
+                value={field.value}
+                onChange={field.onChange}
+                rows={6}
+              />
+            )}
           />
         </FormField>
         <p className="text-xs text-muted-foreground">{tContent('descriptionHint')}</p>

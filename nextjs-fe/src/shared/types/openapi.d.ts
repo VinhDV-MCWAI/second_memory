@@ -203,6 +203,26 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/admin/article/preview': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /**
+     * Markdown rendered as the public page shows it: HTML with embedded articles and files (signed
+     *     links) and the table of contents. Nothing is saved
+     */
+    post: operations['article.preview'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/admin/audit-log/list': {
     parameters: {
       query?: never;
@@ -1568,13 +1588,27 @@ export interface components {
     PartUrlsRequest: {
       part_numbers: number[];
     };
+    /**
+     * PreviewArticleRequest
+     * @description Markdown to show as the public page would (ADR-0022); nothing is saved.
+     */
+    PreviewArticleRequest: {
+      body: string | null;
+    };
     /** PublicArticleResource */
     PublicArticleResource: {
       title: string;
       slug: string;
       key: string;
       summary: string | null;
+      /** @description Embedded articles and files are in it; headings carry ids */
       body_html: string;
+      /** @description Headings of level 2 and 3, for "On this page" */
+      toc: {
+        level: number;
+        id: string;
+        text: string;
+      }[];
       updated_at: string;
       categories: {
         name: string;
@@ -2447,6 +2481,54 @@ export interface operations {
       };
       /** @description Not Found */
       404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ApiError'];
+        };
+      };
+      422: components['responses']['ValidationException'];
+    };
+  };
+  'article.preview': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['PreviewArticleRequest'];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            data: {
+              html: string;
+              toc: {
+                level: number;
+                id: string;
+                text: string;
+              }[];
+            };
+            error: {
+              status: boolean;
+              code: number;
+              messages: null;
+            };
+          };
+        };
+      };
+      401: components['responses']['AuthenticationException'];
+      /** @description Forbidden */
+      403: {
         headers: {
           [name: string]: unknown;
         };

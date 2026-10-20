@@ -22,6 +22,9 @@ foreach ([
     Route::put("{$resource}/move/{id}", [$controller, 'move'])->name("{$resource}.move");
 }
 
+// Markdown as the public page shows it, for the editor's Preview tab (ADR-0022)
+Route::post('article/preview', [ArticleController::class, 'preview'])->name('article.preview');
+
 // One search box (ADR-0009)
 Route::get('search', [SearchController::class, 'search'])->name('search.query');
 
