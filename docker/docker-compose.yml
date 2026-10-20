@@ -1,11 +1,19 @@
 name: my_LM
 
+# Every container keeps at most 3 × 10 MB of logs (Docker's default json-file log never stops growing)
+x-logging: &logging
+  driver: json-file
+  options:
+    max-size: 10m
+    max-file: "3"
+
 services:
   # PostgreSQL Database
   ml-postgres:
     container_name: ml-postgres
     image: postgres:16.15-alpine3.24
     restart: unless-stopped
+    logging: *logging
     environment:
       POSTGRES_DB: ${POSTGRES_DB}
       POSTGRES_USER: ${POSTGRES_USER}
@@ -26,27 +34,30 @@ services:
     ports:
       - "${POSTGRES_PORT_OUTSIDE_ENV}:${POSTGRES_PORT_INSIDE_ENV}"
     command: >
-      postgres -c shared_buffers=256MB -c max_connections=200 -c effective_cache_size=512MB -c maintenance_work_mem=64MB -c checkpoint_completion_target=0.9 -c wal_buffers=16MB -c default_statistics_target=100 -c random_page_cost=1.1 -c effective_io_concurrency=200 -c work_mem=4MB -c min_wal_size=1GB -c max_wal_size=4GB -c hba_file=/etc/postgresql/custom/pg_hba.conf
+      postgres -c shared_buffers=256MB -c max_connections=200 -c effective_cache_size=512MB -c maintenance_work_mem=64MB -c checkpoint_completion_target=0.9 -c wal_buffers=16MB -c default_statistics_target=100 -c random_page_cost=1.1 -c effective_io_concurrency=200 -c work_mem=4MB -c min_wal_size=80MB -c max_wal_size=512MB -c hba_file=/etc/postgresql/custom/pg_hba.conf
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
       interval: 10s
       timeout: 5s
       retries: 5
-      start_period: 10s
+      start_period: 30s
+      # Checked every second while starting, so the services that wait for it start at once
+      start_interval: 1s
     networks:
       - app-network
     deploy:
       resources:
         limits:
-          memory: 1G
+          memory: 768M
         reservations:
-          memory: 512M
+          memory: 256M
 
   # Redis Cache
   ml-redis:
     container_name: ml-redis
     image: redis:7.4.11-alpine3.21
     restart: unless-stopped
+    logging: *logging
     environment:
       REDIS_PASSWORD: ${REDIS_PASSWORD}
     volumes:
@@ -78,24 +89,29 @@ services:
       interval: 10s
       timeout: 3s
       retries: 5
-      start_period: 5s
+      start_period: 30s
+      start_interval: 1s
     networks:
       - app-network
     deploy:
       resources:
         limits:
-          memory: 512M
+          # Above maxmemory in redis/redis.conf
+          memory: 256M
         reservations:
-          memory: 128M
+          memory: 32M
 
   # PHP-FPM for Laravel
   ml-php:
     container_name: ml-php
+    # Built once here; ml-queue, ml-scheduler and ml-reverb run the same image
+    image: my_lm-ml-php
     build:
       context: ../laravel-api
       dockerfile: ../docker/laravel/Dockerfile
       target: development
     restart: unless-stopped
+    logging: *logging
     working_dir: /var/www/laravel-api
     volumes:
       - ../laravel-api:/var/www/laravel-api
@@ -126,7 +142,8 @@ services:
       interval: 30s
       timeout: 10s
       retries: 3
-      start_period: 90s
+      start_period: 120s
+      start_interval: 2s
     networks:
       - app-network
     deploy:
@@ -143,11 +160,13 @@ services:
   ml-queue:
     &laravel-worker
     container_name: ml-queue
-    build:
-      context: ../laravel-api
-      dockerfile: ../docker/laravel/Dockerfile
-      target: development
+    image: my_lm-ml-php
+    # Never pulled: `up` builds it for ml-php first
+    pull_policy: never
     restart: unless-stopped
+    logging: *logging
+    # A tiny init as PID 1 passes the stop signal on, so `docker stop` ends them cleanly instead of killing after the timeout
+    init: true
     working_dir: /var/www/laravel-api
     entrypoint: ["php", "artisan"]
     # --timeout below the queue's retry_after (config/queue.php); a code change needs `make workers-restart`
@@ -170,16 +189,22 @@ services:
     depends_on:
       ml-php:
         condition: service_healthy
+    # The worker finishes the job it holds before it stops; longer jobs are retried after the restart
+    stop_grace_period: 30s
     healthcheck:
-      test: ["CMD-SHELL", "grep -q artisan /proc/1/cmdline"]
+      # PID 1 is the init, the worker its child; [a] keeps the check's own shell from matching
+      test: ["CMD-SHELL", "pgrep -f '[a]rtisan' >/dev/null"]
       interval: 30s
       timeout: 5s
       retries: 3
+      start_period: 10s
+      start_interval: 2s
     networks:
       - app-network
     deploy:
       resources:
         limits:
+          # ffmpeg thumbnails run here
           memory: 512M
         reservations:
           memory: 64M
@@ -189,6 +214,13 @@ services:
     <<: *laravel-worker
     container_name: ml-scheduler
     command: ["schedule:work"]
+    stop_grace_period: 10s
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+        reservations:
+          memory: 32M
 
   # WebSocket server for live notifications; browsers reach it through nginx (/app/...)
   ml-reverb:
@@ -201,6 +233,14 @@ services:
       timeout: 5s
       retries: 3
       start_period: 10s
+      start_interval: 2s
+    stop_grace_period: 10s
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+        reservations:
+          memory: 32M
 
   # Next.js Frontend
   ml-nextjs:
@@ -213,6 +253,9 @@ services:
       args:
         APP: nextjs-fe
     restart: unless-stopped
+    logging: *logging
+    # Node as PID 1 ignores the stop signal: without an init `docker stop` kills it after the timeout
+    init: true
     volumes:
       - ../nextjs-fe:/repo/nextjs-fe
       - /repo/nextjs-fe/.next
@@ -236,7 +279,8 @@ services:
       interval: 45s
       timeout: 20s
       retries: 5
-      start_period: 90s
+      start_period: 120s
+      start_interval: 3s
     networks:
       - app-network
     deploy:
@@ -257,6 +301,9 @@ services:
       dockerfile: docker/public-site/Dockerfile
       target: development
     restart: unless-stopped
+    logging: *logging
+    # Clean stop (see ml-nextjs); a killed Astro also leaves its lock file .astro/dev.json behind
+    init: true
     volumes:
       - ../public-site:/repo/public-site
       - /repo/public-site/.astro
@@ -275,7 +322,8 @@ services:
       interval: 30s
       timeout: 10s
       retries: 3
-      start_period: 30s
+      start_period: 60s
+      start_interval: 2s
     networks:
       - app-network
     deploy:
@@ -291,6 +339,7 @@ services:
     container_name: ml-nginx
     image: nginxinc/nginx-unprivileged:1.25.5-alpine3.19
     restart: unless-stopped
+    logging: *logging
     volumes:
       # Folder mount (see ml-postgres): edits show up at once, `nginx -s reload` is enough
       - ./nginx:/etc/nginx/custom:ro
@@ -319,15 +368,16 @@ services:
       interval: 30s
       timeout: 10s
       retries: 3
-      start_period: 10s
+      start_period: 30s
+      start_interval: 2s
     networks:
       - app-network
     deploy:
       resources:
         limits:
-          memory: 256M
+          memory: 128M
         reservations:
-          memory: 64M
+          memory: 32M
 
   # MinIO Object Storage (S3-compatible)
   ml-minio:
@@ -337,6 +387,7 @@ services:
       args:
         MINIO_IMAGE: ${MINIO_IMAGE:-pgsty/minio:RELEASE.2026-08-04T00-00-00Z}
     restart: unless-stopped
+    logging: *logging
     ports:
       - "${MINIO_PORT_OUTSIDE_ENV}:${MINIO_PORT_INSIDE_ENV}"
       - "${MINIO_CONSOLE_PORT_OUTSIDE_ENV}:${MINIO_CONSOLE_PORT_INSIDE_ENV}"
@@ -360,20 +411,23 @@ services:
       interval: 30s
       timeout: 10s
       retries: 3
+      # ml-php waits for the buckets, which wait for this: check often while starting
+      start_period: 60s
+      start_interval: 2s
     deploy:
       resources:
+        # No CPU cap: MinIO warns when it gets fewer CPUs than the machine has
         limits:
-          memory: 1G
-          cpus: "4"
+          memory: 512M
         reservations:
-          memory: 256M
-          cpus: "2"
+          memory: 128M
 
   # MinIO client - auto init buckets
   ml-minio-init:
     container_name: ml-minio-init
     image: ${MINIO_IMAGE:-pgsty/minio:RELEASE.2026-08-04T00-00-00Z}
     user: "1000:1000"
+    logging: *logging
     depends_on:
       ml-minio:
         condition: service_healthy

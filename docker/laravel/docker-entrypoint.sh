@@ -36,30 +36,28 @@ fi
 echo ""
 
 
-# Step 2: Fresh Composer Install
+# Step 2: Composer packages, skipped when vendor/ was installed from this exact lock file
+# (every restart stays fast and works offline; a lock change or a missing vendor/ installs again)
 echo -e "${YELLOW}[2/6] Managing Composer packages...${NC}"
-
-if [ ! -d "vendor" ]; then
-    echo -e "${BLUE}  -> No vendor directory found, will perform fresh install...${NC}"
+LOCK_STAMP="vendor/.composer-lock.sha256"
+if [ -f "$LOCK_STAMP" ] && sha256sum -c -s "$LOCK_STAMP" 2>/dev/null; then
+    echo -e "${GREEN}  ✓ vendor/ matches composer.lock, nothing to install${NC}"
 else
-    echo -e "${BLUE}  -> Vendor directory exists, will update...${NC}"
-fi
+    composer config --global process-timeout 600
+    composer config --global cache-files-maxsize 512MiB
 
-echo -e "${BLUE}  -> Configuring Composer settings...${NC}"
-composer config --global process-timeout 600
-composer config --global cache-files-maxsize 512MiB
-
-echo -e "${BLUE}  -> Installing dependencies (this may take a while)...${NC}"
-if composer install \
-    --no-interaction \
-    --prefer-dist \
-    --optimize-autoloader \
-    --ignore-platform-req=ext-awscrt; then
-    
-    echo -e "${GREEN}  ✓ Composer packages installed successfully${NC}"
-else
-    echo -e "${RED}  ✗ ERROR: Composer install failed!${NC}"
-    exit 1
+    echo -e "${BLUE}  -> Installing dependencies (this may take a while)...${NC}"
+    if composer install \
+        --no-interaction \
+        --prefer-dist \
+        --optimize-autoloader \
+        --ignore-platform-req=ext-awscrt; then
+        sha256sum composer.lock > "$LOCK_STAMP"
+        echo -e "${GREEN}  ✓ Composer packages installed successfully${NC}"
+    else
+        echo -e "${RED}  ✗ ERROR: Composer install failed!${NC}"
+        exit 1
+    fi
 fi
 echo ""
 
@@ -102,8 +100,7 @@ if grep -q "APP_KEY=base64:" .env; then
     echo -e "${GREEN}  ✓ Application key already exists${NC}"
 else
     echo -e "${BLUE}  -> Running: php artisan key:generate${NC}"
-    php artisan key:generate --force
-    if [ $? -eq 0 ]; then
+    if php artisan key:generate --force; then
         echo -e "${GREEN}  ✓ Application key generated${NC}"
     else
         echo -e "${RED}  ✗ ERROR: Key generation failed${NC}"
@@ -166,6 +163,6 @@ if [ $# -eq 0 ]; then
     echo "No command provided, starting PHP-FPM..."
     exec php-fpm
 else
-    echo "Executing command: $@"
+    echo "Executing command: $*"
     exec "$@"
 fi
