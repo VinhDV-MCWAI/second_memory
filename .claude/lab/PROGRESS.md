@@ -91,6 +91,8 @@ Mỗi dòng do `scripts/lane.sh done` tự thêm. Không sửa tay. Các dòng t
 
 - 2026-10-20 — [lane main] FIX-01 done: 40c05e20 — ô lọc: câu gợi ý hiện đúng tên ô (trước hiện 'filters.searchPlaceholder' và báo lỗi console), mục All trong ô chọn không còn giá trị rỗng; test mới dùng câu chữ thật và bắt đúng lỗi cũ; 163 test giao diện pass; dọn: file tạm trong scratchpad
 
+- 2026-10-20 — [lane main] KB-01 done: 842f28b1 — REQ-005 + ADR-0022, giai đoạn 10 trong lộ trình và danh sách việc, KB-02…KB-08 lên bảng
+
 ## Next step
 
 1. Đầu phiên: đọc file này, rồi `scripts/lane.sh status`. Bảng việc chỉ còn các việc "để sau" theo quyết định chủ dự án.

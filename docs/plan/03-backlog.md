@@ -62,7 +62,7 @@ Các mục còn lại của giai đoạn này (triển khai, vận hành, sự c
 
 | Mã | Việc | Kết quả | Trạng thái |
 |---|---|---|---|
-| KB-01 | Hồ sơ yêu cầu, quyết định thiết kế, đưa việc lên bảng | REQ-005 + ADR-0022 | todo |
+| KB-01 | Hồ sơ yêu cầu, quyết định thiết kế, đưa việc lên bảng | REQ-005 + ADR-0022 | done (842f28b1 — REQ-005 + ADR-0022, giai đoạn 10 trong lộ trình và danh sách việc, KB-02…KB-08 lên bảng) |
 | KB-02 | Bỏ Skill Ledger: kỹ năng, cấp độ, mục tiêu học, bằng chứng, nhãn (API, bảng, quyền, màn hình, trang `/skills`, dữ liệu mẫu, ☆ 🔖 kỹ năng / bằng chứng) | Không còn Skill Ledger, `make verify` xanh | todo |
 | KB-03 | Danh mục 2 cấp (nhóm → danh mục) có đính kèm link / file; bài viết nhiều danh mục, bài cha tối đa 10 cấp, thứ tự ↑ ↓ thay ô số; API + màn hình quản trị; dữ liệu mẫu mới | Quản lý được cây danh mục, cây bài viết | todo |
 | KB-04 | Markdown: neo tiêu đề, mục lục, `[[bài]]`, `![[bài]]`, `![[bài#Tiêu đề]]`, `![[file:…]]`; thẻ Viết / Xem trước; nút Chèn file, Chèn bài | Xem trước giống trang public, nhúng an toàn | todo |
