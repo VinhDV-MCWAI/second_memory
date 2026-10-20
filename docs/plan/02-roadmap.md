@@ -77,7 +77,7 @@ Ghi lại để làm sau, theo thứ tự dự kiến. Mỗi mục bắt đầu 
 |---|---|---|
 | Triển khai | Bản demo prod-like có dữ liệu mẫu và HTTPS (DEMO-01, DEMO-02), quản lý bí mật, staging, diễn tập dựng lại từ đầu bằng Terraform | `infra/` |
 | Vận hành | Log có mã request, chỉ số, cảnh báo, mục tiêu chất lượng dịch vụ, hướng dẫn xử lý từng cảnh báo | |
-| Sự cố | Gây lỗi giả lập, báo cáo sự cố, nhìn lại không đổ lỗi, diễn tập khôi phục dữ liệu đo thời gian | Mẫu trong `archive/engineering-lab/templates/` |
+| Sự cố | Gây lỗi giả lập, báo cáo sự cố, nhìn lại không đổ lỗi, diễn tập khôi phục dữ liệu đo thời gian | **Diễn tập lần đầu xong 2026-10-20** trên dev ([biên bản](../incidents/2026-10-20-dien-tap-su-co.md)): khôi phục thử, hàng đợi dừng, Redis dừng, kèm một sự cố thật. Còn: khôi phục thật đầu-cuối trên môi trường tạm (cùng mục Triển khai) |
 | Hiệu năng và bảo mật | Đo tải trước / sau, phân tích mối đe dọa, quét lỗ hổng | `perf/` |
 | Portfolio | Case study, tài khoản demo chỉ xem | |
 | Sao lưu định kỳ | Cài rclone, lên lịch | Chủ dự án tự làm |
