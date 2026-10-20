@@ -1,11 +1,11 @@
 # Lộ trình
 
-Cập nhật: 2026-10-19. Mục tiêu và cách làm việc: [01-goals-and-workflow.md](01-goals-and-workflow.md). Việc còn mở: [03-backlog.md](03-backlog.md). Việc đã xong: [05-done.md](05-done.md).
+Cập nhật: 2026-10-20. Mục tiêu và cách làm việc: [01-goals-and-workflow.md](01-goals-and-workflow.md). Việc còn mở: [03-backlog.md](03-backlog.md). Việc đã xong: [05-done.md](05-done.md).
 
 ```
 Tính năng:     1. Dọn nền ─► 2. Phân quyền động ─► 3. Media MinIO ─► 4. Phòng ban ─► 5. CI/CD (rồi tắt) ─► 6. Nâng cấp trên dev ─► 9. Trang cho người dùng
                   (xong)         (xong)                 (xong)            (xong)          (xong, đang tắt)        (xong)                 (xong)
-Luyện quy trình:                                                                                                8. Đóng gói → sổ tay → vòng đời đầy đủ (đang làm: sổ tay, đóng gói v2.3.0)
+Luyện quy trình:                                                                                                8. Đóng gói → sổ tay → vòng đời đầy đủ (đang làm: nghiệm thu v2.3.0)
 Sau cùng:      7. Triển khai, vận hành, sự cố, hiệu năng & bảo mật, portfolio; CI/CD chỉ khi chủ dự án yêu cầu
 ```
 
@@ -77,7 +77,7 @@ Ghi lại để làm sau, theo thứ tự dự kiến. Mỗi mục bắt đầu 
 |---|---|---|
 | Triển khai | Bản demo prod-like có dữ liệu mẫu và HTTPS (DEMO-01, DEMO-02), quản lý bí mật, staging, diễn tập dựng lại từ đầu bằng Terraform | `infra/` |
 | Vận hành | Log có mã request, chỉ số, cảnh báo, mục tiêu chất lượng dịch vụ, hướng dẫn xử lý từng cảnh báo | |
-| Sự cố | Gây lỗi giả lập, báo cáo sự cố, nhìn lại không đổ lỗi, diễn tập khôi phục dữ liệu đo thời gian | **Diễn tập lần đầu xong 2026-10-20** trên dev ([biên bản](../incidents/2026-10-20-dien-tap-su-co.md)): khôi phục thử, hàng đợi dừng, Redis dừng, kèm một sự cố thật. Còn: khôi phục thật đầu-cuối trên môi trường tạm (cùng mục Triển khai) |
+| Sự cố | Gây lỗi giả lập, báo cáo sự cố, nhìn lại không đổ lỗi, diễn tập khôi phục dữ liệu đo thời gian | **Diễn tập lần đầu xong 2026-10-20** trên dev ([biên bản](../incidents/2026-10-20-dien-tap-su-co.md)): khôi phục thử, hàng đợi dừng, Redis dừng, kèm một sự cố thật. Sao lưu cả file trong thùng rác: xong cùng ngày. Còn: khôi phục thật đầu-cuối trên môi trường tạm (cùng mục Triển khai) |
 | Hiệu năng và bảo mật | Đo tải trước / sau, phân tích mối đe dọa, quét lỗ hổng | `perf/` |
 | Portfolio | Case study, tài khoản demo chỉ xem | |
 | Sao lưu định kỳ | Cài rclone, lên lịch | Chủ dự án tự làm |
@@ -90,7 +90,7 @@ Ghi lại để làm sau, theo thứ tự dự kiến. Mỗi mục bắt đầu 
 |---|---|
 | Mục tiêu | Đúc kết kinh nghiệm của một developer trong doanh nghiệp thật: nhận yêu cầu → làm rõ → phân tích → thiết kế → làm → test → QA → đóng gói → triển khai → bàn giao → vận hành ([ADR-0018](../adr/0018-lifecycle-practice-track.md)) |
 | Cách làm | Luyện trên các tính năng thật, không thu gọn ứng dụng. Tham khảo [sổ tay cũ](../archive/engineering-lab/handbook/README.md) và [mẫu tài liệu](../archive/engineering-lab/templates/) |
-| Gồm | (1) Đóng gói và bàn giao bản `v2.2.0` (xong 2026-10-17); (2) sổ tay quy trình bản mới (chờ chủ dự án duyệt đề xuất); (3) một vòng đời đầy đủ trên trang cho người dùng và tài khoản người dùng cuối (đã làm xong tính năng, còn đóng gói `v2.3.0` theo sổ tay mới) |
+| Gồm | (1) Đóng gói và bàn giao bản `v2.2.0` (xong 2026-10-17); (2) sổ tay quy trình bản mới (xong 2026-10-19, [docs/handbook/](../handbook/README.md)); (3) một vòng đời đầy đủ trên trang cho người dùng và tài khoản người dùng cuối (đã làm xong tính năng, còn đóng gói `v2.3.0` theo sổ tay mới) |
 | Không gồm | CI/CD tự động (chỉ làm khi chủ dự án yêu cầu) |
 | Xong khi | Có tag `v2.2.0` với ghi chú phát hành, biên bản nghiệm thu, tài liệu bàn giao; sổ tay mới được dùng thật; một tính năng có đủ hồ sơ từ yêu cầu tới nhìn lại |
 
