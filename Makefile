@@ -17,13 +17,25 @@ setup: ## Generate docker/.env and app env files (idempotent)
 	bash scripts/setup-env.sh
 
 .PHONY: up
-up: ## Start the whole stack (generates env on first run)
+up: ## Build and start the whole stack (first run, or after a Dockerfile / lockfile change; generates env on first run)
 	@[ -f docker/.env ] || $(MAKE) setup
 	$(COMPOSE) up -d --build --renew-anon-volumes
+	@# --renew-anon-volumes leaves the old node_modules volumes behind; named volumes (dev data) are never touched
+	@docker volume prune -f >/dev/null
+
+.PHONY: start
+start: ## Daily start: no rebuild, reuses the containers (make up after a Dockerfile / lockfile change)
+	@[ -f docker/.env ] || $(MAKE) setup
+	$(COMPOSE) up -d
+
+.PHONY: stop
+stop: ## Daily stop: keeps containers and volumes, so `make start` is quick
+	$(COMPOSE) stop
 
 .PHONY: down
-down: ## Stop the stack (keeps volumes)
+down: ## Stop and remove the containers (keeps dev data in the named volumes)
 	$(COMPOSE) down
+	@docker volume prune -f >/dev/null
 
 .PHONY: restart
 restart: ## Recreate containers and rebuild images (picks up env changes)

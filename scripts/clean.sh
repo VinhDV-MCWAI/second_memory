@@ -5,11 +5,13 @@
 #
 # Usage: scripts/clean.sh   (wrapped by `make clean`)
 #   CACHE_KEEP=168h   build cache newer than this is kept so the next build stays fast
+#   CACHE_MAX=4GB     ...but the cache never grows past this (oldest entries go first)
 set -euo pipefail
 
 cd "$(dirname "$0")/.."
 
 cache_keep=${CACHE_KEEP:-168h}
+cache_max=${CACHE_MAX:-4GB}
 production_images='^(sm-api|sm-nextjs-fe|sm-public-site|sm-minio):'
 # Built on this machine by compose, make e2e / ci / import, perf/metrics.sh and infra/tf.sh: kept so the next run is fast
 built_images='^(my_lm-ml-[a-z-]+|ml-e2e|sm-ci-[a-z]+|ledger-importer(-dev)?|lab-metrics-[a-z]+|sm-tools):'
@@ -48,6 +50,8 @@ docker volume prune -f | tail -1
 
 echo ">> Build cache older than $cache_keep"
 docker builder prune -f --filter "until=$cache_keep" | tail -1
+echo ">> Build cache above $cache_max"
+docker builder prune -f --max-used-space "$cache_max" | tail -1
 
 echo ">> Generated test output"
 rm -rf e2e/artifacts laravel-api/.phpunit.result.cache
