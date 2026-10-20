@@ -44,12 +44,10 @@ class GenerateResponseMiddleware
             $responseApi->headers->setCookie($cookie);
         }
 
-        // Copy non-cookie headers
+        // Copy non-cookie headers, replacing the rebuilt response's own (Date, Cache-Control) so none goes out twice
         foreach ($response->headers->all() as $key => $values) {
             if (strtolower($key) !== 'set-cookie') {
-                foreach ($values as $v) {
-                    $responseApi->headers->set($key, $v, false);
-                }
+                $responseApi->headers->set($key, $values);
             }
         }
 
