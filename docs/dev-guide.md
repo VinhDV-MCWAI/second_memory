@@ -2,7 +2,7 @@
 
 Tài liệu này dành cho việc chạy dự án trên máy cá nhân. Staging và production chưa làm ở giai đoạn này (xem [ADR-0012](adr/0012-restore-features-dev-first.md)).
 
-Máy không cần cài PHP, Composer, Node hay pnpm. Mọi thứ chạy trong Docker, mọi lệnh gõ ở thư mục gốc của repo qua `make`. Gõ `make help` để xem toàn bộ lệnh.
+Để chạy dự án, máy không cần cài PHP, Composer, Node hay pnpm. Mọi thứ chạy trong Docker, mọi lệnh gõ ở thư mục gốc của repo qua `make`. Gõ `make help` để xem toàn bộ lệnh. Muốn extension của VS Code báo lỗi ngay khi gõ thì cài thêm vài công cụ trên máy (mục 8), nhưng test và các lệnh kiểm tra vẫn chạy trong Docker.
 
 ## 1. Chạy lần đầu (khoảng 5–10 phút)
 
@@ -146,3 +146,17 @@ Test dùng một database riêng tên `testing`, không đụng dữ liệu dev.
 
 Không dùng `migrate:rollback` trên DB dev. Muốn thử rollback một migration thì làm trên DB `testing`:
 `docker exec -e DB_DATABASE=testing ml-php php artisan migrate:rollback --step=1 --force`.
+
+## 8. Công cụ trên máy cho extension VS Code (không bắt buộc)
+
+Chỉ để extension báo lỗi ngay khi gõ (ESLint, Prettier, Tailwind, Astro, Intelephense / PHP Tools, Pint, PHPStan). Kết quả cuối cùng vẫn là `make lint`, `make verify` trong Docker. Cài trên WSL ngày 2026-10-20:
+
+| Công cụ | Cách cài | Ghi chú |
+|---|---|---|
+| Node 24 (LTS) | [nvm](https://github.com/nvm-sh/nvm): `nvm install --lts` | Cùng dòng 24 với Docker |
+| pnpm | `corepack enable` | Tự dùng đúng bản ghi trong `package.json` |
+| Thư viện JavaScript | `pnpm install --frozen-lockfile` ở thư mục gốc | Lần đầu: `sudo chown -R $USER: node_modules nextjs-fe/node_modules public-site/node_modules` (Docker tạo các thư mục này dưới quyền root). Container dùng bản riêng của nó nên không bị ảnh hưởng. Chạy lại mỗi khi `pnpm-lock.yaml` đổi |
+| PHP 8.5 | `sudo apt install php-cli php-bcmath php-curl php-gd php-mbstring php-pgsql php-sqlite3 php-xml php-zip php-redis` | Thư viện PHP (`laravel-api/vendor/`) có sẵn do container cài. Không cần Composer trên máy |
+| Extension | `code --install-extension dbaeumer.vscode-eslint bradlc.vscode-tailwindcss astro-build.astro-vscode` | Extension PHP (Intelephense, PHP Tools) dùng `php` vừa cài |
+
+Không cài thư viện mới bằng `pnpm add` hay `composer require` trên máy: thêm thư viện vẫn làm trong container và cần chủ dự án đồng ý.
