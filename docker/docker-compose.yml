@@ -61,12 +61,15 @@ services:
     ports:
       - "${REDIS_PORT_OUTSIDE_ENV}:${REDIS_PORT_INSIDE_ENV}"
     # The password goes into a config file written at start instead of the command line (seen by
-    # `ps` and `docker inspect`); calling the image entrypoint again drops Redis to the redis user
+    # `ps` and `docker inspect`); calling the image entrypoint again drops Redis to the redis user.
+    # rm first: on a restart the file from the last run is still there, owned by redis, and the
+    # kernel (fs.protected_regular) stops even root from rewriting it in the sticky /tmp
     command:
       - sh
       - -c
       - >-
         umask 077 &&
+        rm -f /tmp/redis-auth.conf &&
         printf 'include /usr/local/etc/redis/redis.conf\nrequirepass %s\n' "$$REDIS_PASSWORD" > /tmp/redis-auth.conf &&
         chown redis:redis /tmp/redis-auth.conf &&
         exec docker-entrypoint.sh redis-server /tmp/redis-auth.conf
