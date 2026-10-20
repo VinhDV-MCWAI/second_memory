@@ -95,6 +95,8 @@ Mỗi dòng do `scripts/lane.sh done` tự thêm. Không sửa tay. Các dòng t
 
 - 2026-10-20 — [lane main] KB-02 done: 98a1322b — bỏ Skill Ledger: 9 bảng, 19 quyền, API, 4 màn hình quản trị, trang /skills (chuyển hướng về /), ☆ 🔖 chỉ còn bài viết; tìm kiếm còn tên file, trang tổng quan đếm danh mục và bài viết; file public tạm không có (quay lại ở KB-03); make verify xanh (219 backend, 146 giao diện, 63 importer); test trình duyệt viết lại ở KB-08; dọn: make clean, dữ liệu mẫu Skill Ledger trên DB dev đã xóa bằng migration
 
+- 2026-10-20 — [lane main] KB-03 done: 645f7dbf — nhóm → danh mục có đính kèm (link/file), bài viết nhiều danh mục và cây sách tối đa 10 cấp (chặn vòng), ↑ ↓ thay ô số thứ tự, trang quản trị mới (cây danh mục, ô đính kèm, bài cha, bài con), trang public /categories, /articles, chuyển hướng /guides, /skills; dữ liệu mẫu mới (2 nhóm, 14 danh mục, sách 3 cấp); 231 backend, 151 giao diện pass; dọn: make clean
+
 ## Next step
 
 1. Đầu phiên: đọc file này, rồi `scripts/lane.sh status`. Bảng việc chỉ còn các việc "để sau" theo quyết định chủ dự án.
