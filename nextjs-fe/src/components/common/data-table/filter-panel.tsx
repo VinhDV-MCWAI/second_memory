@@ -18,6 +18,9 @@ import { FilterField, FilterPanelProps } from '@/shared/types';
 
 export type { FilterField };
 
+// Radix Select forbids an empty item value, so "All" uses this marker and clears the filter
+const ALL_VALUE = '__all__';
+
 export function FilterPanel({ filters, onFilterChange, onReset, fields = [] }: FilterPanelProps) {
   const [isExpanded, setIsExpanded] = useState(false);
   const [localFilters, setLocalFilters] = useState(filters);
@@ -26,7 +29,7 @@ export function FilterPanel({ filters, onFilterChange, onReset, fields = [] }: F
   const handleChange = (key: string, value: unknown) => {
     setLocalFilters((prev) => ({
       ...prev,
-      [key]: value,
+      [key]: value === ALL_VALUE ? undefined : value,
     }));
   };
 
@@ -72,7 +75,7 @@ export function FilterPanel({ filters, onFilterChange, onReset, fields = [] }: F
                     type="text"
                     placeholder={
                       field.placeholder ||
-                      `${t('searchPlaceholder').replace('{field}', field.label.toLowerCase())}`
+                      t('searchPlaceholder', { field: field.label.toLowerCase() })
                     }
                     value={(localFilters[field.key] as string) || ''}
                     onChange={(e) => handleChange(field.key, e.target.value)}
@@ -85,14 +88,11 @@ export function FilterPanel({ filters, onFilterChange, onReset, fields = [] }: F
                   >
                     <SelectTrigger>
                       <SelectValue
-                        placeholder={t('selectPlaceholder').replace(
-                          '{field}',
-                          field.label.toLowerCase(),
-                        )}
+                        placeholder={t('selectPlaceholder', { field: field.label.toLowerCase() })}
                       />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="">{t('all')}</SelectItem>
+                      <SelectItem value={ALL_VALUE}>{t('all')}</SelectItem>
                       {field.options.map((option) => (
                         <SelectItem key={option.value} value={option.value.toString()}>
                           {option.label}
@@ -112,13 +112,15 @@ export function FilterPanel({ filters, onFilterChange, onReset, fields = [] }: F
                 {field.type === 'boolean' && (
                   <Select
                     value={(localFilters[field.key] as boolean)?.toString() || ''}
-                    onValueChange={(value) => handleChange(field.key, value === 'true')}
+                    onValueChange={(value) =>
+                      handleChange(field.key, value === ALL_VALUE ? value : value === 'true')
+                    }
                   >
                     <SelectTrigger>
                       <SelectValue placeholder={t('all')} />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="">{t('all')}</SelectItem>
+                      <SelectItem value={ALL_VALUE}>{t('all')}</SelectItem>
                       <SelectItem value="true">{t('yes')}</SelectItem>
                       <SelectItem value="false">{t('no')}</SelectItem>
                     </SelectContent>
