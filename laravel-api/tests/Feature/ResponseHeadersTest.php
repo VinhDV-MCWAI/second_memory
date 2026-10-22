@@ -17,7 +17,7 @@ final class ResponseHeadersTest extends TestCase
 
     public function test_an_enveloped_response_sends_each_header_once(): void
     {
-        $response = $this->getJson('/api/public/categories')->assertOk();
+        $response = $this->getJson('/api/public/home')->assertOk();
 
         $this->assertCount(1, $response->headers->all('date'));
         $this->assertCount(1, $response->headers->all('cache-control'));

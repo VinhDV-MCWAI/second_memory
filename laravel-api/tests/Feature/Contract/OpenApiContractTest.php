@@ -47,11 +47,11 @@ final class OpenApiContractTest extends TestCase
 
     public function test_an_undocumented_status_is_rejected(): void
     {
-        $response = $this->call('GET', '/api/public/categories');
+        $response = $this->call('GET', '/api/public/home');
         $response->baseResponse->setStatusCode(418);
 
         $this->expectException(AssertionFailedError::class);
-        $this->expectExceptionMessageMatches('#GET /public/categories → 418 is not documented#');
+        $this->expectExceptionMessageMatches('#GET /public/home → 418 is not documented#');
         OpenApiContract::instance()->assertMatches($response, 'GET');
     }
 }
