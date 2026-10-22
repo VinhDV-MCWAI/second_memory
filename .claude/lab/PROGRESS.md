@@ -99,6 +99,8 @@ Mỗi dòng do `scripts/lane.sh done` tự thêm. Không sửa tay. Các dòng t
 
 - 2026-10-20 — [lane main] KB-04 done: fd38a913 — [[bài]], ![[bài]], ![[bài#mục]], ![[file:id]] (bỏ qua code, chặn vòng, tối đa 3 lớp, bài riêng tư không lộ), neo tiêu đề + mục lục, file nhúng có mã riêng (article_media), API xem trước; ô soạn Viết / Xem trước, Chèn file, Chèn bài cho bài viết và mô tả danh mục; thử quay lui migration trên DB testing; 239 backend, 153 giao diện pass; dọn: make clean
 
+- 2026-10-22 — [lane main] KB-05 done: ccc4c326, 84a51c4d — trang chủ kiểu diễn đàn (nhóm → danh mục, số bài, bài mới nhất), trang danh mục có tab Mới nhất / Cập nhật, tìm tiêu đề không dấu, lọc thêm danh mục, chia trang (trang nhóm gồm bài của cả nhóm), trang bài 3 cột: cây sách / bài cùng danh mục, mục lục, bài trước / sau, Menu trên điện thoại không cần JavaScript; tô màu code bằng Code có sẵn của Astro (không thêm thư viện); make verify pass (243 backend, 153 giao diện, 63 importer); test trình duyệt để KB-08; dọn: make clean, bài TMP code, file tạm; ghi chú: đầu phiên Postgres, Redis dừng mã 127 sau khi máy khởi động lại, make start chạy lại được
+
 ## Next step
 
 1. Đầu phiên: đọc file này, rồi `scripts/lane.sh status`. Bảng việc chỉ còn các việc "để sau" theo quyết định chủ dự án.
