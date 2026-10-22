@@ -1,42 +1,172 @@
 ---
 import Attachments from '@/components/Attachments.astro';
+import RichHtml from '@/components/RichHtml.astro';
 import Base from '@/layouts/Base.astro';
-import { getPublicCategory } from '@/lib/public-api';
+import { ARTICLE_SORTS, WORDS_MAX, categoryUrl, readCategoryQuery } from '@/lib/category-query';
+import { getPublicCategory, getPublicHome } from '@/lib/public-api';
 import { ROUTES } from '@/lib/routes';
 
 const HTTP_NOT_FOUND = 404;
 
+const slug = Astro.params.slug ?? '';
+const query = readCategoryQuery(Astro.url.searchParams);
 // A private category (or one in a private group) and a missing one both answer 404 (ADR-0022)
-const category = await getPublicCategory(Astro.params.slug ?? '');
+const category = await getPublicCategory(slug, query);
 if (!category) {
   Astro.response.status = HTTP_NOT_FOUND;
 }
+
+// Every other shown category, to narrow the list to articles in both (the home answer is cached)
+const others = category
+  ? (await getPublicHome()).flatMap((group) =>
+      group.categories
+        .filter((other) => other.slug !== slug)
+        .map((other) => ({ ...other, group: group.name })),
+    )
+  : [];
+const sort = query.sort ?? ARTICLE_SORTS[0]?.value;
+const filtered = query.also !== null || query.q !== null;
+// The date that matches the order: written for Newest, changed for Recently updated
+const dateOf = (article: { created_at: string; updated_at: string }) =>
+  sort === 'updated' ? article.updated_at : article.created_at;
 ---
 
 {category ? (
   <Base title={`${category.name} — Second Memory`}>
-    <a href={ROUTES.HOME} class="text-sm hover:underline">
-      ← {category.group?.name ?? 'All categories'}
-    </a>
+    <nav class="text-muted-foreground text-sm">
+      <a href={ROUTES.HOME} class="hover:underline">
+        Home
+      </a>
+      {category.group && (
+        <>
+          {' › '}
+          <a href={ROUTES.category(category.group.slug)} class="hover:underline">
+            {category.group.name}
+          </a>
+        </>
+      )}
+    </nav>
     <h1 class="mt-4 text-3xl font-semibold">{category.name}</h1>
-    {/* Built by the API from Markdown with raw HTML escaped and unsafe links removed */}
-    <div class="article-body mt-4" set:html={category.description_html} />
+    <RichHtml html={category.description_html} class="mt-4" />
     <Attachments attachments={category.attachments} />
 
-    {category.articles.length === 0 ? (
-      <p class="mt-10">No articles are published here yet.</p>
-    ) : (
-      <ul class="divide-border mt-10 divide-y">
-        {category.articles.map((article) => (
-          <li class="py-4">
-            <a href={ROUTES.article(article.slug)} class="font-medium hover:underline">
-              {article.title}
+    {category.categories.length > 0 && (
+      <ul class="mt-8 flex flex-wrap gap-2">
+        {category.categories.map((child) => (
+          <li>
+            <a
+              href={ROUTES.category(child.slug)}
+              class="hover:bg-muted block rounded-md border px-3 py-1.5 text-sm"
+            >
+              {child.name}
+              <span class="text-muted-foreground ml-1 font-mono text-xs">
+                {child.article_count}
+              </span>
             </a>
-            {article.summary && <p class="text-muted-foreground mt-1 text-sm">{article.summary}</p>}
           </li>
         ))}
       </ul>
     )}
+
+    <section class="mt-10">
+      <nav class="flex gap-4 border-b text-sm">
+        {ARTICLE_SORTS.map((tab) => (
+          <a
+            href={categoryUrl(slug, query, { sort: tab.value, page: null })}
+            class:list={[
+              '-mb-px border-b-2 pb-2',
+              tab.value === sort
+                ? 'border-primary font-medium'
+                : 'text-muted-foreground border-transparent hover:underline',
+            ]}
+            aria-current={tab.value === sort ? 'page' : undefined}
+          >
+            {tab.label}
+          </a>
+        ))}
+      </nav>
+
+      {/* A plain GET form: works without JavaScript */}
+      <form method="get" class="mt-4 flex flex-wrap gap-2 text-sm">
+        {query.sort && <input type="hidden" name="sort" value={query.sort} />}
+        <input
+          type="search"
+          name="q"
+          value={query.q ?? ''}
+          placeholder="Words of the title"
+          maxlength={WORDS_MAX}
+          class="bg-background min-w-0 flex-1 rounded-md border px-3 py-1.5"
+        />
+        <select
+          name="also"
+          class="bg-background rounded-md border px-3 py-1.5"
+          aria-label="Also in"
+        >
+          <option value="">Also in any category</option>
+          {others.map((other) => (
+            <option value={other.slug} selected={other.slug === query.also}>
+              {other.group} › {other.name}
+            </option>
+          ))}
+        </select>
+        <button type="submit" class="hover:bg-muted rounded-md border px-3 py-1.5">
+          Filter
+        </button>
+        {filtered && (
+          <a
+            href={categoryUrl(slug, query, { q: null, also: null, page: null })}
+            class="self-center hover:underline"
+          >
+            Clear
+          </a>
+        )}
+      </form>
+
+      {category.articles.length === 0 ? (
+        <p class="mt-8">
+          {filtered ? 'No article matches.' : 'No articles are published here yet.'}
+        </p>
+      ) : (
+        <ul class="mt-4 divide-y">
+          {category.articles.map((article) => (
+            <li class="py-4">
+              <a href={ROUTES.article(article.slug)} class="font-medium hover:underline">
+                {article.title}
+              </a>
+              {article.summary && (
+                <p class="text-muted-foreground mt-1 text-sm">{article.summary}</p>
+              )}
+              <p class="text-muted-foreground mt-1 font-mono text-xs">
+                {sort === 'updated' ? 'Updated ' : ''}
+                <time datetime={dateOf(article)}>{dateOf(article).slice(0, 10)}</time>
+              </p>
+            </li>
+          ))}
+        </ul>
+      )}
+
+      {category.last_page > 1 && (
+        <nav class="mt-6 flex items-center justify-between text-sm">
+          {category.page > 1 ? (
+            <a href={categoryUrl(slug, query, { page: category.page - 1 })} class="hover:underline">
+              ← Previous
+            </a>
+          ) : (
+            <span />
+          )}
+          <span class="text-muted-foreground font-mono text-xs">
+            Page {category.page} of {category.last_page} · {category.total} articles
+          </span>
+          {category.page < category.last_page ? (
+            <a href={categoryUrl(slug, query, { page: category.page + 1 })} class="hover:underline">
+              Next →
+            </a>
+          ) : (
+            <span />
+          )}
+        </nav>
+      )}
+    </section>
   </Base>
 ) : (
   <Base title="Category not found">

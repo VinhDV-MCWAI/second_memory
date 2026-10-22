@@ -1,17 +1,13 @@
 ---
 import Base from '@/layouts/Base.astro';
-import { getPublicCategories, type PublicCategory } from '@/lib/public-api';
+import { getPublicHome } from '@/lib/public-api';
 import { ROUTES } from '@/lib/routes';
 
-// Groups in the owner's order, each with its categories (ADR-0022). The API lists a group right
-// before its categories; a category's `group` names it.
-const rows = await getPublicCategories();
-const groups = rows
-  .filter((row) => row.group === null)
-  .map((group) => ({ group, categories: rows.filter((row) => row.group === group.name) }));
+// Like the boards of a forum (ADR-0022): one table per group, one row per category with its
+// article count and newest article, in the owner's order
+const groups = await getPublicHome();
 
-const count = (category: PublicCategory) =>
-  `${category.article_count} ${category.article_count === 1 ? 'article' : 'articles'}`;
+const count = (total: number) => `${total} ${total === 1 ? 'article' : 'articles'}`;
 ---
 
 <Base title="Second Memory">
@@ -20,26 +16,47 @@ const count = (category: PublicCategory) =>
     Notes from experience on building software. Pick a category.
   </p>
 
-  {groups.map(({ group, categories }) => (
-    <section class="mt-10">
-      <h2 class="text-xl font-semibold">
+  {groups.map((group) => (
+    <section class="mt-10 overflow-hidden rounded-lg border">
+      <h2 class="bg-muted px-4 py-3 font-semibold">
         <a href={ROUTES.category(group.slug)} class="hover:underline">
           {group.name}
         </a>
       </h2>
-      <ul class="mt-4 grid gap-4 sm:grid-cols-2">
-        {categories.map((category) => (
-          <li>
-            <a
-              href={ROUTES.category(category.slug)}
-              class="hover:bg-muted block h-full rounded-lg border p-5"
-            >
-              <span class="font-medium">{category.name}</span>
-              <p class="text-muted-foreground mt-3 font-mono text-xs">{count(category)}</p>
-            </a>
-          </li>
-        ))}
-      </ul>
+      {group.categories.length === 0 ? (
+        <p class="text-muted-foreground px-4 py-3 text-sm">No categories yet.</p>
+      ) : (
+        <ul class="divide-y">
+          {group.categories.map((category) => (
+            <li class="grid gap-1 px-4 py-3 sm:grid-cols-[1fr_7rem_16rem] sm:items-center sm:gap-4">
+              <a href={ROUTES.category(category.slug)} class="font-medium hover:underline">
+                {category.name}
+              </a>
+              <span class="text-muted-foreground font-mono text-xs">
+                {count(category.article_count)}
+              </span>
+              {category.latest ? (
+                <span class="min-w-0 text-sm">
+                  <a
+                    href={ROUTES.article(category.latest.slug)}
+                    class="block truncate hover:underline"
+                  >
+                    {category.latest.title}
+                  </a>
+                  <time
+                    datetime={category.latest.created_at}
+                    class="text-muted-foreground font-mono text-xs"
+                  >
+                    {category.latest.created_at.slice(0, 10)}
+                  </time>
+                </span>
+              ) : (
+                <span class="text-muted-foreground text-sm">—</span>
+              )}
+            </li>
+          ))}
+        </ul>
+      )}
     </section>
   ))}
 </Base>

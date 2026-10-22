@@ -1,5 +1,6 @@
 // Server-side client for the public API (docs/features/trang-public.md).
 // Types come from laravel-api/openapi.json (`pnpm gen:api`, run by `make openapi`).
+import { toSearch } from '@/lib/category-query';
 import type { components, paths } from '@/types/openapi';
 
 // Inside Docker the browser URL (localhost:81) is not reachable, so the server calls nginx on the
@@ -19,10 +20,15 @@ type Data<P extends keyof paths> = paths[P] extends {
   ? D
   : never;
 
-export type PublicCategory = components['schemas']['PublicCategoryResource'];
+export type PublicGroup = components['schemas']['PublicGroupResource'];
 export type PublicCategoryDetail = components['schemas']['PublicCategoryDetailResource'];
 export type PublicArticle = components['schemas']['PublicArticleResource'];
 export type PublicAttachment = components['schemas']['PublicAttachmentResource'];
+export type ArticleSort = components['schemas']['ArticleSort'];
+export type BookNode = NonNullable<PublicArticle['book']>;
+export type CategoryQuery = NonNullable<
+  paths['/public/categories/{slug}']['get']['parameters']['query']
+>;
 
 const cache = new Map<string, { at: number; data: unknown }>();
 
@@ -44,15 +50,17 @@ async function getPublic<T>(path: string): Promise<T | null> {
   return data;
 }
 
-export async function getPublicCategories(): Promise<PublicCategory[]> {
-  return (await getPublic<Data<'/public/categories'>>('categories'))?.data ?? [];
+export async function getPublicHome(): Promise<PublicGroup[]> {
+  return (await getPublic<Data<'/public/home'>>('home'))?.data ?? [];
 }
 
-export async function getPublicCategory(slug: string): Promise<PublicCategoryDetail | null> {
-  return (
-    (await getPublic<Data<'/public/categories/{slug}'>>(`categories/${encodeURIComponent(slug)}`))
-      ?.data ?? null
-  );
+// The query must already be valid (the page checks it): the API answers 422 otherwise.
+export async function getPublicCategory(
+  slug: string,
+  query: CategoryQuery = {},
+): Promise<PublicCategoryDetail | null> {
+  const path = `categories/${encodeURIComponent(slug)}${toSearch(query)}`;
+  return (await getPublic<Data<'/public/categories/{slug}'>>(path))?.data ?? null;
 }
 
 export async function getPublicArticle(slug: string): Promise<PublicArticle | null> {

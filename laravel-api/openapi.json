@@ -6167,16 +6167,16 @@
                 }
             }
         },
-        "/public/categories": {
+        "/public/home": {
             "get": {
-                "operationId": "publicContent.categories",
-                "summary": "Public groups and categories of the home page: each group followed by its categories, in the owner's order",
+                "operationId": "publicContent.home",
+                "summary": "The home page: public groups in the owner's order, each with its public categories, their article count and newest article",
                 "tags": [
                     "PublicContent"
                 ],
                 "responses": {
                     "200": {
-                        "description": "Array of `PublicCategoryResource`",
+                        "description": "Array of `PublicGroupResource`",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -6188,7 +6188,7 @@
                                                 "data": {
                                                     "type": "array",
                                                     "items": {
-                                                        "$ref": "#/components/schemas/PublicCategoryResource"
+                                                        "$ref": "#/components/schemas/PublicGroupResource"
                                                     }
                                                 }
                                             },
@@ -6241,7 +6241,7 @@
         "/public/categories/{slug}": {
             "get": {
                 "operationId": "publicContent.category",
-                "summary": "One public category: description as safe HTML, evidence, public articles; private (or in a private group) or missing \u2192 404",
+                "summary": "One public group or category: description as safe HTML, evidence, its categories (a group), and a page of its public articles\n(`sort`: newest | updated; `also`: only articles in that category too; `q`: words of the title). Private (or in a private group)\nor missing \u2192 404",
                 "tags": [
                     "PublicContent"
                 ],
@@ -6252,6 +6252,55 @@
                         "required": true,
                         "schema": {
                             "type": "string"
+                        }
+                    },
+                    {
+                        "name": "sort",
+                        "in": "query",
+                        "schema": {
+                            "anyOf": [
+                                {
+                                    "$ref": "#/components/schemas/ArticleSort"
+                                },
+                                {
+                                    "type": "null"
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "name": "also",
+                        "in": "query",
+                        "description": "Slug of another category: only articles in both",
+                        "schema": {
+                            "type": [
+                                "string",
+                                "null"
+                            ],
+                            "maxLength": 100
+                        }
+                    },
+                    {
+                        "name": "q",
+                        "in": "query",
+                        "description": "Words of the title",
+                        "schema": {
+                            "type": [
+                                "string",
+                                "null"
+                            ],
+                            "maxLength": 200
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "schema": {
+                            "type": [
+                                "integer",
+                                "null"
+                            ],
+                            "minimum": 1
                         }
                     }
                 ],
@@ -6302,6 +6351,9 @@
                             }
                         }
                     },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
                     "404": {
                         "description": "Not Found",
                         "content": {
@@ -6329,7 +6381,7 @@
         "/public/articles/{slug}": {
             "get": {
                 "operationId": "publicContent.article",
-                "summary": "One public article, its Markdown body as safe HTML; private (or under a private article) or missing \u2192 404",
+                "summary": "One public article: body as safe HTML, table of contents, categories, its book (tree, way up, previous / next) or related\narticles; private (or under a private article) or missing \u2192 404",
                 "tags": [
                     "PublicContent"
                 ],
@@ -7600,6 +7652,15 @@
                 ],
                 "title": "ArticleResource"
             },
+            "ArticleSort": {
+                "type": "string",
+                "description": "How a category page of the public site orders its articles, like the tabs of a forum (ADR-0022).\n",
+                "enum": [
+                    "newest",
+                    "updated"
+                ],
+                "title": "ArticleSort"
+            },
             "AttachedFileResource": {
                 "type": "object",
                 "properties": {
@@ -8653,6 +8714,9 @@
                             ]
                         }
                     },
+                    "created_at": {
+                        "type": "string"
+                    },
                     "updated_at": {
                         "type": "string"
                     },
@@ -8673,6 +8737,121 @@
                                 "slug"
                             ]
                         }
+                    },
+                    "book": {
+                        "type": [
+                            "object",
+                            "null"
+                        ],
+                        "description": "The book this page is in, from its top: `{title, slug, children}` nested; null outside a book",
+                        "properties": {
+                            "title": {
+                                "type": "string"
+                            },
+                            "slug": {
+                                "type": "string"
+                            },
+                            "children": {
+                                "type": "array",
+                                "items": {
+                                    "type": "object",
+                                    "properties": {
+                                        "title": {
+                                            "type": "string"
+                                        },
+                                        "slug": {
+                                            "type": "string"
+                                        },
+                                        "children": {
+                                            "type": "array",
+                                            "items": {}
+                                        }
+                                    },
+                                    "required": [
+                                        "title",
+                                        "slug",
+                                        "children"
+                                    ]
+                                }
+                            }
+                        },
+                        "required": [
+                            "title",
+                            "slug",
+                            "children"
+                        ]
+                    },
+                    "ancestors": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "title": {
+                                    "type": "string"
+                                },
+                                "slug": {
+                                    "type": "string"
+                                }
+                            },
+                            "required": [
+                                "title",
+                                "slug"
+                            ]
+                        }
+                    },
+                    "previous": {
+                        "type": [
+                            "object",
+                            "null"
+                        ],
+                        "properties": {
+                            "title": {
+                                "type": "string"
+                            },
+                            "slug": {
+                                "type": "string"
+                            }
+                        },
+                        "required": [
+                            "title",
+                            "slug"
+                        ]
+                    },
+                    "next": {
+                        "type": [
+                            "object",
+                            "null"
+                        ],
+                        "properties": {
+                            "title": {
+                                "type": "string"
+                            },
+                            "slug": {
+                                "type": "string"
+                            }
+                        },
+                        "required": [
+                            "title",
+                            "slug"
+                        ]
+                    },
+                    "related": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "title": {
+                                    "type": "string"
+                                },
+                                "slug": {
+                                    "type": "string"
+                                }
+                            },
+                            "required": [
+                                "title",
+                                "slug"
+                            ]
+                        }
                     }
                 },
                 "required": [
@@ -8682,8 +8861,14 @@
                     "summary",
                     "body_html",
                     "toc",
+                    "created_at",
                     "updated_at",
-                    "categories"
+                    "categories",
+                    "book",
+                    "ancestors",
+                    "previous",
+                    "next",
+                    "related"
                 ],
                 "title": "PublicArticleResource"
             },
@@ -8789,6 +8974,28 @@
                             "$ref": "#/components/schemas/PublicAttachmentResource"
                         }
                     },
+                    "categories": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "name": {
+                                    "type": "string"
+                                },
+                                "slug": {
+                                    "type": "string"
+                                },
+                                "article_count": {
+                                    "type": "integer"
+                                }
+                            },
+                            "required": [
+                                "name",
+                                "slug",
+                                "article_count"
+                            ]
+                        }
+                    },
                     "articles": {
                         "type": "array",
                         "items": {
@@ -8806,6 +9013,9 @@
                                         "null"
                                     ]
                                 },
+                                "created_at": {
+                                    "type": "string"
+                                },
                                 "updated_at": {
                                     "type": "string"
                                 }
@@ -8814,9 +9024,19 @@
                                 "title",
                                 "slug",
                                 "summary",
+                                "created_at",
                                 "updated_at"
                             ]
                         }
+                    },
+                    "page": {
+                        "type": "integer"
+                    },
+                    "last_page": {
+                        "type": "integer"
+                    },
+                    "total": {
+                        "type": "integer"
                     }
                 },
                 "required": [
@@ -8825,11 +9045,15 @@
                     "group",
                     "description_html",
                     "attachments",
-                    "articles"
+                    "categories",
+                    "articles",
+                    "page",
+                    "last_page",
+                    "total"
                 ],
                 "title": "PublicCategoryDetailResource"
             },
-            "PublicCategoryResource": {
+            "PublicGroupResource": {
                 "type": "object",
                 "properties": {
                     "name": {
@@ -8838,20 +9062,58 @@
                     "slug": {
                         "type": "string"
                     },
-                    "group": {
-                        "description": "Name of the group it is in; null for a group"
-                    },
-                    "article_count": {
-                        "type": "integer"
+                    "categories": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "name": {
+                                    "type": "string"
+                                },
+                                "slug": {
+                                    "type": "string"
+                                },
+                                "article_count": {
+                                    "type": "integer"
+                                },
+                                "latest": {
+                                    "type": [
+                                        "object",
+                                        "null"
+                                    ],
+                                    "properties": {
+                                        "title": {
+                                            "type": "string"
+                                        },
+                                        "slug": {
+                                            "type": "string"
+                                        },
+                                        "created_at": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "required": [
+                                        "title",
+                                        "slug",
+                                        "created_at"
+                                    ]
+                                }
+                            },
+                            "required": [
+                                "name",
+                                "slug",
+                                "article_count",
+                                "latest"
+                            ]
+                        }
                     }
                 },
                 "required": [
                     "name",
                     "slug",
-                    "group",
-                    "article_count"
+                    "categories"
                 ],
-                "title": "PublicCategoryResource"
+                "title": "PublicGroupResource"
             },
             "RegisterRequest": {
                 "type": "object",

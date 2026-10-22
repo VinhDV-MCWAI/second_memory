@@ -1027,15 +1027,15 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
-  '/public/categories': {
+  '/public/home': {
     parameters: {
       query?: never;
       header?: never;
       path?: never;
       cookie?: never;
     };
-    /** Public groups and categories of the home page: each group followed by its categories, in the owner's order */
-    get: operations['publicContent.categories'];
+    /** The home page: public groups in the owner's order, each with its public categories, their article count and newest article */
+    get: operations['publicContent.home'];
     put?: never;
     post?: never;
     delete?: never;
@@ -1051,7 +1051,11 @@ export interface paths {
       path?: never;
       cookie?: never;
     };
-    /** One public category: description as safe HTML, evidence, public articles; private (or in a private group) or missing → 404 */
+    /**
+     * One public group or category: description as safe HTML, evidence, its categories (a group), and a page of its public articles
+     *     (`sort`: newest | updated; `also`: only articles in that category too; `q`: words of the title). Private (or in a private group)
+     *     or missing → 404
+     */
     get: operations['publicContent.category'];
     put?: never;
     post?: never;
@@ -1068,7 +1072,10 @@ export interface paths {
       path?: never;
       cookie?: never;
     };
-    /** One public article, its Markdown body as safe HTML; private (or under a private article) or missing → 404 */
+    /**
+     * One public article: body as safe HTML, table of contents, categories, its book (tree, way up, previous / next) or related
+     *     articles; private (or under a private article) or missing → 404
+     */
     get: operations['publicContent.article'];
     put?: never;
     post?: never;
@@ -1320,6 +1327,12 @@ export interface components {
       children_count: number;
       updated_at: string | null;
     };
+    /**
+     * ArticleSort
+     * @description How a category page of the public site orders its articles, like the tabs of a forum (ADR-0022).
+     * @enum {string}
+     */
+    ArticleSort: 'newest' | 'updated';
     /** AttachedFileResource */
     AttachedFileResource: {
       id: number;
@@ -1609,9 +1622,36 @@ export interface components {
         id: string;
         text: string;
       }[];
+      created_at: string;
       updated_at: string;
       categories: {
         name: string;
+        slug: string;
+      }[];
+      /** @description The book this page is in, from its top: `{title, slug, children}` nested; null outside a book */
+      book: {
+        title: string;
+        slug: string;
+        children: {
+          title: string;
+          slug: string;
+          children: unknown[];
+        }[];
+      } | null;
+      ancestors: {
+        title: string;
+        slug: string;
+      }[];
+      previous: {
+        title: string;
+        slug: string;
+      } | null;
+      next: {
+        title: string;
+        slug: string;
+      } | null;
+      related: {
+        title: string;
         slug: string;
       }[];
     };
@@ -1638,20 +1678,36 @@ export interface components {
       } | null;
       description_html: string;
       attachments: components['schemas']['PublicAttachmentResource'][];
+      categories: {
+        name: string;
+        slug: string;
+        article_count: number;
+      }[];
       articles: {
         title: string;
         slug: string;
         summary: string | null;
+        created_at: string;
         updated_at: string;
       }[];
+      page: number;
+      last_page: number;
+      total: number;
     };
-    /** PublicCategoryResource */
-    PublicCategoryResource: {
+    /** PublicGroupResource */
+    PublicGroupResource: {
       name: string;
       slug: string;
-      /** @description Name of the group it is in; null for a group */
-      group: unknown;
-      article_count: number;
+      categories: {
+        name: string;
+        slug: string;
+        article_count: number;
+        latest: {
+          title: string;
+          slug: string;
+          created_at: string;
+        } | null;
+      }[];
     };
     /** RegisterRequest */
     RegisterRequest: {
@@ -4748,7 +4804,7 @@ export interface operations {
       };
     };
   };
-  'publicContent.categories': {
+  'publicContent.home': {
     parameters: {
       query?: never;
       header?: never;
@@ -4757,7 +4813,7 @@ export interface operations {
     };
     requestBody?: never;
     responses: {
-      /** @description Array of `PublicCategoryResource` */
+      /** @description Array of `PublicGroupResource` */
       200: {
         headers: {
           [name: string]: unknown;
@@ -4765,7 +4821,7 @@ export interface operations {
         content: {
           'application/json': {
             data: {
-              data: components['schemas']['PublicCategoryResource'][];
+              data: components['schemas']['PublicGroupResource'][];
             };
             error: {
               status: boolean;
@@ -4788,7 +4844,14 @@ export interface operations {
   };
   'publicContent.category': {
     parameters: {
-      query?: never;
+      query?: {
+        sort?: components['schemas']['ArticleSort'] | null;
+        /** @description Slug of another category: only articles in both */
+        also?: string | null;
+        /** @description Words of the title */
+        q?: string | null;
+        page?: number | null;
+      };
       header?: never;
       path: {
         slug: string;
@@ -4824,6 +4887,7 @@ export interface operations {
           'application/json': components['schemas']['ApiError'];
         };
       };
+      422: components['responses']['ValidationException'];
       /** @description Too Many Requests */
       429: {
         headers: {

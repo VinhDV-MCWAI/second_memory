@@ -1,0 +1,51 @@
+---
+// Left column of an article page (ADR-0022): the book it is in, or articles sharing a category
+import BookTree from '@/components/BookTree.astro';
+import type { PublicArticle } from '@/lib/public-api';
+import { ROUTES } from '@/lib/routes';
+
+interface Props {
+  article: PublicArticle;
+}
+
+const { article } = Astro.props;
+const { book } = article;
+---
+
+<nav class="text-sm">
+  {book ? (
+    <>
+      <a
+        href={ROUTES.article(book.slug)}
+        class:list={[
+          'block px-2 font-semibold',
+          book.slug === article.slug ? '' : 'hover:underline',
+        ]}
+        aria-current={book.slug === article.slug ? 'page' : undefined}
+      >
+        {book.title}
+      </a>
+      <div class="mt-2">
+        <BookTree nodes={book.children} current={article.slug} />
+      </div>
+    </>
+  ) : (
+    article.related.length > 0 && (
+      <>
+        <p class="px-2 font-semibold">In the same categories</p>
+        <ul class="mt-2 space-y-1">
+          {article.related.map((other) => (
+            <li>
+              <a
+                href={ROUTES.article(other.slug)}
+                class="text-muted-foreground block px-2 py-1 hover:underline"
+              >
+                {other.title}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </>
+    )
+  )}
+</nav>

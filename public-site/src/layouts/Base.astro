@@ -5,9 +5,16 @@ import { ROUTES } from '@/lib/routes';
 interface Props {
   title: string;
   description?: string;
+  /** Room for the side columns of a documentation page (ADR-0022) */
+  wide?: boolean;
 }
 
-const { title, description = 'Notes from experience on how software gets built' } = Astro.props;
+const {
+  title,
+  description = 'Notes from experience on how software gets built',
+  wide = false,
+} = Astro.props;
+const width = wide ? 'max-w-7xl' : 'max-w-4xl';
 ---
 
 <html lang="en">
@@ -18,7 +25,7 @@ const { title, description = 'Notes from experience on how software gets built' 
     <title>{title}</title>
   </head>
   <body>
-    <header class="mx-auto flex max-w-3xl items-center justify-between px-6 pt-6 text-sm">
+    <header class:list={['mx-auto flex items-center justify-between px-6 pt-6 text-sm', width]}>
       <a href={ROUTES.HOME} class="font-medium hover:underline">
         Second Memory
       </a>
@@ -26,7 +33,7 @@ const { title, description = 'Notes from experience on how software gets built' 
         Sign in
       </a>
     </header>
-    <main class="mx-auto max-w-3xl px-6 py-12">
+    <main class:list={['mx-auto px-6 py-12', width]}>
       <slot />
     </main>
     <script>

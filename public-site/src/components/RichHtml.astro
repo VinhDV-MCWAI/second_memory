@@ -1,0 +1,32 @@
+---
+// Safe HTML from the API (Markdown with raw HTML escaped and unsafe links removed) with its code
+// blocks coloured by Shiki on the server: no JavaScript in the browser (ADR-0022).
+import { Code } from 'astro:components';
+import type { CodeLanguage } from 'astro';
+import { splitCodeBlocks } from '@/lib/code-blocks';
+
+interface Props {
+  html: string;
+  class?: string;
+}
+
+const { html, class: className } = Astro.props;
+const parts = splitCodeBlocks(html);
+// Light and dark follow the system setting through the --shiki-* variables (global.css)
+const THEMES = { light: 'github-light', dark: 'github-dark' } as const;
+---
+
+<div class:list={['article-body', className]}>
+  {parts.map((part) =>
+    'code' in part ? (
+      <Code
+        code={part.code}
+        lang={part.lang as CodeLanguage}
+        themes={THEMES}
+        defaultColor={false}
+      />
+    ) : (
+      <Fragment set:html={part.html} />
+    ),
+  )}
+</div>

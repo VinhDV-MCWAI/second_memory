@@ -1,0 +1,35 @@
+---
+// The pages of a book, nested like the side menu of a documentation site (ADR-0022); the page
+// being read is marked
+import type { BookNode } from '@/lib/public-api';
+import { ROUTES } from '@/lib/routes';
+
+interface Props {
+  nodes: BookNode['children'];
+  current: string;
+}
+
+const { nodes, current } = Astro.props;
+---
+
+<ul class="space-y-1">
+  {nodes.map((node) => (
+    <li>
+      <a
+        href={ROUTES.article(node.slug)}
+        class:list={[
+          'block rounded px-2 py-1',
+          node.slug === current ? 'bg-muted font-medium' : 'text-muted-foreground hover:underline',
+        ]}
+        aria-current={node.slug === current ? 'page' : undefined}
+      >
+        {node.title}
+      </a>
+      {node.children.length > 0 && (
+        <div class="ml-3 border-l pl-2">
+          <Astro.self nodes={node.children as BookNode['children']} current={current} />
+        </div>
+      )}
+    </li>
+  ))}
+</ul>

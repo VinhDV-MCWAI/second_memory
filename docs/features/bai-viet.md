@@ -7,7 +7,7 @@ Nơi lưu kinh nghiệm của chủ dự án và hiện ra ở [trang public](tr
 
 Yêu cầu: [REQ-005](../requirements/REQ-005-trang-tai-lieu-kinh-nghiem.md). Thiết kế: [ADR-0022](../adr/0022-trang-tai-lieu-kinh-nghiem.md) (thay một phần [ADR-0021](../adr/0021-public-home-categories-articles.md)).
 
-Trạng thái: đang làm theo các bước KB-02…KB-08. **Xong** (2026-10-20): bỏ Skill Ledger, mô hình mới, màn hình quản trị, trang public tối thiểu, nhúng bài và file, xem trước Markdown. Còn: giao diện kiểu trang tài liệu (KB-05), lượt xem và xếp hạng (KB-06), nhập từ Obsidian (KB-07). Nội dung hiện tại là **bài mẫu** (`make seed`).
+Trạng thái: đang làm theo các bước KB-02…KB-08. **Xong**: bỏ Skill Ledger, mô hình mới, màn hình quản trị, nhúng bài và file, xem trước Markdown (2026-10-20); trang public kiểu trang tài liệu (2026-10-22). Còn: lượt xem, xếp hạng Đọc nhiều / Được lưu nhiều, tìm kiếm (KB-06), nhập từ Obsidian (KB-07). Nội dung hiện tại là **bài mẫu** (`make seed`).
 
 ## Màn hình trong trang quản trị
 
@@ -24,9 +24,9 @@ Vai trò Chỉ xem có hai quyền `list`. Không còn ô gõ số thứ tự: m
 
 | Địa chỉ | Hiện gì |
 |---|---|
-| http://localhost:81/ | Từng nhóm, dưới mỗi nhóm là các danh mục kèm số bài công khai |
-| http://localhost:81/categories/{danh mục} | Mô tả, đính kèm (link, file mở trong trình duyệt hoặc tải về), bài viết công khai mới sửa trước |
-| http://localhost:81/articles/{bài} | Toàn bài, các danh mục của bài, nút ☆ yêu thích, 🔖 xem sau ([người dùng cuối](nguoi-dung-cuoi.md)) |
+| http://localhost:81/ | Kiểu diễn đàn: mỗi nhóm một bảng, mỗi danh mục một dòng có số bài, bài mới nhất và ngày viết |
+| http://localhost:81/categories/{danh mục} | Mô tả, đính kèm, danh sách bài (20 bài một trang) xếp **Mới nhất** hoặc **Cập nhật gần đây**, lọc thêm "cũng thuộc danh mục…", tìm theo tiêu đề. Trang của một nhóm có thêm các danh mục con và liệt kê bài của cả nhóm |
+| http://localhost:81/articles/{bài} | Bố cục trang tài liệu 3 cột: cây sách (hoặc bài cùng danh mục), nội dung, mục lục; bài trước / sau, nút ☆ 🔖. Chi tiết ở [trang public](trang-public.md) |
 | `/guides/{danh mục}`, `/guides/{danh mục}/{bài}`, `/skills`, `/skills/{slug}` | Đường dẫn cũ, chuyển hướng 301 sang đường dẫn mới |
 
 ## Viết nội dung
@@ -90,9 +90,9 @@ HTML viết thẳng vào bài được hiện thành chữ, không chạy; link 
 | `GET /api/admin/article/list` | Lọc `title`, `category_id`, `parent_id`, `root`, `is_public`; lọc theo `parent_id` thì xếp theo thứ tự trong sách |
 | `POST article/store`, `PUT update/{id}`, `POST delete`, `PUT move/{id}` | `parent_id`, `category_ids`, `title`, `summary`, `body`, `is_public` |
 | `POST article/preview` | `{body}` → `{html, toc}` như trang public, file dùng link ký tạm; không lưu gì (quyền `article.preview`) |
-| `GET /api/public/categories` | Nhóm và danh mục công khai theo thứ tự cây: `name`, `slug`, `group`, `article_count` |
-| `GET /api/public/categories/{slug}` | `group`, `description_html`, `attachments` (`title`, `url`, `note`, `file: {key, name, size, mime_type, thumbnail_url}`), `articles` |
-| `GET /api/public/articles/{slug}` | `title`, `key` (mã để lưu), `summary`, `body_html` (đã chèn bài và file), `toc`, `updated_at`, `categories` |
+| `GET /api/public/home` | Nhóm công khai theo thứ tự, mỗi nhóm có `categories: [{name, slug, article_count, latest}]` (`latest`: bài mới nhất hoặc null) |
+| `GET /api/public/categories/{slug}?sort=&also=&q=&page=` | `group`, `description_html`, `attachments` (`title`, `url`, `note`, `file: {key, name, size, mime_type, thumbnail_url}`), `categories` (danh mục con của nhóm), `articles`, `page`, `last_page`, `total`. `sort`: `newest` (mặc định) hoặc `updated`, sai thì 422; `also`: slug danh mục thứ hai; `q`: chữ trong tiêu đề, không phân biệt dấu |
+| `GET /api/public/articles/{slug}` | `title`, `key` (mã để lưu), `summary`, `body_html` (đã chèn bài và file), `toc`, `created_at`, `updated_at`, `categories`, `book` (cây sách từ gốc, chỉ phần đang hiện), `ancestors`, `previous`, `next`, `related` (bài cùng danh mục khi bài không nằm trong sách) |
 | `GET /api/public/files/{key}` | Link tạm của file đính kèm danh mục hoặc file nhúng trong bài đang hiện |
 
 API public không cần đăng nhập, riêng tư hay không tồn tại đều trả 404.
@@ -116,5 +116,5 @@ API public không cần đăng nhập, riêng tư hay không tồn tại đều 
 | API | `laravel-api/app/{Http/Controllers,Services,Repositories,Http/Requests}/Content/`, `app/Models/Content/`, `app/Repositories/Concerns/MovesAmongSiblings.php`, `routes/api/content.php`, `app/Services/Public/` |
 | Dữ liệu mẫu | `laravel-api/database/seeders/DevContentSeeder.php`: nhóm Quy trình (10 danh mục × 2 bài), nhóm Kỹ năng (4 danh mục, có đính kèm), sách "Laravel thực chiến" 3 cấp; chỉ dev, chạy lại không nhân đôi |
 | Trang quản trị | `nextjs-fe/src/app/admin/(panel)/{content-categories,articles}/`, `src/features/content/` (`markdown-editor`, `article-picker-dialog`, `attachments-field`, `move-buttons`, `sub-pages`) |
-| Trang public | `public-site/src/pages/index.astro`, `src/pages/{categories,articles}/`, `src/components/Attachments.astro` |
+| Trang public | `public-site/src/pages/index.astro`, `src/pages/{categories,articles}/`, `src/components/` (`Attachments`, `RichHtml`, `ArticleMenu`, `BookTree`), `src/lib/category-query.ts`, `src/lib/code-blocks.ts` |
 | Test | `make test f=ArticleEmbed`, `f=WikiSyntax`, `f=ContentCategoryApi`, `f=ArticleApi`, `f=PublicContentApi`, `f=PublicFileApi`, `f=FolderPolicy`, `f=SavedApi`; `pnpm test src/features/content` |

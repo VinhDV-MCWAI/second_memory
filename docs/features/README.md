@@ -10,7 +10,7 @@ Mỗi tính năng một file: nó làm gì, màn hình nào, API nào, bảng n�
 | Skill Ledger (đã bỏ 2026-10-20) | [skill-ledger.md](skill-ledger.md) | Lịch sử: kỹ năng, cấp độ, bằng chứng, mục tiêu học, nhãn. Thay bằng danh mục và bài viết ([ADR-0022](../adr/0022-trang-tai-lieu-kinh-nghiem.md)) |
 | Tìm kiếm | [tim-kiem.md](tim-kiem.md) | Một ô tìm kiếm cho kỹ năng, mục tiêu, bằng chứng, file và thư mục; gõ không dấu, gõ sai vẫn ra |
 | Nhật ký thay đổi | [nhat-ky-thay-doi.md](nhat-ky-thay-doi.md) | Ghi lại ai đổi gì, lúc nào, và mọi lần đăng nhập |
-| Trang public | [trang-public.md](trang-public.md) | Trang ai cũng xem được ở gốc `/`: trang chủ danh mục, kỹ năng và bằng chứng công khai, bài viết |
+| Trang public | [trang-public.md](trang-public.md) | Trang ai cũng xem được ở gốc `/`: trang chủ kiểu diễn đàn, trang danh mục, bài viết bố cục trang tài liệu |
 | Danh mục và bài viết | [bai-viet.md](bai-viet.md) | Danh mục trang chủ (các bước làm phần mềm) và bài viết Markdown, sửa trên trang quản trị |
 | Nhập từ Obsidian | [nhap-tu-obsidian.md](nhap-tu-obsidian.md) | Đồng bộ ghi chú Obsidian có `publish: true` thành bằng chứng |
 | Việc nền và thông báo tức thì | [viec-nen-va-thong-bao.md](viec-nen-va-thong-bao.md) | Việc chạy lâu làm ở container riêng, xong thì báo ngay lên màn hình (dùng chung cho mọi tính năng) |

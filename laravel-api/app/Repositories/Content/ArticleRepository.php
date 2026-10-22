@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Repositories\Content;
 
 use App\Constants\ContentConst;
+use App\Enums\ArticleSort;
 use App\Enums\MoveDirection;
 use App\Models\Content\Article;
 use App\Models\Content\ContentCategory;
@@ -15,6 +16,7 @@ use App\Repositories\CrudRepository;
 use App\Services\Content\WikiSyntax;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\Relation;
@@ -163,6 +165,75 @@ class ArticleRepository extends CrudRepository
                 $categories->visible()->select(['content_category.id', 'content_category.name', 'content_category.slug']);
             }])
             ->firstOrFail();
+    }
+
+    /**
+     * Shown articles in any of the categories (a category, or a group and its categories) for its
+     * public page (ADR-0022), optionally also in a second category and with the words in the title.
+     *
+     * @param  list<int>  $categoryIds
+     * @return LengthAwarePaginator<int, Article>
+     */
+    public function publicArticlesIn(array $categoryIds, ArticleSort $sort, ?int $alsoCategoryId, ?string $words, int $page): LengthAwarePaginator
+    {
+        $query = Article::query()
+            ->visible()
+            ->whereHas('categories', fn (Builder $categories) => $categories->whereKey($categoryIds))
+            ->when($alsoCategoryId !== null, fn (Builder $query) => $query->whereHas('categories', fn (Builder $categories) => $categories->whereKey($alsoCategoryId)))
+            ->when($words !== null && trim($words) !== '', fn (Builder $query) => $query->whereRaw('f_unaccent(lower(article.title)) like f_unaccent(lower(?))', ['%'.$this->escapeLike(trim((string) $words)).'%']))
+            ->select(['article.id', 'article.title', 'article.slug', 'article.summary', 'article.created_at', 'article.updated_at'])
+            ->orderByDesc($sort->column())
+            ->orderByDesc('article.id');
+
+        return $query->paginate(ContentConst::PUBLIC_PER_PAGE, ['*'], 'page', $page);
+    }
+
+    /**
+     * Every article under (and including) $rootId, parents before children, siblings in order.
+     *
+     * @return list<object{id: int, parent_id: int|null, title: string, slug: string, is_public: bool}>
+     */
+    public function treeRows(int $rootId): array
+    {
+        return DB::select(<<<'SQL'
+            WITH RECURSIVE down(id, path) AS (
+                SELECT id, ARRAY[sort_order, id] FROM article WHERE id = ?
+                UNION ALL
+                SELECT a.id, down.path || ARRAY[a.sort_order, a.id] FROM article a JOIN down ON a.parent_id = down.id
+            )
+            SELECT a.id, a.parent_id, a.title, a.slug, a.is_public FROM down JOIN article a ON a.id = down.id ORDER BY down.path
+            SQL, [$rootId]);
+    }
+
+    /** The top of the article's tree: itself when it has no parent */
+    public function rootIdOf(int $id): int
+    {
+        return (int) DB::selectOne(<<<'SQL'
+            WITH RECURSIVE up(id, parent_id) AS (
+                SELECT id, parent_id FROM article WHERE id = ?
+                UNION ALL
+                SELECT a.id, a.parent_id FROM article a JOIN up ON a.id = up.parent_id
+            )
+            SELECT id FROM up WHERE parent_id IS NULL
+            SQL, [$id])?->id;
+    }
+
+    /**
+     * Newest shown articles sharing a category with $article, itself left out.
+     *
+     * @return Collection<int, Article>
+     */
+    public function relatedVisible(Article $article, int $limit): Collection
+    {
+        $categoryIds = $article->categories->modelKeys();
+
+        return Article::query()
+            ->visible()
+            ->whereKeyNot($article->id)
+            ->whereHas('categories', fn (Builder $categories) => $categories->whereKey($categoryIds))
+            ->latest('article.created_at')
+            ->limit($limit)
+            ->get(['article.id', 'article.title', 'article.slug']);
     }
 
     /**

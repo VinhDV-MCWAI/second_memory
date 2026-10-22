@@ -46,12 +46,12 @@ Trình duyệt → http://localhost:81 (nginx)
   ├─ /app/…            → Reverb (WebSocket, thông báo tức thì)
   ├─ /admin…, /_next/… → trang quản trị (Next.js): đăng nhập ở /admin/login
   ├─ /login, /docs…    → chuyển hướng tới /admin/login, /
-  └─ mọi đường dẫn khác → trang public (Astro, ứng dụng public-site): /, /skills, /guides/…, /me
+  └─ mọi đường dẫn khác → trang public (Astro, ứng dụng public-site): /, /categories/…, /articles/…, /me
 ```
 
 | Dịch vụ | Địa chỉ từ máy | Dùng để |
 |---|---|---|
-| Trang public | http://localhost:81/ | Trang chủ danh mục, kỹ năng, bài viết |
+| Trang public | http://localhost:81/ | Trang chủ kiểu diễn đàn, danh mục, bài viết |
 | Trang quản trị + API | http://localhost:81/admin | Dùng hằng ngày (`root` / `12345678`) |
 | Danh sách API (OpenAPI) | file `laravel-api/openapi.json` (sinh bằng `make openapi`) | Xem các API hiện có |
 | MinIO console | http://localhost:9102 | Xem bucket và file |

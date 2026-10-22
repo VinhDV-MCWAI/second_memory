@@ -410,10 +410,4 @@ class MediaRepository extends BaseRepository
                 ->where('media_mgmt.virtual_path', 'not like', $this->escapeLike($folder).MediaConst::PATH_SEPARATOR.'%');
         }
     }
-
-    /** `%`, `_` and `\` in a name are literal in LIKE patterns (PostgreSQL's default escape is `\`). */
-    private function escapeLike(string $value): string
-    {
-        return str_replace(['\\', '%', '_'], ['\\\\', '\\%', '\\_'], $value);
-    }
 }

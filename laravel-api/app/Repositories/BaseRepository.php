@@ -63,6 +63,12 @@ abstract class BaseRepository
         }
     }
 
+    /** `%`, `_` and `\` in a value are literal in LIKE patterns (PostgreSQL's default escape is `\`). */
+    protected function escapeLike(string $value): string
+    {
+        return str_replace(['\\', '%', '_'], ['\\\\', '\\%', '\\_'], $value);
+    }
+
     /**
      * Order by `sort_by` when it is one of the sortable columns, otherwise by the default.
      * The allow-list replaces a per-request Schema::hasColumn() query (API-04) and keeps

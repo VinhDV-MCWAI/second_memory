@@ -66,7 +66,7 @@ Route::prefix('public')
         // Files the public site shows (ADR-0022)
         Route::get('files/{key}', [PublicFileController::class, 'url'])->whereUuid('key');
         // Categories and articles (ADR-0022)
-        Route::get('categories', [PublicContentController::class, 'categories']);
+        Route::get('home', [PublicContentController::class, 'home']);
         Route::get('categories/{slug}', [PublicContentController::class, 'category']);
         Route::get('articles/{slug}', [PublicContentController::class, 'article']);
     });

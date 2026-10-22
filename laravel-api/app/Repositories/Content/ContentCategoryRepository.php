@@ -17,6 +17,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\Relation;
 
 /**
@@ -124,25 +125,38 @@ class ContentCategoryRepository extends CrudRepository
     }
 
     /**
-     * Visible groups and categories in tree order, with their visible articles counted.
+     * Visible groups in order, each with its visible categories, their visible article count and
+     * newest visible article: the forum-like home page (ADR-0022).
      *
      * @return Collection<int, ContentCategory>
      */
-    public function publicCategories(): Collection
+    public function publicGroups(): Collection
     {
         return ContentCategory::query()
             ->visible()
-            ->leftJoin('content_category as parent', 'parent.id', '=', 'content_category.parent_id')
-            ->select('content_category.*', 'parent.name as parent_name')
-            ->withCount(['articles' => function (Builder $articles): void {
-                /** @var Builder<Article> $articles */
-                $articles->visible();
+            ->whereNull('content_category.parent_id')
+            ->with(['children' => function (Relation $children): void {
+                /** @var HasMany<ContentCategory, ContentCategory> $children */
+                $children->where('is_public', true)
+                    ->withCount(['articles' => function (Builder $articles): void {
+                        /** @var Builder<Article> $articles */
+                        $articles->visible();
+                    }])
+                    ->with(['articles' => function (Relation $articles): void {
+                        /** @var BelongsToMany<Article, ContentCategory> $articles */
+                        $articles->visible()->latest('article.created_at')->limit(1)
+                            ->select(['article.id', 'article.title', 'article.slug', 'article.created_at']);
+                    }])
+                    ->orderBy('sort_order')->orderBy('id');
             }])
-            ->orderByRaw(self::TREE_ORDER)
+            ->orderBy('content_category.sort_order')
+            ->orderBy('content_category.id')
             ->get();
     }
 
     /**
+     * A shown group or category with its evidence and, for a group, its shown categories.
+     *
      * @throws ModelNotFoundException when the category is missing or not shown
      */
     public function publicCategoryBySlug(string $slug): ContentCategory
@@ -153,14 +167,25 @@ class ContentCategoryRepository extends CrudRepository
             ->with([
                 'parent:id,name,slug',
                 'attachments.media',
-                'articles' => function (Relation $articles): void {
-                    /** @var BelongsToMany<Article, ContentCategory> $articles */
-                    $articles->visible()
-                        ->orderByDesc('article.updated_at')->orderBy('article.id')
-                        ->select(['article.id', 'article.title', 'article.slug', 'article.summary', 'article.updated_at']);
+                'children' => function (Relation $children): void {
+                    /** @var HasMany<ContentCategory, ContentCategory> $children */
+                    $children->where('is_public', true)
+                        ->withCount(['articles' => function (Builder $articles): void {
+                            /** @var Builder<Article> $articles */
+                            $articles->visible();
+                        }])
+                        ->orderBy('sort_order')->orderBy('id');
                 },
             ])
             ->firstOrFail();
+    }
+
+    /** Id of a shown category by slug; null when it is missing or not shown */
+    public function visibleIdBySlug(string $slug): ?int
+    {
+        $id = ContentCategory::query()->visible()->where('content_category.slug', $slug)->value('content_category.id');
+
+        return $id === null ? null : (int) $id;
     }
 
     /**

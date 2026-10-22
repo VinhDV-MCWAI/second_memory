@@ -5,9 +5,10 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Public;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Public\PublicCategoryRequest;
 use App\Http\Resources\Public\PublicArticleResource;
 use App\Http\Resources\Public\PublicCategoryDetailResource;
-use App\Http\Resources\Public\PublicCategoryResource;
+use App\Http\Resources\Public\PublicGroupResource;
 use App\Services\Public\PublicContentService;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
@@ -19,29 +20,35 @@ class PublicContentController extends Controller
     public function __construct(private readonly PublicContentService $content) {}
 
     /**
-     * Public groups and categories of the home page: each group followed by its categories, in the owner's order
+     * The home page: public groups in the owner's order, each with its public categories, their article count and newest article
      *
      * @unauthenticated
      *
-     * @return AnonymousResourceCollection<int, PublicCategoryResource>
+     * @return AnonymousResourceCollection<int, PublicGroupResource>
      */
-    public function categories(): AnonymousResourceCollection
+    public function home(): AnonymousResourceCollection
     {
-        return $this->content->categories();
+        return $this->content->home();
     }
 
     /**
-     * One public category: description as safe HTML, evidence, public articles; private (or in a private group) or missing → 404
+     * One public group or category: description as safe HTML, evidence, its categories (a group), and a page of its public articles
+     * (`sort`: newest | updated; `also`: only articles in that category too; `q`: words of the title). Private (or in a private group)
+     * or missing → 404
      *
      * @unauthenticated
      */
-    public function category(string $slug): PublicCategoryDetailResource
+    public function category(PublicCategoryRequest $request, string $slug): PublicCategoryDetailResource
     {
-        return $this->content->category($slug);
+        /** @var array{sort?: string|null, also?: string|null, q?: string|null, page?: int|string|null} $query */
+        $query = $request->validated();
+
+        return $this->content->category($slug, $query);
     }
 
     /**
-     * One public article, its Markdown body as safe HTML; private (or under a private article) or missing → 404
+     * One public article: body as safe HTML, table of contents, categories, its book (tree, way up, previous / next) or related
+     * articles; private (or under a private article) or missing → 404
      *
      * @unauthenticated
      */

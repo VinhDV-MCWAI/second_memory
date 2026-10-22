@@ -34,6 +34,12 @@ final class ContentConst
 
     public const PER_PAGE = 15;
 
+    /** Articles per page of a public category */
+    public const PUBLIC_PER_PAGE = 20;
+
+    /** Articles sharing a category, beside an article that is not in a book */
+    public const RELATED_MAX = 10;
+
     /** Articles embedded in articles: `![[a]]` inside `![[b]]` inside … (ADR-0022) */
     public const EMBED_DEPTH_MAX = 3;
 
