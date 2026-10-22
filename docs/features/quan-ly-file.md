@@ -24,8 +24,8 @@ Menu **Files** (`/admin/files`, cần quyền `media.list`).
 | Thùng rác | Nút **Trash** (`/admin/files/trash`) | `media.trash-list` |
 | Khóa thư mục theo phòng ban | Gắn thư mục cho phòng ban: chỉ thành viên (và vai trò Chủ) thấy và dùng được thư mục cùng mọi thứ bên trong. Luật và các chỗ bị chặn ở [phòng ban](phong-ban.md#khóa-thư-mục-trong-files). Nút chìa khóa (**Access**) ở dòng thư mục để chọn phòng ban; thư mục khóa có ổ khóa màu vàng cạnh tên | `media.access` + `department.list` |
 | Xem kích thước ảnh | Cột dung lượng và dòng dưới tên trong hộp xem trước hiện thêm rộng × cao (ví dụ `2.0 MB · 1920 × 1080`) với ảnh jpg, png, gif, webp, avif, bmp. Đọc từ 1 MB đầu của file ngay khi upload xong; ảnh hỏng không đọc được thì chỉ hiện dung lượng, upload vẫn thành công. Ảnh upload trước ngày 2026-10-15: chạy `docker exec ml-php php artisan media:read-image-sizes` (chạy lại bao nhiêu lần cũng được) | `media.list` |
-| Xem ảnh nhỏ, thời lượng | Ảnh (jpg, png, gif, webp, avif, bmp) và video (mp4, m4v, webm, ogv) có ảnh nhỏ cạnh tên file; video và nhạc (mp3, m4a, wav, ogg, oga, flac) có thời lượng cạnh dung lượng, ví dụ `45 MB · 1280 × 720 · 3:12`. Có cả trong hộp chọn file và ô file của form bằng chứng. Tạo ngầm vài giây sau khi upload xong, màn hình tự hỏi lại tới khi có (tối đa 30 giây). Chi tiết ở mục [Ảnh nhỏ và thời lượng](#ảnh-nhỏ-và-thời-lượng) | `media.list` |
-| Xem file đang gắn vào bằng chứng nào | Cột **Evidence**: kẹp giấy + số lần gắn. Rê chuột vào file thấy tên các bằng chứng; bấm vào số của một file thì mở màn hình Evidence chỉ hiện các bằng chứng dùng file đó (cần quyền `evidence.list`); thư mục đếm các file bên trong (không tính file đã xóa). Xóa file / thư mục đang được gắn thì hộp thoại xóa cảnh báo thêm số liên kết sẽ hiện "Deleted" | `media.list` |
+| Xem ảnh nhỏ, thời lượng | Ảnh (jpg, png, gif, webp, avif, bmp) và video (mp4, m4v, webm, ogv) có ảnh nhỏ cạnh tên file; video và nhạc (mp3, m4a, wav, ogg, oga, flac) có thời lượng cạnh dung lượng, ví dụ `45 MB · 1280 × 720 · 3:12`. Có cả trong hộp chọn file (Chèn file của bài viết, đính kèm của danh mục). Tạo ngầm vài giây sau khi upload xong, màn hình tự hỏi lại tới khi có (tối đa 30 giây). Chi tiết ở mục [Ảnh nhỏ và thời lượng](#ảnh-nhỏ-và-thời-lượng) | `media.list` |
+| Xem file đang dùng ở đâu | Cột **Used in**: các danh mục đính kèm file (**Category:** tên) và các bài viết nhúng file bằng `![[file:…]]` (**Article:** tên). Trống là chưa dùng ở đâu. Từ 2026-10-22 ([ADR-0022](../adr/0022-trang-tai-lieu-kinh-nghiem.md)) | `media.list` |
 
 Nút nào không có quyền thì không hiện (API vẫn chặn bằng 403). Vai trò Chỉ xem: xem và tải về.
 
@@ -33,7 +33,7 @@ Upload chạy lần lượt từng file (file lớn đã tự gửi 4 phần cù
 
 ### Thùng rác
 
-File đã xóa nằm trong thùng rác **30 ngày**, sau đó MinIO tự xóa hẳn và dòng đó biến khỏi thùng rác. Mỗi ngày lúc 0 giờ, lệnh `media:prune-trash` (container `ml-scheduler`) xóa hẳn khỏi bảng `media_mgmt` mọi dòng đã xóa quá 30 ngày (file, thư mục, upload hỏng), kèm liên kết của file đó với bằng chứng, và ghi `purged` vào nhật ký. Chạy tay: `docker exec ml-php php artisan media:prune-trash`.
+File đã xóa nằm trong thùng rác **30 ngày**, sau đó MinIO tự xóa hẳn và dòng đó biến khỏi thùng rác. Mỗi ngày lúc 0 giờ, lệnh `media:prune-trash` (container `ml-scheduler`) xóa hẳn khỏi bảng `media_mgmt` mọi dòng đã xóa quá 30 ngày (file, thư mục, upload hỏng), kèm đính kèm danh mục và liên kết nhúng trong bài viết của file đó, và ghi `purged` vào nhật ký. Chạy tay: `docker exec ml-php php artisan media:prune-trash`.
 
 | Thao tác | Kết quả | Quyền |
 |---|---|---|
@@ -66,7 +66,7 @@ Từ 2026-10-15. Upload xong thì một việc nền (container `ml-queue`, khô
 | File ffmpeg không đọc được | Upload vẫn thành công, chỉ không có ảnh nhỏ và thời lượng. Lý do ghi vào log (`ffprobe could not read a file`) |
 | An toàn | Mỗi lần chạy ffmpeg tối đa 60 giây. ffmpeg chỉ được đọc file qua mạng (http) và chỉ với các định dạng video, nhạc, ảnh thông thường: một file giả làm video nhưng bên trong là danh sách phát (trỏ tới file khác trên máy) bị từ chối |
 | Xóa | Ảnh nhỏ ở lại cùng file (không bị đặt dấu đã xóa), nên thùng rác vẫn hiện được (từ 2026-10-17). Xóa vĩnh viễn hoặc lệnh dọn hằng ngày thì xóa luôn ảnh nhỏ |
-| Trang public | File đính kèm bằng chứng công khai cũng hiện ảnh nhỏ, xem [Trang public](trang-public.md) |
+| Trang public | File đính kèm danh mục công khai cũng hiện ảnh nhỏ, xem [Trang public](trang-public.md) |
 | File upload trước ngày 2026-10-15 | `docker exec ml-php php artisan media:read-media-info`. Chạy lại bao nhiêu lần cũng được: file đã đọc (kể cả không đọc được) được bỏ qua |
 | Image PHP | Có thêm ffmpeg nên image bản dev nặng 433 MB (trước là 252 MB) |
 
@@ -163,7 +163,7 @@ Tất cả nằm dưới `/api/admin/media/`. Mỗi API là một quyền trong 
 
 | API | Làm gì | Quyền | Chỉ xem |
 |---|---|---|---|
-| `GET list?folder=/Docs&name=…` | Con trực tiếp của thư mục (mặc định `/`), thư mục đứng trước. Mỗi file có ô `preview`: `image`, `pdf`, `video`, `audio`, `text` hoặc null (chỉ tải về); `attached_count` (số liên kết với bằng chứng, thư mục đếm file bên trong), `used_by` (`[{id, title}]` các bằng chứng dùng file) | `media.list` | Được |
+| `GET list?folder=/Docs&name=…` | Con trực tiếp của thư mục (mặc định `/`), thư mục đứng trước. Mỗi file có ô `preview`: `image`, `pdf`, `video`, `audio`, `text` hoặc null (chỉ tải về); `used_in` (`[{kind, id, title}]`: `kind` là `category` cho danh mục đính kèm file, `article` cho bài viết nhúng file) | `media.list` | Được |
 | `POST store-folder` `{folder, name}` | Tạo thư mục | `media.store-folder` | Không |
 | `POST upload-url` `{folder, name, size, mime_type}` | Xin link PUT cho file ≤ 100 MB; trả `{id, url, method, headers, expires_at}` | `media.upload-url` | Không |
 | `POST complete/{id}` | Báo đã gửi xong; trả thông tin file | `media.complete` | Không |
@@ -181,7 +181,7 @@ Tất cả nằm dưới `/api/admin/media/`. Mỗi API là một quyền trong 
 | `POST trash/delete` `{ids}` | Xóa vĩnh viễn các file trong thùng rác; trả số file đã xóa | `media.trash-delete` | Không |
 | `POST trash/empty` | Dọn sạch thùng rác; trả số file đã xóa | `media.trash-empty` | Không |
 
-File có thể được [đính kèm vào bằng chứng](skill-ledger.md#file-đính-kèm-bằng-chứng) của Skill Ledger. Xóa file đang đính kèm thì bằng chứng vẫn giữ và đánh dấu "Deleted"; khôi phục từ thùng rác là hiện lại; xóa vĩnh viễn thì tự gỡ khỏi bằng chứng.
+File có thể được đính kèm vào danh mục hoặc nhúng trong bài viết ([danh mục và bài viết](bai-viet.md)). Xóa file vào thùng rác thì trang public thôi hiện nó; khôi phục là hiện lại; xóa vĩnh viễn thì tự gỡ khỏi đính kèm và khỏi danh sách file nhúng của bài.
 
 Mọi thay đổi (tạo thư mục, upload xong, đổi tên, chuyển, xóa) ghi vào [nhật ký thay đổi](nhat-ky-thay-doi.md) với loại `media`.
 
@@ -231,8 +231,7 @@ Mọi thay đổi (tạo thư mục, upload xong, đổi tên, chuyển, xóa) g
 | Tiếp tục upload dở sau khi tải lại trang | Xong |
 | Xem trước ảnh, PDF, video, nhạc, file chữ | Xong |
 | Thùng rác 30 ngày, khôi phục, xóa vĩnh viễn, dọn hằng ngày | Xong |
-| Gắn file vào bằng chứng của [Skill Ledger](skill-ledger.md), cột Evidence ở màn hình Files | Xong |
-| Bằng chứng chỉ có file, không cần link | Xong |
-| Bấm số ở cột Evidence để mở các bằng chứng dùng file | Xong |
+| Gắn file vào bằng chứng của Skill Ledger, cột Evidence ở màn hình Files | Xong, bỏ cùng Skill Ledger (2026-10-20) |
+| Cột Used in: danh mục đính kèm file, bài viết nhúng file | Xong (2026-10-22) |
 | Kích thước ảnh (rộng × cao) | Xong |
 | Thời lượng video, nhạc; ảnh nhỏ của ảnh và video | Xong |

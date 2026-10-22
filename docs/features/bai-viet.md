@@ -7,7 +7,7 @@ Nơi lưu kinh nghiệm của chủ dự án và hiện ra ở [trang public](tr
 
 Yêu cầu: [REQ-005](../requirements/REQ-005-trang-tai-lieu-kinh-nghiem.md). Thiết kế: [ADR-0022](../adr/0022-trang-tai-lieu-kinh-nghiem.md) (thay một phần [ADR-0021](../adr/0021-public-home-categories-articles.md)).
 
-Trạng thái: đang làm theo các bước KB-02…KB-08. **Xong**: bỏ Skill Ledger, mô hình mới, màn hình quản trị, nhúng bài và file, xem trước Markdown (2026-10-20); trang public kiểu trang tài liệu (2026-10-22). Còn: lượt xem, xếp hạng Đọc nhiều / Được lưu nhiều, tìm kiếm (KB-06), nhập từ Obsidian (KB-07). Nội dung hiện tại là **bài mẫu** (`make seed`).
+Trạng thái: đang làm theo các bước KB-02…KB-08. **Xong**: bỏ Skill Ledger, mô hình mới, màn hình quản trị, nhúng bài và file, xem trước Markdown (2026-10-20); trang public kiểu trang tài liệu; lượt xem, xếp hạng Đọc nhiều / Được lưu nhiều, [tìm kiếm](tim-kiem.md), xếp hạng trên trang tổng quan (2026-10-22). Còn: nhập từ Obsidian (KB-07). Nội dung hiện tại là **bài mẫu** (`make seed`).
 
 ## Màn hình trong trang quản trị
 
@@ -78,6 +78,8 @@ HTML viết thẳng vào bài được hiện thành chữ, không chạy; link 
 | Công khai | Danh mục hiện khi nó và nhóm của nó công khai. Bài hiện khi nó và **mọi bài cha** công khai; danh mục chỉ quyết định bài có trong danh sách của danh mục hay không |
 | Xóa | Nhóm còn danh mục con: bị chặn (trừ khi xóa cùng lúc). Bài còn bài con: bị chặn (trừ khi xóa cùng lúc). Xóa danh mục thì bài viết chỉ mất liên kết với danh mục đó |
 | Lưu đệm | Trang public chậm tối đa 60 giây so với trang quản trị |
+| Lượt xem | Mỗi lần trang public hiện một bài, máy chủ trang public báo cho API kèm mã băm của IP + trình duyệt người xem. Cùng một người mở lại trong **30 phút** chỉ tính 1. Chỉ lưu con số, không lưu ai xem: mã băm chỉ nằm trong Redis 30 phút để nhận ra lần mở lại. Lượt xem không đổi ngày sửa của bài |
+| Được lưu | Số người dùng trang public đã lưu bài (☆ yêu thích hoặc 🔖 xem sau; một người lưu cả hai vẫn tính 1) |
 | Nhật ký | Mọi thêm, sửa, xóa, đổi thứ tự ghi vào [nhật ký thay đổi](nhat-ky-thay-doi.md), loại `content_category`, `article`; ảnh chụp có cả danh sách đính kèm và danh mục |
 
 ## API
@@ -91,9 +93,12 @@ HTML viết thẳng vào bài được hiện thành chữ, không chạy; link 
 | `POST article/store`, `PUT update/{id}`, `POST delete`, `PUT move/{id}` | `parent_id`, `category_ids`, `title`, `summary`, `body`, `is_public` |
 | `POST article/preview` | `{body}` → `{html, toc}` như trang public, file dùng link ký tạm; không lưu gì (quyền `article.preview`) |
 | `GET /api/public/home` | Nhóm công khai theo thứ tự, mỗi nhóm có `categories: [{name, slug, article_count, latest}]` (`latest`: bài mới nhất hoặc null) |
-| `GET /api/public/categories/{slug}?sort=&also=&q=&page=` | `group`, `description_html`, `attachments` (`title`, `url`, `note`, `file: {key, name, size, mime_type, thumbnail_url}`), `categories` (danh mục con của nhóm), `articles`, `page`, `last_page`, `total`. `sort`: `newest` (mặc định) hoặc `updated`, sai thì 422; `also`: slug danh mục thứ hai; `q`: chữ trong tiêu đề, không phân biệt dấu |
+| `GET /api/public/categories/{slug}?sort=&also=&q=&page=` | `group`, `description_html`, `attachments` (`title`, `url`, `note`, `file: {key, name, size, mime_type, thumbnail_url}`), `categories` (danh mục con của nhóm), `articles`, `page`, `last_page`, `total`. `sort`: `newest` (mặc định), `updated`, `most_read` hoặc `most_saved`, sai thì 422; mỗi bài có thêm `view_count`, `save_count`; `also`: slug danh mục thứ hai; `q`: chữ trong tiêu đề, không phân biệt dấu |
 | `GET /api/public/articles/{slug}` | `title`, `key` (mã để lưu), `summary`, `body_html` (đã chèn bài và file), `toc`, `created_at`, `updated_at`, `categories`, `book` (cây sách từ gốc, chỉ phần đang hiện), `ancestors`, `previous`, `next`, `related` (bài cùng danh mục khi bài không nằm trong sách) |
 | `GET /api/public/files/{key}` | Link tạm của file đính kèm danh mục hoặc file nhúng trong bài đang hiện |
+| `POST /api/public/articles/{slug}/view` | `{visitor}` (sha256 dạng hex của IP + trình duyệt) → `{counted}`: `false` khi người này đã được tính trong 30 phút qua. Chỉ máy chủ trang public gọi; giới hạn riêng 600 lần / phút để không ăn vào giới hạn 60 lần / phút của các API đọc |
+| `GET /api/public/search?q=` | Tìm bài và danh mục đang hiện, xem [tìm kiếm](tim-kiem.md) |
+| `GET /api/admin/dashboard/summary` | Số danh mục, số bài, số bài công khai, `views` (tổng lượt xem), `most_read`, `most_saved` (5 bài mỗi loại, cả bài riêng tư: `{id, title, slug, is_public, count}`; bài chưa ai đọc / lưu không hiện) |
 
 API public không cần đăng nhập, riêng tư hay không tồn tại đều trả 404.
 
@@ -103,7 +108,7 @@ API public không cần đăng nhập, riêng tư hay không tồn tại đều 
 |---|---|
 | `content_category` | `parent_id` (nhóm), tên (duy nhất), `slug`, mô tả Markdown (tối đa 20.000 ký tự), `sort_order`, `is_public` |
 | `category_attachment` | Đính kèm: tiêu đề, `url`, `media_id` (file trong Files), ghi chú, `position`, `public_id` (mã của `/files/{mã}`) |
-| `article` | `parent_id` (bài cha), tiêu đề, `slug` (duy nhất), tóm tắt, nội dung Markdown, `sort_order` (trong cùng cha), `is_public`, `public_key` |
+| `article` | `parent_id` (bài cha), tiêu đề, `slug` (duy nhất), tóm tắt, nội dung Markdown, `sort_order` (trong cùng cha), `is_public`, `public_key`, `view_count` (lượt xem), `search_text` / `search_tsv` (cột tự tính cho [tìm kiếm](tim-kiem.md)) |
 | `article_category` | Bài ↔ danh mục |
 | `article_media` | File nhúng trong nội dung (`![[file:{id}]]`), cập nhật mỗi lần lưu bài; `public_id` là mã của `/files/{mã}` |
 | `end_user_saved.article_id` | Bài viết người dùng đã lưu |
