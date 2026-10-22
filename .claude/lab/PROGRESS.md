@@ -103,6 +103,8 @@ Mỗi dòng do `scripts/lane.sh done` tự thêm. Không sửa tay. Các dòng t
 
 - 2026-10-22 — [lane main] KB-06 done: f57082a5, 14352c31, 671cb151, c57624c5 — lượt xem (một người 30 phút tính 1, chỉ lưu con số, khóa Redis, giới hạn riêng 600/phút), tab Đọc nhiều / Được lưu nhiều kèm số lượt xem và lưu, tìm kiếm bài + danh mục (quản trị có cả bài riêng tư và file; trang public /search và ô tìm đầu trang; gõ không dấu, gõ sai vẫn ra), trang tổng quan: tổng lượt xem, 5 bài đọc nhiều, 5 bài lưu nhiều, Files: cột Used in; migration thử quay lui trên DB testing; make verify pass (251 backend, 155 giao diện, 63 importer); dọn: make clean, lượt xem thử đưa về 0, ảnh chụp và file tạm
 
+- 2026-10-22 — [lane main] KB-07 done: 6bf0b36a, d36458e2, 787d95ca, e39cb796 — make import tạo bài viết từ ghi chú Obsidian: gửi cả nội dung, bài cha (đường dẫn, tên file hoặc [[ ]]), danh mục theo tên (tên lạ được báo, không tự tạo), [[link]] và ![[nhúng]] đổi sang slug, link tới ghi chú không đăng chỉ còn chữ; ghi chú bị bỏ thì bài bị ẩn; token mới khóa article:import; thử thật trên dev với vault TMP 2 ghi chú; make verify pass (269 backend, 155 giao diện, 58 importer, astro check 0 lỗi); dọn: 2 bài TMP xóa qua service, token đã thu hồi, vault thử và file tạm, make clean
+
 ## Next step
 
 1. Đầu phiên: đọc file này, rồi `scripts/lane.sh status`. Bảng việc chỉ còn các việc "để sau" theo quyết định chủ dự án.
