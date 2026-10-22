@@ -6,6 +6,8 @@ namespace App\Http\Resources\Media;
 
 use App\Enums\PreviewKind;
 use App\Enums\UploadStatus;
+use App\Models\Content\Article;
+use App\Models\Content\ContentCategory;
 use App\Models\Media\MediaMgmt;
 use App\Services\Media\MediaInfoService;
 use Illuminate\Http\Request;
@@ -47,6 +49,15 @@ class MediaResource extends JsonResource
              * @var list<int>
              */
             'department_ids' => $this->whenLoaded('departments', fn () => $this->departments->modelKeys()),
+            /**
+             * Where the file shows (ADR-0022; Files listing only): categories attaching it, articles embedding it
+             *
+             * @var list<array{kind: 'category'|'article', id: int, title: string}>
+             */
+            'used_in' => $this->whenLoaded('attachedToCategories', fn (): array => [
+                ...$this->attachedToCategories->map(fn (ContentCategory $category): array => ['kind' => 'category', 'id' => (int) $category->id, 'title' => (string) $category->name]),
+                ...$this->embeddedInArticles->map(fn (Article $article): array => ['kind' => 'article', 'id' => $article->id, 'title' => $article->title]),
+            ]),
             'created_at' => $this->created_at?->toIso8601String(),
             'updated_at' => $this->updated_at?->toIso8601String(),
         ];

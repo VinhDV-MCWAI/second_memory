@@ -5,9 +5,12 @@ declare(strict_types=1);
 namespace Tests\Feature\Public;
 
 use App\Constants\ContentConst;
+use App\Enums\SavedKind;
 use App\Models\Content\Article;
 use App\Models\Content\CategoryAttachment;
 use App\Models\Content\ContentCategory;
+use App\Models\User\EndUser;
+use App\Models\User\EndUserSaved;
 use Tests\TestCase;
 
 /**
@@ -56,6 +59,24 @@ final class PublicContentApiTest extends TestCase
         $this->getJson("/api/public/categories/{$laravel->slug}?sort=updated")->assertOk()
             ->assertJsonPath('data.data.articles.*.title', ['Cũ', 'Mới']);
         $this->getJson("/api/public/categories/{$laravel->slug}?sort=nope")->assertUnprocessable();
+    }
+
+    public function test_a_category_ranks_by_views_and_by_end_users_who_saved(): void
+    {
+        $category = ContentCategory::factory()->create();
+        Article::factory()->inCategory($category)->create(['title' => 'Đọc nhiều', 'view_count' => 9]);
+        $saved = Article::factory()->inCategory($category)->create(['title' => 'Lưu nhiều', 'view_count' => 1, 'created_at' => now()->subDay()]);
+        Article::factory()->inCategory($category)->create(['title' => 'Mới', 'created_at' => now()->subDays(2)]);
+        EndUserSaved::query()->create(['end_user_id' => EndUser::factory()->create()->id, 'kind' => SavedKind::FAVORITE->value, 'article_id' => $saved->id]);
+
+        $url = "/api/public/categories/{$category->slug}";
+        $this->getJson("{$url}?sort=most_read")->assertOk()
+            ->assertJsonPath('data.data.articles.*.title', ['Đọc nhiều', 'Lưu nhiều', 'Mới'])
+            ->assertJsonPath('data.data.articles.0.view_count', 9);
+        // Ties read newest first
+        $this->getJson("{$url}?sort=most_saved")->assertOk()
+            ->assertJsonPath('data.data.articles.*.title', ['Lưu nhiều', 'Đọc nhiều', 'Mới'])
+            ->assertJsonPath('data.data.articles.0.save_count', 1);
     }
 
     public function test_a_group_lists_its_categories_and_their_articles(): void

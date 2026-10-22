@@ -61,6 +61,7 @@ class AppServiceProvider extends ServiceProvider
         Gate::before(fn (mixed $admin): ?bool => $admin instanceof AdminMst && $admin->hasRole(AdminRole::OWNER->value) ? true : null);
 
         RateLimiter::for('public', fn (Request $request): Limit => Limit::perMinute(ContentConst::PUBLIC_RATE_PER_MINUTE)->by((string) $request->ip()));
+        RateLimiter::for('public-view', fn (Request $request): Limit => Limit::perMinute(ContentConst::PUBLIC_VIEW_RATE_PER_MINUTE)->by((string) $request->ip()));
         RateLimiter::for('user', fn (Request $request): Limit => Limit::perMinute(EndUserConst::RATE_PER_MINUTE)->by((string) $request->ip()));
         RateLimiter::for('user-register', fn (Request $request): Limit => Limit::perHour(EndUserConst::REGISTER_PER_HOUR)->by((string) $request->ip()));
 

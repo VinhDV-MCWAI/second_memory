@@ -181,11 +181,28 @@ class ArticleRepository extends CrudRepository
             ->whereHas('categories', fn (Builder $categories) => $categories->whereKey($categoryIds))
             ->when($alsoCategoryId !== null, fn (Builder $query) => $query->whereHas('categories', fn (Builder $categories) => $categories->whereKey($alsoCategoryId)))
             ->when($words !== null && trim($words) !== '', fn (Builder $query) => $query->whereRaw('f_unaccent(lower(article.title)) like f_unaccent(lower(?))', ['%'.$this->escapeLike(trim((string) $words)).'%']))
-            ->select(['article.id', 'article.title', 'article.slug', 'article.summary', 'article.created_at', 'article.updated_at'])
-            ->orderByDesc($sort->column())
+            ->select(['article.id', 'article.title', 'article.slug', 'article.summary', 'article.view_count', 'article.created_at', 'article.updated_at'])
+            ->selectRaw(ArticleSort::SAVE_COUNT.' AS save_count')
+            ->orderByRaw($sort->expression().' DESC')
+            // Ties (no views or saves yet) read newest first
+            ->orderByDesc('article.created_at')
             ->orderByDesc('article.id');
 
         return $query->paginate(ContentConst::PUBLIC_PER_PAGE, ['*'], 'page', $page);
+    }
+
+    /** Id of a shown article by slug; null when it is missing or not shown */
+    public function visibleIdBySlug(string $slug): ?int
+    {
+        $id = Article::query()->visible()->where('article.slug', $slug)->value('article.id');
+
+        return $id === null ? null : (int) $id;
+    }
+
+    /** One more view; `updated_at` is left alone, a view is not a change */
+    public function addView(int $id): void
+    {
+        DB::table('article')->where('id', $id)->increment('view_count');
     }
 
     /**

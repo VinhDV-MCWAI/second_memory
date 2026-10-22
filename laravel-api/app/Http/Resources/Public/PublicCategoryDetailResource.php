@@ -47,11 +47,13 @@ class PublicCategoryDetailResource extends JsonResource
                 'slug' => (string) $category->slug,
                 'article_count' => (int) $category->getAttribute('articles_count'),
             ])->all(),
-            /** @var list<array{title: string, slug: string, summary: string|null, created_at: string, updated_at: string}> */
+            /** @var list<array{title: string, slug: string, summary: string|null, view_count: int, save_count: int, created_at: string, updated_at: string}> */
             'articles' => collect($this->articles->items())->map(fn (Article $article): array => [
                 'title' => (string) $article->title,
                 'slug' => (string) $article->slug,
                 'summary' => $article->summary,
+                'view_count' => (int) $article->view_count,
+                'save_count' => (int) $article->getAttribute('save_count'),
                 'created_at' => (string) $article->created_at?->toIso8601String(),
                 'updated_at' => (string) $article->updated_at?->toIso8601String(),
             ])->all(),

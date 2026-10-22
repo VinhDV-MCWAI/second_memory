@@ -7,6 +7,9 @@ namespace App\Http\Requests\Content\Search;
 use App\Constants\SearchConst;
 use Illuminate\Foundation\Http\FormRequest;
 
+/**
+ * The search box, admin or public (ADR-0009, ADR-0022).
+ */
 class SearchRequest extends FormRequest
 {
     public function authorize(): bool
@@ -17,7 +20,7 @@ class SearchRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'q' => ['required', 'string', 'min:'.SearchConst::QUERY_MIN, 'max:'.SearchConst::QUERY_MAX],
+            'q' => ['required', 'string', 'min:'.SearchConst::QUERY_MIN, 'max:'.SearchConst::QUERY_MAX, 'regex:'.SearchConst::WORD_PATTERN],
         ];
     }
 

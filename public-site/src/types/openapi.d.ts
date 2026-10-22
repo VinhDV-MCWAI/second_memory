@@ -430,7 +430,7 @@ export interface paths {
       path?: never;
       cookie?: never;
     };
-    /** Category and article counts for the dashboard */
+    /** Category and article counts, total views, and the articles read and saved most (private ones too) for the dashboard */
     get: operations['dashboard.summary'];
     put?: never;
     post?: never;
@@ -1085,6 +1085,46 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/public/search': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * Search the shown articles (title, summary, body) and categories (name, description); accents and case ignored,
+     *     typo fallback (`match: fuzzy`) when nothing matches
+     */
+    get: operations['publicContent.search'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/public/articles/{slug}/view': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /**
+     * Report that the public site showed an article: counted once per visitor (a hash the site makes from IP and browser,
+     *     never stored) per 30 minutes; `counted` is false for a repeat. Private or missing → 404
+     */
+    post: operations['publicContent.view'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/public/files/{key}': {
     parameters: {
       query?: never;
@@ -1228,7 +1268,8 @@ export interface paths {
       cookie?: never;
     };
     /**
-     * Search the names of files and folders (accents and case ignored; typo fallback when nothing matches).
+     * Search articles (title, summary, body), categories (name, description) and the names of files and folders; accents
+     *     and case ignored, typo fallback (`match: fuzzy`) when nothing matches. Private articles and categories are included.
      *     `files` is empty for an admin without `media.list`, and never holds the trash or locked folders the admin may not use
      */
     get: operations['search.query'];
@@ -1332,7 +1373,7 @@ export interface components {
      * @description How a category page of the public site orders its articles, like the tabs of a forum (ADR-0022).
      * @enum {string}
      */
-    ArticleSort: 'newest' | 'updated';
+    ArticleSort: 'newest' | 'updated' | 'most_read' | 'most_saved';
     /** AttachedFileResource */
     AttachedFileResource: {
       id: number;
@@ -1354,6 +1395,13 @@ export interface components {
       preview: string | null;
       /** @description Departments a folder is given to (ADR-0017; Files listing only). Empty: open to every admin with Files rights */
       department_ids?: number[];
+      /** @description Where the file shows (ADR-0022; Files listing only): categories attaching it, articles embedding it */
+      used_in?: {
+        /** @enum {string} */
+        kind: 'category' | 'article';
+        id: number;
+        title: string;
+      }[];
       created_at: string | null;
       updated_at: string | null;
       /** @description false: deleted in the file manager (in the trash, or gone for good) */
@@ -1558,6 +1606,13 @@ export interface components {
       preview: string | null;
       /** @description Departments a folder is given to (ADR-0017; Files listing only). Empty: open to every admin with Files rights */
       department_ids?: number[];
+      /** @description Where the file shows (ADR-0022; Files listing only): categories attaching it, articles embedding it */
+      used_in?: {
+        /** @enum {string} */
+        kind: 'category' | 'article';
+        id: number;
+        title: string;
+      }[];
       created_at: string | null;
       updated_at: string | null;
     };
@@ -1687,6 +1742,8 @@ export interface components {
         title: string;
         slug: string;
         summary: string | null;
+        view_count: number;
+        save_count: number;
         created_at: string;
         updated_at: string;
       }[];
@@ -1708,6 +1765,14 @@ export interface components {
           created_at: string;
         } | null;
       }[];
+    };
+    /**
+     * PublicViewRequest
+     * @description A view of an article reported by the public site's server (ADR-0022).
+     */
+    PublicViewRequest: {
+      /** @description sha256 (hex) of the visitor's IP and browser, made by the public site; only kept as a cache key for 30 minutes */
+      visitor: string;
     };
     /** RegisterRequest */
     RegisterRequest: {
@@ -3170,6 +3235,21 @@ export interface operations {
               categories: number;
               articles: number;
               public_articles: number;
+              views: number;
+              most_read: {
+                id: number;
+                title: string;
+                slug: string;
+                is_public: boolean;
+                count: number;
+              }[];
+              most_saved: {
+                id: number;
+                title: string;
+                slug: string;
+                is_public: boolean;
+                count: number;
+              }[];
             };
             error: {
               status: boolean;
@@ -4948,6 +5028,101 @@ export interface operations {
       };
     };
   };
+  'publicContent.search': {
+    parameters: {
+      query: {
+        q: string;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            data: {
+              match: components['schemas']['SearchMatch'];
+              articles: {
+                title: string;
+                slug: string;
+                summary: string | null;
+              }[];
+              categories: {
+                name: string;
+                slug: string;
+                group: string | null;
+              }[];
+            };
+            error: {
+              status: boolean;
+              code: number;
+              messages: null;
+            };
+          };
+        };
+      };
+      422: components['responses']['ValidationException'];
+      /** @description Too Many Requests */
+      429: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ApiError'];
+        };
+      };
+    };
+  };
+  'publicContent.view': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        slug: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['PublicViewRequest'];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            data: {
+              counted: boolean;
+            };
+            error: {
+              status: boolean;
+              code: number;
+              messages: null;
+            };
+          };
+        };
+      };
+      404: components['responses']['ModelNotFoundException'];
+      422: components['responses']['ValidationException'];
+      /** @description Too Many Requests */
+      429: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ApiError'];
+        };
+      };
+    };
+  };
   'publicFile.url': {
     parameters: {
       query?: never;
@@ -5325,6 +5500,20 @@ export interface operations {
           'application/json': {
             data: {
               match: components['schemas']['SearchMatch'];
+              articles: {
+                id: number;
+                title: string;
+                slug: string;
+                snippet: string | null;
+                is_public: boolean;
+              }[];
+              categories: {
+                id: number;
+                name: string;
+                slug: string;
+                group: string | null;
+                is_public: boolean;
+              }[];
               files: {
                 id: number;
                 is_file: boolean;

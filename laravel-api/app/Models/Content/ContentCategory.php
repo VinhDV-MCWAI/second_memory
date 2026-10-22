@@ -32,6 +32,9 @@ class ContentCategory extends Model
 
     protected $fillable = ['parent_id', 'name', 'slug', 'description', 'sort_order', 'is_public'];
 
+    /** Generated search columns (ADR-0009): read by SQL only */
+    protected $hidden = ['search_text', 'search_tsv'];
+
     /**
      * @return BelongsTo<ContentCategory, $this>
      */

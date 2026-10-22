@@ -56,6 +56,26 @@ final class ContentConst
     /** Requests per minute and IP on /api/public (RFC-002 §4.3). */
     public const PUBLIC_RATE_PER_MINUTE = 60;
 
+    /**
+     * View counts (ADR-0022): the public site's server reports every article page it renders, so
+     * all reports come from one IP; their own limit keeps them from using up PUBLIC_RATE_PER_MINUTE.
+     */
+    public const PUBLIC_VIEW_RATE_PER_MINUTE = 600;
+
+    /** One visitor opening an article again within this time counts once */
+    public const VIEW_WINDOW_MINUTES = 30;
+
+    /** Keys expire on their own there; the default (database) store would keep every expired key */
+    public const VIEW_CACHE_STORE = 'redis';
+
+    public const VIEW_CACHE_PREFIX = 'article-view:';
+
+    /** Rows of the dashboard's "most read" and "most saved" cards */
+    public const DASHBOARD_TOP = 5;
+
+    /** The visitor is a sha256 of IP and browser, made by the public site: never stored */
+    public const VISITOR_PATTERN = '/^[0-9a-f]{64}$/';
+
     /** Sanctum ability of the Obsidian importer's token and the token name (ADR-0010). */
     public const IMPORT_ABILITY = 'evidence:import';
 

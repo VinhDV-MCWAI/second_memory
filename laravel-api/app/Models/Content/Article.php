@@ -25,6 +25,7 @@ use Illuminate\Support\Carbon;
  * @property int $sort_order
  * @property bool $is_public
  * @property string $public_key
+ * @property int $view_count
  * @property Carbon|null $updated_at
  */
 class Article extends Model
@@ -34,6 +35,9 @@ class Article extends Model
     protected $table = 'article';
 
     protected $fillable = ['parent_id', 'title', 'slug', 'summary', 'body', 'sort_order', 'is_public'];
+
+    /** Generated search columns (ADR-0009): read by SQL only */
+    protected $hidden = ['search_text', 'search_tsv'];
 
     /**
      * Rows of the visible() check: true for an article whose parent chain holds a private article.
@@ -91,6 +95,7 @@ class Article extends Model
             'parent_id' => 'integer',
             'sort_order' => 'integer',
             'is_public' => 'boolean',
+            'view_count' => 'integer',
             'created_at' => 'datetime',
             'updated_at' => 'datetime',
         ];

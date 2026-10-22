@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace App\Models\Media;
 
 use App\Enums\UploadStatus;
+use App\Models\Content\Article;
+use App\Models\Content\ContentCategory;
 use App\Models\Master\AdminMst;
 use App\Models\Master\Department;
 use Illuminate\Database\Eloquent\Builder;
@@ -85,6 +87,26 @@ class MediaMgmt extends Model
     public function departments(): BelongsToMany
     {
         return $this->belongsToMany(Department::class, 'department_policy', 'media_id', 'department_id');
+    }
+
+    /**
+     * Categories that attach this file (ADR-0022).
+     *
+     * @return BelongsToMany<ContentCategory, $this>
+     */
+    public function attachedToCategories(): BelongsToMany
+    {
+        return $this->belongsToMany(ContentCategory::class, 'category_attachment', 'media_id', 'content_category_id');
+    }
+
+    /**
+     * Articles that embed this file with `![[file:id]]` (ADR-0022).
+     *
+     * @return BelongsToMany<Article, $this>
+     */
+    public function embeddedInArticles(): BelongsToMany
+    {
+        return $this->belongsToMany(Article::class, 'article_media', 'media_id', 'article_id');
     }
 
     /**

@@ -12,7 +12,9 @@ use App\Http\Resources\Public\PublicGroupResource;
 use App\Models\Content\Article;
 use App\Repositories\Content\ArticleRepository;
 use App\Repositories\Content\ContentCategoryRepository;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Support\Facades\Cache;
 
 /**
  * Read-only public view of groups, categories and articles as a documentation site (ADR-0022).
@@ -50,6 +52,26 @@ final class PublicContentService
         );
 
         return new PublicCategoryDetailResource($category, $articles);
+    }
+
+    /**
+     * Counts a view unless the same visitor viewed the article in the last VIEW_WINDOW_MINUTES (ADR-0022).
+     *
+     * @return array{counted: bool}
+     *
+     * @throws ModelNotFoundException when the article is missing or not shown
+     */
+    public function view(string $slug, string $visitor): array
+    {
+        $id = $this->articles->visibleIdBySlug($slug) ?? throw (new ModelNotFoundException)->setModel(Article::class, [$slug]);
+        // add() writes only when the key is missing: atomic in Redis, so two quick reports count once
+        $counted = Cache::store(ContentConst::VIEW_CACHE_STORE)
+            ->add(ContentConst::VIEW_CACHE_PREFIX.$id.':'.$visitor, true, now()->addMinutes(ContentConst::VIEW_WINDOW_MINUTES));
+        if ($counted) {
+            $this->articles->addView($id);
+        }
+
+        return ['counted' => $counted];
     }
 
     public function article(string $slug): PublicArticleResource

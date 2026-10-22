@@ -69,4 +69,12 @@ Route::prefix('public')
         Route::get('home', [PublicContentController::class, 'home']);
         Route::get('categories/{slug}', [PublicContentController::class, 'category']);
         Route::get('articles/{slug}', [PublicContentController::class, 'article']);
+        Route::get('search', [PublicContentController::class, 'search']);
+    });
+
+// View counts of articles (ADR-0022), reported by the public site's server: its own rate limit
+Route::prefix('public')
+    ->middleware(['api.response', 'throttle:public-view'])
+    ->group(function () {
+        Route::post('articles/{slug}/view', [PublicContentController::class, 'view']);
     });

@@ -9,12 +9,15 @@ use App\Constants\Messages;
 use App\Enums\UploadStatus;
 use App\Models\Content\Article;
 use App\Models\Content\CategoryAttachment;
+use App\Models\Content\ContentCategory;
 use App\Models\Media\MediaMgmt;
 use App\Repositories\BaseRepository;
 use Carbon\CarbonInterface;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use Illuminate\Database\UniqueConstraintViolationException;
 use Illuminate\Support\Facades\DB;
@@ -46,7 +49,15 @@ class MediaRepository extends BaseRepository
     public function list(string $folder, array $payload, array $blocked = []): LengthAwarePaginator
     {
         $query = $this->query()->live()->where('upload_status', '<>', UploadStatus::UPLOADING->value)
-            ->with('departments:id');
+            ->with([
+                'departments:id',
+                // "Used in" of the Files listing (ADR-0022); a category may attach one file twice
+                'attachedToCategories' => function (Relation $categories): void {
+                    /** @var BelongsToMany<ContentCategory, MediaMgmt> $categories */
+                    $categories->select(['content_category.id', 'content_category.name'])->distinct();
+                },
+                'embeddedInArticles:article.id,article.title',
+            ]);
         $this->whereChildOf($query, $folder);
         $this->excludeFolders($query, $blocked);
 

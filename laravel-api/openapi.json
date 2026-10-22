@@ -2753,7 +2753,7 @@
         "/admin/dashboard/summary": {
             "get": {
                 "operationId": "dashboard.summary",
-                "summary": "Category and article counts for the dashboard",
+                "summary": "Category and article counts, total views, and the articles read and saved most (private ones too) for the dashboard",
                 "tags": [
                     "Dashboard"
                 ],
@@ -2769,20 +2769,85 @@
                                             "type": "object",
                                             "properties": {
                                                 "categories": {
-                                                    "type": "integer",
-                                                    "minimum": 0
+                                                    "type": "integer"
                                                 },
                                                 "articles": {
                                                     "type": "integer"
                                                 },
                                                 "public_articles": {
                                                     "type": "integer"
+                                                },
+                                                "views": {
+                                                    "type": "integer"
+                                                },
+                                                "most_read": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "integer"
+                                                            },
+                                                            "title": {
+                                                                "type": "string"
+                                                            },
+                                                            "slug": {
+                                                                "type": "string"
+                                                            },
+                                                            "is_public": {
+                                                                "type": "boolean"
+                                                            },
+                                                            "count": {
+                                                                "type": "integer"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "id",
+                                                            "title",
+                                                            "slug",
+                                                            "is_public",
+                                                            "count"
+                                                        ]
+                                                    }
+                                                },
+                                                "most_saved": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "integer"
+                                                            },
+                                                            "title": {
+                                                                "type": "string"
+                                                            },
+                                                            "slug": {
+                                                                "type": "string"
+                                                            },
+                                                            "is_public": {
+                                                                "type": "boolean"
+                                                            },
+                                                            "count": {
+                                                                "type": "integer"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "id",
+                                                            "title",
+                                                            "slug",
+                                                            "is_public",
+                                                            "count"
+                                                        ]
+                                                    }
                                                 }
                                             },
                                             "required": [
                                                 "categories",
                                                 "articles",
-                                                "public_articles"
+                                                "public_articles",
+                                                "views",
+                                                "most_read",
+                                                "most_saved"
                                             ]
                                         },
                                         "error": {
@@ -6466,6 +6531,236 @@
                 "security": []
             }
         },
+        "/public/search": {
+            "get": {
+                "operationId": "publicContent.search",
+                "summary": "Search the shown articles (title, summary, body) and categories (name, description); accents and case ignored,\ntypo fallback (`match: fuzzy`) when nothing matches",
+                "tags": [
+                    "PublicContent"
+                ],
+                "parameters": [
+                    {
+                        "name": "q",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "pattern": "[\\p{L}\\p{N}]",
+                            "minLength": 2,
+                            "maxLength": 100
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "match": {
+                                                    "$ref": "#/components/schemas/SearchMatch"
+                                                },
+                                                "articles": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "title": {
+                                                                "type": "string"
+                                                            },
+                                                            "slug": {
+                                                                "type": "string"
+                                                            },
+                                                            "summary": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "title",
+                                                            "slug",
+                                                            "summary"
+                                                        ]
+                                                    }
+                                                },
+                                                "categories": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "name": {
+                                                                "type": "string"
+                                                            },
+                                                            "slug": {
+                                                                "type": "string"
+                                                            },
+                                                            "group": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "name",
+                                                            "slug",
+                                                            "group"
+                                                        ]
+                                                    }
+                                                }
+                                            },
+                                            "required": [
+                                                "match",
+                                                "articles",
+                                                "categories"
+                                            ]
+                                        },
+                                        "error": {
+                                            "type": "object",
+                                            "properties": {
+                                                "status": {
+                                                    "type": "boolean"
+                                                },
+                                                "code": {
+                                                    "type": "integer"
+                                                },
+                                                "messages": {
+                                                    "type": "null"
+                                                }
+                                            },
+                                            "required": [
+                                                "status",
+                                                "code",
+                                                "messages"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data",
+                                        "error"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "429": {
+                        "description": "Too Many Requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiError"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": []
+            }
+        },
+        "/public/articles/{slug}/view": {
+            "post": {
+                "operationId": "publicContent.view",
+                "summary": "Report that the public site showed an article: counted once per visitor (a hash the site makes from IP and browser,\nnever stored) per 30 minutes; `counted` is false for a repeat. Private or missing \u2192 404",
+                "tags": [
+                    "PublicContent"
+                ],
+                "parameters": [
+                    {
+                        "name": "slug",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/PublicViewRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "counted": {
+                                                    "type": "boolean"
+                                                }
+                                            },
+                                            "required": [
+                                                "counted"
+                                            ]
+                                        },
+                                        "error": {
+                                            "type": "object",
+                                            "properties": {
+                                                "status": {
+                                                    "type": "boolean"
+                                                },
+                                                "code": {
+                                                    "type": "integer"
+                                                },
+                                                "messages": {
+                                                    "type": "null"
+                                                }
+                                            },
+                                            "required": [
+                                                "status",
+                                                "code",
+                                                "messages"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data",
+                                        "error"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "429": {
+                        "description": "Too Many Requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiError"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": []
+            }
+        },
         "/public/files/{key}": {
             "get": {
                 "operationId": "publicFile.url",
@@ -7200,7 +7495,7 @@
         "/admin/search": {
             "get": {
                 "operationId": "search.query",
-                "summary": "Search the names of files and folders (accents and case ignored; typo fallback when nothing matches).\n`files` is empty for an admin without `media.list`, and never holds the trash or locked folders the admin may not use",
+                "summary": "Search articles (title, summary, body), categories (name, description) and the names of files and folders; accents\nand case ignored, typo fallback (`match: fuzzy`) when nothing matches. Private articles and categories are included.\n`files` is empty for an admin without `media.list`, and never holds the trash or locked folders the admin may not use",
                 "tags": [
                     "Search"
                 ],
@@ -7211,6 +7506,7 @@
                         "required": true,
                         "schema": {
                             "type": "string",
+                            "pattern": "[\\p{L}\\p{N}]",
                             "minLength": 2,
                             "maxLength": 100
                         }
@@ -7229,6 +7525,72 @@
                                             "properties": {
                                                 "match": {
                                                     "$ref": "#/components/schemas/SearchMatch"
+                                                },
+                                                "articles": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "integer"
+                                                            },
+                                                            "title": {
+                                                                "type": "string"
+                                                            },
+                                                            "slug": {
+                                                                "type": "string"
+                                                            },
+                                                            "snippet": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "is_public": {
+                                                                "type": "boolean"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "id",
+                                                            "title",
+                                                            "slug",
+                                                            "snippet",
+                                                            "is_public"
+                                                        ]
+                                                    }
+                                                },
+                                                "categories": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "integer"
+                                                            },
+                                                            "name": {
+                                                                "type": "string"
+                                                            },
+                                                            "slug": {
+                                                                "type": "string"
+                                                            },
+                                                            "group": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "is_public": {
+                                                                "type": "boolean"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "id",
+                                                            "name",
+                                                            "slug",
+                                                            "group",
+                                                            "is_public"
+                                                        ]
+                                                    }
                                                 },
                                                 "files": {
                                                     "type": "array",
@@ -7273,6 +7635,8 @@
                                             },
                                             "required": [
                                                 "match",
+                                                "articles",
+                                                "categories",
                                                 "files"
                                             ]
                                         },
@@ -7657,7 +8021,9 @@
                 "description": "How a category page of the public site orders its articles, like the tabs of a forum (ADR-0022).\n",
                 "enum": [
                     "newest",
-                    "updated"
+                    "updated",
+                    "most_read",
+                    "most_saved"
                 ],
                 "title": "ArticleSort"
             },
@@ -7736,6 +8102,33 @@
                         "description": "Departments a folder is given to (ADR-0017; Files listing only). Empty: open to every admin with Files rights",
                         "items": {
                             "type": "integer"
+                        }
+                    },
+                    "used_in": {
+                        "type": "array",
+                        "description": "Where the file shows (ADR-0022; Files listing only): categories attaching it, articles embedding it",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "kind": {
+                                    "type": "string",
+                                    "enum": [
+                                        "category",
+                                        "article"
+                                    ]
+                                },
+                                "id": {
+                                    "type": "integer"
+                                },
+                                "title": {
+                                    "type": "string"
+                                }
+                            },
+                            "required": [
+                                "kind",
+                                "id",
+                                "title"
+                            ]
                         }
                     },
                     "created_at": {
@@ -8467,6 +8860,33 @@
                             "type": "integer"
                         }
                     },
+                    "used_in": {
+                        "type": "array",
+                        "description": "Where the file shows (ADR-0022; Files listing only): categories attaching it, articles embedding it",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "kind": {
+                                    "type": "string",
+                                    "enum": [
+                                        "category",
+                                        "article"
+                                    ]
+                                },
+                                "id": {
+                                    "type": "integer"
+                                },
+                                "title": {
+                                    "type": "string"
+                                }
+                            },
+                            "required": [
+                                "kind",
+                                "id",
+                                "title"
+                            ]
+                        }
+                    },
                     "created_at": {
                         "type": [
                             "string",
@@ -9013,6 +9433,12 @@
                                         "null"
                                     ]
                                 },
+                                "view_count": {
+                                    "type": "integer"
+                                },
+                                "save_count": {
+                                    "type": "integer"
+                                },
                                 "created_at": {
                                     "type": "string"
                                 },
@@ -9024,6 +9450,8 @@
                                 "title",
                                 "slug",
                                 "summary",
+                                "view_count",
+                                "save_count",
                                 "created_at",
                                 "updated_at"
                             ]
@@ -9114,6 +9542,21 @@
                     "categories"
                 ],
                 "title": "PublicGroupResource"
+            },
+            "PublicViewRequest": {
+                "type": "object",
+                "description": "A view of an article reported by the public site's server (ADR-0022).",
+                "properties": {
+                    "visitor": {
+                        "type": "string",
+                        "description": "sha256 (hex) of the visitor's IP and browser, made by the public site; only kept as a cache key for 30 minutes",
+                        "pattern": "^[0-9a-f]{64}$"
+                    }
+                },
+                "required": [
+                    "visitor"
+                ],
+                "title": "PublicViewRequest"
             },
             "RegisterRequest": {
                 "type": "object",

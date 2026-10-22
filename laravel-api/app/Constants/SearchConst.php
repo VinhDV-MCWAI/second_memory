@@ -13,8 +13,16 @@ final class SearchConst
 
     public const QUERY_MAX = 100;
 
+    /** A query must hold a word: letters and digits are kept, everything else separates words */
+    public const WORD_PATTERN = '/[\p{L}\p{N}]/u';
+
+    public const WORD_SEPARATOR = '/[^\p{L}\p{N}]+/u';
+
     /** Results per group of the admin search (ADR-0008). */
     public const LIMIT = 10;
+
+    /** Articles on the public search page (ADR-0022); categories use LIMIT */
+    public const PUBLIC_ARTICLE_LIMIT = 20;
 
     public const SNIPPET_LENGTH = 160;
 
