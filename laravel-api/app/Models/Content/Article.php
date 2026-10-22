@@ -26,6 +26,7 @@ use Illuminate\Support\Carbon;
  * @property bool $is_public
  * @property string $public_key
  * @property int $view_count
+ * @property string|null $external_key
  * @property Carbon|null $updated_at
  */
 class Article extends Model
@@ -34,7 +35,7 @@ class Article extends Model
 
     protected $table = 'article';
 
-    protected $fillable = ['parent_id', 'title', 'slug', 'summary', 'body', 'sort_order', 'is_public'];
+    protected $fillable = ['parent_id', 'title', 'slug', 'summary', 'body', 'sort_order', 'is_public', 'external_key'];
 
     /** Generated search columns (ADR-0009): read by SQL only */
     protected $hidden = ['search_text', 'search_tsv'];

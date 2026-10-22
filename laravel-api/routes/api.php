@@ -2,8 +2,10 @@
 
 declare(strict_types=1);
 
+use App\Constants\ContentConst;
 use App\Constants\EndUserConst;
 use App\Http\Controllers\Audit\AuditLogController;
+use App\Http\Controllers\Content\ArticleImportController;
 use App\Http\Controllers\Custom\CredentialController;
 use App\Http\Controllers\Public\PublicContentController;
 use App\Http\Controllers\Public\PublicFileController;
@@ -36,6 +38,11 @@ Route::prefix('admin')
                         Route::group([], base_path('routes/api/content.php'));
                         Route::get('audit-log/list', [AuditLogController::class, 'list'])->name('audit-log.list');
                     });
+
+                // The only route an API token opens (ADR-0010, ADR-0022): the Obsidian importer CLI, or the owner's session
+                Route::post('article/import', [ArticleImportController::class, 'import'])
+                    ->name('article.import')
+                    ->middleware(['auth.admin:'.ContentConst::IMPORT_ABILITY, 'throttle:'.ContentConst::IMPORT_RATE_PER_MINUTE.',1']);
             });
     });
 

@@ -63,6 +63,11 @@ return [
     'search_query' => 'Search text',
     'body' => 'Content',
     'sort_order' => 'Order',
+    // Obsidian import (ADR-0022)
+    'notes' => 'Notes',
+    'external_key' => 'Vault path',
+    'parent_note' => 'Parent note',
+    'dry_run' => 'Dry run',
     // Notes in rendered articles (ADR-0022); the public page shows only the first two
     'embed_loop' => 'Not embedded again: [[:slug]] already contains this article',
     'embed_too_deep' => 'Not embedded: articles are embedded at most 3 levels deep',

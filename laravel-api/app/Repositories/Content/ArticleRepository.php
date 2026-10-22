@@ -70,7 +70,7 @@ class ArticleRepository extends CrudRepository
 
     public function executeStore(array $payload): int
     {
-        $payload['slug'] = $this->uniqueSlugFor((string) $payload['title'], 'article');
+        $payload['slug'] = $this->uniqueSlugFor((string) $payload['title'], ContentConst::ARTICLE_SLUG_FALLBACK);
         $payload['sort_order'] = $this->nextPosition(self::idOrNull($payload['parent_id'] ?? null));
         $id = parent::executeStore($payload);
         $this->syncCategories($id, $payload);

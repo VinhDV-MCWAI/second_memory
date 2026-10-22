@@ -76,10 +76,24 @@ final class ContentConst
     /** The visitor is a sha256 of IP and browser, made by the public site: never stored */
     public const VISITOR_PATTERN = '/^[0-9a-f]{64}$/';
 
-    /** Sanctum ability of the Obsidian importer's token and the token name (ADR-0010). */
-    public const IMPORT_ABILITY = 'evidence:import';
+    /** Sanctum ability of the Obsidian importer's token and the token name (ADR-0010, ADR-0022). */
+    public const IMPORT_ABILITY = 'article:import';
 
     public const IMPORT_TOKEN_NAME = 'ledger-importer';
 
     public const IMPORT_TOKEN_DAYS = 90;
+
+    /** Notes in one import; tools/ledger-importer (contract.py) checks the same limits first */
+    public const IMPORT_NOTES_MAX = 2000;
+
+    /** Vault-relative path of a note */
+    public const IMPORT_EXTERNAL_KEY_MAX = 500;
+
+    public const IMPORT_RATE_PER_MINUTE = 10;
+
+    /** `via` of the audit rows the importer writes; the actor is the token's admin */
+    public const IMPORT_AUDIT_VIA = 'importer';
+
+    /** Slug of an article whose title gives none (only symbols) */
+    public const ARTICLE_SLUG_FALLBACK = 'article';
 }

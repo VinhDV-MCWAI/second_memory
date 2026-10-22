@@ -1431,6 +1431,126 @@
                 }
             }
         },
+        "/admin/article/import": {
+            "post": {
+                "operationId": "article.import",
+                "description": "Called by the importer CLI with an API token that has the `article:import` ability, or by the owner's session.",
+                "summary": "Sync the complete list of published Obsidian notes into articles (idempotent; `dry_run` only counts)",
+                "tags": [
+                    "ArticleImport"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ImportArticleRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "created": {
+                                                    "type": "integer"
+                                                },
+                                                "updated": {
+                                                    "type": "integer"
+                                                },
+                                                "unchanged": {
+                                                    "type": "integer"
+                                                },
+                                                "hidden": {
+                                                    "type": "integer"
+                                                },
+                                                "unknown_categories": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string"
+                                                    }
+                                                },
+                                                "unknown_links": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string"
+                                                    }
+                                                }
+                                            },
+                                            "required": [
+                                                "created",
+                                                "updated",
+                                                "unchanged",
+                                                "hidden",
+                                                "unknown_categories",
+                                                "unknown_links"
+                                            ]
+                                        },
+                                        "error": {
+                                            "type": "object",
+                                            "properties": {
+                                                "status": {
+                                                    "type": "boolean"
+                                                },
+                                                "code": {
+                                                    "type": "integer"
+                                                },
+                                                "messages": {
+                                                    "type": "null"
+                                                }
+                                            },
+                                            "required": [
+                                                "status",
+                                                "code",
+                                                "messages"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data",
+                                        "error"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiError"
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too Many Requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/admin/audit-log/list": {
             "get": {
                 "operationId": "audit-log.list",
@@ -8741,6 +8861,71 @@
                     3
                 ],
                 "title": "Gender"
+            },
+            "ImportArticleRequest": {
+                "type": "object",
+                "description": "The complete list of published Obsidian notes (ADR-0022, tools/ledger-importer). Categories are\nnames, never created; `parent` and the `[[links]]` of the body name other notes the way Obsidian\ndoes (path or file name), and the service resolves them.",
+                "properties": {
+                    "notes": {
+                        "type": "array",
+                        "description": "An empty list is valid: the vault has no published note left, so every imported article is hidden",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "external_key": {
+                                    "type": "string",
+                                    "maxLength": 500
+                                },
+                                "title": {
+                                    "type": "string",
+                                    "maxLength": 200
+                                },
+                                "summary": {
+                                    "type": [
+                                        "string",
+                                        "null"
+                                    ],
+                                    "maxLength": 500
+                                },
+                                "body": {
+                                    "type": [
+                                        "string",
+                                        "null"
+                                    ],
+                                    "maxLength": 100000
+                                },
+                                "parent": {
+                                    "type": [
+                                        "string",
+                                        "null"
+                                    ],
+                                    "maxLength": 500
+                                },
+                                "categories": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "string",
+                                        "maxLength": 100
+                                    }
+                                }
+                            },
+                            "required": [
+                                "external_key",
+                                "title",
+                                "body"
+                            ]
+                        },
+                        "maxItems": 2000,
+                        "uniqueItems": true
+                    },
+                    "dry_run": {
+                        "type": "boolean"
+                    }
+                },
+                "required": [
+                    "notes"
+                ],
+                "title": "ImportArticleRequest"
             },
             "IsActive": {
                 "type": "integer",

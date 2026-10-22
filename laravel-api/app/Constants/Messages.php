@@ -116,6 +116,10 @@ class Messages
 
     const E0051 = 'Move or delete the sub-pages of this article first';
 
+    const E0052 = 'The parent is not one of the published notes';
+
+    const E0053 = 'Notes cannot be parents of each other in a loop';
+
     /**
      * Errors http messages
      */

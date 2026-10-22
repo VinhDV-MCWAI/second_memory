@@ -223,6 +223,26 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/admin/article/import': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /**
+     * Sync the complete list of published Obsidian notes into articles (idempotent; `dry_run` only counts)
+     * @description Called by the importer CLI with an API token that has the `article:import` ability, or by the owner's session.
+     */
+    post: operations['article.import'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/admin/audit-log/list': {
     parameters: {
       query?: never;
@@ -1568,6 +1588,24 @@ export interface components {
      */
     Gender: 1 | 2 | 3;
     /**
+     * ImportArticleRequest
+     * @description The complete list of published Obsidian notes (ADR-0022, tools/ledger-importer). Categories are
+     *     names, never created; `parent` and the `[[links]]` of the body name other notes the way Obsidian
+     *     does (path or file name), and the service resolves them.
+     */
+    ImportArticleRequest: {
+      /** @description An empty list is valid: the vault has no published note left, so every imported article is hidden */
+      notes: {
+        external_key: string;
+        title: string;
+        summary?: string | null;
+        body: string | null;
+        parent?: string | null;
+        categories?: string[];
+      }[];
+      dry_run?: boolean;
+    };
+    /**
      * IsActive
      * @enum {integer}
      */
@@ -2658,6 +2696,63 @@ export interface operations {
         };
       };
       422: components['responses']['ValidationException'];
+    };
+  };
+  'article.import': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['ImportArticleRequest'];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            data: {
+              created: number;
+              updated: number;
+              unchanged: number;
+              hidden: number;
+              unknown_categories: string[];
+              unknown_links: string[];
+            };
+            error: {
+              status: boolean;
+              code: number;
+              messages: null;
+            };
+          };
+        };
+      };
+      401: components['responses']['AuthenticationException'];
+      /** @description Forbidden */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ApiError'];
+        };
+      };
+      422: components['responses']['ValidationException'];
+      /** @description Too Many Requests */
+      429: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ApiError'];
+        };
+      };
     };
   };
   'audit-log.list': {
