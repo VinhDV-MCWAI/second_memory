@@ -3,7 +3,8 @@ import ArticleMenu from '@/components/ArticleMenu.astro';
 import RichHtml from '@/components/RichHtml.astro';
 import SaveButtons from '@/components/SaveButtons.astro';
 import Base from '@/layouts/Base.astro';
-import { getPublicArticle } from '@/lib/public-api';
+import { createHash } from 'node:crypto';
+import { getPublicArticle, reportView } from '@/lib/public-api';
 import { ROUTES } from '@/lib/routes';
 
 const HTTP_NOT_FOUND = 404;
@@ -14,6 +15,13 @@ const TOC_SUB_LEVEL = 3;
 const article = await getPublicArticle(Astro.params.slug ?? '');
 if (!article) {
   Astro.response.status = HTTP_NOT_FOUND;
+}
+if (article) {
+  // The visitor is a hash of IP (nginx's X-Real-IP) and browser; the API keeps it 30 minutes as a
+  // cache key to count a reader once, and never stores who read (ADR-0022)
+  const ip = Astro.request.headers.get('x-real-ip') ?? Astro.clientAddress;
+  const browser = Astro.request.headers.get('user-agent') ?? '';
+  reportView(article.slug, createHash('sha256').update(`${ip}|${browser}`).digest('hex'));
 }
 const hasMenu = article !== null && (article.book !== null || article.related.length > 0);
 ---

@@ -1,0 +1,82 @@
+---
+import Base from '@/layouts/Base.astro';
+import { getPublicSearch } from '@/lib/public-api';
+import { ROUTES } from '@/lib/routes';
+
+// Same limits as the API (SearchConst: QUERY_MIN, QUERY_MAX, WORD_PATTERN): a query it would refuse
+// is answered here without calling it
+const QUERY_MIN = 2;
+const QUERY_MAX = 100;
+const HAS_WORD = /[\p{L}\p{N}]/u;
+
+const q = (Astro.url.searchParams.get('q') ?? '').trim().slice(0, QUERY_MAX);
+const searchable = q.length >= QUERY_MIN && HAS_WORD.test(q);
+const results = searchable ? await getPublicSearch(q) : null;
+const found = results !== null && results.articles.length + results.categories.length > 0;
+---
+
+<Base title={q ? `${q} — Search — Second Memory` : 'Search — Second Memory'}>
+  <h1 class="text-3xl font-semibold">Search</h1>
+  {/* A plain GET form: works without JavaScript */}
+  <form method="get" action={ROUTES.SEARCH} class="mt-6 flex gap-2 text-sm">
+    <input
+      type="search"
+      name="q"
+      value={q}
+      placeholder="Words of a title or text"
+      minlength={QUERY_MIN}
+      maxlength={QUERY_MAX}
+      required
+      class="bg-background min-w-0 flex-1 rounded-md border px-3 py-1.5"
+    />
+    <button type="submit" class="hover:bg-muted rounded-md border px-3 py-1.5">
+      Search
+    </button>
+  </form>
+  <p class="text-muted-foreground mt-2 text-xs">Accents and case are ignored.</p>
+
+  {q && !searchable && <p class="mt-8">Type at least {QUERY_MIN} letters or digits.</p>}
+  {searchable && !found && <p class="mt-8">Nothing found for “{q}”.</p>}
+  {results && found && (
+    <>
+      {results.match === 'fuzzy' && (
+        <p class="mt-8 text-sm text-amber-600">No exact match — showing similar results.</p>
+      )}
+      {results.categories.length > 0 && (
+        <section class="mt-8">
+          <h2 class="font-semibold">Categories</h2>
+          <ul class="mt-3 flex flex-wrap gap-2">
+            {results.categories.map((category) => (
+              <li>
+                <a
+                  href={ROUTES.category(category.slug)}
+                  class="hover:bg-muted block rounded-md border px-3 py-1.5 text-sm"
+                >
+                  {category.group && <span class="text-muted-foreground">{category.group} › </span>}
+                  {category.name}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
+      {results.articles.length > 0 && (
+        <section class="mt-8">
+          <h2 class="font-semibold">Articles</h2>
+          <ul class="mt-2 divide-y">
+            {results.articles.map((article) => (
+              <li class="py-4">
+                <a href={ROUTES.article(article.slug)} class="font-medium hover:underline">
+                  {article.title}
+                </a>
+                {article.summary && (
+                  <p class="text-muted-foreground mt-1 text-sm">{article.summary}</p>
+                )}
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
+    </>
+  )}
+</Base>

@@ -7,6 +7,8 @@ import { ROUTES } from '@/lib/routes';
 export const ARTICLE_SORTS: { value: ArticleSort; label: string }[] = [
   { value: 'newest', label: 'Newest' },
   { value: 'updated', label: 'Recently updated' },
+  { value: 'most_read', label: 'Most read' },
+  { value: 'most_saved', label: 'Most saved' },
 ];
 
 // Limits of the API (ContentConst: CATEGORY_NAME_MAX, ARTICLE_TITLE_MAX)

@@ -25,6 +25,7 @@ export type PublicCategoryDetail = components['schemas']['PublicCategoryDetailRe
 export type PublicArticle = components['schemas']['PublicArticleResource'];
 export type PublicAttachment = components['schemas']['PublicAttachmentResource'];
 export type ArticleSort = components['schemas']['ArticleSort'];
+export type PublicSearch = Data<'/public/search'>;
 export type BookNode = NonNullable<PublicArticle['book']>;
 export type CategoryQuery = NonNullable<
   paths['/public/categories/{slug}']['get']['parameters']['query']
@@ -74,4 +75,21 @@ export async function getPublicFileUrl(key: string): Promise<string | null> {
   return (
     (await getPublic<Data<'/public/files/{key}'>>(`files/${encodeURIComponent(key)}`))?.url ?? null
   );
+}
+
+export async function getPublicSearch(q: string): Promise<PublicSearch | null> {
+  return getPublic<PublicSearch>(`search?q=${encodeURIComponent(q)}`);
+}
+
+// A view is counted by the API once per visitor and article per 30 minutes (ADR-0022). Never awaited
+// by the page and never fails it: a slow or broken API only loses a view.
+const VIEW_TIMEOUT_MS = 2_000;
+
+export function reportView(slug: string, visitor: string): void {
+  fetch(`${API_URL}/public/articles/${encodeURIComponent(slug)}/view`, {
+    method: 'POST',
+    headers: { Accept: 'application/json', 'Content-Type': 'application/json' },
+    body: JSON.stringify({ visitor }),
+    signal: AbortSignal.timeout(VIEW_TIMEOUT_MS),
+  }).catch(() => undefined);
 }

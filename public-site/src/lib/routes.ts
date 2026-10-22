@@ -7,6 +7,7 @@ export const ROUTES = {
   LOGIN: '/account/login',
   REGISTER: '/account/register',
   ME: '/me',
+  SEARCH: '/search',
   /** Admin accounts sign in to the admin app, never here (ADR-0020) */
   ADMIN_LOGIN: '/admin/login',
   category: (slug: string) => `/categories/${encode(slug)}`,

@@ -29,9 +29,20 @@ const width = wide ? 'max-w-7xl' : 'max-w-4xl';
       <a href={ROUTES.HOME} class="font-medium hover:underline">
         Second Memory
       </a>
-      <a href={ROUTES.LOGIN} data-account class="hover:underline">
-        Sign in
-      </a>
+      <span class="flex items-center gap-4">
+        <form method="get" action={ROUTES.SEARCH} role="search">
+          <input
+            type="search"
+            name="q"
+            placeholder="Search"
+            aria-label="Search articles and categories"
+            class="bg-background w-32 rounded-md border px-2 py-1 sm:w-48"
+          />
+        </form>
+        <a href={ROUTES.LOGIN} data-account class="hover:underline">
+          Sign in
+        </a>
+      </span>
     </header>
     <main class:list={['mx-auto px-6 py-12', width]}>
       <slot />
