@@ -130,12 +130,17 @@
     "placeholder": "Search...",
     "filter": "Filter",
     "title": "Search",
-    "description": "File and folder names. Accents and case are ignored.",
+    "description": "Articles (title, summary, text), categories, and file and folder names. Accents and case are ignored.",
     "fuzzy": "No exact match — showing similar results",
     "empty": "Nothing found for “{q}”",
     "hint": "Type at least {min} characters",
     "files": "Files",
-    "openFiles": "Open Files"
+    "openFiles": "Open Files",
+    "articles": "Articles",
+    "categories": "Categories",
+    "private": "Private",
+    "openArticles": "Open Articles",
+    "openCategories": "Open Categories"
   },
   "dashboard": {
     "welcomeDescription": "Welcome back! Here's what's happening with your business today.",
@@ -154,7 +159,13 @@
     "articles": "Articles",
     "publicArticles": "Public articles",
     "recentChanges": "Recent changes",
-    "noChanges": "No changes yet"
+    "noChanges": "No changes yet",
+    "views": "Article views",
+    "mostRead": "Most read",
+    "mostSaved": "Most saved",
+    "viewsCount": "{count, plural, one {# view} other {# views}}",
+    "savesCount": "{count, plural, one {# reader saved it} other {# readers saved it}}",
+    "noRanking": "Nothing yet"
   },
   "metadata": {
     "title": "Admin Dashboard",
@@ -602,6 +613,11 @@
     "dropNow": "Drop to upload into this folder",
     "name": "Name",
     "size": "Size",
+    "usedIn": {
+      "title": "Used in",
+      "category": "Category",
+      "article": "Article"
+    },
     "updated": "Updated",
     "processing": "Processing",
     "download": "Download",

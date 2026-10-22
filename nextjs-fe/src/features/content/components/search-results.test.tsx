@@ -29,6 +29,8 @@ describe('SearchResults', () => {
         return HttpResponse.json(
           envelope({
             match: 'fuzzy',
+            articles: [],
+            categories: [],
             files: [
               {
                 id: 3,
@@ -57,6 +59,8 @@ describe('SearchResults', () => {
         HttpResponse.json(
           envelope({
             match: 'exact',
+            articles: [],
+            categories: [],
             files: [
               {
                 id: 7,
@@ -95,10 +99,45 @@ describe('SearchResults', () => {
     expect(screen.queryByText('fuzzy')).toBeNull();
   });
 
+  it('links public articles and categories to the public site and marks private ones', async () => {
+    server.use(
+      http.get(apiUrl('/admin/search'), () =>
+        HttpResponse.json(
+          envelope({
+            match: 'exact',
+            articles: [
+              { id: 1, title: 'Hàng đợi', slug: 'hang-doi', snippet: 'Việc nền.', is_public: true },
+              { id: 2, title: 'Nháp', slug: 'nhap', snippet: null, is_public: false },
+            ],
+            categories: [
+              { id: 3, name: 'Laravel', slug: 'laravel', group: 'Kỹ năng', is_public: true },
+            ],
+            files: [],
+          }),
+        ),
+      ),
+    );
+
+    renderResults('hang doi');
+
+    const article = await screen.findByRole('link', { name: 'Hàng đợi' });
+    expect(article.getAttribute('href')).toBe('/articles/hang-doi');
+    expect(article.getAttribute('target')).toBe('_blank');
+    expect(screen.getByText('Việc nền.')).toBeTruthy();
+    // A private article is not linked to the public site
+    expect(screen.queryByRole('link', { name: 'Nháp' })).toBeNull();
+    expect(screen.getByText('private')).toBeTruthy();
+    expect(screen.getByRole('link', { name: 'Laravel' }).getAttribute('href')).toBe(
+      '/categories/laravel',
+    );
+    expect(screen.getByText('Kỹ năng')).toBeTruthy();
+    expect(screen.queryByText('files')).toBeNull();
+  });
+
   it('shows an empty state when nothing matches', async () => {
     server.use(
       http.get(apiUrl('/admin/search'), () =>
-        HttpResponse.json(envelope({ match: 'fuzzy', files: [] })),
+        HttpResponse.json(envelope({ match: 'fuzzy', articles: [], categories: [], files: [] })),
       ),
     );
 

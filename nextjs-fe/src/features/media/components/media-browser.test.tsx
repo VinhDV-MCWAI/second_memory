@@ -179,6 +179,30 @@ describe('MediaBrowser', () => {
     expect(thumbnails[0].getAttribute('src')).toBe('http://storage.test/thumb.jpg');
   });
 
+  it('says which categories and articles use a file', async () => {
+    server.use(
+      http.get(apiUrl('/admin/media/list'), () =>
+        HttpResponse.json(
+          page([
+            {
+              ...item(1, 'chung-chi.pdf', true),
+              used_in: [
+                { kind: 'category', id: 4, title: 'Laravel' },
+                { kind: 'article', id: 9, title: 'Hàng đợi' },
+              ],
+            },
+          ]),
+        ),
+      ),
+    );
+    renderBrowser();
+
+    expect(await screen.findByText('Laravel')).toBeTruthy();
+    expect(screen.getByText('Hàng đợi')).toBeTruthy();
+    expect(screen.getByText('usedIn.category:')).toBeTruthy();
+    expect(screen.getByText('usedIn.article:')).toBeTruthy();
+  });
+
   it('resumes an unfinished upload when the same file is uploaded into the same folder', async () => {
     unfinished = [unfinishedMovie];
     uploadFile.mockReturnValue(new Promise(() => undefined));

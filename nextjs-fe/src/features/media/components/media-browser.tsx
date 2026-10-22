@@ -245,6 +245,22 @@ export function MediaBrowser() {
       render: (item) => (item.is_file ? formatFileSize(item) : ''),
     },
     {
+      // Categories attaching the file and articles embedding it (ADR-0022)
+      key: 'used_in',
+      label: t('usedIn.title'),
+      render: (item) =>
+        item.used_in?.length ? (
+          <ul className="space-y-0.5 text-sm">
+            {item.used_in.map((use) => (
+              <li key={`${use.kind}-${use.id}`} className="truncate">
+                <span className="text-muted-foreground">{t(`usedIn.${use.kind}`)}:</span>{' '}
+                {use.title}
+              </li>
+            ))}
+          </ul>
+        ) : null,
+    },
+    {
       key: 'updated_at',
       label: t('updated'),
       sortable: true,

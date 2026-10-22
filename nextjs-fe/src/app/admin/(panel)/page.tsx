@@ -7,17 +7,26 @@ import { useDashboardSummary } from '@/features/content/hooks/use-content-querie
 import { BackgroundTaskTestCard } from '@/features/system/components/background-task-test-card';
 import { useApiData } from '@/shared/hooks/use-api-data';
 import { API_ENDPOINTS } from '@/shared/api';
-import { ADMIN_ROUTES, SORT_ORDER } from '@/shared/config';
+import { ADMIN_ROUTES, SORT_ORDER, publicPaths } from '@/shared/config';
 import type { AuditLogEntry, DashboardSummary } from '@/shared/types/models';
 
 /** Rows of the "recent changes" card. */
 const RECENT_CHANGES = 5;
 
-const STAT_LABELS: Record<keyof DashboardSummary, string> = {
+type StatKey = 'categories' | 'articles' | 'public_articles' | 'views';
+
+const STAT_LABELS: Record<StatKey, string> = {
   categories: 'categories',
   articles: 'articles',
   public_articles: 'publicArticles',
+  views: 'views',
 };
+
+/** The dashboard's ranking cards (ADR-0022): title and the message of each row's count. */
+const RANKINGS = [
+  { key: 'most_read', title: 'mostRead', count: 'viewsCount' },
+  { key: 'most_saved', title: 'mostSaved', count: 'savesCount' },
+] as const satisfies { key: keyof DashboardSummary; title: string; count: string }[];
 
 export default function AdminDashboard() {
   const t = useTranslations('dashboard');
@@ -40,8 +49,8 @@ export default function AdminDashboard() {
         ]}
       />
 
-      <div className="mt-8 grid gap-4 sm:grid-cols-3">
-        {(Object.keys(STAT_LABELS) as (keyof DashboardSummary)[]).map((key) => (
+      <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        {(Object.keys(STAT_LABELS) as StatKey[]).map((key) => (
           <Card key={key} className="p-6">
             <p className="text-sm font-medium text-muted-foreground">{t(STAT_LABELS[key])}</p>
             <p className="mt-2 text-3xl font-bold">{summary ? summary[key] : '–'}</p>
@@ -50,6 +59,39 @@ export default function AdminDashboard() {
       </div>
 
       <div className="mt-8 grid gap-6 lg:grid-cols-3">
+        {RANKINGS.map((ranking) => {
+          const rows = summary?.[ranking.key] ?? [];
+          return (
+            <Card key={ranking.key} className="p-6">
+              <h3 className="text-lg font-semibold">{t(ranking.title)}</h3>
+              {rows.length === 0 ? (
+                <p className="mt-4 text-sm text-muted-foreground">{t('noRanking')}</p>
+              ) : (
+                <ol className="mt-4 space-y-3">
+                  {rows.map((row) => (
+                    <li key={row.id} className="border-b pb-3 text-sm last:border-0">
+                      {row.is_public ? (
+                        <a
+                          href={publicPaths.article(row.slug)}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="font-medium hover:underline"
+                        >
+                          {row.title}
+                        </a>
+                      ) : (
+                        <p className="font-medium">{row.title}</p>
+                      )}
+                      <p className="text-xs text-muted-foreground">
+                        {t(ranking.count, { count: row.count })}
+                      </p>
+                    </li>
+                  ))}
+                </ol>
+              )}
+            </Card>
+          );
+        })}
         <Card className="p-6">
           <h3 className="text-lg font-semibold">{t('recentChanges')}</h3>
           {recent.length === 0 ? (
