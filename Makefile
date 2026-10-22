@@ -189,11 +189,11 @@ importer-test: importer-dev-image ## Importer: pytest (API mocked)
 	docker run --rm ledger-importer-dev pytest -p no:cacheprovider
 
 .PHONY: import
-import: ## Import published Obsidian notes (make import vault=<path> [dry=1]; needs LEDGER_API_TOKEN)
+import: ## Import published Obsidian notes as articles (make import vault=<path> [dry=1]; needs LEDGER_API_TOKEN)
 	@test -d "$(vault)" || { echo "usage: make import vault=<path to the vault> [dry=1]"; exit 2; }
 	docker build -q -t ledger-importer $(IMPORTER_DIR) >/dev/null
 	docker run --rm --network ml_network -v "$(abspath $(vault)):/vault:ro" \
-		-e LEDGER_API_TOKEN -e LEDGER_API_URL -e LEDGER_NOTE_BASE_URL \
+		-e LEDGER_API_TOKEN -e LEDGER_API_URL \
 		ledger-importer $(if $(dry),--dry-run)
 
 ##@ Data
