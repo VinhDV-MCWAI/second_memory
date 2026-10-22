@@ -7,7 +7,7 @@ Nơi lưu kinh nghiệm của chủ dự án và hiện ra ở [trang public](tr
 
 Yêu cầu: [REQ-005](../requirements/REQ-005-trang-tai-lieu-kinh-nghiem.md). Thiết kế: [ADR-0022](../adr/0022-trang-tai-lieu-kinh-nghiem.md) (thay một phần [ADR-0021](../adr/0021-public-home-categories-articles.md)).
 
-Trạng thái: đang làm theo các bước KB-02…KB-08. **Xong**: bỏ Skill Ledger, mô hình mới, màn hình quản trị, nhúng bài và file, xem trước Markdown (2026-10-20); trang public kiểu trang tài liệu; lượt xem, xếp hạng Đọc nhiều / Được lưu nhiều, [tìm kiếm](tim-kiem.md), xếp hạng trên trang tổng quan (2026-10-22). Còn: nhập từ Obsidian (KB-07). Nội dung hiện tại là **bài mẫu** (`make seed`).
+Trạng thái: đang làm theo các bước KB-02…KB-08. **Xong**: bỏ Skill Ledger, mô hình mới, màn hình quản trị, nhúng bài và file, xem trước Markdown (2026-10-20); trang public kiểu trang tài liệu; lượt xem, xếp hạng Đọc nhiều / Được lưu nhiều, [tìm kiếm](tim-kiem.md), xếp hạng trên trang tổng quan, [nhập từ Obsidian](nhap-tu-obsidian.md) (2026-10-22). Còn: test trình duyệt, đóng gói `v3.0.0` (KB-08). Nội dung hiện tại là **bài mẫu** (`make seed`).
 
 ## Màn hình trong trang quản trị
 

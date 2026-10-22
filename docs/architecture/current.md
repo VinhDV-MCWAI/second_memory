@@ -20,7 +20,7 @@ flowchart LR
     Q --> M
     S[ml-scheduler<br/>việc hẹn giờ] --> P
     Q -->|sự kiện| R2
-    I[importer<br/>make import] -->|POST /api/admin/evidence/import| N
+    I[importer<br/>make import] -->|POST /api/admin/article/import| N
 ```
 
 | Container | Vai trò |
@@ -46,7 +46,7 @@ flowchart LR
 | Files | `admin/media/*` (18 API: thư mục, upload, upload chia phần, tải, thùng rác, khóa thư mục) | [quan-ly-file.md](../features/quan-ly-file.md) |
 | Tìm kiếm, nhật ký | `admin/search`, `admin/audit-log/*` | [tim-kiem.md](../features/tim-kiem.md), [nhat-ky-thay-doi.md](../features/nhat-ky-thay-doi.md) |
 | Việc nền | `admin/background-task/*`, `broadcasting/auth` | [viec-nen-va-thong-bao.md](../features/viec-nen-va-thong-bao.md) |
-| Nhập Obsidian | `admin/evidence/import` (chỉ token API) | [nhap-tu-obsidian.md](../features/nhap-tu-obsidian.md) |
+| Nhập Obsidian | `admin/article/import` (token API hoặc phiên của chủ) | [nhap-tu-obsidian.md](../features/nhap-tu-obsidian.md) |
 | Người dùng cuối | `user/*` (bộ đăng nhập `user`), `admin/end-user/*` | [nguoi-dung-cuoi.md](../features/nguoi-dung-cuoi.md) |
 | Danh mục, bài viết | `admin/content-category/*`, `admin/article/*` | [bai-viet.md](../features/bai-viet.md) |
 | Public | `public/skills/*`, `public/files/*`, `public/categories/*`, `public/articles/*` | [trang-public.md](../features/trang-public.md), [bai-viet.md](../features/bai-viet.md) |

@@ -16,7 +16,7 @@ The API behind the admin dashboard, the public site and the Obsidian importer. L
 | Admin accounts | `/api/admin/admin-mst/*` | `owner` writes, `viewer` reads ([ADR-0005](../docs/adr/0005-owner-viewer-roles.md)) |
 | Skill Ledger | `/api/admin/{skill,skill-level,learning-goal,evidence,tag}/*`, `search`, `dashboard/summary` | same |
 | Audit log | `GET /api/admin/audit-log/list` | read-only ([ADR-0006](../docs/adr/0006-audit-log.md)) |
-| Import | `POST /api/admin/evidence/import` | API token with ability `evidence:import` ([ADR-0010](../docs/adr/0010-python-importer-tooling.md)) |
+| Import | `POST /api/admin/article/import` | API token with ability `article:import` ([ADR-0010](../docs/adr/0010-python-importer-tooling.md), [ADR-0022](../docs/adr/0022-trang-tai-lieu-kinh-nghiem.md)) |
 | Public | `GET /api/public/skills`, `GET /api/public/skills/{slug}` | anyone, rate-limited per IP |
 
 Every response uses one envelope, `{ "data": …, "error": { "status", "code", "messages" } }`. The contract is generated from the code into [openapi.json](openapi.json) ([ADR-0008](../docs/adr/0008-code-first-openapi-contract.md)); the tests validate every response against it and `make openapi` regenerates it with the admin FE types.

@@ -19,7 +19,7 @@ The project is also a practice ground for professional software work: every feat
 | Public page | The site root: a home page of categories, `/skills` (public skills, level history, public evidence and their files) and articles; ~3 KB of client JavaScript; old `/docs` links redirect here | [trang-public.md](docs/features/trang-public.md) |
 | Categories and articles | Home page categories (the steps of building software) and Markdown articles, edited in the admin app | [bai-viet.md](docs/features/bai-viet.md) |
 | End users | Visitors may sign up on the public page to keep favorites and a read-later list; admins lock accounts and open / close sign-up | [nguoi-dung-cuoi.md](docs/features/nguoi-dung-cuoi.md) |
-| Obsidian import | Notes marked `publish: true` become evidence (Python CLI) | [nhap-tu-obsidian.md](docs/features/nhap-tu-obsidian.md) |
+| Obsidian import | Notes marked `publish: true` become articles, with their content, parents and links (Python CLI) | [nhap-tu-obsidian.md](docs/features/nhap-tu-obsidian.md) |
 
 ## Architecture
 

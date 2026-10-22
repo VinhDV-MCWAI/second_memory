@@ -4,7 +4,7 @@
 
 | | |
 |---|---|
-| Status | Accepted |
+| Status | Accepted; the note ↔ API contract is replaced by [ADR-0022](0022-trang-tai-lieu-kinh-nghiem.md) (notes become articles, `POST admin/article/import`, ability `article:import`, see [nhap-tu-obsidian.md](../features/nhap-tu-obsidian.md)). Tooling and token rules still hold |
 | Date | 2026-10-08 |
 | Deciders | TL |
 | Related | [REQ-002](../archive/engineering-lab/requirements/REQ-002-skill-ledger.md) US-4, Q6, Q7; [RFC-002](../archive/engineering-lab/design/RFC-002-skill-ledger.md) §4.5, §9 Q3; [ADR-0004](0004-sanctum-spa-cookie-auth.md); [ADR-0005](0005-owner-viewer-roles.md); [ADR-0008](0008-code-first-openapi-contract.md) contract row `evidence/import`; backlog P3-13, P3-14 |
