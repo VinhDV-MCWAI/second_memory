@@ -1,12 +1,6 @@
-import datetime as dt
 from pathlib import Path
 
 import pytest
-
-from ledger_importer.note import NoteContext
-
-TODAY = dt.date(2026, 10, 8)
-BASE_URL = "https://notes.example.com"
 
 
 class Vault:
@@ -21,9 +15,6 @@ class Vault:
         text = body if frontmatter is None else f"---\n{frontmatter}\n---\n{body}"
         path.write_text(text, encoding="utf-8")
         return path
-
-    def context(self, base_url: str | None = BASE_URL) -> NoteContext:
-        return NoteContext(root=self.root, note_base_url=base_url, today=TODAY)
 
 
 @pytest.fixture

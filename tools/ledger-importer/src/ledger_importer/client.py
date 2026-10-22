@@ -1,4 +1,4 @@
-"""The one API call: `POST /api/admin/evidence/import` with a Sanctum token (ADR-0010)."""
+"""The one API call: `POST /api/admin/article/import` with a Sanctum token (ADR-0010, ADR-0022)."""
 
 from typing import Any, TypedDict, cast
 
@@ -16,7 +16,8 @@ class ImportResult(TypedDict):
     updated: int
     unchanged: int
     hidden: int
-    unknown_skills: list[str]
+    unknown_categories: list[str]
+    unknown_links: list[str]
 
 
 class ApiError(RuntimeError):

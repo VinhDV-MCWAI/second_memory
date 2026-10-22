@@ -1,7 +1,7 @@
 [project]
 name = "ledger-importer"
 version = "0.1.0"
-description = "Imports the Obsidian notes marked publish: true into the Skill Ledger as note evidence (ADR-0010)"
+description = "Imports the Obsidian notes marked publish: true as articles (ADR-0010, ADR-0022)"
 readme = "README.md"
 requires-python = ">=3.14"
 dependencies = [

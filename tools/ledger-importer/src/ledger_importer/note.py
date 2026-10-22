@@ -1,59 +1,48 @@
-"""One note → one request item of `POST admin/evidence/import` (ADR-0010 §Importer contract)."""
+"""One note → one request item of `POST admin/article/import` (ADR-0022 §Nhập từ Obsidian).
 
-import datetime as dt
+The body is sent as written: the API turns `[[links]]` to other published notes into article links.
+"""
+
 import re
 import unicodedata
-from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, NotRequired, TypedDict
-from urllib.parse import quote, urlsplit
 
 from ledger_importer.contract import (
+    BODY_MAX,
+    CATEGORY_NAME_MAX,
     ELLIPSIS,
     EXTERNAL_KEY_MAX,
     NOTE_SUFFIX,
-    SKILL_NAME_MAX,
     SUMMARY_MAX,
-    TAG_NAME_MAX,
     TITLE_MAX,
-    URL_MAX,
-    URL_SCHEMES,
 )
 from ledger_importer.vault import FrontmatterError, split_frontmatter
 
 # [[target|label]] → label, [[target]] → target, [text](url) and ![alt](url) → text
 _WIKI_LINK = re.compile(r"!?\[\[([^\]|]*)(?:\|([^\]]*))?\]\]")
 _MD_LINK = re.compile(r"!?\[([^\]]*)\]\([^)]*\)")
-_DATE = re.compile(r"\d{4}-\d{2}-\d{2}")
 
 
 class Note(TypedDict):
     external_key: str
     title: str
-    url: str
-    occurred_on: str
+    body: str
     summary: NotRequired[str]
-    tags: list[str]
-    skills: list[str]
+    parent: NotRequired[str]
+    categories: list[str]
 
 
 class InvalidNoteError(ValueError):
     """A published note that cannot be sent; the message says why."""
 
 
-@dataclass(frozen=True)
-class NoteContext:
-    root: Path
-    note_base_url: str | None
-    today: dt.date
-
-
-def parse_note(path: Path, context: NoteContext) -> Note | None:
+def parse_note(path: Path, root: Path) -> Note | None:
     """The request item of a published note, or None when the note is not published."""
     try:
         frontmatter, body = split_frontmatter(path.read_text(encoding="utf-8"))
     except FrontmatterError as error:
-        # Cannot tell whether it is published, and skipping it could hide its row: treat it as invalid
+        # Cannot tell whether it is published, and skipping it could hide its article: treat it as invalid
         raise InvalidNoteError(str(error)) from None
     except UnicodeDecodeError:
         raise InvalidNoteError("file is not UTF-8") from None
@@ -62,18 +51,22 @@ def parse_note(path: Path, context: NoteContext) -> Note | None:
     if frontmatter.get("publish") is not True:
         return None
 
-    key = external_key(path, context.root)
+    body = body.strip("\n")
+    if len(body) > BODY_MAX:
+        raise InvalidNoteError(f"content is longer than {BODY_MAX} characters")
+
     note: Note = {
-        "external_key": key,
+        "external_key": external_key(path, root),
         "title": _title(frontmatter, path),
-        "url": _url(frontmatter, key, context.note_base_url),
-        "occurred_on": _occurred_on(frontmatter, context.today),
-        "tags": _names(frontmatter, "tags", TAG_NAME_MAX, strip_hash=True),
-        "skills": _names(frontmatter, "skills", SKILL_NAME_MAX, strip_hash=False),
+        "body": body,
+        "categories": _names(frontmatter, "categories", CATEGORY_NAME_MAX),
     }
     summary = _summary(frontmatter, body)
     if summary:
         note["summary"] = summary
+    parent = _parent(frontmatter)
+    if parent:
+        note["parent"] = parent
     return note
 
 
@@ -101,10 +94,10 @@ def summarize(text: str) -> str:
 
 
 def first_paragraph(body: str) -> str:
-    """The first block of text between blank lines that is not a heading."""
+    """The first block of text between blank lines that is not a heading or a code fence."""
     for block in re.split(r"\n\s*\n", body):
         stripped = block.strip()
-        if stripped and not stripped.startswith("#"):
+        if stripped and not stripped.startswith(("#", "```", "~~~")):
             return stripped
     return ""
 
@@ -131,47 +124,21 @@ def _summary(frontmatter: dict[str, Any], body: str) -> str:
     return summarize(value)
 
 
-def _occurred_on(frontmatter: dict[str, Any], today: dt.date) -> str:
-    value = frontmatter.get("date")
-    # YAML reads an unquoted 2026-10-01 as a date, a quoted one as text; a datetime has a time part
-    if isinstance(value, dt.date) and not isinstance(value, dt.datetime):
-        day = value
-    elif isinstance(value, str) and _DATE.fullmatch(value.strip()):
-        try:
-            day = dt.date.fromisoformat(value.strip())
-        except ValueError:
-            raise InvalidNoteError(f"date {value!r} does not exist") from None
-    elif value is None:
-        raise InvalidNoteError("date is missing (YYYY-MM-DD)")
-    else:
-        raise InvalidNoteError(f"date {value!r} is not YYYY-MM-DD")
-    if day > today:
-        raise InvalidNoteError(f"date {day.isoformat()} is in the future")
-    return day.isoformat()
+def _parent(frontmatter: dict[str, Any]) -> str:
+    """The parent note as Obsidian names it: a path, a file name or "[[Note]]"; the API resolves it."""
+    value = frontmatter.get("parent")
+    if value is None:
+        return ""
+    if not isinstance(value, str):
+        # An unquoted [[Note]] is a YAML list of lists
+        raise InvalidNoteError('parent must be text: a note path or "[[Note]]" in quotes')
+    parent = value.strip()
+    if len(parent) > EXTERNAL_KEY_MAX:
+        raise InvalidNoteError(f"parent is longer than {EXTERNAL_KEY_MAX} characters")
+    return unicodedata.normalize("NFC", parent)
 
 
-def _is_http_url(value: str) -> bool:
-    parts = urlsplit(value)
-    return parts.scheme in URL_SCHEMES and bool(parts.netloc)
-
-
-def _url(frontmatter: dict[str, Any], key: str, base_url: str | None) -> str:
-    value = frontmatter.get("url")
-    if value is not None:
-        if not isinstance(value, str) or not _is_http_url(value.strip()):
-            raise InvalidNoteError("url must be an http(s) URL")
-        url = value.strip()
-    elif base_url:
-        path = "/".join(quote(segment, safe="") for segment in key.removesuffix(NOTE_SUFFIX).split("/"))
-        url = f"{base_url.rstrip('/')}/{path}"
-    else:
-        raise InvalidNoteError("no url in frontmatter and LEDGER_NOTE_BASE_URL is not set")
-    if len(url) > URL_MAX:
-        raise InvalidNoteError(f"url is longer than {URL_MAX} characters")
-    return url
-
-
-def _names(frontmatter: dict[str, Any], field: str, max_length: int, *, strip_hash: bool) -> list[str]:
+def _names(frontmatter: dict[str, Any], field: str, max_length: int) -> list[str]:
     """A list (or one text) of names, trimmed, without duplicates ignoring case, in note order."""
     value = frontmatter.get(field)
     if value is None:
@@ -184,8 +151,6 @@ def _names(frontmatter: dict[str, Any], field: str, max_length: int, *, strip_ha
     seen: set[str] = set()
     for item in items:
         name = item.strip()
-        if strip_hash:
-            name = name.removeprefix("#").strip()
         if not name or name.casefold() in seen:
             continue
         if len(name) > max_length:

@@ -8,10 +8,17 @@ import pytest
 
 from ledger_importer.cli import main
 from ledger_importer.contract import IMPORT_PATH, ExitCode
-from tests.conftest import BASE_URL, TODAY, Vault
+from tests.conftest import Vault
 
 TOKEN = "1|secret-token"  # noqa: S105 - a fake token
-COUNTS = {"created": 2, "updated": 0, "unchanged": 1, "hidden": 1, "unknown_skills": ["Rust"]}
+COUNTS = {
+    "created": 2,
+    "updated": 0,
+    "unchanged": 1,
+    "hidden": 1,
+    "unknown_categories": ["Rust"],
+    "unknown_links": ["Draft"],
+}
 
 
 class FakeApi:
@@ -43,18 +50,18 @@ def run(vault: Vault, capsys: pytest.CaptureFixture[str]) -> Run:
     def _run(
         *args: str, api: FakeApi | None = None, env: dict[str, str] | None = None
     ) -> tuple[int, str, str]:
-        environment = {"LEDGER_API_TOKEN": TOKEN, "LEDGER_NOTE_BASE_URL": BASE_URL} if env is None else env
+        environment = {"LEDGER_API_TOKEN": TOKEN} if env is None else env
         out = io.StringIO()
         transport = httpx.MockTransport((api or FakeApi()).handler)
-        code = main([str(vault.root), *args], env=environment, transport=transport, today=TODAY, out=out)
+        code = main([str(vault.root), *args], env=environment, transport=transport, out=out)
         return code, out.getvalue(), capsys.readouterr().err
 
     return _run
 
 
 def add_published(vault: Vault) -> None:
-    vault.add("a.md", "publish: true\ndate: 2026-09-30\nskills: [Rust]")
-    vault.add("b/c.md", "publish: true\ndate: 2026-09-01\ntags: [x]")
+    vault.add("a.md", "publish: true\ncategories: [Rust]", "See [[Draft]].")
+    vault.add("b/c.md", "publish: true\nparent: a")
     vault.add("draft.md", "publish: false")
     vault.add("plain.md")
 
@@ -73,10 +80,12 @@ def test_sends_published_notes_with_the_token(vault: Vault, run: Run) -> None:
     assert request.headers["Accept"] == "application/json"
     assert api.payload["dry_run"] is False
     assert [note["external_key"] for note in api.payload["notes"]] == ["a.md", "b/c.md"]
+    assert api.payload["notes"][0]["body"] == "See [[Draft]]."
+    assert api.payload["notes"][1]["parent"] == "a"
     assert "4 notes, 2 published, 0 invalid" in out
     assert "created    2" in out
-    assert "Unknown skills" in out
-    assert "Rust" in out
+    assert "Unknown categories (not created; add them in the admin or fix the notes): Rust" in out
+    assert "Links shown as plain text (no published note or article by that name): Draft" in out
     assert TOKEN not in out
 
 
@@ -93,19 +102,19 @@ def test_dry_run_asks_the_api_to_only_count(vault: Vault, run: Run) -> None:
 
 def test_any_invalid_published_note_stops_the_run(vault: Vault, run: Run) -> None:
     add_published(vault)
-    vault.add("broken.md", "publish: true")
+    vault.add("broken.md", "publish: true\ntitle: ''")
     api = FakeApi()
 
     code, out, _ = run(api=api)
 
     assert code == ExitCode.INVALID_NOTES
     assert api.requests == []
-    assert "broken.md: date is missing" in out
+    assert "broken.md: title must be a non-empty text" in out
     assert "nothing was sent" in out
 
 
 def test_dry_run_with_invalid_notes_sends_nothing_either(vault: Vault, run: Run) -> None:
-    vault.add("broken.md", "publish: true")
+    vault.add("broken.md", "publish: true\ncategories: {a: b}")
     api = FakeApi()
 
     assert run("--dry-run", api=api)[0] == ExitCode.INVALID_NOTES
@@ -132,12 +141,23 @@ def test_too_many_notes_stops(vault: Vault, run: Run, monkeypatch: pytest.Monkey
     assert api.requests == []
 
 
+def test_too_large_a_request_stops(vault: Vault, run: Run, monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setattr("ledger_importer.cli.REQUEST_BYTES_MAX", 100)
+    add_published(vault)
+    api = FakeApi()
+
+    code, out, _ = run(api=api)
+
+    assert code == ExitCode.INVALID_NOTES
+    assert "nothing was sent" in out
+    assert api.requests == []
+
+
 @pytest.mark.parametrize(
     ("env", "message"),
     [
         ({}, "LEDGER_API_TOKEN is not set"),
         ({"LEDGER_API_TOKEN": TOKEN, "LEDGER_API_URL": "ml-nginx"}, "LEDGER_API_URL must be an http(s) URL"),
-        ({"LEDGER_API_TOKEN": TOKEN, "LEDGER_NOTE_BASE_URL": "notes/"}, "LEDGER_NOTE_BASE_URL must be"),
     ],
 )
 def test_configuration_errors(vault: Vault, run: Run, env: dict[str, str], message: str) -> None:
@@ -182,9 +202,13 @@ def test_api_url_from_the_environment(vault: Vault, run: Run) -> None:
             422,
             {
                 "data": None,
-                "error": {"status": True, "code": 422, "messages": {"notes.0.url": ["The url is invalid."]}},
+                "error": {
+                    "status": True,
+                    "code": 422,
+                    "messages": {"notes.0.parent": ["Unknown parent"]},
+                },
             },
-            "notes.0.url: The url is invalid.",
+            "notes.0.parent: Unknown parent",
         ),
         (
             429,
@@ -215,7 +239,6 @@ def test_network_error_exits_3(vault: Vault, capsys: pytest.CaptureFixture[str])
         [str(vault.root)],
         env={"LEDGER_API_TOKEN": TOKEN},
         transport=httpx.MockTransport(refuse),
-        today=TODAY,
         out=io.StringIO(),
     )
 

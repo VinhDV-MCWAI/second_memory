@@ -1,6 +1,6 @@
-"""Limits and codes of the import contract (ADR-0010, ADR-0008 row `evidence/import`).
+"""Limits and codes of the import contract (ADR-0010, ADR-0022 `article/import`).
 
-The limits mirror `App\\Constants\\LedgerConst` in laravel-api; the API validates them again.
+The limits mirror `App\\Constants\\ContentConst` in laravel-api; the API validates them again.
 """
 
 from enum import IntEnum
@@ -8,23 +8,23 @@ from enum import IntEnum
 NOTES_MAX = 2000
 EXTERNAL_KEY_MAX = 500
 TITLE_MAX = 200
-URL_MAX = 2048
-TAG_NAME_MAX = 50
-SKILL_NAME_MAX = 100
-# Shorter than the API's 1,000: a summary is a teaser, the note itself is behind the URL
+BODY_MAX = 100_000
+CATEGORY_NAME_MAX = 100
+# Shorter than the API's 500: a summary is a teaser for lists and search results
 SUMMARY_MAX = 300
 ELLIPSIS = "…"
+# PHP accepts request bodies up to 50 MB (docker/laravel/php.ini post_max_size); keep clear of it
+REQUEST_BYTES_MAX = 45 * 1024 * 1024
 
 NOTE_SUFFIX = ".md"
 FRONTMATTER_FENCE = "---"
 URL_SCHEMES = ("http", "https")
 
-IMPORT_PATH = "/api/admin/evidence/import"
-HTTP_TIMEOUT_SECONDS = 30.0
+IMPORT_PATH = "/api/admin/article/import"
+HTTP_TIMEOUT_SECONDS = 60.0
 
 ENV_API_URL = "LEDGER_API_URL"
 ENV_API_TOKEN = "LEDGER_API_TOKEN"  # noqa: S105 - the name of the variable, not a secret
-ENV_NOTE_BASE_URL = "LEDGER_NOTE_BASE_URL"
 DEFAULT_API_URL = "http://ml-nginx:8080"  # nginx listens on 8080 inside the Compose network (P4-02)
 DEFAULT_VAULT = "/vault"
 

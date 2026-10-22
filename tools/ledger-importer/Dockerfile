@@ -1,4 +1,4 @@
-# Obsidian → Skill Ledger importer (ADR-0010). One-shot CLI, not a Compose service.
+# Obsidian → articles importer (ADR-0010, ADR-0022). One-shot CLI, not a Compose service.
 #   docker build -t ledger-importer tools/ledger-importer                  → runtime image
 #   docker build --target dev -t ledger-importer-dev tools/ledger-importer → ruff, mypy, pytest
 FROM ghcr.io/astral-sh/uv:0.12.23 AS uv
