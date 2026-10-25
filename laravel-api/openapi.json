@@ -2346,7 +2346,7 @@
         "/admin/content-category/move/{id}": {
             "put": {
                 "operationId": "content-category.move",
-                "summary": "One step up or down among its siblings (the same parent)",
+                "summary": "One step up or down among its siblings (`direction`), or a drop in the tree: under `parent_id`\n(null for the top) at `position` among the new siblings, 0 first (ADR-0023)",
                 "tags": [
                     "ContentCategory"
                 ],
@@ -2361,11 +2361,10 @@
                     }
                 ],
                 "requestBody": {
-                    "required": true,
                     "content": {
                         "application/json": {
                             "schema": {
-                                "$ref": "#/components/schemas/MoveRequest"
+                                "$ref": "#/components/schemas/MoveContentCategoryRequest"
                             }
                         }
                     }
@@ -2409,11 +2408,11 @@
                             }
                         }
                     },
-                    "401": {
-                        "$ref": "#/components/responses/AuthenticationException"
-                    },
                     "422": {
                         "$ref": "#/components/responses/ValidationException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
                     },
                     "403": {
                         "description": "Forbidden",
@@ -9123,6 +9122,26 @@
                     "updated_at"
                 ],
                 "title": "MediaResource"
+            },
+            "MoveContentCategoryRequest": {
+                "type": "object",
+                "description": "A step up or down among the siblings (the \u2191 \u2193 buttons), or a drop in the tree (ADR-0023):\n`parent_id` (null for the top) and `position` among its new siblings, 0 first.",
+                "properties": {
+                    "direction": {
+                        "$ref": "#/components/schemas/MoveDirection"
+                    },
+                    "position": {
+                        "type": "integer",
+                        "minimum": 0
+                    },
+                    "parent_id": {
+                        "type": [
+                            "integer",
+                            "null"
+                        ]
+                    }
+                },
+                "title": "MoveContentCategoryRequest"
             },
             "MoveDirection": {
                 "type": "string",

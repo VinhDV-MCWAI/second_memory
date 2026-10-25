@@ -116,6 +116,36 @@ final class ContentCategoryApiTest extends TestCase
         $this->call('PUT', self::BASE."/move/{$a}", ['direction' => 'sideways'], $this->owner)->assertStatus(CommonVal::HTTP_UNPROCESSABLE_CONTENT);
     }
 
+    public function test_a_drop_puts_a_category_under_a_parent_at_a_position(): void
+    {
+        $skills = $this->store(['name' => 'Kỹ năng']);
+        $process = $this->store(['name' => 'Quy trình']);
+        [$a, $b] = [$this->store(['name' => 'A', 'parent_id' => $skills]), $this->store(['name' => 'B', 'parent_id' => $skills])];
+        $design = $this->store(['name' => 'Thiết kế', 'parent_id' => $process]);
+        $this->travel(1)->minutes();
+
+        // Same parent: only the order changes, not the edit date
+        $updated = ContentCategory::query()->findOrFail($b)->updated_at;
+        $this->call('PUT', self::BASE."/move/{$b}", ['parent_id' => $skills, 'position' => 0], $this->owner)->assertOk();
+        $this->call('GET', self::BASE.'/list', ['parent_id' => $skills], $this->owner)->assertJsonPath('data.data.*.id', [$b, $a]);
+        $this->assertEquals($updated, ContentCategory::query()->findOrFail($b)->updated_at);
+
+        // Into another branch between two rows; the old siblings close the gap
+        $this->call('PUT', self::BASE."/move/{$b}", ['parent_id' => $process, 'position' => 1], $this->owner)->assertOk();
+        $this->call('GET', self::BASE.'/list', ['parent_id' => $process], $this->owner)
+            ->assertJsonPath('data.data.*.id', [$design, $b])
+            ->assertJsonPath('data.data.*.sort_order', [1, 2]);
+        $this->call('GET', self::BASE.'/list', ['parent_id' => $skills], $this->owner)->assertJsonPath('data.data.0.sort_order', 1);
+        $this->assertSame($process, AuditLog::query()->where(['auditable_id' => $b, 'event' => 'updated', 'auditable_type' => 'content_category'])->latest('id')->firstOrFail()->new_values['parent_id'] ?? null);
+
+        // To the top level, past the end; and the same rules as the form
+        $this->call('PUT', self::BASE."/move/{$b}", ['parent_id' => null, 'position' => 99], $this->owner)->assertOk();
+        $this->call('GET', self::BASE.'/list', ['root' => 1], $this->owner)->assertJsonPath('data.data.*.id', [$skills, $process, $b]);
+        $this->call('PUT', self::BASE."/move/{$skills}", ['parent_id' => $a, 'position' => 0], $this->owner)
+            ->assertStatus(CommonVal::HTTP_UNPROCESSABLE_CONTENT)->assertJsonPath('error.messages.parent_id.0', Messages::E0048);
+        $this->call('PUT', self::BASE."/move/{$a}", ['position' => -1], $this->owner)->assertStatus(CommonVal::HTTP_UNPROCESSABLE_CONTENT);
+    }
+
     public function test_attachments_are_links_or_files_kept_by_id_in_the_given_order(): void
     {
         $this->useFakeStorage();

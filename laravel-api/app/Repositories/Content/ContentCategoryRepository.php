@@ -118,6 +118,48 @@ class ContentCategoryRepository extends CrudRepository
     }
 
     /**
+     * Puts the category under $parentId at $position among its children and numbers both lists of
+     * siblings 1…n again. A new parent is an edit (`updated_at`); the order alone is not.
+     */
+    public function place(int $id, ?int $parentId, int $position): void
+    {
+        $category = $this->find($id);
+        $oldParentId = $category->parent_id;
+        if ($oldParentId !== $parentId) {
+            $category->update(['parent_id' => $parentId]);
+        }
+
+        $siblings = $this->childIds($parentId, $id);
+        array_splice($siblings, min($position, count($siblings)), 0, [$id]);
+        $this->numberInOrder($siblings);
+        if ($oldParentId !== $parentId) {
+            $this->numberInOrder($this->childIds($oldParentId, $id));
+        }
+    }
+
+    /**
+     * @return list<int>
+     */
+    private function childIds(?int $parentId, int $except): array
+    {
+        return $this->model->newQuery()
+            ->where('parent_id', $parentId)
+            ->whereKeyNot($except)
+            ->orderBy('sort_order')->orderBy('id')
+            ->pluck('id')->map(intval(...))->all();
+    }
+
+    /**
+     * @param  list<int>  $ids
+     */
+    private function numberInOrder(array $ids): void
+    {
+        foreach ($ids as $position => $id) {
+            $this->model->newQuery()->whereKey($id)->toBase()->update(['sort_order' => $position + 1]);
+        }
+    }
+
+    /**
      * @param  list<int>  $ids
      */
     public function anyHasChildren(array $ids): bool

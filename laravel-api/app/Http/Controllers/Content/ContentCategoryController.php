@@ -8,9 +8,9 @@ use App\Enums\MoveDirection;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Content\Category\DeleteContentCategoryRequest;
 use App\Http\Requests\Content\Category\ListContentCategoryRequest;
+use App\Http\Requests\Content\Category\MoveContentCategoryRequest;
 use App\Http\Requests\Content\Category\StoreContentCategoryRequest;
 use App\Http\Requests\Content\Category\UpdateContentCategoryRequest;
-use App\Http\Requests\Content\MoveRequest;
 use App\Http\Resources\Content\ContentCategoryResource;
 use App\Services\Content\ContentCategoryService;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
@@ -47,10 +47,17 @@ class ContentCategoryController extends Controller
     }
 
     /**
-     * One step up or down among its siblings (the same parent)
+     * One step up or down among its siblings (`direction`), or a drop in the tree: under `parent_id`
+     * (null for the top) at `position` among the new siblings, 0 first (ADR-0023)
      */
-    public function move(MoveRequest $request, string $id): void
+    public function move(MoveContentCategoryRequest $request, string $id): void
     {
+        if ($request->has('position')) {
+            $parentId = $request->validated('parent_id');
+            $this->categories->place((int) $id, $parentId === null ? null : (int) $parentId, (int) $request->validated('position'));
+
+            return;
+        }
         $this->categories->move((int) $id, MoveDirection::from((string) $request->validated('direction')));
     }
 }

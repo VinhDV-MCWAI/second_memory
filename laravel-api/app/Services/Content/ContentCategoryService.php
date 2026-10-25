@@ -77,6 +77,20 @@ class ContentCategoryService extends AuditedCrudService
     }
 
     /**
+     * A drop in the tree: under $parentId at $position among its children. A new parent follows the
+     * same rules as the form (no loop, CATEGORY_DEPTH_MAX levels).
+     *
+     * @throws ValidationException
+     */
+    public function place(int $id, ?int $parentId, int $position): void
+    {
+        if ($parentId !== $this->categories->find($id)->parent_id) {
+            $this->ensureParent($id, ['parent_id' => $parentId]);
+        }
+        $this->auditedChange($id, fn () => $this->categories->place($id, $parentId, $position));
+    }
+
+    /**
      * A tree at most CATEGORY_DEPTH_MAX levels deep, never a loop: a category cannot go under itself
      * or under a category inside it, and the categories it holds move with it.
      *

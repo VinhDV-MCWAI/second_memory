@@ -366,7 +366,10 @@ export interface paths {
       cookie?: never;
     };
     get?: never;
-    /** One step up or down among its siblings (the same parent) */
+    /**
+     * One step up or down among its siblings (`direction`), or a drop in the tree: under `parent_id`
+     *     (null for the top) at `position` among the new siblings, 0 first (ADR-0023)
+     */
     put: operations['content-category.move'];
     post?: never;
     delete?: never;
@@ -1655,6 +1658,16 @@ export interface components {
       }[];
       created_at: string | null;
       updated_at: string | null;
+    };
+    /**
+     * MoveContentCategoryRequest
+     * @description A step up or down among the siblings (the ↑ ↓ buttons), or a drop in the tree (ADR-0023):
+     *     `parent_id` (null for the top) and `position` among its new siblings, 0 first.
+     */
+    MoveContentCategoryRequest: {
+      direction?: components['schemas']['MoveDirection'];
+      position?: number;
+      parent_id?: number | null;
     };
     /**
      * MoveDirection
@@ -3094,9 +3107,9 @@ export interface operations {
       };
       cookie?: never;
     };
-    requestBody: {
+    requestBody?: {
       content: {
-        'application/json': components['schemas']['MoveRequest'];
+        'application/json': components['schemas']['MoveContentCategoryRequest'];
       };
     };
     responses: {
