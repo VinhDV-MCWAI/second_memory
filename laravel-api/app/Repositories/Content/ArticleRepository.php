@@ -12,6 +12,7 @@ use App\Models\Content\ContentCategory;
 use App\Models\Media\MediaMgmt;
 use App\Repositories\Concerns\MakesUniqueSlugs;
 use App\Repositories\Concerns\MovesAmongSiblings;
+use App\Repositories\Concerns\WalksParentTree;
 use App\Repositories\CrudRepository;
 use App\Services\Content\WikiSyntax;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
@@ -31,6 +32,7 @@ class ArticleRepository extends CrudRepository
 {
     use MakesUniqueSlugs;
     use MovesAmongSiblings;
+    use WalksParentTree;
 
     public function __construct(Article $model)
     {
@@ -96,51 +98,6 @@ class ArticleRepository extends CrudRepository
     {
         $article = $this->find($id);
         $this->swapWithNeighbour($article, $direction, fn (Builder $siblings) => $siblings->where('parent_id', $article->parent_id));
-    }
-
-    /**
-     * Levels from the root down to this article, the root being 1.
-     */
-    public function depth(int $id): int
-    {
-        return (int) DB::selectOne(<<<'SQL'
-            WITH RECURSIVE up(id, parent_id, depth) AS (
-                SELECT id, parent_id, 1 FROM article WHERE id = ?
-                UNION ALL
-                SELECT a.id, a.parent_id, up.depth + 1 FROM article a JOIN up ON a.id = up.parent_id
-            )
-            SELECT max(depth) AS depth FROM up
-            SQL, [$id])?->depth;
-    }
-
-    /**
-     * Levels of the subtree under this article, the article itself being 1.
-     */
-    public function height(int $id): int
-    {
-        return (int) DB::selectOne(<<<'SQL'
-            WITH RECURSIVE down(id, height) AS (
-                SELECT id, 1 FROM article WHERE id = ?
-                UNION ALL
-                SELECT a.id, down.height + 1 FROM article a JOIN down ON a.parent_id = down.id
-            )
-            SELECT max(height) AS height FROM down
-            SQL, [$id])?->height;
-    }
-
-    /**
-     * Whether $candidate is $id itself or one of its sub-pages, at any level.
-     */
-    public function isSelfOrDescendant(int $candidate, int $id): bool
-    {
-        return DB::selectOne(<<<'SQL'
-            WITH RECURSIVE down(id) AS (
-                SELECT id FROM article WHERE id = ?
-                UNION ALL
-                SELECT a.id FROM article a JOIN down ON a.parent_id = down.id
-            )
-            SELECT EXISTS (SELECT 1 FROM down WHERE id = ?) AS found
-            SQL, [$id, $candidate])?->found === true;
     }
 
     /**
