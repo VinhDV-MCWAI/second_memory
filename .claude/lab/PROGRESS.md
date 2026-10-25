@@ -109,6 +109,8 @@ Mỗi dòng do `scripts/lane.sh done` tự thêm. Không sửa tay. Các dòng t
 
 - 2026-10-25 — [lane main] UX-01 done: cd76e65c…e1ada060 — 10 góp ý xong: lỗi đính kèm hiện trên màn hình, link phải có http(s)://, email tên miền không có thật báo riêng, sắp xếp có tiêu chí phụ + mũi tên ↑↓ + về trang 1, vai trò tiêu đề quyền cố định, Files chọn thư mục đích bằng cây, danh mục 5 cấp, màn hình danh mục là cây thu gọn/mở rộng + tìm + kéo thả (@dnd-kit), ô chọn danh mục dạng cây có tìm/chọn tất cả/bỏ chọn, mọi form kiểm tra khi nhập + khóa nút lưu + quy tắc khớp máy chủ (quản trị và trang public); make verify pass (272 backend, 175 giao diện, 58 importer), make e2e 10/10; dọn: make clean, dữ liệu E2E do e2e/run.sh xóa, file theo dõi góp ý đã xóa, 2 khóa cũ của phiên trước
 
+- 2026-10-25 — [lane main] UX-02 done: 79996d5a — ô Bài cha của bài viết là cây theo sách, tìm không dấu theo cả đường dẫn, bài đang sửa và bài con của nó không chọn được; lint, typecheck, 176 test giao diện pass; dọn: make clean, không tạo dữ liệu
+
 ## Next step
 
 1. Đầu phiên: đọc file này, rồi `scripts/lane.sh status`. Bảng việc chỉ còn các việc "để sau" theo quyết định chủ dự án.
