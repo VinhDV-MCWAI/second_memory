@@ -3,7 +3,7 @@
 A task is not done until its leftovers are gone. Full guide and the checklist: [docs/runbooks/don-dep.md](../../docs/runbooks/don-dep.md).
 
 ## While working
-- Name every record you create by hand on dev with the prefix `TMP ` (skills, evidence, roles, departments, folders; admin accounts `tmp_…`), so it is easy to find and remove. E2E records use `E2E ` and `e2e/run.sh` removes them.
+- Name every record you create by hand on dev with the prefix `TMP ` (categories, articles, roles, departments, folders; admin accounts `tmp_…`, end users `tmp-…`), so it is easy to find and remove. E2E records use `E2E ` and `e2e/run.sh` removes them.
 - Throwaway containers: `docker run --rm`. Temporary scripts and outputs go in the scratchpad, never in the repo.
 - Never test on the dev DB what a PHPUnit test on the `testing` DB can prove.
 

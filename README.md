@@ -1,6 +1,6 @@
 # Second Memory
 
-A self-hosted personal knowledge and skill management system: track the skills you learn, the goals you set and the evidence that proves them (links, certificates, PDFs, videos), keep your files in your own object storage, and publish a read-only skill page.
+A self-hosted personal knowledge base: write down what you learn as Markdown articles in categories and books, keep your files in your own object storage, and publish it all as a documentation-style public site.
 
 The project is also a practice ground for professional software work: every feature goes through request → proposal → confirmation → implementation → tests → documentation, with the decisions written down in [docs/adr/](docs/adr/).
 
@@ -13,11 +13,11 @@ The project is also a practice ground for professional software work: every feat
 | Departments | Departments, admins in several departments, folders in Files locked to departments | [phong-ban.md](docs/features/phong-ban.md) |
 | Dynamic permissions | Every admin API is a permission; roles with a permission matrix in the UI; menus and buttons follow the permissions | [phan-quyen-dong.md](docs/features/phan-quyen-dong.md) |
 | Sign-in | Session cookie (Laravel Sanctum), signed-in devices with remote sign-out, "remember me" for 30 days, rate limits per user and per IP | [dang-nhap.md](docs/features/dang-nhap.md) |
-| Search | One search box over skills, goals, evidence, files and folders: Vietnamese without diacritics, typo tolerant | [tim-kiem.md](docs/features/tim-kiem.md) |
+| Search | Articles and categories (admin: also private articles, files and folders), on the public site and in the admin app: Vietnamese without diacritics, typo tolerant | [tim-kiem.md](docs/features/tim-kiem.md) |
 | Audit log | Every change and sign-in attempt, with a filterable screen | [nhat-ky-thay-doi.md](docs/features/nhat-ky-thay-doi.md) |
 | Background jobs | Queue, scheduler and live notifications (Reverb WebSocket) shared by every long-running feature | [viec-nen-va-thong-bao.md](docs/features/viec-nen-va-thong-bao.md) |
-| Public page | The site root: a home page of categories, `/skills` (public skills, level history, public evidence and their files) and articles; ~3 KB of client JavaScript; old `/docs` links redirect here | [trang-public.md](docs/features/trang-public.md) |
-| Categories and articles | Home page categories (the steps of building software) and Markdown articles, edited in the admin app | [bai-viet.md](docs/features/bai-viet.md) |
+| Public page | The site root, read like a documentation site: a forum-style home page (groups → categories), category pages with Latest / Updated / Most read / Most saved, article pages with a book menu, contents and previous / next; ~3 KB of client JavaScript; old `/docs`, `/skills`, `/guides` links redirect | [trang-public.md](docs/features/trang-public.md) |
+| Categories and articles | Groups and categories with attachments; Markdown articles in several categories, books up to 10 levels deep, Obsidian-style `[[links]]` and `![[embeds]]` of articles, sections and files, preview in the admin app; view counts | [bai-viet.md](docs/features/bai-viet.md) |
 | End users | Visitors may sign up on the public page to keep favorites and a read-later list; admins lock accounts and open / close sign-up | [nguoi-dung-cuoi.md](docs/features/nguoi-dung-cuoi.md) |
 | Obsidian import | Notes marked `publish: true` become articles, with their content, parents and links (Python CLI) | [nhap-tu-obsidian.md](docs/features/nhap-tu-obsidian.md) |
 
@@ -27,8 +27,8 @@ The project is also a practice ground for professional software work: every feat
 browser ──► ml-nginx :81 ─┬─ /api/*              ─► ml-php (Laravel API) ──┬─► ml-postgres (data, search)
                           ├─ /app/* (WebSocket)  ─► ml-reverb               ├─► ml-redis (sessions, cache, queue)
                           ├─ /media-official/*   ─► ml-minio (signed links) └─► ml-minio (files)
-                          ├─ /skills             ─► ml-public-site (public site, Astro)
-                          └─ everything else     ─► ml-nextjs (admin dashboard)
+                          ├─ /admin, /_next/*    ─► ml-nextjs (admin dashboard)
+                          └─ everything else     ─► ml-public-site (public site, Astro)
                                                     ml-queue, ml-scheduler: background jobs (same image as ml-php)
 ```
 
@@ -53,7 +53,7 @@ The host needs only **Docker** (Docker Desktop on WSL2 works) and **make**. PHP,
 make up        # first run: generates docker/.env and the app env files, builds and starts the stack;
                # an empty database is migrated and seeded on start
 make ps        # every container should be healthy
-make seed      # optional: sample skills, evidence, goals, tags, categories + articles and a read-only "viewer" account
+make seed      # optional: sample categories, articles and a book, a read-only "viewer" admin and a "demo" end user
 ```
 
 Open <http://localhost:81/> (public site) and <http://localhost:81/admin> (admin). The seed creates a local-only owner account, `root` / `12345678`. Never use it outside dev.
@@ -64,7 +64,7 @@ Open <http://localhost:81/> (public site) and <http://localhost:81/admin> (admin
 
 | Command | What it does |
 |---|---|
-| `make test` / `make test f=Skill` | backend tests (PHPUnit, on the separate `testing` database) |
+| `make test` / `make test f=ArticleApi` | backend tests (PHPUnit, on the separate `testing` database) |
 | `make fe-test` | admin dashboard tests (Vitest) |
 | `make lint` · `make format` | Pint + ESLint + Prettier + ruff checks · fix formatting |
 | `make verify` | every quality gate in the dev containers (lint, Larastan, OpenAPI drift, type checks, all tests) |

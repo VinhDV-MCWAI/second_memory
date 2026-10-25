@@ -1,6 +1,6 @@
 # Kiến trúc hiện tại
 
-Cập nhật: 2026-10-19. Hệ thống đang chạy thế nào trên môi trường dev. Sửa file này cùng commit với thay đổi về container, đăng nhập, phân quyền hoặc cấu trúc dữ liệu. Chi tiết từng tính năng nằm trong [docs/features/](../features/). Kiến trúc của bản `v1.0.0` (trước khi thu gọn): [as-is.md](../archive/engineering-lab/architecture/as-is.md).
+Cập nhật: 2026-10-25. Hệ thống đang chạy thế nào trên môi trường dev. Sửa file này cùng commit với thay đổi về container, đăng nhập, phân quyền hoặc cấu trúc dữ liệu. Chi tiết từng tính năng nằm trong [docs/features/](../features/). Kiến trúc của bản `v1.0.0` (trước khi thu gọn): [as-is.md](../archive/engineering-lab/architecture/as-is.md).
 
 ## 1. Container (dev, Docker Compose)
 
@@ -11,7 +11,7 @@ flowchart LR
     N -->|/app/* WebSocket| R2[ml-reverb]
     N -->|/media-official/* link ký tạm| M[(ml-minio)]
     N -->|/admin, /_next| F[ml-nextjs<br/>trang quản trị]
-    N -->|còn lại: /, /skills, /guides| D[ml-public-site<br/>trang public, Astro]
+    N -->|còn lại: /, /categories, /articles, /search| D[ml-public-site<br/>trang public, Astro]
     D -->|GET /api/public/*| N
     P --> PG[(ml-postgres)]
     P --> R[(ml-redis)]
@@ -29,27 +29,27 @@ flowchart LR
 | `ml-php` | REST API (php-fpm). Khởi động lần đầu thì migrate và seed DB trống. Có `ffmpeg` để đọc thời lượng và tạo ảnh nhỏ |
 | `ml-queue`, `ml-scheduler`, `ml-reverb` | Cùng image với `ml-php`: làm việc nền (hàng đợi Redis), chạy lệnh hẹn giờ, gửi thông báo tức thì qua WebSocket. Đổi code việc nền thì `make workers-restart` |
 | `ml-nextjs` | Trang quản trị, chỉ dưới `/admin` (đăng nhập `/admin/login`, [ADR-0021](../adr/0021-public-home-categories-articles.md)) |
-| `ml-public-site` | Trang public ở gốc `/`: trang chủ danh mục, `/skills`, `/guides/…`, tài khoản người dùng (Astro, HTML render ở server; chỉ một script nhỏ cho tài khoản người dùng, ~3 KB; gọi API qua nginx, giữ kết quả 60 giây). `/docs…` cũ được nginx chuyển hướng tới `/` ([ADR-0019](../adr/0019-public-user-frontend.md), [ADR-0021](../adr/0021-public-home-categories-articles.md)) |
+| `ml-public-site` | Trang public ở gốc `/`, đọc như trang tài liệu: trang chủ kiểu diễn đàn (nhóm → danh mục), `/categories/…`, `/articles/…`, `/search`, tài khoản người dùng (Astro, HTML render ở server; chỉ một script nhỏ cho tài khoản người dùng, ~3 KB; gọi API qua nginx, giữ kết quả 60 giây). `/docs…` cũ được nginx chuyển hướng tới `/`; `/skills…`, `/guides…` cũ được Astro chuyển hướng ([ADR-0019](../adr/0019-public-user-frontend.md), [ADR-0021](../adr/0021-public-home-categories-articles.md), [ADR-0022](../adr/0022-trang-tai-lieu-kinh-nghiem.md)) |
 | `ml-postgres` | Dữ liệu và tìm kiếm. DB `testing` riêng cho test |
 | `ml-redis` | Phiên đăng nhập, cache, hàng đợi (test dùng DB 14 / 15) |
 | `ml-minio` (+ `ml-minio-init`) | Kho file. Bucket không cho đọc công khai; trình duyệt upload và tải bằng link ký tạm. Bucket chính bật lưu phiên bản, bản cũ tự hết hạn sau 30 ngày (thùng rác) |
 
 ## 2. Các nhóm API
 
-94 API. Hợp đồng đầy đủ: `laravel-api/openapi.json` (sinh từ code, [ADR-0008](../adr/0008-code-first-openapi-contract.md)). Mọi response cùng một dạng: `{ "data": …, "error": { "status", "code", "messages" } }`.
+76 API (đếm 2026-10-25). Hợp đồng đầy đủ: `laravel-api/openapi.json` (sinh từ code, [ADR-0008](../adr/0008-code-first-openapi-contract.md)). Mọi response cùng một dạng: `{ "data": …, "error": { "status", "code", "messages" } }`.
 
 | Nhóm | Đường dẫn | Tài liệu |
 |---|---|---|
 | Đăng nhập, thiết bị | `sanctum/csrf-cookie`, `admin/credential/*`, `admin/admin-session/*` | [dang-nhap.md](../features/dang-nhap.md) |
 | Quản trị viên, vai trò, quyền, phòng ban | `admin/admin-mst/*`, `admin/role/*`, `admin/permission/*`, `admin/department/*` | [quan-tri-vien.md](../features/quan-tri-vien.md), [phan-quyen-dong.md](../features/phan-quyen-dong.md), [phong-ban.md](../features/phong-ban.md) |
-| Skill Ledger | `admin/{skill,skill-level,learning-goal,evidence,tag}/*`, `admin/dashboard/*` | [skill-ledger.md](../features/skill-ledger.md) |
+| Trang tổng quan | `admin/dashboard/summary` | [bai-viet.md](../features/bai-viet.md) |
 | Files | `admin/media/*` (18 API: thư mục, upload, upload chia phần, tải, thùng rác, khóa thư mục) | [quan-ly-file.md](../features/quan-ly-file.md) |
 | Tìm kiếm, nhật ký | `admin/search`, `admin/audit-log/*` | [tim-kiem.md](../features/tim-kiem.md), [nhat-ky-thay-doi.md](../features/nhat-ky-thay-doi.md) |
 | Việc nền | `admin/background-task/*`, `broadcasting/auth` | [viec-nen-va-thong-bao.md](../features/viec-nen-va-thong-bao.md) |
 | Nhập Obsidian | `admin/article/import` (token API hoặc phiên của chủ) | [nhap-tu-obsidian.md](../features/nhap-tu-obsidian.md) |
 | Người dùng cuối | `user/*` (bộ đăng nhập `user`), `admin/end-user/*` | [nguoi-dung-cuoi.md](../features/nguoi-dung-cuoi.md) |
 | Danh mục, bài viết | `admin/content-category/*`, `admin/article/*` | [bai-viet.md](../features/bai-viet.md) |
-| Public | `public/skills/*`, `public/files/*`, `public/categories/*`, `public/articles/*` | [trang-public.md](../features/trang-public.md), [bai-viet.md](../features/bai-viet.md) |
+| Public | `public/home`, `public/categories/*`, `public/articles/*` (cả lượt xem), `public/search`, `public/files/*` | [trang-public.md](../features/trang-public.md), [bai-viet.md](../features/bai-viet.md) |
 
 ## 3. Đăng nhập và phân quyền
 
@@ -63,7 +63,7 @@ sequenceDiagram
     A->>A: giới hạn sai theo tên + IP và theo IP, kiểm mật khẩu, tạo phiên mới
     A-->>B: cookie phiên (phiên trong Redis, thiết bị trong bảng admin_session)
     B->>A: gọi /api/admin/* kèm cookie
-    A->>A: auth:sanctum → quyền = tên route (vd. skill.list); vai trò Chủ luôn qua
+    A->>A: auth:sanctum → quyền = tên route (vd. article.list); vai trò Chủ luôn qua
 ```
 
 | Phần | Cách làm | Quyết định |
@@ -79,8 +79,8 @@ sequenceDiagram
 
 | Bảng | Dùng cho |
 |---|---|
-| `skill`, `skill_level`, `learning_goal`, `evidence`, `tag` + `evidence_skill`, `evidence_tag`, `skill_tag` | Skill Ledger |
-| `evidence_media` | File gắn vào bằng chứng (tối đa 10, có thứ tự, mã public riêng) |
+| `content_category`, `category_attachment` | Nhóm và danh mục (2 cấp), đính kèm link / file của danh mục |
+| `article`, `article_category`, `article_media` | Bài viết (bài cha tối đa 10 cấp, lượt xem), bài thuộc nhiều danh mục, file nhúng trong bài (mã public riêng) |
 | `media_mgmt` | File và thư mục trong Files (đường dẫn ảo, khóa MinIO, kích thước, thời lượng, trạng thái upload, đã xóa hay chưa) |
 | `department`, `admin_department`, `department_policy` | Phòng ban, thành viên, thư mục khóa theo phòng ban |
 | `admin_mst`, `admin_session` | Quản trị viên, thiết bị đang đăng nhập |

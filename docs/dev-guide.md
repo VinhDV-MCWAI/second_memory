@@ -22,14 +22,13 @@ Mở trình duyệt vào **http://localhost:81/admin** và đăng nhập:
 | Chỉ xem | `viewer` | `12345678` | Xem mọi trang, sửa gì cũng bị báo lỗi 403 |
 | Người dùng trang public | `demo` | `12345678` | Chỉ đăng nhập được ở http://localhost:81/account/login (yêu thích, xem sau); không vào được trang quản trị. Tạo bởi `make seed` |
 
-`make seed` còn thêm dữ liệu mẫu cho Skill Ledger để có cái mà thử:
+`make seed` còn thêm danh mục và bài viết mẫu để có cái mà thử:
 
 | Loại | Số lượng | Ghi chú |
 |---|---|---|
-| Skill | 5 | PostgreSQL, Laravel, Docker công khai; React, Terraform riêng tư. Mỗi skill có lịch sử cấp độ |
-| Nhãn | 5 | database, backend, devops, frontend, performance |
-| Bằng chứng | 6 | Pull request, quyết định thiết kế, sự cố, và 2 ghi chú như được nhập từ Obsidian |
-| Mục tiêu học | 4 | 2 đang theo, 1 đã đạt, 1 đã bỏ |
+| Nhóm Quy trình | 10 danh mục × 2 bài | Các bước làm phần mềm: nhận yêu cầu, làm rõ, phân tích, thiết kế… |
+| Nhóm Kỹ năng | 4 danh mục | Có đính kèm (link, file) |
+| Sách "Laravel thực chiến" | 3 cấp bài cha / bài con | Để thử cây sách, bài trước / sau, nhúng bài |
 
 Những ngày sau chỉ cần `make start` khi bắt đầu và `make stop` khi xong (xem mục 7).
 
@@ -72,7 +71,7 @@ Thư mục code được gắn thẳng vào container, nên phần lớn thay đ
 | Thêm migration | `docker exec ml-php php artisan migrate --force` |
 | Thêm hoặc xóa class PHP | `docker exec ml-php composer dump-autoload` |
 | Đổi route hoặc request/response của API | `make openapi`, để sinh lại kiểu dữ liệu cho giao diện |
-| Thêm API quản trị mới | Đặt tên route (`->name('skill.list')`), rồi `make permissions` để tạo quyền ([phân quyền động](features/phan-quyen-dong.md)) |
+| Thêm API quản trị mới | Đặt tên route (`->name('article.list')`), rồi `make permissions` để tạo quyền ([phân quyền động](features/phan-quyen-dong.md)) |
 | Thêm thư viện PHP | `docker exec ml-php composer require <tên gói>` |
 | Thêm thư viện JS (sửa `pnpm-lock.yaml`) | `make up` (dựng lại image và tạo mới thư mục `node_modules` trong container; thiếu bước tạo mới thì báo "Cannot find module") |
 | Sửa `docker/.env` hoặc Dockerfile | `make restart` |

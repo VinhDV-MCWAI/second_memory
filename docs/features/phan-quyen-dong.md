@@ -20,9 +20,9 @@ Giao diện chỉ ẩn những gì API sẽ từ chối; API vẫn là nơi ki�
 
 | | |
 |---|---|
-| Tên quyền | Tên route của API, dạng `<chức năng>.<việc>`: `skill.list`, `evidence.delete`, `admin-mst.update` |
-| Chức năng | Phần trước dấu chấm: `skill` → Skill, `evidence` → Bằng chứng, `learning-goal` → Mục tiêu học, `tag` → Nhãn, `admin-mst` → Quản trị viên, `role` → Vai trò, `permission` → Danh sách quyền, `audit-log` → Nhật ký thay đổi |
-| Số quyền hiện có | 31 (mọi API quản trị, trừ đăng nhập, đăng xuất và `credential/me`) |
+| Tên quyền | Tên route của API, dạng `<chức năng>.<việc>`: `article.list`, `media.delete`, `admin-mst.update` |
+| Chức năng | Phần trước dấu chấm: `article` → Bài viết, `content-category` → Danh mục, `media` → Files, `department` → Phòng ban, `end-user` → Người dùng cuối, `admin-mst` → Quản trị viên, `role` → Vai trò, `permission` → Danh sách quyền, `audit-log` → Nhật ký thay đổi |
+| Số quyền hiện có | 53 (đếm 2026-10-25; mọi API quản trị, trừ đăng nhập, đăng xuất và `credential/me`) |
 | Luôn được phép | `GET /api/admin/credential/me`: ai đăng nhập cũng xem được thông tin của mình |
 
 ## Vai trò có sẵn
@@ -30,7 +30,7 @@ Giao diện chỉ ẩn những gì API sẽ từ chối; API vẫn là nơi ki�
 | Vai trò | Quyền | Ghi chú |
 |---|---|---|
 | Chủ (`owner`) | Toàn quyền, không cần tick quyền nào | Không thể tự khóa mình. API mới dùng được ngay. Luôn phải còn ít nhất một chủ đang hoạt động |
-| Chỉ xem (`viewer`) | Mọi quyền xem (11 quyền `GET`) | Ghi gì cũng bị 403. Đổi được quyền, không đổi được tên |
+| Chỉ xem (`viewer`) | Mọi quyền xem (16 quyền `GET`) | Ghi gì cũng bị 403. Đổi được quyền, không đổi được tên |
 
 Một admin có thể có nhiều vai trò; quyền là phần gộp của các vai trò đó. Admin không có vai trò nào thì chỉ gọi được `credential/me`.
 

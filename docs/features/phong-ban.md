@@ -61,7 +61,6 @@ Cách làm trên màn hình Files (http://localhost:81/admin/files):
 | Khóa thư mục | Nút chìa khóa (**Access**) ở dòng thư mục → tick các phòng ban → **Save** | `media.access` và `department.list` (vai trò Chủ có sẵn) |
 | Mở khóa | Cùng nút đó, bỏ tick hết → **Save** | như trên |
 | Nhận ra thư mục khóa | Biểu tượng ổ khóa màu vàng cạnh tên thư mục | `media.list` |
-| File bị khóa trong form bằng chứng | Hiện tên kèm nhãn **Locked**, không có nút xem trước và tải về | `evidence.list` |
 
 | Luật | |
 |---|---|
@@ -74,7 +73,7 @@ Cách làm trên màn hình Files (http://localhost:81/admin/files):
 | File ở ngoài cùng | Luôn mở |
 | Vai trò Chủ | Luôn thấy hết |
 | Việc chạy nền, lệnh dọn dẹp | Không bị chặn (không có người đăng nhập) |
-| Trang public | **Không đổi**: file gắn vào bằng chứng công khai vẫn mở được. Muốn giấu thì bỏ công khai bằng chứng |
+| Trang public | **Không đổi**: file đã nhúng vào bài viết hoặc đính kèm danh mục công khai vẫn mở được. Muốn giấu thì bỏ công khai bài hoặc danh mục đó |
 
 Không được phép thì API trả về y như khi thư mục hoặc file không tồn tại, để không lộ là có nó:
 
@@ -87,7 +86,7 @@ Không được phép thì API trả về y như khi thư mục hoặc file khô
 | Xóa | Mục bị khóa được bỏ qua như id không tồn tại. Xóa một thư mục có chứa thư mục khóa mà mình không dùng được: từ chối (422, "This folder holds folders you cannot use") |
 | Thùng rác | Chỉ thấy, khôi phục, xóa hẳn file của thư mục được phép. Thư mục khóa đã bị xóa vẫn giữ khóa cho file của nó trong thùng rác |
 | Upload dở | Thư mục bị khóa sau khi bắt đầu upload: upload biến khỏi khung Unfinished uploads, không gửi tiếp được |
-| Gắn file vào bằng chứng | Không gắn được file bị khóa (422 ở `media_ids`). File đã gắn từ trước thì vẫn giữ, vẫn hiện tên, nhưng `locked: true`: không có xem trước, không có ảnh nhỏ, không có nút mở/tải |
+| Nhúng file vào bài viết, đính kèm file vào danh mục | Không thêm được file bị khóa: lưu bị chặn (422). File đã thêm từ trước thì vẫn giữ |
 | Ô tìm kiếm chung | Thư mục bị khóa và mọi thứ bên trong không hiện trong nhóm Files của [Tìm kiếm](tim-kiem.md) (từ 2026-10-17) |
 
 ### API
@@ -108,8 +107,8 @@ Ghi chú: thư mục khóa bị xóa rồi khôi phục một file bên trong th
 | Loại | Ở đâu | Kiểm tra gì |
 |---|---|---|
 | Máy chủ | `laravel-api/tests/Feature/Master/DepartmentApiTest.php` | Thêm, sửa, xóa, tìm phòng ban; mã không trùng; quyền; admin thuộc nhiều phòng ban |
-| Máy chủ | `laravel-api/tests/Feature/Media/FolderPolicyApiTest.php` | Từng chỗ bị chặn ở bảng trên, khóa lồng nhau, phòng ban ngừng dùng, thùng rác, upload dở, bằng chứng, tìm kiếm |
-| Giao diện | `department-form.test.tsx`, `media-browser.test.tsx`, `evidence-files-field.test.tsx` | Form phòng ban, nút Access, ổ khóa, nhãn Locked |
+| Máy chủ | `laravel-api/tests/Feature/Media/FolderPolicyApiTest.php` | Từng chỗ bị chặn ở bảng trên, khóa lồng nhau, phòng ban ngừng dùng, thùng rác, upload dở, tìm kiếm |
+| Giao diện | `department-form.test.tsx`, `media-browser.test.tsx` | Form phòng ban, nút Access, ổ khóa |
 | Trình duyệt | `e2e/tests/departments.spec.ts` (`make e2e`) | Chủ thêm phòng ban trên màn hình Departments, tạo thư mục, khóa cho phòng ban của `e2e_member`: `e2e_member` vẫn thấy, `e2e_outsider` (phòng ban khác) không thấy |
 
 `e2e/run.sh` tạo sẵn hai tài khoản `e2e_member`, `e2e_outsider` (vai trò `E2E Files reader`, chỉ có quyền xem Files) và mỗi người một phòng ban `E2E …`. Chạy xong thì xóa mọi phòng ban `E2E …` (khóa thư mục đi theo), xóa vai trò, tắt hai tài khoản.

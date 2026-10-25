@@ -10,7 +10,7 @@ Nhật ký hiện ở ba chỗ:
 |---|---|
 | Màn hình **Nhật ký thay đổi** http://localhost:81/admin/audit-log (menu bên trái, có từ 2026-10-14) | Toàn bộ nhật ký, mới nhất trước, có phân trang. Mỗi dòng: thời điểm, việc, loại dữ liệu + mã, ai làm, IP; bấm "n ô" để xem từng ô `cũ → mới`. Lọc theo loại dữ liệu, việc, người làm, từ ngày, đến ngày. Ô "người làm" chỉ hiện với ai có quyền xem danh sách quản trị viên. Ai có quyền `audit-log.list` thì thấy menu (vai trò Chủ và Chỉ xem đều có) |
 | Trang tổng quan http://localhost:81/admin, khung "Hoạt động gần đây" | 10 dòng mới nhất: việc gì, loại dữ liệu + mã, ai làm, lúc nào |
-| Phía dưới form sửa quản trị viên, kỹ năng, bằng chứng, mục tiêu học | Lịch sử của đúng bản ghi đó, mới nhất trước, mỗi ô đổi hiện `cũ → mới` |
+| Phía dưới form sửa quản trị viên, vai trò, phòng ban, người dùng cuối, danh mục, bài viết | Lịch sử của đúng bản ghi đó, mới nhất trước, mỗi ô đổi hiện `cũ → mới` |
 
 ## API
 
@@ -30,9 +30,9 @@ Nhật ký hiện ở ba chỗ:
 | Đăng nhập / đăng xuất | `logged_in` / `logged_out` | |
 | Đăng nhập sai | `login_failed` | Chỉ tên đã gõ, không có mã tài khoản (để không lộ tài khoản có tồn tại) |
 
-Loại dữ liệu (`auditable_type`): `admin`, `skill`, `skill_level`, `learning_goal`, `evidence`, `tag`.
+Loại dữ liệu (`auditable_type`): `admin`, `role`, `department`, `media`, `end_user`, `app_setting`, `content_category`, `article`. Các dòng cũ của Skill Ledger (`skill`, `evidence`, `tag`…) vẫn còn trong nhật ký, chỉ để xem lại (Skill Ledger bỏ từ 2026-10-20).
 
-Không bao giờ ghi: mật khẩu, `remember_token`. Dòng do [nhập từ Obsidian](nhap-tu-obsidian.md) tạo có `new_values.via = importer`. Khi một mục tiêu học tự thành "đã đạt" vì cấp độ mới, nhật ký cũng có dòng `updated` cho mục tiêu đó.
+Không bao giờ ghi: mật khẩu, `remember_token`. Dòng do [nhập từ Obsidian](nhap-tu-obsidian.md) tạo có `new_values.via = importer`.
 
 ## Dữ liệu
 

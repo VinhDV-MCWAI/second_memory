@@ -7,7 +7,7 @@ Nơi lưu kinh nghiệm của chủ dự án và hiện ra ở [trang public](tr
 
 Yêu cầu: [REQ-005](../requirements/REQ-005-trang-tai-lieu-kinh-nghiem.md). Thiết kế: [ADR-0022](../adr/0022-trang-tai-lieu-kinh-nghiem.md) (thay một phần [ADR-0021](../adr/0021-public-home-categories-articles.md)).
 
-Trạng thái: đang làm theo các bước KB-02…KB-08. **Xong**: bỏ Skill Ledger, mô hình mới, màn hình quản trị, nhúng bài và file, xem trước Markdown (2026-10-20); trang public kiểu trang tài liệu; lượt xem, xếp hạng Đọc nhiều / Được lưu nhiều, [tìm kiếm](tim-kiem.md), xếp hạng trên trang tổng quan, [nhập từ Obsidian](nhap-tu-obsidian.md) (2026-10-22). Còn: test trình duyệt, đóng gói `v3.0.0` (KB-08). Nội dung hiện tại là **bài mẫu** (`make seed`).
+Trạng thái: **xong**, ra bản [`v3.0.0`](../releases/v3.0.0.md) (2026-10-25): bỏ Skill Ledger, mô hình mới, màn hình quản trị, nhúng bài và file, xem trước Markdown (2026-10-20); trang public kiểu trang tài liệu; lượt xem, xếp hạng Đọc nhiều / Được lưu nhiều, [tìm kiếm](tim-kiem.md), xếp hạng trên trang tổng quan, [nhập từ Obsidian](nhap-tu-obsidian.md) (2026-10-22); test trình duyệt (2026-10-25). Nội dung hiện tại là **bài mẫu** (`make seed`).
 
 ## Màn hình trong trang quản trị
 
@@ -122,4 +122,4 @@ API public không cần đăng nhập, riêng tư hay không tồn tại đều 
 | Dữ liệu mẫu | `laravel-api/database/seeders/DevContentSeeder.php`: nhóm Quy trình (10 danh mục × 2 bài), nhóm Kỹ năng (4 danh mục, có đính kèm), sách "Laravel thực chiến" 3 cấp; chỉ dev, chạy lại không nhân đôi |
 | Trang quản trị | `nextjs-fe/src/app/admin/(panel)/{content-categories,articles}/`, `src/features/content/` (`markdown-editor`, `article-picker-dialog`, `attachments-field`, `move-buttons`, `sub-pages`) |
 | Trang public | `public-site/src/pages/index.astro`, `src/pages/{categories,articles}/`, `src/components/` (`Attachments`, `RichHtml`, `ArticleMenu`, `BookTree`), `src/lib/category-query.ts`, `src/lib/code-blocks.ts` |
-| Test | `make test f=ArticleEmbed`, `f=WikiSyntax`, `f=ContentCategoryApi`, `f=ArticleApi`, `f=PublicContentApi`, `f=PublicFileApi`, `f=FolderPolicy`, `f=SavedApi`; `pnpm test src/features/content` |
+| Test | `make test f=ArticleEmbed`, `f=WikiSyntax`, `f=ContentCategoryApi`, `f=ArticleApi`, `f=PublicContentApi`, `f=PublicFileApi`, `f=FolderPolicy`, `f=SavedApi`; `pnpm test src/features/content`; `make e2e` (`critical-journey.spec.ts`, `content.spec.ts`) |

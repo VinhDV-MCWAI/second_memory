@@ -55,8 +55,8 @@ Cuối script in `docker system df`. Cần thêm chỗ trống thì xóa tay ả
 | Nguồn | Ai dọn | Cách làm |
 |---|---|---|
 | Test backend (`make test`) | Tự động | Chạy trên DB `testing`, mỗi test cuộn lại giao dịch (`DatabaseTransactions`), không đụng DB dev |
-| Test trình duyệt (`make e2e`) | Tự động | `e2e/run.sh` đặt tên mọi bản ghi `E2E …`, chạy xong xóa skill, bằng chứng, danh mục và bài viết, vai trò, phòng ban, người dùng `e2e-…`, file, nhật ký của tài khoản e2e, và tắt các tài khoản `e2e_owner`, `e2e_member`, `e2e_outsider` |
-| Thử bằng tay trên trình duyệt | Người thử | Đặt tên bắt đầu bằng `TMP ` (skill, bằng chứng, vai trò, phòng ban, thư mục, tài khoản `tmp_…`) để dễ nhận ra, xong thì xóa trên giao diện |
+| Test trình duyệt (`make e2e`) | Tự động | `e2e/run.sh` đặt tên mọi bản ghi `E2E …`, chạy xong xóa danh mục, bài viết, vai trò, phòng ban, người dùng `e2e-…`, file, nhật ký của tài khoản e2e, và tắt các tài khoản `e2e_owner`, `e2e_member`, `e2e_outsider` |
+| Thử bằng tay trên trình duyệt | Người thử | Đặt tên bắt đầu bằng `TMP ` (danh mục, bài viết, vai trò, phòng ban, thư mục, tài khoản `tmp_…`, người dùng cuối `tmp-…`) để dễ nhận ra, xong thì xóa trên giao diện |
 | File upload thử | Người thử | Files → xóa → Trash → **Delete forever** (xóa hẳn khỏi MinIO). Không làm thì lệnh `media:prune-trash` tự xóa sau 30 ngày |
 | Upload dở dang | Tự động | `media:clean-stuck-uploads` mỗi giờ dọn upload treo quá 24 giờ |
 | Việc nền lỗi | Người thử | `docker exec ml-php php artisan queue:failed` để xem, `queue:flush` để xóa sau khi đã đọc lỗi |
@@ -68,8 +68,9 @@ docker exec -i ml-postgres sh -c 'psql -U "$POSTGRES_USER" -d "$POSTGRES_DB"' <<
 select 'role' as kind, name from roles where name ilike '%test%' or name like 'TMP %'
 union all select 'admin', user_name from admin_mst where user_name like 'tmp%'
 union all select 'department', name from department where name like 'TMP %'
-union all select 'skill', name from skill where name like 'TMP %'
-union all select 'evidence', title from evidence where title like 'TMP %'
+union all select 'category', name from content_category where name like 'TMP %'
+union all select 'article', title from article where title like 'TMP %'
+union all select 'end_user', username from end_user where username like 'tmp%'
 union all select 'file', virtual_path from media_mgmt where virtual_path ilike '%smoke%' or virtual_path like '/TMP %' or virtual_path ilike '%thử%';
 SQL
 ```

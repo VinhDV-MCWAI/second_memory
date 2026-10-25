@@ -78,4 +78,4 @@ Chi tiết từng trường: [bai-viet.md](bai-viet.md#api). Không cần đăng
 | Thành phần | `public-site/src/components/`: `RichHtml.astro` (in HTML, tô màu code), `ArticleMenu.astro` + `BookTree.astro` (cột trái), `Attachments.astro`, `SaveButtons.astro` |
 | Đường dẫn | `public-site/src/lib/routes.ts` (mọi đường dẫn trang), `src/lib/category-query.ts` (tham số lọc trong địa chỉ); chuyển hướng cũ trong `public-site/astro.config.mjs` và `docker/nginx/default.conf` |
 | Gọi API | `public-site/src/lib/public-api.ts`; kiểu dữ liệu sinh từ `openapi.json` vào `src/types/openapi.d.ts` bằng `make openapi` |
-| Test | `make test f=PublicContentApi`, `f=PublicFileApi`, `f=PublicViewApi`, `f=PublicSearchApi`; `docker exec ml-public-site pnpm typecheck`; test trình duyệt viết lại ở bước KB-08 |
+| Test | `make test f=PublicContentApi`, `f=PublicFileApi`, `f=PublicViewApi`, `f=PublicSearchApi`; `docker exec ml-public-site pnpm typecheck`; `make e2e` (`critical-journey.spec.ts`: trang chủ → nhóm → danh mục → bài, link và nhúng, mục lục, tìm kiếm, bài riêng tư 404, đường dẫn cũ; `content.spec.ts`: danh mục bị ẩn thì 404) |
