@@ -23,11 +23,12 @@ const CACHED = { timeout: 90_000, intervals: [5_000] };
 async function createCategory(page: Page, name: string, inGroup?: string) {
   await page.goto('/admin/content-categories');
   await page.getByRole('button', { name: 'Create Category' }).click();
-  const dialog = page.getByRole('dialog');
+  // The tree pickers open popovers, which are dialogs too
+  const dialog = page.getByRole('dialog', { name: 'Create Category' });
   await dialog.getByLabel('Name').fill(name);
   if (inGroup) {
-    await dialog.getByRole('combobox').click();
-    await page.getByRole('option', { name: inGroup }).click();
+    await dialog.getByRole('combobox', { name: 'Parent category' }).click();
+    await page.getByRole('option', { name: inGroup, exact: true }).click();
   }
   await dialog.getByRole('button', { name: 'Create', exact: true }).click();
   await expect(dialog).toBeHidden();
@@ -41,11 +42,17 @@ async function createArticle(
 ) {
   await page.goto('/admin/articles');
   await page.getByRole('button', { name: 'Create Article' }).click();
-  const dialog = page.getByRole('dialog');
+  const dialog = page.getByRole('dialog', { name: 'Create Article' });
   await dialog.getByLabel('Title').fill(title);
-  if (options.category) await dialog.getByLabel(options.category, { exact: true }).check();
+  if (options.category) {
+    await dialog.getByRole('combobox', { name: 'Categories' }).click();
+    await page.getByRole('textbox', { name: 'Search categories' }).fill(options.category);
+    // While searching, a row reads as its whole path (group › category)
+    await page.getByLabel(options.category).check();
+    await page.keyboard.press('Escape');
+  }
   if (options.parent) {
-    await dialog.getByRole('combobox').click();
+    await dialog.getByRole('combobox', { name: 'Parent article' }).click();
     await page.getByRole('option', { name: options.parent }).click();
   }
   await dialog.getByLabel('Content (Markdown)').fill(body);
