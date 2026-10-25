@@ -160,11 +160,7 @@ export function ContentCategoryForm({
         <div className="space-y-2">
           <p className="text-sm font-medium">{tContent('attachments')}</p>
           <p className="text-xs text-muted-foreground">{tContent('attachmentsHint')}</p>
-          <AttachmentsField
-            control={control}
-            register={register}
-            initialFiles={initialFiles}
-          />
+          <AttachmentsField control={control} register={register} initialFiles={initialFiles} />
           {errors.attachments?.message && (
             <p className="text-sm text-destructive">{errors.attachments.message}</p>
           )}
