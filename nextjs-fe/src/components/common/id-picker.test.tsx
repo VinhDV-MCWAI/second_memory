@@ -12,7 +12,12 @@ const renderPicker = (value: number[], onChange = vi.fn()) => {
   const { Wrapper } = createQueryWrapper();
   render(
     <Wrapper>
-      <IdPicker endpoint="/admin/content-category" emptyMessage="noCategories" value={value} onChange={onChange} />
+      <IdPicker
+        endpoint="/admin/content-category"
+        emptyMessage="noCategories"
+        value={value}
+        onChange={onChange}
+      />
     </Wrapper>,
   );
   return onChange;
