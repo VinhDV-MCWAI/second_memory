@@ -105,6 +105,8 @@ Mỗi dòng do `scripts/lane.sh done` tự thêm. Không sửa tay. Các dòng t
 
 - 2026-10-22 — [lane main] KB-07 done: 6bf0b36a, d36458e2, 787d95ca, e39cb796 — make import tạo bài viết từ ghi chú Obsidian: gửi cả nội dung, bài cha (đường dẫn, tên file hoặc [[ ]]), danh mục theo tên (tên lạ được báo, không tự tạo), [[link]] và ![[nhúng]] đổi sang slug, link tới ghi chú không đăng chỉ còn chữ; ghi chú bị bỏ thì bài bị ẩn; token mới khóa article:import; thử thật trên dev với vault TMP 2 ghi chú; make verify pass (269 backend, 155 giao diện, 58 importer, astro check 0 lỗi); dọn: 2 bài TMP xóa qua service, token đã thu hồi, vault thử và file tạm, make clean
 
+- 2026-10-25 — [lane main] REL-02 done: ba47a50d + tag v2.3.0 ở 58c40531 — nghiệm thu bằng kiểm tra tự động; thử trên trình duyệt gộp vào v3.0.0 (chủ dự án chọn, Skill Ledger đã bỏ nên 9 bước cũ không còn thử được); dọn: không tạo dữ liệu
+
 ## Next step
 
 1. Đầu phiên: đọc file này, rồi `scripts/lane.sh status`. Bảng việc chỉ còn các việc "để sau" theo quyết định chủ dự án.
