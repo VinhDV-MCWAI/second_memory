@@ -636,7 +636,6 @@
     "folderName": "Folder name",
     "newName": "New name",
     "targetFolder": "Target folder",
-    "targetFolderHint": "A folder path such as /Docs or /Docs/2026; / is the top level.",
     "create": "Create",
     "deleteSelected": "Delete ({count})",
     "deleteTitle": "Delete {count, plural, one {# item} other {# items}}?",
@@ -706,8 +705,7 @@
     "validation": {
       "nameRequired": "Enter a name",
       "nameTooLong": "At most {max} characters",
-      "nameInvalid": "A name cannot contain / or be . or ..",
-      "folderInvalid": "Start with / and do not end with / (for example /Docs)"
+      "nameInvalid": "A name cannot contain / or be . or .."
     },
     "access": {
       "open": "Access",
@@ -720,7 +718,13 @@
       "lockedHint": "Locked: admins outside these departments will not see this folder.",
       "openHint": "Open: everyone with Files rights sees this folder.",
       "lockedIcon": "Locked to departments"
-    }
+    },
+    "topLevel": "/ (top level)",
+    "expand": "Open {name}",
+    "collapse": "Close {name}",
+    "loadingFolders": "Loading…",
+    "moveNamed": "Move {name}",
+    "moveFailed": "Could not move it, try again"
   },
   "backgroundTasks": {
     "title": "Background jobs",

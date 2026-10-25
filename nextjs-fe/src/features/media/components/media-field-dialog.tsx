@@ -15,8 +15,6 @@ interface MediaFieldDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   title: string;
-  /** Request field the value is sent as; server errors on it show under the input. */
-  field: 'name' | 'folder';
   label: string;
   hint?: string;
   initialValue: string;
@@ -25,12 +23,11 @@ interface MediaFieldDialogProps {
   onSubmit: (value: string) => Promise<unknown>;
 }
 
-/** One-input dialog of the file screen: new folder, rename, move. */
+/** One-input dialog of the file screen: new folder, rename. */
 export function MediaFieldDialog({
   open,
   onOpenChange,
   title,
-  field,
   label,
   hint,
   initialValue,
@@ -38,24 +35,20 @@ export function MediaFieldDialog({
   schema,
   onSubmit,
 }: MediaFieldDialogProps) {
-  const form = useForm<{ name: string; folder: string }>({
-    resolver: zodResolver(
-      z.object({
-        name: field === 'name' ? schema : z.string(),
-        folder: field === 'folder' ? schema : z.string(),
-      }),
-    ),
-    defaultValues: { name: '', folder: '' },
+  // Sent as `name`, so a server error on it shows under the input
+  const form = useForm<{ name: string }>({
+    resolver: zodResolver(z.object({ name: schema })),
+    defaultValues: { name: '' },
   });
   const { register, handleSubmit, reset, setError, formState } = form;
 
   useEffect(() => {
-    if (open) reset({ name: '', folder: '', [field]: initialValue });
-  }, [open, field, initialValue, reset]);
+    if (open) reset({ name: initialValue });
+  }, [open, initialValue, reset]);
 
   const submit = handleSubmit(async (values) => {
     try {
-      await onSubmit(values[field].trim());
+      await onSubmit(values.name.trim());
       onOpenChange(false);
     } catch (error) {
       handleBindErrors(error, setError);
@@ -74,8 +67,8 @@ export function MediaFieldDialog({
       ]}
     >
       <form id={FORM_ID} onSubmit={submit} noValidate>
-        <FormField id="media-field" label={label} required error={formState.errors[field]?.message}>
-          <Input id="media-field" autoFocus {...register(field)} />
+        <FormField id="media-field" label={label} required error={formState.errors.name?.message}>
+          <Input id="media-field" autoFocus {...register('name')} />
         </FormField>
         {hint && <p className="mt-2 text-xs text-muted-foreground">{hint}</p>}
       </form>

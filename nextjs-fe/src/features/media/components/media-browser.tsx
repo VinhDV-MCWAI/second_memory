@@ -38,18 +38,12 @@ import {
 } from '../hooks/use-media';
 import { useUploads, type UploadState } from '../hooks/use-uploads';
 import { discardUpload } from '../lib/uploader';
-import {
-  crumbsOf,
-  filesHref,
-  formatBytes,
-  formatFileSize,
-  parentOf,
-  ROOT,
-} from '../lib/media-paths';
+import { crumbsOf, filesHref, formatBytes, formatFileSize, ROOT } from '../lib/media-paths';
 import { IconButton } from './icon-button';
 import { FileThumb } from './file-thumb';
 import { FolderAccessDialog } from './folder-access-dialog';
 import { MediaFieldDialog } from './media-field-dialog';
+import { MoveDialog } from './move-dialog';
 import { PreviewDialog } from './preview-dialog';
 import { UnfinishedUploads } from './unfinished-uploads';
 import { UploadPanel } from './upload-panel';
@@ -126,10 +120,6 @@ export function MediaBrowser() {
       (value) => !value.includes('/') && value !== '.' && value !== '..',
       t('validation.nameInvalid'),
     );
-  const folderSchema = z
-    .string()
-    .trim()
-    .regex(/^\/(?:[^/]+(?:\/[^/]+)*)?$/, t('validation.folderInvalid'));
 
   const openFolder = (path: string) => {
     setPage(1);
@@ -453,7 +443,6 @@ export function MediaBrowser() {
         open={dialog?.kind === 'folder'}
         onOpenChange={(open) => !open && setDialog(null)}
         title={t('newFolder')}
-        field="name"
         label={t('folderName')}
         initialValue=""
         submitLabel={t('create')}
@@ -464,7 +453,6 @@ export function MediaBrowser() {
         open={dialog?.kind === 'rename'}
         onOpenChange={(open) => !open && setDialog(null)}
         title={t('rename')}
-        field="name"
         label={t('newName')}
         initialValue={dialog?.kind === 'rename' ? dialog.item.name : ''}
         submitLabel={tCommon('save')}
@@ -475,21 +463,10 @@ export function MediaBrowser() {
             : Promise.resolve()
         }
       />
-      <MediaFieldDialog
-        open={dialog?.kind === 'move'}
-        onOpenChange={(open) => !open && setDialog(null)}
-        title={t('move')}
-        field="folder"
-        label={t('targetFolder')}
-        hint={t('targetFolderHint')}
-        initialValue={dialog?.kind === 'move' ? parentOf(dialog.item.path) : folder}
-        submitLabel={t('move')}
-        schema={folderSchema}
-        onSubmit={(value) =>
-          dialog?.kind === 'move'
-            ? actions.update.mutateAsync({ id: dialog.item.id, folder: value })
-            : Promise.resolve()
-        }
+      <MoveDialog
+        item={dialog?.kind === 'move' ? dialog.item : null}
+        onClose={() => setDialog(null)}
+        onMove={(id, target) => actions.update.mutateAsync({ id, folder: target })}
       />
       <FolderAccessDialog
         folder={accessFor}

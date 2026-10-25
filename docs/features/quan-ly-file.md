@@ -19,7 +19,7 @@ Menu **Files** (`/admin/files`, cần quyền `media.list`).
 | Theo dõi upload | Khung **Uploads**: %, đã gửi / tổng, nút X để hủy; file lớn hiện "Processing in the background…" rồi "Done" khi việc nền báo về | — |
 | Xem trước | Bấm tên file hoặc nút con mắt: ảnh, PDF, video, nhạc, file chữ hiện ngay trong hộp thoại, có nút tải về. Chi tiết ở mục [Xem trước](#xem-trước) | `media.download-url` |
 | Tải về | Nút tải ở dòng file (link tạm 5 phút, tải đúng tên file) | `media.download-url` |
-| Đổi tên / Di chuyển | Nút bút chì / nút chuyển thư mục; di chuyển bằng cách gõ đường dẫn thư mục đích (ví dụ `/Docs/2026`) | `media.update` |
+| Đổi tên / Di chuyển | Nút bút chì / nút chuyển thư mục; di chuyển bằng cách chọn thư mục đích trong cây thư mục (bấm ▸ để mở thư mục con; một thư mục không chuyển được vào chính nó hay thư mục con của nó) | `media.update` |
 | Xóa | Nút thùng rác ở dòng, hoặc tick nhiều dòng rồi **Delete (n)**; hỏi lại trước khi xóa. File vào [thùng rác](#thùng-rác) 30 ngày | `media.delete` |
 | Thùng rác | Nút **Trash** (`/admin/files/trash`) | `media.trash-list` |
 | Khóa thư mục theo phòng ban | Gắn thư mục cho phòng ban: chỉ thành viên (và vai trò Chủ) thấy và dùng được thư mục cùng mọi thứ bên trong. Luật và các chỗ bị chặn ở [phòng ban](phong-ban.md#khóa-thư-mục-trong-files). Nút chìa khóa (**Access**) ở dòng thư mục để chọn phòng ban; thư mục khóa có ổ khóa màu vàng cạnh tên | `media.access` + `department.list` |
