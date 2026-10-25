@@ -87,6 +87,22 @@ final class DepartmentApiTest extends TestCase
             ->assertStatus(CommonVal::HTTP_NOT_FOUND);
     }
 
+    public function test_equal_sort_values_keep_one_order_across_pages(): void
+    {
+        Department::query()->delete();
+        $ids = Department::factory()->count(3)->create(['updated_at' => '2026-10-01 10:00:00'])->modelKeys();
+
+        foreach (['asc', 'desc'] as $order) {
+            $seen = [];
+            foreach ([1, 2, 3] as $page) {
+                $seen[] = $this->call('GET', self::BASE.'/list', ['sort_by' => 'updated_at', 'sort_order' => $order, 'per_page' => 1, 'page' => $page], $this->owner)
+                    ->json('data.data.0.id');
+            }
+            sort($seen);
+            $this->assertSame($ids, $seen, "every row once when sorted {$order}");
+        }
+    }
+
     public function test_viewer_can_list_but_not_write(): void
     {
         Department::factory()->create();
