@@ -117,6 +117,8 @@ Mỗi dòng do `scripts/lane.sh done` tự thêm. Không sửa tay. Các dòng t
 
 - 2026-10-25 — [lane main] READ-02 done: a9101091, fc6d8d81 — DB: danh mục có lượt xem, ☆ danh mục, 🔖 nhớ mục đang đọc (migration thử quay lui trên DB testing, đã chạy trên DB dev); API: cây danh mục kèm số bài/lượt xem/yêu thích, danh sách bài theo tab (thêm Yêu thích nhiều), báo lượt xem danh mục, lưu mục đang đọc, tìm kiếm có found_in + đoạn trích tô đậm + mục trong bài; trang Của tôi mở danh mục / đúng mục đã đọc; make verify pass (280 backend, 177 giao diện, 58 importer, astro check 0 lỗi); dọn: make clean, file tạm, không tạo dữ liệu TMP
 
+- 2026-10-25 — [lane main] READ-03 done: c02fd6bb — trang chủ tóm tắt: ô tìm lớn, thẻ danh mục (In order theo nhóm / Most viewed / Most favorited, 24 thẻ), tab bài Most read / Most favorited / Newest (10 bài), See more mở mục đầu tiên của tab; đổi tab bằng link, không thêm JavaScript; astro check 0 lỗi, make lint pass, make e2e 10/10; dọn: make clean, file tạm, không tạo dữ liệu TMP (dữ liệu E2E đã được run.sh xóa)
+
 ## Next step
 
 1. Đầu phiên: đọc file này, rồi `scripts/lane.sh status`. Bảng việc chỉ còn các việc "để sau" theo quyết định chủ dự án.
