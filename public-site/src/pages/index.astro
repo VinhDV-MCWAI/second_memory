@@ -1,62 +1,189 @@
 ---
+import CategoryBadge from '@/components/CategoryBadge.astro';
 import Base from '@/layouts/Base.astro';
-import { getPublicHome } from '@/lib/public-api';
+import {
+  ARTICLE_TABS,
+  ARTICLE_TAB_SIZE,
+  CATEGORY_SORTS,
+  SECTION_ARTICLES,
+  SECTION_CATEGORIES,
+  homeUrl,
+  readHomeQuery,
+  sortCategories,
+} from '@/lib/home-query';
+import { getPublicArticles, getPublicCategories } from '@/lib/public-api';
+import type { PublicCategoryNode } from '@/lib/public-api';
 import { ROUTES } from '@/lib/routes';
 
-// Like the boards of a forum (ADR-0022): one table per group, one row per category with its
-// article count and newest article, in the owner's order
-const groups = await getPublicHome();
+// A summary only (REQ-006): category badges and the most read / favorited / newest articles.
+// Every badge, article and "See more" opens the reading page.
+const query = readHomeQuery(Astro.url.searchParams);
+const [tree, articles] = await Promise.all([
+  getPublicCategories(),
+  getPublicArticles(query.articles, ARTICLE_TAB_SIZE),
+]);
 
-const count = (total: number) => `${total} ${total === 1 ? 'article' : 'articles'}`;
+// The tree comes parents first, so every category belongs to the group last seen before it
+const TOP_DEPTH = 1;
+const groups: { group: PublicCategoryNode; categories: PublicCategoryNode[] }[] = [];
+for (const node of tree) {
+  if (node.depth === TOP_DEPTH) {
+    groups.push({ group: node, categories: [] });
+  } else {
+    groups.at(-1)?.categories.push(node);
+  }
+}
+const sorted =
+  query.categories === 'order'
+    ? null
+    : sortCategories(
+        groups.flatMap(({ categories }) => categories),
+        query.categories,
+      );
+const firstCategory = sorted
+  ? sorted[0]
+  : groups.find(({ categories }) => categories.length)?.categories[0];
+
+const plural = (count: number, word: string) => `${count} ${word}${count === 1 ? '' : 's'}`;
+// The count a sorted badge shows, matching the order
+const badgeCount = (category: PublicCategoryNode) =>
+  query.categories === 'most_viewed'
+    ? plural(category.view_count, 'view')
+    : `☆ ${category.favorite_count}`;
+const articleMeta = (article: (typeof articles)[number]) =>
+  query.articles === 'most_read'
+    ? plural(article.view_count, 'read')
+    : query.articles === 'most_favorited'
+      ? `☆ ${article.favorite_count}`
+      : article.created_at.slice(0, 10);
+const tabClass = (current: boolean) => [
+  '-mb-px shrink-0 border-b-2 pb-2 whitespace-nowrap',
+  current
+    ? 'border-primary font-medium'
+    : 'text-muted-foreground border-transparent hover:underline',
+];
 ---
 
 <Base title="Second Memory">
   <h1 class="text-3xl font-semibold">Second Memory</h1>
-  <p class="text-muted-foreground mt-2">
-    Notes from experience on building software. Pick a category.
-  </p>
+  <p class="text-muted-foreground mt-2">Notes from experience on building software.</p>
 
-  {groups.map((group) => (
-    <section class="mt-10 overflow-hidden rounded-lg border">
-      <h2 class="bg-muted px-4 py-3 font-semibold">
-        <a href={ROUTES.category(group.slug)} class="hover:underline">
-          {group.name}
+  {/* A plain GET form: works without JavaScript */}
+  <form method="get" action={ROUTES.SEARCH} role="search" class="mt-6 flex gap-2">
+    <input
+      type="search"
+      name="q"
+      placeholder="Search categories, articles and their text"
+      aria-label="Search the site"
+      class="bg-background min-w-0 flex-1 rounded-md border px-4 py-2.5"
+    />
+    <button type="submit" class="hover:bg-muted rounded-md border px-4 py-2.5 text-sm">
+      Search
+    </button>
+  </form>
+
+  <section id={SECTION_CATEGORIES} class="mt-12 scroll-mt-6">
+    <h2 class="text-xl font-semibold">Categories</h2>
+    <nav class="mt-3 flex gap-5 overflow-x-auto border-b text-sm" aria-label="Order of categories">
+      {CATEGORY_SORTS.map((sort) => (
+        <a
+          href={homeUrl(query, { categories: sort.value }, SECTION_CATEGORIES)}
+          class:list={tabClass(sort.value === query.categories)}
+          aria-current={sort.value === query.categories ? 'page' : undefined}
+        >
+          {sort.label}
         </a>
-      </h2>
-      {group.categories.length === 0 ? (
-        <p class="text-muted-foreground px-4 py-3 text-sm">No categories yet.</p>
-      ) : (
-        <ul class="divide-y">
-          {group.categories.map((category) => (
-            <li class="grid gap-1 px-4 py-3 sm:grid-cols-[1fr_7rem_16rem] sm:items-center sm:gap-4">
-              <a href={ROUTES.category(category.slug)} class="font-medium hover:underline">
-                {category.name}
-              </a>
-              <span class="text-muted-foreground font-mono text-xs">
-                {count(category.article_count)}
+      ))}
+    </nav>
+
+    {!firstCategory && <p class="text-muted-foreground mt-4 text-sm">No categories yet.</p>}
+    {sorted ? (
+      <ul class="mt-4 flex flex-wrap gap-2">
+        {sorted.map((category) => (
+          <li>
+            <CategoryBadge name={category.name} slug={category.slug} count={badgeCount(category)} />
+          </li>
+        ))}
+      </ul>
+    ) : (
+      groups.map(({ group, categories }) => (
+        <div class="mt-5">
+          <h3 class="text-sm font-medium">
+            <a href={ROUTES.category(group.slug)} class="hover:underline">
+              {group.name}
+            </a>
+          </h3>
+          {categories.length > 0 && (
+            <ul class="mt-2 flex flex-wrap gap-2">
+              {categories.map((category) => (
+                <li>
+                  <CategoryBadge
+                    name={category.name}
+                    slug={category.slug}
+                    count={category.article_count}
+                  />
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+      ))
+    )}
+    {firstCategory && (
+      <a
+        href={ROUTES.category(firstCategory.slug)}
+        class="text-primary mt-4 inline-block text-sm hover:underline"
+      >
+        See more →
+      </a>
+    )}
+  </section>
+
+  <section id={SECTION_ARTICLES} class="mt-12 scroll-mt-6">
+    <h2 class="text-xl font-semibold">Articles</h2>
+    <nav class="mt-3 flex gap-5 overflow-x-auto border-b text-sm" aria-label="Order of articles">
+      {ARTICLE_TABS.map((tab) => (
+        <a
+          href={homeUrl(query, { articles: tab.value }, SECTION_ARTICLES)}
+          class:list={tabClass(tab.value === query.articles)}
+          aria-current={tab.value === query.articles ? 'page' : undefined}
+        >
+          {tab.label}
+        </a>
+      ))}
+    </nav>
+
+    {articles.length === 0 ? (
+      <p class="text-muted-foreground mt-4 text-sm">No articles yet.</p>
+    ) : (
+      <>
+        <ol class="mt-2 divide-y">
+          {articles.map((article) => (
+            <li class="flex items-baseline justify-between gap-4 py-3">
+              <span class="min-w-0">
+                <a href={ROUTES.article(article.slug)} class="font-medium hover:underline">
+                  {article.title}
+                </a>
+                {article.summary && (
+                  <span class="text-muted-foreground block truncate text-sm">
+                    {article.summary}
+                  </span>
+                )}
               </span>
-              {category.latest ? (
-                <span class="min-w-0 text-sm">
-                  <a
-                    href={ROUTES.article(category.latest.slug)}
-                    class="block truncate hover:underline"
-                  >
-                    {category.latest.title}
-                  </a>
-                  <time
-                    datetime={category.latest.created_at}
-                    class="text-muted-foreground font-mono text-xs"
-                  >
-                    {category.latest.created_at.slice(0, 10)}
-                  </time>
-                </span>
-              ) : (
-                <span class="text-muted-foreground text-sm">—</span>
-              )}
+              <span class="text-muted-foreground shrink-0 font-mono text-xs">
+                {articleMeta(article)}
+              </span>
             </li>
           ))}
-        </ul>
-      )}
-    </section>
-  ))}
+        </ol>
+        {/* The reading page opens at the first article of the tab (REQ-006) */}
+        <a
+          href={ROUTES.article(articles[0]!.slug)}
+          class="text-primary mt-4 inline-block text-sm hover:underline"
+        >
+          See more →
+        </a>
+      </>
+    )}
+  </section>
 </Base>

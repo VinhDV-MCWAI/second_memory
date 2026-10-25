@@ -6,12 +6,24 @@ Trang ai cũng xem được, không cần đăng nhập, nằm ở **gốc** `ht
 
 | Địa chỉ | Hiện gì |
 |---|---|
-| http://localhost:81/ | Trang chủ kiểu diễn đàn: mỗi nhóm công khai một bảng; mỗi danh mục một dòng có số bài, bài mới nhất và ngày viết; theo thứ tự admin đặt |
+| http://localhost:81/ | Trang chủ tóm tắt (từ 2026-10-25, [REQ-006](../requirements/REQ-006-trang-chu-va-trang-doc.md)): ô tìm kiếm lớn, thẻ danh mục, tab bài viết ([bảng dưới](#trang-chủ)) |
 | http://localhost:81/categories/{slug} | Một nhóm hoặc danh mục: đường dẫn ngược (Home › nhóm), mô tả, đính kèm (link, file), danh mục con (khi là nhóm), danh sách bài |
 | http://localhost:81/articles/{slug} | Một bài, bố cục 3 cột (bảng dưới). Mỗi lần mở được tính lượt xem (cùng người trong 30 phút tính 1, [chi tiết](bai-viet.md#quy-tắc)) |
 | http://localhost:81/search?q=… | [Tìm kiếm](tim-kiem.md) bài viết và danh mục; ô tìm nằm ở đầu mọi trang |
 | http://localhost:81/files/{mã} | Mở một file đính kèm hoặc file nhúng: xin API link tạm rồi chuyển tới MinIO. Ảnh, PDF, video, nhạc, file chữ mở trong trình duyệt; loại khác tải về |
 | `/account/login`, `/account/register`, `/me` | Tài khoản người dùng ([người dùng cuối](nguoi-dung-cuoi.md)) |
+
+### Trang chủ
+
+| Phần | Cách dùng |
+|---|---|
+| Ô tìm kiếm lớn | Gửi tới trang [tìm kiếm](tim-kiem.md) |
+| **Categories**: tab **In order** | Mọi nhóm theo thứ tự admin đặt; dưới mỗi nhóm là thẻ của mọi danh mục trong nhóm (kể cả danh mục cấp dưới) kèm số bài |
+| **Categories**: tab **Most viewed** / **Most favorited** | 24 thẻ danh mục có nhiều lượt xem / nhiều người ☆ nhất (không tính nhóm), bằng nhau thì theo thứ tự admin đặt; thẻ hiện con số đó |
+| **Articles**: tab **Most read** / **Most favorited** / **Newest** | 10 bài đọc nhiều nhất, nhiều người ☆ nhất, mới nhất; mỗi bài hiện tóm tắt và số lượt đọc / số ☆ / ngày viết |
+| **See more →** | Ở danh mục: mở danh mục đầu tiên của tab đang chọn. Ở bài viết: mở bài đầu tiên của tab đang chọn. Khi có trang đọc 4 cột (READ-04) thì các link này mở trang đó |
+
+Đổi tab là link thường (`?categories=most_viewed&articles=newest`), chạy không cần JavaScript, trang tải lại và cuộn về đúng phần vừa đổi. Giá trị sửa tay sai thì dùng tab đầu tiên. Trang chủ không có JavaScript riêng.
 
 ### Danh sách bài của một danh mục
 

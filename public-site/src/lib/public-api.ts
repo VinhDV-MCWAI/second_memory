@@ -26,6 +26,8 @@ export type PublicArticle = components['schemas']['PublicArticleResource'];
 export type PublicAttachment = components['schemas']['PublicAttachmentResource'];
 export type ArticleSort = components['schemas']['ArticleSort'];
 export type PublicSearch = Data<'/public/search'>;
+export type PublicCategoryNode = Data<'/public/categories'>[number];
+export type PublicArticleCard = components['schemas']['PublicArticleCardResource'];
 export type BookNode = NonNullable<PublicArticle['book']>;
 export type CategoryQuery = NonNullable<
   paths['/public/categories/{slug}']['get']['parameters']['query']
@@ -53,6 +55,20 @@ async function getPublic<T>(path: string): Promise<T | null> {
 
 export async function getPublicHome(): Promise<PublicGroup[]> {
   return (await getPublic<Data<'/public/home'>>('home'))?.data ?? [];
+}
+
+// Every public category in tree order, with its level, article count, views and favourites
+export async function getPublicCategories(): Promise<PublicCategoryNode[]> {
+  return (await getPublic<Data<'/public/categories'>>('categories')) ?? [];
+}
+
+// The first page of every public article in one order (the tabs of the home page)
+export async function getPublicArticles(
+  sort: ArticleSort,
+  perPage: number,
+): Promise<PublicArticleCard[]> {
+  const path = `articles${toSearch({ sort, per_page: perPage })}`;
+  return (await getPublic<Data<'/public/articles'>>(path))?.data.articles ?? [];
 }
 
 // The query must already be valid (the page checks it): the API answers 422 otherwise.

@@ -1,0 +1,20 @@
+---
+// One category badge of the home page (REQ-006): its name and a count, opening the reading page
+import { ROUTES } from '@/lib/routes';
+
+interface Props {
+  name: string;
+  slug: string;
+  count: string | number;
+}
+
+const { name, slug, count } = Astro.props;
+---
+
+<a
+  href={ROUTES.category(slug)}
+  class="hover:bg-muted inline-flex items-baseline gap-2 rounded-full border px-3 py-1 text-sm"
+>
+  {name}
+  <span class="text-muted-foreground font-mono text-xs">{count}</span>
+</a>
