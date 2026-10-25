@@ -28,6 +28,8 @@ import Base from '@/layouts/Base.astro';
         name="current_password"
         type="password"
         required
+        maxlength="100"
+        aria-label="Current password"
         placeholder="Current password"
         autocomplete="current-password"
         class="w-full rounded border bg-transparent px-3 py-2"
@@ -37,6 +39,9 @@ import Base from '@/layouts/Base.astro';
         type="password"
         required
         minlength="8"
+        maxlength="100"
+        data-differ="current_password"
+        aria-label="New password"
         placeholder="New password"
         autocomplete="new-password"
         class="w-full rounded border bg-transparent px-3 py-2"
@@ -45,7 +50,8 @@ import Base from '@/layouts/Base.astro';
         name="password_confirmation"
         type="password"
         required
-        minlength="8"
+        data-match="password"
+        aria-label="New password again"
         placeholder="New password again"
         autocomplete="new-password"
         class="w-full rounded border bg-transparent px-3 py-2"
@@ -66,6 +72,8 @@ import Base from '@/layouts/Base.astro';
         name="password"
         type="password"
         required
+        maxlength="100"
+        aria-label="Password"
         placeholder="Password"
         autocomplete="current-password"
         class="w-full rounded border bg-transparent px-3 py-2"
@@ -80,12 +88,12 @@ import Base from '@/layouts/Base.astro';
 
 <script>
   import { ROUTES } from '@/lib/routes';
+  import { liveForm } from '@/scripts/live-form';
   import {
     api,
     currentUser,
     loginUrl,
     savedItems,
-    showErrors,
     signOut,
     type SavedItem,
   } from '@/scripts/user-api';
@@ -129,6 +137,7 @@ import Base from '@/layouts/Base.astro';
   });
 
   const password = document.querySelector<HTMLFormElement>('#password')!;
+  const livePassword = liveForm(password);
   password.addEventListener('submit', async (event) => {
     event.preventDefault();
     const errors = password.querySelector<HTMLElement>('[data-errors]')!;
@@ -138,11 +147,12 @@ import Base from '@/layouts/Base.astro';
       password.reset();
       password.querySelector<HTMLElement>('[data-done]')!.hidden = false;
     } catch (error) {
-      showErrors(errors, error);
+      livePassword.showServerErrors(error);
     }
   });
 
   const remove = document.querySelector<HTMLFormElement>('#delete')!;
+  const liveRemove = liveForm(remove);
   remove.addEventListener('submit', async (event) => {
     event.preventDefault();
     if (!confirm('Delete your account and both lists for good?')) return;
@@ -151,7 +161,7 @@ import Base from '@/layouts/Base.astro';
       await signOut();
       location.href = ROUTES.HOME;
     } catch (error) {
-      showErrors(remove.querySelector<HTMLElement>('[data-errors]')!, error);
+      liveRemove.showServerErrors(error);
     }
   });
 </script>

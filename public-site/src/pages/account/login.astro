@@ -24,6 +24,7 @@ import { ROUTES } from '@/lib/routes';
         name="password"
         type="password"
         required
+        maxlength="100"
         autocomplete="current-password"
         class="mt-1 w-full rounded border bg-transparent px-3 py-2"
       />
@@ -49,9 +50,11 @@ import { ROUTES } from '@/lib/routes';
 </Base>
 
 <script>
-  import { nextPage, showErrors, signIn } from '@/scripts/user-api';
+  import { liveForm } from '@/scripts/live-form';
+  import { nextPage, signIn } from '@/scripts/user-api';
 
   const form = document.querySelector<HTMLFormElement>('#login');
+  const live = form && liveForm(form);
   const register = document.querySelector<HTMLAnchorElement>('a[data-register]');
   if (register) register.href += location.search;
   form?.addEventListener('submit', async (event) => {
@@ -64,7 +67,7 @@ import { ROUTES } from '@/lib/routes';
       });
       location.href = nextPage();
     } catch (error) {
-      showErrors(form.querySelector<HTMLElement>('[data-errors]')!, error);
+      live?.showServerErrors(error);
     }
   });
 </script>

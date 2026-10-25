@@ -46,9 +46,22 @@ test('a visitor signs up, saves an article, and is signed out once locked', asyn
     await visitor.getByRole('link', { name: 'Create one' }).click();
     await visitor.getByLabel('Username (3–30 letters, digits, . _ -)').fill(username);
     await visitor.getByLabel('Display name').fill(`E2E visitor ${suffix}`);
-    await visitor.getByLabel('Password (at least 8 characters)').fill(password);
-    await visitor.getByLabel('Password again').fill(password);
-    await visitor.getByRole('button', { name: 'Create account' }).click();
+    // Each field is checked once left, and the button stays off until every field passes
+    const create = visitor.getByRole('button', { name: 'Create account' });
+    const newPassword = visitor.getByLabel('Password (at least 8 characters)');
+    const again = visitor.getByLabel('Password again');
+    await newPassword.fill('short');
+    await again.fill('other');
+    await again.blur();
+    await newPassword.focus();
+    await newPassword.blur();
+    await expect(newPassword).toHaveAccessibleDescription('At least 8 characters');
+    await expect(again).toHaveAccessibleDescription('Does not match');
+    await expect(create).toBeDisabled();
+    await newPassword.fill(password);
+    await again.fill(password);
+    await expect(again).toHaveAccessibleDescription('');
+    await create.click();
     // Back on the article it came from
     await expect(visitor).toHaveURL(`${PUBLIC_URL}/articles/${slug}`);
     await expect(visitor.getByRole('link', { name: `E2E visitor ${suffix} · My lists` })).toBeVisible();

@@ -17,6 +17,7 @@ import Base from '@/layouts/Base.astro';
         minlength="3"
         maxlength="30"
         pattern="[A-Za-z0-9._\-]+"
+        title="Only letters, digits, . _ -"
         autocomplete="username"
         autocapitalize="none"
         class="mt-1 w-full rounded border bg-transparent px-3 py-2"
@@ -39,6 +40,7 @@ import Base from '@/layouts/Base.astro';
         type="password"
         required
         minlength="8"
+        maxlength="100"
         autocomplete="new-password"
         class="mt-1 w-full rounded border bg-transparent px-3 py-2"
       />
@@ -49,7 +51,7 @@ import Base from '@/layouts/Base.astro';
         name="password_confirmation"
         type="password"
         required
-        minlength="8"
+        data-match="password"
         autocomplete="new-password"
         class="mt-1 w-full rounded border bg-transparent px-3 py-2"
       />
@@ -62,9 +64,11 @@ import Base from '@/layouts/Base.astro';
 </Base>
 
 <script>
-  import { api, nextPage, showErrors, signIn } from '@/scripts/user-api';
+  import { liveForm } from '@/scripts/live-form';
+  import { api, nextPage, signIn } from '@/scripts/user-api';
 
   const form = document.querySelector<HTMLFormElement>('#register');
+  const live = form && liveForm(form);
   void api<{ open: boolean }>('GET', 'user/registration').then(({ open }) => {
     if (!open && form) {
       form.hidden = true;
@@ -77,7 +81,7 @@ import Base from '@/layouts/Base.astro';
       await signIn('user/register', Object.fromEntries(new FormData(form)));
       location.href = nextPage();
     } catch (error) {
-      showErrors(form.querySelector<HTMLElement>('[data-errors]')!, error);
+      live?.showServerErrors(error);
     }
   });
 </script>
