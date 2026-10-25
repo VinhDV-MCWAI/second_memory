@@ -107,6 +107,8 @@ Mỗi dòng do `scripts/lane.sh done` tự thêm. Không sửa tay. Các dòng t
 
 - 2026-10-25 — [lane main] REL-02 done: ba47a50d + tag v2.3.0 ở 58c40531 — nghiệm thu bằng kiểm tra tự động; thử trên trình duyệt gộp vào v3.0.0 (chủ dự án chọn, Skill Ledger đã bỏ nên 9 bước cũ không còn thử được); dọn: không tạo dữ liệu
 
+- 2026-10-25 — [lane main] UX-01 done: cd76e65c…e1ada060 — 10 góp ý xong: lỗi đính kèm hiện trên màn hình, link phải có http(s)://, email tên miền không có thật báo riêng, sắp xếp có tiêu chí phụ + mũi tên ↑↓ + về trang 1, vai trò tiêu đề quyền cố định, Files chọn thư mục đích bằng cây, danh mục 5 cấp, màn hình danh mục là cây thu gọn/mở rộng + tìm + kéo thả (@dnd-kit), ô chọn danh mục dạng cây có tìm/chọn tất cả/bỏ chọn, mọi form kiểm tra khi nhập + khóa nút lưu + quy tắc khớp máy chủ (quản trị và trang public); make verify pass (272 backend, 175 giao diện, 58 importer), make e2e 10/10; dọn: make clean, dữ liệu E2E do e2e/run.sh xóa, file theo dõi góp ý đã xóa, 2 khóa cũ của phiên trước
+
 ## Next step
 
 1. Đầu phiên: đọc file này, rồi `scripts/lane.sh status`. Bảng việc chỉ còn các việc "để sau" theo quyết định chủ dự án.
