@@ -575,7 +575,16 @@
       "test": "Run test",
       "status": "Status",
       "registration": "View sign-up switch",
-      "registration-update": "Open / close sign-up"
+      "registration-update": "Open / close sign-up",
+      "access": "Lock to departments",
+      "move": "Move",
+      "preview": "Preview",
+      "multipart-resume": "Resume upload",
+      "multipart-unfinished": "Unfinished uploads",
+      "trash-list": "View trash",
+      "trash-restore": "Restore from trash",
+      "trash-delete": "Delete forever",
+      "trash-empty": "Empty trash"
     },
     "features": {
       "admin-mst": "Admins",

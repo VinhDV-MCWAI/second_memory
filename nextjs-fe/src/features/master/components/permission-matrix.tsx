@@ -37,8 +37,9 @@ export function PermissionMatrix({ groups, value, onChange, disabled }: Permissi
   const label = (key: string, fallback: string) => (t.has(key) ? t(key) : fallback);
 
   return (
-    <Table>
-      <TableHeader>
+    // The header with the action names stays in view while the features scroll under it
+    <Table containerClassName="max-h-[55vh] rounded-md border">
+      <TableHeader className="sticky top-0 z-10 bg-muted">
         <TableRow>
           <TableHead>{t('feature')}</TableHead>
           {COLUMNS.map((action) => (
