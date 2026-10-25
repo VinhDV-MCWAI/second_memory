@@ -2435,6 +2435,7 @@ export interface operations {
         sort_order?: string | null;
         title?: string | null;
         category_id?: number | null;
+        'category_ids[]'?: number[];
         /** @description Sub-pages of this article */
         parent_id?: number | null;
         /** @description Only articles without a parent */

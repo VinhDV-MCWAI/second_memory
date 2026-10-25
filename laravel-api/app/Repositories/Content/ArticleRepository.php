@@ -52,6 +52,9 @@ class ArticleRepository extends CrudRepository
         if (isset($payload['category_id'])) {
             $query->whereHas('categories', fn (Builder $categories) => $categories->whereKey($payload['category_id']));
         }
+        if (! empty($payload['category_ids'])) {
+            $query->whereHas('categories', fn (Builder $categories) => $categories->whereKey($payload['category_ids']));
+        }
         if (isset($payload['title'])) {
             $query->whereRaw('lower(title) like lower(?)', ['%'.$payload['title'].'%']);
         }

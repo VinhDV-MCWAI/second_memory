@@ -55,6 +55,23 @@ final class ArticleApiTest extends TestCase
         $this->assertSame(4, AuditLog::query()->where(['auditable_type' => 'article', 'auditable_id' => $id])->count());
     }
 
+    public function test_the_list_filters_by_any_of_several_categories(): void
+    {
+        [$design, $qa, $ops, $sub] = ContentCategory::factory()->count(4)->create();
+        $sub->update(['parent_id' => $design->id]);
+        $inDesign = $this->store(['title' => 'Thiết kế', 'category_ids' => [$design->id]]);
+        $inBoth = $this->store(['title' => 'Cả hai', 'category_ids' => [$design->id, $qa->id]]);
+        $inQa = $this->store(['title' => 'Kiểm thử', 'category_ids' => [$qa->id]]);
+        $this->store(['title' => 'Vận hành', 'category_ids' => [$ops->id]]);
+        $this->store(['title' => 'Nhánh con', 'category_ids' => [$sub->id]]);
+
+        // Each article once, and a category's sub-categories are not included
+        $this->call('GET', self::BASE.'/list', ['category_ids' => [$design->id, $qa->id], 'sort_by' => 'id', 'sort_order' => 'asc'], $this->owner)->assertOk()
+            ->assertJsonPath('data.data.*.id', [$inDesign, $inBoth, $inQa]);
+        $this->call('GET', self::BASE.'/list', ['category_ids' => ['x']], $this->owner)
+            ->assertStatus(CommonVal::HTTP_UNPROCESSABLE_CONTENT)->assertJsonStructure(['error' => ['messages' => ['category_ids.0']]]);
+    }
+
     public function test_sub_pages_form_a_tree_in_their_own_order(): void
     {
         $book = $this->store(['title' => 'Laravel thực chiến']);

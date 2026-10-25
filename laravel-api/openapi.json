@@ -879,6 +879,16 @@
                         }
                     },
                     {
+                        "name": "category_ids[]",
+                        "in": "query",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "integer"
+                            }
+                        }
+                    },
+                    {
                         "name": "parent_id",
                         "in": "query",
                         "description": "Sub-pages of this article",

@@ -14,6 +14,9 @@ class ListArticleRequest extends ListRequest
         return [
             'title' => ['nullable', 'string', 'max:'.ContentConst::ARTICLE_TITLE_MAX],
             'category_id' => ['nullable', 'integer'],
+            /** Articles in at least one of these categories */
+            'category_ids' => ['nullable', 'array'],
+            'category_ids.*' => ['integer'],
             /** Sub-pages of this article */
             'parent_id' => ['nullable', 'integer'],
             /** Only articles without a parent */
