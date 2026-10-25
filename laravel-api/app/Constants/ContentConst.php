@@ -40,6 +40,9 @@ final class ContentConst
     /** Articles per page of a public category */
     public const PUBLIC_PER_PAGE = 20;
 
+    /** Largest page the public site may ask for: the article column of the reading page lists a whole category (ADR-0024) */
+    public const PUBLIC_PER_PAGE_MAX = 100;
+
     /** Articles sharing a category, beside an article that is not in a book */
     public const RELATED_MAX = 10;
 
@@ -72,6 +75,11 @@ final class ContentConst
     public const VIEW_CACHE_STORE = 'redis';
 
     public const VIEW_CACHE_PREFIX = 'article-view:';
+
+    public const CATEGORY_VIEW_CACHE_PREFIX = 'category-view:';
+
+    /** Anchor of the heading a reader reached in a read-later article (ADR-0024) */
+    public const READING_ANCHOR_MAX = 255;
 
     /** Rows of the dashboard's "most read" and "most saved" cards */
     public const DASHBOARD_TOP = 5;

@@ -1067,6 +1067,43 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/public/categories': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * Every public category in tree order (parents first, siblings in the owner's order), with its level, the number of public
+     *     articles in it and below it, its view count and favourites: the category tree of the reading page and the home page
+     */
+    get: operations['publicContent.categories'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/public/articles': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** A page of every public article in the order asked for (`sort`; `per_page` up to 100): the tabs of the home page */
+    get: operations['publicContent.articles'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/public/categories/{slug}': {
     parameters: {
       query?: never;
@@ -1076,8 +1113,8 @@ export interface paths {
     };
     /**
      * One public group or category: description as safe HTML, evidence, its categories (a group), and a page of its public articles
-     *     (`sort`: newest | updated; `also`: only articles in that category too; `q`: words of the title). Private (or in a private group)
-     *     or missing → 404
+     *     (`sort`; `also`: only articles in that category too; `q`: words of the title; `per_page` up to 100). Private (or in a private
+     *     group) or missing → 404
      */
     get: operations['publicContent.category'];
     put?: never;
@@ -1117,7 +1154,9 @@ export interface paths {
     };
     /**
      * Search the shown articles (title, summary, body) and categories (name, description); accents and case ignored,
-     *     typo fallback (`match: fuzzy`) when nothing matches
+     *     typo fallback (`match: fuzzy`) when nothing matches. Articles say whether the words are in the title / summary or only in
+     *     the body (`found_in`) and carry the passage of the body around them (`snippet`, safe HTML with `<mark>`); `sections` are
+     *     the headings of the found articles that hold every word, with their anchor
      */
     get: operations['publicContent.search'];
     put?: never;
@@ -1142,6 +1181,26 @@ export interface paths {
      *     never stored) per 30 minutes; `counted` is false for a repeat. Private or missing → 404
      */
     post: operations['publicContent.view'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/public/categories/{slug}/view': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /**
+     * Report that a reader stayed on a category page (the public site's rule): counted once per visitor per 30 minutes, like
+     *     articles. Private or missing → 404
+     */
+    post: operations['publicContent.viewCategory'];
     delete?: never;
     options?: never;
     head?: never;
@@ -1258,7 +1317,7 @@ export interface paths {
     };
     get?: never;
     put?: never;
-    /** Save an article (`article`: its public `key`). Saving twice is fine */
+    /** Save an article (`article`: its public `key`) or, as a favourite, a category (`category`: its slug). Saving twice is fine */
     post: operations['saved.store'];
     delete?: never;
     options?: never;
@@ -1277,6 +1336,26 @@ export interface paths {
     put?: never;
     /** Remove it from that list (also succeeds when it was not saved) */
     post: operations['saved.delete'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/user/saved/position': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /**
+     * Keep the heading the reader reached in a read-later article (`anchor`: a `toc[].id` of it; empty = the top). Not in the
+     *     read-later list → 404
+     */
+    post: operations['saved.position'];
     delete?: never;
     options?: never;
     head?: never;
@@ -1396,7 +1475,7 @@ export interface components {
      * @description How a category page of the public site orders its articles, like the tabs of a forum (ADR-0022).
      * @enum {string}
      */
-    ArticleSort: 'newest' | 'updated' | 'most_read' | 'most_saved';
+    ArticleSort: 'newest' | 'updated' | 'most_read' | 'most_saved' | 'most_favorited';
     /** AttachedFileResource */
     AttachedFileResource: {
       id: number;
@@ -1716,6 +1795,26 @@ export interface components {
     PreviewArticleRequest: {
       body: string | null;
     };
+    /** PublicArticleCardResource */
+    PublicArticleCardResource: {
+      title: string;
+      slug: string;
+      summary: string | null;
+      view_count: number;
+      /** @description End users who keep it in either list */
+      save_count: number;
+      /** @description End users who keep it in their favourites */
+      favorite_count: number;
+      created_at: string;
+      updated_at: string;
+    };
+    /** PublicArticleListResource */
+    PublicArticleListResource: {
+      articles: components['schemas']['PublicArticleCardResource'][];
+      page: number;
+      last_page: number;
+      total: number;
+    };
     /** PublicArticleResource */
     PublicArticleResource: {
       title: string;
@@ -1730,6 +1829,9 @@ export interface components {
         id: string;
         text: string;
       }[];
+      view_count: number;
+      /** @description End users who keep it in their favourites */
+      favorite_count: number;
       created_at: string;
       updated_at: string;
       categories: {
@@ -1785,6 +1887,9 @@ export interface components {
         name: string;
         slug: string;
       }[];
+      view_count: number;
+      /** @description End users who keep it as a favourite */
+      favorite_count: number;
       description_html: string;
       attachments: components['schemas']['PublicAttachmentResource'][];
       categories: {
@@ -1792,15 +1897,7 @@ export interface components {
         slug: string;
         article_count: number;
       }[];
-      articles: {
-        title: string;
-        slug: string;
-        summary: string | null;
-        view_count: number;
-        save_count: number;
-        created_at: string;
-        updated_at: string;
-      }[];
+      articles: components['schemas']['PublicArticleCardResource'][];
       page: number;
       last_page: number;
       total: number;
@@ -1828,6 +1925,19 @@ export interface components {
       /** @description sha256 (hex) of the visitor's IP and browser, made by the public site; only kept as a cache key for 30 minutes */
       visitor: string;
     };
+    /**
+     * ReadingPositionRequest
+     * @description The heading a reader reached in a read-later article (ADR-0024); no anchor = the top.
+     */
+    ReadingPositionRequest: {
+      /**
+       * Format: uuid
+       * @description Public key of the article
+       */
+      article: string;
+      /** @description Id of the heading (`toc[].id` of the article) */
+      anchor?: string | null;
+    };
     /** RegisterRequest */
     RegisterRequest: {
       username: string;
@@ -1847,9 +1957,16 @@ export interface components {
     /** SavedItemResource */
     SavedItemResource: {
       kind: string;
+      type: string;
       key: string;
       title: string;
-      article_slug: string;
+      /** @description Page of the article; null for a category */
+      article_slug: string | null;
+      /** @description Page of the category; null for an article */
+      category_slug: string | null;
+      /** @description Id of the heading reached in a read-later article; null = from the top */
+      anchor: string | null;
+      read_at: string | null;
       saved_at: string;
     };
     /**
@@ -1860,13 +1977,29 @@ export interface components {
     SavedKind: 'favorite' | 'read_later';
     /**
      * SavedRequest
-     * @description An article (by public key) and which list (ADR-0020, ADR-0022).
+     * @description Which list, and either an article (by public key) or a category (by slug; favourites only)
+     *     (ADR-0020, ADR-0022, ADR-0024).
      */
     SavedRequest: {
       kind: components['schemas']['SavedKind'];
-      /** Format: uuid */
-      article: string;
+      /**
+       * Format: uuid
+       * @description Public key of an article
+       */
+      article?: string | null;
+      /** @description Slug of a category: favourites only */
+      category?: string | null;
     };
+    /**
+     * SearchFoundIn
+     * @description Where the public search found an article (ADR-0024): the site tags the result with it.
+     *     | |
+     *     |---|
+     *     | `title` <br/> Title or summary |
+     *     | `content` <br/> Only the body |
+     * @enum {string}
+     */
+    SearchFoundIn: 'title' | 'content';
     /**
      * SearchMatch
      * @description Which search mode answered (ADR-0009): the UI shows "did you mean" wording for fuzzy results.
@@ -5034,6 +5167,92 @@ export interface operations {
       };
     };
   };
+  'publicContent.categories': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            data: {
+              name: string;
+              slug: string;
+              parent_slug: string | null;
+              depth: number;
+              article_count: number;
+              view_count: number;
+              favorite_count: number;
+            }[];
+            error: {
+              status: boolean;
+              code: number;
+              messages: null;
+            };
+          };
+        };
+      };
+      /** @description Too Many Requests */
+      429: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ApiError'];
+        };
+      };
+    };
+  };
+  'publicContent.articles': {
+    parameters: {
+      query?: {
+        sort?: components['schemas']['ArticleSort'] | null;
+        page?: number | null;
+        per_page?: number | null;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description `PublicArticleListResource` */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            data: {
+              data: components['schemas']['PublicArticleListResource'];
+            };
+            error: {
+              status: boolean;
+              code: number;
+              messages: null;
+            };
+          };
+        };
+      };
+      422: components['responses']['ValidationException'];
+      /** @description Too Many Requests */
+      429: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ApiError'];
+        };
+      };
+    };
+  };
   'publicContent.category': {
     parameters: {
       query?: {
@@ -5043,6 +5262,7 @@ export interface operations {
         /** @description Words of the title */
         q?: string | null;
         page?: number | null;
+        per_page?: number | null;
       };
       header?: never;
       path: {
@@ -5163,11 +5383,19 @@ export interface operations {
                 title: string;
                 slug: string;
                 summary: string | null;
+                found_in: components['schemas']['SearchFoundIn'];
+                snippet: string | null;
               }[];
               categories: {
                 name: string;
                 slug: string;
                 group: string | null;
+              }[];
+              sections: {
+                article_title: string;
+                article_slug: string;
+                heading: string;
+                anchor: string;
               }[];
             };
             error: {
@@ -5212,6 +5440,53 @@ export interface operations {
         content: {
           'application/json': {
             data: {
+              /** @description add() writes only when the key is missing: atomic in Redis, so two quick reports count once */
+              counted: boolean;
+            };
+            error: {
+              status: boolean;
+              code: number;
+              messages: null;
+            };
+          };
+        };
+      };
+      404: components['responses']['ModelNotFoundException'];
+      422: components['responses']['ValidationException'];
+      /** @description Too Many Requests */
+      429: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ApiError'];
+        };
+      };
+    };
+  };
+  'publicContent.viewCategory': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        slug: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['PublicViewRequest'];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            data: {
+              /** @description add() writes only when the key is missing: atomic in Redis, so two quick reports count once */
               counted: boolean;
             };
             error: {
@@ -5561,6 +5836,48 @@ export interface operations {
     requestBody: {
       content: {
         'application/json': components['schemas']['SavedRequest'];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            data: null;
+            error: {
+              status: boolean;
+              code: number;
+              messages: null;
+            };
+          };
+        };
+      };
+      401: components['responses']['AuthenticationException'];
+      404: components['responses']['ModelNotFoundException'];
+      422: components['responses']['ValidationException'];
+      /** @description Too Many Requests */
+      429: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ApiError'];
+        };
+      };
+    };
+  };
+  'saved.position': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['ReadingPositionRequest'];
       };
     };
     responses: {

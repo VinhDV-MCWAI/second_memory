@@ -5,14 +5,17 @@ declare(strict_types=1);
 namespace Tests\Feature\User;
 
 use App\Constants\CommonVal;
+use App\Constants\ContentConst;
 use App\Models\Content\Article;
+use App\Models\Content\ContentCategory;
 use App\Models\User\EndUser;
 use Tests\Concerns\AuthenticatesAdmins;
 use Tests\Concerns\AuthenticatesEndUsers;
 use Tests\TestCase;
 
 /**
- * Favourites and read later (ADR-0020): only articles the public site shows.
+ * Favourites and read later (ADR-0020, ADR-0024): only articles and categories the public site
+ * shows; a category only as a favourite; a read-later article keeps the heading the reader reached.
  */
 final class SavedApiTest extends TestCase
 {
@@ -86,9 +89,71 @@ final class SavedApiTest extends TestCase
             ->assertStatus(CommonVal::HTTP_UNPROCESSABLE_CONTENT);
     }
 
+    public function test_a_category_is_saved_as_a_favourite_only(): void
+    {
+        $category = ContentCategory::factory()->create(['name' => 'Laravel', 'slug' => 'laravel']);
+
+        $this->call('POST', self::BASE.'/store', ['kind' => 'favorite', 'category' => 'laravel'], $this->cookies)->assertOk();
+        $this->call('POST', self::BASE.'/store', ['kind' => 'favorite', 'category' => 'laravel'], $this->cookies)->assertOk();
+        $this->call('GET', self::BASE.'/list', [], $this->cookies)->assertOk()
+            ->assertJsonCount(1, 'data.data')
+            ->assertJsonPath('data.data.0.type', 'category')
+            ->assertJsonPath('data.data.0.key', 'laravel')
+            ->assertJsonPath('data.data.0.title', 'Laravel')
+            ->assertJsonPath('data.data.0.category_slug', 'laravel')
+            ->assertJsonPath('data.data.0.article_slug', null);
+
+        $this->call('POST', self::BASE.'/store', ['kind' => 'read_later', 'category' => 'laravel'], $this->cookies)
+            ->assertStatus(CommonVal::HTTP_UNPROCESSABLE_CONTENT)
+            ->assertJsonStructure(['error' => ['messages' => ['category']]]);
+        $this->call('POST', self::BASE.'/store', ['kind' => 'favorite', 'category' => 'laravel', 'article' => $this->key], $this->cookies)
+            ->assertStatus(CommonVal::HTTP_UNPROCESSABLE_CONTENT);
+        $this->call('POST', self::BASE.'/store', ['kind' => 'favorite', 'category' => 'nope'], $this->cookies)->assertNotFound();
+
+        // Hidden: out of the list but kept; shown again: back
+        $category->update(['is_public' => false]);
+        $this->call('GET', self::BASE.'/list', [], $this->cookies)->assertJsonCount(0, 'data.data');
+        $category->update(['is_public' => true]);
+        $this->call('GET', self::BASE.'/list', [], $this->cookies)->assertJsonCount(1, 'data.data');
+
+        $this->call('POST', self::BASE.'/delete', ['kind' => 'favorite', 'category' => 'laravel'], $this->cookies)->assertOk();
+        $this->assertDatabaseCount('end_user_saved', 0);
+    }
+
+    public function test_a_read_later_article_keeps_the_heading_reached_until_hidden_or_deleted(): void
+    {
+        $this->call('POST', self::BASE.'/store', ['kind' => 'read_later', 'article' => $this->key], $this->cookies)->assertOk();
+        $this->call('GET', self::BASE.'/list', [], $this->cookies)->assertJsonPath('data.data.0.anchor', null);
+
+        $this->call('POST', self::BASE.'/position', ['article' => $this->key, 'anchor' => 'hàng-đợi'], $this->cookies)->assertOk();
+        $this->call('GET', self::BASE.'/list', [], $this->cookies)
+            ->assertJsonPath('data.data.0.type', 'article')
+            ->assertJsonPath('data.data.0.anchor', 'hàng-đợi')
+            ->assertJsonPath('data.data.0.read_at', fn (?string $at): bool => $at !== null);
+        $this->call('POST', self::BASE.'/position', ['article' => $this->key, 'anchor' => null], $this->cookies)->assertOk();
+        $this->call('GET', self::BASE.'/list', [], $this->cookies)->assertJsonPath('data.data.0.anchor', null);
+        $this->call('POST', self::BASE.'/position', ['article' => $this->key, 'anchor' => str_repeat('a', ContentConst::READING_ANCHOR_MAX + 1)], $this->cookies)
+            ->assertStatus(CommonVal::HTTP_UNPROCESSABLE_CONTENT);
+
+        // A favourite is not a read-later entry
+        $other = Article::factory()->create();
+        $otherKey = (string) $other->refresh()->public_key;
+        $this->call('POST', self::BASE.'/store', ['kind' => 'favorite', 'article' => $otherKey], $this->cookies)->assertOk();
+        $this->call('POST', self::BASE.'/position', ['article' => $otherKey, 'anchor' => 'x'], $this->cookies)->assertNotFound();
+
+        // Private: hidden with its position kept; public again: back where the reader was
+        $this->call('POST', self::BASE.'/position', ['article' => $this->key, 'anchor' => 'cài-đặt'], $this->cookies)->assertOk();
+        $this->article->update(['is_public' => false]);
+        $this->call('GET', self::BASE.'/list', ['kind' => 'read_later'], $this->cookies)->assertJsonCount(0, 'data.data');
+        $this->call('POST', self::BASE.'/position', ['article' => $this->key, 'anchor' => 'x'], $this->cookies)->assertNotFound();
+        $this->article->update(['is_public' => true]);
+        $this->call('GET', self::BASE.'/list', ['kind' => 'read_later'], $this->cookies)->assertJsonPath('data.data.0.anchor', 'cài-đặt');
+    }
+
     public function test_guests_get_401(): void
     {
         $this->call('GET', self::BASE.'/list')->assertUnauthorized();
         $this->call('POST', self::BASE.'/store', ['kind' => 'favorite', 'article' => $this->key])->assertUnauthorized();
+        $this->call('POST', self::BASE.'/position', ['article' => $this->key, 'anchor' => 'x'])->assertUnauthorized();
     }
 }

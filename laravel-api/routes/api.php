@@ -63,6 +63,7 @@ Route::prefix('user')
             Route::get('saved/list', [SavedController::class, 'list']);
             Route::post('saved/store', [SavedController::class, 'store']);
             Route::post('saved/delete', [SavedController::class, 'delete']);
+            Route::post('saved/position', [SavedController::class, 'position']);
         });
     });
 
@@ -74,14 +75,17 @@ Route::prefix('public')
         Route::get('files/{key}', [PublicFileController::class, 'url'])->whereUuid('key');
         // Categories and articles (ADR-0022)
         Route::get('home', [PublicContentController::class, 'home']);
+        Route::get('categories', [PublicContentController::class, 'categories']);
+        Route::get('articles', [PublicContentController::class, 'articles']);
         Route::get('categories/{slug}', [PublicContentController::class, 'category']);
         Route::get('articles/{slug}', [PublicContentController::class, 'article']);
         Route::get('search', [PublicContentController::class, 'search']);
     });
 
-// View counts of articles (ADR-0022), reported by the public site's server: its own rate limit
+// View counts of articles and categories (ADR-0022, ADR-0024), reported by the public site's server: its own rate limit
 Route::prefix('public')
     ->middleware(['api.response', 'throttle:public-view'])
     ->group(function () {
         Route::post('articles/{slug}/view', [PublicContentController::class, 'view']);
+        Route::post('categories/{slug}/view', [PublicContentController::class, 'viewCategory']);
     });

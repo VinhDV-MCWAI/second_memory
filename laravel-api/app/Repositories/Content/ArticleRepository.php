@@ -120,6 +120,8 @@ class ArticleRepository extends CrudRepository
         return Article::query()
             ->visible()
             ->where('article.slug', $slug)
+            ->select('article.*')
+            ->selectRaw(ArticleSort::FAVORITE_COUNT.' AS favorite_count')
             ->with(['categories' => function (Relation $categories): void {
                 /** @var BelongsToMany<ContentCategory, Article> $categories */
                 $categories->visible()->select(['content_category.id', 'content_category.name', 'content_category.slug']);
@@ -130,25 +132,42 @@ class ArticleRepository extends CrudRepository
     /**
      * Shown articles in any of the categories (a category, or a group and its categories) for its
      * public page (ADR-0022), optionally also in a second category and with the words in the title.
+     * Null categories: every shown article (the tabs of the home page, ADR-0024).
      *
-     * @param  list<int>  $categoryIds
+     * @param  list<int>|null  $categoryIds
      * @return LengthAwarePaginator<int, Article>
      */
-    public function publicArticlesIn(array $categoryIds, ArticleSort $sort, ?int $alsoCategoryId, ?string $words, int $page): LengthAwarePaginator
+    public function publicArticlesIn(?array $categoryIds, ArticleSort $sort, ?int $alsoCategoryId, ?string $words, int $page, int $perPage = ContentConst::PUBLIC_PER_PAGE): LengthAwarePaginator
     {
         $query = Article::query()
             ->visible()
-            ->whereHas('categories', fn (Builder $categories) => $categories->whereKey($categoryIds))
+            ->when($categoryIds !== null, fn (Builder $query) => $query->whereHas('categories', fn (Builder $categories) => $categories->whereKey($categoryIds)))
             ->when($alsoCategoryId !== null, fn (Builder $query) => $query->whereHas('categories', fn (Builder $categories) => $categories->whereKey($alsoCategoryId)))
             ->when($words !== null && trim($words) !== '', fn (Builder $query) => $query->whereRaw('f_unaccent(lower(article.title)) like f_unaccent(lower(?))', ['%'.$this->escapeLike(trim((string) $words)).'%']))
             ->select(['article.id', 'article.title', 'article.slug', 'article.summary', 'article.view_count', 'article.created_at', 'article.updated_at'])
             ->selectRaw(ArticleSort::SAVE_COUNT.' AS save_count')
+            ->selectRaw(ArticleSort::FAVORITE_COUNT.' AS favorite_count')
             ->orderByRaw($sort->expression().' DESC')
             // Ties (no views or saves yet) read newest first
             ->orderByDesc('article.created_at')
             ->orderByDesc('article.id');
 
-        return $query->paginate(ContentConst::PUBLIC_PER_PAGE, ['*'], 'page', $page);
+        return $query->paginate($perPage, ['*'], 'page', $page);
+    }
+
+    /**
+     * Which shown article is in which category: the article counts of the category tree.
+     *
+     * @return list<object{category_id: int, article_id: int}>
+     */
+    public function visibleCategoryLinks(): array
+    {
+        return Article::query()
+            ->visible()
+            ->join('article_category', 'article_category.article_id', '=', 'article.id')
+            ->get(['article_category.content_category_id AS category_id', 'article.id AS article_id'])
+            ->map(fn (Article $row): object => (object) ['category_id' => (int) $row->getAttribute('category_id'), 'article_id' => (int) $row->getAttribute('article_id')])
+            ->all();
     }
 
     /** Id of a shown article by slug; null when it is missing or not shown */

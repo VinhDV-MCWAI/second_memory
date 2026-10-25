@@ -13,9 +13,13 @@ enum ArticleSort: string
     case UPDATED = 'updated';
     case MOST_READ = 'most_read';
     case MOST_SAVED = 'most_saved';
+    case MOST_FAVORITED = 'most_favorited';
 
     /** End users who keep the article in either list (favourites, read later) */
     public const SAVE_COUNT = '(SELECT count(DISTINCT saved.end_user_id) FROM end_user_saved saved WHERE saved.article_id = article.id)';
+
+    /** End users who keep the article in their favourites (ADR-0024) */
+    public const FAVORITE_COUNT = "(SELECT count(*) FROM end_user_saved saved WHERE saved.article_id = article.id AND saved.kind = '".SavedKind::FAVORITE->value."')";
 
     public function label(): string
     {
@@ -24,6 +28,7 @@ enum ArticleSort: string
             self::UPDATED => 'Recently updated',
             self::MOST_READ => 'Most read',
             self::MOST_SAVED => 'Most saved',
+            self::MOST_FAVORITED => 'Most favorited',
         };
     }
 
@@ -35,6 +40,7 @@ enum ArticleSort: string
             self::UPDATED => 'article.updated_at',
             self::MOST_READ => 'article.view_count',
             self::MOST_SAVED => self::SAVE_COUNT,
+            self::MOST_FAVORITED => self::FAVORITE_COUNT,
         };
     }
 }

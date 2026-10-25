@@ -29,6 +29,7 @@ class PublicCategoryRequest extends FormRequest
             /** Words of the title */
             'q' => ['nullable', 'string', 'max:'.ContentConst::ARTICLE_TITLE_MAX],
             'page' => ['nullable', 'integer', 'min:1'],
+            'per_page' => ['nullable', 'integer', 'min:1', 'max:'.ContentConst::PUBLIC_PER_PAGE_MAX],
         ];
     }
 }

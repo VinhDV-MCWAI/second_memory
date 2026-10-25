@@ -6,10 +6,12 @@ namespace App\Services\Public;
 
 use App\Constants\ContentConst;
 use App\Enums\ArticleSort;
+use App\Http\Resources\Public\PublicArticleListResource;
 use App\Http\Resources\Public\PublicArticleResource;
 use App\Http\Resources\Public\PublicCategoryDetailResource;
 use App\Http\Resources\Public\PublicGroupResource;
 use App\Models\Content\Article;
+use App\Models\Content\ContentCategory;
 use App\Repositories\Content\ArticleRepository;
 use App\Repositories\Content\ContentCategoryRepository;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -21,6 +23,8 @@ use Illuminate\Support\Facades\Cache;
  * Private or missing → 404.
  *
  * @phpstan-import-type Place from PublicArticleResource
+ *
+ * @phpstan-type TreeCategory array{name: string, slug: string, parent_slug: string|null, depth: int, article_count: int, view_count: int, favorite_count: int}
  */
 final class PublicContentService
 {
@@ -35,7 +39,55 @@ final class PublicContentService
     }
 
     /**
-     * @param  array{sort?: string|null, also?: string|null, q?: string|null, page?: int|string|null}  $query
+     * Every shown category in tree order (ADR-0024). `article_count` counts the shown articles of the
+     * category and of the shown categories below it, each article once, like its page lists them.
+     *
+     * @return list<TreeCategory>
+     */
+    public function categories(): array
+    {
+        $rows = $this->categories->publicTree();
+        $slugs = array_column($rows, 'slug', 'id');
+        /** @var array<int, array<int, true>> $articles shown article ids per category, then per subtree */
+        $articles = [];
+        foreach ($this->articles->visibleCategoryLinks() as $link) {
+            $articles[$link->category_id][$link->article_id] = true;
+        }
+        // Children come after their parent, so walking backwards adds each subtree to its parent once complete
+        foreach (array_reverse($rows) as $row) {
+            if ($row->parent_id !== null && isset($slugs[$row->parent_id])) {
+                $articles[$row->parent_id] = ($articles[$row->parent_id] ?? []) + ($articles[$row->id] ?? []);
+            }
+        }
+
+        return array_map(fn (object $row): array => [
+            'name' => (string) $row->name,
+            'slug' => (string) $row->slug,
+            'parent_slug' => $row->parent_id === null ? null : $slugs[$row->parent_id],
+            'depth' => (int) $row->depth,
+            'article_count' => count($articles[$row->id] ?? []),
+            'view_count' => (int) $row->view_count,
+            'favorite_count' => (int) $row->favorite_count,
+        ], $rows);
+    }
+
+    /**
+     * @param  array{sort?: string|null, page?: int|string|null, per_page?: int|string|null}  $query
+     */
+    public function articles(array $query): PublicArticleListResource
+    {
+        return new PublicArticleListResource($this->articles->publicArticlesIn(
+            null,
+            ArticleSort::tryFrom((string) ($query['sort'] ?? '')) ?? ArticleSort::NEWEST,
+            null,
+            null,
+            (int) ($query['page'] ?? 1),
+            (int) ($query['per_page'] ?? ContentConst::PUBLIC_PER_PAGE),
+        ));
+    }
+
+    /**
+     * @param  array{sort?: string|null, also?: string|null, q?: string|null, page?: int|string|null, per_page?: int|string|null}  $query
      */
     public function category(string $slug, array $query): PublicCategoryDetailResource
     {
@@ -49,9 +101,15 @@ final class PublicContentService
             isset($query['also']) ? ($also ?? 0) : null,
             $query['q'] ?? null,
             (int) ($query['page'] ?? 1),
+            (int) ($query['per_page'] ?? ContentConst::PUBLIC_PER_PAGE),
         );
 
-        return new PublicCategoryDetailResource($category, $articles, $this->categories->ancestors($category->id));
+        return new PublicCategoryDetailResource(
+            $category,
+            $articles,
+            $this->categories->ancestors($category->id),
+            $this->categories->favoriteCount($category->id),
+        );
     }
 
     /**
@@ -64,14 +122,36 @@ final class PublicContentService
     public function view(string $slug, string $visitor): array
     {
         $id = $this->articles->visibleIdBySlug($slug) ?? throw (new ModelNotFoundException)->setModel(Article::class, [$slug]);
-        // add() writes only when the key is missing: atomic in Redis, so two quick reports count once
-        $counted = Cache::store(ContentConst::VIEW_CACHE_STORE)
-            ->add(ContentConst::VIEW_CACHE_PREFIX.$id.':'.$visitor, true, now()->addMinutes(ContentConst::VIEW_WINDOW_MINUTES));
+        $counted = $this->firstViewInWindow(ContentConst::VIEW_CACHE_PREFIX.$id.':'.$visitor);
         if ($counted) {
             $this->articles->addView($id);
         }
 
         return ['counted' => $counted];
+    }
+
+    /**
+     * Same rule for a category page (ADR-0024).
+     *
+     * @return array{counted: bool}
+     *
+     * @throws ModelNotFoundException when the category is missing or not shown
+     */
+    public function viewCategory(string $slug, string $visitor): array
+    {
+        $id = $this->categories->visibleIdBySlug($slug) ?? throw (new ModelNotFoundException)->setModel(ContentCategory::class, [$slug]);
+        $counted = $this->firstViewInWindow(ContentConst::CATEGORY_VIEW_CACHE_PREFIX.$id.':'.$visitor);
+        if ($counted) {
+            $this->categories->addView($id);
+        }
+
+        return ['counted' => $counted];
+    }
+
+    private function firstViewInWindow(string $key): bool
+    {
+        // add() writes only when the key is missing: atomic in Redis, so two quick reports count once
+        return Cache::store(ContentConst::VIEW_CACHE_STORE)->add($key, true, now()->addMinutes(ContentConst::VIEW_WINDOW_MINUTES));
     }
 
     public function article(string $slug): PublicArticleResource

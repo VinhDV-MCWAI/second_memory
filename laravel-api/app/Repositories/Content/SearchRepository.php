@@ -50,7 +50,7 @@ final class SearchRepository
     public function articles(array $words, bool $fuzzy, bool $visibleOnly, int $limit): Collection
     {
         $query = Article::query()
-            ->select(['article.id', 'article.title', 'article.slug', 'article.summary', 'article.is_public'])
+            ->select(['article.id', 'article.title', 'article.slug', 'article.summary', 'article.body', 'article.is_public'])
             ->when($visibleOnly, fn (Builder $query) => $query->visible());
 
         return $this->match($query, 'article', $words, $fuzzy)->limit($limit)->get();

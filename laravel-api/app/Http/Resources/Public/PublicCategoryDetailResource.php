@@ -23,8 +23,12 @@ class PublicCategoryDetailResource extends JsonResource
      * @param  LengthAwarePaginator<int, Article>  $articles
      * @param  list<array{name: string, slug: string}>  $ancestors  from the top down to the parent
      */
-    public function __construct(ContentCategory $category, private readonly LengthAwarePaginator $articles, private readonly array $ancestors)
-    {
+    public function __construct(
+        ContentCategory $category,
+        private readonly LengthAwarePaginator $articles,
+        private readonly array $ancestors,
+        private readonly int $favoriteCount,
+    ) {
         parent::__construct($category);
     }
 
@@ -42,6 +46,9 @@ class PublicCategoryDetailResource extends JsonResource
              * @var list<array{name: string, slug: string}>
              */
             'ancestors' => $this->ancestors,
+            'view_count' => (int) $this->view_count,
+            /** End users who keep it as a favourite */
+            'favorite_count' => $this->favoriteCount,
             'description_html' => app(MarkdownRenderer::class)->toHtml((string) $this->description),
             'attachments' => PublicAttachmentResource::collection($this->attachments),
             /** @var list<array{name: string, slug: string, article_count: int}> */
@@ -50,16 +57,7 @@ class PublicCategoryDetailResource extends JsonResource
                 'slug' => (string) $category->slug,
                 'article_count' => (int) $category->getAttribute('articles_count'),
             ])->all(),
-            /** @var list<array{title: string, slug: string, summary: string|null, view_count: int, save_count: int, created_at: string, updated_at: string}> */
-            'articles' => collect($this->articles->items())->map(fn (Article $article): array => [
-                'title' => (string) $article->title,
-                'slug' => (string) $article->slug,
-                'summary' => $article->summary,
-                'view_count' => (int) $article->view_count,
-                'save_count' => (int) $article->getAttribute('save_count'),
-                'created_at' => (string) $article->created_at?->toIso8601String(),
-                'updated_at' => (string) $article->updated_at?->toIso8601String(),
-            ])->all(),
+            'articles' => PublicArticleCardResource::collection($this->articles->items()),
             'page' => $this->articles->currentPage(),
             'last_page' => $this->articles->lastPage(),
             'total' => $this->articles->total(),

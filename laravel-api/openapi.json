@@ -6438,10 +6438,218 @@
                 "security": []
             }
         },
+        "/public/categories": {
+            "get": {
+                "operationId": "publicContent.categories",
+                "summary": "Every public category in tree order (parents first, siblings in the owner's order), with its level, the number of public\narticles in it and below it, its view count and favourites: the category tree of the reading page and the home page",
+                "tags": [
+                    "PublicContent"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "name": {
+                                                        "type": "string"
+                                                    },
+                                                    "slug": {
+                                                        "type": "string"
+                                                    },
+                                                    "parent_slug": {
+                                                        "type": [
+                                                            "string",
+                                                            "null"
+                                                        ]
+                                                    },
+                                                    "depth": {
+                                                        "type": "integer"
+                                                    },
+                                                    "article_count": {
+                                                        "type": "integer"
+                                                    },
+                                                    "view_count": {
+                                                        "type": "integer"
+                                                    },
+                                                    "favorite_count": {
+                                                        "type": "integer"
+                                                    }
+                                                },
+                                                "required": [
+                                                    "name",
+                                                    "slug",
+                                                    "parent_slug",
+                                                    "depth",
+                                                    "article_count",
+                                                    "view_count",
+                                                    "favorite_count"
+                                                ]
+                                            }
+                                        },
+                                        "error": {
+                                            "type": "object",
+                                            "properties": {
+                                                "status": {
+                                                    "type": "boolean"
+                                                },
+                                                "code": {
+                                                    "type": "integer"
+                                                },
+                                                "messages": {
+                                                    "type": "null"
+                                                }
+                                            },
+                                            "required": [
+                                                "status",
+                                                "code",
+                                                "messages"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data",
+                                        "error"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too Many Requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiError"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": []
+            }
+        },
+        "/public/articles": {
+            "get": {
+                "operationId": "publicContent.articles",
+                "summary": "A page of every public article in the order asked for (`sort`; `per_page` up to 100): the tabs of the home page",
+                "tags": [
+                    "PublicContent"
+                ],
+                "parameters": [
+                    {
+                        "name": "sort",
+                        "in": "query",
+                        "schema": {
+                            "anyOf": [
+                                {
+                                    "$ref": "#/components/schemas/ArticleSort"
+                                },
+                                {
+                                    "type": "null"
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "schema": {
+                            "type": [
+                                "integer",
+                                "null"
+                            ],
+                            "minimum": 1
+                        }
+                    },
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "schema": {
+                            "type": [
+                                "integer",
+                                "null"
+                            ],
+                            "minimum": 1,
+                            "maximum": 100
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "`PublicArticleListResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "data": {
+                                                    "$ref": "#/components/schemas/PublicArticleListResource"
+                                                }
+                                            },
+                                            "required": [
+                                                "data"
+                                            ]
+                                        },
+                                        "error": {
+                                            "type": "object",
+                                            "properties": {
+                                                "status": {
+                                                    "type": "boolean"
+                                                },
+                                                "code": {
+                                                    "type": "integer"
+                                                },
+                                                "messages": {
+                                                    "type": "null"
+                                                }
+                                            },
+                                            "required": [
+                                                "status",
+                                                "code",
+                                                "messages"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data",
+                                        "error"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "429": {
+                        "description": "Too Many Requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiError"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": []
+            }
+        },
         "/public/categories/{slug}": {
             "get": {
                 "operationId": "publicContent.category",
-                "summary": "One public group or category: description as safe HTML, evidence, its categories (a group), and a page of its public articles\n(`sort`: newest | updated; `also`: only articles in that category too; `q`: words of the title). Private (or in a private group)\nor missing \u2192 404",
+                "summary": "One public group or category: description as safe HTML, evidence, its categories (a group), and a page of its public articles\n(`sort`; `also`: only articles in that category too; `q`: words of the title; `per_page` up to 100). Private (or in a private\ngroup) or missing \u2192 404",
                 "tags": [
                     "PublicContent"
                 ],
@@ -6501,6 +6709,18 @@
                                 "null"
                             ],
                             "minimum": 1
+                        }
+                    },
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "schema": {
+                            "type": [
+                                "integer",
+                                "null"
+                            ],
+                            "minimum": 1,
+                            "maximum": 100
                         }
                     }
                 ],
@@ -6669,7 +6889,7 @@
         "/public/search": {
             "get": {
                 "operationId": "publicContent.search",
-                "summary": "Search the shown articles (title, summary, body) and categories (name, description); accents and case ignored,\ntypo fallback (`match: fuzzy`) when nothing matches",
+                "summary": "Search the shown articles (title, summary, body) and categories (name, description); accents and case ignored,\ntypo fallback (`match: fuzzy`) when nothing matches. Articles say whether the words are in the title / summary or only in\nthe body (`found_in`) and carry the passage of the body around them (`snippet`, safe HTML with `<mark>`); `sections` are\nthe headings of the found articles that hold every word, with their anchor",
                 "tags": [
                     "PublicContent"
                 ],
@@ -6716,12 +6936,23 @@
                                                                     "string",
                                                                     "null"
                                                                 ]
+                                                            },
+                                                            "found_in": {
+                                                                "$ref": "#/components/schemas/SearchFoundIn"
+                                                            },
+                                                            "snippet": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
                                                             }
                                                         },
                                                         "required": [
                                                             "title",
                                                             "slug",
-                                                            "summary"
+                                                            "summary",
+                                                            "found_in",
+                                                            "snippet"
                                                         ]
                                                     }
                                                 },
@@ -6749,12 +6980,39 @@
                                                             "group"
                                                         ]
                                                     }
+                                                },
+                                                "sections": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "article_title": {
+                                                                "type": "string"
+                                                            },
+                                                            "article_slug": {
+                                                                "type": "string"
+                                                            },
+                                                            "heading": {
+                                                                "type": "string"
+                                                            },
+                                                            "anchor": {
+                                                                "type": "string"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "article_title",
+                                                            "article_slug",
+                                                            "heading",
+                                                            "anchor"
+                                                        ]
+                                                    }
                                                 }
                                             },
                                             "required": [
                                                 "match",
                                                 "articles",
-                                                "categories"
+                                                "categories",
+                                                "sections"
                                             ]
                                         },
                                         "error": {
@@ -6841,7 +7099,103 @@
                                             "type": "object",
                                             "properties": {
                                                 "counted": {
+                                                    "type": "boolean",
+                                                    "description": "add() writes only when the key is missing: atomic in Redis, so two quick reports count once"
+                                                }
+                                            },
+                                            "required": [
+                                                "counted"
+                                            ]
+                                        },
+                                        "error": {
+                                            "type": "object",
+                                            "properties": {
+                                                "status": {
                                                     "type": "boolean"
+                                                },
+                                                "code": {
+                                                    "type": "integer"
+                                                },
+                                                "messages": {
+                                                    "type": "null"
+                                                }
+                                            },
+                                            "required": [
+                                                "status",
+                                                "code",
+                                                "messages"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data",
+                                        "error"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "429": {
+                        "description": "Too Many Requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiError"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": []
+            }
+        },
+        "/public/categories/{slug}/view": {
+            "post": {
+                "operationId": "publicContent.viewCategory",
+                "summary": "Report that a reader stayed on a category page (the public site's rule): counted once per visitor per 30 minutes, like\narticles. Private or missing \u2192 404",
+                "tags": [
+                    "PublicContent"
+                ],
+                "parameters": [
+                    {
+                        "name": "slug",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/PublicViewRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "counted": {
+                                                    "type": "boolean",
+                                                    "description": "add() writes only when the key is missing: atomic in Redis, so two quick reports count once"
                                                 }
                                             },
                                             "required": [
@@ -7474,7 +7828,7 @@
         "/user/saved/store": {
             "post": {
                 "operationId": "saved.store",
-                "summary": "Save an article (`article`: its public `key`). Saving twice is fine",
+                "summary": "Save an article (`article`: its public `key`) or, as a favourite, a category (`category`: its slug). Saving twice is fine",
                 "tags": [
                     "Saved"
                 ],
@@ -7562,6 +7916,84 @@
                         "application/json": {
                             "schema": {
                                 "$ref": "#/components/schemas/SavedRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "null"
+                                        },
+                                        "error": {
+                                            "type": "object",
+                                            "properties": {
+                                                "status": {
+                                                    "type": "boolean"
+                                                },
+                                                "code": {
+                                                    "type": "integer"
+                                                },
+                                                "messages": {
+                                                    "type": "null"
+                                                }
+                                            },
+                                            "required": [
+                                                "status",
+                                                "code",
+                                                "messages"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data",
+                                        "error"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "429": {
+                        "description": "Too Many Requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/user/saved/position": {
+            "post": {
+                "operationId": "saved.position",
+                "summary": "Keep the heading the reader reached in a read-later article (`anchor`: a `toc[].id` of it; empty = the top). Not in the\nread-later list \u2192 404",
+                "tags": [
+                    "Saved"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ReadingPositionRequest"
                             }
                         }
                     }
@@ -8161,7 +8593,8 @@
                     "newest",
                     "updated",
                     "most_read",
-                    "most_saved"
+                    "most_saved",
+                    "most_favorited"
                 ],
                 "title": "ArticleSort"
             },
@@ -9323,6 +9756,78 @@
                 ],
                 "title": "PreviewArticleRequest"
             },
+            "PublicArticleCardResource": {
+                "type": "object",
+                "properties": {
+                    "title": {
+                        "type": "string"
+                    },
+                    "slug": {
+                        "type": "string"
+                    },
+                    "summary": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "view_count": {
+                        "type": "integer"
+                    },
+                    "save_count": {
+                        "type": "integer",
+                        "description": "End users who keep it in either list"
+                    },
+                    "favorite_count": {
+                        "type": "integer",
+                        "description": "End users who keep it in their favourites"
+                    },
+                    "created_at": {
+                        "type": "string"
+                    },
+                    "updated_at": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "title",
+                    "slug",
+                    "summary",
+                    "view_count",
+                    "save_count",
+                    "favorite_count",
+                    "created_at",
+                    "updated_at"
+                ],
+                "title": "PublicArticleCardResource"
+            },
+            "PublicArticleListResource": {
+                "type": "object",
+                "properties": {
+                    "articles": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/PublicArticleCardResource"
+                        }
+                    },
+                    "page": {
+                        "type": "integer"
+                    },
+                    "last_page": {
+                        "type": "integer"
+                    },
+                    "total": {
+                        "type": "integer"
+                    }
+                },
+                "required": [
+                    "articles",
+                    "page",
+                    "last_page",
+                    "total"
+                ],
+                "title": "PublicArticleListResource"
+            },
             "PublicArticleResource": {
                 "type": "object",
                 "properties": {
@@ -9367,6 +9872,13 @@
                                 "text"
                             ]
                         }
+                    },
+                    "view_count": {
+                        "type": "integer"
+                    },
+                    "favorite_count": {
+                        "type": "integer",
+                        "description": "End users who keep it in their favourites"
                     },
                     "created_at": {
                         "type": "string"
@@ -9515,6 +10027,8 @@
                     "summary",
                     "body_html",
                     "toc",
+                    "view_count",
+                    "favorite_count",
                     "created_at",
                     "updated_at",
                     "categories",
@@ -9620,6 +10134,14 @@
                             ]
                         }
                     },
+                    "view_count": {
+                        "type": "integer"
+                    },
+                    "favorite_count": {
+                        "type": "integer",
+                        "description": "End users who keep it as a favourite",
+                        "minimum": 0
+                    },
                     "description_html": {
                         "type": "string"
                     },
@@ -9654,42 +10176,7 @@
                     "articles": {
                         "type": "array",
                         "items": {
-                            "type": "object",
-                            "properties": {
-                                "title": {
-                                    "type": "string"
-                                },
-                                "slug": {
-                                    "type": "string"
-                                },
-                                "summary": {
-                                    "type": [
-                                        "string",
-                                        "null"
-                                    ]
-                                },
-                                "view_count": {
-                                    "type": "integer"
-                                },
-                                "save_count": {
-                                    "type": "integer"
-                                },
-                                "created_at": {
-                                    "type": "string"
-                                },
-                                "updated_at": {
-                                    "type": "string"
-                                }
-                            },
-                            "required": [
-                                "title",
-                                "slug",
-                                "summary",
-                                "view_count",
-                                "save_count",
-                                "created_at",
-                                "updated_at"
-                            ]
+                            "$ref": "#/components/schemas/PublicArticleCardResource"
                         }
                     },
                     "page": {
@@ -9706,6 +10193,8 @@
                     "name",
                     "slug",
                     "ancestors",
+                    "view_count",
+                    "favorite_count",
                     "description_html",
                     "attachments",
                     "categories",
@@ -9793,6 +10282,29 @@
                 ],
                 "title": "PublicViewRequest"
             },
+            "ReadingPositionRequest": {
+                "type": "object",
+                "description": "The heading a reader reached in a read-later article (ADR-0024); no anchor = the top.",
+                "properties": {
+                    "article": {
+                        "type": "string",
+                        "format": "uuid",
+                        "description": "Public key of the article"
+                    },
+                    "anchor": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "description": "Id of the heading (`toc[].id` of the article)",
+                        "maxLength": 255
+                    }
+                },
+                "required": [
+                    "article"
+                ],
+                "title": "ReadingPositionRequest"
+            },
             "RegisterRequest": {
                 "type": "object",
                 "properties": {
@@ -9863,6 +10375,9 @@
                     "kind": {
                         "type": "string"
                     },
+                    "type": {
+                        "type": "string"
+                    },
                     "key": {
                         "type": "string"
                     },
@@ -9870,7 +10385,31 @@
                         "type": "string"
                     },
                     "article_slug": {
-                        "type": "string"
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "description": "Page of the article; null for a category"
+                    },
+                    "category_slug": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "description": "Page of the category; null for an article"
+                    },
+                    "anchor": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "description": "Id of the heading reached in a read-later article; null = from the top"
+                    },
+                    "read_at": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
                     },
                     "saved_at": {
                         "type": "string"
@@ -9878,9 +10417,13 @@
                 },
                 "required": [
                     "kind",
+                    "type",
                     "key",
                     "title",
                     "article_slug",
+                    "category_slug",
+                    "anchor",
+                    "read_at",
                     "saved_at"
                 ],
                 "title": "SavedItemResource"
@@ -9896,21 +10439,41 @@
             },
             "SavedRequest": {
                 "type": "object",
-                "description": "An article (by public key) and which list (ADR-0020, ADR-0022).",
+                "description": "Which list, and either an article (by public key) or a category (by slug; favourites only)\n(ADR-0020, ADR-0022, ADR-0024).",
                 "properties": {
                     "kind": {
                         "$ref": "#/components/schemas/SavedKind"
                     },
                     "article": {
-                        "type": "string",
-                        "format": "uuid"
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "format": "uuid",
+                        "description": "Public key of an article"
+                    },
+                    "category": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "description": "Slug of a category: favourites only",
+                        "maxLength": 100
                     }
                 },
                 "required": [
-                    "kind",
-                    "article"
+                    "kind"
                 ],
                 "title": "SavedRequest"
+            },
+            "SearchFoundIn": {
+                "type": "string",
+                "description": "Where the public search found an article (ADR-0024): the site tags the result with it.\n| |\n|---|\n| `title` <br/> Title or summary |\n| `content` <br/> Only the body |",
+                "enum": [
+                    "title",
+                    "content"
+                ],
+                "title": "SearchFoundIn"
             },
             "SearchMatch": {
                 "type": "string",

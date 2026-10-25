@@ -6,6 +6,7 @@ namespace App\Repositories\Content;
 
 use App\Constants\ContentConst;
 use App\Enums\MoveDirection;
+use App\Enums\SavedKind;
 use App\Models\Content\Article;
 use App\Models\Content\CategoryAttachment;
 use App\Models\Content\ContentCategory;
@@ -262,6 +263,40 @@ class ContentCategoryRepository extends CrudRepository
             )
             SELECT c.name, c.slug FROM up JOIN content_category c ON c.id = up.id WHERE up.depth > 0 ORDER BY up.depth DESC
             SQL, [$id]));
+    }
+
+    /**
+     * Every shown category, parents before children, siblings in order, with its view count and
+     * how many end users keep it as a favourite: the category tree of the public site (ADR-0024).
+     *
+     * @return list<object{id: int, parent_id: int|null, depth: int, name: string, slug: string, view_count: int, favorite_count: int}>
+     */
+    public function publicTree(): array
+    {
+        return DB::select(<<<'SQL'
+            WITH RECURSIVE tree(id, depth, path) AS (
+                SELECT id, 1, ARRAY[sort_order::bigint, id] FROM content_category WHERE parent_id IS NULL AND is_public
+                UNION ALL
+                SELECT c.id, tree.depth + 1, tree.path || ARRAY[c.sort_order::bigint, c.id]
+                FROM content_category c JOIN tree ON c.parent_id = tree.id WHERE c.is_public
+            )
+            SELECT c.id, c.parent_id, tree.depth, c.name, c.slug, c.view_count,
+                (SELECT count(*) FROM end_user_saved saved WHERE saved.content_category_id = c.id AND saved.kind = ?) AS favorite_count
+            FROM tree JOIN content_category c ON c.id = tree.id
+            ORDER BY tree.path
+            SQL, [SavedKind::FAVORITE->value]);
+    }
+
+    /** End users who keep the category as a favourite */
+    public function favoriteCount(int $id): int
+    {
+        return DB::table('end_user_saved')->where(['content_category_id' => $id, 'kind' => SavedKind::FAVORITE->value])->count();
+    }
+
+    /** One more view; `updated_at` is left alone, a view is not a change */
+    public function addView(int $id): void
+    {
+        DB::table('content_category')->where('id', $id)->increment('view_count');
     }
 
     /** Id of a shown category by slug; null when it is missing or not shown */

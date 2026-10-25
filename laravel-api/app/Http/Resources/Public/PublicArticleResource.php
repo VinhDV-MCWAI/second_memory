@@ -50,6 +50,9 @@ class PublicArticleResource extends JsonResource
              * @var list<array{level: int, id: string, text: string}>
              */
             'toc' => $rendered['toc'],
+            'view_count' => (int) $this->view_count,
+            /** End users who keep it in their favourites */
+            'favorite_count' => (int) $this->getAttribute('favorite_count'),
             'created_at' => (string) $this->created_at?->toIso8601String(),
             'updated_at' => (string) $this->updated_at?->toIso8601String(),
             /** @var list<array{name: string, slug: string}> */

@@ -6,6 +6,7 @@ namespace Tests\Feature\Public;
 
 use App\Constants\ContentConst;
 use App\Models\Content\Article;
+use App\Models\Content\ContentCategory;
 use Illuminate\Testing\TestResponse;
 use Tests\TestCase;
 
@@ -47,6 +48,26 @@ final class PublicViewApiTest extends TestCase
         $this->reportView($underHidden, 'a')->assertNotFound();
         $this->postJson('/api/public/articles/nope/view', ['visitor' => hash('sha256', 'a')])->assertNotFound();
         $this->postJson("/api/public/articles/{$underHidden->slug}/view", ['visitor' => 'someone'])->assertUnprocessable();
+        $this->assertSame(0, $underHidden->refresh()->view_count);
+    }
+
+    public function test_a_category_counts_its_own_views_once_per_window(): void
+    {
+        $category = ContentCategory::factory()->create();
+        $article = Article::factory()->inCategory($category)->create();
+        $hidden = ContentCategory::factory()->private()->create();
+        $underHidden = ContentCategory::factory()->in($hidden)->create();
+        $url = "/api/public/categories/{$category->slug}/view";
+
+        $this->postJson($url, ['visitor' => hash('sha256', 'a')])->assertOk()->assertJsonPath('data.counted', true);
+        $this->postJson($url, ['visitor' => hash('sha256', 'a')])->assertOk()->assertJsonPath('data.counted', false);
+        // The same visitor reading an article of it is another count
+        $this->reportView($article, 'a')->assertOk()->assertJsonPath('data.counted', true);
+        $this->postJson("/api/public/categories/{$underHidden->slug}/view", ['visitor' => hash('sha256', 'a')])->assertNotFound();
+        $this->postJson($url, ['visitor' => 'someone'])->assertUnprocessable();
+
+        $this->assertSame(1, $category->refresh()->view_count);
+        $this->assertSame(1, $article->refresh()->view_count);
         $this->assertSame(0, $underHidden->refresh()->view_count);
     }
 

@@ -22,6 +22,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property string|null $description
  * @property int $sort_order
  * @property bool $is_public
+ * @property int $view_count
  * @property-read ContentCategory|null $parent
  */
 class ContentCategory extends Model
@@ -99,6 +100,7 @@ class ContentCategory extends Model
             'parent_id' => 'integer',
             'sort_order' => 'integer',
             'is_public' => 'boolean',
+            'view_count' => 'integer',
             'created_at' => 'datetime',
             'updated_at' => 'datetime',
         ];
