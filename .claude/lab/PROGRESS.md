@@ -111,6 +111,8 @@ Mỗi dòng do `scripts/lane.sh done` tự thêm. Không sửa tay. Các dòng t
 
 - 2026-10-25 — [lane main] UX-02 done: 79996d5a — ô Bài cha của bài viết là cây theo sách, tìm không dấu theo cả đường dẫn, bài đang sửa và bài con của nó không chọn được; lint, typecheck, 176 test giao diện pass; dọn: make clean, không tạo dữ liệu
 
+- 2026-10-25 — [lane main] UX-03 done: 87108857, 7d1c5566 — ô lọc Danh mục ở màn hình bài viết là cây có ô tick và tìm không dấu, hiện bài thuộc ít nhất một danh mục đã tick (không tính danh mục con); API nhận thêm category_ids[], category_id cũ vẫn dùng được; make verify pass (273 backend, 177 giao diện, 58 importer); dọn: make clean, không tạo dữ liệu
+
 ## Next step
 
 1. Đầu phiên: đọc file này, rồi `scripts/lane.sh status`. Bảng việc chỉ còn các việc "để sau" theo quyết định chủ dự án.
