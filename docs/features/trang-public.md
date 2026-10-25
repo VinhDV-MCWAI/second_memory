@@ -7,8 +7,8 @@ Trang ai cũng xem được, không cần đăng nhập, nằm ở **gốc** `ht
 | Địa chỉ | Hiện gì |
 |---|---|
 | http://localhost:81/ | Trang chủ tóm tắt (từ 2026-10-25, [REQ-006](../requirements/REQ-006-trang-chu-va-trang-doc.md)): ô tìm kiếm lớn, thẻ danh mục, tab bài viết ([bảng dưới](#trang-chủ)) |
-| http://localhost:81/categories/{slug} | Một nhóm hoặc danh mục: đường dẫn ngược (Home › nhóm), mô tả, đính kèm (link, file), danh mục con (khi là nhóm), danh sách bài |
-| http://localhost:81/articles/{slug} | Một bài, bố cục 3 cột (bảng dưới). Mỗi lần mở được tính lượt xem (cùng người trong 30 phút tính 1, [chi tiết](bai-viet.md#quy-tắc)) |
+| http://localhost:81/categories/{slug} | [Trang đọc](#trang-đọc-4-cột); cột giữa là nhóm hoặc danh mục: đường dẫn ngược (Home › nhóm), tên + nút ☆, mô tả, đính kèm (link, file), danh mục con (khi là nhóm), danh sách bài |
+| http://localhost:81/articles/{slug} | [Trang đọc](#trang-đọc-4-cột); cột giữa là một bài. `?in={danh mục}` chọn danh mục hiện ở cột 2 (không có hoặc sai thì lấy danh mục đầu tiên của bài) |
 | http://localhost:81/search?q=… | [Tìm kiếm](tim-kiem.md) bài viết và danh mục; ô tìm nằm ở đầu mọi trang |
 | http://localhost:81/files/{mã} | Mở một file đính kèm hoặc file nhúng: xin API link tạm rồi chuyển tới MinIO. Ảnh, PDF, video, nhạc, file chữ mở trong trình duyệt; loại khác tải về |
 | `/account/login`, `/account/register`, `/me` | Tài khoản người dùng ([người dùng cuối](nguoi-dung-cuoi.md)) |
@@ -37,15 +37,27 @@ Trang ai cũng xem được, không cần đăng nhập, nằm ở **gốc** `ht
 
 Trang của một **nhóm** liệt kê bài của cả nhóm (bài gắn vào nhóm hoặc vào danh mục công khai trong nhóm). Địa chỉ sửa tay sai (`?sort=abc`, `?page=x`) thì bị bỏ qua, không báo lỗi.
 
-### Trang bài viết
+### Trang đọc 4 cột
+
+Từ 2026-10-25 ([REQ-006](../requirements/REQ-006-trang-chu-va-trang-doc.md), [ADR-0024](../adr/0024-trang-doc-chuyen-trang-khong-tai-lai.md)), trang danh mục và trang bài dùng chung một bố cục kiểu trang tài liệu của Next.js.
 
 | Cột | Hiện gì |
 |---|---|
-| Trái | Bài nằm trong sách (có bài cha hoặc bài con): cây mục của cả sách, mục đang đọc được tô. Bài đơn: tối đa 10 bài mới nhất cùng danh mục |
-| Giữa | Đường dẫn ngược (Home › sách › chương), danh mục của bài, tiêu đề, nút ☆ / 🔖, nội dung; cuối bài là **bài trước / bài sau** theo thứ tự đọc của cây (đọc hết một mục rồi tới mục con của nó, rồi mục kế tiếp) |
-| Phải | **On this page**: các tiêu đề cấp 2, 3 của bài, bấm để nhảy tới |
+| 1. **Categories** | Cây mọi danh mục đang hiện kèm số bài; bấm ▸ để mở nhánh, bấm tên để mở danh mục. Nhánh của danh mục đang xem mở sẵn, danh mục đó được tô |
+| 2. Tên danh mục | Bài của danh mục đang chọn (tối đa 100, nhiều hơn thì có link **All N articles →**), bài đang đọc được tô. Bài nằm trong sách thì cây mục của sách ở trên danh sách. Bài không thuộc danh mục nào: cây sách hoặc bài liên quan |
+| 3. Nội dung | Bài: đường dẫn `Home › nhóm › danh mục › (chương của sách) › bài`, danh mục của bài, tiêu đề, nút ☆ / 🔖, nội dung, **bài trước / bài sau** theo thứ tự đọc của sách. Danh mục: như trước (tab, lọc, chia trang) |
+| 4. **On this page** | Tiêu đề cấp 2, 3 của bài; bấm để cuộn tới; tiêu đề của phần đang đọc sáng lên khi cuộn |
 
-Trên điện thoại cột trái thành nút **Menu** mở ra đóng lại (thẻ `details` của HTML, không cần JavaScript); cột phải chỉ hiện trên màn hình rộng.
+| Tính năng | Cách chạy |
+|---|---|
+| Chuyển trang không tải lại | Công cụ chuyển trang có sẵn của Astro (`ClientRouter`), chỉ bật ở trang đọc. Bấm link giữa các trang đọc thì chỉ thay nội dung, thanh địa chỉ đổi theo, nút Back quay lại bài trước. Cột 1 giữ nguyên chỗ cuộn và nhánh đang mở. Link sang trang chủ, tìm kiếm, tài khoản thì tải cả trang như thường |
+| Cột 2 giữ danh mục | Link trong trang đọc mang theo `?in={danh mục}`, nên đi từ bài này sang bài khác cột 2 không đổi. Trang có thẻ `canonical` trỏ về địa chỉ không có `?in=` cho máy tìm kiếm |
+| Ô lọc ở mỗi cột 1, 2, 4 | Lọc ngay khi gõ, không phân biệt dấu và hoa thường. Lọc cây thì giữ cả danh mục cha của kết quả và mở nhánh |
+| Thu gọn cột 1, 2, 4 | Nút « / » ở đầu cột; trình duyệt nhớ cột nào đang thu gọn (`localStorage`), mở lại vẫn thế |
+| Màn hình | Rộng từ 1280px: đủ 4 cột. Từ 1024px: không có cột 4. Điện thoại: nội dung trước, link **Categories and articles ↓** nhảy xuống hai menu ở dưới |
+| Không có JavaScript | Vẫn đọc được: link tải lại trang, mở nhánh cây và bấm mục lục vẫn chạy; ô lọc và nút thu gọn được ẩn |
+| Lượt đọc thật | Xem mục [Quy tắc](#quy-tắc) |
+| Nhớ chỗ đang đọc | Với bài đã bấm 🔖: khi đổi sang phần (`##`) khác thì gửi phần đó cho API, tối đa 1 lần / 10 giây, và gửi lần cuối khi rời trang. Danh sách **Read later** ở `/me` mở bài đúng phần đó; phần không còn (bài đã sửa) thì mở từ đầu kèm dòng báo "The section you read last time is no longer in this article" |
 
 Khối code trong bài và trong mô tả danh mục được **tô màu** ở server (Shiki đi kèm Astro, theme GitHub sáng / tối theo cài đặt máy người xem). Ngôn ngữ không biết thì hiện chữ thường.
 
@@ -62,7 +74,7 @@ Khối code trong bài và trong mô tả danh mục được **tô màu** ở s
 | `GET /api/public/articles/{slug}` | Một bài: HTML, mục lục, danh mục, cây sách, đường dẫn ngược, bài trước / sau, bài cùng danh mục, lượt xem, số người yêu thích |
 | `GET /api/public/files/{key}` | Link tạm `{url, expires_at}` của một file (5 phút để tải, 1 giờ để xem trong trình duyệt) |
 | `GET /api/public/search?q=` | Tìm bài và danh mục đang hiện |
-| `POST /api/public/articles/{slug}/view` | Máy chủ trang public báo một lượt xem (không chờ kết quả, API lỗi thì chỉ mất lượt đó, trang vẫn hiện). Từ READ-04 chỉ báo khi người xem đọc thật ([ADR-0024](../adr/0024-trang-doc-chuyen-trang-khong-tai-lai.md)) |
+| `POST /api/public/articles/{slug}/view` | Máy chủ trang public báo một lượt đọc thật, khi trình duyệt báo về `POST /views/articles/{slug}` (đường dẫn của trang public, không phải API; API lỗi thì chỉ mất lượt đó) |
 | `POST /api/public/categories/{slug}/view` | Như trên cho trang danh mục; đếm riêng, đọc bài không cộng vào danh mục |
 
 Chi tiết từng trường: [bai-viet.md](bai-viet.md#api). Không cần đăng nhập, giới hạn 60 request / phút / IP; riêng báo lượt xem giới hạn 600 / phút.
@@ -79,6 +91,8 @@ Chi tiết từng trường: [bai-viet.md](bai-viet.md#api). Không cần đăng
 | Link file luôn mới | Trang chỉ chứa `/files/{mã}`; mỗi lần bấm mới xin link ký tạm, nên trang lưu đệm bao lâu cũng không bị link hết hạn |
 | Lưu đệm 60 giây | Server của trang public gọi API qua nginx và giữ kết quả 60 giây trong bộ nhớ (theo từng địa chỉ, kể cả tham số lọc); sửa trong trang quản trị có thể mất tới 1 phút mới thấy |
 | Chia đường dẫn | nginx: `/admin…`, `/_next/…`, `/favicon.ico` → trang quản trị; `/api/` → Laravel; mọi đường dẫn khác → trang public |
+| Lượt đọc thật của bài | Tab đang hiện đủ `min(15 giây, 30% thời gian đọc ước tính 200 chữ/phút)` **và** đã cuộn 25% chiều dài bài (bài ngắn chỉ cần cuộn hết trang). Trình duyệt gửi `POST /views/articles/{slug}` (`sendBeacon`), máy chủ trang public tính mã băm IP + trình duyệt rồi báo API. Mở trang mà không đọc, bot không chạy JavaScript, người tắt JavaScript: không tính. Cùng người trong 30 phút tính 1 |
+| Lượt xem danh mục | Tab đang hiện trang danh mục đủ 10 giây → `POST /views/categories/{slug}`. Đếm riêng, đọc bài không cộng vào danh mục |
 
 ## Dữ liệu
 
@@ -89,8 +103,9 @@ Chi tiết từng trường: [bai-viet.md](bai-viet.md#api). Không cần đăng
 | Phần | File |
 |---|---|
 | API | `laravel-api/app/Services/Public/PublicContentService.php` (cây sách, bài trước / sau), `app/Http/Resources/Public/`, `app/Http/Requests/Public/PublicCategoryRequest.php`, `app/Enums/ArticleSort.php` |
-| Trang | `public-site/src/pages/`: `index.astro`, `categories/[slug].astro`, `articles/[slug].astro` (báo lượt xem), `search.astro`, `files/[key].ts`, `account/`, `me.astro` |
-| Thành phần | `public-site/src/components/`: `RichHtml.astro` (in HTML, tô màu code), `ArticleMenu.astro` + `BookTree.astro` (cột trái), `Attachments.astro`, `SaveButtons.astro` |
+| Trang | `public-site/src/pages/`: `index.astro`, `categories/[slug].astro`, `articles/[slug].astro`, `views/[kind]/[slug].ts` (nhận lượt đọc thật), `search.astro`, `files/[key].ts`, `account/`, `me.astro` |
+| Trang đọc | `public-site/src/layouts/Reader.astro` (4 cột, `ClientRouter`), `src/scripts/reader.ts` (lọc, thu gọn, mục lục sáng, nhớ chỗ đọc, lượt đọc thật), `src/lib/category-tree.ts`, `src/lib/reader.ts`, CSS `.reader` trong `src/styles/global.css` |
+| Thành phần | `public-site/src/components/`: `RichHtml.astro` (in HTML, tô màu code), `CategoryTree.astro` (cột 1), `ArticleMenu.astro` + `BookTree.astro` (cây sách ở cột 2), `Attachments.astro`, `SaveButtons.astro` (☆ 🔖 của bài, ☆ của danh mục), `CategoryBadge.astro` |
 | Đường dẫn | `public-site/src/lib/routes.ts` (mọi đường dẫn trang), `src/lib/category-query.ts` (tham số lọc trong địa chỉ); chuyển hướng cũ trong `public-site/astro.config.mjs` và `docker/nginx/default.conf` |
 | Gọi API | `public-site/src/lib/public-api.ts`; kiểu dữ liệu sinh từ `openapi.json` vào `src/types/openapi.d.ts` bằng `make openapi` |
 | Test | `make test f=PublicContentApi`, `f=PublicFileApi`, `f=PublicViewApi`, `f=PublicSearchApi`; `docker exec ml-public-site pnpm typecheck`; `make e2e` (`critical-journey.spec.ts`: trang chủ → nhóm → danh mục → bài, link và nhúng, mục lục, tìm kiếm, bài riêng tư 404, đường dẫn cũ; `content.spec.ts`: danh mục bị ẩn thì 404) |

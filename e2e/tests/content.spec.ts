@@ -78,7 +78,11 @@ test('owner publishes a category and an article; visitors read them from the hom
     }).toPass({ timeout: 90_000, intervals: [5_000] });
     await visitor.getByRole('link', { name: category }).click();
     await expect(visitor).toHaveURL(`${PUBLIC_URL}/categories/${categorySlug}`);
-    await visitor.getByRole('link', { name: article }).click();
+    // From column 2 of the reading page (ADR-0024): the page changes without a reload
+    await visitor
+      .getByRole('navigation', { name: `Articles in ${category}` })
+      .getByRole('link', { name: article })
+      .click();
     await expect(visitor.getByRole('heading', { level: 1, name: article })).toBeVisible();
     await expect(visitor.getByRole('heading', { level: 2, name: 'First step' })).toBeVisible();
     await expect(visitor.getByRole('table')).toBeVisible();

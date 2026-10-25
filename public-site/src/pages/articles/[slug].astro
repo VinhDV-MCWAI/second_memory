@@ -1,132 +1,122 @@
 ---
-import ArticleMenu from '@/components/ArticleMenu.astro';
 import RichHtml from '@/components/RichHtml.astro';
 import SaveButtons from '@/components/SaveButtons.astro';
 import Base from '@/layouts/Base.astro';
-import { createHash } from 'node:crypto';
-import { getPublicArticle, reportView } from '@/lib/public-api';
+import Reader from '@/layouts/Reader.astro';
+import { READER_LIST_SIZE } from '@/lib/reader';
+import { getPublicArticle, getPublicCategories, getPublicCategory } from '@/lib/public-api';
 import { ROUTES } from '@/lib/routes';
 
 const HTTP_NOT_FOUND = 404;
-// "On this page" indents level-3 headings under level-2 ones
-const TOC_SUB_LEVEL = 3;
 
 // Private (or under a private article) and missing both answer 404 (ADR-0022)
 const article = await getPublicArticle(Astro.params.slug ?? '');
 if (!article) {
   Astro.response.status = HTTP_NOT_FOUND;
 }
-if (article) {
-  // The visitor is a hash of IP (nginx's X-Real-IP) and browser; the API keeps it 30 minutes as a
-  // cache key to count a reader once, and never stores who read (ADR-0022)
-  const ip = Astro.request.headers.get('x-real-ip') ?? Astro.clientAddress;
-  const browser = Astro.request.headers.get('user-agent') ?? '';
-  reportView(article.slug, createHash('sha256').update(`${ip}|${browser}`).digest('hex'));
-}
-const hasMenu = article !== null && (article.book !== null || article.related.length > 0);
+// Column 2 lists the category the reader came from (?in=, kept by its links), else the article's
+// first one. Views are counted by the browser once it is really read (ADR-0024), not here.
+const wanted = Astro.url.searchParams.get('in');
+const shown =
+  article?.categories.find(({ slug }) => slug === wanted) ?? article?.categories[0] ?? null;
+const [categories, category] = await Promise.all([
+  article ? getPublicCategories() : [],
+  shown ? getPublicCategory(shown.slug, { per_page: READER_LIST_SIZE }) : null,
+]);
+// Other articles open with the same column 2
+const linkTo = (slug: string) =>
+  category ? ROUTES.articleIn(slug, category.slug) : ROUTES.article(slug);
 ---
 
 {article ? (
-  <Base title={`${article.title} — Second Memory`} description={article.summary ?? undefined} wide>
-    {/* Three columns like a documentation site: menu, page, "On this page" */}
-    <div class="grid gap-10 lg:grid-cols-[15rem_minmax(0,1fr)] xl:grid-cols-[15rem_minmax(0,1fr)_13rem]">
-      <aside>
-        {hasMenu && (
+  <Reader
+    title={`${article.title} — Second Memory`}
+    description={article.summary ?? undefined}
+    canonical={ROUTES.article(article.slug)}
+    categories={categories}
+    category={category}
+    article={article}
+    toc={article.toc}
+  >
+    <article data-read-article={article.slug} data-article-key={article.key}>
+      {/* Group › category › the book's pages above this one › this article */}
+      <nav class="text-muted-foreground mt-2 text-sm" aria-label="Breadcrumb">
+        <a href={ROUTES.HOME} class="hover:underline">
+          Home
+        </a>
+        {category && (
           <>
-            {/* Phones: a menu that opens without JavaScript */}
-            <details class="rounded-md border lg:hidden">
-              <summary class="cursor-pointer px-3 py-2 text-sm font-medium">Menu</summary>
-              <div class="border-t p-2">
-                <ArticleMenu article={article} />
-              </div>
-            </details>
-            <div class="sticky top-6 hidden max-h-[calc(100vh-3rem)] overflow-y-auto lg:block">
-              <ArticleMenu article={article} />
-            </div>
+            {[...category.ancestors, category].map((up) => (
+              <>
+                {' › '}
+                <a href={ROUTES.category(up.slug)} class="hover:underline">
+                  {up.name}
+                </a>
+              </>
+            ))}
           </>
         )}
-      </aside>
-
-      <article class="min-w-0">
-        <nav class="text-muted-foreground text-sm">
-          <a href={ROUTES.HOME} class="hover:underline">
-            Home
-          </a>
-          {article.ancestors.map((ancestor) => (
-            <>
-              {' › '}
-              <a href={ROUTES.article(ancestor.slug)} class="hover:underline">
-                {ancestor.title}
-              </a>
-            </>
-          ))}
-        </nav>
-        <p class="mt-4 flex flex-wrap gap-2 text-sm">
-          {article.categories.map((category) => (
-            <a
-              href={ROUTES.category(category.slug)}
-              class="bg-muted rounded px-2 py-0.5 hover:underline"
-            >
-              {category.name}
+        {article.ancestors.map((ancestor) => (
+          <>
+            {' › '}
+            <a href={linkTo(ancestor.slug)} class="hover:underline">
+              {ancestor.title}
             </a>
-          ))}
-        </p>
-        <h1 class="mt-4 text-3xl font-semibold">
-          {article.title} <SaveButtons article={article.key} label={article.title} />
-        </h1>
-        {article.summary && <p class="text-muted-foreground mt-2">{article.summary}</p>}
-        <p class="text-muted-foreground mt-2 font-mono text-xs">
-          Updated <time datetime={article.updated_at}>{article.updated_at.slice(0, 10)}</time>
-        </p>
+          </>
+        ))}
+        {' › '}
+        <span class="text-foreground">{article.title}</span>
+      </nav>
+      <p class="mt-4 flex flex-wrap gap-2 text-sm">
+        {article.categories.map((other) => (
+          <a
+            href={ROUTES.category(other.slug)}
+            class="bg-muted rounded px-2 py-0.5 hover:underline"
+          >
+            {other.name}
+          </a>
+        ))}
+      </p>
+      <h1 class="mt-4 text-3xl font-semibold">
+        {article.title} <SaveButtons article={article.key} label={article.title} />
+      </h1>
+      {article.summary && <p class="text-muted-foreground mt-2">{article.summary}</p>}
+      <p class="text-muted-foreground mt-2 font-mono text-xs">
+        Updated <time datetime={article.updated_at}>{article.updated_at.slice(0, 10)}</time>
+      </p>
+      <p data-missing-section hidden class="mt-4 rounded-md border px-3 py-2 text-sm">
+        The section you read last time is no longer in this article; starting from the top.
+      </p>
+      <div data-article-body>
         <RichHtml html={article.body_html} class="mt-8" />
+      </div>
 
-        {(article.previous || article.next) && (
-          <nav class="mt-12 grid gap-4 border-t pt-6 text-sm sm:grid-cols-2">
-            {article.previous ? (
-              <a
-                href={ROUTES.article(article.previous.slug)}
-                class="hover:bg-muted rounded-md border p-4"
-              >
-                <span class="text-muted-foreground block text-xs">← Previous</span>
-                <span class="font-medium">{article.previous.title}</span>
-              </a>
-            ) : (
-              <span />
-            )}
-            {article.next && (
-              <a
-                href={ROUTES.article(article.next.slug)}
-                class="hover:bg-muted rounded-md border p-4 text-right"
-              >
-                <span class="text-muted-foreground block text-xs">Next →</span>
-                <span class="font-medium">{article.next.title}</span>
-              </a>
-            )}
-          </nav>
-        )}
-      </article>
-
-      {article.toc.length > 0 && (
-        <aside class="hidden xl:block">
-          <nav class="sticky top-6 text-sm">
-            <p class="font-semibold">On this page</p>
-            <ul class="mt-2 space-y-1">
-              {article.toc.map((heading) => (
-                <li class:list={{ 'pl-3': heading.level >= TOC_SUB_LEVEL }}>
-                  <a href={`#${heading.id}`} class="text-muted-foreground hover:underline">
-                    {heading.text}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </nav>
-        </aside>
+      {(article.previous || article.next) && (
+        <nav class="mt-12 grid gap-4 border-t pt-6 text-sm sm:grid-cols-2">
+          {article.previous ? (
+            <a href={linkTo(article.previous.slug)} class="hover:bg-muted rounded-md border p-4">
+              <span class="text-muted-foreground block text-xs">← Previous</span>
+              <span class="font-medium">{article.previous.title}</span>
+            </a>
+          ) : (
+            <span />
+          )}
+          {article.next && (
+            <a
+              href={linkTo(article.next.slug)}
+              class="hover:bg-muted rounded-md border p-4 text-right"
+            >
+              <span class="text-muted-foreground block text-xs">Next →</span>
+              <span class="font-medium">{article.next.title}</span>
+            </a>
+          )}
+        </nav>
       )}
-    </div>
+    </article>
     <script>
       import '@/scripts/save-buttons';
     </script>
-  </Base>
+  </Reader>
 ) : (
   <Base title="Article not found">
     <h1 class="text-3xl font-semibold">Article not found</h1>

@@ -2,6 +2,9 @@
 // /admin; ADR-0022: categories and articles). Used by pages on the server and by scripts in the browser.
 const encode = encodeURIComponent;
 
+export const VIEW_KINDS = ['articles', 'categories'] as const;
+export type ViewKind = (typeof VIEW_KINDS)[number];
+
 export const ROUTES = {
   HOME: '/',
   LOGIN: '/account/login',
@@ -12,5 +15,9 @@ export const ROUTES = {
   ADMIN_LOGIN: '/admin/login',
   category: (slug: string) => `/categories/${encode(slug)}`,
   article: (slug: string) => `/articles/${encode(slug)}`,
+  /** An article read from one of its categories: the reading page lists that category's articles */
+  articleIn: (slug: string, category: string) => `/articles/${encode(slug)}?in=${encode(category)}`,
+  /** Where the reading page reports a real read (ADR-0024) */
+  view: (kind: ViewKind, slug: string) => `/views/${kind}/${encode(slug)}`,
   file: (key: string) => `/files/${encode(key)}`,
 } as const;

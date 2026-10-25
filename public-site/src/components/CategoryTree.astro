@@ -1,0 +1,61 @@
+---
+// Column 1 of the reading page (ADR-0024): every public category, nested; a branch opens without
+// JavaScript (<details>), the branch of the current category starts open. src/scripts/reader.ts
+// moves the mark when the column is kept across pages.
+import { ROUTES } from '@/lib/routes';
+
+export interface TreeNode {
+  name: string;
+  slug: string;
+  article_count: number;
+  children: TreeNode[];
+}
+
+interface Props {
+  nodes: TreeNode[];
+  /** Slugs from the top down to the current category */
+  path: string[];
+}
+
+const { nodes, path } = Astro.props;
+const current = path.at(-1);
+---
+
+<ul class="space-y-0.5">
+  {nodes.map((node) => {
+    const link = (
+      <a
+        href={ROUTES.category(node.slug)}
+        data-category={node.slug}
+        aria-current={node.slug === current ? 'page' : undefined}
+        class="aria-[current=page]:bg-muted flex min-w-0 flex-1 justify-between gap-2 rounded px-2 py-1 hover:underline aria-[current=page]:font-medium"
+      >
+        <span class="truncate">{node.name}</span>
+        <span class="text-muted-foreground font-mono text-xs">{node.article_count}</span>
+      </a>
+    );
+    return (
+      <li data-filter-item data-filter-text={node.name}>
+        {node.children.length > 0 ? (
+          <details open={path.includes(node.slug)} class="group">
+            {/* The arrow opens the branch, the name opens the category */}
+            <summary class="flex cursor-pointer list-none items-center">
+              <span
+                class="text-muted-foreground w-4 shrink-0 text-center text-xs transition-transform group-open:rotate-90"
+                aria-hidden="true"
+              >
+                ▸
+              </span>
+              {link}
+            </summary>
+            <div class="ml-3 border-l pl-1">
+              <Astro.self nodes={node.children} path={path} />
+            </div>
+          </details>
+        ) : (
+          <div class="flex pl-4">{link}</div>
+        )}
+      </li>
+    );
+  })}
+</ul>

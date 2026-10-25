@@ -37,6 +37,15 @@ Trang public chạy Astro, máy chủ dựng HTML, chỉ ~3 KB JavaScript. Mỗi
 | Bài xóa / riêng tư | Xóa bài: dòng đã lưu mất theo (khóa ngoại đã có). Riêng tư: ẩn khỏi danh sách, giữ dòng; công khai lại thì hiện lại |
 | Tìm kiếm | API trả thêm loại kết quả (danh mục, bài viết, mục trong bài, nội dung) và đoạn trích quanh từ khóa. Cần chỉ mục mới thì hỏi chủ dự án trước |
 
+## Ghi chú khi làm (READ-04, 2026-10-25)
+
+| Điểm | Đã làm | Vì sao |
+|---|---|---|
+| Chỗ bật `ClientRouter` | Chỉ trong layout trang đọc (`Reader.astro`), không trong layout chung | Trang chủ, tìm kiếm, tài khoản giữ 0 KB JavaScript riêng và không phải viết lại script; Astro tự tải cả trang khi trang đích không có công cụ chuyển trang. Ô tìm ở đầu trang có `data-astro-reload` vì form không được Astro tự tải lại như link |
+| Mục lục sáng | Theo vị trí cuộn (tiêu đề cuối cùng đã qua mép trên cửa sổ), không dùng `IntersectionObserver` | Đúng cả khi giữa hai tiêu đề có đoạn dài hơn màn hình |
+| Cột cuộn độc lập | Cột 3 cuộn theo cửa sổ, cột 1, 2, 4 dính (`sticky`) và tự cuộn | Giống trang tài liệu của Next.js; link tới `#mục`, nút Back và điện thoại chạy như trang thường |
+| Giữ chỗ cuộn cột 1 | Script lưu trước khi đổi trang, đặt lại sau đó | Astro chỉ giữ được trên trình duyệt có `moveBefore()` |
+
 ## Hệ quả
 
 | Tốt | Không tốt |

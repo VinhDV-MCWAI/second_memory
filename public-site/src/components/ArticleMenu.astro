@@ -1,22 +1,27 @@
 ---
-// Left column of an article page (ADR-0022): the book it is in, or articles sharing a category
+// Book menu of an article (ADR-0022), in column 2 of the reading page (ADR-0024): the book it is
+// in, or articles sharing a category
 import BookTree from '@/components/BookTree.astro';
 import type { PublicArticle } from '@/lib/public-api';
 import { ROUTES } from '@/lib/routes';
 
 interface Props {
   article: PublicArticle;
+  /** The category of column 2, kept by the links */
+  category?: string;
 }
 
-const { article } = Astro.props;
+const { article, category } = Astro.props;
 const { book } = article;
+const linkTo = (slug: string) =>
+  category ? ROUTES.articleIn(slug, category) : ROUTES.article(slug);
 ---
 
 <nav class="text-sm">
   {book ? (
     <>
       <a
-        href={ROUTES.article(book.slug)}
+        href={linkTo(book.slug)}
         class:list={[
           'block px-2 font-semibold',
           book.slug === article.slug ? '' : 'hover:underline',
@@ -26,7 +31,7 @@ const { book } = article;
         {book.title}
       </a>
       <div class="mt-2">
-        <BookTree nodes={book.children} current={article.slug} />
+        <BookTree nodes={book.children} current={article.slug} category={category} />
       </div>
     </>
   ) : (
@@ -37,7 +42,7 @@ const { book } = article;
           {article.related.map((other) => (
             <li>
               <a
-                href={ROUTES.article(other.slug)}
+                href={linkTo(other.slug)}
                 class="text-muted-foreground block px-2 py-1 hover:underline"
               >
                 {other.title}

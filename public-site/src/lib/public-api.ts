@@ -1,6 +1,7 @@
 // Server-side client for the public API (docs/features/trang-public.md).
 // Types come from laravel-api/openapi.json (`pnpm gen:api`, run by `make openapi`).
 import { toSearch } from '@/lib/category-query';
+import type { ViewKind } from '@/lib/routes';
 import type { components, paths } from '@/types/openapi';
 
 // Inside Docker the browser URL (localhost:81) is not reachable, so the server calls nginx on the
@@ -97,12 +98,12 @@ export async function getPublicSearch(q: string): Promise<PublicSearch | null> {
   return getPublic<PublicSearch>(`search?q=${encodeURIComponent(q)}`);
 }
 
-// A view is counted by the API once per visitor and article per 30 minutes (ADR-0022). Never awaited
-// by the page and never fails it: a slow or broken API only loses a view.
+// A real read (ADR-0024) is counted by the API once per visitor and article or category per 30
+// minutes. Never fails the caller: a slow or broken API only loses a view.
 const VIEW_TIMEOUT_MS = 2_000;
 
-export function reportView(slug: string, visitor: string): void {
-  fetch(`${API_URL}/public/articles/${encodeURIComponent(slug)}/view`, {
+export async function reportView(kind: ViewKind, slug: string, visitor: string): Promise<void> {
+  await fetch(`${API_URL}/public/${kind}/${encodeURIComponent(slug)}/view`, {
     method: 'POST',
     headers: { Accept: 'application/json', 'Content-Type': 'application/json' },
     body: JSON.stringify({ visitor }),

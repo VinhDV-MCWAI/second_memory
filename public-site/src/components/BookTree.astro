@@ -7,16 +7,20 @@ import { ROUTES } from '@/lib/routes';
 interface Props {
   nodes: BookNode['children'];
   current: string;
+  /** The category of the reading page's column 2, kept by the links (ADR-0024) */
+  category?: string;
 }
 
-const { nodes, current } = Astro.props;
+const { nodes, current, category } = Astro.props;
+const linkTo = (slug: string) =>
+  category ? ROUTES.articleIn(slug, category) : ROUTES.article(slug);
 ---
 
 <ul class="space-y-1">
   {nodes.map((node) => (
     <li>
       <a
-        href={ROUTES.article(node.slug)}
+        href={linkTo(node.slug)}
         class:list={[
           'block rounded px-2 py-1',
           node.slug === current ? 'bg-muted font-medium' : 'text-muted-foreground hover:underline',
@@ -27,7 +31,11 @@ const { nodes, current } = Astro.props;
       </a>
       {node.children.length > 0 && (
         <div class="ml-3 border-l pl-2">
-          <Astro.self nodes={node.children as BookNode['children']} current={current} />
+          <Astro.self
+            nodes={node.children as BookNode['children']}
+            current={current}
+            category={category}
+          />
         </div>
       )}
     </li>

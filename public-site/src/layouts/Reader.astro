@@ -1,0 +1,190 @@
+---
+// The reading page (REQ-006, ADR-0024): four columns like a documentation site. 1 category tree,
+// 2 articles of the current category, 3 the page (slot), 4 "On this page". The page scrolls with
+// the window; columns 1, 2 and 4 stick and scroll on their own. Astro's router swaps pages without
+// a reload, and column 1 is kept across them (scroll and open branches). Without JavaScript the
+// links simply load the next page; filters and collapse buttons stay hidden.
+import { ClientRouter } from 'astro:transitions';
+import ArticleMenu from '@/components/ArticleMenu.astro';
+import CategoryTree from '@/components/CategoryTree.astro';
+import Base from '@/layouts/Base.astro';
+import { buildTree, pathTo } from '@/lib/category-tree';
+import type { PublicArticle, PublicArticleCard, PublicCategoryNode } from '@/lib/public-api';
+import { READER_HIDDEN_KEY } from '@/lib/reader';
+import { ROUTES } from '@/lib/routes';
+
+interface Props {
+  title: string;
+  description?: string;
+  /** The address search engines should keep (an article without ?in=) */
+  canonical?: string;
+  categories: PublicCategoryNode[];
+  /** The category whose articles column 2 lists */
+  category: { name: string; slug: string; articles: PublicArticleCard[]; total: number } | null;
+  /** The article being read: marked in column 2, its book above the list */
+  article?: PublicArticle;
+  toc?: PublicArticle['toc'];
+}
+
+const { title, description, canonical, categories, category, article, toc = [] } = Astro.props;
+const tree = buildTree(categories);
+const path = pathTo(categories, category?.slug ?? null);
+// "On this page" indents level-3 headings under level-2 ones
+const TOC_SUB_LEVEL = 3;
+const filterClass = 'bg-background mt-2 w-full rounded-md border px-2 py-1 text-sm';
+---
+
+<Base title={title} description={description} full>
+  <Fragment slot="head">
+    {canonical && <link rel="canonical" href={new URL(canonical, Astro.url).href} />}
+    <ClientRouter />
+  </Fragment>
+
+  <div class="reader" data-reader data-current-category={category?.slug ?? ''}>
+    {/* Column 1: kept across pages (scroll, open branches) */}
+    <aside id="reader-menu" data-column="tree" transition:persist="reader-tree">
+      <div class="reader-column-head">
+        <p class="font-semibold">Categories</p>
+        <button type="button" data-collapse="tree" aria-label="Categories column">
+          «
+        </button>
+      </div>
+      <div data-column-body data-filter-scope>
+        <input
+          type="search"
+          data-filter
+          placeholder="Filter categories"
+          aria-label="Filter categories"
+          class={filterClass}
+        />
+        <nav class="mt-2 text-sm" aria-label="Categories">
+          <CategoryTree nodes={tree} path={path} />
+        </nav>
+      </div>
+    </aside>
+
+    {/* Column 2 */}
+    <aside data-column="list">
+      <div class="reader-column-head">
+        <p class="truncate font-semibold">{category?.name ?? 'Articles'}</p>
+        <button type="button" data-collapse="list" aria-label="Articles column">
+          «
+        </button>
+      </div>
+      <div data-column-body data-filter-scope>
+        {category && (
+          <input
+            type="search"
+            data-filter
+            placeholder="Filter articles"
+            aria-label={`Filter articles in ${category.name}`}
+            class={filterClass}
+          />
+        )}
+        {article?.book && (
+          <div class="mt-3">
+            <ArticleMenu article={article} category={category?.slug} />
+          </div>
+        )}
+        {category ? (
+          <nav class="mt-3 text-sm" aria-label={`Articles in ${category.name}`}>
+            {category.articles.length === 0 ? (
+              <p class="text-muted-foreground px-2">No articles yet.</p>
+            ) : (
+              <ul class="space-y-0.5">
+                {category.articles.map((item) => (
+                  <li data-filter-item data-filter-text={item.title}>
+                    <a
+                      href={ROUTES.articleIn(item.slug, category.slug)}
+                      aria-current={item.slug === article?.slug ? 'page' : undefined}
+                      class="aria-[current=page]:bg-muted text-muted-foreground aria-[current=page]:text-foreground block rounded px-2 py-1 hover:underline aria-[current=page]:font-medium"
+                    >
+                      {item.title}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            )}
+            {category.total > category.articles.length && (
+              <a href={ROUTES.category(category.slug)} class="mt-2 block px-2 hover:underline">
+                All {category.total} articles →
+              </a>
+            )}
+          </nav>
+        ) : (
+          article && !article.book && <ArticleMenu article={article} />
+        )}
+      </div>
+    </aside>
+
+    {/* Column 3 */}
+    <div class="min-w-0">
+      {/* Phones: the page comes first, the two menus below it */}
+      <a href="#reader-menu" class="text-muted-foreground text-sm hover:underline lg:hidden">
+        Categories and articles ↓
+      </a>
+      <slot />
+    </div>
+
+    {/* Column 4: a <nav>, the page's contents */}
+    <nav data-column="toc" aria-label="On this page">
+      <div class="reader-column-head">
+        <p class="font-semibold">On this page</p>
+        <button type="button" data-collapse="toc" aria-label="Contents column">
+          »
+        </button>
+      </div>
+      <div data-column-body data-filter-scope>
+        {toc.length === 0 ? (
+          <p class="text-muted-foreground mt-2 text-sm">No headings.</p>
+        ) : (
+          <>
+            <input
+              type="search"
+              data-filter
+              placeholder="Filter headings"
+              aria-label="Filter headings"
+              class={filterClass}
+            />
+            <ul class="mt-2 space-y-1 text-sm">
+              {toc.map((heading) => (
+                <li
+                  data-filter-item
+                  data-filter-text={heading.text}
+                  class:list={{ 'pl-3': heading.level >= TOC_SUB_LEVEL }}
+                >
+                  <a
+                    href={`#${heading.id}`}
+                    data-toc={heading.id}
+                    data-level={heading.level}
+                    class="text-muted-foreground aria-[current=true]:text-primary block hover:underline aria-[current=true]:font-medium"
+                  >
+                    {heading.text}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </>
+        )}
+      </div>
+    </nav>
+
+    {/* Before the first paint and after every swap: hidden columns from the last visit, and the
+        filters / buttons that need JavaScript */}
+    <script is:inline data-astro-rerun define:vars={{ key: READER_HIDDEN_KEY }}>
+      (() => {
+        const reader = document.querySelector('[data-reader]');
+        let hidden = [];
+        try {
+          hidden = JSON.parse(localStorage.getItem(key) ?? '[]');
+        } catch {}
+        reader.dataset.js = '';
+        reader.dataset.hidden = Array.isArray(hidden) ? hidden.join(' ') : '';
+      })();
+    </script>
+  </div>
+
+  <script>
+    import '@/scripts/reader';
+  </script>
+</Base>

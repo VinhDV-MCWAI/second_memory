@@ -5,16 +5,16 @@ import { ROUTES } from '@/lib/routes';
 interface Props {
   title: string;
   description?: string;
-  /** Room for the side columns of a documentation page (ADR-0022) */
-  wide?: boolean;
+  /** The whole window, for the four columns of the reading page (ADR-0024) */
+  full?: boolean;
 }
 
 const {
   title,
   description = 'Notes from experience on how software gets built',
-  wide = false,
+  full = false,
 } = Astro.props;
-const width = wide ? 'max-w-7xl' : 'max-w-4xl';
+const width = full ? 'max-w-none' : 'max-w-4xl';
 ---
 
 <html lang="en">
@@ -23,6 +23,7 @@ const width = wide ? 'max-w-7xl' : 'max-w-4xl';
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content={description} />
     <title>{title}</title>
+    <slot name="head" />
   </head>
   <body>
     <header class:list={['mx-auto flex items-center justify-between px-6 pt-6 text-sm', width]}>
@@ -30,7 +31,8 @@ const width = wide ? 'max-w-7xl' : 'max-w-4xl';
         Second Memory
       </a>
       <span class="flex items-center gap-4">
-        <form method="get" action={ROUTES.SEARCH} role="search">
+        {/* The search page has no router (ADR-0024): a full load, not a swap */}
+        <form method="get" action={ROUTES.SEARCH} role="search" data-astro-reload>
           <input
             type="search"
             name="q"
@@ -44,7 +46,7 @@ const width = wide ? 'max-w-7xl' : 'max-w-4xl';
         </a>
       </span>
     </header>
-    <main class:list={['mx-auto px-6 py-12', width]}>
+    <main class:list={['mx-auto px-6', full ? 'py-6' : 'py-12', width]}>
       <slot />
     </main>
     <script>

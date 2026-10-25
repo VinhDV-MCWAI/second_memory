@@ -9,7 +9,8 @@ Trạng thái: **xong** (2026-10-19). Tài khoản quản trị (`root`, `viewer
 | Địa chỉ | Làm gì |
 |---|---|
 | Góc trên mọi trang | "Sign in", hoặc tên người dùng → My lists |
-| http://localhost:81/articles/{bài} | Nút ☆ (yêu thích) và 🔖 (xem sau) cạnh tiêu đề bài viết. Chưa đăng nhập mà bấm thì chuyển sang trang đăng nhập, xong thì quay lại đúng trang đó |
+| http://localhost:81/articles/{bài} | Nút ☆ (yêu thích) và 🔖 (xem sau) cạnh tiêu đề bài viết. Chưa đăng nhập mà bấm thì chuyển sang trang đăng nhập, xong thì quay lại đúng trang đó. Bài đã 🔖 thì trang nhớ phần đang đọc ([trang đọc](trang-public.md#trang-đọc-4-cột)) |
+| http://localhost:81/categories/{danh mục} | Nút ☆ cạnh tên danh mục (danh mục chỉ có yêu thích) |
 | http://localhost:81/account/login | Đăng nhập bằng tên đăng nhập + mật khẩu |
 | http://localhost:81/account/register | Đăng ký: tên đăng nhập (3–30 ký tự `a-z 0-9 . _ -`), tên hiển thị, mật khẩu 8–100 ký tự, nhập lại phải khớp; lỗi hiện dưới từng ô khi gõ, nút gửi khóa tới khi hợp lệ. Admin tắt đăng ký thì trang báo "Registration is closed for now" |
 | http://localhost:81/me | Hai danh sách Favorites, Read later (mới nhất trước); đăng xuất; đổi mật khẩu; xóa tài khoản (nhập lại mật khẩu) |

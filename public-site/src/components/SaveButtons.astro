@@ -1,15 +1,20 @@
 ---
-// ☆ favourite and 🔖 read later for one article (ADR-0020, ADR-0022). The page HTML is the
-// same for every visitor; src/scripts/save-buttons.ts marks what the signed-in user saved.
-interface Props {
-  article: string;
-  label: string;
-}
+// ☆ favourite and 🔖 read later for one article, or ☆ for one category (ADR-0020, ADR-0022,
+// ADR-0024). The page HTML is the same for every visitor; src/scripts/save-buttons.ts marks what
+// the signed-in user saved.
+type Props = { label: string } & ({ article: string } | { category: string });
 
-const { article, label } = Astro.props;
+const { label } = Astro.props;
+const target =
+  'article' in Astro.props
+    ? { type: 'article', key: Astro.props.article }
+    : { type: 'category', key: Astro.props.category };
 const buttons = [
   { kind: 'favorite', icon: '☆', on: '★', title: `Add ${label} to favorites` },
-  { kind: 'read_later', icon: '🔖', on: '🔖', title: `Save ${label} to read later` },
+  // Categories are only favourites
+  ...(target.type === 'article'
+    ? [{ kind: 'read_later', icon: '🔖', on: '🔖', title: `Save ${label} to read later` }]
+    : []),
 ];
 ---
 
@@ -19,7 +24,8 @@ const buttons = [
       type="button"
       class="text-muted-foreground hover:bg-muted rounded px-1 text-sm aria-pressed:text-primary aria-pressed:bg-muted"
       data-save={button.kind}
-      data-article={article}
+      data-type={target.type}
+      data-key={target.key}
       data-icon={button.icon}
       data-icon-on={button.on}
       aria-pressed="false"

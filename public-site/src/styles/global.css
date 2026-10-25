@@ -154,3 +154,79 @@ body {
     color: var(--shiki-dark);
   }
 }
+
+/* The reading page (ADR-0024, src/layouts/Reader.astro). Phones: the page, then the two menus;
+   no contents column. Wider: sticky columns that scroll on their own, hidden ones shrink to their
+   button. Filters and buttons need JavaScript (data-js is set by the layout's inline script). */
+.reader {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+.reader > [data-column='tree'],
+.reader > [data-column='list'] {
+  order: 1;
+}
+.reader > [data-column='toc'] {
+  display: none;
+}
+.reader-column-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+}
+.reader-column-head button,
+.reader:not([data-js]) [data-filter] {
+  display: none;
+}
+@media (min-width: 64rem) {
+  .reader {
+    display: grid;
+    gap: 1.5rem;
+    align-items: start;
+    grid-template-columns: var(--reader-tree, 15rem) var(--reader-list, 15rem) minmax(0, 1fr);
+  }
+  .reader > [data-column] {
+    order: 0;
+    position: sticky;
+    top: 0;
+    max-height: 100vh;
+    overflow-y: auto;
+    padding-bottom: 1.5rem;
+  }
+  .reader[data-js] .reader-column-head button {
+    display: inline-block;
+    border-radius: 0.25rem;
+    padding: 0 0.375rem;
+    color: var(--color-muted-foreground);
+  }
+  .reader[data-js] .reader-column-head button:hover {
+    background: var(--color-muted);
+  }
+  .reader[data-hidden~='tree'] {
+    --reader-tree: 1.75rem;
+  }
+  .reader[data-hidden~='list'] {
+    --reader-list: 1.75rem;
+  }
+  .reader[data-hidden~='toc'] {
+    --reader-toc: 1.75rem;
+  }
+  .reader[data-hidden~='tree'] [data-column='tree'] :is([data-column-body], .reader-column-head p),
+  .reader[data-hidden~='list'] [data-column='list'] :is([data-column-body], .reader-column-head p),
+  .reader[data-hidden~='toc'] [data-column='toc'] :is([data-column-body], .reader-column-head p) {
+    display: none;
+  }
+}
+@media (min-width: 80rem) {
+  .reader {
+    grid-template-columns:
+      var(--reader-tree, 15rem) var(--reader-list, 15rem) minmax(0, 1fr)
+      var(--reader-toc, 13rem);
+  }
+  .reader > [data-column='toc'] {
+    display: block;
+  }
+}

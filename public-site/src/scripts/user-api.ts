@@ -47,7 +47,13 @@ function xsrfToken(): string | null {
   return part ? decodeURIComponent(part.slice('XSRF-TOKEN='.length)) : null;
 }
 
-export async function api<T>(method: string, path: string, body?: unknown): Promise<T> {
+/** `keepalive`: the request outlives the page (a reading position sent while leaving it) */
+export async function api<T>(
+  method: string,
+  path: string,
+  body?: unknown,
+  { keepalive = false } = {},
+): Promise<T> {
   if (method !== 'GET' && xsrfToken() === null) {
     await fetch('/api/sanctum/csrf-cookie', { credentials: 'same-origin' });
   }
@@ -60,6 +66,7 @@ export async function api<T>(method: string, path: string, body?: unknown): Prom
       ...(method === 'GET' ? {} : { 'X-XSRF-TOKEN': xsrfToken() ?? '' }),
     },
     body: body === undefined ? undefined : JSON.stringify(body),
+    keepalive,
   });
   const json = (await response.json().catch(() => null)) as {
     data: T;
@@ -91,8 +98,22 @@ export async function signOut(): Promise<void> {
   setMarker(false);
 }
 
-export async function savedItems(): Promise<SavedItem[]> {
-  return (await api<{ data: SavedItem[] }>('GET', 'user/saved/list')).data;
+// The ☆ 🔖 buttons and the reading position of one page share one request; a page reached through
+// the reading page's router (ADR-0024) has another address, so it asks again
+let saved: { page: string; items: Promise<SavedItem[]> } | null = null;
+
+export function savedItems(): Promise<SavedItem[]> {
+  if (saved?.page !== location.href) {
+    const items = api<{ data: SavedItem[] }>('GET', 'user/saved/list').then(({ data }) => data);
+    saved = { page: location.href, items };
+    items.catch(() => (saved = null));
+  }
+  return saved.items;
+}
+
+/** After saving or removing something, the next savedItems() asks the API again */
+export function forgetSaved(): void {
+  saved = null;
 }
 
 /** Where to go after signing in: only pages of this site, never the admin app. */

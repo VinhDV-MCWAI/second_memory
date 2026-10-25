@@ -78,7 +78,7 @@ HTML viết thẳng vào bài được hiện thành chữ, không chạy; link 
 | Công khai | Danh mục hiện khi nó và mọi cấp phía trên công khai. Bài hiện khi nó và **mọi bài cha** công khai; danh mục chỉ quyết định bài có trong danh sách của danh mục hay không |
 | Xóa | Nhóm còn danh mục con: bị chặn (trừ khi xóa cùng lúc). Bài còn bài con: bị chặn (trừ khi xóa cùng lúc). Xóa danh mục thì bài viết chỉ mất liên kết với danh mục đó |
 | Lưu đệm | Trang public chậm tối đa 60 giây so với trang quản trị |
-| Lượt xem | Mỗi lần trang public hiện một bài, máy chủ trang public báo cho API kèm mã băm của IP + trình duyệt người xem. Cùng một người mở lại trong **30 phút** chỉ tính 1. Chỉ lưu con số, không lưu ai xem: mã băm chỉ nằm trong Redis 30 phút để nhận ra lần mở lại. Lượt xem không đổi ngày sửa của bài |
+| Lượt xem | Từ 2026-10-25 chỉ tính **lượt đọc thật**: trình duyệt báo khi người xem ở lại đủ lâu và đã cuộn ([cách tính](trang-public.md#quy-tắc), [ADR-0024](../adr/0024-trang-doc-chuyen-trang-khong-tai-lai.md)); máy chủ trang public báo cho API kèm mã băm của IP + trình duyệt người xem. Số cũ (đếm mỗi lần mở trang) giữ nguyên. Cùng một người mở lại trong **30 phút** chỉ tính 1. Chỉ lưu con số, không lưu ai xem: mã băm chỉ nằm trong Redis 30 phút để nhận ra lần mở lại. Lượt xem không đổi ngày sửa của bài |
 | Được lưu | Số người dùng trang public đã lưu bài (☆ yêu thích hoặc 🔖 xem sau; một người lưu cả hai vẫn tính 1) |
 | Nhật ký | Mọi thêm, sửa, xóa, đổi thứ tự ghi vào [nhật ký thay đổi](nhat-ky-thay-doi.md), loại `content_category`, `article`; ảnh chụp có cả danh sách đính kèm và danh mục |
 
