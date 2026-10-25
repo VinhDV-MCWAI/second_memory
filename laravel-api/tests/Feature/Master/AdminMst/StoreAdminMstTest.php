@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests\Feature\Master\AdminMst;
 
 use App\Constants\CommonVal;
+use App\Constants\Messages;
 use App\Enums\AuditEvent;
 use App\Enums\Gender;
 use App\Enums\IsActive;
@@ -413,6 +414,8 @@ class StoreAdminMstTest extends TestCase
         $response = $this->call('POST', $this->storeUrl, $payload, $cookies);
 
         $this->assertCustomValidationErrors($response, 'email');
+        // Its own message: a typo in the domain is not "an invalid email address"
+        $this->assertSame([Messages::E0054], $response->json('error.messages.email'));
     }
 
     /**

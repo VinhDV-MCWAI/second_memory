@@ -11,6 +11,7 @@ use App\Enums\IsActive;
 use App\Enums\IsDelete;
 use App\Models\Master\AdminMst;
 use App\Models\Master\Department;
+use App\Rules\EmailDomainExists;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
@@ -45,7 +46,7 @@ class UpdateAdminMstRequest extends FormRequest
     {
         return [
             'id' => ['required', 'integer', 'min:'.CommonVal::MIN_INTEGER, 'max:'.CommonVal::MAX_INTEGER, Rule::exists(AdminMst::class, 'id')],
-            'email' => ['required', 'email:rfc'.(config('app.email_dns_check') ? ',dns' : ''), 'min:'.CommonVal::MIN_VARCHAR, 'max:30', Rule::unique('admin_mst')->ignore($this->route('id'))],
+            'email' => ['required', 'email:rfc', 'min:'.CommonVal::MIN_VARCHAR, 'max:30', Rule::unique('admin_mst')->ignore($this->route('id')), ...(config('app.email_dns_check') ? [new EmailDomainExists] : [])],
             'user_name' => ['required', 'string', 'min:'.CommonVal::MIN_VARCHAR, 'max:50', Rule::unique('admin_mst', 'user_name')->ignore($this->route('id'))],
             'password' => ['nullable', 'string', 'min:'.CommonVal::MIN_VARCHAR, 'max:100'],
             'first_name' => ['required', 'string', 'min:'.CommonVal::MIN_VARCHAR, 'max:20'],

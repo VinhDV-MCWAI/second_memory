@@ -120,6 +120,8 @@ class Messages
 
     const E0053 = 'Notes cannot be parents of each other in a loop';
 
+    const E0054 = 'No mail server is known for this email domain: check it for a typo';
+
     /**
      * Errors http messages
      */
