@@ -3,7 +3,7 @@ import { E2E_PASSWORD, E2E_USER } from '../env';
 
 // Dynamic permissions (ADR-0013): the owner creates a role on the roles screen by ticking
 // permissions in the matrix. The `E2E ` prefix lets e2e/run.sh delete the role afterwards.
-const roleName = `E2E Tag reader ${Date.now().toString(36)}`;
+const roleName = `E2E Content reader ${Date.now().toString(36)}`;
 
 test('owner creates a role from the permission matrix', async ({ page }) => {
   await page.goto('/admin/login');
@@ -18,8 +18,8 @@ test('owner creates a role from the permission matrix', async ({ page }) => {
   await page.getByRole('button', { name: 'Create Role' }).click();
   const dialog = page.getByRole('dialog');
   await dialog.getByLabel('Name').fill(roleName);
-  await dialog.getByRole('checkbox', { name: 'tag.list' }).check();
-  await dialog.getByRole('checkbox', { name: 'skill.list' }).check();
+  await dialog.getByRole('checkbox', { name: 'content-category.list' }).check();
+  await dialog.getByRole('checkbox', { name: 'article.list' }).check();
   await dialog.getByRole('button', { name: 'Create', exact: true }).click();
   await expect(dialog).toBeHidden();
 

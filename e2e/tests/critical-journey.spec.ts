@@ -1,35 +1,64 @@
 import { expect, test, type Page } from '@playwright/test';
 import { E2E_PASSWORD, E2E_USER, PUBLIC_URL } from '../env';
 
-// The critical journey of the Skill Ledger (RFC-002 §7, P3-15):
-// login → create skill → add evidence → find it by search → see it on the public page,
-// while a private skill stays hidden. Names carry a run id so runs never collide, and the
-// `E2E ` prefix lets e2e/run.sh delete everything this spec created.
+// The critical journey of the experience docs site (REQ-005, ADR-0022):
+// login → group and category → a book with a chapter that links and embeds it → find it with the
+// admin search → read it on the public site like a documentation page, while a private article
+// stays hidden. Names carry a run id so runs never collide, and the `E2E ` prefix lets
+// e2e/run.sh delete everything this spec created.
 const runId = Date.now().toString(36);
-const publicSkill = `E2E Skill ${runId}`;
-const privateSkill = `E2E Private ${runId}`;
-const evidenceTitle = `E2E Evidence ${runId}`;
-// laravel-api SkillRepository::uniqueSlug = Str::slug(name) for a new name
+const group = `E2E Group ${runId}`;
+const category = `E2E Topic ${runId}`;
+const book = `E2E Book ${runId}`;
+const chapter = `E2E Chapter ${runId}`;
+const privateArticle = `E2E Private ${runId}`;
+const overview = `Overview text of run ${runId}`;
+// laravel-api uniqueSlug = Str::slug(name) for a new name
 const slugOf = (name: string) => name.toLowerCase().replaceAll(' ', '-');
 
-// Ledger dates may not be in the future; yesterday is safe whatever the server's time zone.
-const yesterday = () => new Date(Date.now() - 24 * 3600 * 1000).toISOString().slice(0, 10);
-
 const HTTP_NOT_FOUND = 404;
+// The public pages keep answers for up to a minute
+const CACHED = { timeout: 90_000, intervals: [5_000] };
 
-async function createSkill(page: Page, name: string, isPublic: boolean) {
-  await page.goto('/admin/skills');
-  await page.getByRole('button', { name: 'Create Skill' }).click();
+async function createCategory(page: Page, name: string, inGroup?: string) {
+  await page.goto('/admin/content-categories');
+  await page.getByRole('button', { name: 'Create Category' }).click();
   const dialog = page.getByRole('dialog');
   await dialog.getByLabel('Name').fill(name);
-  await dialog.getByLabel('Category').fill('E2E');
-  if (isPublic) await dialog.getByLabel('Show on the public page').check();
+  if (inGroup) {
+    await dialog.getByRole('combobox').click();
+    await page.getByRole('option', { name: inGroup }).click();
+  }
   await dialog.getByRole('button', { name: 'Create', exact: true }).click();
   await expect(dialog).toBeHidden();
-  await expect(page.getByRole('cell', { name, exact: true })).toBeVisible();
 }
 
-test('owner records a skill with evidence and it shows on the public page', async ({ page }) => {
+async function createArticle(
+  page: Page,
+  title: string,
+  body: string,
+  options: { category?: string; parent?: string; isPublic?: boolean } = {},
+) {
+  await page.goto('/admin/articles');
+  await page.getByRole('button', { name: 'Create Article' }).click();
+  const dialog = page.getByRole('dialog');
+  await dialog.getByLabel('Title').fill(title);
+  if (options.category) await dialog.getByLabel(options.category, { exact: true }).check();
+  if (options.parent) {
+    await dialog.getByRole('combobox').click();
+    await page.getByRole('option', { name: options.parent }).click();
+  }
+  await dialog.getByLabel('Content (Markdown)').fill(body);
+  if (options.isPublic === false) await dialog.getByLabel('Show on the public page').uncheck();
+  await dialog.getByRole('button', { name: 'Create', exact: true }).click();
+  await expect(dialog).toBeHidden();
+  await expect(page.getByRole('row').filter({ hasText: title })).toBeVisible();
+}
+
+test('owner writes a book and visitors read it like a documentation site', async ({
+  page,
+  browser,
+}) => {
   expect(E2E_PASSWORD, 'E2E_PASSWORD is set by e2e/run.sh').not.toBe('');
 
   await test.step('log in', async () => {
@@ -40,54 +69,82 @@ test('owner records a skill with evidence and it shows on the public page', asyn
     await expect(page).toHaveURL(/\/admin$/);
   });
 
-  await test.step('create a public and a private skill', async () => {
-    await createSkill(page, publicSkill, true);
-    await createSkill(page, privateSkill, false);
+  await test.step('a group with a category in it', async () => {
+    await createCategory(page, group);
+    await createCategory(page, category, group);
   });
 
-  await test.step('add public evidence to the public skill', async () => {
-    await page.goto('/admin/evidence');
-    await page.getByRole('button', { name: 'Create Evidence' }).click();
-    const dialog = page.getByRole('dialog');
-    await dialog.getByLabel('Title').fill(evidenceTitle);
-    await dialog.getByLabel(/^Link \(http or https/).fill(`https://example.com/e2e/${runId}`);
-    await dialog.getByLabel('Date').fill(yesterday());
-    await dialog.getByLabel('Summary').fill('Recorded by the end-to-end test.');
-    await dialog.getByLabel(publicSkill, { exact: true }).check();
-    await dialog.getByLabel('Show on the public page').check();
-    await dialog.getByRole('button', { name: 'Create', exact: true }).click();
-    await expect(dialog).toBeHidden();
-    await expect(page.getByRole('cell', { name: evidenceTitle, exact: true })).toBeVisible();
+  await test.step('a book, a chapter that links and embeds it, and a private article', async () => {
+    await createArticle(page, book, `## Overview\n\n${overview}\n\n## Later\n\nNot embedded.`, {
+      category,
+    });
+    await createArticle(
+      page,
+      chapter,
+      `Back to [[${slugOf(book)}|the book]].\n\n![[${slugOf(book)}#Overview]]\n\n## Steps\n\n\`\`\`php\necho 1;\n\`\`\``,
+      { category, parent: book },
+    );
+    await createArticle(page, privateArticle, 'Only for the owner.', { category, isPublic: false });
   });
 
-  await test.step('find the evidence with the header search', async () => {
+  await test.step('find the book with the header search', async () => {
     const search = page.getByRole('search').getByRole('searchbox');
-    await search.fill(evidenceTitle);
+    await search.fill(book);
     await search.press('Enter');
     await expect(page).toHaveURL(/\/admin\/search\?q=/);
-    await expect(page.getByText(evidenceTitle, { exact: true })).toBeVisible();
+    await expect(page.getByText(book, { exact: true }).first()).toBeVisible();
   });
 
-  await test.step('see the skill and its evidence on the public page', async () => {
-    await page.goto(`${PUBLIC_URL}/skills/${slugOf(publicSkill)}`);
-    await expect(page.getByRole('heading', { level: 1, name: publicSkill })).toBeVisible();
-    await expect(page.getByRole('link', { name: evidenceTitle })).toBeVisible();
+  const visitor = await (await browser.newContext()).newPage();
+
+  await test.step('home → group → category → book, without signing in', async () => {
+    await expect(async () => {
+      await visitor.goto(`${PUBLIC_URL}/`);
+      await expect(visitor.getByRole('link', { name: group })).toBeVisible({ timeout: 1_000 });
+    }).toPass(CACHED);
+    await visitor.getByRole('link', { name: category }).click();
+    await expect(visitor).toHaveURL(`${PUBLIC_URL}/categories/${slugOf(category)}`);
+    await expect(visitor.getByRole('heading', { level: 1, name: category })).toBeVisible();
+    await expect(visitor.getByText(privateArticle)).toHaveCount(0);
+    await visitor.getByRole('link', { name: book }).first().click();
+    await expect(visitor.getByRole('heading', { level: 1, name: book })).toBeVisible();
   });
 
-  await test.step('the private skill is not public', async () => {
-    const response = await page.goto(`${PUBLIC_URL}/skills/${slugOf(privateSkill)}`);
+  await test.step('the chapter page: link, embedded section, contents, book menu', async () => {
+    await visitor.goto(`${PUBLIC_URL}/articles/${slugOf(chapter)}`);
+    await expect(visitor.getByRole('heading', { level: 1, name: chapter })).toBeVisible();
+    await expect(visitor.getByRole('link', { name: 'the book' })).toHaveAttribute(
+      'href',
+      `/articles/${slugOf(book)}`,
+    );
+    // Only the Overview section is embedded, not the rest of the book
+    await expect(visitor.getByText(overview)).toBeVisible();
+    await expect(visitor.getByText('Not embedded.')).toHaveCount(0);
+    const contents = visitor.locator('nav').filter({ hasText: 'On this page' });
+    await expect(contents.getByRole('link', { name: 'Steps' })).toBeVisible();
+    await expect(visitor.getByRole('link', { name: book }).first()).toBeVisible();
+  });
+
+  await test.step('the public search finds the book; the private article is not public', async () => {
+    await visitor.goto(`${PUBLIC_URL}/search?q=${encodeURIComponent(book)}`);
+    await expect(visitor.getByRole('link', { name: book }).first()).toBeVisible();
+    await visitor.goto(`${PUBLIC_URL}/search?q=${encodeURIComponent(privateArticle)}`);
+    await expect(visitor.getByRole('link', { name: privateArticle })).toHaveCount(0);
+    const response = await visitor.goto(`${PUBLIC_URL}/articles/${slugOf(privateArticle)}`);
     expect(response?.status()).toBe(HTTP_NOT_FOUND);
-    await page.goto(`${PUBLIC_URL}/skills`);
-    await expect(page.getByText(privateSkill)).toHaveCount(0);
   });
 
-  await test.step('old links land on the right pages (ADR-0021)', async () => {
-    await page.goto(`${PUBLIC_URL}/docs/some/old/page`);
-    await expect(page).toHaveURL(`${PUBLIC_URL}/`);
-    await expect(page.getByRole('heading', { level: 1, name: 'Second Memory' })).toBeVisible();
-    await page.goto(`${PUBLIC_URL}/skills/me`);
-    await expect(page).toHaveURL(/\/(me|account\/login\?next=%2Fme)$/);
-    await page.goto(`${PUBLIC_URL}/login`);
-    await expect(page).toHaveURL(/\/admin(\/login)?/);
+  await test.step('old links land on the right pages (ADR-0021, ADR-0022)', async () => {
+    await visitor.goto(`${PUBLIC_URL}/docs/some/old/page`);
+    await expect(visitor).toHaveURL(`${PUBLIC_URL}/`);
+    await expect(visitor.getByRole('heading', { level: 1, name: 'Second Memory' })).toBeVisible();
+    await visitor.goto(`${PUBLIC_URL}/guides/${slugOf(category)}/${slugOf(book)}`);
+    await expect(visitor).toHaveURL(`${PUBLIC_URL}/articles/${slugOf(book)}`);
+    await visitor.goto(`${PUBLIC_URL}/skills`);
+    await expect(visitor).toHaveURL(`${PUBLIC_URL}/`);
+    await visitor.goto(`${PUBLIC_URL}/skills/me`);
+    await expect(visitor).toHaveURL(/\/(me|account\/login\?next=%2Fme)$/);
+    await visitor.goto(`${PUBLIC_URL}/login`);
+    await expect(visitor).toHaveURL(/\/admin(\/login)?/);
   });
 });

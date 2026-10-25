@@ -1,7 +1,7 @@
 import { expect, test } from '@playwright/test';
 import { E2E_PASSWORD, E2E_USER, PUBLIC_URL } from '../env';
 
-// Home page categories and articles (ADR-0021, REQ-004): the owner adds a category and an article
+// Categories and articles (ADR-0021, ADR-0022): the owner adds a category and an article
 // in the admin app; a visitor finds them from the home page and reads the Markdown as HTML; a
 // hidden category disappears. e2e/run.sh removes every `E2E …` category and its articles.
 const suffix = Date.now().toString(36);
@@ -31,9 +31,8 @@ test('owner publishes a category and an article; visitors read them from the hom
 
     await page.goto('/admin/articles');
     await page.getByRole('button', { name: 'Create Article' }).click();
-    await form.getByRole('combobox').click();
-    await page.getByRole('option', { name: category }).click();
     await form.getByLabel('Title').fill(article);
+    await form.getByLabel(category, { exact: true }).check();
     await form.getByLabel('Content (Markdown)').fill('## First step\n\n| A | B |\n|---|---|\n| 1 | 2 |');
     await form.getByRole('button', { name: 'Create', exact: true }).click();
     await expect(form).toBeHidden();
@@ -43,10 +42,13 @@ test('owner publishes a category and an article; visitors read them from the hom
   const visitor = await (await browser.newContext()).newPage();
 
   await test.step('a visitor goes home → category → article, without signing in', async () => {
-    await visitor.goto(`${PUBLIC_URL}/`);
-    await expect(visitor.getByRole('link', { name: /^Skills/ })).toBeVisible();
-    await visitor.getByRole('link', { name: new RegExp(category) }).click();
-    await expect(visitor).toHaveURL(`${PUBLIC_URL}/guides/${categorySlug}`);
+    // The home page keeps its answer for up to a minute
+    await expect(async () => {
+      await visitor.goto(`${PUBLIC_URL}/`);
+      await expect(visitor.getByRole('link', { name: category })).toBeVisible({ timeout: 1_000 });
+    }).toPass({ timeout: 90_000, intervals: [5_000] });
+    await visitor.getByRole('link', { name: category }).click();
+    await expect(visitor).toHaveURL(`${PUBLIC_URL}/categories/${categorySlug}`);
     await visitor.getByRole('link', { name: article }).click();
     await expect(visitor.getByRole('heading', { level: 1, name: article })).toBeVisible();
     await expect(visitor.getByRole('heading', { level: 2, name: 'First step' })).toBeVisible();
@@ -55,15 +57,19 @@ test('owner publishes a category and an article; visitors read them from the hom
 
   await test.step('a hidden category is gone for visitors', async () => {
     await page.goto('/admin/content-categories');
+    // The list is paged: filter it down to this run's category
+    await page.getByRole('button', { name: 'Show' }).click();
+    await page.getByPlaceholder('Search name...').fill(category);
+    await page.getByRole('button', { name: 'Apply Filters' }).click();
     await page.getByRole('row').filter({ hasText: category }).getByRole('button', { name: 'Edit' }).click();
     const form = page.getByRole('dialog');
-    await form.getByLabel('Public').uncheck();
+    await form.getByLabel('Show on the public page').uncheck();
     await form.getByRole('button', { name: 'Update' }).click();
     await expect(form).toBeHidden();
 
     // The public pages keep answers for up to a minute
     await expect
-      .poll(async () => (await visitor.goto(`${PUBLIC_URL}/guides/${categorySlug}`))?.status(), {
+      .poll(async () => (await visitor.goto(`${PUBLIC_URL}/categories/${categorySlug}`))?.status(), {
         timeout: 90_000,
         intervals: [5_000],
       })

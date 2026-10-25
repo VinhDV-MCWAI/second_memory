@@ -1,13 +1,13 @@
 import { expect, test, type Page } from '@playwright/test';
 import { E2E_PASSWORD, E2E_USER, PUBLIC_URL } from '../env';
 
-// End-user accounts of the public site (ADR-0020, REQ-003): a visitor clicks ☆ on a public skill,
-// creates an account, comes back to the skill, keeps it as a favourite and to read later, sees both
-// in My lists; the owner locks the account and the visitor is signed out. e2e/run.sh removes the
-// `E2E …` skill and every `e2e-…` end user afterwards.
+// End-user accounts of the public site (ADR-0020, REQ-003): a visitor clicks ☆ on a public article,
+// creates an account, comes back to the article, keeps it as a favourite and to read later, sees
+// both in My lists; the owner locks the account and the visitor is signed out. e2e/run.sh removes
+// the `E2E …` article and every `e2e-…` end user afterwards.
 const suffix = Date.now().toString(36);
-const skill = `E2E Shared ${suffix}`;
-const slug = skill.toLowerCase().replaceAll(' ', '-');
+const article = `E2E Shared ${suffix}`;
+const slug = article.toLowerCase().replaceAll(' ', '-');
 const username = `e2e-${suffix}`;
 const password = 'e2e-visitor-1';
 
@@ -19,26 +19,28 @@ async function signInAsOwner(page: Page) {
   await expect(page).toHaveURL(/\/admin$/);
 }
 
-test('a visitor signs up, saves a skill, and is signed out once locked', async ({ page, browser }) => {
-  await test.step('the owner publishes a skill', async () => {
+test('a visitor signs up, saves an article, and is signed out once locked', async ({
+  page,
+  browser,
+}) => {
+  await test.step('the owner publishes an article', async () => {
     await signInAsOwner(page);
-    await page.goto('/admin/skills');
-    await page.getByRole('button', { name: 'Create Skill' }).click();
+    await page.goto('/admin/articles');
+    await page.getByRole('button', { name: 'Create Article' }).click();
     const dialog = page.getByRole('dialog');
-    await dialog.getByLabel('Name').fill(skill);
-    await dialog.getByLabel('Category').fill('E2E');
-    await dialog.getByLabel('Show on the public page').check();
+    await dialog.getByLabel('Title').fill(article);
+    await dialog.getByLabel('Content (Markdown)').fill('Worth reading twice.');
     await dialog.getByRole('button', { name: 'Create', exact: true }).click();
     await expect(dialog).toBeHidden();
   });
 
   const context = await browser.newContext();
   const visitor = await context.newPage();
-  const favorite = visitor.getByRole('button', { name: `Add ${skill} to favorites` });
-  const readLater = visitor.getByRole('button', { name: `Save ${skill} to read later` });
+  const favorite = visitor.getByRole('button', { name: `Add ${article} to favorites` });
+  const readLater = visitor.getByRole('button', { name: `Save ${article} to read later` });
 
   await test.step('a guest who clicks ☆ is asked to sign in, and registers', async () => {
-    await visitor.goto(`${PUBLIC_URL}/skills/${slug}`);
+    await visitor.goto(`${PUBLIC_URL}/articles/${slug}`);
     await favorite.click();
     await expect(visitor).toHaveURL(/\/account\/login\?next=/);
     await visitor.getByRole('link', { name: 'Create one' }).click();
@@ -47,12 +49,12 @@ test('a visitor signs up, saves a skill, and is signed out once locked', async (
     await visitor.getByLabel('Password (at least 8 characters)').fill(password);
     await visitor.getByLabel('Password again').fill(password);
     await visitor.getByRole('button', { name: 'Create account' }).click();
-    // Back on the skill it came from
-    await expect(visitor).toHaveURL(`${PUBLIC_URL}/skills/${slug}`);
+    // Back on the article it came from
+    await expect(visitor).toHaveURL(`${PUBLIC_URL}/articles/${slug}`);
     await expect(visitor.getByRole('link', { name: `E2E visitor ${suffix} · My lists` })).toBeVisible();
   });
 
-  await test.step('☆ and 🔖 keep the skill in My lists', async () => {
+  await test.step('☆ and 🔖 keep the article in My lists', async () => {
     await favorite.click();
     await expect(favorite).toHaveAttribute('aria-pressed', 'true');
     await readLater.click();
@@ -63,7 +65,7 @@ test('a visitor signs up, saves a skill, and is signed out once locked', async (
     await visitor.goto(`${PUBLIC_URL}/me`);
     for (const list of ['Favorites', 'Read later']) {
       const section = visitor.locator('section').filter({ has: visitor.getByRole('heading', { name: list }) });
-      await expect(section.getByRole('link', { name: skill })).toBeVisible();
+      await expect(section.getByRole('link', { name: article })).toBeVisible();
     }
   });
 
