@@ -6,7 +6,6 @@ import { useTranslations } from 'next-intl';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { FormField } from '@/components/common/form-field';
-import { OptionSelect } from '@/components/common/option-select';
 import type { ResourceFormProps } from '@/components/common/resource-list-page';
 import { useDialogFormState } from '@/components/common/use-dialog-form-state';
 import { FORM_VALIDATION_MODE } from '@/shared/config';
@@ -15,6 +14,7 @@ import { CategoryTreeSelect } from '@/features/content/components/category-tree-
 import { IsPublicField } from '@/features/content/components/is-public-field';
 import { useCategoryTree } from '@/features/content/hooks/use-content-queries';
 import { MarkdownEditor } from '@/features/content/components/markdown-editor';
+import { selfAndDescendants } from '@/features/content/lib/category-tree';
 import { SubPages } from '@/features/content/components/sub-pages';
 import { useApiData } from '@/shared/hooks/use-api-data';
 import { useCrud } from '@/shared/hooks/use-crud';
@@ -29,9 +29,6 @@ const AUDITABLE_TYPE = 'article';
 
 /** Parents offered in the select: a personal site has at most a few hundred articles. */
 const PARENT_PAGE_SIZE = 500;
-
-/** Value of the "no parent" option (Radix Select forbids an empty value). */
-const NO_PARENT = 'none';
 
 /**
  * An article (ADR-0022): Markdown, any number of categories, optionally a sub-page of another
@@ -56,6 +53,14 @@ export function ArticleForm({
     sort_by: 'title',
     sort_order: 'asc',
   });
+
+  // The books as a tree; an article cannot sit under itself or one of its own sub-pages
+  const parentRows = articles.map((article) => ({
+    id: article.id,
+    parent_id: article.parent_id,
+    name: article.title,
+  }));
+  const blockedParents = initialData ? selfAndDescendants(parentRows, initialData.id) : undefined;
 
   const form = useForm<ArticleFormData>({
     mode: FORM_VALIDATION_MODE,
@@ -127,16 +132,17 @@ export function ArticleForm({
             control={control}
             name="parent_id"
             render={({ field }) => (
-              <OptionSelect
+              <CategoryTreeSelect
                 id="parent_id"
-                value={field.value ?? NO_PARENT}
-                onChange={(value) => field.onChange(value === NO_PARENT ? null : Number(value))}
-                options={[
-                  { value: NO_PARENT, label: tContent('noParent') },
-                  ...articles
-                    .filter((article) => article.id !== initialData?.id)
-                    .map((article) => ({ value: article.id, label: article.title })),
-                ]}
+                mode="single"
+                categories={parentRows}
+                value={field.value}
+                onChange={field.onChange}
+                noneLabel={tContent('noParent')}
+                disabledIds={blockedParents}
+                invalid={!!errors.parent_id}
+                searchLabel={tContent('searchArticles')}
+                emptyLabel={tContent('noArticleMatches')}
               />
             )}
           />

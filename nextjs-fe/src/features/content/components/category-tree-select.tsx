@@ -29,16 +29,22 @@ type CategoryTreeSelectProps = Selection & {
   /** Categories shown greyed out, e.g. a category and its branch when picking its parent */
   disabledIds?: Set<number>;
   invalid?: boolean;
+  /** Search box text and the line shown when nothing matches; categories' by default */
+  searchLabel?: string;
+  emptyLabel?: string;
 };
 
 /**
  * Pick one category (a parent) or several (an article's) from the category tree: indented by
  * level, with a search over the whole path that ignores accents. With several, "Select all" and
- * "Clear" act on the categories the search shows.
+ * "Clear" act on the categories the search shows. Any tree of `CategoryRow`s works, e.g. the
+ * articles when picking a parent article.
  */
 export function CategoryTreeSelect(props: CategoryTreeSelectProps) {
   const { id, categories, disabledIds, invalid } = props;
   const t = useTranslations('content');
+  const searchLabel = props.searchLabel ?? t('searchCategories');
+  const emptyLabel = props.emptyLabel ?? t('noCategoryMatches');
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState('');
 
@@ -110,8 +116,8 @@ export function CategoryTreeSelect(props: CategoryTreeSelectProps) {
           autoFocus
           value={query}
           onChange={(event) => setQuery(event.target.value)}
-          placeholder={t('searchCategories')}
-          aria-label={t('searchCategories')}
+          placeholder={searchLabel}
+          aria-label={searchLabel}
         />
         {props.mode === 'multiple' && (
           <div className="mt-2 flex items-center gap-2 text-xs">
@@ -141,7 +147,7 @@ export function CategoryTreeSelect(props: CategoryTreeSelectProps) {
             </li>
           )}
           {shown.length === 0 && (
-            <li className="px-2 py-1.5 text-sm text-muted-foreground">{t('noCategoryMatches')}</li>
+            <li className="px-2 py-1.5 text-sm text-muted-foreground">{emptyLabel}</li>
           )}
           {shown.map((node) => {
             const disabled = disabledIds?.has(node.row.id) ?? false;

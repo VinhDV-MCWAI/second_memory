@@ -100,6 +100,16 @@ describe('ArticleForm', () => {
     });
   });
 
+  it('picks the parent from the book tree, never itself or one of its sub-pages', async () => {
+    renderForm();
+
+    fireEvent.click(screen.getByRole('combobox', { name: /parent/ }));
+    const own = await screen.findByRole('option', { name: 'Trình bày phương án' });
+    expect(own.hasAttribute('disabled')).toBe(true);
+    expect(screen.getByRole('option', { name: 'Chương 1' }).hasAttribute('disabled')).toBe(true);
+    expect(screen.getByRole('textbox', { name: 'searchArticles' })).toBeTruthy();
+  });
+
   it('lists its sub-pages in book order', async () => {
     renderForm();
 

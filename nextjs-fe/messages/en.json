@@ -818,6 +818,8 @@
     "clearShown": "Clear shown",
     "selectedCount": "{count} selected",
     "noCategoryMatches": "No category matches",
+    "searchArticles": "Search articles",
+    "noArticleMatches": "No article matches",
     "expandAll": "Expand all",
     "collapseAll": "Collapse all",
     "expandNamed": "Expand {name}",
