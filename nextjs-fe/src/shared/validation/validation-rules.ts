@@ -48,6 +48,7 @@ export const ValidationRules = {
   // Public home page content (laravel-api ContentConst)
   CATEGORY_NAME_MAX: 100,
   CATEGORY_DESCRIPTION_MAX: 20000,
+  CATEGORY_DEPTH_MAX: 5,
   ATTACHMENTS_MAX: 20,
   ATTACHMENT_TITLE_MAX: 200,
   ATTACHMENT_URL_MAX: 2048,

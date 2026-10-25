@@ -771,8 +771,7 @@
     "viewOnSite": "Open on the public site",
     "public": "Public",
     "private": "Private",
-    "group": "Group",
-    "noGroup": "None: this is a group",
+    "noGroup": "None: top level (a group)",
     "parent": "Parent article",
     "noParent": "None: a page of its own",
     "moveUp": "Move up",
@@ -808,6 +807,13 @@
       "search": "Search by title",
       "link": "Link",
       "embed": "Embed"
-    }
+    },
+    "parentCategory": "Parent category",
+    "pickCategories": "Choose categories",
+    "searchCategories": "Search categories",
+    "selectShown": "Select all shown",
+    "clearShown": "Clear shown",
+    "selectedCount": "{count} selected",
+    "noCategoryMatches": "No category matches"
   }
 }

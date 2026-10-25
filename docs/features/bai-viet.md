@@ -15,8 +15,8 @@ Menu **Public content**:
 
 | Màn hình | Làm gì | Quyền |
 |---|---|---|
-| Categories (`/admin/content-categories`) | Cây nhóm → danh mục (danh mục thụt vào dưới nhóm). Nút **↑ ↓** đổi thứ tự trong cùng nhóm. Form: tên, nhóm (chọn từ danh sách, hoặc "không có" để thành nhóm), mô tả Markdown, đính kèm (thêm link, gắn file từ Files, ↑ ↓, xóa), công khai | `content-category.list/store/update/delete/move` |
-| Articles (`/admin/articles`) | Danh sách mới sửa nhất đứng đầu, hiện danh mục, bài cha, số bài con; lọc theo tiêu đề, danh mục, công khai. Form: tiêu đề, danh mục (tick nhiều), bài cha (chọn từ danh sách), tóm tắt, nội dung, công khai; phần **Sub-pages** liệt kê bài con theo thứ tự trong sách với nút ↑ ↓ | `article.list/store/update/delete/move` |
+| Categories (`/admin/content-categories`) | Cây nhóm → danh mục (danh mục thụt vào dưới nhóm). Nút **↑ ↓** đổi thứ tự trong cùng nhóm. Form: tên, danh mục cha (ô chọn dạng cây có tìm kiếm không dấu; "None" để thành nhóm; chính nó, nhánh của nó và chỗ làm cây sâu quá 5 cấp bị làm mờ), mô tả Markdown, đính kèm (thêm link, gắn file từ Files, ↑ ↓, xóa), công khai | `content-category.list/store/update/delete/move` |
+| Articles (`/admin/articles`) | Danh sách mới sửa nhất đứng đầu, hiện danh mục, bài cha, số bài con; lọc theo tiêu đề, danh mục, công khai. Form: tiêu đề, danh mục (ô chọn dạng cây: tìm kiếm không dấu theo cả đường dẫn, tick nhiều, **Select all shown** / **Clear shown** áp dụng cho các mục đang hiện), bài cha (chọn từ danh sách), tóm tắt, nội dung, công khai; phần **Sub-pages** liệt kê bài con theo thứ tự trong sách với nút ↑ ↓ | `article.list/store/update/delete/move` |
 
 Vai trò Chỉ xem có hai quyền `list`. Không còn ô gõ số thứ tự: mục mới luôn nằm cuối, đổi chỗ bằng ↑ ↓.
 

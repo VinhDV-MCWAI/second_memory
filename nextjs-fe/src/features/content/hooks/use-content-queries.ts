@@ -5,7 +5,8 @@ import { apiClient } from '@/shared/api/client';
 import { API_ENDPOINTS } from '@/shared/api/endpoints';
 import { queryKeys } from '@/shared/api/query-keys';
 import { SEARCH_QUERY_MIN } from '@/shared/config';
-import type { DashboardSummary, SearchResult } from '@/shared/types/models';
+import { useApiData } from '@/shared/hooks/use-api-data';
+import type { ContentCategory, DashboardSummary, SearchResult } from '@/shared/types/models';
 
 /** Category and article counts for the dashboard. */
 export function useDashboardSummary() {
@@ -25,5 +26,15 @@ export function useSearch(q: string) {
       (await apiClient.get<SearchResult>(API_ENDPOINTS.CONTENT.SEARCH, { params: { q: text } }))
         .data,
     enabled: text.length >= SEARCH_QUERY_MIN,
+  });
+}
+
+/** Every category fits on one page: a site has a few hundred at most (REQ-005 volume). */
+const CATEGORY_TREE_PAGE_SIZE = 1000;
+
+/** The whole category tree (the API sends it in tree order): pickers and the categories screen. */
+export function useCategoryTree() {
+  return useApiData<ContentCategory>(API_ENDPOINTS.CONTENT.CATEGORY, {
+    per_page: CATEGORY_TREE_PAGE_SIZE,
   });
 }

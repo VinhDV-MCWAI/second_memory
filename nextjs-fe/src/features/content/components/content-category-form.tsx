@@ -6,14 +6,16 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useTranslations } from 'next-intl';
 import { Input } from '@/components/ui/input';
 import { FormField } from '@/components/common/form-field';
-import { OptionSelect } from '@/components/common/option-select';
 import type { ResourceFormProps } from '@/components/common/resource-list-page';
 import { HistoryViewer } from '@/features/history/components/history-viewer';
 import { AttachmentsField } from '@/features/content/components/attachments-field';
+import { CategoryTreeSelect } from '@/features/content/components/category-tree-select';
+import { useCategoryTree } from '@/features/content/hooks/use-content-queries';
+import { flattenTree, heightOf, selfAndDescendants } from '@/features/content/lib/category-tree';
 import { IsPublicField } from '@/features/content/components/is-public-field';
 import { MarkdownEditor } from '@/features/content/components/markdown-editor';
-import { useApiData } from '@/shared/hooks/use-api-data';
 import { useCrud } from '@/shared/hooks/use-crud';
+import { ValidationRules } from '@/shared/validation/validation-rules';
 import { API_ENDPOINTS } from '@/shared/api';
 import { publicPaths } from '@/shared/config';
 import { handleBindErrors } from '@/shared/utils/error-handler';
@@ -26,14 +28,8 @@ import type { AttachedFile, ContentCategory } from '@/shared/types/models';
 /** audit_log.auditable_type of categories (ContentConst::CATEGORY_AUDITABLE_TYPE). */
 const AUDITABLE_TYPE = 'content_category';
 
-/** A site has a handful of groups; one page fills the select. */
-const GROUP_PAGE_SIZE = 100;
-
-/** Value of the "no parent" option (Radix Select forbids an empty value). */
-const NO_PARENT = 'none';
-
 /**
- * A group (no parent) or a category inside one (ADR-0022). Its path (slug) is set from the name on
+ * A category of the tree (ADR-0022, at most CATEGORY_DEPTH_MAX levels since ADR-0023): no parent makes it a group. Its path (slug) is set from the name on
  * create and never changes. The description is Markdown; attachments are its evidence.
  */
 export function ContentCategoryForm({
@@ -49,12 +45,21 @@ export function ContentCategoryForm({
   const { create, update, loading } = useCrud(API_ENDPOINTS.CONTENT.CATEGORY, {
     invalidateKeys: [API_ENDPOINTS.CONTENT.CATEGORY, API_ENDPOINTS.CONTENT.ARTICLE],
   });
-  const { data: groups } = useApiData<ContentCategory>(API_ENDPOINTS.CONTENT.CATEGORY, {
-    per_page: GROUP_PAGE_SIZE,
-    filters: { root: 1 },
-  });
-  // A group that holds categories stays a group (two levels at most)
-  const mustStayGroup = (initialData?.children_count ?? 0) > 0;
+  const { data: categories } = useCategoryTree();
+  // Not under itself or its own branch, and not where the branch would go deeper than allowed
+  const branchHeight = initialData ? heightOf(categories, initialData.id) : 1;
+  const ownBranch = initialData
+    ? selfAndDescendants(categories, initialData.id)
+    : new Set<number>();
+  const blocked = new Set(
+    flattenTree(categories)
+      .filter(
+        (node) =>
+          ownBranch.has(node.row.id) ||
+          node.level + 1 + branchHeight > ValidationRules.CATEGORY_DEPTH_MAX,
+      )
+      .map((node) => node.row.id),
+  );
 
   const {
     register,
@@ -105,12 +110,6 @@ export function ContentCategoryForm({
     }
   };
 
-  const groupOptions = [
-    { value: NO_PARENT, label: tContent('noGroup') },
-    ...groups
-      .filter((group) => group.id !== initialData?.id)
-      .map((group) => ({ value: group.id, label: group.name })),
-  ];
   const initialFiles = (initialData?.attachments ?? [])
     .map((attachment) => attachment.file)
     .filter((file): file is AttachedFile => file !== null);
@@ -122,21 +121,28 @@ export function ContentCategoryForm({
           <FormField id="name" label={tLabels('name')} required error={errors.name?.message}>
             <Input id="name" {...register('name')} aria-invalid={!!errors.name} />
           </FormField>
-          {!mustStayGroup && (
-            <FormField id="parent_id" label={tContent('group')} error={errors.parent_id?.message}>
-              <Controller
-                control={control}
-                name="parent_id"
-                render={({ field }) => (
-                  <OptionSelect
-                    value={field.value ?? NO_PARENT}
-                    onChange={(value) => field.onChange(value === NO_PARENT ? null : Number(value))}
-                    options={groupOptions}
-                  />
-                )}
-              />
-            </FormField>
-          )}
+          <FormField
+            id="parent_id"
+            label={tContent('parentCategory')}
+            error={errors.parent_id?.message}
+          >
+            <Controller
+              control={control}
+              name="parent_id"
+              render={({ field }) => (
+                <CategoryTreeSelect
+                  id="parent_id"
+                  mode="single"
+                  noneLabel={tContent('noGroup')}
+                  categories={categories}
+                  disabledIds={blocked}
+                  value={field.value}
+                  onChange={field.onChange}
+                  invalid={!!errors.parent_id}
+                />
+              )}
+            />
+          </FormField>
         </div>
         <FormField
           id="description"

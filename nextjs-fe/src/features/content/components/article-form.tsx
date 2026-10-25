@@ -8,10 +8,11 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { FormField } from '@/components/common/form-field';
 import { OptionSelect } from '@/components/common/option-select';
-import { IdPicker } from '@/components/common/id-picker';
 import type { ResourceFormProps } from '@/components/common/resource-list-page';
 import { HistoryViewer } from '@/features/history/components/history-viewer';
+import { CategoryTreeSelect } from '@/features/content/components/category-tree-select';
 import { IsPublicField } from '@/features/content/components/is-public-field';
+import { useCategoryTree } from '@/features/content/hooks/use-content-queries';
 import { MarkdownEditor } from '@/features/content/components/markdown-editor';
 import { SubPages } from '@/features/content/components/sub-pages';
 import { useApiData } from '@/shared/hooks/use-api-data';
@@ -48,6 +49,7 @@ export function ArticleForm({
   const { create, update, loading } = useCrud(API_ENDPOINTS.CONTENT.ARTICLE, {
     invalidateKeys: [API_ENDPOINTS.CONTENT.ARTICLE, API_ENDPOINTS.CONTENT.CATEGORY],
   });
+  const { data: categories } = useCategoryTree();
   const { data: articles } = useApiData<Article>(API_ENDPOINTS.CONTENT.ARTICLE, {
     per_page: PARENT_PAGE_SIZE,
     sort_by: 'title',
@@ -105,11 +107,13 @@ export function ArticleForm({
             control={control}
             name="category_ids"
             render={({ field }) => (
-              <IdPicker
-                endpoint={API_ENDPOINTS.CONTENT.CATEGORY}
-                emptyMessage={tContent('noCategories')}
+              <CategoryTreeSelect
+                id="category_ids"
+                mode="multiple"
+                categories={categories}
                 value={field.value}
                 onChange={field.onChange}
+                invalid={!!errors.category_ids}
               />
             )}
           />

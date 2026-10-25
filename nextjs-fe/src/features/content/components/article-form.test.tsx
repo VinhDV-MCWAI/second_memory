@@ -85,6 +85,8 @@ describe('ArticleForm', () => {
     expect(screen.getByRole('link', { name: 'viewOnSite' }).getAttribute('href')).toBe(
       '/articles/trinh-bay-phuong-an',
     );
+    // The categories picker opens as a tree with checkboxes
+    fireEvent.click(screen.getByRole('combobox', { name: /categories/ }));
     fireEvent.click(await screen.findByLabelText('QA'));
     fireEvent.change(screen.getByLabelText(/^body/), { target: { value: '## Vấn đề\n\n- A' } });
     fireEvent.click(screen.getByRole('button', { name: 'save' }));
@@ -101,7 +103,8 @@ describe('ArticleForm', () => {
   it('lists its sub-pages in book order', async () => {
     renderForm();
 
-    expect(await screen.findByText('Chương 1')).toBeTruthy();
+    // The sub-pages panel, not the hidden option of the parent select
+    expect(await screen.findByText('Chương 1', { selector: 'span' })).toBeTruthy();
     expect(screen.getByText('subPages')).toBeTruthy();
   });
 
