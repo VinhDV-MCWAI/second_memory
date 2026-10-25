@@ -44,11 +44,14 @@ Khối code trong bài và trong mô tả danh mục được **tô màu** ở s
 | API | Làm gì |
 |---|---|
 | `GET /api/public/home` | Trang chủ: nhóm, danh mục, số bài, bài mới nhất |
-| `GET /api/public/categories/{slug}` | Một nhóm hoặc danh mục và một trang bài; tham số `sort`, `also`, `q`, `page` |
-| `GET /api/public/articles/{slug}` | Một bài: HTML, mục lục, danh mục, cây sách, đường dẫn ngược, bài trước / sau, bài cùng danh mục |
+| `GET /api/public/categories` | Cây danh mục đang hiện (cha trước con, theo thứ tự của chủ dự án): tên, slug, slug danh mục cha, cấp, số bài (gồm cả bài của danh mục con, mỗi bài tính 1 lần), lượt xem, số người yêu thích. Dùng cho trang chủ tóm tắt và cột 1 của trang đọc ([ADR-0024](../adr/0024-trang-doc-chuyen-trang-khong-tai-lai.md)) |
+| `GET /api/public/articles` | Mọi bài đang hiện theo một cách xếp (`sort`: `newest`, `updated`, `most_read`, `most_saved`, `most_favorited`), `page`, `per_page` tối đa 100: các tab bài viết ở trang chủ |
+| `GET /api/public/categories/{slug}` | Một nhóm hoặc danh mục (kèm lượt xem, số người yêu thích) và một trang bài; tham số `sort`, `also`, `q`, `page`, `per_page` (tối đa 100, để cột 2 của trang đọc lấy cả danh mục) |
+| `GET /api/public/articles/{slug}` | Một bài: HTML, mục lục, danh mục, cây sách, đường dẫn ngược, bài trước / sau, bài cùng danh mục, lượt xem, số người yêu thích |
 | `GET /api/public/files/{key}` | Link tạm `{url, expires_at}` của một file (5 phút để tải, 1 giờ để xem trong trình duyệt) |
 | `GET /api/public/search?q=` | Tìm bài và danh mục đang hiện |
-| `POST /api/public/articles/{slug}/view` | Máy chủ trang public báo một lượt xem (không chờ kết quả, API lỗi thì chỉ mất lượt đó, trang vẫn hiện) |
+| `POST /api/public/articles/{slug}/view` | Máy chủ trang public báo một lượt xem (không chờ kết quả, API lỗi thì chỉ mất lượt đó, trang vẫn hiện). Từ READ-04 chỉ báo khi người xem đọc thật ([ADR-0024](../adr/0024-trang-doc-chuyen-trang-khong-tai-lai.md)) |
+| `POST /api/public/categories/{slug}/view` | Như trên cho trang danh mục; đếm riêng, đọc bài không cộng vào danh mục |
 
 Chi tiết từng trường: [bai-viet.md](bai-viet.md#api). Không cần đăng nhập, giới hạn 60 request / phút / IP; riêng báo lượt xem giới hạn 600 / phút.
 

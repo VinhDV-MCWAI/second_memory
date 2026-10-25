@@ -52,8 +52,9 @@ Không có nút Thêm: người dùng tự đăng ký. Vai trò Chỉ xem có ha
 | `GET /api/user/me` | `{username, display_name}` |
 | `PUT /api/user/password` | `current_password`, `password`, `password_confirmation` |
 | `POST /api/user/delete-account` | `password` |
-| `GET /api/user/saved/list` | Danh sách đã lưu (`kind` để lọc): `kind`, `key`, `title`, `article_slug`, `saved_at` |
-| `POST /api/user/saved/store`, `POST /api/user/saved/delete` | `kind` (`favorite` / `read_later`) + `article` (mã `key` của bài trong API public). Lưu hai lần hay bỏ thứ chưa lưu đều không lỗi |
+| `GET /api/user/saved/list` | Danh sách đã lưu (`kind` để lọc): `kind`, `type` (`article` / `category`), `key` (mã bài hoặc slug danh mục), `title`, `article_slug`, `category_slug`, `anchor` (mục đang đọc), `read_at`, `saved_at` |
+| `POST /api/user/saved/store`, `POST /api/user/saved/delete` | `kind` (`favorite` / `read_later`) + `article` (mã `key` của bài trong API public) **hoặc** `category` (slug danh mục, chỉ với `favorite`). Lưu hai lần hay bỏ thứ chưa lưu đều không lỗi |
+| `POST /api/user/saved/position` | `article` + `anchor` (mã tiêu đề trong `toc` của bài; rỗng = đầu bài): nhớ mục đang đọc của bài đã bấm 🔖. Bài chưa bấm 🔖 → 404 ([ADR-0024](../adr/0024-trang-doc-chuyen-trang-khong-tai-lai.md)) |
 | `GET /api/admin/end-user/list`, `PUT update/{id}`, `POST delete` | Quản trị người dùng |
 | `GET /api/admin/end-user/registration`, `PUT registration-update` | Xem / đổi công tắc đăng ký |
 
@@ -64,7 +65,7 @@ Gọi `GET /api/sanctum/csrf-cookie` trước mọi lệnh ghi, như trang quả
 | Bảng | Dùng cho |
 |---|---|
 | `end_user` | Tên đăng nhập (duy nhất, chữ thường), tên hiển thị, mật khẩu băm, đang dùng, lần đăng nhập cuối |
-| `end_user_saved` | Người dùng, loại (`favorite` / `read_later`), `article_id`, không trùng |
+| `end_user_saved` | Người dùng, loại (`favorite` / `read_later`), `article_id` **hoặc** `content_category_id` (danh mục chỉ là yêu thích), không trùng; `reading_anchor` + `read_at`: mục đang đọc của bài 🔖. Xóa bài / danh mục thì dòng mất theo; bài / danh mục chuyển sang riêng tư thì chỉ ẩn khỏi danh sách, công khai lại thì hiện lại |
 | `app_setting` | Công tắc `end_user_registration_open` (không có dòng = đang mở) |
 
 ## Code

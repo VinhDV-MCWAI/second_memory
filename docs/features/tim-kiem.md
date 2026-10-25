@@ -23,7 +23,7 @@ Kết quả là đoán gần đúng thì cả hai hiện dòng "No exact match �
 | API | Làm gì | Ai dùng |
 |---|---|---|
 | `GET /api/admin/search?q=...` | `match` (`exact` hoặc `fuzzy`), `articles` (`{id, title, slug, snippet, is_public}`), `categories` (`{id, name, slug, group, is_public}`), `files` (`{id, is_file, name, path, size, thumbnail_url}`) | Quyền `search.query`; nhóm `files` cần thêm quyền `media.list` |
-| `GET /api/public/search?q=...` | `match`, `articles` (`{title, slug, summary}`, tối đa 20), `categories` (`{name, slug, group}`) | Ai cũng gọi được, giới hạn 60 request / phút / IP như các API public khác |
+| `GET /api/public/search?q=...` | `match`, `articles` (`{title, slug, summary, found_in, snippet}`, tối đa 20), `categories` (`{name, slug, group}`), `sections` (`{article_title, article_slug, heading, anchor}`, tối đa 10). `found_in`: `title` (từ khóa ở tiêu đề / tóm tắt) hoặc `content` (chỉ ở nội dung); `snippet`: đoạn nội dung quanh từ khóa (HTML an toàn, từ khóa trong `<mark>`, không dấu vẫn khớp, giữ nguyên dấu khi hiện); `sections`: tiêu đề mục (cấp 2, 3) của các bài tìm được có đủ từ khóa, kèm mã neo để mở đúng mục ([ADR-0024](../adr/0024-trang-doc-chuyen-trang-khong-tai-lai.md)) | Ai cũng gọi được, giới hạn 60 request / phút / IP như các API public khác |
 
 Từ khóa dài 2–100 ký tự và phải có ít nhất một chữ hoặc số (gõ `!!` thì báo lỗi 422; trang public hiện câu nhắc, không gọi API).
 
