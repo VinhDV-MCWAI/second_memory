@@ -24,7 +24,7 @@ export function featureOfEndpoint(endpoint: string): string {
   return endpoint.split('/').filter(Boolean).pop() ?? '';
 }
 
-/** The action part of a permission name: `skill-level.store` → `store`. */
+/** The action part of a permission name: `article.store` → `store`. */
 export function actionOfPermission(name: string): string {
   return name.slice(name.indexOf(SEPARATOR) + 1);
 }

@@ -4,11 +4,11 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
 import { useApiData } from '@/shared/hooks/use-api-data';
 
-/** Tags and skills fit on one page: the ledger has a few dozen of each (REQ-002 volume). */
+/** Categories fit on one page: a site has a few dozen (REQ-005 volume). */
 const PICKER_PAGE_SIZE = 100;
 
 interface IdPickerProps {
-  /** List endpoint of records with `id` and `name`, e.g. `API_ENDPOINTS.LEDGER.TAG`. */
+  /** List endpoint of records with `id` and `name`, e.g. `API_ENDPOINTS.CONTENT.CATEGORY`. */
   endpoint: string;
   /** Shown instead of the list when there is nothing to pick. */
   emptyMessage: string;

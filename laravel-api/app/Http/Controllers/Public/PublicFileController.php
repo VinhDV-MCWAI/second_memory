@@ -15,7 +15,7 @@ class PublicFileController extends Controller
     public function __construct(private readonly PublicFileService $files) {}
 
     /**
-     * Short-lived link to a file attached to public evidence of a public skill (`files[].key` of the skill); anything else → 404
+     * Short-lived link to a file attached to a public category or embedded in a public article (its `key`); anything else → 404
      *
      * Images, PDF, video, audio and text open in the browser, other types download.
      *
