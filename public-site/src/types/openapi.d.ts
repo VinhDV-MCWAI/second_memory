@@ -1329,7 +1329,7 @@ export interface components {
       }[];
       avatar: string;
       is_delete: boolean;
-      updated_at: string;
+      updated_at: string | null;
     };
     /** AdminSessionResource */
     AdminSessionResource: {
@@ -1566,7 +1566,7 @@ export interface components {
       description: string | null;
       is_active: boolean;
       admin_count: number;
-      updated_at: string;
+      updated_at: string | null;
     };
     /** EndAdminSessionRequest */
     EndAdminSessionRequest: {
@@ -1580,7 +1580,7 @@ export interface components {
       is_active: boolean;
       saved_count: number;
       last_login_at: string | null;
-      created_at: string;
+      created_at: string | null;
     };
     /**
      * Gender
@@ -3176,7 +3176,7 @@ export interface operations {
               }[];
               avatar: string;
               is_delete: boolean;
-              updated_at: string;
+              updated_at: string | null;
               permissions: string[];
             };
             error: {
@@ -3264,7 +3264,7 @@ export interface operations {
               }[];
               avatar: string;
               is_delete: boolean;
-              updated_at: string;
+              updated_at: string | null;
               permissions: string[];
             };
             error: {

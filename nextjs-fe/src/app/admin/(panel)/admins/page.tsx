@@ -15,6 +15,7 @@ import { SORT_FIELDS } from '@/shared/config';
 import type { AdminMst } from '@/shared/types/api';
 import type { Department, Role } from '@/shared/types/models';
 import type { SearchField } from '@/shared/types/data-table.types';
+import { formatDateTime } from '@/shared/utils/date-formatter';
 
 /** Roles and departments fit on one page: a handful per installation. */
 const OPTION_PAGE_SIZE = 100;
@@ -62,7 +63,12 @@ export default function AdminListPage() {
         </StatusBadge>
       ),
     },
-    { key: 'updated_at', label: tFields('updatedAt'), sortable: true },
+    {
+      key: 'updated_at',
+      label: tFields('updatedAt'),
+      sortable: true,
+      render: (item) => formatDateTime(item.updated_at),
+    },
   ];
 
   const filterFields: FilterField[] = [

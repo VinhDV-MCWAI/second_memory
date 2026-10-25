@@ -11,6 +11,7 @@ import { API_ENDPOINTS } from '@/shared/api';
 import { IsActive } from '@/shared/enums/enums';
 import type { EndUser } from '@/shared/types/models';
 import type { SearchField } from '@/shared/types/data-table.types';
+import { formatDateTime } from '@/shared/utils/date-formatter';
 
 /** End users of the public site (ADR-0020): no Add button, they sign up themselves. */
 export default function EndUserListPage() {
@@ -40,9 +41,14 @@ export default function EndUserListPage() {
       key: 'last_login_at',
       label: tFields('lastLoginAt'),
       sortable: true,
-      render: (item) => item.last_login_at ?? '—',
+      render: (item) => formatDateTime(item.last_login_at) || '—',
     },
-    { key: 'created_at', label: tFields('createdAt'), sortable: true },
+    {
+      key: 'created_at',
+      label: tFields('createdAt'),
+      sortable: true,
+      render: (item) => formatDateTime(item.created_at),
+    },
   ];
 
   const filterFields: FilterField[] = [

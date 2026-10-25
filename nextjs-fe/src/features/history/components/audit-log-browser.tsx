@@ -62,6 +62,7 @@ export function AuditLogBrowser() {
   };
 
   const handleSort = (column: string) => {
+    setPage(PAGINATION.DEFAULT_PAGE);
     if (sortBy === column) {
       setSortOrder(sortOrder === SORT_ORDER.ASC ? SORT_ORDER.DESC : SORT_ORDER.ASC);
     } else {

@@ -2549,7 +2549,10 @@
                                                     "type": "boolean"
                                                 },
                                                 "updated_at": {
-                                                    "type": "string"
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
                                                 },
                                                 "permissions": {
                                                     "type": "array",
@@ -2775,7 +2778,10 @@
                                                     "type": "boolean"
                                                 },
                                                 "updated_at": {
-                                                    "type": "string"
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
                                                 },
                                                 "permissions": {
                                                     "type": "array",
@@ -7903,7 +7909,10 @@
                         "type": "boolean"
                     },
                     "updated_at": {
-                        "type": "string"
+                        "type": [
+                            "string",
+                            "null"
+                        ]
                     }
                 },
                 "required": [
@@ -8783,7 +8792,10 @@
                         "type": "integer"
                     },
                     "updated_at": {
-                        "type": "string"
+                        "type": [
+                            "string",
+                            "null"
+                        ]
                     }
                 },
                 "required": [
@@ -8839,7 +8851,10 @@
                         ]
                     },
                     "created_at": {
-                        "type": "string"
+                        "type": [
+                            "string",
+                            "null"
+                        ]
                     }
                 },
                 "required": [

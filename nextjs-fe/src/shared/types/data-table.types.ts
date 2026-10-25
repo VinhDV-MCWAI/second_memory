@@ -22,6 +22,7 @@ export interface DataTableProps<T> {
   onSelectionChange?: (ids: number[]) => void;
   onSort?: (column: string) => void;
   sortBy?: string;
+  /** Direction of `sortBy`, shown as ↑ or ↓ on its header */
   sortOrder?: SortOrder;
   onEdit?: (id: number) => void;
   onDelete?: (id: number) => void;

@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Http\Resources\Master;
 
-use App\Http\Resources\Concerns\FormatsDates;
 use App\Models\Master\AdminMst;
 use App\Models\Master\Department;
 use Illuminate\Database\Eloquent\Model;
@@ -16,7 +15,6 @@ use Illuminate\Http\Resources\Json\JsonResource;
  */
 class AdminMstResource extends JsonResource
 {
-    use FormatsDates;
 
     /**
      * Transform the resource into an array.
@@ -41,7 +39,7 @@ class AdminMstResource extends JsonResource
             'departments' => $this->departments->map(fn (Department $department): array => ['id' => $department->id, 'code' => $department->code, 'name' => $department->name])->values()->all(),
             'avatar' => (string) $this->avatar,
             'is_delete' => (bool) $this->is_delete,
-            'updated_at' => $this->formatDate($this->updated_at),
+            'updated_at' => $this->updated_at?->toIso8601String(),
         ];
     }
 }

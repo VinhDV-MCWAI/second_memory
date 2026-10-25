@@ -184,6 +184,8 @@ export function ResourceListPage<T extends { id: number }>({
   };
 
   const handleSort = (column: string) => {
+    // A new order starts from its first page
+    setPage(PAGINATION.DEFAULT_PAGE);
     if (sortBy === column) {
       setSortOrder(sortOrder === SORT_ORDER.ASC ? SORT_ORDER.DESC : SORT_ORDER.ASC);
     } else {

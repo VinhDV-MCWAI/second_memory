@@ -11,9 +11,10 @@ import {
 } from '@/components/ui/table';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Button } from '@/components/ui/button';
-import { ArrowUpDown, Edit, Trash2 } from 'lucide-react';
+import { ArrowDown, ArrowUp, ArrowUpDown, Edit, Trash2 } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { Column, DataTableProps } from '@/shared/types';
+import { SORT_ORDER } from '@/shared/config';
 import { LoadingOverlay } from '@/components/ui/loading';
 
 export type { Column };
@@ -26,6 +27,7 @@ export function DataTable<T>({
   onSelectionChange,
   onSort,
   sortBy,
+  sortOrder,
   onEdit,
   onDelete,
   showActions = true,
@@ -51,11 +53,18 @@ export function DataTable<T>({
     }
   };
 
-  const SortIcon = ({ column }: { column: string }) => (
-    <ArrowUpDown
-      className={`ml-2 inline h-4 w-4 ${sortBy === column ? 'text-blue-600' : 'text-gray-400'}`}
-    />
-  );
+  // The sorted column shows its direction; the others only that they can be sorted
+  const SortIcon = ({ column }: { column: string }) => {
+    if (sortBy !== column || !sortOrder) {
+      return (
+        <ArrowUpDown
+          className={`ml-2 inline h-4 w-4 ${sortBy === column ? 'text-blue-600' : 'text-gray-400'}`}
+        />
+      );
+    }
+    const Icon = sortOrder === SORT_ORDER.ASC ? ArrowUp : ArrowDown;
+    return <Icon className="ml-2 inline h-4 w-4 text-blue-600" />;
+  };
 
   // No early return for loading
 
@@ -86,6 +95,13 @@ export function DataTable<T>({
                       : ''
                   }
                   onClick={() => column.sortable && onSort && onSort(column.key)}
+                  aria-sort={
+                    column.sortable && sortBy === column.key && sortOrder
+                      ? sortOrder === SORT_ORDER.ASC
+                        ? 'ascending'
+                        : 'descending'
+                      : undefined
+                  }
                 >
                   {column.label}
                   {column.sortable && onSort && <SortIcon column={column.key} />}

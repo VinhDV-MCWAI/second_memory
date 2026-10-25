@@ -84,6 +84,12 @@ abstract class BaseRepository
         $sortOrder = in_array(strtolower((string) $sortOrder), ['asc', 'desc'], true) ? $sortOrder : $defaultSortOrder;
 
         $query->orderBy($sortBy, $sortOrder);
+        // Rows with the same value (seeded in the same second, same status…) keep one order, so a
+        // page never repeats or skips a row of the page before
+        $key = $query->getModel()->getQualifiedKeyName();
+        if ($sortBy !== $key && $sortBy !== $query->getModel()->getKeyName()) {
+            $query->orderBy($key, $sortOrder);
+        }
     }
 
     /**

@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Http\Resources\Master;
 
-use App\Http\Resources\Concerns\FormatsDates;
 use App\Models\User\EndUser;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -16,8 +15,6 @@ use Illuminate\Http\Resources\Json\JsonResource;
  */
 class EndUserResource extends JsonResource
 {
-    use FormatsDates;
-
     /**
      * @return array<string, mixed>
      */
@@ -29,9 +26,8 @@ class EndUserResource extends JsonResource
             'display_name' => (string) $this->display_name,
             'is_active' => (bool) $this->is_active,
             'saved_count' => (int) $this->saved_items_count,
-            /** @var string|null */
-            'last_login_at' => $this->last_login_at === null ? null : $this->formatDate($this->last_login_at),
-            'created_at' => $this->formatDate($this->created_at),
+            'last_login_at' => $this->last_login_at?->toIso8601String(),
+            'created_at' => $this->created_at?->toIso8601String(),
         ];
     }
 }

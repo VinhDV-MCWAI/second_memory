@@ -10,6 +10,7 @@ import { API_ENDPOINTS } from '@/shared/api';
 import { IsActive } from '@/shared/enums/enums';
 import type { Department } from '@/shared/types/models';
 import type { SearchField } from '@/shared/types/data-table.types';
+import { formatDateTime } from '@/shared/utils/date-formatter';
 
 export default function DepartmentListPage() {
   const tCommon = useTranslations('common');
@@ -35,7 +36,12 @@ export default function DepartmentListPage() {
         </StatusBadge>
       ),
     },
-    { key: 'updated_at', label: tFields('updatedAt'), sortable: true },
+    {
+      key: 'updated_at',
+      label: tFields('updatedAt'),
+      sortable: true,
+      render: (item) => formatDateTime(item.updated_at),
+    },
   ];
 
   const filterFields: FilterField[] = [

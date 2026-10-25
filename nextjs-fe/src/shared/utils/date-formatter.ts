@@ -42,6 +42,16 @@ export function formatDateForBackend(date: Date | string | null | undefined): st
 }
 
 /**
+ * Date and time to the minute (dd/MM/yyyy HH:mm) for list columns that can be sorted: a relative
+ * "5 days ago" or a bare date hides the order the column is sorted by.
+ */
+export function formatDateTime(date: string | null | undefined): string {
+  if (!date) return '';
+  const dateObj = parseISO(date);
+  return isValid(dateObj) ? format(dateObj, DATE_FORMATS.LONG) : '';
+}
+
+/**
  * Format timestamp to relative time (e.g., "2 hours ago")
  * @param date - Date object or timestamp
  * @returns Formatted relative time string or fallback to locale time string

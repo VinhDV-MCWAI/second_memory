@@ -28,7 +28,7 @@ import { Input } from '@/components/ui/input';
 import { ADMIN_ROUTES, SORT_ORDER, type SortOrder } from '@/shared/config';
 import { usePermissions } from '@/shared/hooks/use-permissions';
 import { getApiErrorMessage, notification } from '@/shared/utils';
-import { formatTimestamp } from '@/shared/utils/date-formatter';
+import { formatDateTime } from '@/shared/utils/date-formatter';
 import type { MediaItem, UnfinishedUpload } from '@/shared/types/models';
 import {
   MEDIA_PER_PAGE,
@@ -264,7 +264,7 @@ export function MediaBrowser() {
       key: 'updated_at',
       label: t('updated'),
       sortable: true,
-      render: (item) => formatTimestamp(item.updated_at),
+      render: (item) => formatDateTime(item.updated_at),
     },
     {
       key: 'actions',
@@ -419,11 +419,13 @@ export function MediaBrowser() {
         loading={loading}
         showActions={false}
         sortBy={sortBy}
+        sortOrder={sortOrder}
         onSort={(column) => {
           setSortOrder(
             column === sortBy && sortOrder === SORT_ORDER.ASC ? SORT_ORDER.DESC : SORT_ORDER.ASC,
           );
           setSortBy(column);
+          setPage(1);
         }}
         selectedIds={canDelete ? selectedIds : undefined}
         onSelectionChange={canDelete ? setSelectedIds : undefined}

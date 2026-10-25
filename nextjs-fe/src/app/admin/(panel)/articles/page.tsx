@@ -9,7 +9,7 @@ import { ArticleForm } from '@/features/content/components/article-form';
 import { useApiData } from '@/shared/hooks/use-api-data';
 import { API_ENDPOINTS } from '@/shared/api';
 import { SORT_ORDER } from '@/shared/config';
-import { formatTimestamp } from '@/shared/utils/date-formatter';
+import { formatDateTime } from '@/shared/utils/date-formatter';
 import type { Article, ContentCategory } from '@/shared/types/models';
 import type { SearchField } from '@/shared/types/data-table.types';
 
@@ -57,7 +57,7 @@ export default function ArticleListPage() {
       key: 'updated_at',
       label: tFields('updatedAt'),
       sortable: true,
-      render: (item) => formatTimestamp(item.updated_at),
+      render: (item) => formatDateTime(item.updated_at),
     },
   ];
 

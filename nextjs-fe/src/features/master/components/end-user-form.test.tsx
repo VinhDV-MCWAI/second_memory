@@ -19,7 +19,7 @@ const endUser: EndUser = {
   is_active: true,
   saved_count: 2,
   last_login_at: null,
-  created_at: '01/10/2026',
+  created_at: '2026-10-01T09:00:00+00:00',
 };
 
 const renderForm = (onSuccess = vi.fn()) => {

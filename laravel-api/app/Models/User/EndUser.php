@@ -9,9 +9,12 @@ use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Carbon;
 
 /**
  * A visitor's account on the public site (ADR-0020). Separate from admins: own table, own guard.
+ *
+ * @property Carbon|null $last_login_at
  */
 class EndUser extends Model implements AuthenticatableContract
 {
