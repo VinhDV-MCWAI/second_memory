@@ -6,23 +6,19 @@ import { StatusBadge } from '@/components/common/data-table/cells';
 import type { Column } from '@/components/common/data-table/data-table';
 import type { FilterField } from '@/components/common/data-table/filter-panel';
 import { ArticleForm } from '@/features/content/components/article-form';
-import { useApiData } from '@/shared/hooks/use-api-data';
+import { CategoryTreeSelect } from '@/features/content/components/category-tree-select';
+import { useCategoryTree } from '@/features/content/hooks/use-content-queries';
 import { API_ENDPOINTS } from '@/shared/api';
 import { SORT_ORDER } from '@/shared/config';
 import { formatDateTime } from '@/shared/utils/date-formatter';
-import type { Article, ContentCategory } from '@/shared/types/models';
+import type { Article } from '@/shared/types/models';
 import type { SearchField } from '@/shared/types/data-table.types';
-
-/** Every category fits the filter's select. */
-const CATEGORY_PAGE_SIZE = 100;
 
 /** Articles (ADR-0022): newest change first, with their categories and their place in a book. */
 export default function ArticleListPage() {
   const tFields = useTranslations('fields');
   const tContent = useTranslations('content');
-  const { data: categories } = useApiData<ContentCategory>(API_ENDPOINTS.CONTENT.CATEGORY, {
-    per_page: CATEGORY_PAGE_SIZE,
-  });
+  const { data: categories } = useCategoryTree();
 
   const columns: Column<Article>[] = [
     {
@@ -64,10 +60,19 @@ export default function ArticleListPage() {
   const filterFields: FilterField[] = [
     { key: 'title', label: tFields('title'), type: 'text' },
     {
-      key: 'category_id',
-      label: tFields('category'),
-      type: 'select',
-      options: categories.map((category) => ({ value: category.id, label: category.name })),
+      // Articles in at least one of the ticked categories
+      key: 'category_ids',
+      label: tFields('categories'),
+      type: 'custom',
+      render: (value, onChange) => (
+        <CategoryTreeSelect
+          id="category_ids"
+          mode="multiple"
+          categories={categories}
+          value={Array.isArray(value) ? value : []}
+          onChange={onChange}
+        />
+      ),
     },
     { key: 'is_public', label: tContent('public'), type: 'boolean' },
   ];

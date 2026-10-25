@@ -29,7 +29,9 @@ export function FilterPanel({ filters, onFilterChange, onReset, fields = [] }: F
   const handleChange = (key: string, value: unknown) => {
     setLocalFilters((prev) => ({
       ...prev,
-      [key]: value === ALL_VALUE ? undefined : value,
+      // An empty list (nothing ticked) clears the filter like "All"
+      [key]:
+        value === ALL_VALUE || (Array.isArray(value) && value.length === 0) ? undefined : value,
     }));
   };
 
@@ -101,6 +103,10 @@ export function FilterPanel({ filters, onFilterChange, onReset, fields = [] }: F
                     </SelectContent>
                   </Select>
                 )}
+                {field.type === 'custom' &&
+                  field.render?.(localFilters[field.key], (value) =>
+                    handleChange(field.key, value),
+                  )}
                 {field.type === 'date' && (
                   <Input
                     id={field.key}

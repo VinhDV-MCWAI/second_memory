@@ -40,7 +40,7 @@ export interface PaginatedResponse<T> {
  * Common Query Parameters
  */
 
-export type FilterValue = string | number | boolean | null | undefined;
+export type FilterValue = string | number | boolean | number[] | null | undefined;
 
 export interface ListQueryParams {
   page?: number;

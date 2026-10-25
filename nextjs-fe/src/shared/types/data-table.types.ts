@@ -59,9 +59,11 @@ export interface PaginationProps {
 export interface FilterField {
   key: string;
   label: string;
-  type: 'text' | 'select' | 'date' | 'boolean';
+  type: 'text' | 'select' | 'date' | 'boolean' | 'custom';
   options?: { value: string | number; label: string }[];
   placeholder?: string;
+  /** The input of a `custom` field; its id must be the field's key, for the label */
+  render?: (value: unknown, onChange: (value: unknown) => void) => ReactNode;
 }
 
 /**
