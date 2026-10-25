@@ -1,5 +1,12 @@
 import { describe, expect, it } from 'vitest';
-import { flattenTree, foldText, heightOf, matchesQuery, selfAndDescendants } from './category-tree';
+import {
+  dropTarget,
+  flattenTree,
+  foldText,
+  heightOf,
+  matchesQuery,
+  selfAndDescendants,
+} from './category-tree';
 
 const rows = [
   { id: 1, parent_id: null, name: 'Kỹ năng' },
@@ -37,5 +44,28 @@ describe('category tree', () => {
     const [, , queue] = flattenTree(rows);
     expect(matchesQuery(queue!, 'laravel hang')).toBe(true);
     expect(matchesQuery(queue!, 'docker')).toBe(false);
+  });
+
+  describe('dropTarget', () => {
+    // Tree order as the API sends it: 1 › (2 › 4, 5), 3
+    const tree = flattenTree(rows).map((node) => node.row);
+
+    it('places a row above, below or inside another, among the siblings without itself', () => {
+      expect(dropTarget(tree, 5, 2, 'before', 5)).toEqual({ parent_id: 1, position: 0 });
+      expect(dropTarget(tree, 4, 3, 'after', 5)).toEqual({ parent_id: null, position: 2 });
+      expect(dropTarget(tree, 3, 5, 'inside', 5)).toEqual({ parent_id: 5, position: 0 });
+      expect(dropTarget(tree, 3, 1, 'inside', 5)).toEqual({ parent_id: 1, position: 2 });
+    });
+
+    it('refuses its own branch, too many levels and a drop that changes nothing', () => {
+      expect(dropTarget(tree, 1, 4, 'inside', 5)).toBeNull();
+      expect(dropTarget(tree, 2, 2, 'before', 5)).toBeNull();
+      // 2 holds 4: two levels under 5 (level 2) make four, more than 3
+      expect(dropTarget(tree, 2, 5, 'inside', 3)).toBeNull();
+      expect(dropTarget(tree, 2, 5, 'after', 3)).toEqual({ parent_id: 1, position: 1 });
+      // 2 sits right above 5 already
+      expect(dropTarget(tree, 2, 5, 'before', 5)).toBeNull();
+      expect(dropTarget(tree, 5, 2, 'after', 5)).toBeNull();
+    });
   });
 });

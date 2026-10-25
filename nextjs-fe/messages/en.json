@@ -814,6 +814,14 @@
     "selectShown": "Select all shown",
     "clearShown": "Clear shown",
     "selectedCount": "{count} selected",
-    "noCategoryMatches": "No category matches"
+    "noCategoryMatches": "No category matches",
+    "expandAll": "Expand all",
+    "collapseAll": "Collapse all",
+    "expandNamed": "Expand {name}",
+    "collapseNamed": "Collapse {name}",
+    "dragNamed": "Drag {name}",
+    "dragHint": "Drag a row by its handle: drop on the top or bottom edge of another row to place it above or below, in the middle to put it inside.",
+    "dragNotWhileSearching": "Clear the search to drag rows.",
+    "noCategoriesYet": "No categories yet"
   }
 }

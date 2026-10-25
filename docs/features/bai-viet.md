@@ -15,7 +15,7 @@ Menu **Public content**:
 
 | Màn hình | Làm gì | Quyền |
 |---|---|---|
-| Categories (`/admin/content-categories`) | Cây nhóm → danh mục (danh mục thụt vào dưới nhóm). Nút **↑ ↓** đổi thứ tự trong cùng nhóm. Form: tên, danh mục cha (ô chọn dạng cây có tìm kiếm không dấu; "None" để thành nhóm; chính nó, nhánh của nó và chỗ làm cây sâu quá 5 cấp bị làm mờ), mô tả Markdown, đính kèm (thêm link, gắn file từ Files, ↑ ↓, xóa), công khai | `content-category.list/store/update/delete/move` |
+| Categories (`/admin/content-categories`) | Cây nhóm → danh mục, mỗi cấp thụt vào một nấc. Bấm mũi tên cạnh tên để thu gọn / mở rộng một nhánh, hoặc **Expand all** / **Collapse all**. Ô tìm kiếm không dấu hiện các danh mục khớp kèm các cấp cha của chúng. **Kéo thả** bằng nút cầm ở đầu dòng: thả vào mép trên / dưới một dòng để đặt trước / sau nó, thả vào giữa dòng để đưa vào bên trong (thành danh mục con, nằm cuối); chỗ thả không hợp lệ (vào chính nhánh của nó, quá 5 cấp) không hiện vạch đánh dấu. Đang tìm kiếm thì không kéo được. Nút **↑ ↓** vẫn đổi thứ tự trong cùng cha. Form: tên, danh mục cha (ô chọn dạng cây có tìm kiếm không dấu; "None" để thành nhóm; chính nó, nhánh của nó và chỗ làm cây sâu quá 5 cấp bị làm mờ), mô tả Markdown, đính kèm (thêm link, gắn file từ Files, ↑ ↓, xóa), công khai | `content-category.list/store/update/delete/move` |
 | Articles (`/admin/articles`) | Danh sách mới sửa nhất đứng đầu, hiện danh mục, bài cha, số bài con; lọc theo tiêu đề, danh mục, công khai. Form: tiêu đề, danh mục (ô chọn dạng cây: tìm kiếm không dấu theo cả đường dẫn, tick nhiều, **Select all shown** / **Clear shown** áp dụng cho các mục đang hiện), bài cha (chọn từ danh sách), tóm tắt, nội dung, công khai; phần **Sub-pages** liệt kê bài con theo thứ tự trong sách với nút ↑ ↓ | `article.list/store/update/delete/move` |
 
 Vai trò Chỉ xem có hai quyền `list`. Không còn ô gõ số thứ tự: mục mới luôn nằm cuối, đổi chỗ bằng ↑ ↓.
@@ -71,7 +71,7 @@ HTML viết thẳng vào bài được hiện thành chữ, không chạy; link 
 |---|---|
 | Cấp danh mục | Tối đa 5 cấp. Chuyển một danh mục thì cả nhánh đi theo; không chuyển được vào chính nó hay danh mục con cháu của nó, không làm cây sâu quá 5 cấp (báo lỗi ở ô danh mục cha) |
 | Cây bài viết | Bài cha phải là bài khác, không phải chính nó hay bài con của nó. Cả cây tối đa 10 cấp, tính cả các bài con đi theo khi chuyển một nhánh |
-| Thứ tự | ↑ ↓ đổi chỗ với bài / danh mục kế bên trong cùng cha. Đổi thứ tự không tính là sửa nội dung (ngày sửa giữ nguyên) nhưng có ghi nhật ký. Chuyển sang cha khác thì nằm cuối ở đó |
+| Thứ tự | ↑ ↓ đổi chỗ với bài / danh mục kế bên trong cùng cha. Kéo thả danh mục đặt nó vào cha mới ở đúng vị trí, theo cùng quy tắc như ô danh mục cha (chuyển cha thì tính là sửa). Đổi thứ tự không tính là sửa nội dung (ngày sửa giữ nguyên) nhưng có ghi nhật ký. Chuyển sang cha khác thì nằm cuối ở đó |
 | Đường dẫn | Tạo từ tên khi thêm ("Thiết kế" → `thiet-ke`), **không đổi** khi sửa tên. Đường dẫn bài viết **không trùng trên cả trang** (để sau này `[[đường-dẫn]]` luôn chỉ đúng một bài); trùng thì thêm số |
 | Tên danh mục | Không trùng (không phân biệt hoa thường) |
 | Đính kèm | Mỗi đính kèm cần **link hoặc file** (hoặc cả hai), tối đa 20. File phải đã upload xong, chưa xóa và ở thư mục admin được dùng; file đã gắn vẫn giữ khi bị đưa vào thùng rác (hiện "Deleted in Files"), xóa vĩnh viễn thì đính kèm mất theo |
@@ -88,7 +88,7 @@ HTML viết thẳng vào bài được hiện thành chữ, không chạy; link 
 |---|---|
 | `GET /api/admin/content-category/list` | Cây danh mục theo thứ tự (cha trước, con ngay sau; lọc `name`, `parent_id`, `root`, `is_public`); mỗi dòng có `parent_name`, `depth` (cấp, 1 trên cùng), `children_count`, `article_count`, `attachments` |
 | `POST content-category/store`, `PUT update/{id}`, `POST delete` | `parent_id`, `name`, `description`, `is_public`, `attachments: [{id?, title, url?, media_id?, note?}]` (thay cả danh sách theo thứ tự gửi; có `id` thì giữ đính kèm đó) |
-| `PUT content-category/move/{id}` | `{direction: up|down}` |
+| `PUT content-category/move/{id}` | `{direction: up\|down}` (một bước), hoặc `{parent_id, position}` khi kéo thả: đặt dưới `parent_id` (null là lên trên cùng) ở vị trí `position` trong các danh mục cùng cha, 0 là đầu |
 | `GET /api/admin/article/list` | Lọc `title`, `category_id`, `parent_id`, `root`, `is_public`; lọc theo `parent_id` thì xếp theo thứ tự trong sách |
 | `POST article/store`, `PUT update/{id}`, `POST delete`, `PUT move/{id}` | `parent_id`, `category_ids`, `title`, `summary`, `body`, `is_public` |
 | `POST article/preview` | `{body}` → `{html, toc}` như trang public, file dùng link ký tạm; không lưu gì (quyền `article.preview`) |

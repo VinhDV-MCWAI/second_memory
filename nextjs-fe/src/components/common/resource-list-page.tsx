@@ -81,39 +81,66 @@ type Editor<T> =
       dialogActions?: never;
     };
 
-export type ResourceListPageProps<T extends { id: number }> = Editor<T> & {
-  /** API resource, e.g. `API_ENDPOINTS.MASTER.ADMIN`. */
-  endpoint: string;
-  /** `entities.*` message keys for one and many records, e.g. `admin` / `admins`. */
-  entity: { one: string; many: string };
-  columns: Column<T>[];
-  filterFields: FilterField[];
-  searchFields: SearchField[];
-  defaultSortBy: string;
-  /** Newest-first lists pass `SORT_ORDER.DESC`. */
-  defaultSortOrder?: SortOrder;
-  /** localStorage key of the saved filters. */
-  filtersKey: string;
-  staleTime?: number;
-  /** Filters set by the page (e.g. from the URL), sent on top of the user's filters. */
-  fixedFilters?: Record<string, FilterValue>;
-  /** Shown above the search and filters, e.g. what the fixed filters mean. */
-  toolbar?: ReactNode;
-};
+/** What a page's own list view gets: the row buttons open the same dialogs as the table's. */
+export interface ResourceViewActions<T> {
+  /** Null without the update permission */
+  edit: ((record: T) => void) | null;
+  /** Null without the delete permission */
+  remove: ((id: number) => void) | null;
+}
+
+type Listing<T> =
+  | {
+      columns: Column<T>[];
+      filterFields: FilterField[];
+      searchFields: SearchField[];
+      defaultSortBy: string;
+      /** Newest-first lists pass `SORT_ORDER.DESC`. */
+      defaultSortOrder?: SortOrder;
+      /** localStorage key of the saved filters. */
+      filtersKey: string;
+      staleTime?: number;
+      /** Filters set by the page (e.g. from the URL), sent on top of the user's filters. */
+      fixedFilters?: Record<string, FilterValue>;
+      view?: never;
+    }
+  | {
+      /** The page loads and shows its records itself (e.g. the category tree) instead of the table. */
+      view: (actions: ResourceViewActions<T>) => ReactNode;
+      columns?: never;
+      filterFields?: never;
+      searchFields?: never;
+      defaultSortBy?: never;
+      defaultSortOrder?: never;
+      filtersKey?: never;
+      staleTime?: never;
+      fixedFilters?: never;
+    };
+
+export type ResourceListPageProps<T extends { id: number }> = Editor<T> &
+  Listing<T> & {
+    /** API resource, e.g. `API_ENDPOINTS.MASTER.ADMIN`. */
+    endpoint: string;
+    /** `entities.*` message keys for one and many records, e.g. `admin` / `admins`. */
+    entity: { one: string; many: string };
+    /** Shown above the search and filters, e.g. what the fixed filters mean. */
+    toolbar?: ReactNode;
+  };
 
 /** Admin list page: header, search/filters, bulk delete, table, pagination, create/edit/delete dialogs. */
 export function ResourceListPage<T extends { id: number }>({
   endpoint,
   entity,
-  columns,
-  filterFields,
-  searchFields,
+  columns = [],
+  filterFields = [],
+  searchFields = [],
   defaultSortBy,
   defaultSortOrder = SORT_ORDER.ASC,
-  filtersKey,
+  filtersKey = '',
   staleTime,
   fixedFilters,
   toolbar,
+  view,
   ...editor
 }: ResourceListPageProps<T>) {
   const [page, setPage] = useState<number>(PAGINATION.DEFAULT_PAGE);
@@ -148,6 +175,7 @@ export function ResourceListPage<T extends { id: number }>({
     sort_by: sortBy,
     sort_order: sortOrder,
     staleTime,
+    enabled: !view,
   });
   const { remove } = useCrud(endpoint);
   const { execute, isLoading: isDeleteProcessing } = useActionLock({
@@ -248,62 +276,71 @@ export function ResourceListPage<T extends { id: number }>({
 
       <div className="mt-6 space-y-4">
         {toolbar}
-        <div className="flex gap-2">
-          <AdvancedSearch fields={searchFields} onSearch={handleAdvancedSearch} />
-          <SavedFilters
-            currentFilters={filters}
-            onApplyFilter={(f) => applyFilters(f as Record<string, FilterValue>)}
-            storageKey={filtersKey}
-          />
-        </div>
+        {view ? (
+          view({
+            edit: canUpdate ? openEditor : null,
+            remove: canDelete ? (id) => askDelete([id]) : null,
+          })
+        ) : (
+          <>
+            <div className="flex gap-2">
+              <AdvancedSearch fields={searchFields} onSearch={handleAdvancedSearch} />
+              <SavedFilters
+                currentFilters={filters}
+                onApplyFilter={(f) => applyFilters(f as Record<string, FilterValue>)}
+                storageKey={filtersKey}
+              />
+            </div>
 
-        <FilterPanel
-          filters={filters}
-          onFilterChange={(f) => applyFilters(f as Record<string, FilterValue>)}
-          onReset={() => applyFilters({})}
-          fields={filterFields}
-        />
+            <FilterPanel
+              filters={filters}
+              onFilterChange={(f) => applyFilters(f as Record<string, FilterValue>)}
+              onReset={() => applyFilters({})}
+              fields={filterFields}
+            />
 
-        {canDelete && (
-          <BulkActions
-            selectedIds={selectedIds}
-            onClearSelection={() => setSelectedIds([])}
-            actions={bulkActions}
-            isLoading={loading}
-          />
+            {canDelete && (
+              <BulkActions
+                selectedIds={selectedIds}
+                onClearSelection={() => setSelectedIds([])}
+                actions={bulkActions}
+                isLoading={loading}
+              />
+            )}
+
+            <DataTable
+              data={data}
+              columns={columns}
+              loading={loading}
+              selectedIds={selectedIds}
+              onSelectionChange={canDelete ? setSelectedIds : undefined}
+              onSort={handleSort}
+              sortBy={sortBy}
+              sortOrder={sortOrder}
+              onEdit={
+                canUpdate
+                  ? (id) => {
+                      const record = data.find((row) => row.id === id);
+                      if (record) openEditor(record);
+                    }
+                  : undefined
+              }
+              onDelete={canDelete ? (id) => askDelete([id]) : undefined}
+              showActions={canUpdate || canDelete}
+            />
+
+            <Pagination
+              pagination={pagination}
+              page={page}
+              onPageChange={setPage}
+              perPage={perPage}
+              onPerPageChange={(next) => {
+                setPerPage(next);
+                setPage(PAGINATION.DEFAULT_PAGE);
+              }}
+            />
+          </>
         )}
-
-        <DataTable
-          data={data}
-          columns={columns}
-          loading={loading}
-          selectedIds={selectedIds}
-          onSelectionChange={canDelete ? setSelectedIds : undefined}
-          onSort={handleSort}
-          sortBy={sortBy}
-          sortOrder={sortOrder}
-          onEdit={
-            canUpdate
-              ? (id) => {
-                  const record = data.find((row) => row.id === id);
-                  if (record) openEditor(record);
-                }
-              : undefined
-          }
-          onDelete={canDelete ? (id) => askDelete([id]) : undefined}
-          showActions={canUpdate || canDelete}
-        />
-
-        <Pagination
-          pagination={pagination}
-          page={page}
-          onPageChange={setPage}
-          perPage={perPage}
-          onPerPageChange={(next) => {
-            setPerPage(next);
-            setPage(PAGINATION.DEFAULT_PAGE);
-          }}
-        />
       </div>
 
       {editor.editor ? (
