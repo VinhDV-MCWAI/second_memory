@@ -5,24 +5,24 @@ import { IdPicker } from './id-picker';
 import { apiUrl, envelope, server } from '@/test/server';
 import { createQueryWrapper } from '@/test/query-wrapper';
 
-const tags = (data: { id: number; name: string }[]) =>
+const categories = (data: { id: number; name: string }[]) =>
   HttpResponse.json(envelope({ data, current_page: 1, last_page: 1, per_page: 100, total: 2 }));
 
 const renderPicker = (value: number[], onChange = vi.fn()) => {
   const { Wrapper } = createQueryWrapper();
   render(
     <Wrapper>
-      <IdPicker endpoint="/admin/tag" emptyMessage="noTags" value={value} onChange={onChange} />
+      <IdPicker endpoint="/admin/content-category" emptyMessage="noCategories" value={value} onChange={onChange} />
     </Wrapper>,
   );
   return onChange;
 };
 
 describe('IdPicker', () => {
-  it('adds and removes tag ids', async () => {
+  it('adds and removes category ids', async () => {
     server.use(
-      http.get(apiUrl('/admin/tag/list'), () =>
-        tags([
+      http.get(apiUrl('/admin/content-category/list'), () =>
+        categories([
           { id: 1, name: 'php' },
           { id: 2, name: 'sql' },
         ]),
@@ -37,11 +37,11 @@ describe('IdPicker', () => {
     expect(onChange).toHaveBeenLastCalledWith([]);
   });
 
-  it('says so when there are no tags', async () => {
-    server.use(http.get(apiUrl('/admin/tag/list'), () => tags([])));
+  it('says so when there are no categories', async () => {
+    server.use(http.get(apiUrl('/admin/content-category/list'), () => categories([])));
 
     renderPicker([]);
 
-    expect(await screen.findByText('noTags')).toBeTruthy();
+    expect(await screen.findByText('noCategories')).toBeTruthy();
   });
 });
