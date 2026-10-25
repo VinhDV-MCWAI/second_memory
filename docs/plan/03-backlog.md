@@ -77,7 +77,7 @@ Các mục còn lại của giai đoạn này (triển khai, vận hành, sự c
 
 | Mã | Việc | Kết quả | Trạng thái |
 |---|---|---|---|
-| READ-01 | Hồ sơ yêu cầu, thử và đo công cụ chuyển trang của Astro, quyết định thiết kế, đưa việc lên bảng | REQ-006 + ADR-0024 | doing |
+| READ-01 | Hồ sơ yêu cầu, thử và đo công cụ chuyển trang của Astro, quyết định thiết kế, đưa việc lên bảng | REQ-006 + ADR-0024 | done (c210f7f3 — REQ-006 + ADR-0024; thử ClientRouter của Astro trên bản build: +16,4 KB JavaScript (5,6 KB nén), HTML máy chủ vẫn đủ nội dung (SEO giữ nguyên); READ-02…READ-06 lên bảng; dọn: bản build thử và máy chủ thử trong container đã xóa, không tạo dữ liệu) |
 | READ-02 | API + DB: lượt xem và ☆ cho danh mục, lượt đọc thật cho bài, chỗ đang đọc cho 🔖, danh sách bài cho tab trang chủ, cây danh mục, đoạn trích tìm kiếm | API mới có test | todo |
 | READ-03 | Trang chủ tóm tắt: thẻ danh mục có sắp xếp, tab bài viết, Xem thêm mở trang đọc | Trang chủ mới | todo |
 | READ-04 | Trang đọc 4 cột: cây danh mục, bài theo danh mục, nội dung + đường dẫn, mục lục sáng theo chỗ đọc; tìm trong cột, thu gọn, chuyển trang không tải lại, nhớ chỗ đang đọc, lượt đọc thật | Trang đọc mới | todo |

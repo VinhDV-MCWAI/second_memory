@@ -113,6 +113,8 @@ Mỗi dòng do `scripts/lane.sh done` tự thêm. Không sửa tay. Các dòng t
 
 - 2026-10-25 — [lane main] UX-03 done: 87108857, 7d1c5566 — ô lọc Danh mục ở màn hình bài viết là cây có ô tick và tìm không dấu, hiện bài thuộc ít nhất một danh mục đã tick (không tính danh mục con); API nhận thêm category_ids[], category_id cũ vẫn dùng được; make verify pass (273 backend, 177 giao diện, 58 importer); dọn: make clean, không tạo dữ liệu
 
+- 2026-10-25 — [lane main] READ-01 done: c210f7f3 — REQ-006 + ADR-0024; thử ClientRouter của Astro trên bản build: +16,4 KB JavaScript (5,6 KB nén), HTML máy chủ vẫn đủ nội dung (SEO giữ nguyên); READ-02…READ-06 lên bảng; dọn: bản build thử và máy chủ thử trong container đã xóa, không tạo dữ liệu
+
 ## Next step
 
 1. Đầu phiên: đọc file này, rồi `scripts/lane.sh status`. Bảng việc chỉ còn các việc "để sau" theo quyết định chủ dự án.
