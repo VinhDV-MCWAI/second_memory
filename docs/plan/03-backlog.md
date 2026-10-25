@@ -70,3 +70,16 @@ Các mục còn lại của giai đoạn này (triển khai, vận hành, sự c
 | KB-06 | Lượt xem, xếp hạng (Mới nhất, Cập nhật, Đọc nhiều, Được lưu nhiều), tìm kiếm public và quản trị, trang tổng quan, cột "dùng ở đâu" của Files | Xếp hạng và tìm kiếm chạy | done (f57082a5, 14352c31, 671cb151, c57624c5 — lượt xem (một người 30 phút tính 1, chỉ lưu con số, khóa Redis, giới hạn riêng 600/phút), tab Đọc nhiều / Được lưu nhiều kèm số lượt xem và lưu, tìm kiếm bài + danh mục (quản trị có cả bài riêng tư và file; trang public /search và ô tìm đầu trang; gõ không dấu, gõ sai vẫn ra), trang tổng quan: tổng lượt xem, 5 bài đọc nhiều, 5 bài lưu nhiều, Files: cột Used in; migration thử quay lui trên DB testing; make verify pass (251 backend, 155 giao diện, 63 importer); dọn: make clean, lượt xem thử đưa về 0, ảnh chụp và file tạm) |
 | KB-07 | Nhập từ Obsidian thành bài viết (gửi cả nội dung, danh mục, bài cha, `[[ ]]`) | `make import` tạo bài viết | done (6bf0b36a, d36458e2, 787d95ca, e39cb796 — make import tạo bài viết từ ghi chú Obsidian: gửi cả nội dung, bài cha (đường dẫn, tên file hoặc [[ ]]), danh mục theo tên (tên lạ được báo, không tự tạo), [[link]] và ![[nhúng]] đổi sang slug, link tới ghi chú không đăng chỉ còn chữ; ghi chú bị bỏ thì bài bị ẩn; token mới khóa article:import; thử thật trên dev với vault TMP 2 ghi chú; make verify pass (269 backend, 155 giao diện, 58 importer, astro check 0 lỗi); dọn: 2 bài TMP xóa qua service, token đã thu hồi, vault thử và file tạm, make clean) |
 | KB-08 | Tài liệu tính năng, test trình duyệt, dọn dẹp, đóng gói `v3.0.0` | `docs/releases/v3.0.0.md` + tag | doing |
+
+## 11. Trang chủ tóm tắt và trang đọc 4 cột
+
+[REQ-006](../requirements/REQ-006-trang-chu-va-trang-doc.md), [ADR-0024](../adr/0024-trang-doc-chuyen-trang-khong-tai-lai.md). Hai giao diện riêng: trang chủ tóm tắt, trang đọc 4 cột chuyển bài không tải lại.
+
+| Mã | Việc | Kết quả | Trạng thái |
+|---|---|---|---|
+| READ-01 | Hồ sơ yêu cầu, thử và đo công cụ chuyển trang của Astro, quyết định thiết kế, đưa việc lên bảng | REQ-006 + ADR-0024 | doing |
+| READ-02 | API + DB: lượt xem và ☆ cho danh mục, lượt đọc thật cho bài, chỗ đang đọc cho 🔖, danh sách bài cho tab trang chủ, cây danh mục, đoạn trích tìm kiếm | API mới có test | todo |
+| READ-03 | Trang chủ tóm tắt: thẻ danh mục có sắp xếp, tab bài viết, Xem thêm mở trang đọc | Trang chủ mới | todo |
+| READ-04 | Trang đọc 4 cột: cây danh mục, bài theo danh mục, nội dung + đường dẫn, mục lục sáng theo chỗ đọc; tìm trong cột, thu gọn, chuyển trang không tải lại, nhớ chỗ đang đọc, lượt đọc thật | Trang đọc mới | todo |
+| READ-05 | Tìm kiếm có nhãn Danh mục / Bài viết / Mục trong bài / Nội dung và đoạn trích tô đậm từ khóa | Trang tìm kiếm mới | todo |
+| READ-06 | Tài liệu, test trình duyệt, đo JavaScript, dọn dẹp, thử lại nghiệm thu `v3.0.0` | `make verify`, `make e2e` xanh | todo |
