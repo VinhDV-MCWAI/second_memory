@@ -1,12 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import {
-  useFieldArray,
-  type Control,
-  type FieldErrors,
-  type UseFormRegister,
-} from 'react-hook-form';
+import { useFieldArray, useFormState, type Control, type UseFormRegister } from 'react-hook-form';
 import { useTranslations } from 'next-intl';
 import { ArrowDown, ArrowUp, Link2, Paperclip, X } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
@@ -24,7 +19,6 @@ import type { AttachedFile, MediaItem } from '@/shared/types/models';
 interface AttachmentsFieldProps {
   control: Control<ContentCategoryFormData>;
   register: UseFormRegister<ContentCategoryFormData>;
-  errors: FieldErrors<ContentCategoryFormData>;
   /** Files the category had when the form opened, by media id (names, sizes, availability). */
   initialFiles: AttachedFile[];
 }
@@ -33,15 +27,13 @@ interface AttachmentsFieldProps {
  * Evidence of a category (ADR-0022): links and files of the file manager, each with a title and a
  * note, in the order they are shown. A file deleted in Files stays attached and is marked.
  */
-export function AttachmentsField({
-  control,
-  register,
-  errors,
-  initialFiles,
-}: AttachmentsFieldProps) {
+export function AttachmentsField({ control, register, initialFiles }: AttachmentsFieldProps) {
   const t = useTranslations('content');
   const { can } = usePermissions();
   const { fields, append, remove, swap } = useFieldArray({ control, name: 'attachments' });
+  // Subscribe here: errors passed as a prop are mutated in place, so a memoised child (React
+  // Compiler) would never show an error the server sent back
+  const { errors } = useFormState({ control, name: 'attachments' });
   const [known, setKnown] = useState<AttachedFile[]>(initialFiles);
   const [picking, setPicking] = useState(false);
   const room = ValidationRules.ATTACHMENTS_MAX - fields.length;

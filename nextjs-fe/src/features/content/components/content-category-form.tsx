@@ -163,7 +163,6 @@ export function ContentCategoryForm({
           <AttachmentsField
             control={control}
             register={register}
-            errors={errors}
             initialFiles={initialFiles}
           />
           {errors.attachments?.message && (
