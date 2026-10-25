@@ -77,8 +77,8 @@ class ContentCategoryService extends AuditedCrudService
     }
 
     /**
-     * Two levels: the parent must be a group (no parent itself), and a group that holds categories
-     * cannot move under another one.
+     * A tree at most CATEGORY_DEPTH_MAX levels deep, never a loop: a category cannot go under itself
+     * or under a category inside it, and the categories it holds move with it.
      *
      * @param  array<string, mixed>  $payload
      *
@@ -90,9 +90,13 @@ class ContentCategoryService extends AuditedCrudService
         if ($parentId === null) {
             return;
         }
-        $parent = $this->categories->find($parentId);
-        if ($parentId === $id || $parent->parent_id !== null || ($id !== null && $this->categories->hasChildren($id))) {
+        $this->categories->find($parentId);
+        if ($id !== null && $this->categories->isSelfOrDescendant($parentId, $id)) {
             throw ValidationException::withMessages(['parent_id' => Messages::E0048]);
+        }
+        $height = $id === null ? 1 : $this->categories->height($id);
+        if ($this->categories->depth($parentId) + $height > ContentConst::CATEGORY_DEPTH_MAX) {
+            throw ValidationException::withMessages(['parent_id' => Messages::E0055]);
         }
     }
 

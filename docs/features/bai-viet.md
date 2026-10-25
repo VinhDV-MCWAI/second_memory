@@ -2,7 +2,7 @@
 
 Nơi lưu kinh nghiệm của chủ dự án và hiện ra ở [trang public](trang-public.md). Chỉ có hai khái niệm:
 
-- **Danh mục**, hai cấp: **nhóm** (ví dụ "Kỹ năng", "Quy trình làm phần mềm") và **danh mục** trong nhóm (ví dụ "Laravel", "Thiết kế"). Danh mục có mô tả Markdown và **đính kèm** (link hoặc file) làm bằng chứng.
+- **Danh mục**, tối đa **5 cấp** (từ 2026-10-25, [ADR-0023](../adr/0023-danh-muc-nhieu-cap.md)): cấp trên cùng gọi là **nhóm** (ví dụ "Kỹ năng", "Quy trình làm phần mềm"), bên trong là danh mục và danh mục con (ví dụ Kỹ năng → Backend → Laravel). Danh mục có mô tả Markdown và **đính kèm** (link hoặc file) làm bằng chứng.
 - **Bài viết**, viết bằng Markdown, thuộc **nhiều danh mục**. Một bài có thể là **bài con** của bài khác, nên một cuốn sách là một cây bài viết (tối đa 10 cấp).
 
 Yêu cầu: [REQ-005](../requirements/REQ-005-trang-tai-lieu-kinh-nghiem.md). Thiết kế: [ADR-0022](../adr/0022-trang-tai-lieu-kinh-nghiem.md) (thay một phần [ADR-0021](../adr/0021-public-home-categories-articles.md)).
@@ -25,7 +25,7 @@ Vai trò Chỉ xem có hai quyền `list`. Không còn ô gõ số thứ tự: m
 | Địa chỉ | Hiện gì |
 |---|---|
 | http://localhost:81/ | Kiểu diễn đàn: mỗi nhóm một bảng, mỗi danh mục một dòng có số bài, bài mới nhất và ngày viết |
-| http://localhost:81/categories/{danh mục} | Mô tả, đính kèm, danh sách bài (20 bài một trang) xếp **Mới nhất** hoặc **Cập nhật gần đây**, lọc thêm "cũng thuộc danh mục…", tìm theo tiêu đề. Trang của một nhóm có thêm các danh mục con và liệt kê bài của cả nhóm |
+| http://localhost:81/categories/{danh mục} | Mô tả, đính kèm, danh sách bài (20 bài một trang) xếp **Mới nhất** hoặc **Cập nhật gần đây**, lọc thêm "cũng thuộc danh mục…", tìm theo tiêu đề. Trang có thêm các danh mục ngay bên trong và liệt kê bài của mọi danh mục con cháu; phía trên trang hiện đủ các cấp cha |
 | http://localhost:81/articles/{bài} | Bố cục trang tài liệu 3 cột: cây sách (hoặc bài cùng danh mục), nội dung, mục lục; bài trước / sau, nút ☆ 🔖. Chi tiết ở [trang public](trang-public.md) |
 | `/guides/{danh mục}`, `/guides/{danh mục}/{bài}`, `/skills`, `/skills/{slug}` | Đường dẫn cũ, chuyển hướng 301 sang đường dẫn mới |
 
@@ -69,13 +69,13 @@ HTML viết thẳng vào bài được hiện thành chữ, không chạy; link 
 
 | Quy tắc | Chi tiết |
 |---|---|
-| Hai cấp danh mục | Nhóm không có cha. Danh mục chỉ nằm trong một nhóm. Nhóm đang có danh mục con không thể chuyển vào nhóm khác (báo lỗi ở ô nhóm) |
+| Cấp danh mục | Tối đa 5 cấp. Chuyển một danh mục thì cả nhánh đi theo; không chuyển được vào chính nó hay danh mục con cháu của nó, không làm cây sâu quá 5 cấp (báo lỗi ở ô danh mục cha) |
 | Cây bài viết | Bài cha phải là bài khác, không phải chính nó hay bài con của nó. Cả cây tối đa 10 cấp, tính cả các bài con đi theo khi chuyển một nhánh |
 | Thứ tự | ↑ ↓ đổi chỗ với bài / danh mục kế bên trong cùng cha. Đổi thứ tự không tính là sửa nội dung (ngày sửa giữ nguyên) nhưng có ghi nhật ký. Chuyển sang cha khác thì nằm cuối ở đó |
 | Đường dẫn | Tạo từ tên khi thêm ("Thiết kế" → `thiet-ke`), **không đổi** khi sửa tên. Đường dẫn bài viết **không trùng trên cả trang** (để sau này `[[đường-dẫn]]` luôn chỉ đúng một bài); trùng thì thêm số |
 | Tên danh mục | Không trùng (không phân biệt hoa thường) |
 | Đính kèm | Mỗi đính kèm cần **link hoặc file** (hoặc cả hai), tối đa 20. File phải đã upload xong, chưa xóa và ở thư mục admin được dùng; file đã gắn vẫn giữ khi bị đưa vào thùng rác (hiện "Deleted in Files"), xóa vĩnh viễn thì đính kèm mất theo |
-| Công khai | Danh mục hiện khi nó và nhóm của nó công khai. Bài hiện khi nó và **mọi bài cha** công khai; danh mục chỉ quyết định bài có trong danh sách của danh mục hay không |
+| Công khai | Danh mục hiện khi nó và mọi cấp phía trên công khai. Bài hiện khi nó và **mọi bài cha** công khai; danh mục chỉ quyết định bài có trong danh sách của danh mục hay không |
 | Xóa | Nhóm còn danh mục con: bị chặn (trừ khi xóa cùng lúc). Bài còn bài con: bị chặn (trừ khi xóa cùng lúc). Xóa danh mục thì bài viết chỉ mất liên kết với danh mục đó |
 | Lưu đệm | Trang public chậm tối đa 60 giây so với trang quản trị |
 | Lượt xem | Mỗi lần trang public hiện một bài, máy chủ trang public báo cho API kèm mã băm của IP + trình duyệt người xem. Cùng một người mở lại trong **30 phút** chỉ tính 1. Chỉ lưu con số, không lưu ai xem: mã băm chỉ nằm trong Redis 30 phút để nhận ra lần mở lại. Lượt xem không đổi ngày sửa của bài |
@@ -86,14 +86,14 @@ HTML viết thẳng vào bài được hiện thành chữ, không chạy; link 
 
 | API | Làm gì |
 |---|---|
-| `GET /api/admin/content-category/list` | Cây nhóm → danh mục (lọc `name`, `parent_id`, `root`, `is_public`); mỗi dòng có `parent_name`, `children_count`, `article_count`, `attachments` |
+| `GET /api/admin/content-category/list` | Cây danh mục theo thứ tự (cha trước, con ngay sau; lọc `name`, `parent_id`, `root`, `is_public`); mỗi dòng có `parent_name`, `depth` (cấp, 1 trên cùng), `children_count`, `article_count`, `attachments` |
 | `POST content-category/store`, `PUT update/{id}`, `POST delete` | `parent_id`, `name`, `description`, `is_public`, `attachments: [{id?, title, url?, media_id?, note?}]` (thay cả danh sách theo thứ tự gửi; có `id` thì giữ đính kèm đó) |
 | `PUT content-category/move/{id}` | `{direction: up|down}` |
 | `GET /api/admin/article/list` | Lọc `title`, `category_id`, `parent_id`, `root`, `is_public`; lọc theo `parent_id` thì xếp theo thứ tự trong sách |
 | `POST article/store`, `PUT update/{id}`, `POST delete`, `PUT move/{id}` | `parent_id`, `category_ids`, `title`, `summary`, `body`, `is_public` |
 | `POST article/preview` | `{body}` → `{html, toc}` như trang public, file dùng link ký tạm; không lưu gì (quyền `article.preview`) |
 | `GET /api/public/home` | Nhóm công khai theo thứ tự, mỗi nhóm có `categories: [{name, slug, article_count, latest}]` (`latest`: bài mới nhất hoặc null) |
-| `GET /api/public/categories/{slug}?sort=&also=&q=&page=` | `group`, `description_html`, `attachments` (`title`, `url`, `note`, `file: {key, name, size, mime_type, thumbnail_url}`), `categories` (danh mục con của nhóm), `articles`, `page`, `last_page`, `total`. `sort`: `newest` (mặc định), `updated`, `most_read` hoặc `most_saved`, sai thì 422; mỗi bài có thêm `view_count`, `save_count`; `also`: slug danh mục thứ hai; `q`: chữ trong tiêu đề, không phân biệt dấu |
+| `GET /api/public/categories/{slug}?sort=&also=&q=&page=` | `ancestors` (các cấp cha từ trên xuống), `description_html`, `attachments` (`title`, `url`, `note`, `file: {key, name, size, mime_type, thumbnail_url}`), `categories` (danh mục ngay bên trong), `articles`, `page`, `last_page`, `total`. `sort`: `newest` (mặc định), `updated`, `most_read` hoặc `most_saved`, sai thì 422; mỗi bài có thêm `view_count`, `save_count`; `also`: slug danh mục thứ hai; `q`: chữ trong tiêu đề, không phân biệt dấu |
 | `GET /api/public/articles/{slug}` | `title`, `key` (mã để lưu), `summary`, `body_html` (đã chèn bài và file), `toc`, `created_at`, `updated_at`, `categories`, `book` (cây sách từ gốc, chỉ phần đang hiện), `ancestors`, `previous`, `next`, `related` (bài cùng danh mục khi bài không nằm trong sách) |
 | `GET /api/public/files/{key}` | Link tạm của file đính kèm danh mục hoặc file nhúng trong bài đang hiện |
 | `POST /api/public/articles/{slug}/view` | `{visitor}` (sha256 dạng hex của IP + trình duyệt) → `{counted}`: `false` khi người này đã được tính trong 30 phút qua. Chỉ máy chủ trang public gọi; giới hạn riêng 600 lần / phút để không ăn vào giới hạn 60 lần / phút của các API đọc |
@@ -106,7 +106,7 @@ API public không cần đăng nhập, riêng tư hay không tồn tại đều 
 
 | Bảng | Dùng cho |
 |---|---|
-| `content_category` | `parent_id` (nhóm), tên (duy nhất), `slug`, mô tả Markdown (tối đa 20.000 ký tự), `sort_order`, `is_public` |
+| `content_category` | `parent_id` (danh mục cha, tối đa 5 cấp), tên (duy nhất), `slug`, mô tả Markdown (tối đa 20.000 ký tự), `sort_order`, `is_public` |
 | `category_attachment` | Đính kèm: tiêu đề, `url`, `media_id` (file trong Files), ghi chú, `position`, `public_id` (mã của `/files/{mã}`) |
 | `article` | `parent_id` (bài cha), tiêu đề, `slug` (duy nhất), tóm tắt, nội dung Markdown, `sort_order` (trong cùng cha), `is_public`, `public_key`, `view_count` (lượt xem), `search_text` / `search_tsv` (cột tự tính cho [tìm kiếm](tim-kiem.md)) |
 | `article_category` | Bài ↔ danh mục |

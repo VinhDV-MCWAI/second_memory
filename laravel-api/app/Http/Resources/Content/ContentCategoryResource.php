@@ -34,8 +34,10 @@ class ContentCategoryResource extends JsonResource
             'sort_order' => (int) $this->sort_order,
             'is_public' => (bool) $this->is_public,
             'article_count' => (int) $this->articles_count,
-            /** Categories inside this group */
+            /** Categories right inside this one */
             'children_count' => (int) $this->children_count,
+            /** Level in the tree, 1 at the top (ContentConst::CATEGORY_DEPTH_MAX at most) */
+            'depth' => (int) ($this->getAttribute('depth') ?? 1),
             /** Links or files shown as the category's evidence, in display order */
             'attachments' => $this->attachments->map(fn (CategoryAttachment $attachment): array => [
                 'id' => $attachment->id,

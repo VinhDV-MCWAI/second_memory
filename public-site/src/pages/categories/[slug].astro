@@ -10,7 +10,7 @@ const HTTP_NOT_FOUND = 404;
 
 const slug = Astro.params.slug ?? '';
 const query = readCategoryQuery(Astro.url.searchParams);
-// A private category (or one in a private group) and a missing one both answer 404 (ADR-0022)
+// A private category (or one below a private one) and a missing one both answer 404 (ADR-0022)
 const category = await getPublicCategory(slug, query);
 if (!category) {
   Astro.response.status = HTTP_NOT_FOUND;
@@ -38,14 +38,14 @@ const dateOf = (article: { created_at: string; updated_at: string }) =>
       <a href={ROUTES.HOME} class="hover:underline">
         Home
       </a>
-      {category.group && (
+      {category.ancestors.map((ancestor) => (
         <>
           {' › '}
-          <a href={ROUTES.category(category.group.slug)} class="hover:underline">
-            {category.group.name}
+          <a href={ROUTES.category(ancestor.slug)} class="hover:underline">
+            {ancestor.name}
           </a>
         </>
-      )}
+      ))}
     </nav>
     <h1 class="mt-4 text-3xl font-semibold">{category.name}</h1>
     <RichHtml html={category.description_html} class="mt-4" />

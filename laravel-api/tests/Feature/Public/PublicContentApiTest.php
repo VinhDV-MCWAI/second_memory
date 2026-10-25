@@ -49,7 +49,7 @@ final class PublicContentApiTest extends TestCase
         Article::factory()->inCategory($laravel)->private()->create();
 
         $response = $this->getJson("/api/public/categories/{$laravel->slug}")->assertOk()
-            ->assertJsonPath('data.data.group.name', 'Kỹ năng')
+            ->assertJsonPath('data.data.ancestors', [['name' => 'Kỹ năng', 'slug' => $group->slug]])
             ->assertJsonPath('data.data.attachments.0', ['title' => 'Docs', 'url' => 'https://laravel.com/docs', 'note' => null, 'file' => null])
             ->assertJsonPath('data.data.articles.*.title', ['Mới', 'Cũ'])
             ->assertJsonPath('data.data.total', 2);
@@ -79,18 +79,27 @@ final class PublicContentApiTest extends TestCase
             ->assertJsonPath('data.data.articles.0.save_count', 1);
     }
 
-    public function test_a_group_lists_its_categories_and_their_articles(): void
+    public function test_a_category_lists_the_categories_inside_and_the_articles_of_every_level_below(): void
     {
-        $group = ContentCategory::factory()->create();
+        $group = ContentCategory::factory()->create(['name' => 'Kỹ năng']);
         $shown = ContentCategory::factory()->in($group)->create(['name' => 'Laravel']);
+        $deeper = ContentCategory::factory()->in($shown)->create(['name' => 'Hàng đợi']);
         $hidden = ContentCategory::factory()->in($group)->private()->create();
-        Article::factory()->inCategory($shown)->create(['title' => 'Hàng đợi']);
+        $underHidden = ContentCategory::factory()->in($hidden)->create();
+        Article::factory()->inCategory($shown)->create(['title' => 'Cài đặt', 'created_at' => now()->subDay()]);
+        Article::factory()->inCategory($deeper)->create(['title' => 'Redis']);
         Article::factory()->inCategory($hidden)->create(['title' => 'Riêng']);
+        Article::factory()->inCategory($underHidden)->create(['title' => 'Dưới mục riêng']);
 
         $this->getJson("/api/public/categories/{$group->slug}")->assertOk()
-            ->assertJsonPath('data.data.group', null)
+            ->assertJsonPath('data.data.ancestors', [])
             ->assertJsonPath('data.data.categories', [['name' => 'Laravel', 'slug' => $shown->slug, 'article_count' => 1]])
-            ->assertJsonPath('data.data.articles.*.title', ['Hàng đợi']);
+            ->assertJsonPath('data.data.articles.*.title', ['Redis', 'Cài đặt']);
+        $this->getJson("/api/public/categories/{$deeper->slug}")->assertOk()
+            ->assertJsonPath('data.data.ancestors.*.name', ['Kỹ năng', 'Laravel']);
+
+        // A category under a private one is hidden however public it is itself
+        $this->getJson("/api/public/categories/{$underHidden->slug}")->assertNotFound();
     }
 
     public function test_a_category_list_narrows_by_a_second_category_and_title_words_and_pages(): void

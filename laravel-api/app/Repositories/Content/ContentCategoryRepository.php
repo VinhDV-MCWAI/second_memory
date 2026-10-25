@@ -11,6 +11,7 @@ use App\Models\Content\CategoryAttachment;
 use App\Models\Content\ContentCategory;
 use App\Repositories\Concerns\MakesUniqueSlugs;
 use App\Repositories\Concerns\MovesAmongSiblings;
+use App\Repositories\Concerns\WalksParentTree;
 use App\Repositories\CrudRepository;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
@@ -19,6 +20,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\Relation;
+use Illuminate\Support\Facades\DB;
 
 /**
  * Groups and categories of the public site (ADR-0021, ADR-0022). The slug is set once on create;
@@ -28,9 +30,20 @@ class ContentCategoryRepository extends CrudRepository
 {
     use MakesUniqueSlugs;
     use MovesAmongSiblings;
+    use WalksParentTree;
 
-    /** Groups in their order, each followed by its categories in theirs */
-    private const TREE_ORDER = 'coalesce(parent.sort_order, content_category.sort_order), coalesce(parent.id, content_category.id), content_category.parent_id IS NOT NULL, content_category.sort_order, content_category.id';
+    /**
+     * Every category with its level (1 at the top) and its place in the tree: ordering by `path`
+     * puts each category right after its parent, siblings in their order (depth first).
+     */
+    private const TREE_PATHS = <<<'SQL'
+        WITH RECURSIVE tree(id, depth, path) AS (
+            SELECT id, 1, ARRAY[sort_order, id] FROM content_category WHERE parent_id IS NULL
+            UNION ALL
+            SELECT c.id, tree.depth + 1, tree.path || ARRAY[c.sort_order, c.id] FROM content_category c JOIN tree ON c.parent_id = tree.id
+        )
+        SELECT id, depth, path FROM tree
+        SQL;
 
     public function __construct(ContentCategory $model)
     {
@@ -41,7 +54,8 @@ class ContentCategoryRepository extends CrudRepository
     {
         $query = $this->model->query()
             ->leftJoin('content_category as parent', 'parent.id', '=', 'content_category.parent_id')
-            ->select('content_category.*', 'parent.name as parent_name')
+            ->leftJoinSub(self::TREE_PATHS, 'tree', 'tree.id', '=', 'content_category.id')
+            ->select('content_category.*', 'parent.name as parent_name', 'tree.depth')
             ->withCount(['articles', 'children'])
             ->with('attachments.media');
 
@@ -63,7 +77,7 @@ class ContentCategoryRepository extends CrudRepository
         if (in_array($sortBy, $sortable, true)) {
             $this->applySorting($query, [...$payload, 'sort_by' => $sortBy], $sortable);
         } else {
-            $query->orderByRaw(self::TREE_ORDER);
+            $query->orderBy('tree.path');
         }
 
         return $query->paginate($payload['per_page'] ?? ContentConst::PER_PAGE, ['*'], 'page', $payload['page'] ?? 1);
@@ -101,11 +115,6 @@ class ContentCategoryRepository extends CrudRepository
     {
         $category = $this->find($id);
         $this->swapWithNeighbour($category, $direction, fn (Builder $siblings) => $siblings->where('parent_id', $category->parent_id));
-    }
-
-    public function hasChildren(int $id): bool
-    {
-        return $this->model->newQuery()->where('parent_id', $id)->exists();
     }
 
     /**
@@ -155,7 +164,7 @@ class ContentCategoryRepository extends CrudRepository
     }
 
     /**
-     * A shown group or category with its evidence and, for a group, its shown categories.
+     * A shown category with its evidence and the shown categories right inside it.
      *
      * @throws ModelNotFoundException when the category is missing or not shown
      */
@@ -165,7 +174,6 @@ class ContentCategoryRepository extends CrudRepository
             ->visible()
             ->where('content_category.slug', $slug)
             ->with([
-                'parent:id,name,slug',
                 'attachments.media',
                 'children' => function (Relation $children): void {
                     /** @var HasMany<ContentCategory, ContentCategory> $children */
@@ -178,6 +186,40 @@ class ContentCategoryRepository extends CrudRepository
                 },
             ])
             ->firstOrFail();
+    }
+
+    /**
+     * Ids of the shown categories below $id, at any level: a category lists their articles too.
+     *
+     * @return list<int>
+     */
+    public function visibleDescendantIds(int $id): array
+    {
+        return array_map(fn (object $row): int => (int) $row->id, DB::select(<<<'SQL'
+            WITH RECURSIVE down(id) AS (
+                SELECT c.id FROM content_category c WHERE c.parent_id = ? AND c.is_public
+                UNION ALL
+                SELECT c.id FROM content_category c JOIN down ON c.parent_id = down.id WHERE c.is_public
+            )
+            SELECT id FROM down
+            SQL, [$id]));
+    }
+
+    /**
+     * The categories above $id, from the top down to its parent: the trail of a category page.
+     *
+     * @return list<array{name: string, slug: string}>
+     */
+    public function ancestors(int $id): array
+    {
+        return array_map(fn (object $row): array => ['name' => (string) $row->name, 'slug' => (string) $row->slug], DB::select(<<<'SQL'
+            WITH RECURSIVE up(id, parent_id, depth) AS (
+                SELECT id, parent_id, 0 FROM content_category WHERE id = ?
+                UNION ALL
+                SELECT c.id, c.parent_id, up.depth + 1 FROM content_category c JOIN up ON c.id = up.parent_id
+            )
+            SELECT c.name, c.slug FROM up JOIN content_category c ON c.id = up.id WHERE up.depth > 0 ORDER BY up.depth DESC
+            SQL, [$id]));
     }
 
     /** Id of a shown category by slug; null when it is missing or not shown */

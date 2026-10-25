@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests\Feature\Content;
 
 use App\Constants\CommonVal;
+use App\Constants\ContentConst;
 use App\Constants\Messages;
 use App\Models\Audit\AuditLog;
 use App\Models\Content\Article;
@@ -51,29 +52,52 @@ final class ContentCategoryApiTest extends TestCase
         $this->assertSame(2, AuditLog::query()->where(['auditable_type' => 'content_category', 'auditable_id' => $id])->count());
     }
 
-    public function test_two_levels_listed_as_a_tree_and_new_rows_go_last(): void
+    public function test_levels_listed_as_a_tree_and_new_rows_go_last(): void
     {
         $skills = $this->store(['name' => 'Kỹ năng']);
         $process = $this->store(['name' => 'Quy trình']);
+        $backend = $this->store(['name' => 'Backend', 'parent_id' => $skills]);
+        $laravel = $this->store(['name' => 'Laravel', 'parent_id' => $backend]);
         $docker = $this->store(['name' => 'Docker', 'parent_id' => $skills]);
-        $laravel = $this->store(['name' => 'Laravel', 'parent_id' => $skills]);
         $design = $this->store(['name' => 'Thiết kế', 'parent_id' => $process]);
 
+        // Depth first: every category right after its parent, siblings in their order
         $this->call('GET', self::BASE.'/list', [], $this->owner)->assertOk()
-            ->assertJsonPath('data.data.*.id', [$skills, $docker, $laravel, $process, $design])
+            ->assertJsonPath('data.data.*.id', [$skills, $backend, $laravel, $docker, $process, $design])
+            ->assertJsonPath('data.data.*.depth', [1, 2, 3, 2, 1, 2])
             ->assertJsonPath('data.data.0.children_count', 2)
-            ->assertJsonPath('data.data.1.parent_name', 'Kỹ năng');
+            ->assertJsonPath('data.data.2.parent_name', 'Backend');
         $this->call('GET', self::BASE.'/list', ['root' => 1], $this->owner)->assertJsonPath('data.data.*.id', [$skills, $process]);
 
-        // Not under a category, not under itself, and a group with categories stays a group
-        foreach ([[$design, ['parent_id' => $docker]], [$skills, ['parent_id' => $skills]], [$skills, ['parent_id' => $process]]] as [$id, $change]) {
-            $this->call('PUT', self::BASE."/update/{$id}", ['name' => "Tên {$id}", ...$change], $this->owner)
+        // Not under itself, nor under a category inside it
+        foreach ([[$skills, $skills], [$skills, $laravel], [$backend, $laravel]] as [$id, $parent]) {
+            $this->call('PUT', self::BASE."/update/{$id}", ['name' => "Tên {$id}", 'parent_id' => $parent], $this->owner)
                 ->assertStatus(CommonVal::HTTP_UNPROCESSABLE_CONTENT)->assertJsonPath('error.messages.parent_id.0', Messages::E0048);
         }
 
-        // Moving to another group puts it last there
-        $this->call('PUT', self::BASE."/update/{$docker}", ['name' => 'Docker', 'parent_id' => $process], $this->owner)->assertOk();
-        $this->call('GET', self::BASE.'/list', ['parent_id' => $process], $this->owner)->assertJsonPath('data.data.*.id', [$design, $docker]);
+        // A whole branch moves, and lands last among its new siblings
+        $this->call('PUT', self::BASE."/update/{$backend}", ['name' => 'Backend', 'parent_id' => $design], $this->owner)->assertOk();
+        $this->call('GET', self::BASE.'/list', ['parent_id' => $process], $this->owner)->assertJsonPath('data.data.*.id', [$design]);
+        $this->call('GET', self::BASE.'/list', [], $this->owner)
+            ->assertJsonPath('data.data.*.id', [$skills, $docker, $process, $design, $backend, $laravel])
+            ->assertJsonPath('data.data.5.depth', 4);
+    }
+
+    public function test_categories_go_at_most_five_levels_deep(): void
+    {
+        $parent = null;
+        foreach (range(1, ContentConst::CATEGORY_DEPTH_MAX) as $level) {
+            $parent = $this->store(['name' => "Cấp {$level}", 'parent_id' => $parent]);
+        }
+        $this->call('POST', self::BASE.'/store', ['name' => 'Cấp 6', 'parent_id' => $parent], $this->owner)
+            ->assertStatus(CommonVal::HTTP_UNPROCESSABLE_CONTENT)->assertJsonPath('error.messages.parent_id.0', Messages::E0055);
+
+        // A branch of two levels cannot go under level 4 either
+        $top = $this->store(['name' => 'Nhánh']);
+        $this->store(['name' => 'Con của nhánh', 'parent_id' => $top]);
+        $levelFour = (int) ContentCategory::query()->where('name', 'Cấp 4')->value('id');
+        $this->call('PUT', self::BASE."/update/{$top}", ['name' => 'Nhánh', 'parent_id' => $levelFour], $this->owner)
+            ->assertStatus(CommonVal::HTTP_UNPROCESSABLE_CONTENT)->assertJsonPath('error.messages.parent_id.0', Messages::E0055);
     }
 
     public function test_the_arrows_swap_a_row_with_its_neighbour_without_touching_the_edit_date(): void

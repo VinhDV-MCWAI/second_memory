@@ -23,6 +23,7 @@ const category: ContentCategory = {
   is_public: true,
   article_count: 0,
   children_count: 0,
+  depth: 1,
   attachments: [
     {
       id: 9,

@@ -1500,8 +1500,10 @@ export interface components {
       sort_order: number;
       is_public: boolean;
       article_count: number;
-      /** @description Categories inside this group */
+      /** @description Categories right inside this one */
       children_count: number;
+      /** @description Level in the tree, 1 at the top (ContentConst::CATEGORY_DEPTH_MAX at most) */
+      depth: number;
       /** @description Links or files shown as the category's evidence, in display order */
       attachments: {
         id: number;
@@ -1765,10 +1767,11 @@ export interface components {
     PublicCategoryDetailResource: {
       name: string;
       slug: string;
-      group: {
+      /** @description The categories above this one, from the top down to its parent; empty at the top */
+      ancestors: {
         name: string;
         slug: string;
-      } | null;
+      }[];
       description_html: string;
       attachments: components['schemas']['PublicAttachmentResource'][];
       categories: {

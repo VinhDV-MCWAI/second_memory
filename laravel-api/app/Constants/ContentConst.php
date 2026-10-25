@@ -29,6 +29,9 @@ final class ContentConst
     /** Markdown source of one article */
     public const ARTICLE_BODY_MAX = 100_000;
 
+    /** Levels of the category tree (a group → categories → …), the top counting as one */
+    public const CATEGORY_DEPTH_MAX = 5;
+
     /** Levels of an article tree (a book → chapters → …), the root counting as one */
     public const ARTICLE_DEPTH_MAX = 10;
 

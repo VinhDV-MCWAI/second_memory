@@ -106,9 +106,9 @@ class Messages
 
     const E0046 = 'Registration is closed';
 
-    const E0047 = 'Move or delete the categories inside this group first';
+    const E0047 = 'Move or delete the categories inside this one first';
 
-    const E0048 = 'A group cannot go inside another category, and a category with categories inside stays a group';
+    const E0048 = 'A category cannot go under itself or a category inside it';
 
     const E0049 = 'An article cannot go under itself or one of its sub-pages';
 
@@ -121,6 +121,8 @@ class Messages
     const E0053 = 'Notes cannot be parents of each other in a loop';
 
     const E0054 = 'No mail server is known for this email domain: check it for a typo';
+
+    const E0055 = 'Categories can go at most 5 levels deep';
 
     /**
      * Errors http messages

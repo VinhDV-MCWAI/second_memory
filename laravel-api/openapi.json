@@ -8526,7 +8526,11 @@
                     },
                     "children_count": {
                         "type": "integer",
-                        "description": "Categories inside this group"
+                        "description": "Categories right inside this one"
+                    },
+                    "depth": {
+                        "type": "integer",
+                        "description": "Level in the tree, 1 at the top (ContentConst::CATEGORY_DEPTH_MAX at most)"
                     },
                     "attachments": {
                         "type": "array",
@@ -8597,6 +8601,7 @@
                     "is_public",
                     "article_count",
                     "children_count",
+                    "depth",
                     "attachments",
                     "updated_at"
                 ],
@@ -9567,23 +9572,24 @@
                     "slug": {
                         "type": "string"
                     },
-                    "group": {
-                        "type": [
-                            "object",
-                            "null"
-                        ],
-                        "properties": {
-                            "name": {
-                                "type": "string"
+                    "ancestors": {
+                        "type": "array",
+                        "description": "The categories above this one, from the top down to its parent; empty at the top",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "name": {
+                                    "type": "string"
+                                },
+                                "slug": {
+                                    "type": "string"
+                                }
                             },
-                            "slug": {
-                                "type": "string"
-                            }
-                        },
-                        "required": [
-                            "name",
-                            "slug"
-                        ]
+                            "required": [
+                                "name",
+                                "slug"
+                            ]
+                        }
                     },
                     "description_html": {
                         "type": "string"
@@ -9670,7 +9676,7 @@
                 "required": [
                     "name",
                     "slug",
-                    "group",
+                    "ancestors",
                     "description_html",
                     "attachments",
                     "categories",

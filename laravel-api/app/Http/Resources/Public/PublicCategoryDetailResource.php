@@ -12,8 +12,8 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 /**
- * A public group or category (ADR-0022): description as safe HTML, evidence, the categories of a
- * group, and one page of its articles in the order asked for.
+ * A public category (ADR-0022): the trail of categories above it, description as safe HTML,
+ * evidence, the categories right inside it, and one page of its articles in the order asked for.
  *
  * @mixin ContentCategory
  */
@@ -21,8 +21,9 @@ class PublicCategoryDetailResource extends JsonResource
 {
     /**
      * @param  LengthAwarePaginator<int, Article>  $articles
+     * @param  list<array{name: string, slug: string}>  $ancestors  from the top down to the parent
      */
-    public function __construct(ContentCategory $category, private readonly LengthAwarePaginator $articles)
+    public function __construct(ContentCategory $category, private readonly LengthAwarePaginator $articles, private readonly array $ancestors)
     {
         parent::__construct($category);
     }
@@ -32,13 +33,15 @@ class PublicCategoryDetailResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        $parent = $this->parent;
-
         return [
             'name' => (string) $this->name,
             'slug' => (string) $this->slug,
-            /** @var array{name: string, slug: string}|null */
-            'group' => $parent === null ? null : ['name' => (string) $parent->name, 'slug' => (string) $parent->slug],
+            /**
+             * The categories above this one, from the top down to its parent; empty at the top
+             *
+             * @var list<array{name: string, slug: string}>
+             */
+            'ancestors' => $this->ancestors,
             'description_html' => app(MarkdownRenderer::class)->toHtml((string) $this->description),
             'attachments' => PublicAttachmentResource::collection($this->attachments),
             /** @var list<array{name: string, slug: string, article_count: int}> */

@@ -32,6 +32,21 @@ class ContentCategory extends Model
 
     protected $fillable = ['parent_id', 'name', 'slug', 'description', 'sort_order', 'is_public'];
 
+    /**
+     * Rows of the visible() check: true for a category below a private one. The parent rule keeps
+     * the tree acyclic and at most CATEGORY_DEPTH_MAX deep, so the walk ends.
+     */
+    private const HIDDEN_BY_ANCESTOR = <<<'SQL'
+        EXISTS (
+            WITH RECURSIVE up(id) AS (
+                SELECT content_category.parent_id
+                UNION ALL
+                SELECT ancestor.parent_id FROM content_category ancestor JOIN up ON ancestor.id = up.id
+            )
+            SELECT 1 FROM up JOIN content_category hidden ON hidden.id = up.id WHERE hidden.is_public = false
+        )
+        SQL;
+
     /** Generated search columns (ADR-0009): read by SQL only */
     protected $hidden = ['search_text', 'search_tsv'];
 
@@ -68,15 +83,13 @@ class ContentCategory extends Model
     }
 
     /**
-     * Shown on the public site: the category and its group (if any) are both public.
+     * Shown on the public site: the category and every category above it are public.
      *
      * @param  Builder<ContentCategory>  $query
      */
     public function scopeVisible(Builder $query): void
     {
-        $query->where('content_category.is_public', true)
-            ->where(fn (Builder $top) => $top->whereNull('content_category.parent_id')
-                ->orWhereHas('parent', fn (Builder $parent) => $parent->where('is_public', true)));
+        $query->where('content_category.is_public', true)->whereRaw('NOT '.self::HIDDEN_BY_ANCESTOR);
     }
 
     protected function casts(): array

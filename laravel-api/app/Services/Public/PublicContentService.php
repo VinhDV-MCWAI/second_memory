@@ -42,8 +42,8 @@ final class PublicContentService
         $category = $this->categories->publicCategoryBySlug($slug);
         $also = isset($query['also']) ? $this->categories->visibleIdBySlug($query['also']) : null;
         $articles = $this->articles->publicArticlesIn(
-            // A group lists the articles of its shown categories too
-            [$category->id, ...$category->children->modelKeys()],
+            // A category lists the articles of the shown categories below it too, at any level
+            [$category->id, ...$this->categories->visibleDescendantIds($category->id)],
             ArticleSort::tryFrom((string) ($query['sort'] ?? '')) ?? ArticleSort::NEWEST,
             // An unknown second category narrows the list to nothing, not to everything
             isset($query['also']) ? ($also ?? 0) : null,
@@ -51,7 +51,7 @@ final class PublicContentService
             (int) ($query['page'] ?? 1),
         );
 
-        return new PublicCategoryDetailResource($category, $articles);
+        return new PublicCategoryDetailResource($category, $articles, $this->categories->ancestors($category->id));
     }
 
     /**

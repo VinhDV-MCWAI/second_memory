@@ -18,7 +18,7 @@ Skill Ledger (kỹ năng có cấp độ, mục tiêu học, bằng chứng dùn
 | Bảng | Quyết định |
 |---|---|
 | Skill Ledger | Xóa `skill`, `skill_level`, `skill_tag`, `tag`, `evidence`, `evidence_skill`, `evidence_tag`, `evidence_media`, `learning_goal` và các enum, quyền, màn hình, API của chúng. Dữ liệu là mẫu, không chuyển đổi. Nhật ký thay đổi cũ giữ nguyên |
-| `content_category` | Thêm `parent_id` (danh mục cha, **tối đa 2 cấp**: nhóm → danh mục; nhóm không có cha). `description` thành Markdown dài (tối đa 20.000 ký tự). `sort_order` giữ, chỉ đổi bằng API `move` (↑ ↓) trong cùng cha; mục mới nằm cuối. Xóa bị chặn khi còn danh mục con; bài viết chỉ mất liên kết |
+| `content_category` | Thêm `parent_id` (danh mục cha, **tối đa 2 cấp**: nhóm → danh mục; nhóm không có cha; **đổi thành tối đa 5 cấp từ 2026-10-25, [ADR-0023](0023-danh-muc-nhieu-cap.md)**). `description` thành Markdown dài (tối đa 20.000 ký tự). `sort_order` giữ, chỉ đổi bằng API `move` (↑ ↓) trong cùng cha; mục mới nằm cuối. Xóa bị chặn khi còn danh mục con; bài viết chỉ mất liên kết |
 | `category_attachment` (mới) | Bằng chứng của danh mục: tiêu đề, `url` **hoặc** `media_id` (file trong Files), ghi chú ngắn, `position`, `public_id` (UUID cho `/files/{mã}`). File bị xóa hẳn khỏi Files thì đính kèm mất theo |
 | `article` | Bỏ `content_category_id`. Thêm `parent_id` (bài cha, chặn vòng, **cây tối đa 10 cấp**, xóa bài còn bài con bị chặn), `sort_order` theo cha (↑ ↓), `view_count`. `slug` **duy nhất toàn hệ thống** (để `[[slug]]` luôn trỏ đúng một bài) |
 | `article_category` (mới) | Bài ↔ danh mục, nhiều-nhiều. Bài con không bắt buộc có danh mục |
