@@ -1,6 +1,5 @@
 'use client';
 
-import { useEffect } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useTranslations } from 'next-intl';
@@ -9,6 +8,8 @@ import { Textarea } from '@/components/ui/textarea';
 import { FormField } from '@/components/common/form-field';
 import { OptionSelect } from '@/components/common/option-select';
 import type { ResourceFormProps } from '@/components/common/resource-list-page';
+import { useDialogFormState } from '@/components/common/use-dialog-form-state';
+import { FORM_VALIDATION_MODE } from '@/shared/config';
 import { HistoryViewer } from '@/features/history/components/history-viewer';
 import { CategoryTreeSelect } from '@/features/content/components/category-tree-select';
 import { IsPublicField } from '@/features/content/components/is-public-field';
@@ -56,13 +57,8 @@ export function ArticleForm({
     sort_order: 'asc',
   });
 
-  const {
-    register,
-    handleSubmit,
-    control,
-    setError,
-    formState: { errors, isDirty },
-  } = useForm<ArticleFormData>({
+  const form = useForm<ArticleFormData>({
+    mode: FORM_VALIDATION_MODE,
     resolver: zodResolver(getArticleSchema(tValidation)),
     values: {
       parent_id: initialData?.parent_id ?? null,
@@ -73,11 +69,19 @@ export function ArticleForm({
       is_public: initialData?.is_public ?? true,
     },
   });
+  const {
+    register,
+    handleSubmit,
+    control,
+    setError,
+    formState: { errors },
+  } = form;
 
-  useEffect(
-    () => onStateChange({ pending: loading, dirty: isDirty }),
-    [loading, isDirty, onStateChange],
-  );
+  useDialogFormState(form, {
+    pending: loading,
+    editing: !!initialData,
+    onStateChange,
+  });
 
   const onSubmit = async (data: ArticleFormData) => {
     try {

@@ -1,12 +1,13 @@
 'use client';
 
-import { useEffect } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useTranslations } from 'next-intl';
 import { Input } from '@/components/ui/input';
 import { FormField } from '@/components/common/form-field';
 import type { ResourceFormProps } from '@/components/common/resource-list-page';
+import { useDialogFormState } from '@/components/common/use-dialog-form-state';
+import { FORM_VALIDATION_MODE } from '@/shared/config';
 import { HistoryViewer } from '@/features/history/components/history-viewer';
 import { PermissionMatrix } from '@/features/master/components/permission-matrix';
 import { usePermissionGroups } from '@/features/master/hooks/use-permission-groups';
@@ -36,14 +37,8 @@ export function RoleForm({
   });
   const isOwner = initialData?.name === AdminRole.OWNER;
 
-  const {
-    register,
-    handleSubmit,
-    setError,
-    setValue,
-    control,
-    formState: { errors, isDirty },
-  } = useForm<RoleFormData>({
+  const form = useForm<RoleFormData>({
+    mode: FORM_VALIDATION_MODE,
     resolver: zodResolver(getRoleSchema(tValidation)),
     // Kept sorted so ticking a box off and on again is not a change
     values: {
@@ -51,12 +46,22 @@ export function RoleForm({
       permissions: [...(initialData?.permissions ?? [])].sort(),
     },
   });
+  const {
+    register,
+    handleSubmit,
+    setError,
+    setValue,
+    control,
+    formState: { errors },
+  } = form;
   const permissions = useWatch({ control, name: 'permissions' });
 
-  useEffect(
-    () => onStateChange({ pending: loading, submitDisabled: isOwner, dirty: isDirty }),
-    [loading, isOwner, isDirty, onStateChange],
-  );
+  useDialogFormState(form, {
+    pending: loading,
+    editing: !!initialData,
+    onStateChange,
+    blocked: isOwner,
+  });
 
   const onSubmit = async (data: RoleFormData) => {
     try {

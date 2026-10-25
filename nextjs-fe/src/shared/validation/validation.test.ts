@@ -55,6 +55,27 @@ describe('admin schema', () => {
     expect(getAdminSchema(t).safeParse({ ...valid, department_ids: ['hr'] }).success).toBe(false);
   });
 
+  it('cap first and last names at 20 characters and keep birth dates in range, like the API', () => {
+    const result = getAdminSchema(t).safeParse({
+      ...person,
+      status: AdminStatus.ACTIVE,
+      first_name: 'a'.repeat(ValidationRules.FIRST_NAME_MAX + 1),
+      last_name: 'a'.repeat(ValidationRules.LAST_NAME_MAX),
+      birth: '1899-12-31',
+    });
+    expect(messagesOf(result)).toEqual([
+      `firstName.maxLength:{"max":${ValidationRules.FIRST_NAME_MAX}}`,
+      'birth.range:{"min":1900,"max":2100}',
+    ]);
+  });
+
+  it('want a password for a new admin only', () => {
+    const valid = { ...person, status: AdminStatus.ACTIVE, password: '' };
+    expect(messagesOf(getAdminSchema(t, true).safeParse(valid))).toEqual(['password.required']);
+    expect(getAdminSchema(t, true).safeParse({ ...valid, password: '123456' }).success).toBe(true);
+    expect(getAdminSchema(t).safeParse(valid).success).toBe(true);
+  });
+
   it('reject an unknown status', () => {
     expect(getAdminSchema(t).safeParse({ ...person, status: 99 }).success).toBe(false);
   });

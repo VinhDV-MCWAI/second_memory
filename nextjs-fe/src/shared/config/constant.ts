@@ -151,6 +151,12 @@ export const UI_CONSTANTS = {
   ACTION_DELAY_MS: 300,
 } as const;
 
+/**
+ * When react-hook-form checks a field: first when it is left, then on every change, so errors
+ * show while typing without flagging a field the user has not reached yet.
+ */
+export const FORM_VALIDATION_MODE = 'onTouched';
+
 // Shared dialog (AppDialog) defaults, used for whatever a dialog does not set
 export const DIALOG_DEFAULTS = {
   SIZE: 'md',

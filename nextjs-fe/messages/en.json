@@ -61,7 +61,6 @@
     "redirecting": "Redirecting",
     "reset": "Reset",
     "preview": "Preview",
-    "passwordRequired": "Password Required",
     "parentId": "Parent ID",
     "review": "Review",
     "next": "Next",
@@ -526,6 +525,9 @@
     "attachmentTitle": {
       "required": "Give the attachment a title",
       "maxLength": "The title cannot exceed {max} characters"
+    },
+    "birth": {
+      "range": "Pick a date between {min} and {max}"
     }
   },
   "advancedSearch": {
@@ -705,7 +707,8 @@
     "validation": {
       "nameRequired": "Enter a name",
       "nameTooLong": "At most {max} characters",
-      "nameInvalid": "A name cannot contain / or be . or .."
+      "nameInvalid": "A name cannot contain / or \\, control characters, or be . or ..",
+      "extensionBlocked": "This file type is not allowed"
     },
     "access": {
       "open": "Access",

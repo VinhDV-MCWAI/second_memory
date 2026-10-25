@@ -1,6 +1,5 @@
 'use client';
 
-import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useTranslations } from 'next-intl';
@@ -9,6 +8,8 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { FormField } from '@/components/common/form-field';
 import type { ResourceFormProps } from '@/components/common/resource-list-page';
+import { useDialogFormState } from '@/components/common/use-dialog-form-state';
+import { FORM_VALIDATION_MODE } from '@/shared/config';
 import { HistoryViewer } from '@/features/history/components/history-viewer';
 import { useCrud } from '@/shared/hooks/use-crud';
 import { API_ENDPOINTS } from '@/shared/api';
@@ -34,12 +35,8 @@ export function DepartmentForm({
     invalidateKeys: [API_ENDPOINTS.MASTER.DEPARTMENT, API_ENDPOINTS.MASTER.ADMIN],
   });
 
-  const {
-    register,
-    handleSubmit,
-    setError,
-    formState: { errors, isDirty },
-  } = useForm<DepartmentFormData>({
+  const form = useForm<DepartmentFormData>({
+    mode: FORM_VALIDATION_MODE,
     resolver: zodResolver(getDepartmentSchema(tValidation)),
     values: {
       code: initialData?.code ?? '',
@@ -48,11 +45,18 @@ export function DepartmentForm({
       is_active: initialData?.is_active ?? true,
     },
   });
+  const {
+    register,
+    handleSubmit,
+    setError,
+    formState: { errors },
+  } = form;
 
-  useEffect(
-    () => onStateChange({ pending: loading, dirty: isDirty }),
-    [loading, isDirty, onStateChange],
-  );
+  useDialogFormState(form, {
+    pending: loading,
+    editing: !!initialData,
+    onStateChange,
+  });
 
   const onSubmit = async (data: DepartmentFormData) => {
     const payload = {

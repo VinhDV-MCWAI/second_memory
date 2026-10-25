@@ -40,13 +40,19 @@ export const getFirstNameValidation = (t: Translator) =>
   z
     .string()
     .min(1, t('firstName.required'))
-    .max(ValidationRules.NAME_MAX, t('firstName.maxLength', { max: ValidationRules.NAME_MAX }));
+    .max(
+      ValidationRules.FIRST_NAME_MAX,
+      t('firstName.maxLength', { max: ValidationRules.FIRST_NAME_MAX }),
+    );
 
 export const getLastNameValidation = (t: Translator) =>
   z
     .string()
     .min(1, t('lastName.required'))
-    .max(ValidationRules.NAME_MAX, t('lastName.maxLength', { max: ValidationRules.NAME_MAX }));
+    .max(
+      ValidationRules.LAST_NAME_MAX,
+      t('lastName.maxLength', { max: ValidationRules.LAST_NAME_MAX }),
+    );
 
 export const getAddressValidation = (t: Translator) =>
   z
@@ -70,17 +76,35 @@ export const getAvatarValidation = (t: Translator) =>
 export const genderValidation = z.nativeEnum(Gender);
 export const adminStatusValidation = z.nativeEnum(AdminStatus);
 
-// Admin schema matching StoreAdminMstRequest
-export const getAdminSchema = (t: Translator) =>
+/** `YYYY-MM-DD` of a date input, empty or within MIN_DATE…MAX_DATE (CommonVal on the API). */
+const getBirthValidation = (t: Translator) =>
+  z
+    .string()
+    .refine(
+      (value) =>
+        value === '' ||
+        (new Date(value) >= ValidationRules.MIN_DATE &&
+          new Date(value) <= ValidationRules.MAX_DATE),
+      t('birth.range', {
+        min: ValidationRules.MIN_DATE.getFullYear(),
+        max: ValidationRules.MAX_DATE.getFullYear(),
+      }),
+    )
+    .optional();
+
+// Admin schema matching StoreAdminMstRequest (a new admin needs a password) and UpdateAdminMstRequest
+export const getAdminSchema = (t: Translator, creating = false) =>
   z.object({
     email: getEmailValidation(t),
     user_name: getUsernameValidation(t),
-    password: z.union([getPasswordValidation(t), z.literal('')]).optional(),
+    password: creating
+      ? z.string().min(1, t('password.required')).pipe(getPasswordValidation(t))
+      : z.union([getPasswordValidation(t), z.literal('')]).optional(),
     first_name: getFirstNameValidation(t),
     last_name: getLastNameValidation(t),
     address: getAddressValidation(t),
     phone_number: getPhoneValidation(t),
-    birth: z.string().optional(),
+    birth: getBirthValidation(t),
     gender: genderValidation,
     status: adminStatusValidation,
     role_ids: z.array(z.number()),

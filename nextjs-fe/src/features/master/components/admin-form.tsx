@@ -22,6 +22,8 @@ import { AdminStatus, Gender, GenderLabels, AdminStatusLabels } from '@/shared/e
 import { UPLOAD_CONFIG } from '@/shared/config';
 import { getAdminSchema, type AdminFormData } from '@/shared/validation/validation';
 import type { ResourceFormProps } from '@/components/common/resource-list-page';
+import { useDialogFormState } from '@/components/common/use-dialog-form-state';
+import { FORM_VALIDATION_MODE } from '@/shared/config';
 import { HistoryViewer } from '@/features/history/components/history-viewer';
 import { IdPicker } from '@/components/common/id-picker';
 
@@ -51,16 +53,9 @@ export function AdminForm({
     () => initialData?.avatar ?? null,
   );
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors, isDirty },
-    setValue,
-    control,
-    reset,
-    setError,
-  } = useForm<AdminFormData>({
-    resolver: zodResolver(getAdminSchema(tValidation)),
+  const form = useForm<AdminFormData>({
+    mode: FORM_VALIDATION_MODE,
+    resolver: zodResolver(getAdminSchema(tValidation, !isEdit)),
     defaultValues: {
       gender: Gender.MALE,
       status: AdminStatus.ACTIVE,
@@ -69,6 +64,15 @@ export function AdminForm({
       is_active: true,
     },
   });
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    setValue,
+    control,
+    reset,
+    setError,
+  } = form;
 
   useEffect(() => {
     if (initialData) {
@@ -111,18 +115,14 @@ export function AdminForm({
     delay: UI_CONSTANTS.ACTION_DELAY_MS,
   });
 
-  useEffect(
-    () => onStateChange({ pending: loading || isActionProcessing, dirty: isDirty }),
-    [loading, isActionProcessing, isDirty, onStateChange],
-  );
+  useDialogFormState(form, {
+    pending: loading || isActionProcessing,
+    editing: isEdit,
+    onStateChange,
+  });
 
   const onSubmit = async (data: AdminFormData) => {
     await execute(async () => {
-      if (!isEdit && !data.password) {
-        setError('password', { type: 'manual', message: tCommon('passwordRequired') });
-        return;
-      }
-
       try {
         // Avatar upload is not implemented: only the preview is shown
         const payload = {

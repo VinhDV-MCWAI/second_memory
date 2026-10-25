@@ -1,6 +1,5 @@
 'use client';
 
-import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useTranslations } from 'next-intl';
@@ -8,6 +7,8 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { FormField } from '@/components/common/form-field';
 import type { ResourceFormProps } from '@/components/common/resource-list-page';
+import { useDialogFormState } from '@/components/common/use-dialog-form-state';
+import { FORM_VALIDATION_MODE } from '@/shared/config';
 import { HistoryViewer } from '@/features/history/components/history-viewer';
 import { useCrud } from '@/shared/hooks/use-crud';
 import { API_ENDPOINTS } from '@/shared/api';
@@ -31,20 +32,23 @@ export function EndUserForm({
   const tValidation = useTranslations('validation');
   const { update, loading } = useCrud(API_ENDPOINTS.MASTER.END_USER);
 
+  const form = useForm<EndUserFormData>({
+    mode: FORM_VALIDATION_MODE,
+    resolver: zodResolver(getEndUserSchema(tValidation)),
+    values: { is_active: initialData?.is_active ?? true, password: '' },
+  });
   const {
     register,
     handleSubmit,
     setError,
-    formState: { errors, isDirty },
-  } = useForm<EndUserFormData>({
-    resolver: zodResolver(getEndUserSchema(tValidation)),
-    values: { is_active: initialData?.is_active ?? true, password: '' },
-  });
+    formState: { errors },
+  } = form;
 
-  useEffect(
-    () => onStateChange({ pending: loading, dirty: isDirty }),
-    [loading, isDirty, onStateChange],
-  );
+  useDialogFormState(form, {
+    pending: loading,
+    editing: !!initialData,
+    onStateChange,
+  });
 
   const onSubmit = async (data: EndUserFormData) => {
     if (!initialData) return;

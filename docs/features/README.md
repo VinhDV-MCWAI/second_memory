@@ -35,4 +35,8 @@ Vai trò tự tạo trên màn hình Vai trò chỉ thấy menu và nút ứng v
 | 403 | Đã đăng nhập nhưng không được làm việc này |
 | 422 | Dữ liệu gửi lên sai; `error.messages` ghi lỗi theo từng ô |
 
+## Kiểm tra form (từ 2026-10-25)
+
+Mọi form của trang quản trị và trang public dùng cùng quy tắc với máy chủ (độ dài, ô bắt buộc, dạng link, ký tự cho phép). Một ô được kiểm tra khi rời khỏi nó, sau đó kiểm tra lại mỗi lần gõ; lỗi hiện ngay dưới ô. Nút lưu / gửi bị khóa cho tới khi mọi ô hợp lệ. Mở form sửa một bản ghi đang sai quy tắc thì lỗi hiện ngay. Lỗi chỉ máy chủ biết (tên đã có người dùng, tên miền email không có thật, sai mật khẩu) hiện dưới đúng ô đó sau khi gửi, và mất khi sửa ô.
+
 Mọi API trả cùng một khung: `{ "data": …, "error": { "status", "code", "messages" } }`. Danh sách API đầy đủ: `laravel-api/openapi.json` (sinh bằng `make openapi`).

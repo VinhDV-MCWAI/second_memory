@@ -50,6 +50,22 @@ import { UploadPanel } from './upload-panel';
 
 /** laravel-api MediaConst::NAME_MAX / UploadStatus::PROCESSING. */
 const NAME_MAX = 255;
+/** MediaConst::NAME_PATTERN: one path segment, no slash, backslash or control character, not . or .. */
+const NAME_PATTERN = /^(?!\.{1,2}$)[^/\\\x00-\x1F\x7F]+$/u;
+/** MediaConst::BLOCKED_EXTENSIONS */
+const BLOCKED_EXTENSIONS = [
+  'exe',
+  'msi',
+  'bat',
+  'cmd',
+  'com',
+  'scr',
+  'ps1',
+  'sh',
+  'php',
+  'phtml',
+  'phar',
+];
 const STATUS_PROCESSING = 1;
 const ACTIVE: UploadState[] = ['waiting', 'uploading', 'processing'];
 
@@ -116,9 +132,12 @@ export function MediaBrowser() {
     .trim()
     .min(1, t('validation.nameRequired'))
     .max(NAME_MAX, t('validation.nameTooLong', { max: NAME_MAX }))
+    .refine((value) => NAME_PATTERN.test(value), t('validation.nameInvalid'))
     .refine(
-      (value) => !value.includes('/') && value !== '.' && value !== '..',
-      t('validation.nameInvalid'),
+      (value) =>
+        !value.includes('.') ||
+        !BLOCKED_EXTENSIONS.includes(value.split('.').pop()?.toLowerCase() ?? ''),
+      t('validation.extensionBlocked'),
     );
 
   const openFolder = (path: string) => {

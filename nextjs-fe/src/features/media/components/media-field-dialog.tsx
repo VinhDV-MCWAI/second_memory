@@ -8,6 +8,7 @@ import { AppDialog } from '@/components/common/app-dialog';
 import { FormField } from '@/components/common/form-field';
 import { Input } from '@/components/ui/input';
 import { handleBindErrors } from '@/shared/utils/error-handler';
+import { FORM_VALIDATION_MODE } from '@/shared/config';
 
 const FORM_ID = 'media-field-form';
 
@@ -37,6 +38,7 @@ export function MediaFieldDialog({
 }: MediaFieldDialogProps) {
   // Sent as `name`, so a server error on it shows under the input
   const form = useForm<{ name: string }>({
+    mode: FORM_VALIDATION_MODE,
     resolver: zodResolver(z.object({ name: schema })),
     defaultValues: { name: '' },
   });
@@ -63,7 +65,12 @@ export function MediaFieldDialog({
       size="sm"
       dirty={formState.isDirty}
       actions={[
-        { key: 'submit', label: submitLabel, form: FORM_ID, disabled: formState.isSubmitting },
+        {
+          key: 'submit',
+          label: submitLabel,
+          form: FORM_ID,
+          disabled: formState.isSubmitting || !formState.isValid,
+        },
       ]}
     >
       <form id={FORM_ID} onSubmit={submit} noValidate>

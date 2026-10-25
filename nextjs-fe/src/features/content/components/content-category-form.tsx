@@ -1,12 +1,13 @@
 'use client';
 
-import { useEffect } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useTranslations } from 'next-intl';
 import { Input } from '@/components/ui/input';
 import { FormField } from '@/components/common/form-field';
 import type { ResourceFormProps } from '@/components/common/resource-list-page';
+import { useDialogFormState } from '@/components/common/use-dialog-form-state';
+import { FORM_VALIDATION_MODE } from '@/shared/config';
 import { HistoryViewer } from '@/features/history/components/history-viewer';
 import { AttachmentsField } from '@/features/content/components/attachments-field';
 import { CategoryTreeSelect } from '@/features/content/components/category-tree-select';
@@ -61,13 +62,8 @@ export function ContentCategoryForm({
       .map((node) => node.row.id),
   );
 
-  const {
-    register,
-    handleSubmit,
-    control,
-    setError,
-    formState: { errors, isDirty },
-  } = useForm<ContentCategoryFormData>({
+  const form = useForm<ContentCategoryFormData>({
+    mode: FORM_VALIDATION_MODE,
     resolver: zodResolver(getContentCategorySchema(tValidation)),
     values: {
       parent_id: initialData?.parent_id ?? null,
@@ -83,11 +79,19 @@ export function ContentCategoryForm({
       })),
     },
   });
+  const {
+    register,
+    handleSubmit,
+    control,
+    setError,
+    formState: { errors },
+  } = form;
 
-  useEffect(
-    () => onStateChange({ pending: loading, dirty: isDirty }),
-    [loading, isDirty, onStateChange],
-  );
+  useDialogFormState(form, {
+    pending: loading,
+    editing: !!initialData,
+    onStateChange,
+  });
 
   const onSubmit = async ({ attachments, ...data }: ContentCategoryFormData) => {
     const payload = {
