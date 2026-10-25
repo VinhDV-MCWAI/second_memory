@@ -92,9 +92,13 @@ export const getAdminSchema = (t: Translator) =>
 export type AdminFormData = z.infer<ReturnType<typeof getAdminSchema>>;
 
 /** http(s) only, like the API's `url:http,https` rule: no javascript: or data: links. */
+/** Starts like Laravel's `url:http,https` rule wants it: the browser's URL parser alone accepts `https:host`. */
+const HTTP_URL_START = /^https?:\/\/[^\s/?#]+/i;
+
 const isHttpUrl = (value: string) => {
+  if (!HTTP_URL_START.test(value)) return false;
   try {
-    return ['http:', 'https:'].includes(new URL(value).protocol);
+    return new URL(value).hostname !== '';
   } catch {
     return false;
   }

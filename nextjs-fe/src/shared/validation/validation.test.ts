@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { getAdminSchema } from './validation';
+import { getAdminSchema, getContentCategorySchema } from './validation';
 import { ValidationRules } from './validation-rules';
 import { AdminStatus, Gender } from '@/shared/enums';
 
@@ -57,5 +57,29 @@ describe('admin schema', () => {
 
   it('reject an unknown status', () => {
     expect(getAdminSchema(t).safeParse({ ...person, status: 99 }).success).toBe(false);
+  });
+});
+
+describe('category schema', () => {
+  const category = (url: string) => ({
+    parent_id: null,
+    name: 'Laravel',
+    description: '',
+    is_public: true,
+    attachments: [{ title: 'Docs', url, media_id: null, note: '' }],
+  });
+
+  it('accept http and https links', () => {
+    for (const url of ['https://laravel.com/docs', 'http://localhost:81/a?b=1']) {
+      expect(getContentCategorySchema(t).safeParse(category(url)).success).toBe(true);
+    }
+  });
+
+  it('reject links the backend url rule refuses, like https:host without slashes', () => {
+    for (const url of ['https:abcxyz.com', 'abcxyz.com', 'ftp://host/file', 'https://']) {
+      expect(messagesOf(getContentCategorySchema(t).safeParse(category(url)))).toContain(
+        'url.invalid',
+      );
+    }
   });
 });
