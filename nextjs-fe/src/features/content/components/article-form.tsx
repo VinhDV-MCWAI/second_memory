@@ -124,6 +124,7 @@ export function ArticleForm({
             name="parent_id"
             render={({ field }) => (
               <OptionSelect
+                id="parent_id"
                 value={field.value ?? NO_PARENT}
                 onChange={(value) => field.onChange(value === NO_PARENT ? null : Number(value))}
                 options={[
