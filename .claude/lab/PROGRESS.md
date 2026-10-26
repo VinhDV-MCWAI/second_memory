@@ -129,6 +129,8 @@ Mỗi dòng do `scripts/lane.sh done` tự thêm. Không sửa tay. Các dòng t
 
 - 2026-10-26 — [lane main] KB-08 done: 3828de7f, ddd30644, tag v3.0.0 — chủ dự án thử 13 bước trên trình duyệt: đạt cả 13 (2026-10-26); ghi kết quả vào v3.0.0.md, lộ trình đánh dấu giai đoạn 10 và 11 xong; tag v3.0.0 trên máy, chủ dự án push; dọn: kiểm tra DB dev không còn bài, danh mục TMP và tài khoản tmp- (0 dòng)
 
+- 2026-10-26 — [lane main] OPS-05 done: 88bf8c5e, 65fa3957, 2605ce66 — nguyên nhân (log 10:31): vài giây đầu sau khởi động lại Docker chưa thấy thư mục dự án; ml-postgres, ml-redis gắn cấu hình kiểu create_host_path: false nên hỏng lúc tạo (127) và không được thử lại, các container khác tự thử lại và chạy từ giây thứ 4; sửa: chép pg_hba.conf, redis.conf vào image, không gắn gì từ máy (dữ liệu giữ nguyên, cấu hình kiểm lại đúng); thêm: 5 lần đăng nhập sai e2e_owner lúc 12:54 do container Playwright mồ côi sau khi run.sh bị ngắt, run.sh giờ đặt tên và dừng container khi dọn (thử ngắt giữa chừng: container dừng, dữ liệu E2E được dọn); make test 280 pass, make e2e 10/10, shellcheck sạch; chưa thử khởi động lại máy thật (chờ lần tới); dọn: make clean, ảnh shellcheck và file tạm đã xóa, dữ liệu E2E do run.sh xóa
+
 ## Next step
 
 1. Đầu phiên: đọc file này, rồi `scripts/lane.sh status`. Bảng việc chỉ còn các việc "để sau" theo quyết định chủ dự án.
