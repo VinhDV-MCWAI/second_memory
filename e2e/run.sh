@@ -29,6 +29,9 @@ case "${1:-dev}" in
 esac
 
 IMAGE=ml-e2e
+# A fixed name, so cleanup can stop a run that was interrupted: killing `docker run` leaves the
+# container going, and its logins then fail against the disabled account and lock it (OPS-05)
+RUN_NAME=ml-e2e-run
 E2E_USER=e2e_owner
 E2E_PASSWORD="$(head -c 18 /dev/urandom | base64 | tr -d '/+=')"
 
@@ -42,6 +45,7 @@ artisan_tinker() {
 
 # shellcheck disable=SC2317  # called by the EXIT trap
 cleanup() {
+  docker rm -f "$RUN_NAME" >/dev/null 2>&1 || true
   echo "==> Removing E2E records and disabling $E2E_USER"
   artisan_tinker '
     // Articles and categories of the specs; parents are restricted, so unlink them first
@@ -121,7 +125,8 @@ docker build -q -f e2e/Dockerfile -t "$IMAGE" . >/dev/null
 
 mkdir -p e2e/artifacts
 echo "==> Running the journey"
-docker run --rm --network "$NETWORK" --user "$(id -u):$(id -g)" -e HOME=/tmp \
+docker rm -f "$RUN_NAME" >/dev/null 2>&1 || true
+docker run --rm --name "$RUN_NAME" --network "$NETWORK" --user "$(id -u):$(id -g)" -e HOME=/tmp \
   -e E2E_USER="$E2E_USER" -e E2E_PASSWORD="$E2E_PASSWORD" -e E2E_HELPERS="$E2E_HELPERS" \
   -e E2E_ADMIN_URL="$ADMIN_URL" -e E2E_ADMIN_UPSTREAM="$UPSTREAM" \
   -v "$PWD/e2e/artifacts:/repo/e2e/artifacts" \
