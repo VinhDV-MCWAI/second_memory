@@ -1,15 +1,17 @@
 # Trang public
 
-Trang ai cũng xem được, không cần đăng nhập, nằm ở **gốc** `http://localhost:81/`. Từ 2026-10-22 trang đọc như một trang tài liệu (kiểu Next.js docs, Laravel docs) nhưng xếp theo kiểu diễn đàn: nhóm → danh mục → bài viết ([ADR-0022](../adr/0022-trang-tai-lieu-kinh-nghiem.md)). Nội dung là [danh mục và bài viết](bai-viet.md). Chạy trong ứng dụng riêng `public-site` (Astro, [ADR-0019](../adr/0019-public-user-frontend.md)): HTML dựng sẵn ở server, đọc không cần JavaScript. Người xem có thể đăng nhập để lưu yêu thích và xem sau ([người dùng cuối](nguoi-dung-cuoi.md)); phần đó dùng một script nhỏ (~3 KB), khách chưa đăng nhập không gọi API nào thêm. Trang đọc (danh mục, bài) có thêm công cụ chuyển trang và script đọc: tổng **25,8 KB** chưa nén (10,1 KB nén), dưới giới hạn 30 KB; trang chủ và tìm kiếm 2,6 KB (đo trên bản build ngày 2026-10-26).
+Trang ai cũng xem được, không cần đăng nhập, nằm ở **gốc** `http://localhost:81/`. Từ 2026-10-22 trang đọc như một trang tài liệu (kiểu Next.js docs, Laravel docs) nhưng xếp theo kiểu diễn đàn: nhóm → danh mục → bài viết ([ADR-0022](../adr/0022-trang-tai-lieu-kinh-nghiem.md)). Nội dung là [danh mục và bài viết](bai-viet.md). Chạy trong ứng dụng riêng `public-site` (Astro, [ADR-0019](../adr/0019-public-user-frontend.md)): HTML dựng sẵn ở server, đọc không cần JavaScript. Người xem có thể đăng nhập để lưu yêu thích và xem sau ([người dùng cuối](nguoi-dung-cuoi.md)); phần đó dùng một script nhỏ (~3 KB), khách chưa đăng nhập không gọi API nào thêm. Trang đọc (danh mục, bài) có thêm công cụ chuyển trang và script đọc: tổng **28,4 KB** chưa nén (11,0 KB nén), dưới giới hạn 30 KB; trang chủ và tìm kiếm 4,3 KB, gồm ô tìm kiếm ở header (đo trên bản build ngày 2026-10-26, READ-07).
+
+**Header** nằm cố định ở đầu mọi trang (từ 2026-10-26, READ-07): tên trang bên trái, **ô tìm kiếm duy nhất** ở giữa, Sign in / tên tài khoản bên phải. Cách ô tìm chạy: [tìm kiếm](tim-kiem.md).
 
 ## Màn hình
 
 | Địa chỉ | Hiện gì |
 |---|---|
-| http://localhost:81/ | Trang chủ tóm tắt (từ 2026-10-25, [REQ-006](../requirements/REQ-006-trang-chu-va-trang-doc.md)): ô tìm kiếm lớn, thẻ danh mục, tab bài viết ([bảng dưới](#trang-chủ)) |
+| http://localhost:81/ | Trang chủ tóm tắt (từ 2026-10-25, [REQ-006](../requirements/REQ-006-trang-chu-va-trang-doc.md)): thẻ danh mục, tab bài viết (ô tìm nằm ở header) ([bảng dưới](#trang-chủ)) |
 | http://localhost:81/categories/{slug} | [Trang đọc](#trang-đọc-4-cột); cột giữa là nhóm hoặc danh mục: đường dẫn ngược (Home › nhóm), tên + nút ☆, mô tả, đính kèm (link, file), danh mục con (khi là nhóm), danh sách bài |
 | http://localhost:81/articles/{slug} | [Trang đọc](#trang-đọc-4-cột); cột giữa là một bài. `?in={danh mục}` chọn danh mục hiện ở cột 2 (không có hoặc sai thì lấy danh mục đầu tiên của bài) |
-| http://localhost:81/search?q=… | [Tìm kiếm](tim-kiem.md) danh mục, bài viết, mục trong bài và nội dung bài: một danh sách, mỗi dòng có nhãn và từ khóa tô đậm; ô tìm nằm ở đầu mọi trang |
+| http://localhost:81/search?q=… | [Tìm kiếm](tim-kiem.md) danh mục, bài viết, mục trong bài và nội dung bài: một danh sách, mỗi dòng có nhãn và từ khóa tô đậm; ô tìm nằm giữa header của mọi trang |
 | http://localhost:81/files/{mã} | Mở một file đính kèm hoặc file nhúng: xin API link tạm rồi chuyển tới MinIO. Ảnh, PDF, video, nhạc, file chữ mở trong trình duyệt; loại khác tải về |
 | `/account/login`, `/account/register`, `/me` | Tài khoản người dùng ([người dùng cuối](nguoi-dung-cuoi.md)) |
 
@@ -17,7 +19,6 @@ Trang ai cũng xem được, không cần đăng nhập, nằm ở **gốc** `ht
 
 | Phần | Cách dùng |
 |---|---|
-| Ô tìm kiếm lớn | Gửi tới trang [tìm kiếm](tim-kiem.md) |
 | **Categories**: tab **In order** | Mọi nhóm theo thứ tự admin đặt; dưới mỗi nhóm là thẻ của mọi danh mục trong nhóm (kể cả danh mục cấp dưới) kèm số bài |
 | **Categories**: tab **Most viewed** / **Most favorited** | 24 thẻ danh mục có nhiều lượt xem / nhiều người ☆ nhất (không tính nhóm), bằng nhau thì theo thứ tự admin đặt; thẻ hiện con số đó |
 | **Articles**: tab **Most read** / **Most favorited** / **Newest** | 10 bài đọc nhiều nhất, nhiều người ☆ nhất, mới nhất; mỗi bài hiện tóm tắt và số lượt đọc / số ☆ / ngày viết |
@@ -29,7 +30,7 @@ Trang ai cũng xem được, không cần đăng nhập, nằm ở **gốc** `ht
 
 | Phần | Cách dùng |
 |---|---|
-| Tab **Newest** / **Recently updated** / **Most read** / **Most saved** | Xếp theo ngày viết, ngày sửa, lượt xem hoặc số người đã lưu (bằng nhau thì bài mới trước). Mỗi bài hiện ngày, số lượt xem và số lần lưu. Trên điện thoại các tab nằm một hàng, vuốt ngang |
+| Tab **Newest** / **Recently updated** / **Most read** / **Most saved** | Xếp theo ngày viết, ngày sửa, lượt xem hoặc số người đã lưu (bằng nhau thì bài mới trước). Mỗi bài hiện ngày, số lượt xem và số lần lưu. Màn hình hẹp thì các tab xuống dòng, không có thanh cuộn ngang |
 | Ô **Words of the title** | Tìm theo chữ trong tiêu đề, không phân biệt dấu và hoa thường ("hang doi" tìm được "Hàng đợi") |
 | Ô **Also in …** | Chỉ giữ bài cũng thuộc một danh mục khác (ví dụ Laravel + Thực hiện) |
 | **Filter**, **Clear** | Form thường (GET): chạy không cần JavaScript, địa chỉ giữ cả lựa chọn nên gửi link được |
@@ -44,7 +45,7 @@ Từ 2026-10-25 ([REQ-006](../requirements/REQ-006-trang-chu-va-trang-doc.md), [
 | Cột | Hiện gì |
 |---|---|
 | 1. **Categories** | Cây mọi danh mục đang hiện kèm số bài; bấm ▸ để mở nhánh, bấm tên để mở danh mục. Nhánh của danh mục đang xem mở sẵn, danh mục đó được tô |
-| 2. Tên danh mục | Bài của danh mục đang chọn (tối đa 100, nhiều hơn thì có link **All N articles →**), bài đang đọc được tô. Bài nằm trong sách thì cây mục của sách ở trên danh sách. Bài không thuộc danh mục nào: cây sách hoặc bài liên quan |
+| 2. **Articles** | Bài của danh mục đang chọn (tên danh mục ở đầu danh sách) (tối đa 100, nhiều hơn thì có link **All N articles →**), bài đang đọc được tô. Bài nằm trong sách thì cây mục của sách ở trên danh sách. Bài không thuộc danh mục nào: cây sách hoặc bài liên quan |
 | 3. Nội dung | Bài: đường dẫn `Home › nhóm › danh mục › (chương của sách) › bài`, danh mục của bài, tiêu đề, nút ☆ / 🔖, nội dung, **bài trước / bài sau** theo thứ tự đọc của sách. Danh mục: như trước (tab, lọc, chia trang) |
 | 4. **On this page** | Tiêu đề cấp 2, 3 của bài; bấm để cuộn tới; tiêu đề của phần đang đọc sáng lên khi cuộn |
 
@@ -53,7 +54,8 @@ Từ 2026-10-25 ([REQ-006](../requirements/REQ-006-trang-chu-va-trang-doc.md), [
 | Chuyển trang không tải lại | Công cụ chuyển trang có sẵn của Astro (`ClientRouter`), chỉ bật ở trang đọc. Bấm link giữa các trang đọc thì chỉ thay nội dung, thanh địa chỉ đổi theo, nút Back quay lại bài trước. Cột 1 giữ nguyên chỗ cuộn và nhánh đang mở. Link sang trang chủ, tìm kiếm, tài khoản thì tải cả trang như thường |
 | Cột 2 giữ danh mục | Link trong trang đọc mang theo `?in={danh mục}`, nên đi từ bài này sang bài khác cột 2 không đổi. Trang có thẻ `canonical` trỏ về địa chỉ không có `?in=` cho máy tìm kiếm |
 | Ô lọc ở mỗi cột 1, 2, 4 | Lọc ngay khi gõ, không phân biệt dấu và hoa thường. Lọc cây thì giữ cả danh mục cha của kết quả và mở nhánh |
-| Thu gọn cột 1, 2, 4 | Nút « / » ở đầu cột; trình duyệt nhớ cột nào đang thu gọn (`localStorage`), mở lại vẫn thế |
+| Thu gọn cột 1, 2, 4 | Nút mũi tên có viền ở đầu cột, mũi tên chỉ hướng cột sẽ thu vào. Cột đã thu gọn thành một dải hẹp ghi tên cột theo chiều dọc, bấm vào đâu trên dải cũng mở lại. Trình duyệt nhớ cột nào đang thu gọn (`localStorage`), mở lại vẫn thế |
+| Viền và thanh cuộn | Giữa các cột có đường kẻ chạy hết chiều cao màn hình. Mỗi cột cuộn riêng, đứng yên dưới header; tên cột và nút thu gọn luôn hiện khi cuộn. Thanh cuộn mảnh, cùng màu với trang, chỉ hiện khi rê chuột vào cột (chỗ của nó vẫn giữ nên chữ không bị xô) |
 | Màn hình | Rộng từ 1280px: đủ 4 cột. Từ 1024px: không có cột 4. Điện thoại: nội dung trước, link **Categories and articles ↓** nhảy xuống hai menu ở dưới |
 | Không có JavaScript | Vẫn đọc được: link tải lại trang, mở nhánh cây và bấm mục lục vẫn chạy; ô lọc và nút thu gọn được ẩn |
 | Lượt đọc thật | Xem mục [Quy tắc](#quy-tắc) |

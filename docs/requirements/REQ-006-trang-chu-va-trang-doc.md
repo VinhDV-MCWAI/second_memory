@@ -152,7 +152,7 @@ Tình huống
 | Mục đang đọc: lưu, cập nhật, bài riêng tư bị ẩn, bài xóa thì mất | Test backend API người dùng |
 | Tìm kiếm có loại kết quả, đoạn trích | Test backend |
 | Trang chủ, trang đọc, chuyển trang không tải lại, mục lục sáng, nhớ chỗ đọc | Test trình duyệt (`make e2e`) |
-| JavaScript dưới 30 KB | Đo trên bản build ở READ-06: 25,8 KB (đạt, 2026-10-26) |
+| JavaScript dưới 30 KB | Đo trên bản build ở READ-06: 25,8 KB; đo lại ở READ-07 sau khi thêm ô tìm ở header: 28,4 KB (đạt, 2026-10-26) |
 
 ## 9. Chia việc
 
@@ -164,3 +164,4 @@ Tình huống
 | READ-04 | Trang đọc 4 cột, chuyển trang không tải lại, nhớ chỗ đang đọc, lượt đọc thật |
 | READ-05 | Tìm kiếm có nhãn và đoạn trích |
 | READ-06 | Tài liệu, test trình duyệt, đo JavaScript, dọn dẹp, thử lại nghiệm thu `v3.0.0` |
+| READ-07 | Chỉnh giao diện theo góp ý của chủ dự án (2026-10-26): header cố định, một ô tìm giữa header tự tìm khi ngừng gõ (bỏ ô tìm lớn ở trang chủ và ô ở trang tìm kiếm), viền giữa các cột, thanh cuộn mảnh, nút thu gọn cột to rõ, cột 2 ghi Articles, tab trang chủ không còn thanh cuộn ngang |

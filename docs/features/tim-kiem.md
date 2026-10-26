@@ -5,7 +5,7 @@ Hai ô tìm kiếm dùng chung một cách tìm, chạy bằng PostgreSQL, khôn
 | Ô tìm | Tìm trong |
 |---|---|
 | Thanh đầu **trang quản trị** | Bài viết, danh mục (cả thứ riêng tư), tên file và thư mục trong [Files](quan-ly-file.md) |
-| Đầu **trang public** | Bài viết và danh mục đang hiện trên trang public; không tìm file |
+| Giữa header **trang public** (ô duy nhất của trang, có ở mọi trang) | Bài viết và danh mục đang hiện trên trang public; không tìm file |
 
 Từ 2026-10-22 tìm bài viết và danh mục thay cho kỹ năng, mục tiêu học, bằng chứng đã bỏ ([ADR-0022](../adr/0022-trang-tai-lieu-kinh-nghiem.md)).
 
@@ -14,7 +14,22 @@ Từ 2026-10-22 tìm bài viết và danh mục thay cho kỹ năng, mục tiêu
 | Địa chỉ | Làm gì |
 |---|---|
 | http://localhost:81/admin/search?q=... | Ba nhóm: **Articles** (tiêu đề, đoạn tóm tắt, nhãn **Private** cho bài riêng tư), **Categories** (tên, nhóm, nhãn Private), **Files** (ảnh nhỏ hoặc biểu tượng thư mục, tên, thư mục chứa, dung lượng). Bài và danh mục công khai mở trang public ở tab mới; file mở Files đúng thư mục đó. Nhóm trống thì ẩn |
-| http://localhost:81/search?q=... | Trang public (từ 2026-10-26, giống Obsidian): **một danh sách**, mỗi dòng có nhãn cho biết là gì, xếp theo thứ tự **Category** (tên, nhóm chứa), **Article** (từ khóa ở tiêu đề hoặc tóm tắt; hiện tóm tắt), **Section** (tiêu đề mục trong bài, kèm tên bài; bấm thì mở bài và cuộn tới đúng mục), **Content** (từ khóa chỉ có trong nội dung; hiện đoạn chứa từ khóa). Từ khóa được tô đậm ở mọi dòng, không dấu vẫn khớp. Trên đầu ghi số kết quả, kèm câu báo khi chỉ có kết quả gần đúng. Ô tìm nằm ở đầu mọi trang; chạy không cần JavaScript |
+| http://localhost:81/search?q=... | Trang public (từ 2026-10-26, giống Obsidian): **một danh sách**, mỗi dòng có nhãn cho biết là gì, xếp theo thứ tự **Category** (tên, nhóm chứa), **Article** (từ khóa ở tiêu đề hoặc tóm tắt; hiện tóm tắt), **Section** (tiêu đề mục trong bài, kèm tên bài; bấm thì mở bài và cuộn tới đúng mục), **Content** (từ khóa chỉ có trong nội dung; hiện đoạn chứa từ khóa). Từ khóa được tô đậm ở mọi dòng, không dấu vẫn khớp. Trên đầu ghi số kết quả, kèm câu báo khi chỉ có kết quả gần đúng |
+
+### Ô tìm ở header trang public
+
+Từ 2026-10-26 (READ-07, [REQ-006](../requirements/REQ-006-trang-chu-va-trang-doc.md)).
+
+| Khi | Ô tìm làm gì |
+|---|---|
+| Ngừng gõ 0,35 giây | Tự tìm, không cần Enter. Ở trang khác: hiện danh sách kết quả ngay dưới ô (giống hệt trang `/search`), cuối danh sách có link **All results →**. Ở trang `/search`: thay danh sách trong trang, thanh địa chỉ đổi theo từ khóa |
+| Gõ tiếp khi đang tìm | Bỏ lần tìm cũ, chỉ hiện kết quả của chữ mới nhất |
+| Enter | Mở trang `/search?q=…` (tải cả trang) |
+| Esc, bấm ra ngoài | Đóng danh sách; bấm lại vào ô thì hiện lại |
+| Chưa đủ 2 chữ hoặc số | Không gọi gì |
+| Tắt JavaScript | Ô là form thường: Enter mở trang tìm kiếm |
+
+Kết quả lấy từ chính trang `/search` (HTML dựng ở server), nên danh sách dưới ô và trang tìm kiếm luôn giống nhau. Script: `public-site/src/scripts/header-search.ts`; giới hạn độ dài từ khóa dùng chung ở `public-site/src/lib/search-query.ts`.
 
 Kết quả là đoán gần đúng thì cả hai hiện dòng "No exact match — showing similar results".
 
