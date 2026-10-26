@@ -121,6 +121,8 @@ Mỗi dòng do `scripts/lane.sh done` tự thêm. Không sửa tay. Các dòng t
 
 - 2026-10-25 — [lane main] READ-04 done: c5fc99b1, 77ee06cb — trang đọc 4 cột cho /categories và /articles: cây danh mục giữ chỗ cuộn, bài của danh mục (?in=), nội dung + đường dẫn, mục lục sáng theo chỗ cuộn; lọc không dấu và thu gọn từng cột (nhớ trong trình duyệt); chuyển trang không tải lại bằng ClientRouter (chỉ ở trang đọc); ☆ danh mục; lượt đọc thật và lượt xem danh mục do trình duyệt báo qua /views; nhớ mục đang đọc của bài 🔖; sửa nginx chặn script dev của Astro (/.pnpm/); thử trên trình duyệt 25/25 bước, astro check 0 lỗi, make lint pass, make e2e 10/10; dọn: bài TMP đã xóa, lượt xem thử của danh mục Thực hiện về 0, tài khoản thử đã xóa, bộ đếm đăng ký của IP container kiểm thử đã xóa, make clean
 
+- 2026-10-26 — [lane main] READ-05 done: 2d4ef6cd — trang tìm kiếm một danh sách có nhãn Category / Article / Section / Content, từ khóa tô đậm (tiêu đề tô ở trang, đoạn trích từ API), bấm Section mở bài và cuộn tới đúng mục; thử trên dữ liệu dev đủ 4 loại; astro check 0 lỗi, make lint pass, make e2e 10/10 (thêm bước tìm kiếm); phát sinh OPS-05 (postgres/redis Exited 127 sau khởi động lại); dọn: make clean, dữ liệu E2E đã được run.sh xóa, không tạo dữ liệu TMP
+
 ## Next step
 
 1. Đầu phiên: đọc file này, rồi `scripts/lane.sh status`. Bảng việc chỉ còn các việc "để sau" theo quyết định chủ dự án.
