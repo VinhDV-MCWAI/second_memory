@@ -1,6 +1,7 @@
 ---
 import '@/styles/global.css';
 import { ROUTES } from '@/lib/routes';
+import { QUERY_MAX } from '@/lib/search-query';
 
 interface Props {
   title: string;
@@ -15,6 +16,8 @@ const {
   full = false,
 } = Astro.props;
 const width = full ? 'max-w-none' : 'max-w-4xl';
+// The one search box of the site, in the header of every page; the search page shows its query
+const query = Astro.url.pathname === ROUTES.SEARCH ? (Astro.url.searchParams.get('q') ?? '') : '';
 ---
 
 <html lang="en">
@@ -26,31 +29,56 @@ const width = full ? 'max-w-none' : 'max-w-4xl';
     <slot name="head" />
   </head>
   <body>
-    <header class:list={['mx-auto flex items-center justify-between px-6 pt-6 text-sm', width]}>
-      <a href={ROUTES.HOME} class="font-medium hover:underline">
-        Second Memory
-      </a>
-      <span class="flex items-center gap-4">
-        {/* The search page has no router (ADR-0024): a full load, not a swap */}
-        <form method="get" action={ROUTES.SEARCH} role="search" data-astro-reload>
+    {/* Fixed at the top (its height is --header-height in global.css) */}
+    <header class="site-header">
+      <div
+        class:list={[
+          'mx-auto grid h-full grid-cols-[auto_1fr_auto] items-center gap-4 px-6 text-sm sm:grid-cols-[1fr_auto_1fr]',
+          width,
+        ]}
+      >
+        <a
+          href={ROUTES.HOME}
+          class="justify-self-start font-medium whitespace-nowrap hover:underline"
+        >
+          Second Memory
+        </a>
+        {/* A plain GET form without JavaScript (Enter opens the search page, a full load: that
+            page has no router, ADR-0024); with it, results come while typing (header-search.ts) */}
+        <form
+          method="get"
+          action={ROUTES.SEARCH}
+          role="search"
+          data-astro-reload
+          data-header-search
+          class="w-full sm:w-[min(32rem,50vw)]"
+        >
           <input
             type="search"
             name="q"
-            placeholder="Search"
+            value={query}
+            placeholder="Search…"
             aria-label="Search articles and categories"
-            class="bg-background w-32 rounded-md border px-2 py-1 sm:w-48"
+            autocomplete="off"
+            maxlength={QUERY_MAX}
+            class="bg-muted/60 focus:bg-background w-full rounded-md border px-3 py-1.5"
           />
         </form>
-        <a href={ROUTES.LOGIN} data-account class="hover:underline">
+        <a
+          href={ROUTES.LOGIN}
+          data-account
+          class="max-w-40 justify-self-end truncate whitespace-nowrap hover:underline"
+        >
           Sign in
         </a>
-      </span>
+      </div>
     </header>
-    <main class:list={['mx-auto px-6', full ? 'py-6' : 'py-12', width]}>
+    <main class:list={['mx-auto', full ? 'px-6 py-6 lg:p-0' : 'px-6 py-12', width]}>
       <slot />
     </main>
     <script>
       import '@/scripts/account-link';
+      import '@/scripts/header-search';
     </script>
   </body>
 </html>

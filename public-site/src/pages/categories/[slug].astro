@@ -82,7 +82,7 @@ const dateOf = (article: { created_at: string; updated_at: string }) =>
       )}
 
       <section class="mt-10">
-        <nav class="flex gap-4 overflow-x-auto border-b text-sm">
+        <nav class="flex flex-wrap gap-x-4 border-b text-sm">
           {ARTICLE_SORTS.map((tab) => (
             <a
               href={categoryUrl(slug, query, { sort: tab.value, page: null })}

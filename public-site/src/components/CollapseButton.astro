@@ -1,0 +1,29 @@
+---
+// Hides or shows a column of the reading page (src/scripts/reader.ts). The chevron points where
+// the column goes; CSS turns it from the page's data-hidden, so it is right before scripts run.
+interface Props {
+  column: 'tree' | 'list' | 'toc';
+  label: string;
+}
+
+const { column, label } = Astro.props;
+---
+
+<button
+  type="button"
+  data-collapse={column}
+  aria-label={label}
+  title={label}
+  class="collapse-button"
+>
+  <svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true">
+    <path
+      d="M10 3.5 5.5 8l4.5 4.5"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="1.75"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    ></path>
+  </svg>
+</button>

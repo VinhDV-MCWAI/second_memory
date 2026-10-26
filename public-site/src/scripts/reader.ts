@@ -64,11 +64,8 @@ function hiddenColumns(): Column[] {
 function showButtons(): void {
   const hidden = hiddenColumns();
   for (const button of document.querySelectorAll<HTMLButtonElement>('[data-collapse]')) {
-    const column = button.dataset.collapse as Column;
-    const isHidden = hidden.includes(column);
+    const isHidden = hidden.includes(button.dataset.collapse as Column);
     button.setAttribute('aria-expanded', String(!isHidden));
-    // The arrow points where the column goes: tree and list to the left, contents to the right
-    button.textContent = (column === 'toc') === isHidden ? '«' : '»';
   }
 }
 

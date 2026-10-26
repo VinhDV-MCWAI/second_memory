@@ -68,23 +68,9 @@ const tabClass = (current: boolean) => [
   <h1 class="text-3xl font-semibold">Second Memory</h1>
   <p class="text-muted-foreground mt-2">Notes from experience on building software.</p>
 
-  {/* A plain GET form: works without JavaScript */}
-  <form method="get" action={ROUTES.SEARCH} role="search" class="mt-6 flex gap-2">
-    <input
-      type="search"
-      name="q"
-      placeholder="Search categories, articles and their text"
-      aria-label="Search the site"
-      class="bg-background min-w-0 flex-1 rounded-md border px-4 py-2.5"
-    />
-    <button type="submit" class="hover:bg-muted rounded-md border px-4 py-2.5 text-sm">
-      Search
-    </button>
-  </form>
-
   <section id={SECTION_CATEGORIES} class="mt-12 scroll-mt-6">
     <h2 class="text-xl font-semibold">Categories</h2>
-    <nav class="mt-3 flex gap-5 overflow-x-auto border-b text-sm" aria-label="Order of categories">
+    <nav class="mt-3 flex flex-wrap gap-x-5 border-b text-sm" aria-label="Order of categories">
       {CATEGORY_SORTS.map((sort) => (
         <a
           href={homeUrl(query, { categories: sort.value }, SECTION_CATEGORIES)}
@@ -141,7 +127,7 @@ const tabClass = (current: boolean) => [
 
   <section id={SECTION_ARTICLES} class="mt-12 scroll-mt-6">
     <h2 class="text-xl font-semibold">Articles</h2>
-    <nav class="mt-3 flex gap-5 overflow-x-auto border-b text-sm" aria-label="Order of articles">
+    <nav class="mt-3 flex flex-wrap gap-x-5 border-b text-sm" aria-label="Order of articles">
       {ARTICLE_TABS.map((tab) => (
         <a
           href={homeUrl(query, { articles: tab.value }, SECTION_ARTICLES)}

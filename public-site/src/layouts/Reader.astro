@@ -6,6 +6,7 @@
 // links simply load the next page; filters and collapse buttons stay hidden.
 import { ClientRouter } from 'astro:transitions';
 import ArticleMenu from '@/components/ArticleMenu.astro';
+import CollapseButton from '@/components/CollapseButton.astro';
 import CategoryTree from '@/components/CategoryTree.astro';
 import Base from '@/layouts/Base.astro';
 import { buildTree, pathTo } from '@/lib/category-tree';
@@ -45,9 +46,7 @@ const filterClass = 'bg-background mt-2 w-full rounded-md border px-2 py-1 text-
     <aside id="reader-menu" data-column="tree" transition:persist="reader-tree">
       <div class="reader-column-head">
         <p class="font-semibold">Categories</p>
-        <button type="button" data-collapse="tree" aria-label="Categories column">
-          «
-        </button>
+        <CollapseButton column="tree" label="Categories column" />
       </div>
       <div data-column-body data-filter-scope>
         <input
@@ -66,10 +65,8 @@ const filterClass = 'bg-background mt-2 w-full rounded-md border px-2 py-1 text-
     {/* Column 2 */}
     <aside data-column="list">
       <div class="reader-column-head">
-        <p class="truncate font-semibold">{category?.name ?? 'Articles'}</p>
-        <button type="button" data-collapse="list" aria-label="Articles column">
-          «
-        </button>
+        <p class="truncate font-semibold">Articles</p>
+        <CollapseButton column="list" label="Articles column" />
       </div>
       <div data-column-body data-filter-scope>
         {category && (
@@ -130,9 +127,7 @@ const filterClass = 'bg-background mt-2 w-full rounded-md border px-2 py-1 text-
     <nav data-column="toc" aria-label="On this page">
       <div class="reader-column-head">
         <p class="font-semibold">On this page</p>
-        <button type="button" data-collapse="toc" aria-label="Contents column">
-          »
-        </button>
+        <CollapseButton column="toc" label="Contents column" />
       </div>
       <div data-column-body data-filter-scope>
         {toc.length === 0 ? (

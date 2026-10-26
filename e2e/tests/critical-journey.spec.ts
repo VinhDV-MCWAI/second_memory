@@ -185,8 +185,10 @@ test('owner writes a book and visitors read it like a documentation site', async
     const content = results.getByRole('listitem').filter({ hasText: 'Content' }).filter({ hasText: book });
     await expect(content.locator('mark').first()).toBeVisible();
 
-    await visitor.goto(`${PUBLIC_URL}/search?q=${encodeURIComponent(later)}`);
-    const section = results.getByRole('listitem').filter({ hasText: 'Section' });
+    // The header's box shows results under it once typing pauses, without Enter
+    await visitor.goto(`${PUBLIC_URL}/`);
+    await visitor.getByRole('search').getByRole('searchbox').fill(later);
+    const section = visitor.locator('#header-search-panel').getByRole('listitem').filter({ hasText: 'Section' });
     await expect(section.locator('mark')).toHaveText(later.split(' '));
     await section.getByRole('link', { name: later }).click();
     await expect(visitor).toHaveURL(`${PUBLIC_URL}/articles/${slugOf(book)}#${slugOf(later)}`);
