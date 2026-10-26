@@ -14,7 +14,7 @@ Từ 2026-10-22 tìm bài viết và danh mục thay cho kỹ năng, mục tiêu
 | Địa chỉ | Làm gì |
 |---|---|
 | http://localhost:81/admin/search?q=... | Ba nhóm: **Articles** (tiêu đề, đoạn tóm tắt, nhãn **Private** cho bài riêng tư), **Categories** (tên, nhóm, nhãn Private), **Files** (ảnh nhỏ hoặc biểu tượng thư mục, tên, thư mục chứa, dung lượng). Bài và danh mục công khai mở trang public ở tab mới; file mở Files đúng thư mục đó. Nhóm trống thì ẩn |
-| http://localhost:81/search?q=... | Trang public: danh mục (kèm nhóm) rồi bài viết (tiêu đề, tóm tắt). Ô tìm nằm ở đầu mọi trang; chạy không cần JavaScript |
+| http://localhost:81/search?q=... | Trang public (từ 2026-10-26, giống Obsidian): **một danh sách**, mỗi dòng có nhãn cho biết là gì, xếp theo thứ tự **Category** (tên, nhóm chứa), **Article** (từ khóa ở tiêu đề hoặc tóm tắt; hiện tóm tắt), **Section** (tiêu đề mục trong bài, kèm tên bài; bấm thì mở bài và cuộn tới đúng mục), **Content** (từ khóa chỉ có trong nội dung; hiện đoạn chứa từ khóa). Từ khóa được tô đậm ở mọi dòng, không dấu vẫn khớp. Trên đầu ghi số kết quả, kèm câu báo khi chỉ có kết quả gần đúng. Ô tìm nằm ở đầu mọi trang; chạy không cần JavaScript |
 
 Kết quả là đoán gần đúng thì cả hai hiện dòng "No exact match — showing similar results".
 
@@ -62,5 +62,5 @@ Từ 2026-10-17. Chủ dự án chọn: thêm chỉ mục vào bảng file, tìm
 | Phần | File |
 |---|---|
 | Xử lý | `laravel-api/app/Services/Content/SearchService.php` (`search` cho trang quản trị, `publicSearch` cho trang public), `laravel-api/app/Repositories/Content/SearchRepository.php` |
-| Giao diện | `nextjs-fe/src/app/admin/(panel)/search/page.tsx`, `nextjs-fe/src/features/content/components/search-results.tsx`; trang public `public-site/src/pages/search.astro`, ô tìm trong `src/layouts/Base.astro` |
-| Test | `make test f=SearchContentApi`, `f=SearchFilesApi`, `f=PublicSearchApi`; khóa thư mục: `make test f=FolderPolicyApi`; `pnpm test src/features/content/components/search-results` |
+| Giao diện | `nextjs-fe/src/app/admin/(panel)/search/page.tsx`, `nextjs-fe/src/features/content/components/search-results.tsx`; trang public `public-site/src/pages/search.astro` (tô đậm tiêu đề bằng `src/lib/highlight.ts` + `src/components/Marked.astro`, cùng cách so như API), ô tìm trong `src/layouts/Base.astro` |
+| Test | `make test f=SearchContentApi`, `f=SearchFilesApi`, `f=PublicSearchApi`; khóa thư mục: `make test f=FolderPolicyApi`; `pnpm test src/features/content/components/search-results`; trang public: bước "search results say what they are" trong `e2e/tests/critical-journey.spec.ts` (`make e2e`) |

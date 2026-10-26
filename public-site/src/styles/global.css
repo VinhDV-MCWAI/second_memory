@@ -49,6 +49,14 @@ body {
   font-family: var(--font-sans);
 }
 
+/* Searched words (search page: Marked.astro and the API's snippets): bold, readable in both themes */
+mark {
+  color: var(--color-foreground);
+  background: hsl(var(--primary) / 0.2);
+  font-weight: 600;
+  border-radius: 0.125rem;
+}
+
 /* Article bodies: HTML made from the owner's Markdown by the API (ADR-0021) */
 .article-body > * + * {
   margin-top: 1rem;

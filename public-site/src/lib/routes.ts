@@ -17,6 +17,9 @@ export const ROUTES = {
   article: (slug: string) => `/articles/${encode(slug)}`,
   /** An article read from one of its categories: the reading page lists that category's articles */
   articleIn: (slug: string, category: string) => `/articles/${encode(slug)}?in=${encode(category)}`,
+  /** An article opened at one of its headings (saved reading position, search result) */
+  articleAt: (slug: string, anchor: string | null) =>
+    `/articles/${encode(slug)}${anchor ? `#${encode(anchor)}` : ''}`,
   /** Where the reading page reports a real read (ADR-0024) */
   view: (kind: ViewKind, slug: string) => `/views/${kind}/${encode(slug)}`,
   file: (key: string) => `/files/${encode(key)}`,

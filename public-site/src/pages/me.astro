@@ -105,7 +105,7 @@ import Base from '@/layouts/Base.astro';
     link.href =
       item.category_slug !== null
         ? ROUTES.category(item.category_slug)
-        : `${ROUTES.article(item.article_slug ?? '')}${item.anchor ? `#${encodeURIComponent(item.anchor)}` : ''}`;
+        : ROUTES.articleAt(item.article_slug ?? '', item.anchor);
     link.className = 'font-medium hover:underline';
     link.textContent = item.title;
     li.append(link);

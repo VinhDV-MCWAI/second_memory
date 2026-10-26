@@ -13,6 +13,7 @@ const book = `E2E Book ${runId}`;
 const chapter = `E2E Chapter ${runId}`;
 const privateArticle = `E2E Private ${runId}`;
 const overview = `Overview text of run ${runId}`;
+const later = `Later ${runId}`;
 // laravel-api uniqueSlug = Str::slug(name) for a new name
 const slugOf = (name: string) => name.toLowerCase().replaceAll(' ', '-');
 
@@ -82,7 +83,7 @@ test('owner writes a book and visitors read it like a documentation site', async
   });
 
   await test.step('a book, a chapter that links and embeds it, and a private article', async () => {
-    await createArticle(page, book, `## Overview\n\n${overview}\n\n## Later\n\nNot embedded.`, {
+    await createArticle(page, book, `## Overview\n\n${overview}\n\n## ${later}\n\nNot embedded.`, {
       category,
     });
     await createArticle(
@@ -139,6 +140,20 @@ test('owner writes a book and visitors read it like a documentation site', async
     await expect(visitor.getByRole('link', { name: privateArticle })).toHaveCount(0);
     const response = await visitor.goto(`${PUBLIC_URL}/articles/${slugOf(privateArticle)}`);
     expect(response?.status()).toBe(HTTP_NOT_FOUND);
+  });
+
+  await test.step('search results say what they are and open the right section (REQ-006)', async () => {
+    const results = visitor.getByRole('region', { name: 'Results' });
+    await visitor.goto(`${PUBLIC_URL}/search?q=${encodeURIComponent(overview)}`);
+    const content = results.getByRole('listitem').filter({ hasText: 'Content' }).filter({ hasText: book });
+    await expect(content.locator('mark').first()).toBeVisible();
+
+    await visitor.goto(`${PUBLIC_URL}/search?q=${encodeURIComponent(later)}`);
+    const section = results.getByRole('listitem').filter({ hasText: 'Section' });
+    await expect(section.locator('mark')).toHaveText(later.split(' '));
+    await section.getByRole('link', { name: later }).click();
+    await expect(visitor).toHaveURL(`${PUBLIC_URL}/articles/${slugOf(book)}#${slugOf(later)}`);
+    await expect(visitor.getByRole('heading', { level: 2, name: later })).toBeInViewport();
   });
 
   await test.step('old links land on the right pages (ADR-0021, ADR-0022)', async () => {

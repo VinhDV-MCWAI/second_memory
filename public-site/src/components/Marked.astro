@@ -1,0 +1,13 @@
+---
+// Text with the searched words in <mark> (src/lib/highlight.ts), printed as text, never as HTML
+import { highlight } from '@/lib/highlight';
+
+interface Props {
+  text: string;
+  words: string[];
+}
+
+const { text, words } = Astro.props;
+---
+
+{highlight(text, words).map((piece) => (piece.mark ? <mark>{piece.text}</mark> : piece.text))}

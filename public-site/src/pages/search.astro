@@ -1,5 +1,7 @@
 ---
+import Marked from '@/components/Marked.astro';
 import Base from '@/layouts/Base.astro';
+import { searchWords } from '@/lib/highlight';
 import { getPublicSearch } from '@/lib/public-api';
 import { ROUTES } from '@/lib/routes';
 
@@ -9,10 +11,65 @@ const QUERY_MIN = 2;
 const QUERY_MAX = 100;
 const HAS_WORD = /[\p{L}\p{N}]/u;
 
+/** One row of the result list (REQ-006: one list, each row says what it is) */
+interface Hit {
+  label: 'Category' | 'Article' | 'Section' | 'Content';
+  title: string;
+  href: string;
+  /** Where it lives: group of a category, article of a section */
+  context: string | null;
+  /** Plain text marked here */
+  text: string | null;
+  /** Safe HTML from the API, the words already in <mark> */
+  snippet: string | null;
+}
+
 const q = (Astro.url.searchParams.get('q') ?? '').trim().slice(0, QUERY_MAX);
 const searchable = q.length >= QUERY_MIN && HAS_WORD.test(q);
 const results = searchable ? await getPublicSearch(q) : null;
-const found = results !== null && results.articles.length + results.categories.length > 0;
+const words = searchWords(q);
+
+// Categories, then articles found by title, the headings, and last the articles found in their text
+const hits: Hit[] = results
+  ? [
+      ...results.categories.map((category) => ({
+        label: 'Category' as const,
+        title: category.name,
+        href: ROUTES.category(category.slug),
+        context: category.group,
+        text: null,
+        snippet: null,
+      })),
+      ...results.articles
+        .filter((article) => article.found_in === 'title')
+        .map((article) => ({
+          label: 'Article' as const,
+          title: article.title,
+          href: ROUTES.article(article.slug),
+          context: null,
+          text: article.summary,
+          snippet: null,
+        })),
+      ...results.sections.map((section) => ({
+        label: 'Section' as const,
+        title: section.heading,
+        href: ROUTES.articleAt(section.article_slug, section.anchor),
+        context: section.article_title,
+        text: null,
+        snippet: null,
+      })),
+      ...results.articles
+        .filter((article) => article.found_in === 'content')
+        .map((article) => ({
+          label: 'Content' as const,
+          title: article.title,
+          href: ROUTES.article(article.slug),
+          context: null,
+          text: null,
+          snippet: article.snippet,
+        })),
+    ]
+  : [];
 ---
 
 <Base title={q ? `${q} — Search — Second Memory` : 'Search — Second Memory'}>
@@ -23,7 +80,7 @@ const found = results !== null && results.articles.length + results.categories.l
       type="search"
       name="q"
       value={q}
-      placeholder="Words of a title or text"
+      placeholder="Words of a category, title or text"
       minlength={QUERY_MIN}
       maxlength={QUERY_MAX}
       required
@@ -36,47 +93,38 @@ const found = results !== null && results.articles.length + results.categories.l
   <p class="text-muted-foreground mt-2 text-xs">Accents and case are ignored.</p>
 
   {q && !searchable && <p class="mt-8">Type at least {QUERY_MIN} letters or digits.</p>}
-  {searchable && !found && <p class="mt-8">Nothing found for “{q}”.</p>}
-  {results && found && (
-    <>
-      {results.match === 'fuzzy' && (
-        <p class="mt-8 text-sm text-amber-600">No exact match — showing similar results.</p>
-      )}
-      {results.categories.length > 0 && (
-        <section class="mt-8">
-          <h2 class="font-semibold">Categories</h2>
-          <ul class="mt-3 flex flex-wrap gap-2">
-            {results.categories.map((category) => (
-              <li>
-                <a
-                  href={ROUTES.category(category.slug)}
-                  class="hover:bg-muted block rounded-md border px-3 py-1.5 text-sm"
-                >
-                  {category.group && <span class="text-muted-foreground">{category.group} › </span>}
-                  {category.name}
-                </a>
-              </li>
-            ))}
-          </ul>
-        </section>
-      )}
-      {results.articles.length > 0 && (
-        <section class="mt-8">
-          <h2 class="font-semibold">Articles</h2>
-          <ul class="mt-2 divide-y">
-            {results.articles.map((article) => (
-              <li class="py-4">
-                <a href={ROUTES.article(article.slug)} class="font-medium hover:underline">
-                  {article.title}
-                </a>
-                {article.summary && (
-                  <p class="text-muted-foreground mt-1 text-sm">{article.summary}</p>
-                )}
-              </li>
-            ))}
-          </ul>
-        </section>
-      )}
-    </>
+  {searchable && hits.length === 0 && <p class="mt-8">Nothing found for “{q}”.</p>}
+  {hits.length > 0 && (
+    <section class="mt-8" aria-label="Results">
+      <p class="text-muted-foreground text-sm">
+        {hits.length} {hits.length === 1 ? 'result' : 'results'}
+        {results?.match === 'fuzzy' && (
+          <span class="text-amber-600"> — no exact match, showing similar results</span>
+        )}
+      </p>
+      <ul class="mt-2 divide-y">
+        {hits.map((hit) => (
+          <li class="py-3">
+            <div class="flex items-baseline gap-2">
+              <span class="text-muted-foreground shrink-0 rounded border px-1.5 text-xs">
+                {hit.label}
+              </span>
+              <a href={hit.href} class="min-w-0 font-medium hover:underline">
+                <Marked text={hit.title} words={words} />
+              </a>
+              {hit.context && (
+                <span class="text-muted-foreground min-w-0 truncate text-sm">in {hit.context}</span>
+              )}
+            </div>
+            {hit.text && (
+              <p class="text-muted-foreground mt-1 text-sm">
+                <Marked text={hit.text} words={words} />
+              </p>
+            )}
+            {hit.snippet && <p class="text-muted-foreground mt-1 text-sm" set:html={hit.snippet} />}
+          </li>
+        ))}
+      </ul>
+    </section>
   )}
 </Base>
