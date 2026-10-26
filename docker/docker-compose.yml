@@ -11,7 +11,9 @@ services:
   # PostgreSQL Database
   ml-postgres:
     container_name: ml-postgres
-    image: postgres:16.15-alpine3.24
+    # pg_hba.conf is copied into the image, not mounted (docker/postgres/Dockerfile, OPS-05)
+    build:
+      context: ./postgres
     restart: unless-stopped
     logging: *logging
     environment:
@@ -22,15 +24,6 @@ services:
       PGDATA: /var/lib/postgresql/data/pgdata
     volumes:
       - postgres_data:/var/lib/postgresql/data
-      # Folders, never single files: on Docker Desktop + WSL a single-file bind mount goes stale
-      # when WSL restarts and the container fails with exit 127 (incident 2026-10-20). Long syntax
-      # next to a named volume: the short `-v` form makes Docker Desktop stage the folder the same way.
-      - type: bind
-        source: ./postgres
-        target: /etc/postgresql/custom
-        read_only: true
-        bind:
-          create_host_path: false
     ports:
       - "${POSTGRES_PORT_OUTSIDE_ENV}:${POSTGRES_PORT_INSIDE_ENV}"
     command: >
@@ -55,20 +48,15 @@ services:
   # Redis Cache
   ml-redis:
     container_name: ml-redis
-    image: redis:7.4.11-alpine3.21
+    # redis.conf is copied into the image, not mounted (docker/redis/Dockerfile, OPS-05)
+    build:
+      context: ./redis
     restart: unless-stopped
     logging: *logging
     environment:
       REDIS_PASSWORD: ${REDIS_PASSWORD}
     volumes:
       - redis_data:/data
-      # Folder, long syntax (see ml-postgres)
-      - type: bind
-        source: ./redis
-        target: /usr/local/etc/redis
-        read_only: true
-        bind:
-          create_host_path: false
     ports:
       - "${REDIS_PORT_OUTSIDE_ENV}:${REDIS_PORT_INSIDE_ENV}"
     # The password goes into a config file written at start instead of the command line (seen by

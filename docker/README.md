@@ -35,8 +35,8 @@ Every image is pinned to an exact version and no service runs as root; the detai
 | `laravel/` | PHP image (dev and production targets), entrypoint, `php.ini` |
 | `nextjs/` | one image for both Next.js apps (`--build-arg APP=…`), dev and production targets |
 | `nginx/` | `nginx.conf`, `default.conf` (routing; the Terraform stack reuses it) |
-| `postgres/` | `postgresql.conf`, `pg_hba.conf` |
-| `redis/` | `redis.conf` |
+| `postgres/` | `Dockerfile` (copies `pg_hba.conf` into the image), `postgresql.conf`, `pg_hba.conf` |
+| `redis/` | `Dockerfile` (copies `redis.conf` into the image), `redis.conf` |
 | `minio/` | MinIO image and `create-buckets.sh` |
 
 ## Commands
