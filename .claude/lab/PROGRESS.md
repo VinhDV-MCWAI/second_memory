@@ -131,6 +131,8 @@ Mỗi dòng do `scripts/lane.sh done` tự thêm. Không sửa tay. Các dòng t
 
 - 2026-10-26 — [lane main] OPS-05 done: 88bf8c5e, 65fa3957, 2605ce66 — nguyên nhân (log 10:31): vài giây đầu sau khởi động lại Docker chưa thấy thư mục dự án; ml-postgres, ml-redis gắn cấu hình kiểu create_host_path: false nên hỏng lúc tạo (127) và không được thử lại, các container khác tự thử lại và chạy từ giây thứ 4; sửa: chép pg_hba.conf, redis.conf vào image, không gắn gì từ máy (dữ liệu giữ nguyên, cấu hình kiểm lại đúng); thêm: 5 lần đăng nhập sai e2e_owner lúc 12:54 do container Playwright mồ côi sau khi run.sh bị ngắt, run.sh giờ đặt tên và dừng container khi dọn (thử ngắt giữa chừng: container dừng, dữ liệu E2E được dọn); make test 280 pass, make e2e 10/10, shellcheck sạch; chưa thử khởi động lại máy thật (chờ lần tới); dọn: make clean, ảnh shellcheck và file tạm đã xóa, dữ liệu E2E do run.sh xóa
 
+- 2026-10-26 — [lane main] CONTENT-01 done: daf68edd — sao lưu trước (backups/history/system_backup_20261026_204559.tar.gz, giữ lại); xóa qua service của ứng dụng 10 bài article 1…10 và 8 danh mục test…, aaaaaaaaaaaa (nhật ký thay đổi ghi đủ; còn 26 bài mẫu, 16 danh mục mẫu, giữ tới khi nhập bài thật); vault C:/Users/Dell/Downloads/Obsidian-SB: 84 ghi chú, chưa ghi chú nào publish: true, không có ảnh; chạy thử không ghi trên bản chép 20 chương Computer History: 21 bài hợp lệ, phát hiện thứ tự chương sai (1, 10, 2…) và sửa: công cụ nhập sắp số như số giống Obsidian, 59 test importer pass; không sửa file nào trong vault; dọn: make clean, bản chép và token nhập đã xóa / thu hồi
+
 ## Next step
 
 1. Đầu phiên: đọc file này, rồi `scripts/lane.sh status`. Bảng việc chỉ còn các việc "để sau" theo quyết định chủ dự án.
