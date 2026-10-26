@@ -17,6 +17,15 @@ def test_find_notes_skips_dot_folders_and_other_files(vault: Vault) -> None:
     assert found == ["a/c.md", "b.md"]
 
 
+def test_find_notes_orders_numbers_like_obsidian(vault: Vault) -> None:
+    for name in ["Chương 10.md", "Chương 2.md", "Chương 1.md", "Phần 1/Bài 12.md", "Phần 1/Bài 3.md"]:
+        vault.add(name)
+
+    found = [path.relative_to(vault.root).as_posix() for path in find_notes(vault.root)]
+
+    assert found == ["Chương 1.md", "Chương 2.md", "Chương 10.md", "Phần 1/Bài 3.md", "Phần 1/Bài 12.md"]
+
+
 def test_split_frontmatter_returns_mapping_and_body() -> None:
     data, body = split_frontmatter("---\npublish: true\ntags: [a]\n---\n# Title\n\nText")
 

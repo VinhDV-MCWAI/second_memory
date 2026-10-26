@@ -50,6 +50,7 @@ Máy chủ tìm ghi chú được nhắc tới giống Obsidian: đúng đườn
 | Ghi chú mới | Tạo bài viết, **công khai ngay**. Slug lấy từ tiêu đề, trùng thì thêm số (`-2`) |
 | Ghi chú đổi nội dung | Cập nhật tiêu đề, tóm tắt, nội dung, bài cha, danh mục. Slug giữ nguyên |
 | Đổi bài cha | Bài nằm cuối trong các bài con của cha mới |
+| Nhiều bài con mới cùng một cha | Xếp theo đường dẫn trong vault, **số so như số** giống cây file của Obsidian: `Chương 2` trước `Chương 10` (từ 2026-10-26). Thứ tự đã có thì giữ, đổi bằng ↑ ↓ trong trang quản trị |
 | Ghi chú không đổi | Không ghi gì vào DB |
 | Ghi chú bị bỏ `publish` hoặc bị xóa khỏi vault | Bài bị **ẩn** (chuyển riêng tư), không bị xóa |
 | Ghi chú bị ẩn rồi xuất hiện lại | Nội dung cập nhật nhưng vẫn riêng tư, phải bật công khai lại bằng tay |

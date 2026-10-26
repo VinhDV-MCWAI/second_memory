@@ -31,9 +31,20 @@ _Yaml12BoolLoader.add_implicit_resolver(
 )
 
 
+def _natural_key(path: Path) -> tuple[list[str | int], str]:
+    """Numbers compare as numbers, as in Obsidian's file list: `Chương 2` comes before `Chương 10`.
+
+    The order decides where new children land in a book (ADR-0022). `re.split` with a group
+    alternates text and digits, so the same positions always hold the same type.
+    """
+    text = path.as_posix()
+    chunks: list[str | int] = [int(chunk) if chunk.isdigit() else chunk for chunk in re.split(r"(\d+)", text)]
+    return chunks, text
+
+
 def find_notes(root: Path) -> Iterator[Path]:
     """Every `.md` file under `root`, in a stable order, skipping folders that start with `.`."""
-    for path in sorted(root.rglob(f"*{NOTE_SUFFIX}")):
+    for path in sorted(root.rglob(f"*{NOTE_SUFFIX}"), key=_natural_key):
         relative = path.relative_to(root)
         if path.is_file() and not any(part.startswith(".") for part in relative.parts[:-1]):
             yield path
