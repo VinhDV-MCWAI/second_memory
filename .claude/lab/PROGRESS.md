@@ -127,6 +127,8 @@ Mỗi dòng do `scripts/lane.sh done` tự thêm. Không sửa tay. Các dòng t
 
 - 2026-10-26 — [lane main] READ-07 done: 5f8255ca, 4362d930 — header cố định, một ô tìm giữa header tự hiện kết quả khi ngừng gõ (bỏ ô tìm ở trang chủ và trang tìm kiếm), viền giữa các cột, thanh cuộn mảnh, nút thu gọn có viền và cột thu gọn thành dải bấm được, cột 2 ghi Articles, tab không còn cuộn ngang; xem ảnh chụp tự động thì sửa thêm: danh sách kết quả tràn mép trên điện thoại, dải cột thu gọn chưa sát mép; JS trang đọc 28,4 KB (dưới 30 KB), trang chủ 4,3 KB; astro check 0 lỗi, make lint pass, make e2e 10/10 (lần chạy đầu hỏng 10/10 do khóa đăng nhập e2e_owner còn từ 12:54, chạy lại sau khi hết khóa thì pass); dọn: make clean, bản build và máy chủ đo tạm đã xóa, ảnh chụp trong scratchpad đã xóa, dữ liệu E2E do run.sh xóa, không tạo dữ liệu TMP
 
+- 2026-10-26 — [lane main] KB-08 done: 3828de7f, ddd30644, tag v3.0.0 — chủ dự án thử 13 bước trên trình duyệt: đạt cả 13 (2026-10-26); ghi kết quả vào v3.0.0.md, lộ trình đánh dấu giai đoạn 10 và 11 xong; tag v3.0.0 trên máy, chủ dự án push; dọn: kiểm tra DB dev không còn bài, danh mục TMP và tài khoản tmp- (0 dòng)
+
 ## Next step
 
 1. Đầu phiên: đọc file này, rồi `scripts/lane.sh status`. Bảng việc chỉ còn các việc "để sau" theo quyết định chủ dự án.
