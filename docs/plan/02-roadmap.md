@@ -1,12 +1,12 @@
 # Lộ trình
 
-Cập nhật: 2026-10-25. Mục tiêu và cách làm việc: [01-goals-and-workflow.md](01-goals-and-workflow.md). Việc còn mở: [03-backlog.md](03-backlog.md). Việc đã xong: [05-done.md](05-done.md).
+Cập nhật: 2026-10-26. Mục tiêu và cách làm việc: [01-goals-and-workflow.md](01-goals-and-workflow.md). Việc còn mở: [03-backlog.md](03-backlog.md). Việc đã xong: [05-done.md](05-done.md).
 
 ```
 Tính năng:     1. Dọn nền ─► 2. Phân quyền động ─► 3. Media MinIO ─► 4. Phòng ban ─► 5. CI/CD (rồi tắt) ─► 6. Nâng cấp trên dev ─► 9. Trang cho người dùng
                   (xong)         (xong)                 (xong)            (xong)          (xong, đang tắt)        (xong)                 (xong)
 Luyện quy trình:                                                                                                8. Đóng gói → sổ tay → vòng đời đầy đủ (v2.3.0 xong 2026-10-25)
-Tiếp theo:     10. Trang tài liệu kinh nghiệm (làm xong 2026-10-25; chờ chủ dự án thử trên trình duyệt rồi gắn tag v3.0.0)
+Đã xong:      10. Trang tài liệu kinh nghiệm + 11. Trang chủ tóm tắt và trang đọc 4 cột (tag v3.0.0 gắn 2026-10-26, chủ dự án thử trên trình duyệt: đạt)
 Sau cùng:      7. Triển khai, vận hành, sự cố, hiệu năng & bảo mật, portfolio; CI/CD chỉ khi chủ dự án yêu cầu
 ```
 
@@ -113,6 +113,7 @@ Ghi lại để làm sau, theo thứ tự dự kiến. Mỗi mục bắt đầu 
 | Cách làm | [REQ-005](../requirements/REQ-005-trang-tai-lieu-kinh-nghiem.md), [ADR-0022](../adr/0022-trang-tai-lieu-kinh-nghiem.md): bỏ Skill Ledger; danh mục 2 cấp có đính kèm; bài viết nhiều danh mục, cây chương tối đa 10 cấp, nhúng bài và file theo cú pháp Obsidian |
 | Gồm | KB-01…KB-08 trong [03-backlog.md](03-backlog.md#10-trang-tài-liệu-kinh-nghiệm) |
 | Xong khi | Tag `v3.0.0`; trang public đọc như trang tài liệu; `make verify`, `make e2e` xanh |
+| Tình trạng | Xong 2026-10-26: tag `v3.0.0` (gộp cả giai đoạn 11), chủ dự án thử 13 bước trên trình duyệt: đạt |
 
 ## 11. Trang chủ tóm tắt và trang đọc 4 cột
 
@@ -120,5 +121,5 @@ Ghi lại để làm sau, theo thứ tự dự kiến. Mỗi mục bắt đầu 
 |---|---|
 | Mục tiêu | Trang chủ chỉ tóm tắt (danh mục và bài được quan tâm); đọc trong trang 4 cột như trang tài liệu của Next.js, chuyển bài mượt mà vẫn giữ Astro; tìm kiếm kiểu Obsidian; lượt xem là người đọc thật; 🔖 nhớ chỗ đang đọc |
 | Cách làm | [REQ-006](../requirements/REQ-006-trang-chu-va-trang-doc.md), [ADR-0024](../adr/0024-trang-doc-chuyen-trang-khong-tai-lai.md): công cụ chuyển trang có sẵn của Astro (`ClientRouter`), không thêm thư viện, JavaScript dưới 30 KB |
-| Gồm | READ-01…READ-06 trong [03-backlog.md](03-backlog.md#11-trang-chủ-tóm-tắt-và-trang-đọc-4-cột) |
+| Gồm | READ-01…READ-07 trong [03-backlog.md](03-backlog.md#11-trang-chủ-tóm-tắt-và-trang-đọc-4-cột) |
 | Xong khi | Đủ tiêu chí chấp nhận của REQ-006; `make verify`, `make e2e` xanh |
