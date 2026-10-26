@@ -125,6 +125,8 @@ Mỗi dòng do `scripts/lane.sh done` tự thêm. Không sửa tay. Các dòng t
 
 - 2026-10-26 — [lane main] READ-06 done: b7772abb, f3baded8, 697f127c, e0d7b128 — test trình duyệt cho trang đọc (tab Newest + See more, chuyển bài không tải lại + Back, mục lục sáng, 🔖 nhớ mục); test bắt 2 lỗi, sửa riêng: nginx dev chặn file Vite (429) làm chuyển trang tải lại cả trang, chỗ đọc không lưu khi cuộn trước lúc danh sách đã lưu tải xong; JS trang đọc 25,8 KB (dưới 30 KB); ghi chú v3.0.0 gộp REQ-006, nghiệm thu trình duyệt 13 bước; make verify pass (280 backend, 177 giao diện, 58 importer, astro check 0 lỗi), make e2e 10/10; OPS-05: log nginx cũng báo thiếu nginx.conf lúc khởi động lại 10:31; dọn: make clean, bản build và máy chủ thử đã xóa, dữ liệu E2E do run.sh xóa, không tạo dữ liệu TMP
 
+- 2026-10-26 — [lane main] READ-07 done: 5f8255ca, 4362d930 — header cố định, một ô tìm giữa header tự hiện kết quả khi ngừng gõ (bỏ ô tìm ở trang chủ và trang tìm kiếm), viền giữa các cột, thanh cuộn mảnh, nút thu gọn có viền và cột thu gọn thành dải bấm được, cột 2 ghi Articles, tab không còn cuộn ngang; xem ảnh chụp tự động thì sửa thêm: danh sách kết quả tràn mép trên điện thoại, dải cột thu gọn chưa sát mép; JS trang đọc 28,4 KB (dưới 30 KB), trang chủ 4,3 KB; astro check 0 lỗi, make lint pass, make e2e 10/10 (lần chạy đầu hỏng 10/10 do khóa đăng nhập e2e_owner còn từ 12:54, chạy lại sau khi hết khóa thì pass); dọn: make clean, bản build và máy chủ đo tạm đã xóa, ảnh chụp trong scratchpad đã xóa, dữ liệu E2E do run.sh xóa, không tạo dữ liệu TMP
+
 ## Next step
 
 1. Đầu phiên: đọc file này, rồi `scripts/lane.sh status`. Bảng việc chỉ còn các việc "để sau" theo quyết định chủ dự án.
