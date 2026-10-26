@@ -123,6 +123,8 @@ Mỗi dòng do `scripts/lane.sh done` tự thêm. Không sửa tay. Các dòng t
 
 - 2026-10-26 — [lane main] READ-05 done: 2d4ef6cd — trang tìm kiếm một danh sách có nhãn Category / Article / Section / Content, từ khóa tô đậm (tiêu đề tô ở trang, đoạn trích từ API), bấm Section mở bài và cuộn tới đúng mục; thử trên dữ liệu dev đủ 4 loại; astro check 0 lỗi, make lint pass, make e2e 10/10 (thêm bước tìm kiếm); phát sinh OPS-05 (postgres/redis Exited 127 sau khởi động lại); dọn: make clean, dữ liệu E2E đã được run.sh xóa, không tạo dữ liệu TMP
 
+- 2026-10-26 — [lane main] READ-06 done: b7772abb, f3baded8, 697f127c, e0d7b128 — test trình duyệt cho trang đọc (tab Newest + See more, chuyển bài không tải lại + Back, mục lục sáng, 🔖 nhớ mục); test bắt 2 lỗi, sửa riêng: nginx dev chặn file Vite (429) làm chuyển trang tải lại cả trang, chỗ đọc không lưu khi cuộn trước lúc danh sách đã lưu tải xong; JS trang đọc 25,8 KB (dưới 30 KB); ghi chú v3.0.0 gộp REQ-006, nghiệm thu trình duyệt 13 bước; make verify pass (280 backend, 177 giao diện, 58 importer, astro check 0 lỗi), make e2e 10/10; OPS-05: log nginx cũng báo thiếu nginx.conf lúc khởi động lại 10:31; dọn: make clean, bản build và máy chủ thử đã xóa, dữ liệu E2E do run.sh xóa, không tạo dữ liệu TMP
+
 ## Next step
 
 1. Đầu phiên: đọc file này, rồi `scripts/lane.sh status`. Bảng việc chỉ còn các việc "để sau" theo quyết định chủ dự án.
