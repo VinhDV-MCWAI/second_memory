@@ -3,13 +3,16 @@ import { E2E_PASSWORD, E2E_USER, PUBLIC_URL } from '../env';
 
 // End-user accounts of the public site (ADR-0020, REQ-003): a visitor clicks ☆ on a public article,
 // creates an account, comes back to the article, keeps it as a favourite and to read later, sees
-// both in My lists; the owner locks the account and the visitor is signed out. e2e/run.sh removes
+// both in My lists, comes back to the section it was reading; the owner locks the account and the visitor is signed out. e2e/run.sh removes
 // the `E2E …` article and every `e2e-…` end user afterwards.
 const suffix = Date.now().toString(36);
 const article = `E2E Shared ${suffix}`;
 const slug = article.toLowerCase().replaceAll(' ', '-');
 const username = `e2e-${suffix}`;
 const password = 'e2e-visitor-1';
+// Two sections long enough for the second to scroll to the top of the window
+const filler = Array.from({ length: 40 }, (_, i) => `Line ${i + 1}.`).join('\n\n');
+const body = `Worth reading twice.\n\n## Start\n\n${filler}\n\n## Queues\n\n${filler}`;
 
 async function signInAsOwner(page: Page) {
   await page.goto('/admin/login');
@@ -29,7 +32,7 @@ test('a visitor signs up, saves an article, and is signed out once locked', asyn
     await page.getByRole('button', { name: 'Create Article' }).click();
     const dialog = page.getByRole('dialog');
     await dialog.getByLabel('Title').fill(article);
-    await dialog.getByLabel('Content (Markdown)').fill('Worth reading twice.');
+    await dialog.getByLabel('Content (Markdown)').fill(body);
     await dialog.getByRole('button', { name: 'Create', exact: true }).click();
     await expect(dialog).toBeHidden();
   });
@@ -80,6 +83,25 @@ test('a visitor signs up, saves an article, and is signed out once locked', asyn
       const section = visitor.locator('section').filter({ has: visitor.getByRole('heading', { name: list }) });
       await expect(section.getByRole('link', { name: article })).toBeVisible();
     }
+  });
+
+  await test.step('🔖 remembers the section being read (REQ-006)', async () => {
+    await visitor.goto(`${PUBLIC_URL}/articles/${slug}`);
+    await visitor.getByRole('navigation', { name: 'On this page' }).getByRole('link', { name: 'Queues' }).click();
+    await expect(visitor.getByRole('heading', { level: 2, name: 'Queues' })).toBeInViewport();
+    // Leaving the page sends the section at once
+    const readLaterList = visitor
+      .locator('section')
+      .filter({ has: visitor.getByRole('heading', { name: 'Read later' }) });
+    await expect(async () => {
+      await visitor.goto(`${PUBLIC_URL}/me`);
+      await expect(readLaterList.getByRole('link', { name: article })).toHaveAttribute('href', /#queues$/, {
+        timeout: 1_000,
+      });
+    }).toPass({ timeout: 15_000 });
+    await readLaterList.getByRole('link', { name: article }).click();
+    await expect(visitor).toHaveURL(`${PUBLIC_URL}/articles/${slug}#queues`);
+    await expect(visitor.getByRole('heading', { level: 2, name: 'Queues' })).toBeInViewport();
   });
 
   await test.step('the owner locks the account; the visitor is signed out', async () => {

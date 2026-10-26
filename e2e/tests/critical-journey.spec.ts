@@ -14,6 +14,8 @@ const chapter = `E2E Chapter ${runId}`;
 const privateArticle = `E2E Private ${runId}`;
 const overview = `Overview text of run ${runId}`;
 const later = `Later ${runId}`;
+// Enough text after a heading for it to scroll to the top of the window
+const filler = Array.from({ length: 40 }, (_, i) => `Paragraph ${i + 1} of the book.`).join('\n\n');
 // laravel-api uniqueSlug = Str::slug(name) for a new name
 const slugOf = (name: string) => name.toLowerCase().replaceAll(' ', '-');
 
@@ -83,7 +85,7 @@ test('owner writes a book and visitors read it like a documentation site', async
   });
 
   await test.step('a book, a chapter that links and embeds it, and a private article', async () => {
-    await createArticle(page, book, `## Overview\n\n${overview}\n\n## ${later}\n\nNot embedded.`, {
+    await createArticle(page, book, `## Overview\n\n${overview}\n\n## ${later}\n\nNot embedded.\n\n${filler}`, {
       category,
     });
     await createArticle(
@@ -131,6 +133,41 @@ test('owner writes a book and visitors read it like a documentation site', async
     const contents = visitor.locator('nav').filter({ hasText: 'On this page' });
     await expect(contents.getByRole('link', { name: 'Steps' })).toBeVisible();
     await expect(visitor.getByRole('link', { name: book }).first()).toBeVisible();
+  });
+
+  await test.step('home: the Newest tab lists the chapter, See more opens the reading page (REQ-006)', async () => {
+    await expect(async () => {
+      await visitor.goto(`${PUBLIC_URL}/?articles=newest`);
+      const newest = visitor.locator('#articles').getByRole('listitem').first();
+      await expect(newest.getByRole('link', { name: chapter })).toBeVisible({ timeout: 1_000 });
+    }).toPass(CACHED);
+    await visitor.locator('#articles').getByRole('link', { name: 'See more →' }).click();
+    await expect(visitor).toHaveURL(`${PUBLIC_URL}/articles/${slugOf(chapter)}`);
+  });
+
+  await test.step('the reading page swaps articles without a reload, Back included (ADR-0024)', async () => {
+    await visitor.goto(`${PUBLIC_URL}/articles/${slugOf(book)}?in=${slugOf(category)}`);
+    // Gone if the browser loads a whole new page
+    await visitor.evaluate(() => Object.assign(window, { e2eSamePage: true }));
+    const samePage = () => visitor.evaluate(() => 'e2eSamePage' in window);
+    await visitor
+      .getByRole('navigation', { name: `Articles in ${category}` })
+      .getByRole('link', { name: chapter })
+      .click();
+    await expect(visitor).toHaveURL(`${PUBLIC_URL}/articles/${slugOf(chapter)}?in=${slugOf(category)}`);
+    await expect(visitor.getByRole('heading', { level: 1, name: chapter })).toBeVisible();
+    expect(await samePage()).toBe(true);
+    await visitor.goBack();
+    await expect(visitor.getByRole('heading', { level: 1, name: book })).toBeVisible();
+    expect(await samePage()).toBe(true);
+  });
+
+  await test.step('"On this page" lights the section being read', async () => {
+    const contents = visitor.getByRole('navigation', { name: 'On this page' });
+    await contents.getByRole('link', { name: later }).click();
+    await expect(visitor.getByRole('heading', { level: 2, name: later })).toBeInViewport();
+    await expect(contents.getByRole('link', { name: later })).toHaveAttribute('aria-current', 'true');
+    await expect(contents.getByRole('link', { name: 'Overview' })).not.toHaveAttribute('aria-current', 'true');
   });
 
   await test.step('the public search finds the book; the private article is not public', async () => {
