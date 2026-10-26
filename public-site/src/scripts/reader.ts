@@ -228,16 +228,15 @@ async function keepPosition(key: string, headings: Heading[]): Promise<void> {
   const sections = headings.filter(({ level }) => level === POSITION_LEVEL);
   const page = reader();
   const items = await savedItems().catch(() => []);
+  const item = items.find((saved) => saved.kind === SAVED_READ_LATER && saved.key === key);
   // Not saved for later, or the router already showed another page meanwhile
-  if (
-    !items.some((item) => item.kind === SAVED_READ_LATER && item.key === key) ||
-    reader() !== page
-  ) {
+  if (!item || reader() !== page) {
     return;
   }
 
   const sectionNow = () => reached(sections)?.id ?? null;
-  let sent = sectionNow();
+  // What the API holds: opening the article at the top never overwrites it, only scrolling does
+  let sent = item.anchor;
   let pending: string | null = sent;
   let lastAt = 0;
   let timer: ReturnType<typeof setTimeout> | undefined;
@@ -251,11 +250,14 @@ async function keepPosition(key: string, headings: Heading[]): Promise<void> {
       () => undefined,
     );
   };
-  onScroll(() => {
+  const scrolled = () => {
     pending = sectionNow();
     if (pending === sent || timer) return;
     timer = setTimeout(send, Math.max(0, lastAt + POSITION_EVERY_MS - Date.now()));
-  });
+  };
+  onScroll(scrolled);
+  // Scrolled while the saved list was loading, or the browser restored the scroll of a reload
+  if (scrollY > 0) scrolled();
   const leave = () => send(true);
   addEventListener('pagehide', leave);
   tearDown.push(() => {
