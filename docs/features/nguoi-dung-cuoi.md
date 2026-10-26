@@ -77,4 +77,4 @@ Gọi `GET /api/sanctum/csrf-cookie` trước mọi lệnh ghi, như trang quả
 | API quản trị | `app/Http/Controllers/Master/EndUserController.php`, `app/Services/Master/EndUserService.php`, `app/Services/System/RegistrationSetting.php` |
 | Trang public | `public-site/src/pages/account/`, `src/pages/me.astro`, `src/components/SaveButtons.astro`, `src/scripts/` |
 | Trang quản trị | `nextjs-fe/src/app/admin/end-users/`, `src/features/master/components/{end-user-form,registration-switch}.tsx` |
-| Test | `make test f=EndUser`, `f=SavedApi`; `pnpm test end-user-form`; `make e2e` (`end-users.spec.ts`) |
+| Test | `make test f=EndUser`, `f=SavedApi`; `pnpm test end-user-form`; `make e2e` (`end-users.spec.ts`: đăng ký, ☆ 🔖, mở lại bài từ My lists đúng mục đang đọc, bị khóa thì đăng xuất) |

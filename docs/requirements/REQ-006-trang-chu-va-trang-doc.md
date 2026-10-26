@@ -152,7 +152,7 @@ Tình huống
 | Mục đang đọc: lưu, cập nhật, bài riêng tư bị ẩn, bài xóa thì mất | Test backend API người dùng |
 | Tìm kiếm có loại kết quả, đoạn trích | Test backend |
 | Trang chủ, trang đọc, chuyển trang không tải lại, mục lục sáng, nhớ chỗ đọc | Test trình duyệt (`make e2e`) |
-| JavaScript dưới 30 KB | Đo trên bản build ở READ-06 |
+| JavaScript dưới 30 KB | Đo trên bản build ở READ-06: 25,8 KB (đạt, 2026-10-26) |
 
 ## 9. Chia việc
 
