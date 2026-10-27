@@ -22,7 +22,7 @@ class RoleService extends AuditedCrudService
 
     protected string $auditableType = 'role';
 
-    public function __construct(private readonly RoleRepository $roles, AuditLogger $auditLogger)
+    public function __construct(private readonly RoleRepository $roles, AuditLogger $auditLogger) // NOSONAR php:S1185: the parent takes the abstract CrudRepository; this names the one the container injects
     {
         parent::__construct($roles, $auditLogger);
     }

@@ -20,7 +20,7 @@ class EndUserService extends AuditedCrudService
 
     protected string $auditableType = EndUserConst::AUDITABLE_TYPE;
 
-    public function __construct(EndUserRepository $endUsers, AuditLogger $auditLogger)
+    public function __construct(EndUserRepository $endUsers, AuditLogger $auditLogger) // NOSONAR php:S1185: the parent takes the abstract CrudRepository; this names the one the container injects
     {
         parent::__construct($endUsers, $auditLogger);
     }

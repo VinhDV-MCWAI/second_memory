@@ -16,7 +16,7 @@ class DepartmentService extends AuditedCrudService
 
     protected string $auditableType = 'department';
 
-    public function __construct(DepartmentRepository $departments, AuditLogger $auditLogger)
+    public function __construct(DepartmentRepository $departments, AuditLogger $auditLogger) // NOSONAR php:S1185: the parent takes the abstract CrudRepository; this names the one the container injects
     {
         parent::__construct($departments, $auditLogger);
     }
