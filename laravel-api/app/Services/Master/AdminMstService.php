@@ -8,6 +8,7 @@ use App\Constants\CommonVal;
 use App\Constants\Messages;
 use App\Enums\IsActive;
 use App\Http\Resources\Master\AdminMstResource;
+use App\Models\Master\AdminMst;
 use App\Repositories\Master\AdminMstRepository;
 use App\Services\AuditedCrudService;
 use App\Services\AuditLogger;
@@ -46,8 +47,9 @@ class AdminMstService extends AuditedCrudService
 
         // The session keeps a hash of the password (Sanctum AuthenticateSession) and other sessions
         // with the old hash are logged out. Refresh the current admin so this session keeps working.
-        if (! empty($payload['password']) && $isSelf) {
-            Auth::guard(CommonVal::ADMIN_GUARD)->user()?->refresh();
+        $current = Auth::guard(CommonVal::ADMIN_GUARD)->user();
+        if (! empty($payload['password']) && $isSelf && $current instanceof AdminMst) {
+            $current->refresh();
         }
 
         // Ended sessions also leave the sessions screen (AUTH-04): a new password ends the admin's other
