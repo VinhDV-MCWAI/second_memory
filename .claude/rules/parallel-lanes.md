@@ -3,7 +3,7 @@
 Tasks live on [.claude/lab/BOARD.md](../lab/BOARD.md) and change state only through `scripts/lane.sh`. Today there is one lane, `main` (the whole repo); the script still keeps two conversations from claiming the same task or running tests at the same time. Start with the `/lab-task` skill.
 
 ## Claiming and finishing
-- Take work only through `scripts/lane.sh claim <id>`; finish with `scripts/lane.sh done <id> "<commit> + one-line result"` (it mirrors `03-backlog.md`, appends to the PROGRESS log and commits those files). Never edit the board's Status column, a backlog Status cell, or the PROGRESS log by hand.
+- Take work only through `scripts/lane.sh claim <id>`; finish with `scripts/lane.sh done <id> "<commit> + one-line result"` (it mirrors `03-backlog.md`, appends to the PROGRESS log and commits those files). Keep the note to one or two short sentences. Never edit the board's Status column, a backlog Status cell, or the PROGRESS log by hand.
 - Stuck on something outside your lane: `scripts/lane.sh block <id> "<reason>"`, and add the needed work to the owning lane with `scripts/lane.sh add <lane> <id> …`.
 - New work found (a bug, a follow-up): `scripts/lane.sh add` in the lane that owns the code. Don't do it yourself if it's outside your paths.
 

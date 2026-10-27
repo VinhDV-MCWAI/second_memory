@@ -1,6 +1,6 @@
 # Những việc đã làm
 
-Cập nhật: 2026-10-17. Tóm tắt các việc đã xong từ khi đổi hướng ngày 2026-10-09 ([ADR-0012](../adr/0012-restore-features-dev-first.md)), gom theo tính năng. Cách dùng từng tính năng: file tương ứng trong [docs/features/](../features/). Chi tiết từng commit: `git log`. Việc trước 2026-10-09 (thu gọn, Skill Ledger, Terraform): [docs/releases/](../releases/) và [archive/engineering-lab/](../archive/engineering-lab/).
+Cập nhật: 2026-10-27. Tóm tắt các việc đã xong từ khi đổi hướng ngày 2026-10-09 ([ADR-0012](../adr/0012-restore-features-dev-first.md)), gom theo tính năng. Cách dùng từng tính năng: file tương ứng trong [docs/features/](../features/). Chi tiết từng commit: `git log`. Việc trước 2026-10-09 (thu gọn, Skill Ledger, Terraform): [docs/releases/](../releases/) và [archive/engineering-lab/](../archive/engineering-lab/).
 
 ## Theo tính năng
 
@@ -20,6 +20,13 @@ Cập nhật: 2026-10-17. Tóm tắt các việc đã xong từ khi đổi hư�
 | Người dùng cuối | Người xem trang public tự đăng ký (email, mật khẩu), lưu yêu thích và xem sau kỹ năng, bằng chứng; trang My lists; admin khóa / mở, đặt lại mật khẩu, bật / tắt đăng ký ở màn hình End users; bộ đăng nhập riêng, không gọi được API quản trị | 10-19 | [nguoi-dung-cuoi.md](../features/nguoi-dung-cuoi.md), [ADR-0020](../adr/0020-end-user-accounts.md) |
 | Đóng gói `v2.2.0` | Ghi chú phát hành, nghiệm thu, bàn giao, nhìn lại; tag trên máy | 10-17 | [v2.2.0.md](../releases/v2.2.0.md) |
 | Dọn dẹp | Bỏ tài liệu lỗi thời; viết lại README (tiếng Anh) và tài liệu kiến trúc; `make clean` xóa thêm ảnh Docker không dùng; quy tắc và hướng dẫn dọn dẹp sau mỗi việc; rút gọn bảng việc | 10-17 | [don-dep.md](../runbooks/don-dep.md) |
+| Nội dung public | Danh mục và bài viết (Markdown → HTML an toàn), màn hình Public content → Categories, Articles; trang public chuyển về gốc `/`, quản trị dưới `/admin` | 10-19 | [bai-viet.md](../features/bai-viet.md), [ADR-0021](../adr/0021-public-home-categories-articles.md) |
+| Sổ tay quy trình | Sổ tay tiếng Việt 7 chương, mỗi chương có kinh nghiệm làm việc với từng vai | 10-19 | [handbook/](../handbook/README.md) |
+| Vận hành | Diễn tập sự cố (khôi phục thử, hàng đợi dừng, Redis dừng); sao lưu cả thùng rác; khởi động lại ổn định (chép cấu hình Postgres, Redis vào image); cảnh báo cơ bản bằng thông báo Windows | 10-26 | [canh-bao.md](../runbooks/canh-bao.md), [backup-restore.md](../runbooks/backup-restore.md), [incidents/](../incidents/) |
+| Trang tài liệu kinh nghiệm (giai đoạn 10) | Bỏ Skill Ledger; danh mục nhiều cấp có đính kèm, bài thuộc nhiều danh mục, cây sách tối đa 10 cấp; link `[[bài]]`, nhúng bài / mục / file; trang chủ kiểu diễn đàn; lượt xem, đọc nhiều, được lưu | 10-22 | [REQ-005](../requirements/REQ-005-trang-tai-lieu-kinh-nghiem.md), [ADR-0022](../adr/0022-trang-tai-lieu-kinh-nghiem.md), [ADR-0023](../adr/0023-danh-muc-nhieu-cap.md) |
+| Nhập từ Obsidian | `make import` tạo bài từ ghi chú `publish: true` (bài cha, danh mục, link); thứ tự ghi chú như Obsidian; xóa dữ liệu thử trước khi nhập bài thật | 10-26 | [nhap-tu-obsidian.md](../features/nhap-tu-obsidian.md), [ledger-import.md](../runbooks/ledger-import.md) |
+| Trang chủ và trang đọc 4 cột (giai đoạn 11) | Trang chủ tóm tắt (thẻ danh mục, tab bài); trang đọc 4 cột chuyển bài không tải lại; tìm kiếm kiểu Obsidian có nhãn; ☆ và lượt xem cho cả danh mục; 🔖 nhớ mục đang đọc; header cố định một ô tìm; góp ý giao diện quản trị (ô Bài cha, lọc danh mục dạng cây) | 10-26 | [REQ-006](../requirements/REQ-006-trang-chu-va-trang-doc.md), [ADR-0024](../adr/0024-trang-doc-chuyen-trang-khong-tai-lai.md), [trang-public.md](../features/trang-public.md) |
+| Đóng gói `v2.3.0`, `v3.0.0` | Nghiệm thu tự động cho `v2.3.0`; chủ dự án thử 13 bước trên trình duyệt cho `v3.0.0`, đạt; tag trên máy | 10-26 | [v2.3.0.md](../releases/v2.3.0.md), [v3.0.0.md](../releases/v3.0.0.md) |
 
 ## Quyết định để sau
 
