@@ -14,6 +14,24 @@
 
 All docs live in `docs/` (start at [docs/README.md](docs/README.md)). The old Vietnamese architecture docs are archived in `docs/archive/legacy-architecture/` (outdated — code wins).
 
+## Where to look
+
+Open the 1–3 files for the task at hand, not whole folders. Never read `docs/archive/` unless asked (outdated).
+
+| Task | Open |
+|---|---|
+| Start of a session, "what next" | [.claude/lab/PROGRESS.md](.claude/lab/PROGRESS.md), then `scripts/lane.sh status` |
+| Any feature: what it does, screens, API, tables | its file in [docs/features/](docs/features/) (Vietnamese names: `bai-viet`, `quan-ly-file`, `phan-quyen-dong`, …) |
+| Backend API, services, migrations | [laravel-api/CLAUDE.md](laravel-api/CLAUDE.md), the feature file |
+| Admin UI | [nextjs-fe/CLAUDE.md](nextjs-fe/CLAUDE.md), the feature file |
+| Public site (home, reading page, search) | [public-site/CLAUDE.md](public-site/CLAUDE.md), [trang-public.md](docs/features/trang-public.md) |
+| Obsidian import (`make import`) | [nhap-tu-obsidian.md](docs/features/nhap-tu-obsidian.md), [ledger-import.md](docs/runbooks/ledger-import.md) |
+| Docker, env, a container that will not start | [docker/CLAUDE.md](docker/CLAUDE.md), [dev-guide.md](docs/dev-guide.md) §6 |
+| Backup, restore, alerts, cleanup | [docs/runbooks/](docs/runbooks/) (one file each) |
+| A large task (new phase, DB or UI change) | [handbook](docs/handbook/README.md), an existing `docs/requirements/REQ-*.md` as the template |
+| Why something is built this way | [architecture/current.md](docs/architecture/current.md), then the ADR it links |
+| Writing docs (style, language) | "Quy ước viết tài liệu" in [01-goals-and-workflow.md](docs/plan/01-goals-and-workflow.md) |
+
 ## Running things
 
 Everything runs in Docker (containers prefixed `ml-`). The host has Node, pnpm and PHP only so editor extensions work ([dev-guide §8](docs/dev-guide.md)); never run tests, migrations or `pnpm add` / `composer require` on the host. The root `Makefile` wraps the common commands (`make help` lists them):
