@@ -75,19 +75,6 @@ Backend đi theo tầng: Route → FormRequest (kiểm tra đầu vào) → Cont
 
 Đổi cổng, tên host, biến môi trường, route, dạng dữ liệu API: tìm mọi chỗ dùng trong cả repo (`git grep <tên>`) và ghi vào ghi chú của việc. Đổi API thì chạy `make openapi` để `nextjs-fe` và `public-site` có kiểu dữ liệu mới, và sửa cả hai trong cùng thay đổi.
 
-## Danh sách kiểm khi review
-
-| Mặt | Hỏi |
-|---|---|
-| Đúng | Có làm đúng tiêu chí chấp nhận không? Trường hợp biên, lỗi, rỗng? |
-| Thiết kế | Đúng tầng chưa? Có lặp code không? Có cách đơn giản hơn không? |
-| Hợp đồng | Đổi API đã cập nhật OpenAPI, kiểu dữ liệu giao diện, trang public chưa? Còn tương thích không? |
-| Dữ liệu | Migration quay lui được không? Có index không? Có truy vấn lặp N+1 không? |
-| Bảo mật | Mỗi API có kiểm quyền không? Đầu vào có kiểm tra không? Không có bí mật, không ghi dữ liệu nhạy cảm vào log? |
-| Test | Có test đúng mức? Bỏ thay đổi đi thì test có fail không? |
-| Vận hành | Log có ích không? Thông báo lỗi rõ không? Cấu hình qua `config()`? |
-| Dễ đọc | Tên, không có giá trị ma thuật, comment nói vì sao |
-
 ## Xử lý xung đột
 
 1. Hiểu **cả hai phía** trước khi chọn: đọc commit bên kia (`git log -p <branch> -- <file>`).
