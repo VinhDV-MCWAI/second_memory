@@ -56,6 +56,8 @@ Mỗi dòng do `scripts/lane.sh done` tự thêm; ghi chú khi xong việc tối
 - 2026-10-26 — [lane main] OPS-05 done: 88bf8c5e, 65fa3957, 2605ce66 — Postgres, Redis hỏng sau khởi động lại vì gắn cấu hình từ máy; sửa: chép cấu hình vào image
 - 2026-10-26 — [lane main] CONTENT-01 done: daf68edd — sao lưu, xóa dữ liệu thử qua service của ứng dụng; vault 84 ghi chú, chưa ghi chú nào `publish: true`
 
+- 2026-10-27 — [lane main] DOCS-01 done: 3f9dbb10, 4e4f80b8 — nhật ký tiến độ 51,6 → 7,3 KB, việc cũ gom vào 05-done; bảng việc gì mở file nào trong CLAUDE.md; Playbook: chưa có .me/ thì hỏi một câu
+
 ## Next step
 
 1. Đầu phiên: đọc file này, rồi `scripts/lane.sh status`. Bảng việc chỉ còn các việc "để sau" theo quyết định chủ dự án.
