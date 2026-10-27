@@ -41,7 +41,7 @@ Máy chủ tìm ghi chú được nhắc tới giống Obsidian: đúng đườn
 | Link tới ghi chú không đăng, ảnh trong vault (`![[hinh.png]]`), `![[file:…]]` | Chỉ còn chữ (chữ hiện, hoặc tên ghi chú). Được liệt kê trong kết quả |
 | Link nằm trong khối code hoặc `code` | Giữ nguyên |
 
-Ảnh và file trong vault chưa được nhập vào Files (ngoài phạm vi, [REQ-005](../requirements/REQ-005-trang-tai-lieu-kinh-nghiem.md)).
+Ảnh và file trong vault chưa được nhập vào Files (ngoài phạm vi, [REQ-005](../requirements/REQ-005-trang-tai-lieu-kinh-nghiem.md)). Thiết kế đã duyệt, hoãn làm tới khi vault có bài thật nhúng ảnh: [REQ-007](../requirements/REQ-007-nhap-anh-file-obsidian.md).
 
 ## Quy tắc đồng bộ
 
